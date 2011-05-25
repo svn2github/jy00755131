@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SendDataUDP", "SendDataUDP\SendDataUDP.vcproj", "{E527039F-B88A-4E96-9CC4-4E6C96E9B350}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E527039F-B88A-4E96-9CC4-4E6C96E9B350}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E527039F-B88A-4E96-9CC4-4E6C96E9B350}.Debug|Win32.Build.0 = Debug|Win32
+		{E527039F-B88A-4E96-9CC4-4E6C96E9B350}.Release|Win32.ActiveCfg = Release|Win32
+		{E527039F-B88A-4E96-9CC4-4E6C96E9B350}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
