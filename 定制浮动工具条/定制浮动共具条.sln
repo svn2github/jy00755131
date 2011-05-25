@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "定制浮动共具条", "定制浮动共具条\定制浮动共具条.vcproj", "{B8112E90-7B35-414B-8165-5CDF0EE11906}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B8112E90-7B35-414B-8165-5CDF0EE11906}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B8112E90-7B35-414B-8165-5CDF0EE11906}.Debug|Win32.Build.0 = Debug|Win32
+		{B8112E90-7B35-414B-8165-5CDF0EE11906}.Release|Win32.ActiveCfg = Release|Win32
+		{B8112E90-7B35-414B-8165-5CDF0EE11906}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
