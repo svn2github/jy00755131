@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="gb2312" ?>
+<Matrix>
+	<OperationClient HostIP = "192.168.0.12"/>		
+	<OperationServer HostIP = "192.168.0.12" RevFilePath="d:\RevData" />		
+	<MainCross       SOCKETIP = "255.255.255.255" Port ="20496" />
+  <Operation>  
+      <!--施工模式设置 -->  
+      <Operating Mode="0" Automation ="0" />
+      <!--施工延时设置 -->
+      <OperationDelay AtendofAcq="1" AtendofVP ="1" SlipTime = "11.1" />   
+      <!--放炮表--> 
+      <OperationTable Count="14">
+        <Record VPStatus="0" ShotID ="1" BreakPoint="N" SwathNb ="1" SourcePointIndex ="0" SourceLine = "20" SourceReceiver = "10" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="第一个炮点"/>
+        <Record VPStatus="1" ShotID ="2" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "20.5" SourceReceiver = "10.5" SpreadType ="2" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="2" ProcessTypeID ="1" Comments ="注释"/>
+        <Record VPStatus="0" ShotID ="3" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="3" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="2" ShotID ="4" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="4" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="0" ShotID ="5" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="2" ShotID ="6" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="4" ShotID ="7" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="0" ShotID ="8" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="4" ShotID ="9" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="2" ShotID ="10" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="4" ShotID ="11" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="0" ShotID ="12" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="4" ShotID ="13" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+				<Record VPStatus="0" ShotID ="14" BreakPoint="N" SwathNb ="1" SourcePointIndex ="1" SourceLine = "25.5" SourceReceiver = "30.5" SpreadType ="1" SpreadSFL ="1" SpreadSFN ="1"  SuperSpread="1" ProcessTypeID ="1" Comments ="注释"/>
+      </OperationTable> 
+      <!--震源类型定义-->
+      <SourceType>
+      	<!--脉冲类型定义-->
+        <SourceExplo Count="3">
+          <Record SourceStatus="2" SourceNb ="1" Label="Explo One" ShooterSN="123456" IncrNb="1" Comment="第一个震源SourceExplo震源描述" />
+          <Record SourceStatus="2" SourceNb ="2" Label="Explo two" ShooterSN="213256" IncrNb="1" Comment="震源描述" />          
+          <Record SourceStatus="2" SourceNb ="3" Label="Explo Three" ShooterSN="313456" IncrNb="1" Comment="震源描述" /> 
+        </SourceExplo>
+        <!--可控震源类型定义-->
+        <SourceVibro Count="2">
+           <Record SourceStatus="2" SourceNb ="1001" Label="Vibro one" ShooterSN="12345" Moving="1" Step="1" WorkByAcq="0" ClusterNb="1" Comment="SourceVibro震源描述" />
+           <Record SourceStatus="3" SourceNb ="1002" Label="Vibro two" ShooterSN="12333" Moving="1" Step="1" WorkByAcq="0" ClusterNb="1" Comment="SourceVibro震源描述" />           
+        </SourceVibro>  
+      </SourceType>
+      <!--处理类型定义-->
+      <ProcessType Count="1" > 
+      	<ProcessRecord Nb="1"  Label ="record" Type ="0" ProcessSetup = "0" SerialNb = "12345"  RecordLength="20000" RefractingDelay="1000" TBWindow="200">      		
+      	   <Auxiliaries Count="1"  CorreWith = "Pilot" >	
+      	   	  <Record AuxiNb ="1" AuxiProcessing="Aux1*Aux2"  />
+      	   </Auxiliaries>      	        	   	
+      	</ProcessRecord>
+      </ProcessType>
+      <!--操作员注释定义-->
+      <OperationComment Count="2">
+      	 <Record Nb ="1" Label="label1" User="12345" Comment="操作员施工注释" />
+      	 <Record Nb ="2" Label="label1" User="23222" Comment="操作员施工注释" />
+      </OperationComment> 
+      <SpreadType>
+				<AbsoluteSetup Count="4" TabCount="4">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-10g1,11-100g2;2:1-10g1,11-100g2;3:1-10g1,11-100g2" />
+					<Record Nb="2" Label="Absolute2" Spread="4:1-10g1,11-100g2;5:1-10g1,11-100g2;6:1-10g1,11-100g2" />
+					<Record Nb="3" Label="Absolute3" Spread="7:1-10g1,11-100g2;8:1-10g1,11-100g2;9:1-10g1,11-100g2" />
+					<Record Nb="4" Label="Absolute3" Spread="1:101-110g1,111-150g2;2:101-110g1,111-150g2;3:101-110g1,111-150g2" />
+				</AbsoluteSetup>
+				<GenericSetup Count="3" TabCount="4">
+					<Record Nb="1" Label="Generic1" Line="50g1+50g2" Spread="10l1+10l2" />
+					<Record Nb="2" Label="Generic2" Line="50g1+50g2" Spread="10l1+10l2" />
+					<Record Nb="3" Label="Generic3" Line="50g1+50g2" Spread="10l1+10l2" />
+				</GenericSetup>
+			</SpreadType>         
+  </Operation>
+</Matrix>

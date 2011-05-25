@@ -1,0 +1,714 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\Operation.rc2""  // ????ì??ì? Microsoft Visual C++ ???¨???§?§???§????ì??ì?-|??¨??????¨???§|???§?o???\r\n"
+    "#include ""l.CHS\\afxres.rc""          // ???¨???§?§???§?o???¨???§|????¨???§|???§?|?t\r\n"
+    "#include ""l.CHS\\afxprint.rc""        // ?????§??????§???/?????§??????§???????¨???¨????§????ì??ì???§????ì??ì???¨???§|???§?o???\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
+IDB_SOURCESTATE         BITMAP                  "res\\bitmap2.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PROCESSSETUPDLG DIALOGEX 0, 0, 414, 332
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Process Type Setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Standard",IDC_RADIO_STANDARD,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,153,27,63,10
+    CONTROL         "Advanced",IDC_RADIO_ADVANCED,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,247,26,66,10
+    COMBOBOX        IDC_COMBO_PROCESSTYPESELECT,177,51,104,30,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_STATICPICTURE,"Static",SS_GRAYRECT,18,72,379,244
+END
+
+IDD_IMPULSIVE DIALOGEX 0, 0, 366, 247
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Plug:",IDC_STATIC,34,42,27,21
+    LTEXT           "Box Type:",IDC_STATIC,84,42,29,21
+    LTEXT           "Serial Nb:",IDC_STATIC,133,42,27,21
+    COMBOBOX        IDC_COMBO_PULG,19,60,47,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_BOXTYPE,73,60,46,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_SERIALNB,123,60,46,15,ES_AUTOHSCROLL
+    LTEXT           "Record Length(ms):",IDC_STATIC,192,41,43,21
+    EDITTEXT        IDC_EDIT_RECORDLENGTH,186,60,49,15,ES_AUTOHSCROLL
+    LTEXT           "Refraction Delay(ms):",IDC_STATIC,247,41,40,21
+    EDITTEXT        IDC_EDIT_REFRACTIONDELAY,241,60,51,15,ES_AUTOHSCROLL
+    LTEXT           "TB Window(ms):",IDC_STATIC,304,42,43,21
+    EDITTEXT        IDC_EDIT_TBWINDOW,299,60,52,15,ES_AUTOHSCROLL
+    GROUPBOX        "Firing Order",IDC_STATIC,12,22,164,63,BS_CENTER
+    CTEXT           "Auxiliaries",IDC_STATIC,15,95,202,22,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "Nb",IDC_STATIC,15,117,62,22,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Processing",IDC_STATIC,77,117,140,22,0,WS_EX_DLGMODALFRAME
+    PUSHBUTTON      "Add",IDC_BUTTON_ADD,251,103,71,19
+    PUSHBUTTON      "Delete",IDC_BUTTON_DELETE,251,159,71,19
+    PUSHBUTTON      "Change",IDC_BUTTON_CHANGE,251,131,71,19
+    CONTROL         "",IDC_STATICGRIDEDIT,"Static",SS_BLACKRECT | NOT WS_VISIBLE,15,143,202,19
+    CONTROL         "",IDC_STATICGRID,"Static",SS_GRAYRECT | NOT WS_VISIBLE,15,166,202,63
+    GROUPBOX        "",IDC_STATIC,10,88,344,147
+END
+
+IDD_STACKIMPULSIVE DIALOGEX 0, 0, 393, 181
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT1,30,22,326,128,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_PROCESSSETUPDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 407
+        VERTGUIDE, 18
+        VERTGUIDE, 386
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 325
+        HORZGUIDE, 72
+        HORZGUIDE, 259
+    END
+
+    IDD_IMPULSIVE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 359
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 240
+    END
+
+    IDD_STACKIMPULSIVE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 386
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 174
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_PROCESSSETUPDLG DLGINIT
+BEGIN
+    IDC_COMBO_PROCESSTYPESELECT, 0x403, 10, 0
+0x4d49, 0x5550, 0x534c, 0x5649, 0x0045, 
+    IDC_COMBO_PROCESSTYPESELECT, 0x403, 16, 0
+0x5453, 0x4341, 0x204b, 0x4d49, 0x5550, 0x534c, 0x5649, 0x0045, 
+    0
+END
+
+IDD_IMPULSIVE DLGINIT
+BEGIN
+    IDC_COMBO_PULG, 0x403, 7, 0
+0x5550, 0x474c, 0x3120, "\000" 
+    IDC_COMBO_PULG, 0x403, 7, 0
+0x4c50, 0x4755, 0x3220, "\000" 
+    IDC_COMBO_BOXTYPE, 0x403, 8, 0
+0x434c, 0x2d49, 0x3234, 0x0038, 
+    IDC_COMBO_BOXTYPE, 0x403, 9, 0
+0x414c, 0x5855, 0x342d, 0x3832, "\000" 
+    0
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英语(美国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDB_BITMAPVPSTATE       BITMAP                  "res\\bitmap1.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 193, 130
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Operation"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
+    LTEXT           "Operation, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2010",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "OK",IDOK,68,108,50,14,WS_GROUP
+END
+
+IDD_ACTIVESOURCEVIEW DIALOGEX 0, 0, 148, 81
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 9, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    PUSHBUTTON      "Go",IDC_BUTTONGO,0,63,50,18,WS_DISABLED
+    PUSHBUTTON      "Stop",IDC_BUTTONSTOP,48,63,50,18,WS_DISABLED
+    PUSHBUTTON      "Abort",IDC_BUTTONABORT,96,63,50,18,WS_DISABLED
+END
+
+IDD_STATUSMAILVIE DIALOGEX 0, 0, 276, 21
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LISTBOX         IDC_LISTSTATUSMAIL,0,9,275,9,LBS_NOINTEGRALHEIGHT | WS_TABSTOP,WS_EX_STATICEDGE
+    GROUPBOX        "Status Mail",IDC_STATICSTATUSMAIL,0,0,275,18
+END
+
+IDD_SOURCESETUPDLG DIALOGEX 0, 0, 570, 169
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Source Type Setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_STATICTAB,"Static",SS_GRAYRECT | NOT WS_VISIBLE,0,0,570,137,WS_EX_DLGMODALFRAME
+    PUSHBUTTON      "Apply",IDC_BTNAPPLY,231,146,50,18
+    PUSHBUTTON      "Reset",IDC_BTNRESET,288,146,50,18
+END
+
+IDD_SOURCEEXPLODLG DIALOGEX 0, 0, 568, 129
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_STATICGRIDEDIT,"Static",SS_BLACKRECT | NOT WS_VISIBLE,4,24,487,14
+    CONTROL         "",IDC_STATICGRID,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,4,45,500,75
+    PUSHBUTTON      "Add",IDC_BTNADD,514,57,50,18
+    PUSHBUTTON      "Change",IDC_BTNCHANGE,514,79,50,18
+    PUSHBUTTON      "Delete",IDC_BTNDELETE,514,101,50,18
+    CTEXT           "Nb",IDC_STATIC,15,4,72,20,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "Label",IDC_STATIC,87,4,120,20,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "Shooter\rNb",IDC_STATIC,207,4,80,20,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Incr\rNb",IDC_STATIC,287,4,80,20,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Comment",IDC_STATIC,367,4,122,20,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+END
+
+IDD_SOURCEVIBRODLG DIALOGEX 0, 0, 568, 129
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_STATICGRIDEDIT,"Static",SS_BLACKRECT | NOT WS_VISIBLE | WS_DISABLED,4,24,487,14
+    CONTROL         "",IDC_STATICGRID,"Static",SS_BLACKRECT | NOT WS_VISIBLE | WS_DISABLED,4,45,500,75
+    PUSHBUTTON      "Add",IDC_BTNADD,514,57,50,18
+    PUSHBUTTON      "Change",IDC_BTNCHANGE,514,79,50,18
+    PUSHBUTTON      "Delete",IDC_BTNDELETE,514,101,50,18
+    CTEXT           "Nb",IDC_STATIC,15,4,53,20,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "Label",IDC_STATIC,68,4,94,20,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    LTEXT           " Fleet\r Nb",IDC_STATIC,162,4,56,20,0,WS_EX_DLGMODALFRAME
+    LTEXT           " Type of\r Moving",IDC_STATIC,218,4,85,20,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Step",IDC_STATIC,303,4,60,20,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    LTEXT           " Work\r By Acq",IDC_STATIC,363,4,60,20,0,WS_EX_DLGMODALFRAME
+    LTEXT           " Cluster\r Nb",IDC_STATIC,423,4,67,20,0,WS_EX_DLGMODALFRAME
+END
+
+IDD_SHOTSETUPDLG DIALOGEX 0, 0, 570, 181
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Source Shot Setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_STATICGRIDEDIT,"Static",SS_BLACKRECT | NOT WS_VISIBLE,2,28,490,14
+    CONTROL         "",IDC_STATICGRIDLIST,"Static",SS_BLACKRECT | NOT WS_VISIBLE,2,48,505,110
+    PUSHBUTTON      "Add",ID_BTNADD,517,51,50,18
+    PUSHBUTTON      "Change",ID_BTNCHANGE,517,80,50,18
+    PUSHBUTTON      "Delete",ID_BTNDELETE,517,109,50,18
+    PUSHBUTTON      "Reverse",ID_BTNREVERSE,517,138,50,18
+    PUSHBUTTON      "Apply",ID_BTNAPPLY,227,162,50,18
+    PUSHBUTTON      "Reset",ID_BTNRESET,294,162,50,18
+    CTEXT           "Shot\rId",IDC_STATIC,14,6,40,22,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Label",IDC_STATIC,129,6,86,11,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Super\rSpread",IDC_STATIC,339,6,48,22,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Proc\rType",IDC_STATIC,387,6,40,22,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Comment",IDC_STATIC,427,6,65,22,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "Break\rPoint",IDC_STATIC,54,6,36,22,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Swath\rNb",IDC_STATIC,90,6,38,22,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Line",IDC_STATIC,129,17,41,11,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Rcv",IDC_STATIC,170,17,45,11,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Spread",IDC_STATIC,216,6,123,11,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Sfl",IDC_STATIC,216,17,41,11,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Sfn",IDC_STATIC,257,17,41,11,0,WS_EX_DLGMODALFRAME
+    CTEXT           "Type",IDC_STATIC,299,17,40,11,0,WS_EX_DLGMODALFRAME
+END
+
+IDD_COMMENTTYPESETUPDLG DIALOGEX 0, 0, 374, 181
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Observer Comment Type Setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDITCOMMENT,6,12,360,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL | WS_HSCROLL
+    CONTROL         "",IDC_STATICGRIDEDIT,"Static",SS_BLACKRECT | NOT WS_VISIBLE,18,100,278,14
+    CONTROL         "",IDC_STATICGRIDLIST,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,18,119,290,38
+    PUSHBUTTON      "Add",IDC_BTNADD,316,105,50,18
+    PUSHBUTTON      "Change",IDC_BTNCHANGE,316,129,50,18
+    PUSHBUTTON      "Delete",IDC_BTNDELETE,316,153,50,18
+    PUSHBUTTON      "Apply",ID_BTNAPPLY,127,160,50,18
+    PUSHBUTTON      "Reset",ID_BTNRESET,196,160,50,18
+    GROUPBOX        "Comment:",IDC_STATIC,4,3,365,71,BS_FLAT
+    CTEXT           "Nb",IDC_STATIC,32,80,65,20,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "Label",IDC_STATIC,97,80,200,20,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 186
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 122
+    END
+
+    IDD_ACTIVESOURCEVIEW, DIALOG
+    BEGIN
+        RIGHTMARGIN, 146
+    END
+
+    IDD_STATUSMAILVIE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 275
+        BOTTOMMARGIN, 18
+    END
+
+    IDD_SOURCESETUPDLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 462
+    END
+
+    IDD_SOURCEVIBRODLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 564
+    END
+
+    IDD_SHOTSETUPDLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 567
+    END
+
+    IDD_COMMENTTYPESETUPDLG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 373
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\Operation.ico"
+IDR_OperationTYPE       ICON                    "res\\OperationDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Print\tCtrl+P",              ID_FILE_PRINT
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "Setup"
+    BEGIN
+        MENUITEM "&Source",                     ID_SETUP_SOURCE
+        MENUITEM "Ope&ration",                  ID_SETUP_OPERATION
+        MENUITEM "Pro&cess Type",               ID_SETUP_PROCESSTYPE
+        MENUITEM "Nois&e Editing",              ID_SETUP_NOISEEDITING
+        MENUITEM "Co&mments",                   ID_SETUP_COMMENTS
+        MENUITEM "Optio&ns",                    ID_SETUP_OPTIONS
+        MENUITEM "Delay Se&tup",                ID_SETUP_DELAYSTEUP
+        MENUITEM "Pre&ferences",                ID_SETUP_PREFERENCES
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "All VP",                      ID_VIEW_ALLVP
+        MENUITEM "Active Source",               ID_VIEW_ACTIVESOURCE
+        MENUITEM "Active Acquisition",          ID_VIEW_ACTIVEACQ
+        MENUITEM "All To Do",                   ID_VIEW_ALLTODO
+        MENUITEM "All Done",                    ID_VIEW_ALLDONE
+        MENUITEM "Operation Report",            ID_VIEW_OPERATIONREPORT
+        POPUP "&ToolBar"
+        BEGIN
+            MENUITEM "Standard Toolbar",            ID_VIEW_TOOLBAR
+            MENUITEM "&Workspace",                  ID_VIEW_WORKSPACE
+            MENUITEM SEPARATOR
+            MENUITEM "&Customize...",               ID_VIEW_CUSTOMIZE
+        END
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        POPUP "Application Look"
+        BEGIN
+            MENUITEM "Office &2000",                32771
+            MENUITEM "Office &XP",                  32772
+            MENUITEM "Office 200&3",                32773
+            MENUITEM "Visual Studio 200&5",         32774
+            POPUP "Office 200&7"
+            BEGIN
+                MENUITEM "&Blue Style",                 32775
+                MENUITEM "B&lack Style",                32776
+                MENUITEM "&Aqua Style",                 32777
+                MENUITEM "&Silver Style",               32778
+            END
+            MENUITEM "&Windows XP",                 32779
+            MENUITEM "Visual Studio 200&8",         32780
+            MENUITEM "&Carbon",                     32781
+        END
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About",                      ID_APP_ABOUT
+    END
+END
+
+IDR_POPUP_TOOLBAR MENU 
+BEGIN
+    POPUP "????"
+    BEGIN
+        MENUITEM "Standard Toolbar",            ID_VIEW_TOOLBAR
+        MENUITEM "&Workspace",                  ID_VIEW_WORKSPACE
+        MENUITEM SEPARATOR
+        MENUITEM "&Customize...",               32784
+    END
+END
+
+IDR_POPUP_VPSHOT MENU 
+BEGIN
+    POPUP "VP Select"
+    BEGIN
+        MENUITEM "VP Selected",                 ID_VPSHOT_SELECTED
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "TODO: <???>"
+            VALUE "FileDescription", "TODO: <????>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "Operation.exe"
+            VALUE "LegalCopyright", "TODO: (C) <???>????????"
+            VALUE "OriginalFilename", "Operation.exe"
+            VALUE "ProductName", "TODO: <???>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE ????????? OLE ????????"
+    IDP_SOCKETS_INIT_FAILED "Windows ?????????"
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "Operation\n\nOperation\n\n\nOperation.Document\nOperation.Document"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "Operation"
+    AFX_IDS_IDLEMESSAGE     "??"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_NEW             "?????\n??"
+    ID_FILE_OPEN            "??????\n??"
+    ID_FILE_CLOSE           "??????\n??"
+    ID_FILE_SAVE            "??????\n??"
+    ID_FILE_SAVE_AS         "??????????\n???"
+    ID_FILE_PAGE_SETUP      "??????\n????"
+    ID_FILE_PRINT_SETUP     "????????????\n????"
+    ID_FILE_PRINT           "??????\n??"
+    ID_FILE_PRINT_PREVIEW   "????\n????"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_APP_ABOUT            "About...\nAbout"
+    ID_APP_EXIT             "??????;??????\n??"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "?????"
+    ID_FILE_MRU_FILE2       "?????"
+    ID_FILE_MRU_FILE3       "?????"
+    ID_FILE_MRU_FILE4       "?????"
+    ID_FILE_MRU_FILE5       "?????"
+    ID_FILE_MRU_FILE6       "?????"
+    ID_FILE_MRU_FILE7       "?????"
+    ID_FILE_MRU_FILE8       "?????"
+    ID_FILE_MRU_FILE9       "?????"
+    ID_FILE_MRU_FILE10      "?????"
+    ID_FILE_MRU_FILE11      "?????"
+    ID_FILE_MRU_FILE12      "?????"
+    ID_FILE_MRU_FILE13      "?????"
+    ID_FILE_MRU_FILE14      "?????"
+    ID_FILE_MRU_FILE15      "?????"
+    ID_FILE_MRU_FILE16      "?????"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_NEXT_PANE            "????????\n????"
+    ID_PREV_PANE            "????????\n????"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "????????????\n??"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_EDIT_CLEAR           "??????\n??"
+    ID_EDIT_CLEAR_ALL       "??????\n????"
+    ID_EDIT_COPY            "???????????????\n??"
+    ID_EDIT_CUT             "???????????????\n??"
+    ID_EDIT_FIND            "???????\n??"
+    ID_EDIT_PASTE           "???????\n??"
+    ID_EDIT_REPEAT          "??????\n??"
+    ID_EDIT_REPLACE         "????????????\n??"
+    ID_EDIT_SELECT_ALL      "??????\n??"
+    ID_EDIT_UNDO            "??????\n??"
+    ID_EDIT_REDO            "?????????\n??"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Toolbar\nToolbar"
+    ID_VIEW_STATUS_BAR      "Status Bar\nStatus Bar"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "??????"
+    AFX_IDS_SCMOVE          "??????"
+    AFX_IDS_SCMINIMIZE      "????????"
+    AFX_IDS_SCMAXIMIZE      "????????"
+    AFX_IDS_SCNEXTWINDOW    "??????????"
+    AFX_IDS_SCPREVWINDOW    "??????????"
+    AFX_IDS_SCCLOSE         "?????????????"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "??????????"
+    AFX_IDS_SCTASKLIST      "??????"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "????????\n????"
+END
+
+#endif    // 英语(美国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\Operation.rc2"  // ???§?§? Microsoft Visual C++ ???ì?¨¨??¨???§?§?-|??ì?????ì?¨|??¨?o???
+#include "l.CHS\afxres.rc"          // ???ì?¨¨??¨?o???ì?¨|????ì?¨|??¨?|?t
+#include "l.CHS\afxprint.rc"        // ????¨?????¨???/????¨?????¨???????ì??ì??¨???§?§??¨???§?§???ì?¨|??¨?o???
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
