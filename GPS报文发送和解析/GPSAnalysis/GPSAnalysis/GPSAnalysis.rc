@@ -1,0 +1,235 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\GPSAnalysis.rc2""  // ?¤? Microsoft Visual C++ ?à¨¤?-|ì??á¨o???\r\n"
+    "#include ""l.CHS\\afxres.rc""      // ?à¨o?á??á¨|?t\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\GPSAnalysis.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于 GPSAnalysis"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "GPSAnalysis，1.0 版",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2011",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_GPSANALYSIS_DIALOG DIALOGEX 0, 0, 637, 286
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "GPSAnalysis"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,487,262,50,14
+    PUSHBUTTON      "取消",IDCANCEL,558,262,50,14
+    EDITTEXT        IDC_EDIT_SENDFRAME,15,15,476,84,ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL
+    PUSHBUTTON      "发送GPS帧",IDC_BUTTON_SENDGPSFRAME,506,57,76,22
+    LTEXT           "UTC时间",IDC_STATIC,106,110,36,10
+    LTEXT           "状态",IDC_STATIC,190,110,36,10
+    LTEXT           "纬度",IDC_STATIC,358,110,36,10
+    LTEXT           "纬度值",IDC_STATIC,274,110,36,10
+    LTEXT           "经度",IDC_STATIC,526,110,36,10
+    LTEXT           "经度值",IDC_STATIC,442,110,36,10
+    LTEXT           "方位角",IDC_STATIC,106,135,36,10
+    LTEXT           "UTC日期",IDC_STATIC,190,135,36,10
+    LTEXT           "磁偏角",IDC_STATIC,274,135,36,10
+    LTEXT           "磁偏角方向",IDC_STATIC,358,135,36,10
+    LTEXT           "模式指示",IDC_STATIC,442,135,36,10
+    LTEXT           "校验和",IDC_STATIC,526,135,36,10
+    LTEXT           "速度",IDC_STATIC,22,135,36,10
+    LTEXT           "帧头",IDC_STATIC,22,110,36,10
+    EDITTEXT        IDC_EDIT_HEADFRAME,64,110,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_UTCTIME,148,110,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_STATUS,232,110,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_LATITUDEVALUE,316,110,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_LATITUDE,400,110,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_LONGITUDEVALUE,484,110,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SPEED,64,135,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_AZIMUTH,148,135,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_UTCDATA,232,135,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MAGNETICDECLINATION,316,135,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MAGNETICDECLINATION_DIRECTION,400,135,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MODE,484,135,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_LONGITUDE,568,110,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_CHECKSUM,568,135,36,12,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO_FRAMESELECT,551,17,62,61,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "帧格式选择",IDC_STATIC,508,18,37,11
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "CompanyName", "TODO: <公司名>"
+            VALUE "FileDescription", "TODO: <文件说明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "GPSAnalysis.exe"
+            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
+            VALUE "OriginalFilename", "GPSAnalysis.exe"
+            VALUE "ProductName", "TODO: <产品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_GPSANALYSIS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 630
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 279
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "关于 GPSAnalysis(&A)..."
+    IDP_SOCKETS_INIT_FAILED "Windows 套接字初始化失败。"
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\GPSAnalysis.rc2"  // ·? Microsoft Visual C++ ±à?-μ?×ê?′
+#include "l.CHS\afxres.rc"      // ±ê×?×é?t
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
