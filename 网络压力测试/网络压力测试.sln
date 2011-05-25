@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "网络压力测试", "网络压力测试\网络压力测试.vcproj", "{98875C6A-468F-4FA0-B240-42CE6870DF4B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OnReceive接收", "OnReceive接收\OnReceive接收.vcproj", "{AF9EE6F2-C7A0-450D-BD8C-176B4C2BD980}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "线程接收", "线程接收\线程接收.vcproj", "{3DEE265D-8AD5-4924-9C68-BFCFFDE1DB66}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{98875C6A-468F-4FA0-B240-42CE6870DF4B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{98875C6A-468F-4FA0-B240-42CE6870DF4B}.Debug|Win32.Build.0 = Debug|Win32
+		{98875C6A-468F-4FA0-B240-42CE6870DF4B}.Release|Win32.ActiveCfg = Release|Win32
+		{98875C6A-468F-4FA0-B240-42CE6870DF4B}.Release|Win32.Build.0 = Release|Win32
+		{AF9EE6F2-C7A0-450D-BD8C-176B4C2BD980}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AF9EE6F2-C7A0-450D-BD8C-176B4C2BD980}.Debug|Win32.Build.0 = Debug|Win32
+		{AF9EE6F2-C7A0-450D-BD8C-176B4C2BD980}.Release|Win32.ActiveCfg = Release|Win32
+		{AF9EE6F2-C7A0-450D-BD8C-176B4C2BD980}.Release|Win32.Build.0 = Release|Win32
+		{3DEE265D-8AD5-4924-9C68-BFCFFDE1DB66}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3DEE265D-8AD5-4924-9C68-BFCFFDE1DB66}.Debug|Win32.Build.0 = Debug|Win32
+		{3DEE265D-8AD5-4924-9C68-BFCFFDE1DB66}.Release|Win32.ActiveCfg = Release|Win32
+		{3DEE265D-8AD5-4924-9C68-BFCFFDE1DB66}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
