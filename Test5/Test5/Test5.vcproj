@@ -190,11 +190,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgStudentsSetting.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgTeachersSetting.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MainFrm.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\OutputBar.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SetupGridCtrl.cpp"
 				>
 			</File>
 			<File
@@ -248,6 +264,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgStudentsSetting.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgTeachersSetting.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MainFrm.h"
 				>
 			</File>
@@ -257,6 +285,10 @@
 			</File>
 			<File
 				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SetupGridCtrl.h"
 				>
 			</File>
 			<File
@@ -276,6 +308,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Variable.h"
+				>
+			</File>
+			<File
 				RelativePath=".\WorkSpaceBar.h"
 				>
 			</File>
@@ -289,6 +325,10 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\res\icon1.ico"
+				>
+			</File>
 			<File
 				RelativePath=".\res\Test5.ico"
 				>
@@ -324,5 +364,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="Test5.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

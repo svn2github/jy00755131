@@ -13,6 +13,7 @@
 // See Test5.cpp for the implementation of this class
 //
 
+
 class CTest5App : public CWinApp,
 							public CBCGPWorkspace
 {

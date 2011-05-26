@@ -39,8 +39,8 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
-	void LoadMembers(char* csmembers[]);
-	void LoadMember(char csmember[]);
+	void LoadMembers(CString csmembers);
+	void LoadMember(CString csmember);
 };
 
 /////////////////////////////////////////////////////////////////////////////

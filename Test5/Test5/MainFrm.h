@@ -6,6 +6,8 @@
 #include "WorkSpaceBar.h"
 #include "WorkSpaceBar2.h"
 #include "OutputBar.h"
+#include "DlgSettings.h"
+
 
 class CMainFrame : public CBCGPMDIFrameWnd
 {
@@ -38,6 +40,7 @@ protected:  // control bar embedded members
 	CWorkSpaceBar			m_wndWorkSpace;
 	CWorkSpaceBar2			m_wndWorkSpace2;
 	COutputBar				m_wndOutput;
+	CString					members;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -60,6 +63,8 @@ protected:
 	virtual CBCGPMDIChildWnd* CreateDocumentWindow (LPCTSTR lpcszDocName, CObject* /*pObj*/);
 
 	UINT	m_nAppLook;
+public:
+	afx_msg void OnInformationSettings();
 };
 
 
