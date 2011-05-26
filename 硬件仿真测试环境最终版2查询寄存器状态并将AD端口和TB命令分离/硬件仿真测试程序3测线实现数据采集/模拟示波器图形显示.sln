@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "模拟示波器图形显示", "模拟示波器图形显示\模拟示波器图形显示.vcproj", "{56CF0B16-3E21-43A1-AF36-E6B79BF0428D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56CF0B16-3E21-43A1-AF36-E6B79BF0428D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{56CF0B16-3E21-43A1-AF36-E6B79BF0428D}.Debug|Win32.Build.0 = Debug|Win32
+		{56CF0B16-3E21-43A1-AF36-E6B79BF0428D}.Release|Win32.ActiveCfg = Release|Win32
+		{56CF0B16-3E21-43A1-AF36-E6B79BF0428D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

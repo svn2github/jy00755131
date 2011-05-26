@@ -1,0 +1,280 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\My.rc2""  // ??????ì?????ì?? Microsoft Visual C++ ?????¨??????§????§??????§???????ì?????ì??-|????¨?????????¨??????§?|?????§??o???\r\n"
+    "#include ""l.CHS\\afxres.rc""      // ?????¨??????§????§??????§??o?????¨??????§?|??????¨??????§?|?????§??|?t\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\端口监视器.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于 端口监视器"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "端口监视器，1.0 版",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2010",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_MY_DIALOG DIALOGEX 0, 0, 623, 489
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "端口监视器"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "选择文件存储路径",IDC_BUTTON_SAVEFILEPATH,12,239,61,19
+    PUSHBUTTON      "开始存储通讯数据",IDC_BUTTON_STARTSAVE,12,213,61,19
+    PUSHBUTTON      "停止存储通讯数据",IDC_BUTTON_STOPSAVE,81,213,61,19
+    EDITTEXT        IDC_EDIT_RECEIVE,161,31,449,69,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    PUSHBUTTON      "重置",IDC_BUTTON_RESET,81,239,61,19
+    EDITTEXT        IDC_EDIT_SAVESIZE,80,22,38,18,ES_AUTOHSCROLL
+    LTEXT           "自动保存文件大小",IDC_STATIC,14,24,60,15
+    LTEXT           "K",IDC_STATIC,122,25,8,13
+    CONTROL         "",IDC_IPADDRESS1,"SysIPAddress32",WS_TABSTOP,70,55,58,19
+    LTEXT           "IP地址",IDC_STATIC,29,58,37,14
+    CONTROL         "",IDC_IPADDRESS2,"SysIPAddress32",WS_TABSTOP,70,139,58,19
+    LTEXT           "IP地址",IDC_STATIC,29,143,37,14
+    GROUPBOX        "目标1",IDC_STATIC,12,47,131,79
+    LTEXT           "接收端口",IDC_STATIC,29,82,37,14
+    EDITTEXT        IDC_EDIT_AIMRCVPORT1,70,78,58,19,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "接收端口",IDC_STATIC,29,167,37,14
+    EDITTEXT        IDC_EDIT_AIMRCVPORT2,70,162,58,19,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "发送端口",IDC_STATIC,29,106,37,14
+    EDITTEXT        IDC_EDIT_AIMSENDPORT1,70,101,58,19,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "发送端口",IDC_STATIC,29,191,37,14
+    EDITTEXT        IDC_EDIT_AIMSENDPORT2,70,185,58,19,ES_AUTOHSCROLL | ES_READONLY
+    GROUPBOX        "目标2",IDC_STATIC,12,131,130,79
+    LTEXT           "接收帧数",IDC_STATIC,260,16,35,14
+    LTEXT           "发送帧数",IDC_STATIC,383,16,35,14
+    LTEXT           "0",IDC_STATIC_RECFRAMENUM,308,16,35,14
+    LTEXT           "0",IDC_STATIC_SENDFRAMENUM,432,16,35,14
+    GROUPBOX        "接收帧",IDC_STATIC,155,107,458,185
+    GROUPBOX        "数据帧接收和发送区域",IDC_STATIC,155,9,459,95
+    GROUPBOX        "首包",IDC_STATIC,163,119,144,83
+    LTEXT           "接收帧数",IDC_STATIC,188,127,35,11
+    LTEXT           "0",IDC_STATIC_HEADFRAMENUM,236,127,35,10
+    EDITTEXT        IDC_EDIT_HEADFRAMESHOW,168,139,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    GROUPBOX        "IP地址设置应答",IDC_STATIC,311,119,144,83
+    LTEXT           "0",IDC_STATIC_IPSETRETURNNUM,384,127,35,10
+    EDITTEXT        IDC_EDIT_IPSETRETURNSHOW,316,139,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "接收帧数",IDC_STATIC,340,127,35,11
+    GROUPBOX        "尾包",IDC_STATIC,459,119,150,83
+    LTEXT           "0",IDC_STATIC_TAILFRAMENUM,532,127,35,10
+    EDITTEXT        IDC_EDIT_TAILFRAMESHOW,464,139,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "接收帧数",IDC_STATIC,488,127,35,11
+    GROUPBOX        "尾包时刻查询应答",IDC_STATIC,163,202,144,83
+    LTEXT           "0",IDC_STATIC_TAILTIMERETURNNUM,236,210,35,10
+    EDITTEXT        IDC_EDIT_TAILTIMERETURNSHOW,168,222,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "接收帧数",IDC_STATIC,192,210,35,11
+    GROUPBOX        "时延设置应答",IDC_STATIC,311,202,144,83
+    LTEXT           "0",IDC_STATIC_DELAYTIMERETURNNUM,384,210,35,10
+    EDITTEXT        IDC_EDIT_DELAYTIMERETURNSHOW,316,222,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "接收帧数",IDC_STATIC,340,210,35,11
+    GROUPBOX        "ADC设置应答/ADC数据接收",IDC_STATIC,459,202,150,83
+    LTEXT           "0",IDC_STATIC_ADCSETRETURNNUM,519,210,18,10
+    EDITTEXT        IDC_EDIT_ADCDATARECSHOW,464,222,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "接收应答帧数",IDC_STATIC,467,210,47,11
+    GROUPBOX        "发送帧",IDC_STATIC,154,293,458,185
+    GROUPBOX        "心跳",IDC_STATIC,162,305,144,83
+    LTEXT           "发送帧数",IDC_STATIC,187,313,35,11
+    LTEXT           "0",IDC_STATIC_HEARTBEATFRAMENUM,235,313,35,10
+    EDITTEXT        IDC_EDIT_HEARTBEATFRAMESHOW,167,325,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    GROUPBOX        "IP地址设置",IDC_STATIC,310,305,144,83
+    LTEXT           "0",IDC_STATIC_IPSETNUM,383,313,35,10
+    EDITTEXT        IDC_EDIT_IPSETSHOW,315,325,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "发送帧数",IDC_STATIC,339,313,35,11
+    GROUPBOX        "尾包时刻查询",IDC_STATIC,162,388,144,83
+    LTEXT           "0",IDC_STATIC_TAILTIMESETNUM,235,396,35,10
+    EDITTEXT        IDC_EDIT_TAILTIMESETSHOW,167,408,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "发送帧数",IDC_STATIC,191,396,35,11
+    GROUPBOX        "时延设置",IDC_STATIC,310,388,144,83
+    LTEXT           "0",IDC_STATIC_DELAYTIMESETNUM,383,396,35,10
+    EDITTEXT        IDC_EDIT_DELAYTIMESETSHOW,315,408,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "发送帧数",IDC_STATIC,339,396,35,11
+    GROUPBOX        "ADC设置",IDC_STATIC,458,388,144,83
+    LTEXT           "0",IDC_STATIC_ADCSETNUM,531,396,35,10
+    EDITTEXT        IDC_EDIT_ADCSETSHOW,463,408,134,58,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    LTEXT           "发送帧数",IDC_STATIC,487,396,35,11
+    LTEXT           "0",IDC_STATIC_ADCDATARECNUM,588,211,18,10
+    LTEXT           "接收采样帧数",IDC_STATIC,536,211,47,11
+    GROUPBOX        "状态查询应答帧",IDC_STATIC,7,267,144,208
+    LTEXT           "0",IDC_STATIC_GETSTATUSRETURNNUM,82,281,35,10
+    LTEXT           "接收帧数",IDC_STATIC,38,281,35,11
+    EDITTEXT        IDC_EDIT_GETSTATUSRETURNSHOW,11,295,137,177,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "CompanyName", "TODO: <公司名>"
+            VALUE "FileDescription", "TODO: <文件说明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "端口监视器.exe"
+            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
+            VALUE "OriginalFilename", "端口监视器.exe"
+            VALUE "ProductName", "TODO: <产品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_MY_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 616
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 482
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "关于 端口监视器(&A)..."
+    IDP_SOCKETS_INIT_FAILED "Windows 套接字初始化失败。"
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\My.rc2"  // ?????§????§?? Microsoft Visual C++ ?????ì????¨???¨?????¨??????§????§??-|????ì????????ì????¨?|????¨??o???
+#include "l.CHS\afxres.rc"      // ?????ì????¨???¨?????¨??o?????ì????¨?|??????ì????¨?|????¨??|?t
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
