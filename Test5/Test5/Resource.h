@@ -18,7 +18,6 @@
 #define IDB_WORKSPACE                   147
 #define IDB_TOOLBAR256                  151
 #define IDD_DIALOG_SETTINGS             160
-#define IDI_ICON1                       162
 #define IDC_COMPANY_URL                 1041
 #define IDC_STATICPICTURE               1063
 #define IDC_BUTTON1                     1064
@@ -70,7 +69,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        163
+#define _APS_NEXT_RESOURCE_VALUE        162
 #define _APS_NEXT_COMMAND_VALUE         32852
 #define _APS_NEXT_CONTROL_VALUE         1072
 #define _APS_NEXT_SYMED_VALUE           112

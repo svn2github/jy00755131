@@ -47,9 +47,9 @@ BEGIN
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
     "LANGUAGE 4, 2\r\n"
     "#pragma code_page(936)\r\n"
-    "#include ""res\\Test5.rc2""  // ??¨¨? Microsoft Visual C++ ?¡§¡è?¡ì?¨¨?-|¡§???¡§¡é?¡ìo???\r\n"
-    "#include ""afxres.rc""         // ?¡§¡è?¡ìo?¡§¡é??¡§¡é?¡ì|?t\r\n"
-    "#include ""afxprint.rc""       // ???¡ì???¡ì??/???¡ì???¡ì????¡§¡§?¡ì?¨¨?¡ì?¨¨?¡§¡é?¡ìo???\r\n"
+    "#include ""res\\Test5.rc2""  // ?¡è? Microsoft Visual C++ ?¨¤¡§¡è?-|¨¬??¨¢¡§o???\r\n"
+    "#include ""afxres.rc""         // ?¨¤¡§o?¨¢??¨¢¡§|?t\r\n"
+    "#include ""afxprint.rc""       // ??¡§¡ã¡§??/??¡§¡ã¡§????¨¨¡§¡è¡§¡è?¨¢¡§o???\r\n"
     "#endif\r\n"
     "\0"
 END
@@ -66,7 +66,6 @@ END
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\Test5.ico"
 IDR_Test5TYPE           ICON                    "res\\Test5Doc.ico"
-IDI_ICON1               ICON                    "res\\icon1.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -658,9 +657,9 @@ END
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE 4, 2
 #pragma code_page(936)
-#include "res\Test5.rc2"  // ?¡è? Microsoft Visual C++ ?¨¤¡§¡è?-|¨¬??¨¢¡§o???
-#include "afxres.rc"         // ?¨¤¡§o?¨¢??¨¢¡§|?t
-#include "afxprint.rc"       // ??¡§¡ã¡§??/??¡§¡ã¡§????¨¨¡§¡è¡§¡è?¨¢¡§o???
+#include "res\Test5.rc2"  // ¡¤? Microsoft Visual C++ ¡À¨¤?-¦Ì?¡Á¨º?¡ä
+#include "afxres.rc"         // ¡À¨º¡Á?¡Á¨¦?t
+#include "afxprint.rc"       // ¡ä¨°¨®?/¡ä¨°¨®??¡è¨¤¨¤¡Á¨º?¡ä
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
