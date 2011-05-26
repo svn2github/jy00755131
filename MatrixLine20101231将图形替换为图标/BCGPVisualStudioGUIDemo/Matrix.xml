@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<Matrix>
+	<Line>
+		<Survery>
+			<SurverySetup Count="10" TabCount="4">
+				<Record LineName="1" ReceiverSection="1-1000p1"/>
+				<Record LineName="2" ReceiverSection="1-1000p2"/>
+				<Record LineName="3" ReceiverSection="1-1000p3"/>
+				<Record LineName="4" ReceiverSection="1-1000p4"/>
+				<Record LineName="5" ReceiverSection="1-1000p5"/>
+				<Record LineName="6" ReceiverSection="1-1000p6"/>
+				<Record LineName="7" ReceiverSection="1-1000p7"/>
+				<Record LineName="8" ReceiverSection="1-1000p8"/>
+				<Record LineName="9" ReceiverSection="1-1000p9"/>
+				<Record LineName="10" ReceiverSection="1-1000p10"/>
+			</SurverySetup>
+			<PointCodeSetup Count="10" TabCount="4">
+				<Record Nb="1" Label="PointCode1" SensorType="s1"/>
+				<Record Nb="2" Label="PointCode2" SensorType="s2"/>
+				<Record Nb="3" Label="PointCode3" SensorType="s3"/>
+				<Record Nb="4" Label="PointCode4" SensorType="s4"/>
+				<Record Nb="5" Label="PointCode5" SensorType="s5"/>
+				<Record Nb="6" Label="PointCode6" SensorType="s6"/>
+				<Record Nb="7" Label="PointCode7" SensorType="s7"/>
+				<Record Nb="8" Label="PointCode8" SensorType="s8"/>
+				<Record Nb="9" Label="PointCode9" SensorType="s9"/>
+				<Record Nb="10" Label="PointCode10" SensorType="s10"/>
+			</PointCodeSetup>
+			<SensorSetup Count="10" TabCount="4">
+				<Record Nb="1" SEGDCode="0" Label="Sensor1" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="2" SEGDCode="1" Label="Sensor2" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+				<Record Nb="3" SEGDCode="2" Label="Sensor3" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="4" SEGDCode="3" Label="Sensor4" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+				<Record Nb="5" SEGDCode="4" Label="Sensor5" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="6" SEGDCode="5" Label="Sensor6" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+				<Record Nb="7" SEGDCode="6" Label="Sensor7" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="8" SEGDCode="7" Label="Sensor8" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+				<Record Nb="9" SEGDCode="8" Label="Sensor9" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="10" SEGDCode="9" Label="Sensor10" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+			</SensorSetup>
+		</Survery>
+		<Layout>
+			<MarkerSetup Count="10" TabCount="4">
+				<Record BoxType="1" SN="538054657" LineName="1" PointNb="9" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="12000043" LineName="2" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="20000043" LineName="3" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="28000043" LineName="4" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="36000043" LineName="5" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="44000043" LineName="6" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="52000043" LineName="7" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="60000043" LineName="8" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="68000043" LineName="9" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="76000043" LineName="10" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+			</MarkerSetup>
+			<BlastMachineSetup Count="0" TabCount="4">
+			</BlastMachineSetup>
+			<AuxSetup Count="0" TabCount="4">
+			</AuxSetup>
+			<DetourSetup Count="2" TabCount="4">
+				<Record BoxTypeLow="3" SNLow="28000283" ChannelNbLow="1" BoxTypeHigh="3" SNHigh="28001003" ChannelNbHigh="1" StopMarking="0"/>
+				<Record BoxTypeLow="3" SNLow="36000763" ChannelNbLow="1" BoxTypeHigh="3" SNHigh="36001163" ChannelNbHigh="1" StopMarking="0"/>
+			</DetourSetup>
+			<MuteSetup Count="3" TabCount="4">
+				<Record LineName="2" PointNb="62"/>
+				<Record LineName="1" PointNb="75"/>
+				<Record LineName="2" PointNb="21"/>
+			</MuteSetup>
+		</Layout>
+		<SpreadType>
+			<AbsoluteSetup Count="3" TabCount="4">
+				<Record Nb="1" Label="Absolute1" Spread="10:101-103g1,106-115g2"/>
+				<Record Nb="2" Label="Absolute2" Spread="20:101-103g1,106-115g2;30:101-103g1,106-115g2"/>
+				<Record Nb="3" Label="Absolute3" Spread="30:101-103g1,106-115g2"/>
+			</AbsoluteSetup>
+			<GenericSetup Count="3" TabCount="4">
+				<Record Nb="1" Label="Generic1" Line="50g1+50g2" Spread="10l1+10l2"/>
+				<Record Nb="2" Label="Generic2" Line="50g1+50g2" Spread="10l1+10l2"/>
+				<Record Nb="3" Label="Generic3" Line="50g1+50g2" Spread="10l1+10l2"/>
+			</GenericSetup>
+		</SpreadType>
+		<TestSetup>
+			<InstrumentTestBase Count="5" TabCount="4">
+				<Record TestAim="1" Nb="1" Descr="INSTRUMENT NOISE" TestType="4" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="1" Nb="2" Descr="INSTRUMENT DISTORTION" TestType="5" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="1" Nb="3" Descr="INSTRUMENT CROSSTALK" TestType="7" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="1" Nb="4" Descr="INSTRUMENT GAIN/PHASE" TestType="6" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="1" Nb="5" Descr="INSTRUMENT CMRR" TestType="8" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+			</InstrumentTestBase>
+			<SensorTestBase Count="6" TabCount="4">
+				<Record TestAim="2" Nb="1" Descr="SENSOR RESISTANCE" TestType="15" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="2" Descr="SENSOR LEAKAGE" TestType="14" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="3" Descr="SENSOR NOISE" TestType="1" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="4" Descr="SENSOR TILT" TestType="20" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="5" Descr="SENSOR TILT MODEL" TestType="21" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="6" Descr="SENSOR SEISMONITOR" TestType="22" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+			</SensorTestBase>
+			<InstrumentTestLimit Count="6" TabCount="4">
+				<Record TestAim="1" Nb="400" Descr="Noise" Unit="uv" TestType="4" Limit="50"/>
+				<Record TestAim="1" Nb="500" Descr="Distortion" Unit="%" TestType="5" Limit="12"/>
+				<Record TestAim="1" Nb="700" Descr="Crosstalk" Unit="%" TestType="7" Limit="50"/>
+				<Record TestAim="1" Nb="600" Descr="Gain" Unit="%" TestType="6" Limit="14"/>
+				<Record TestAim="1" Nb="610" Descr="Phase" Unit="%" TestType="6" Limit="15"/>
+				<Record TestAim="1" Nb="800" Descr="CMRR" Unit="%" TestType="8" Limit="50"/>
+			</InstrumentTestLimit>
+			<SensorTestLimit Count="7" TabCount="4">
+				<Record TestAim="2" Nb="1500" Descr="ResistanceMin" Unit="ohms" TestType="15" Limit="90"/>
+				<Record TestAim="2" Nb="1501" Descr="ResistanceMax" Unit="ohms" TestType="15" Limit="110"/>
+				<Record TestAim="2" Nb="1400" Descr="Leakage" Unit="Mohms" TestType="14" Limit="30"/>
+				<Record TestAim="2" Nb="100" Descr="Noise" Unit="uv" TestType="1" Limit="50"/>
+				<Record TestAim="2" Nb="2000" Descr="Tilt" Unit="%" TestType="20" Limit="14"/>
+				<Record TestAim="2" Nb="2100" Descr="Tilt Model" Unit="%" TestType="21" Limit="15"/>
+				<Record TestAim="2" Nb="2200" Descr="Seismonitor" Unit="db" TestType="22" Limit="-66"/>
+			</SensorTestLimit>
+			<InstrumentTest Count="7" TabCount="4">
+				<Record TestNb="1" Recorded="1" RecordLength="30000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="4" Gain="400"/>
+				<Record TestNb="7" Recorded="1" RecordLength="30000" AuxiliaryDescr="" AbsoluteSpread="1:10" TestType="4" Gain="400"/>
+				<Record TestNb="2" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="30" Gain="1600"/>
+				<Record TestNb="3" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="6" Gain="1600"/>
+				<Record TestNb="4" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="5" Gain="1600"/>
+				<Record TestNb="5" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="7" Gain="1600"/>
+				<Record TestNb="6" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="8" Gain="1600"/>
+			</InstrumentTest>
+			<SensorTest Count="4" TabCount="4">
+				<Record TestNb="1" Recorded="1" AbsoluteSpread="2:50-51;3:50-51" TestType="1"/>
+				<Record TestNb="2" Recorded="1" AbsoluteSpread="1:3-14;2:2-15" TestType="40"/>
+				<Record TestNb="3" Recorded="1" AbsoluteSpread="1:3-14;2:2-15;3:1-50" TestType="14"/>
+				<Record TestNb="6" Recorded="0" AbsoluteSpread="1:3-14;2:2-15;3:1-50" TestType="15"/>
+			</SensorTest>
+			<MultipleTest Count="10" TabCount="4">
+				<TestSetup Count="7" TabCount="5" TestNb="1" TestName="Test1" DelayBetweenTest="1000" RecordResults="1" RecordLength="30000" TestFileNb="10" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="1:3-14;2:2-15;3:1-23">
+					<Record LineNb="1" TestType="1" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="2" TestType="1" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="3" TestType="40" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="4" TestType="1" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="10" TestType="60" Gain="0" LoopLineNb="2" NbLoops="2"/>
+					<Record LineNb="5" TestType="50" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="7" TestType="60" Gain="0" LoopLineNb="2" NbLoops="2"/>
+				</TestSetup>
+				<TestSetup Count="9" TabCount="5" TestNb="2" TestName="Test2" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="1:3-14;2:2-15">
+					<Record LineNb="1" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="2" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="3" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="4" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="5" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="6" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="7" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="8" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="9" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="3" TestName="Test3" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="4" TestName="Test4" DelayBetweenTest="0" RecordResults="0" RecordLength="0" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="5" TestName="Test5" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="6" TestName="Test6" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="7" TestName="Test7" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="1" TabCount="5" TestNb="8" TestName="Test8" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+					<Record LineNb="1" TestType="1" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="9" TestName="Test9" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="10" TabCount="5" TestNb="10" TestName="Test10" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="a1" AbsoluteSpread="1:10-20">
+					<Record LineNb="1" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="2" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="3" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="4" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="5" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="6" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="7" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="8" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="9" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="10" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+				</TestSetup>
+			</MultipleTest>
+			<SeisMonitorTest AbsoluteSpread="2:50-51;3:50-51"/>
+		</TestSetup>
+		<LAULeakageSetup Limit="20"/>
+		<LookSetup AutoLook="1" Resistance="0" Tilt="0" Leakage="0"/>
+		<FormLineSetup Count="1" TabCount="3">
+			<Record Nb="1" BoxType="1" SN="4000121"/>
+		</FormLineSetup>
+	</Line>
+</Matrix>
