@@ -1,0 +1,668 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\Test5.rc2""  // ??è? Microsoft Visual C++ ?¨¤?§?è?-|¨???¨￠?§o???\r\n"
+    "#include ""afxres.rc""         // ?¨¤?§o?¨￠??¨￠?§|?t\r\n"
+    "#include ""afxprint.rc""       // ???§???§??/???§???§????¨¨?§?è?§?è?¨￠?§o???\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\Test5.ico"
+IDR_Test5TYPE           ICON                    "res\\Test5Doc.ico"
+IDI_ICON1               ICON                    "res\\icon1.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDB_WORKSPACE           BITMAP                  "res\\workspace.bmp"
+IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "文件(&F)"
+    BEGIN
+        MENUITEM "新建(&N)\tCtrl+N",              ID_FILE_NEW
+        MENUITEM "打开(&O)...\tCtrl+O",           ID_FILE_OPEN
+        MENUITEM SEPARATOR
+        MENUITEM "打印设置(&R)...",                 ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "最近的文件",                       ID_FILE_MRU_FILE1
+        MENUITEM SEPARATOR
+        MENUITEM "关闭(&C)",                      ID_FILE_CLOSE
+        MENUITEM "退出(&X)",                      ID_APP_EXIT
+    END
+    POPUP "设置"
+    BEGIN
+        MENUITEM "资料设置",                        ID_INFORMATION_SETTINGS
+    END
+    POPUP "视图(&V)"
+    BEGIN
+        POPUP "工具栏(&T)"
+        BEGIN
+            MENUITEM "",                            ID_VIEW_TOOLBARS
+        END
+        MENUITEM "状态栏(&S)",                     ID_VIEW_STATUS_BAR
+        POPUP "应用程序外观(&A)"
+        BEGIN
+            MENUITEM "Office &2000",                ID_VIEW_APPLOOK_2000
+            MENUITEM "Office &XP",                  ID_VIEW_APPLOOK_XP
+            MENUITEM "Office 200&3",                ID_VIEW_APPLOOK_2003
+            MENUITEM "Visual Studio 200&5",         ID_VIEW_APPLOOK_VS2005
+            MENUITEM "&Windows Native",             ID_VIEW_APPLOOK_WIN_XP
+            POPUP "Office 200&7"
+            BEGIN
+                MENUITEM "&Blue Style",                 ID_VIEW_APPLOOK_2007
+                MENUITEM "B&lack Style",                ID_VIEW_APPLOOK_2007_1
+                MENUITEM "&Silver Style",               ID_VIEW_APPLOOK_2007_2
+                MENUITEM "&Aqua Style",                 ID_VIEW_APPLOOK_2007_3
+            END
+            MENUITEM "Visual Studio 200&8",         ID_VIEW_APPLOOK_VS2008
+            MENUITEM "Visual Studio 20&10",         ID_VIEW_APPLOOK_VS2010
+            POPUP "Office 201&0"
+            BEGIN
+                MENUITEM "&Blue Style",                 ID_VIEW_APPLOOK_2010_1
+                MENUITEM "B&lack Style",                ID_VIEW_APPLOOK_2010_2
+                MENUITEM "&Silver Style",               ID_VIEW_APPLOOK_2010_3
+            END
+            MENUITEM "Window&s 7",                  ID_VIEW_APPLOOK_WIN7
+        END
+    END
+    POPUP "帮助(&H)"
+    BEGIN
+        MENUITEM "关于 Test5 (&A)...",            ID_APP_ABOUT
+    END
+END
+
+IDR_Test5TYPE MENU 
+BEGIN
+    POPUP "文件(&F)"
+    BEGIN
+        MENUITEM "新建(&N)\tCtrl+N",              ID_FILE_NEW
+        MENUITEM "打开(&O)...\tCtrl+O",           ID_FILE_OPEN
+        MENUITEM "关闭(&C)",                      ID_FILE_CLOSE
+        MENUITEM "保存(&S)\tCtrl+S",              ID_FILE_SAVE
+        MENUITEM "另存为(&A)...",                  ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "打印(&P)...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "打印预览(&V)",                    ID_FILE_PRINT_PREVIEW
+        MENUITEM "打印设置(&R)...",                 ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "最近的文件",                       ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "退出(&X)",                      ID_APP_EXIT
+    END
+    POPUP "编辑(&E)"
+    BEGIN
+        MENUITEM "撤消(&U)\tCtrl+Z",              ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "剪切(&T)\tCtrl+X",              ID_EDIT_CUT
+        MENUITEM "复制(&C)\tCtrl+C",              ID_EDIT_COPY
+        MENUITEM "粘贴(&P)\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "视图(&V)"
+    BEGIN
+        POPUP "工具栏(&T)"
+        BEGIN
+            MENUITEM "",                            ID_VIEW_TOOLBARS
+        END
+        MENUITEM "状态栏(&S)",                     ID_VIEW_STATUS_BAR
+        POPUP "应用程序外观(&A)"
+        BEGIN
+            MENUITEM "Office &2000",                ID_VIEW_APPLOOK_2000
+            MENUITEM "Office &XP",                  ID_VIEW_APPLOOK_XP
+            MENUITEM "Office 200&3",                ID_VIEW_APPLOOK_2003
+            MENUITEM "Visual Studio 200&5",         ID_VIEW_APPLOOK_VS2005
+            MENUITEM "&Windows Native",             ID_VIEW_APPLOOK_WIN_XP
+            POPUP "Office 200&7"
+            BEGIN
+                MENUITEM "&Blue Style",                 ID_VIEW_APPLOOK_2007
+                MENUITEM "B&lack Style",                ID_VIEW_APPLOOK_2007_1
+                MENUITEM "&Silver Style",               ID_VIEW_APPLOOK_2007_2
+                MENUITEM "&Aqua Style",                 ID_VIEW_APPLOOK_2007_3
+            END
+            MENUITEM "Visual Studio 200&8",         ID_VIEW_APPLOOK_VS2008
+            MENUITEM "Visual Studio 20&10",         ID_VIEW_APPLOOK_VS2010
+            POPUP "Office 201&0"
+            BEGIN
+                MENUITEM "&Blue Style",                 ID_VIEW_APPLOOK_2010_1
+                MENUITEM "B&lack Style",                ID_VIEW_APPLOOK_2010_2
+                MENUITEM "&Silver Style",               ID_VIEW_APPLOOK_2010_3
+            END
+            MENUITEM "Window&s 7",                  ID_VIEW_APPLOOK_WIN7
+        END
+    END
+    POPUP "窗口(&W)"
+    BEGIN
+        MENUITEM "新建窗口(&N)",                    ID_WINDOW_NEW
+        MENUITEM "层叠(&C)",                      ID_WINDOW_CASCADE
+        MENUITEM "平铺(&T)",                      ID_WINDOW_TILE_HORZ
+        MENUITEM "排列图标(&A)",                    ID_WINDOW_ARRANGE
+    END
+    POPUP "帮助(&H)"
+    BEGIN
+        MENUITEM "关于 Test5 (&A)...",            ID_APP_ABOUT
+    END
+END
+
+IDR_CONTEXT_MENU MENU 
+BEGIN
+    POPUP "_POPUP_"
+    BEGIN
+        MENUITEM "剪切(&T)",                      ID_EDIT_CUT
+        MENUITEM "复制(&C)",                      ID_EDIT_COPY
+        MENUITEM "粘贴(&P)",                      ID_EDIT_PASTE
+    END
+END
+
+IDR_POPUP_TOOLBAR MENU 
+BEGIN
+    POPUP "DUMMY"
+    BEGIN
+        MENUITEM "标准工具栏",                       ID_VIEW_TOOLBAR
+        MENUITEM "工作区(&W)",                     ID_VIEW_WORKSPACE
+        MENUITEM "第二工作区(&W)",                   ID_VIEW_WORKSPACE2
+        MENUITEM "输出(&O)",                      ID_VIEW_OUTPUT
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR1
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR2
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR3
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR4
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR5
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR6
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR7
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR8
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR9
+        MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR10
+        MENUITEM SEPARATOR
+        MENUITEM "自定义(&C)...",                  ID_VIEW_CUSTOMIZE
+    END
+END
+
+IDR_POPUP_MDITABS MENU 
+BEGIN
+    POPUP "DUMMY"
+    BEGIN
+        MENUITEM "保存(&S)",                      ID_FILE_SAVE
+        MENUITEM "关闭(&C)",                      ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "新建水平选项卡组(&H)",                ID_MDI_NEW_HORZ_TAB_GROUP
+        MENUITEM "新建垂直选项卡组(&V)",                ID_MDI_NEW_VERT_GROUP
+        MENUITEM "移动到下一选项卡组(&X)",               ID_MDI_MOVE_TO_NEXT_GROUP
+        MENUITEM "移动到上一选项卡组(&R)",               ID_MDI_MOVE_TO_PREV_GROUP
+    END
+END
+
+IDR_POPUP_DROP_MDITABS MENU 
+BEGIN
+    POPUP "DUMMY"
+    BEGIN
+        MENUITEM "新建水平选项卡组(&H)",                ID_MDI_NEW_HORZ_TAB_GROUP
+        MENUITEM "新建垂直选项卡组(&V)",                ID_MDI_NEW_VERT_GROUP
+        MENUITEM "移动到下一选项卡组(&X)",               ID_MDI_MOVE_TO_NEXT_GROUP
+        MENUITEM "移动到上一选项卡组(&R)",               ID_MDI_MOVE_TO_PREV_GROUP
+        MENUITEM SEPARATOR
+        MENUITEM "取消(&C)",                      ID_MDI_CANCEL
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS 
+BEGIN
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于 Test5"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    LTEXT           "Test5 Version 1.0.0.1",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2010",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "确定",IDOK,178,7,50,16,WS_GROUP
+    PUSHBUTTON      "http://www.srvsw.cn",IDC_COMPANY_URL,40,36,119,14
+END
+
+IDD_DIALOG_SETTINGS DIALOGEX 0, 0, 599, 181
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_STATICPICTURE,"Static",SS_GRAYRECT | NOT WS_VISIBLE,7,7,585,135,WS_EX_DLGMODALFRAME
+    PUSHBUTTON      "Button1",IDC_BUTTON1,93,148,107,18
+    PUSHBUTTON      "Button2",IDC_BUTTON2,231,148,107,18
+END
+
+IDD_DLGTEACHERSSETTING DIALOGEX 0, 0, 453, 162
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 9, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CTEXT           "婚 姻 状 况",IDC_STATIC,311,13,75,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "联 系 电 话",IDC_STATIC,386,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "年  龄",IDC_STATIC,86,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "姓  名",IDC_STATIC,36,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "籍  贯",IDC_STATIC,136,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "出  生  地",IDC_STATIC,186,13,75,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "政 治 面 貌",IDC_STATIC,261,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CONTROL         "",IDC_STATICGRIDEDIT,"Static",SS_BLACKRECT | NOT WS_VISIBLE,24,39,413,18
+    CONTROL         "",IDC_STATICGRID,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,24,63,413,45
+END
+
+IDD_DLGSTUDENTSSETTING DIALOGEX 0, 0, 453, 142
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 9, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CTEXT           "婚 姻 状 况",IDC_STATIC,308,13,75,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "联 系 电 话",IDC_STATIC,383,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "年  龄",IDC_STATIC,83,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "姓  名",IDC_STATIC,33,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "籍  贯",IDC_STATIC,133,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "出  生  地",IDC_STATIC,183,13,75,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CTEXT           "政 治 面 貌",IDC_STATIC,258,13,50,21,SS_CENTERIMAGE,WS_EX_DLGMODALFRAME
+    CONTROL         "",IDC_STATICGRIDEDIT,"Static",SS_BLACKRECT | NOT WS_VISIBLE,20,39,414,18
+    CONTROL         "",IDC_STATICGRID,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,20,63,413,45
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "00804003a8"
+        BEGIN
+            VALUE "CompanyName", "TODO: <公司名>"
+            VALUE "FileDescription", "TODO: <文件说明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "Test5.exe"
+            VALUE "LegalCopyright", "黎小青 (c) 2007-2010。保留所有权利。"
+            VALUE "OriginalFilename", "Test5.exe"
+            VALUE "ProductName", "TODO: <产品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_DIALOG_SETTINGS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 592
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 174
+    END
+
+    IDD_DLGTEACHERSSETTING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 446
+        VERTGUIDE, 24
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 155
+    END
+
+    IDD_DLGSTUDENTSSETTING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 446
+        VERTGUIDE, 20
+        VERTGUIDE, 70
+        VERTGUIDE, 120
+        VERTGUIDE, 170
+        VERTGUIDE, 245
+        VERTGUIDE, 295
+        VERTGUIDE, 370
+        VERTGUIDE, 420
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 135
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE 初始化失败。请确保 OLE 库是正确的版本。"
+    IDS_MAIN_TOOLBAR        "标准"
+    IDP_SOCKETS_INIT_FAILED "Windows 套接字初始化失败。"
+    IDS_WINDOWS_MANAGER     "窗口(&W)..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "Test5"
+    IDR_Test5TYPE           "\nTest5\nTest5\n\n\nTest5.Document\nTest5.Document"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "Test5"
+    AFX_IDS_IDLEMESSAGE     "就绪"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_NEW             "创建新文档\n新建"
+    ID_FILE_OPEN            "打开现有文档\n打开"
+    ID_FILE_CLOSE           "关闭活动文档\n关闭"
+    ID_FILE_SAVE            "保存活动文档\n保存"
+    ID_FILE_SAVE_AS         "用新名称保存活动文档\n另存为"
+    ID_FILE_PAGE_SETUP      "更改打印选项\n页面设置"
+    ID_FILE_PRINT_SETUP     "选择打印机、打印份数及其他选项\n打印设置"
+    ID_FILE_PRINT           "打印活动文档\n打印"
+    ID_FILE_PRINT_DIRECT    "不更改设置，直接发送文档到默认打印机\n快速打印"
+    ID_FILE_PRINT_PREVIEW   "打印前预览整个页面\n打印预览"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_APP_ABOUT            "显示程序信息、版本号和版权\n关于"
+    ID_APP_EXIT             "退出应用程序；提示保存文档\n退出"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "打开此文档"
+    ID_FILE_MRU_FILE2       "打开此文档"
+    ID_FILE_MRU_FILE3       "打开此文档"
+    ID_FILE_MRU_FILE4       "打开此文档"
+    ID_FILE_MRU_FILE5       "打开此文档"
+    ID_FILE_MRU_FILE6       "打开此文档"
+    ID_FILE_MRU_FILE7       "打开此文档"
+    ID_FILE_MRU_FILE8       "打开此文档"
+    ID_FILE_MRU_FILE9       "打开此文档"
+    ID_FILE_MRU_FILE10      "打开此文档"
+    ID_FILE_MRU_FILE11      "打开此文档"
+    ID_FILE_MRU_FILE12      "打开此文档"
+    ID_FILE_MRU_FILE13      "打开此文档"
+    ID_FILE_MRU_FILE14      "打开此文档"
+    ID_FILE_MRU_FILE15      "打开此文档"
+    ID_FILE_MRU_FILE16      "打开此文档"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_NEXT_PANE            "切换到下一个窗格\n下一窗格"
+    ID_PREV_PANE            "切换回上一个窗格\n上一窗格"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_WINDOW_NEW           "为活动文档打开另一个窗口\n新建窗口"
+    ID_WINDOW_ARRANGE       "在窗口底部排列图标\n排列图标"
+    ID_WINDOW_CASCADE       "以重叠方式排列窗口\n层叠窗口"
+    ID_WINDOW_TILE_HORZ     "以非重叠的平铺方式排列窗口\n平铺窗口"
+    ID_WINDOW_TILE_VERT     "以非重叠的平铺方式排列窗口\n平铺窗口"
+    ID_WINDOW_SPLIT         "将活动窗口拆分为多个窗格\n拆分"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_EDIT_CLEAR           "清除选定内容\n清除"
+    ID_EDIT_CLEAR_ALL       "清除全部内容\n全部清除"
+    ID_EDIT_COPY            "复制选定内容并将其放到剪贴板上\n复制"
+    ID_EDIT_CUT             "剪切选定内容并将其放到剪贴板上\n剪切"
+    ID_EDIT_FIND            "查找指定的文本\n查找"
+    ID_EDIT_PASTE           "插入剪贴板内容\n粘贴"
+    ID_EDIT_REPEAT          "重复上一操作\n重复"
+    ID_EDIT_REPLACE         "用其他文本替换特定的文本\n替换"
+    ID_EDIT_SELECT_ALL      "选定整个文档\n全选"
+    ID_EDIT_UNDO            "撤消上一操作\n撤消"
+    ID_EDIT_REDO            "恢复上次撤消的操作\n重做"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "显示或隐藏工具栏\n切换工具栏"
+    ID_VIEW_STATUS_BAR      "显示或隐藏状态栏\n切换状态栏"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "更改窗口大小"
+    AFX_IDS_SCMOVE          "更改窗口位置"
+    AFX_IDS_SCMINIMIZE      "将窗口缩小为图标"
+    AFX_IDS_SCMAXIMIZE      "使窗口最大化显示"
+    AFX_IDS_SCNEXTWINDOW    "切换到下一个文档窗口"
+    AFX_IDS_SCPREVWINDOW    "切换到前一个文档窗口"
+    AFX_IDS_SCCLOSE         "关闭活动窗口并提示保存文档"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "将窗口恢复到正常大小"
+    AFX_IDS_SCTASKLIST      "激活任务列表"
+    AFX_IDS_MDICHILD        "激活此窗口"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "关闭打印预览模式\n取消预览"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_CUSTOMIZE       "自定义工具栏和菜单\n自定义"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_USER_TOOLBAR1   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+    ID_VIEW_USER_TOOLBAR2   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+    ID_VIEW_USER_TOOLBAR3   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+    ID_VIEW_USER_TOOLBAR4   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+    ID_VIEW_USER_TOOLBAR5   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+    ID_VIEW_USER_TOOLBAR6   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+    ID_VIEW_USER_TOOLBAR7   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_USER_TOOLBAR8   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+    ID_VIEW_USER_TOOLBAR9   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+    ID_VIEW_USER_TOOLBAR10  "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_APPLOOK_2000    "使用 Office 2000 应用程序外观\nOffice 2000 外观"
+    ID_VIEW_APPLOOK_XP      "使用 Office XP 应用程序外观\nOffice XP 外观"
+    ID_VIEW_APPLOOK_2003    "使用 Office 2003 应用程序外观\nOffice 2003 外观"
+    ID_VIEW_APPLOOK_WIN_XP  "使用 Windows native 应用程序外观\nWindows Native 外观"
+    ID_VIEW_APPLOOK_VS2005  "使用 Visual Studio 2005 应用程序外观\nVS 2005 外观"
+    ID_VIEW_APPLOOK_2007    "使用 Office 2007 应用程序外观\nOffice 2007 外观 (Blue)"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_APPLOOK_2007_1  "使用 Office 2007 应用程序外观\nOffice 2007 外观 (Black)"
+    ID_VIEW_APPLOOK_2007_2  "使用 Office 2007 应用程序外观\nOffice 2007 外观 (Silver)"
+    ID_VIEW_APPLOOK_2007_3  "使用 Office 2007 应用程序外观\nOffice 2007 外观 (Aqua)"
+    ID_VIEW_APPLOOK_VS2008  "使用 Visual Studio 2008 应用程序外观\nVS 2008 外观"
+    ID_VIEW_APPLOOK_VS2010  "使用 Visual Studio 2010 应用程序外观\nVS 2010 外观"
+    ID_VIEW_APPLOOK_2010_1  "使用 Office 2010 应用程序外观\nOffice 2010 外观 (Blue)"
+    ID_VIEW_APPLOOK_2010_2  "使用 Office 2010 应用程序外观\nOffice 2010 外观 (Black)"
+    ID_VIEW_APPLOOK_2010_3  "使用 Office 2010 应用程序外观\nOffice 2010 外观 (Silver)"
+    ID_VIEW_APPLOOK_WIN7    "使用 Windows 7 应用程序外观\nWindows 7 外观"
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\Test5.rc2"  // ?¤? Microsoft Visual C++ ?à¨¤?-|ì??á¨o???
+#include "afxres.rc"         // ?à¨o?á??á¨|?t
+#include "afxprint.rc"       // ??¨°¨??/??¨°¨????è¨¤¨¤?á¨o???
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
