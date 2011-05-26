@@ -1,0 +1,276 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\My.rc2""  // ?¤? Microsoft Visual C++ ?à¨¤?-|ì??á¨o???\r\n"
+    "#include ""l.CHS\\afxres.rc""      // ?à¨o?á??á¨|?t\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\模拟示波器图形显示.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于 模拟示波器图形显示"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "模拟示波器图形显示，1.0 版",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2010",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_MY_DIALOG DIALOGEX 0, 0, 623, 409
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "模拟示波器图形显示"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    CTEXT           "采样时间设置",IDC_STATIC,17,23,70,15,WS_BORDER
+    LTEXT           "秒",IDC_STATIC,67,43,22,21
+    EDITTEXT        IDC_EDIT_SAMPLETIME,17,42,46,17,ES_AUTOHSCROLL
+    PUSHBUTTON      "开始采样",IDC_BUTTON_STARTSAMPLE,15,67,71,19
+    PUSHBUTTON      "停止采样",IDC_BUTTON_STOPSAMPLE,15,97,71,19
+    PUSHBUTTON      "文件存储路径",IDC_BUTTON_SAVEFILEPATH,15,187,71,19
+    PUSHBUTTON      "重置",IDC_BUTTON_RESET,15,217,71,19
+    LTEXT           "X =",IDC_STATIC_AXIS_X,18,249,39,17
+    LTEXT           "Y =",IDC_STATIC_AXIS_Y,65,249,39,17
+    LTEXT           "仪器一",IDC_STATIC,111,14,36,19
+    LTEXT           "仪器三",IDC_STATIC,111,106,36,19
+    LTEXT           "仪器二",IDC_STATIC,111,61,36,19
+    LTEXT           "仪器五",IDC_STATIC,111,197,36,19
+    LTEXT           "仪器四",IDC_STATIC,111,151,36,19
+    LTEXT           "仪器七",IDC_STATIC,111,288,36,19
+    LTEXT           "仪器六",IDC_STATIC,111,242,36,19
+    LTEXT           "仪器八",IDC_STATIC,111,334,36,19
+    CONTROL         "选中1",IDC_CHECK_GRAPHVIEW1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,28,28,11
+    CONTROL         "选中2",IDC_CHECK_GRAPHVIEW2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,74,28,11
+    CONTROL         "选中3",IDC_CHECK_GRAPHVIEW3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,119,28,11
+    CONTROL         "选中4",IDC_CHECK_GRAPHVIEW4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,164,28,11
+    CONTROL         "选中5",IDC_CHECK_GRAPHVIEW5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,209,28,11
+    CONTROL         "选中6",IDC_CHECK_GRAPHVIEW6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,254,28,11
+    CONTROL         "选中7",IDC_CHECK_GRAPHVIEW7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,300,28,11
+    CONTROL         "选中8",IDC_CHECK_GRAPHVIEW8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,346,28,11
+    CONTROL         "",IDC_GRAPHSHOW1,"Static",SS_BLACKFRAME,141,14,343,46
+    CONTROL         "",IDC_GRAPHSHOW2,"Static",SS_BLACKFRAME,141,59,343,46
+    CONTROL         "",IDC_GRAPHSHOW3,"Static",SS_BLACKFRAME,141,104,343,46
+    CONTROL         "",IDC_GRAPHSHOW4,"Static",SS_BLACKFRAME,141,149,343,46
+    CONTROL         "",IDC_GRAPHSHOW5,"Static",SS_BLACKFRAME,141,194,343,46
+    CONTROL         "",IDC_GRAPHSHOW6,"Static",SS_BLACKFRAME,141,239,343,46
+    CONTROL         "",IDC_GRAPHSHOW7,"Static",SS_BLACKFRAME,141,284,343,46
+    CONTROL         "",IDC_GRAPHSHOW8,"Static",SS_BLACKFRAME,141,329,343,46
+    LTEXT           "Avg =",IDC_STATIC_AVERAGE1,492,20,49,17
+    LTEXT           "Avg =",IDC_STATIC_AVERAGE2,492,66,49,17
+    LTEXT           "Avg =",IDC_STATIC_AVERAGE3,492,111,49,17
+    LTEXT           "Avg =",IDC_STATIC_AVERAGE4,492,156,49,17
+    LTEXT           "Avg =",IDC_STATIC_AVERAGE5,492,201,49,17
+    LTEXT           "Avg =",IDC_STATIC_AVERAGE6,492,246,49,17
+    LTEXT           "Avg =",IDC_STATIC_AVERAGE7,492,291,49,17
+    LTEXT           "Avg =",IDC_STATIC_AVERAGE8,492,336,49,17
+    LTEXT           "Max =",IDC_STATIC_MAX1,492,44,49,17
+    LTEXT           "Max =",IDC_STATIC_MAX2,492,90,49,17
+    LTEXT           "Max =",IDC_STATIC_MAX3,492,135,49,17
+    LTEXT           "Max =",IDC_STATIC_MAX4,492,180,49,17
+    LTEXT           "Max =",IDC_STATIC_MAX5,492,224,49,17
+    LTEXT           "Max =",IDC_STATIC_MAX6,492,269,49,17
+    LTEXT           "Max =",IDC_STATIC_MAX7,492,313,49,17
+    LTEXT           "Max =",IDC_STATIC_MAX8,492,357,49,17
+    LTEXT           "RMS =",IDC_STATIC_RMS1,547,20,67,17
+    LTEXT           "RMS =",IDC_STATIC_RMS2,547,66,67,17
+    LTEXT           "RMS =",IDC_STATIC_RMS3,547,111,67,17
+    LTEXT           "RMS =",IDC_STATIC_RMS4,547,156,67,17
+    LTEXT           "RMS =",IDC_STATIC_RMS5,547,201,67,17
+    LTEXT           "RMS =",IDC_STATIC_RMS6,547,246,67,17
+    LTEXT           "RMS =",IDC_STATIC_RMS7,547,291,67,17
+    LTEXT           "RMS =",IDC_STATIC_RMS8,547,336,67,17
+    LTEXT           "Min =",IDC_STATIC_MIN1,547,45,67,17
+    LTEXT           "Min =",IDC_STATIC_MIN2,547,90,67,17
+    LTEXT           "Min =",IDC_STATIC_MIN3,547,135,67,17
+    LTEXT           "Min =",IDC_STATIC_MIN4,547,180,67,17
+    LTEXT           "Min =",IDC_STATIC_MIN5,547,224,67,17
+    LTEXT           "Min =",IDC_STATIC_MIN6,547,269,67,17
+    LTEXT           "Min =",IDC_STATIC_MIN7,547,313,67,17
+    LTEXT           "Min =",IDC_STATIC_MIN8,547,357,67,17
+    SCROLLBAR       IDC_SCROLLBAR_GRAPHVIEW,130,381,354,13
+    PUSHBUTTON      "开始噪声采集",IDC_BUTTON_STARTNOISE,15,127,71,19
+    PUSHBUTTON      "停止噪声采集",IDC_BUTTON_STOPNOISE,15,157,71,19
+    CONTROL         "噪声1",IDC_CHECK_NOISE1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,42,28,11
+    CONTROL         "噪声2",IDC_CHECK_NOISE2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,88,28,11
+    CONTROL         "噪声3",IDC_CHECK_NOISE3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,133,28,11
+    CONTROL         "噪声4",IDC_CHECK_NOISE4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,178,28,11
+    CONTROL         "噪声5",IDC_CHECK_NOISE5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,222,28,11
+    CONTROL         "噪声6",IDC_CHECK_NOISE6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,267,28,11
+    CONTROL         "噪声7",IDC_CHECK_NOISE7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,314,28,11
+    CONTROL         "噪声8",IDC_CHECK_NOISE8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,361,28,11
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "CompanyName", "TODO: <公司名>"
+            VALUE "FileDescription", "TODO: <文件说明>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "模拟示波器图形显示.exe"
+            VALUE "LegalCopyright", "TODO: (C) <公司名>。保留所有权利。"
+            VALUE "OriginalFilename", "模拟示波器图形显示.exe"
+            VALUE "ProductName", "TODO: <产品名>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_MY_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 616
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 402
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "关于 模拟示波器图形显示(&A)..."
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\My.rc2"  // ·? Microsoft Visual C++ ±à?-μ?×ê?′
+#include "l.CHS\afxres.rc"      // ±ê×?×é?t
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
