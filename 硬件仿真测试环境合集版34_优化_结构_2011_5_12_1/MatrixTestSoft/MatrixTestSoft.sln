@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MatrixTestSoft", "MatrixTestSoft\MatrixTestSoft.vcproj", "{E52FAF05-C7CD-47A2-AC9C-A8E943BD97EC}"
+EndProject
+Project("{4CAA2610-1955-4629-BDC1-8133FE0B2087}") = "AQtimeProject1", "AQtimeProject1\AQtimeProject1.aqt", "{04801D8B-64F7-47F2-A1B7-14FB9CD7ED4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E52FAF05-C7CD-47A2-AC9C-A8E943BD97EC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E52FAF05-C7CD-47A2-AC9C-A8E943BD97EC}.Debug|Win32.Build.0 = Debug|Win32
+		{E52FAF05-C7CD-47A2-AC9C-A8E943BD97EC}.Release|Win32.ActiveCfg = Release|Win32
+		{E52FAF05-C7CD-47A2-AC9C-A8E943BD97EC}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
