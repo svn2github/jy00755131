@@ -128,7 +128,7 @@
 // 心跳线程Sleep时间
 #define HeartBeatThreadSleepTime					500
 // ADC数据接收线程Sleep时间
-#define ADCDataRecThreadSleepTime				1
+#define ADCDataRecThreadSleepTime				50
 // TB设置延时高位
 #define TBSleepTimeHigh									0x5000
 // TB设置延时低位
