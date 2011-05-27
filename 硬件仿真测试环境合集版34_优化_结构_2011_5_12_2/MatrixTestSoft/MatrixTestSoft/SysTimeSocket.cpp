@@ -1,0 +1,191 @@
+// SysTimeSocket.cpp : 实现文件
+//
+
+#include "stdafx.h"
+#include "MatrixTestSoft.h"
+#include "SysTimeSocket.h"
+#include "Parameter.h"
+
+// CSysTimeSocket
+
+CSysTimeSocket::CSysTimeSocket()
+: m_uiSysTime(0)
+, m_csIPSource(_T(""))
+, m_uiSendPort(0)
+, m_pADCSet(NULL)
+, m_pwnd(NULL)
+, m_uiSysTimeCount(0)
+{
+}
+
+CSysTimeSocket::~CSysTimeSocket()
+{
+}
+
+
+// CSysTimeSocket 成员函数
+void CSysTimeSocket::OnReceive(int nErrorCode) 
+{
+	// TODO: Add your specialized code here and/or call the base class
+	int ret=0;
+	ret = Receive(udp_buf, RcvFrameSize);
+	if(ret == RcvFrameSize) 
+	{
+		unsigned short usCommand = 0;
+		byte	ucCommand = 0;
+		int iPos = 26;
+		unsigned short usCRC16 = 0;
+		memcpy(&usCRC16, &udp_buf[RcvFrameSize - CRCSize], CRCSize);
+		if (usCRC16 != get_crc_16(&udp_buf[FrameHeadSize], RcvFrameSize - FrameHeadSize - CRCCheckSize))
+		{
+		//	return FALSE;
+		}
+		memcpy(&usCommand, &udp_buf[iPos], FramePacketSize2B);
+		iPos += FramePacketSize2B;
+		if (usCommand == SendQueryCmd)
+		{
+			memcpy(&ucCommand, &udp_buf[iPos], FrameCmdSize1B);
+			iPos += FrameCmdSize1B;
+			if (ucCommand == CmdLocalSysTime)
+			{
+				// 查询本地时间，0x04命令
+				OnProcSysTimeReturn(iPos);
+			}
+		}
+	}
+	CAsyncSocket::OnReceive(nErrorCode);
+}
+
+// ADC设置TB时刻开始采集
+//************************************
+// Method:    OnADCStartSample
+// FullName:  CSysTimeSocket::OnADCStartSample
+// Access:    protected 
+// Returns:   void
+// Qualifier:
+// Parameter: unsigned int uiIPAim
+// Parameter: unsigned int tnow
+//************************************
+void CSysTimeSocket::OnADCStartSample(unsigned int tnow)
+{
+	m_pADCSet->OnADCStartSample(tnow);
+	SetTimer(m_pwnd->m_hWnd, TabSampleStartSampleTimerNb, TabSampleStartSampleTimerSet, NULL);
+}
+// 生成采集站本地时间查询帧
+//************************************
+// Method:    MakeCollectSysTimeFrameData
+// FullName:  CThreadManage::MakeCollectSysTimeFrameData
+// Access:    public 
+// Returns:   void
+// Qualifier:
+// Parameter: int * pSelectObject
+//************************************
+void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
+{
+	unsigned int uiIPSource =	0;
+	unsigned int uiIPAim	=	0;
+	unsigned int usPortAim	=	0;
+	unsigned int usCommand	=	0;
+	CString str = _T("");
+	memset(m_cCollectSysTimeSendData, SndFrameBufInit, SndFrameSize);
+	m_cCollectSysTimeSendData[0] = FrameHeadCheck0;
+	m_cCollectSysTimeSendData[1] = FrameHeadCheck1;
+	m_cCollectSysTimeSendData[2] = FrameHeadCheck2;
+	m_cCollectSysTimeSendData[3] = FrameHeadCheck3;
+	memset(&m_cCollectSysTimeSendData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
+
+	str = m_csIPSource;
+	uiIPSource	=	inet_addr(str);
+	for (int i=0; i<InstrumentNum; i++)
+	{
+		ProcessMessages();
+		if (pSelectObject[i] == 1)
+		{
+			uiIPAim	= IPSetAddrStart + IPSetAddrInterval * (i+1);
+			break;
+		}
+	}
+	usPortAim	=	CollectSysTimePort;
+	usCommand	=	SendQueryCmd;
+	int iPos = 16;
+	// 源IP地址
+	memcpy(&m_cCollectSysTimeSendData[iPos], &uiIPSource, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+	// 目标IP地址
+	memcpy(&m_cCollectSysTimeSendData[iPos], &uiIPAim, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+	TRACE1("采集站本地时间查询帧-仪器IP地址：%d\r\n", uiIPAim);
+	// 目标端口号
+	memcpy(&m_cCollectSysTimeSendData[iPos], &usPortAim, FramePacketSize2B);
+	iPos += FramePacketSize2B;
+	// 命令号 1-设置命令应答；2-查询命令应答；3-AD采样数据重发
+	memcpy(&m_cCollectSysTimeSendData[iPos], &usCommand, FramePacketSize2B);
+
+	iPos = 32;
+	// 命令字0x04读取本地系统时间
+	m_cCollectSysTimeSendData[iPos] = CmdLocalSysTime;
+	iPos += FrameCmdSize1B;
+	memset(&m_cCollectSysTimeSendData[iPos], SndFrameBufInit, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+
+	// 设置命令字结束
+	m_cCollectSysTimeSendData[iPos] = SndFrameBufInit;
+
+	unsigned short usCRC16 = 0;
+	usCRC16 = get_crc_16(&m_cCollectSysTimeSendData[FrameHeadSize], SndFrameSize - FrameHeadSize - CRCCheckSize);
+	memcpy(&m_cCollectSysTimeSendData[SndFrameSize - CRCSize], &usCRC16, CRCSize);
+}
+
+// 发送采集站本地时间查询帧
+//************************************
+// Method:    SendCollectSysTimeFrameToSocket
+// FullName:  CThreadManage::SendCollectSysTimeFrameToSocket
+// Access:    public 
+// Returns:   void
+// Qualifier:
+// Parameter: void
+//************************************
+void CSysTimeSocket::SendCollectSysTimeFrameToSocket(void)
+{
+	// 发送帧
+	int iCount = SendTo(m_cCollectSysTimeSendData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
+}
+
+// 防止程序在循环中运行无法响应消息
+//************************************
+// Method:    ProcessMessages
+// FullName:  CSysTimeSocket::ProcessMessages
+// Access:    protected 
+// Returns:   void
+// Qualifier:
+// Parameter: void
+//************************************
+void CSysTimeSocket::ProcessMessages(void)
+{
+	MSG msg;
+	::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+	::DispatchMessage(&msg);
+}
+
+// 处理本地时间查询应答
+//************************************
+// Method:    OnProcSysTimeReturn
+// FullName:  CSysTimeSocket::OnProcSysTimeReturn
+// Access:    public 
+// Returns:   void
+// Qualifier:
+// Parameter: int iPos
+//************************************
+void CSysTimeSocket::OnProcSysTimeReturn(int iPos)
+{
+	unsigned int uiSysTime = 0;
+	memcpy(&uiSysTime, &udp_buf[iPos], FramePacketSize4B);
+	m_uiSysTimeCount++;
+	if (m_uiSysTimeCount == 1)
+	{
+		m_uiSysTime = uiSysTime;
+		// 广播命令开始采样
+		TRACE(_T("查询到的本地时间%d"), m_uiSysTime);
+		OnADCStartSample(m_uiSysTime);
+	}
+}
