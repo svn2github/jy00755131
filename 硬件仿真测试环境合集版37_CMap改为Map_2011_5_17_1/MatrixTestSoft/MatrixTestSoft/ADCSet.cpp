@@ -468,9 +468,6 @@ void CADCSet::OnADCZeroDriftSetFromIP(int iPos, unsigned char* ucZeroDrift)
 	byte mode = 1,sync = 0,phs = 0,chop = 1;
 //	byte cOnADCZeroDriftSetFromIP[16] = {0x8d, 0x40, 0x0a, 0x00, 0x52, 0x08, 0x32, 0x03, 0x6f, 0x0c, 0xff, 0x7d, 0x52, 0x40, 0x00, 0x00};
 	// 不设置零漂校正值
-	// 新版硬件程序
-	/*byte cOnADCZeroDriftSetFromIP[8] = {0x87, 0x40, 0x04, 0x00, 0x52, 0x08, 0x32, 0x03};*/
-	// 旧版硬件程序
 	byte cOnADCZeroDriftSetFromIP[8] = SetADCZeroDriftSetFromIP;
 	m_pTabADCSettings->m_uiADCSync = ((CComboBox*)m_pTabADCSettings->GetDlgItem(IDC_COMBO_SYNC))->GetCurSel();
 	switch(m_pTabADCSettings->m_uiADCSync)
@@ -877,10 +874,7 @@ void CADCSet::OnADCZeroDrift(void)
  
 	Sleep(ADCOperationSleepTime);
  	
-	// 新版硬件程序
-	/*	m_oADCSet.OnADCRegisterWrite(iPos, true);*/
-	// 旧版硬件程序
-	OnADCRegisterWrite(iPos, false);
+	OnADCRegisterWrite(iPos, true);
 	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
 	 
 	OnADCRegisterRead(iPos);

@@ -53,7 +53,7 @@ protected:
 	void LoadXmlFile(CString csXmlFileName);
 	// 打开XML配置文件
 	BOOL OpenXmlFile(CString csXmlFileName);
-	/** XMLDOM文件对象*/
+	// XMLDOM文件对象
 	CXMLDOMDocument m_oXMLDOMDocument;
 	// 载入串口转UDP配置
 	bool LoadUartToUDPSetup(void);
