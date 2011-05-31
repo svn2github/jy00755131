@@ -21,7 +21,8 @@ protected:
 	// 保存通讯数据开始标志位
 	bool m_bStartSave;
 	// 保存文件
-	FILE* m_file;
+//	FILE* m_file;
+	CFile m_file;
 public:
 	// 自动保存文件的大小
 	int m_iSaveSize;

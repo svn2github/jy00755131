@@ -72,7 +72,7 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 
 		// 首包计数
 		GetDlgItem(IDC_STATIC_HEADFRAMENUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiHeadFrameNum)
 		{
 			strTemp.Format(_T("%d"), uiHeadFrameNum);
@@ -80,7 +80,7 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 		}
 		// IP地址设置计数
 		GetDlgItem(IDC_STATIC_IPSETRETURNNUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiIPSetReturnNum)
 		{
 			strTemp.Format(_T("%d"), uiIPSetReturnNum);
@@ -88,7 +88,7 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 		}
 		// 尾包计数
 		GetDlgItem(IDC_STATIC_TAILFRAMENUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiTailFrameNum)
 		{
 			strTemp.Format(_T("%d"), uiTailFrameNum);
@@ -96,7 +96,7 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 		}
 		// 尾包时刻查询应答计数
 		GetDlgItem(IDC_STATIC_TAILTIMERETURNNUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiTailTimeReturnNum)
 		{
 			strTemp.Format(_T("%d"), uiTailTimeReturnNum);
@@ -104,7 +104,7 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 		}
 		// 时延设置应答计数
 		GetDlgItem(IDC_STATIC_DELAYTIMERETURNNUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiDelayTimeReturnNum)
 		{
 			strTemp.Format(_T("%d"), uiDelayTimeReturnNum);
@@ -112,7 +112,7 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 		}
 		// ADC设置应答计数
 		GetDlgItem(IDC_STATIC_ADCSETRETURNNUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiADCSetReturnNum)
 		{
 			strTemp.Format(_T("%d"), uiADCSetReturnNum);
@@ -120,7 +120,7 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 		}
 		// 硬件设备错误查询应答帧个数
 		GetDlgItem(IDC_STATIC_ERRORCODERETURNNUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiErrorCodeReturnNum)
 		{
 			strTemp.Format(_T("%d"), uiErrorCodeReturnNum);

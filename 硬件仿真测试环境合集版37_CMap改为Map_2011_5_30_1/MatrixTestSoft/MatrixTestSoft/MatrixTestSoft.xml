@@ -13,7 +13,7 @@
 		<SampleSetup SaveADCFrameNum="406" SendPort="33282"/>
 	</Sample>
 	<ADCSettings>
-		<ADCControl ADC_SYNC="0" ADC_MODE="1" ADC_SPS="0" ADC_PHS="0" ADC_FILTER="2" ADC_MUX="1" ADC_CHOP="1" ADC_PGA="0"/>
+		<ADCControl ADC_SYNC="0" ADC_MODE="1" ADC_SPS="2" ADC_PHS="0" ADC_FILTER="2" ADC_MUX="0" ADC_CHOP="1" ADC_PGA="0"/>
 		<HPFSettings HPFLow="50" HPFHigh="3"/>
 	</ADCSettings>
 </MatrixTestSoft>

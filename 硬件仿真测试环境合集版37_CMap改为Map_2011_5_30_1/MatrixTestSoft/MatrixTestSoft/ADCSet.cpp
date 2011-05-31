@@ -103,7 +103,16 @@ int CADCSet::ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, uns
 	m_ucFrameData[3] = FrameHeadCheck3;
 	memset(&m_ucFrameData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
-	uiIPSource	=	inet_addr(m_csIPSource);
+	// CString转换为const char*
+	char pach[100];
+	CStringW strw;
+	wstring wstr;
+	strw = m_csIPSource;
+	wstr = strw;
+	string mstring = WideCharToMultiChar(wstr );
+	strcpy_s( pach, sizeof(pach), mstring.c_str() );
+
+	uiIPSource	=	inet_addr(pach);
 	iPos = 16;
 	// 源IP地址
 	memcpy(&m_ucFrameData[iPos], &uiIPSource, FramePacketSize4B);
@@ -302,8 +311,18 @@ void CADCSet::OnADCSetReturn(int iPos)
 	unsigned int uiIPSource = 0;
 	unsigned int uiReturnPort = 0;
 	unsigned int uiReturnPortMove = 0;
+
+	// CString转换为const char*
+	char pach[100];
+	CStringW strw;
+	wstring wstr;
+	strw = m_csIPSource;
+	wstr = strw;
+	string mstring = WideCharToMultiChar(wstr );
+	strcpy_s( pach, sizeof(pach), mstring.c_str() );
+
 	//自动AD返回地址
-	uiIPSource = inet_addr(m_csIPSource);
+	uiIPSource = inet_addr(pach);
 	m_ucFrameData[iPos] = CmdADCDataReturnAddr;
 	iPos += FrameCmdSize1B;
 	memcpy(&m_ucFrameData[iPos], &uiIPSource, FramePacketSize4B);
@@ -643,9 +662,9 @@ void CADCSet::OnADCZeroDriftSetFromIP(int iPos, unsigned char* ucZeroDrift)
 		break;
 	}
 	m_pTabADCSettings->GetDlgItem(IDC_EDIT_HPFLOW)->GetWindowText(str);
-	m_pTabADCSettings->m_ucHpfLow = atoi(str);
+	m_pTabADCSettings->m_ucHpfLow = _tstoi(str);
 	m_pTabADCSettings->GetDlgItem(IDC_EDIT_HPFHIGH)->GetWindowText(str);
-	m_pTabADCSettings->m_ucHpfHigh = atoi(str);
+	m_pTabADCSettings->m_ucHpfHigh = _tstoi(str);
 	cOnADCZeroDriftSetFromIP[4] = (8*sync+4*mode+2*sps2+1*sps1)*16 + (8*sps0+4*phs+2*filtr1+1*filtr0);
 	cOnADCZeroDriftSetFromIP[5] = (4*mux2+2*mux1+1*mux0)*16 + (8*chop+4*pga2+2*pga1+1*pga0);
 	cOnADCZeroDriftSetFromIP[6] = m_pTabADCSettings->m_ucHpfLow;

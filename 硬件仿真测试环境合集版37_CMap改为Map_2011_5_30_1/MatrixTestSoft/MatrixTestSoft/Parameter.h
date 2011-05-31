@@ -1,3 +1,5 @@
+#include <string>
+using namespace std;
 //__________________通讯端口设置__________________
 // 心跳帧发送创建端口
 #define HeartBeatRec					0x7000
@@ -331,4 +333,5 @@ extern unsigned int m_uiSendTailTimeFrameCount;
 extern unsigned int m_uiRecTailTimeFrameCount;
 // CRC16校验
 extern unsigned short get_crc_16(unsigned char* buf, int buf_size);
-
+// 宽字节字符串转换为多字节字符串
+extern string WideCharToMultiChar(wstring str);

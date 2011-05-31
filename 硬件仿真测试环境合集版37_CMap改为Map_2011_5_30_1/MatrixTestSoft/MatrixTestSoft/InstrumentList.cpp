@@ -209,7 +209,8 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrumentAdd)
 		pInstrumentAdd->m_iHeadFrameCount = 0;
 		pInstrumentAdd->m_uiLocation = uiLocation;
 	}
-	TRACE2(_T("仪器SN%04x，仪器位置%d\r\n"), pInstrumentAdd->m_uiSN, pInstrumentAdd->m_uiLocation);
+	TRACE(_T("仪器SN%04x,"), pInstrumentAdd->m_uiSN);
+	TRACE(_T("仪器位置%d\r\n"), pInstrumentAdd->m_uiLocation);
 }
 
 // 删除采集站尾包之后的仪器

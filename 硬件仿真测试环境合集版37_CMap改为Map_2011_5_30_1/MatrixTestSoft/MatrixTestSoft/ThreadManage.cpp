@@ -65,6 +65,20 @@ unsigned short get_crc_16(unsigned char* buf, int buf_size)
 	}
 	return crc_16;
 }
+// 宽字节字符串转换为多字节字符串
+string WideCharToMultiChar(wstring str)
+{
+	string return_value;
+	//获取缓冲区的大小，并申请空间，缓冲区大小是按字节计算的
+	int len=WideCharToMultiByte(CP_ACP,0,str.c_str(),((int)str.size()),NULL,0,NULL,NULL);
+	char *buffer=new char[len+1];
+	WideCharToMultiByte(CP_ACP,0,str.c_str(),((int)str.size()),buffer,len,NULL,NULL);
+	buffer[len]='\0';
+	//删除缓冲区并返回值
+	return_value.append(buffer);
+	delete []buffer;
+	return return_value;
+}
 
 CThreadManage::CThreadManage(void)
 {

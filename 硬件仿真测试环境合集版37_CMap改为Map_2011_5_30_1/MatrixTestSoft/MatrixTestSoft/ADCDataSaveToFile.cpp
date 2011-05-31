@@ -4,7 +4,7 @@
 CADCDataSaveToFile::CADCDataSaveToFile(void)
 : m_bOpenADCSaveFile(FALSE)
 , m_uiADCSaveFileNum(0)
-, m_pFileSave(NULL)
+/*, m_pFileSave(NULL)*/
 , m_uiADCDataToSaveNum(0)
 , m_uiADCFileLength(0)
 , m_csSaveFilePath(_T(""))
@@ -17,7 +17,7 @@ CADCDataSaveToFile::~CADCDataSaveToFile(void)
 
 // 将ADC数据保存到文件中
 void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataSize], unsigned int* upADCDataNum,
-										unsigned int uiADCDataToSaveNum, bool bFinish)
+										 unsigned int uiADCDataToSaveNum, bool bFinish)
 {
 	CString strOutput = _T("");
 	CString strTemp = _T("");
@@ -53,7 +53,10 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 		}
 		strOutput += _T("\r\n");
 	}
-	fprintf(m_pFileSave, _T("%s"), strOutput); 
+	//	fprintf(m_pFileSave, _T("%s"), strOutput); 
+	CArchive ar(&m_FileSave, CArchive::store);
+	ar.WriteString(strOutput);
+	ar.Close();
 
 	if (bFinish == false)
 	{
@@ -78,17 +81,22 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 	CString strFileName = _T("");
 	CString strOutput = _T("");
 	CString strTemp = _T("");
-	errno_t err;
+	//	errno_t err;
 	CString str = _T("");
 	SYSTEMTIME  sysTime;
-	unsigned int uiADCDataFrameCount = 0;
 	// 选中的仪器对象名称
-	char cSelectObjectName[InstrumentNum][RcvFrameSize];
+	wchar_t cSelectObjectName[InstrumentNum][RcvFrameSize];
 	strFileName += m_csSaveFilePath;
 	strTemp.Format(_T("\\%d.text"), m_uiADCSaveFileNum);
 	strFileName += strTemp;
 	// 将ADC采样数据保存成ANSI格式的文件
-	if((err = fopen_s(&m_pFileSave,strFileName,"w+"))!=NULL)
+	// 	if((err = fopen_s(&m_pFileSave,strFileName,"w+"))!=NULL)
+	// 	{
+	// 		AfxMessageBox(_T("ADC数据存储文件创建失败！"));	
+	// 		return;
+	// 	}
+	//保存成UNICODE格式的文件
+	if(m_FileSave.Open(strFileName, CFile::modeCreate|CFile::modeWrite) == FALSE)
 	{
 		AfxMessageBox(_T("ADC数据存储文件创建失败！"));	
 		return;
@@ -104,24 +112,37 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 	{
 		ProcessMessages();
 		strTemp.Format(_T("仪器%d"), i+1);
-		char* pchar = strTemp.GetBuffer(0); 
-		strcpy_s(cSelectObjectName[i],pchar);
+		wchar_t* pchar = strTemp.GetBuffer(0); 
+		_tcscpy_s(cSelectObjectName[i],pchar);
 		strTemp.Format(_T("%s\t\t"), cSelectObjectName[i]);
 		strOutput += strTemp;
 	}
-	
+
 	strOutput += _T("\r\n");
-	fprintf(m_pFileSave, _T("%s"), strOutput); 
+	//	fprintf(m_pFileSave, _T("%s"), strOutput); 
+// 	CArchive ar(&m_FileSave, CArchive::store);
+// 	ar.WriteString(strOutput);
+// 	ar.Close();
+
+	//因为需要保存的内容包含中文，所以需要如下的转换过程
+	int ansiCount=WideCharToMultiByte(CP_ACP,0,strOutput,-1,NULL,0,NULL,NULL);
+	char * pTempChar=(char*)malloc(ansiCount*sizeof(char));
+	memset(pTempChar,0,ansiCount);
+	WideCharToMultiByte(CP_ACP,0,strOutput,-1,pTempChar,ansiCount,NULL,NULL);
+	m_FileSave.Write(pTempChar, ansiCount);
+	free(pTempChar);
+
 	m_bOpenADCSaveFile = TRUE;
 }
 // 关闭ADC保存数据文件
 void CADCDataSaveToFile::OnCloseADCSaveFile(void)
 {
-	if (m_pFileSave == NULL)
-	{
-		return;
-	}
-	fclose(m_pFileSave); 
+	// 	if (m_pFileSave == NULL)
+	// 	{
+	// 		return;
+	// 	}
+	// 	fclose(m_pFileSave); 
+	m_FileSave.Close();
 	m_bOpenADCSaveFile = FALSE;
 }
 // 防止程序在循环中运行无法响应消息

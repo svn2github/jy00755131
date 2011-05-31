@@ -11,7 +11,7 @@ CSaveFile::CSaveFile(void)
 , m_iSaveSize(1024)
 , m_bStartSave(false)
 , m_pWndTab(NULL)
-, m_file(NULL)
+/*, m_file(NULL)*/
 {
 }
 
@@ -30,7 +30,7 @@ CSaveFile::~CSaveFile(void)
 //************************************
 void CSaveFile::OnInit(void)
 {
-	char cSaveToFilePath[MAX_PATH];
+	wchar_t cSaveToFilePath[MAX_PATH];
 	// 得到当前路径
 	GetCurrentDirectory(MAX_PATH, cSaveToFilePath);
 	// 创建保存信息的文件夹
@@ -84,7 +84,7 @@ void CSaveFile::OnSaveStop(void)
 //************************************
 void CSaveFile::OnSelectSaveFilePath(void)
 {
-	char szDir[MAX_PATH];
+	wchar_t szDir[MAX_PATH];
 	BROWSEINFO bi;
 	ITEMIDLIST *pidl;
 
@@ -149,7 +149,7 @@ void CSaveFile::OnSaveToFile(void)
 	CString strFileName = _T("");
 	CString str = _T("");
 	SYSTEMTIME  sysTime;
-	errno_t err;
+//	errno_t err;
 	m_Sec_SavePortMonitorFrame.Lock();
 	csSaveFileTemp = m_csSaveFile;
 	csSaveReceiveFileTemp = m_csSaveReceiveFile;
@@ -170,15 +170,23 @@ void CSaveFile::OnSaveToFile(void)
 	str.Format(_T("\\%04d%02d%02d%02d%02d%02d%03d.text"),sysTime.wYear,sysTime.wMonth,sysTime.wDay,
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 	strFileName += str;
-	m_file = NULL;
+	//	m_file = NULL;
 	//保存成ANSI格式的文件
-	if((err = fopen_s(&m_file,strFileName,"w+"))==NULL)
+	// 	if((err = fopen_s(&m_file,strFileName,"w+"))==NULL)
+	// 	{
+	// 		if (m_file != NULL)
+	// 		{
+	// 			fprintf(m_file,_T("%s"),csSaveFileTemp); 
+	// 			fclose(m_file);
+	// 		}
+	// 	}
+	//保存成UNICODE格式的文件
+	if(m_file.Open(strFileName, CFile::modeCreate|CFile::modeWrite) == TRUE)
 	{
-		if (m_file != NULL)
-		{
-			fprintf(m_file,_T("%s"),csSaveFileTemp); 
-			fclose(m_file);
-		}
+		CArchive ar(&m_file, CArchive::store);
+		ar.WriteString(csSaveFileTemp);
+		ar.Close();
+		m_file.Close();
 	}
 	// 保存接收到的数据到文件
 	if (csSaveReceiveFileTemp.GetLength() != 0)
@@ -188,15 +196,23 @@ void CSaveFile::OnSaveToFile(void)
 		str.Format(_T("\\Rec%04d%02d%02d%02d%02d%02d%03d.text"),sysTime.wYear,sysTime.wMonth,sysTime.wDay,
 			sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 		strFileName += str;
-		m_file = NULL;
-		//保存成ANSI格式的文件
-		if((err = fopen_s(&m_file,strFileName,"w+"))==NULL)
+		// 		m_file = NULL;
+		// 		//保存成ANSI格式的文件
+		// 		if((err = fopen_s(&m_file,strFileName,"w+"))==NULL)
+		// 		{
+		// 			if (m_file != NULL)
+		// 			{
+		// 				fprintf(m_file,_T("%s"),csSaveReceiveFileTemp); 
+		// 				fclose(m_file);
+		// 			}
+		// 		}
+		//保存成UNICODE格式的文件
+		if(m_file.Open(strFileName, CFile::modeCreate|CFile::modeWrite) == TRUE)
 		{
-			if (m_file != NULL)
-			{
-				fprintf(m_file,_T("%s"),csSaveReceiveFileTemp); 
-				fclose(m_file);
-			}
+			CArchive ar(&m_file, CArchive::store);
+			ar.WriteString(csSaveReceiveFileTemp);
+			ar.Close();
+			m_file.Close();
 		}
 	}
 	// 保存发送的数据到文件
@@ -207,15 +223,23 @@ void CSaveFile::OnSaveToFile(void)
 		str.Format(_T("\\Send%04d%02d%02d%02d%02d%02d%03d.text"),sysTime.wYear,sysTime.wMonth,sysTime.wDay,
 			sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 		strFileName += str;
-		m_file = NULL;
-		//保存成ANSI格式的文件
-		if((err = fopen_s(&m_file,strFileName,"w+"))==NULL)
+		// 		m_file = NULL;
+		// 		//保存成ANSI格式的文件
+		// 		if((err = fopen_s(&m_file,strFileName,"w+"))==NULL)
+		// 		{
+		// 			if (m_file != NULL)
+		// 			{
+		// 					fprintf(m_file,_T("%s"),csSaveSendFileTemp); 
+		// 					fclose(m_file);
+		// 			}
+		// 		}
+		//保存成UNICODE格式的文件
+		if(m_file.Open(strFileName, CFile::modeCreate|CFile::modeWrite) == TRUE)
 		{
-			if (m_file != NULL)
-			{
-					fprintf(m_file,_T("%s"),csSaveSendFileTemp); 
-					fclose(m_file);
-			}
+			CArchive ar(&m_file, CArchive::store);
+			ar.WriteString(csSaveSendFileTemp);
+			ar.Close();
+			m_file.Close();
 		}
 	}
 }

@@ -56,7 +56,7 @@ void CPortMonitoringSend::OnTimer(UINT_PTR nIDEvent)
 
 		// 心跳
 		GetDlgItem(IDC_STATIC_HEARTBEATFRAMENUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiHeartBeatNum)
 		{
 			strTemp.Format(_T("%d"), uiHeartBeatNum);
@@ -64,7 +64,7 @@ void CPortMonitoringSend::OnTimer(UINT_PTR nIDEvent)
 		}
 		// IP地址设置
 		GetDlgItem(IDC_STATIC_IPSETNUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiIPSetNum)
 		{
 			strTemp.Format(_T("%d"), uiIPSetNum);
@@ -72,7 +72,7 @@ void CPortMonitoringSend::OnTimer(UINT_PTR nIDEvent)
 		}
 		// 尾包时刻查询
 		GetDlgItem(IDC_STATIC_TAILTIMESETNUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiTailTimeNum)
 		{
 			strTemp.Format(_T("%d"), uiTailTimeNum);
@@ -80,7 +80,7 @@ void CPortMonitoringSend::OnTimer(UINT_PTR nIDEvent)
 		}
 		// 时统设置
 		GetDlgItem(IDC_STATIC_DELAYTIMESETNUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiDelayTimeSetNum)
 		{
 			strTemp.Format(_T("%d"), uiDelayTimeSetNum);
@@ -88,7 +88,7 @@ void CPortMonitoringSend::OnTimer(UINT_PTR nIDEvent)
 		}
 		// ADC参数设置
 		GetDlgItem(IDC_STATIC_ADCSETNUM)->GetWindowText(str);
-		uiTemp = atoi(str);
+		uiTemp = _tstoi(str);
 		if (uiTemp != uiADCSetNum)
 		{
 			strTemp.Format(_T("%d"), uiADCSetNum);

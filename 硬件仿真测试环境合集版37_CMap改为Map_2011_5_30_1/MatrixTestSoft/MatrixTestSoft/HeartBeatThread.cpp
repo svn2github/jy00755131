@@ -105,8 +105,17 @@ void CHeartBeatThread::MakeHeartBeatFrame(void)
 	m_pFrameData[3] = FrameHeadCheck3;
 	memset(&m_pFrameData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
+	// CString转换为const char*
+	char pach[100];
+	CStringW strw;
+	wstring wstr;
+	strw = m_csIPSource;
+	wstr = strw;
+	string mstring = WideCharToMultiChar(wstr );
+	strcpy_s( pach, sizeof(pach), mstring.c_str() );
+
 	// 源IP地址
-	uiIPSource = inet_addr(m_csIPSource);
+	uiIPSource = inet_addr(pach);
 	// 目标IP地址
 	uiIPAim = BroadCastPort;
 	// 目标端口号

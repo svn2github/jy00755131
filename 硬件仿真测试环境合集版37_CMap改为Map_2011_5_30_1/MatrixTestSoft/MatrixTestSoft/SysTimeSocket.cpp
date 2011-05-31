@@ -86,7 +86,6 @@ void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
 	unsigned int uiIPAim	=	0;
 	unsigned int usPortAim	=	0;
 	unsigned int usCommand	=	0;
-	CString str = _T("");
 	memset(m_cCollectSysTimeSendData, SndFrameBufInit, SndFrameSize);
 	m_cCollectSysTimeSendData[0] = FrameHeadCheck0;
 	m_cCollectSysTimeSendData[1] = FrameHeadCheck1;
@@ -94,8 +93,16 @@ void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
 	m_cCollectSysTimeSendData[3] = FrameHeadCheck3;
 	memset(&m_cCollectSysTimeSendData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
-	str = m_csIPSource;
-	uiIPSource	=	inet_addr(str);
+	// CString×ª»»Îªconst char*
+	char pach[100];
+	CStringW strw;
+	wstring wstr;
+	strw = m_csIPSource;
+	wstr = strw;
+	string mstring = WideCharToMultiChar(wstr );
+	strcpy_s( pach, sizeof(pach), mstring.c_str() );
+
+	uiIPSource	=	inet_addr(pach);
 	for (int i=0; i<InstrumentNum; i++)
 	{
 		ProcessMessages();

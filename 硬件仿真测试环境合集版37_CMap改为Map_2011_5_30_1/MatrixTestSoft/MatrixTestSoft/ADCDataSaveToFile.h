@@ -9,7 +9,8 @@ protected:
 	// 文件打开标志位
 	BOOL m_bOpenADCSaveFile;
 	// 保存文件的文件指针
-	FILE * m_pFileSave;
+//	FILE * m_pFileSave;
+	CFile m_FileSave;
 public:
 	// 保存ADC数据文件个数
 	unsigned int m_uiADCSaveFileNum;
