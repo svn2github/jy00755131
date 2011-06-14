@@ -29,6 +29,11 @@ CPortMonitoringRecThread::CPortMonitoringRecThread()
 
 CPortMonitoringRecThread::~CPortMonitoringRecThread()
 {
+	if (m_pSaveFile != NULL)
+	{
+		m_pSaveFile = NULL;
+		delete m_pSaveFile;
+	}
 }
 
 BOOL CPortMonitoringRecThread::InitInstance()
@@ -217,7 +222,7 @@ void CPortMonitoringRecThread::OnInit(void)
 //************************************
 void CPortMonitoringRecThread::OnOpen(void)
 {
-//	m_RecSocket.ShutDown(2);
+	m_RecSocket.ShutDown(2);
 	m_RecSocket.Close();
 	BOOL bReturn =  m_RecSocket.Create(m_iRecPort,SOCK_DGRAM);
 	if (bReturn == FALSE)
@@ -270,6 +275,7 @@ void CPortMonitoringRecThread::OnAvoidIOBlock(SOCKET socket)
 //************************************
 void CPortMonitoringRecThread::OnStop(void)
 {
+	m_RecSocket.ShutDown(2);
 	m_RecSocket.Close();
 }
 
@@ -284,6 +290,7 @@ void CPortMonitoringRecThread::OnStop(void)
 //************************************
 void CPortMonitoringRecThread::OnClose(void)
 {
+	m_RecSocket.ShutDown(2);
 	m_RecSocket.Close();
 	m_bclose = true;
 }

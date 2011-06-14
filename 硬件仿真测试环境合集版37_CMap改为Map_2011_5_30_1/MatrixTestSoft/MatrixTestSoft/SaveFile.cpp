@@ -17,6 +17,11 @@ CSaveFile::CSaveFile(void)
 
 CSaveFile::~CSaveFile(void)
 {
+	if (m_pWndTab != NULL)
+	{
+		m_pWndTab = NULL;
+		delete m_pWndTab;
+	}
 }
 
 // ≥ı ºªØ

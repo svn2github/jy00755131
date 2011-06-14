@@ -19,6 +19,11 @@ CPortMonitoringRec::CPortMonitoringRec(CWnd* pParent /*=NULL*/)
 
 CPortMonitoringRec::~CPortMonitoringRec()
 {
+	if (m_pSendThread != NULL)
+	{
+		m_pSendThread = NULL;
+		delete m_pSendThread;
+	}
 }
 
 void CPortMonitoringRec::DoDataExchange(CDataExchange* pDX)

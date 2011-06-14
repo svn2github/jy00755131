@@ -20,6 +20,11 @@ CHeartBeatThread::CHeartBeatThread()
 
 CHeartBeatThread::~CHeartBeatThread()
 {
+	if (m_pHeartBeatSocket != NULL)
+	{
+		m_pHeartBeatSocket = NULL;
+		delete m_pHeartBeatSocket;
+	}
 }
 
 BOOL CHeartBeatThread::InitInstance()

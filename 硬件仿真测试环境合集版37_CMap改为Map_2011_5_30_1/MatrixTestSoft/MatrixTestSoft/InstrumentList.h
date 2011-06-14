@@ -17,7 +17,7 @@ protected:
 	// 空闲仪器数量
 	unsigned int m_uiCountFree;
 	// 空闲仪器队列
-	list<CInstrument*> m_olsInstrumentFree2;
+	list<CInstrument*> m_olsInstrumentFree;
 public:
 	// 仪器SN索引表
 	hash_map<unsigned int, CInstrument*> m_oInstrumentMap;

@@ -38,6 +38,11 @@ CPortMonitoringSendThread::CPortMonitoringSendThread()
 
 CPortMonitoringSendThread::~CPortMonitoringSendThread()
 {
+	if (m_pSaveFile != NULL)
+	{
+		m_pSaveFile = NULL;
+		delete m_pSaveFile;
+	}
 }
 
 BOOL CPortMonitoringSendThread::InitInstance()
@@ -230,7 +235,7 @@ void CPortMonitoringSendThread::OnInit(void)
 void CPortMonitoringSendThread::OnOpen(void)
 {
 	BOOL bReturn = FALSE;
-//	m_SendSocket.ShutDown(2);
+	m_SendSocket.ShutDown(2);
 	m_SendSocket.Close();
 	bReturn = m_SendSocket.Create(m_iRecPort,SOCK_DGRAM);
 	if (bReturn == FALSE)
@@ -283,6 +288,7 @@ void CPortMonitoringSendThread::OnAvoidIOBlock(SOCKET socket)
 //************************************
 void CPortMonitoringSendThread::OnStop(void)
 {
+	m_SendSocket.ShutDown(2);
 	m_SendSocket.Close();
 	// 硬件设备错误查询应答帧个数
 	m_uiErrorCodeReturnNum = 0;
@@ -304,6 +310,7 @@ void CPortMonitoringSendThread::OnStop(void)
 //************************************
 void CPortMonitoringSendThread::OnClose(void)
 {
+	m_SendSocket.ShutDown(2);
 	m_SendSocket.Close();
 	m_bclose = true;
 }

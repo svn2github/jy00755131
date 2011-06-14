@@ -16,6 +16,11 @@ CInstrumentList::~CInstrumentList(void)
 		m_pInstrumentArray = NULL;
 		delete[] m_pInstrumentArray;
 	}
+	if (m_pwnd != NULL)
+	{
+		m_pwnd = NULL;
+		delete m_pwnd;
+	}
 }
 
 // 初始化
@@ -47,7 +52,7 @@ void CInstrumentList::OnInit(void)
 void CInstrumentList::OnClose(void)
 {
 	// 清空空闲仪器队列
-	m_olsInstrumentFree2.clear();
+	m_olsInstrumentFree.clear();
 	if (m_pInstrumentArray != NULL)
 	{
 		m_pInstrumentArray = NULL;
@@ -73,9 +78,9 @@ CInstrument* CInstrumentList::GetFreeInstrument(void)
 	if(m_uiCountFree > 0)	//有空闲仪器
 	{
 		// 从空闲队列中得到一个仪器
-		iter = m_olsInstrumentFree2.begin();
+		iter = m_olsInstrumentFree.begin();
 		pInstrument = *iter;
-		m_olsInstrumentFree2.pop_front();	
+		m_olsInstrumentFree.pop_front();	
 		pInstrument->m_bInUsed = true;	// 设置仪器为使用中
 		m_uiCountFree--;	// 空闲仪器总数减1
 	}
@@ -243,7 +248,7 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 				// 重置仪器
 				iter->second->OnReset();
 				// 仪器加在空闲仪器队列尾部
-				m_olsInstrumentFree2.push_back(iter->second);
+				m_olsInstrumentFree.push_back(iter->second);
 				m_uiCountFree++;
 			}
 		}
@@ -297,7 +302,7 @@ void CInstrumentList::ClearExperiedTailTimeResult(void)
 void CInstrumentList::OnOpen(void)
 {
 	// 清空空闲仪器队列
-	m_olsInstrumentFree2.clear();
+	m_olsInstrumentFree.clear();
 	// 删除索引表中所有仪器
 	m_oInstrumentMap.clear();
 	for(unsigned int i = 0; i < InstrumentMaxCount; i++)
@@ -307,7 +312,7 @@ void CInstrumentList::OnOpen(void)
 		// 重置仪器
 		m_pInstrumentArray[i].OnReset();
 		// 仪器加在空闲仪器队列尾部
-		m_olsInstrumentFree2.push_back(&m_pInstrumentArray[i]);
+		m_olsInstrumentFree.push_back(&m_pInstrumentArray[i]);
 	}
 	m_uiCountFree = InstrumentMaxCount;
 }
@@ -323,7 +328,7 @@ void CInstrumentList::OnOpen(void)
 void CInstrumentList::OnStop(void)
 {
 	// 清空空闲仪器队列
-	m_olsInstrumentFree2.clear();
+	m_olsInstrumentFree.clear();
 	m_pInstrumentArray = NULL;
 	// 删除索引表中所有仪器
 	m_oInstrumentMap.clear();
@@ -361,7 +366,7 @@ void CInstrumentList::DeleteAllInstrument(void)
 			// 重置仪器
 			iter->second->OnReset();
 			// 仪器加在空闲仪器队列尾部
-			m_olsInstrumentFree2.push_back(iter->second);
+			m_olsInstrumentFree.push_back(iter->second);
 			m_uiCountFree++;
 		}
 	}

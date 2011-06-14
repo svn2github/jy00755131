@@ -141,6 +141,7 @@ void CThreadManage::OnClose(void)
 		str.Format(_T("心跳线程在%dms内未能正常结束！"), WaitForThreadCloseTime);
 		AfxMessageBox(str);
 	}
+	::CloseHandle(m_oHeartBeatThread.m_hHeartBeatThreadClose);
 
 	iResult = WaitForSingleObject(m_oADCDataRecThread.m_hADCDataThreadClose, WaitForThreadCloseTime);
 	if (iResult != WAIT_OBJECT_0)
@@ -148,14 +149,22 @@ void CThreadManage::OnClose(void)
 		str.Format(_T("ADC数据接收线程在%dms内未能正常结束！"), WaitForThreadCloseTime);
 		AfxMessageBox(str);
 	}
-	
+	::CloseHandle(m_oADCDataRecThread.m_hADCDataThreadClose);
+	m_oHeadFrameSocket.ShutDown(2);
 	m_oHeadFrameSocket.Close();
+	m_oIPSetSocket.ShutDown(2);
 	m_oIPSetSocket.Close();
+	m_oTailFrameSocket.ShutDown(2);
 	m_oTailFrameSocket.Close();
+	m_oTailTimeFrameSocket.ShutDown(2);
 	m_oTailTimeFrameSocket.Close();
+	m_oSysTimeSocket.ShutDown(2);
 	m_oSysTimeSocket.Close();
+	m_oADCSetSocket.ShutDown(2);
 	m_oADCSetSocket.Close();
+	m_oHeartBeatSocket.ShutDown(2);
 	m_oHeartBeatSocket.Close();
+	m_oADCDataSocket.ShutDown(2);
 	m_oADCDataSocket.Close();
 	m_oInstrumentList.OnClose();
 }
@@ -204,13 +213,21 @@ void CThreadManage::OnStop(void)
 	m_oHeartBeatThread.SuspendThread();
 	m_oADCDataRecThread.SuspendThread();
 
+	m_oHeadFrameSocket.ShutDown(2);
 	m_oHeadFrameSocket.Close();
+	m_oIPSetSocket.ShutDown(2);
 	m_oIPSetSocket.Close();
+	m_oTailFrameSocket.ShutDown(2);
 	m_oTailFrameSocket.Close();
+	m_oTailTimeFrameSocket.ShutDown(2);
 	m_oTailTimeFrameSocket.Close();
+	m_oSysTimeSocket.ShutDown(2);
 	m_oSysTimeSocket.Close();
+	m_oADCSetSocket.ShutDown(2);
 	m_oADCSetSocket.Close();
+	m_oHeartBeatSocket.ShutDown(2);
 	m_oHeartBeatSocket.Close();
+	m_oADCDataSocket.ShutDown(2);
 	m_oADCDataSocket.Close();
 	m_oInstrumentList.OnStop();
 }
@@ -251,8 +268,8 @@ void CThreadManage::OnCreateAndSetSocket(CSocket* socket, bool bBroadCast,
 										 int iSocketPort, CString str, int iRecBuf, int iSendBuf)
 {
 	CString strTemp = _T("");
-//	socket->ShutDown(2);
-	socket->Close();
+// 	socket->ShutDown(2);
+// 	socket->Close();
 	BOOL bReturn = FALSE;
 	// 生成网络端口，接收发送命令应答帧，create函数写入第三个参数IP地址则接收固定IP地址发送的帧，不写则全网接收
 	// @@@@@@@@@需要改进

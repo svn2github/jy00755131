@@ -20,6 +20,16 @@ CSysTimeSocket::CSysTimeSocket()
 
 CSysTimeSocket::~CSysTimeSocket()
 {
+	if (m_pADCSet != NULL)
+	{
+		m_pADCSet = NULL;
+		delete m_pADCSet;
+	}
+	if (m_pwnd != NULL)
+	{
+		m_pwnd = NULL;
+		delete m_pwnd;
+	}
 }
 
 
