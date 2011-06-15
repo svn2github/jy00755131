@@ -1,6 +1,7 @@
 
 #include "ADCSet.h"
 #include "Parameter.h"
+#include "ADCFrameInfo.h"
 #pragma once
 // CSysTimeSocket 命令目标
 
@@ -29,6 +30,8 @@ public:
 	CWnd* m_pwnd;
 	// 本地时间查询应答计数
 	unsigned int m_uiSysTimeCount;
+	// 类CADCFrameInfo成员变量指针
+	CADCFrameInfo* m_pADCFrameInfo;
 protected:
 	// ADC设置TB时刻开始采集
 	void OnADCStartSample(unsigned int tnow);

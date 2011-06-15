@@ -54,9 +54,16 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 		strOutput += _T("\r\n");
 	}
 	//	fprintf(m_pFileSave, _T("%s"), strOutput); 
-	CArchive ar(&m_FileSave, CArchive::store);
-	ar.WriteString(strOutput);
-	ar.Close();
+// 	CArchive ar(&m_FileSave, CArchive::store);
+// 	ar.WriteString(strOutput);
+// 	ar.Close();
+	//因为需要保存的内容包含中文，所以需要如下的转换过程
+	int ansiCount=WideCharToMultiByte(CP_ACP,0,strOutput,-1,NULL,0,NULL,NULL);
+	char * pTempChar=(char*)malloc(ansiCount*sizeof(char));
+	memset(pTempChar,0,ansiCount);
+	WideCharToMultiByte(CP_ACP,0,strOutput,-1,pTempChar,ansiCount,NULL,NULL);
+	m_FileSave.Write(pTempChar, ansiCount);
+	free(pTempChar);
 
 	if (bFinish == false)
 	{

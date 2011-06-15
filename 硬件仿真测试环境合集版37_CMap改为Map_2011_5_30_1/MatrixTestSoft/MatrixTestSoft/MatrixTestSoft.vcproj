@@ -103,7 +103,7 @@
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="1"
-			CharacterSet="2"
+			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -198,6 +198,10 @@
 			</File>
 			<File
 				RelativePath=".\ADCDataSaveToFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ADCFrameInfo.h"
 				>
 			</File>
 			<File
@@ -386,6 +390,10 @@
 			</File>
 			<File
 				RelativePath=".\ADCDataSaveToFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ADCFrameInfo.cpp"
 				>
 			</File>
 			<File

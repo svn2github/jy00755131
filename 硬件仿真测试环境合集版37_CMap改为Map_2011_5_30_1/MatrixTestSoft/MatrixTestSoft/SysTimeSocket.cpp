@@ -15,6 +15,7 @@ CSysTimeSocket::CSysTimeSocket()
 , m_pADCSet(NULL)
 , m_pwnd(NULL)
 , m_uiSysTimeCount(0)
+, m_pADCFrameInfo(NULL)
 {
 }
 
@@ -29,6 +30,11 @@ CSysTimeSocket::~CSysTimeSocket()
 	{
 		m_pwnd = NULL;
 		delete m_pwnd;
+	}
+	if (m_pADCFrameInfo != NULL)
+	{
+		m_pADCFrameInfo = NULL;
+		delete m_pADCFrameInfo;
 	}
 }
 
@@ -200,9 +206,24 @@ void CSysTimeSocket::OnProcSysTimeReturn(int iPos)
 	m_uiSysTimeCount++;
 	if (m_uiSysTimeCount == 1)
 	{
+		CString strOutput = _T("");
 		m_uiSysTime = uiSysTime;
 		// 广播命令开始采样
 		TRACE(_T("查询到的本地时间%d"), m_uiSysTime);
 		OnADCStartSample(m_uiSysTime);
+		// 在ADC数据帧信息文件中写入TB时间
+// 		if (m_pADCFrameInfo->m_pFileSave != NULL)
+// 		{
+// 			strOutput.Format(_T("设置ADC数据采样TB开始时间为%d\n"), m_uiSysTime + TBSleepTimeHigh);
+// 			fprintf(m_pADCFrameInfo->m_pFileSave, _T("%s"), strOutput); 			
+// 		}
+		strOutput.Format(_T("设置ADC数据采样TB开始时间为%d\n"), m_uiSysTime + TBSleepTimeHigh);
+		//因为需要保存的内容包含中文，所以需要如下的转换过程
+		int ansiCount=WideCharToMultiByte(CP_ACP,0,strOutput,-1,NULL,0,NULL,NULL);
+		char * pTempChar=(char*)malloc(ansiCount*sizeof(char));
+		memset(pTempChar,0,ansiCount);
+		WideCharToMultiByte(CP_ACP,0,strOutput,-1,pTempChar,ansiCount,NULL,NULL);
+		m_pADCFrameInfo->m_FileSave.Write(pTempChar, ansiCount);
+		free(pTempChar);
 	}
 }

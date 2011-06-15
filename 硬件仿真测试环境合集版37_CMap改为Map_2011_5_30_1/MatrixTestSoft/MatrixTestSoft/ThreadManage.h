@@ -11,6 +11,7 @@
 #include "ADCDataRecThread.h"
 #include "ADCSet.h"
 #include "ADCDataSaveToFile.h"
+#include "ADCFrameInfo.h"
 class CThreadManage
 {
 public:
@@ -36,7 +37,8 @@ public:
 	CSocket m_oADCDataSocket;
 	// 类CADCDataSaveToFile成员变量
 	CADCDataSaveToFile m_oADCDataSaveToFile;
-	
+	// 类CADCFrameInfo成员变量
+	CADCFrameInfo m_oADCFrameInfo;
 	// 心跳线程
 	CHeartBeatThread	m_oHeartBeatThread;
 	// ADC数据接收线程

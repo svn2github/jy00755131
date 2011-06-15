@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MatrixTestSoft", "MatrixTestSoft\MatrixTestSoft.vcproj", "{E52FAF05-C7CD-47A2-AC9C-A8E943BD97EC}"
 EndProject
-Project("{4CAA2610-1955-4629-BDC1-8133FE0B2087}") = "AQtimeProject1", "AQtimeProject1\AQtimeProject1.aqt", "{E8C2D099-95EB-4FAF-9289-886B742BCB38}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32

@@ -2,6 +2,7 @@
 #include "OScopeCtrl.h"
 #include "Parameter.h"
 #include "ADCDataSaveToFile.h"
+#include "ADCFrameInfo.h"
 #include <hash_map>
 
 using namespace stdext;
@@ -86,6 +87,8 @@ public:
 	unsigned char m_ucUdpBuf[ADCDataBufSize];
 	// 类CADCDataSaveToFile成员变量指针
 	CADCDataSaveToFile* m_pADCDataSaveToFile;
+	// 类CADCFrameInfo成员变量指针
+	CADCFrameInfo* m_pADCFrameInfo;
 protected:
 	// 被选择仪器的ADC数据个数的最小值
 	unsigned int OnADCRecDataMinNum(void);

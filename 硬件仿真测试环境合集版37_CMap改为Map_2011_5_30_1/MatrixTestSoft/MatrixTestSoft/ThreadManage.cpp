@@ -109,6 +109,8 @@ void CThreadManage::OnInit(void)
 	m_oHeartBeatThread.m_pHeartBeatSocket = &m_oHeartBeatSocket;
 	m_oADCDataRecThread.m_pADCDataSocket = & m_oADCDataSocket;
 	m_oADCDataRecThread.m_pADCDataSaveToFile = & m_oADCDataSaveToFile;
+	m_oADCDataRecThread.m_pADCFrameInfo = &m_oADCFrameInfo;
+	m_oSysTimeSocket.m_pADCFrameInfo = &m_oADCFrameInfo;
 	m_oHeartBeatThread.OnInit();
 	m_oHeartBeatThread.CreateThread();
 	m_oHeartBeatThread.SuspendThread();
