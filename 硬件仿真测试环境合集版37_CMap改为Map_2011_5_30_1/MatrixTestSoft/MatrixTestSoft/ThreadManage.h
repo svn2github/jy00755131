@@ -2,7 +2,6 @@
 
 #include "InstrumentList.h"
 #include "SysTimeSocket.h"
-#include "Parameter.h"
 #include "HeadFrameSocket.h"
 #include "IPSetSocket.h"
 #include "TailFrameSocket.h"

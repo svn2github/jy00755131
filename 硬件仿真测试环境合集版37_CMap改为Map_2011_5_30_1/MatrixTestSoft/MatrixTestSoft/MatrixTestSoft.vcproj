@@ -249,6 +249,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LogFile.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MatrixTestSoft.h"
 				>
 			</File>
@@ -422,6 +426,10 @@
 			</File>
 			<File
 				RelativePath=".\IPSetSocket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LogFile.cpp"
 				>
 			</File>
 			<File

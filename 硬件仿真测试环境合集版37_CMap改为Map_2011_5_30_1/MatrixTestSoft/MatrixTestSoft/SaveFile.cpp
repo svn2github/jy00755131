@@ -1,7 +1,8 @@
 #include "StdAfx.h"
 #include "SaveFile.h"
-#include "Parameter.h"
 #include "Resource.h"
+#include "Parameter.h"
+
 CSaveFile::CSaveFile(void)
 : m_csEditShow(_T(""))
 , m_csSaveFile(_T(""))
@@ -35,13 +36,9 @@ CSaveFile::~CSaveFile(void)
 //************************************
 void CSaveFile::OnInit(void)
 {
-	wchar_t cSaveToFilePath[MAX_PATH];
-	// 得到当前路径
-	GetCurrentDirectory(MAX_PATH, cSaveToFilePath);
 	// 创建保存信息的文件夹
-	CreateDirectory(_T("数据备份"),NULL);
-	m_csSaveFilePath = cSaveToFilePath;
 	m_csSaveFilePath += _T("\\数据备份");
+	CreateDirectory(m_csSaveFilePath, NULL);
 }
 
 // 开始数据存储
@@ -188,9 +185,11 @@ void CSaveFile::OnSaveToFile(void)
 	//保存成UNICODE格式的文件
 	if(m_file.Open(strFileName, CFile::modeCreate|CFile::modeWrite) == TRUE)
 	{
-		CArchive ar(&m_file, CArchive::store);
-		ar.WriteString(csSaveFileTemp);
-		ar.Close();
+// 		CArchive ar(&m_file, CArchive::store);
+// 		ar.WriteString(csSaveFileTemp);
+// 		ar.Close();
+		//因为需要保存的内容包含中文，所以需要如下的转换过程
+		WriteCHToCFile(&m_file, csSaveFileTemp);
 		m_file.Close();
 	}
 	// 保存接收到的数据到文件
@@ -214,9 +213,11 @@ void CSaveFile::OnSaveToFile(void)
 		//保存成UNICODE格式的文件
 		if(m_file.Open(strFileName, CFile::modeCreate|CFile::modeWrite) == TRUE)
 		{
-			CArchive ar(&m_file, CArchive::store);
-			ar.WriteString(csSaveReceiveFileTemp);
-			ar.Close();
+// 			CArchive ar(&m_file, CArchive::store);
+// 			ar.WriteString(csSaveReceiveFileTemp);
+// 			ar.Close();
+			//因为需要保存的内容包含中文，所以需要如下的转换过程
+			WriteCHToCFile(&m_file, csSaveReceiveFileTemp);
 			m_file.Close();
 		}
 	}
@@ -241,9 +242,11 @@ void CSaveFile::OnSaveToFile(void)
 		//保存成UNICODE格式的文件
 		if(m_file.Open(strFileName, CFile::modeCreate|CFile::modeWrite) == TRUE)
 		{
-			CArchive ar(&m_file, CArchive::store);
-			ar.WriteString(csSaveSendFileTemp);
-			ar.Close();
+// 			CArchive ar(&m_file, CArchive::store);
+// 			ar.WriteString(csSaveSendFileTemp);
+// 			ar.Close();
+			//因为需要保存的内容包含中文，所以需要如下的转换过程
+			WriteCHToCFile(&m_file, csSaveSendFileTemp);
 			m_file.Close();
 		}
 	}

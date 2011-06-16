@@ -119,15 +119,9 @@ int CADCSet::ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, uns
 	memset(&m_ucFrameData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
 	// CString转换为const char*
-	char pach[100];
-	CStringW strw;
-	wstring wstr;
-	strw = m_csIPSource;
-	wstr = strw;
-	string mstring = WideCharToMultiChar(wstr );
-	strcpy_s( pach, sizeof(pach), mstring.c_str() );
+	const char* pChar = ConvertCStringToConstCharPointer(m_csIPSource);
 
-	uiIPSource	=	inet_addr(pach);
+	uiIPSource	=	inet_addr(pChar);
 	iPos = 16;
 	// 源IP地址
 	memcpy(&m_ucFrameData[iPos], &uiIPSource, FramePacketSize4B);
@@ -328,16 +322,10 @@ void CADCSet::OnADCSetReturn(int iPos)
 	unsigned int uiReturnPortMove = 0;
 
 	// CString转换为const char*
-	char pach[100];
-	CStringW strw;
-	wstring wstr;
-	strw = m_csIPSource;
-	wstr = strw;
-	string mstring = WideCharToMultiChar(wstr );
-	strcpy_s( pach, sizeof(pach), mstring.c_str() );
+	const char* pChar = ConvertCStringToConstCharPointer(m_csIPSource);
 
 	//自动AD返回地址
-	uiIPSource = inet_addr(pach);
+	uiIPSource = inet_addr(pChar);
 	m_ucFrameData[iPos] = CmdADCDataReturnAddr;
 	iPos += FrameCmdSize1B;
 	memcpy(&m_ucFrameData[iPos], &uiIPSource, FramePacketSize4B);

@@ -2,7 +2,6 @@
 #include "afxcmn.h"
 #include "PortMonitoringRec.h"
 #include "PortMonitoringSend.h"
-#include "Parameter.h"
 #include "SaveFile.h"
 #include "PortMonitoringRecThread.h"
 #include "PortMonitoringSendThread.h"
@@ -25,8 +24,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 private:
-	// 类CSaveFile的变量
-	CSaveFile m_oSaveFile;
 	// 接收方IP地址控制变量
 	CIPAddressCtrl m_IPctrlRec;
 	// 发送方IP地址控制变量
@@ -38,6 +35,8 @@ private:
 	// 开始端口监视标志位
 	BOOL m_bPortMonitoringStart;
 public:
+	// 类CSaveFile的变量
+	CSaveFile m_oSaveFile;
 	// TabControl控制变量
 	CTabCtrl m_cTabCtrlItems;
 	// 类CPortMonitoringRec的变量

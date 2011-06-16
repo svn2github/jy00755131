@@ -16,8 +16,6 @@ protected:
 	CString m_csSaveSendFile;
 	// 定义临界区全局变量
 	CCriticalSection m_Sec_SavePortMonitorFrame;
-	// 通讯文件的存储路径
-	CString m_csSaveFilePath;
 	// 保存通讯数据开始标志位
 	bool m_bStartSave;
 	// 保存文件
@@ -26,6 +24,8 @@ protected:
 public:
 	// 自动保存文件的大小
 	int m_iSaveSize;
+	// 通讯文件的存储路径
+	CString m_csSaveFilePath;
 	// 窗口指针
 	HWND m_hWnd;
 	// 窗口TabPortMonitoring的指针

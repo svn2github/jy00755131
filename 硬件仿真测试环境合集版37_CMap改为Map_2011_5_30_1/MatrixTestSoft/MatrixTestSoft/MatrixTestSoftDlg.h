@@ -3,11 +3,14 @@
 
 #pragma once
 #include "afxcmn.h"
+#include "Parameter.h"
 #include "TabUartToUdp.h"
 #include "TabPortMonitoring.h"
 #include "TabSample.h"
 #include "TabADCSettings.h"
 #include "TabADCDataShow.h"
+#include "LogFile.h"
+
 
 // CMatrixTestSoftDlg dialog
 class CMatrixTestSoftDlg : public CDialog
@@ -46,7 +49,9 @@ protected:
 	CTabADCSettings m_oTabADCSettings;
 	// CTabADCDataShow类的变量
 	CTabADCDataShow m_oTabADCDataShow;
-protected:
+	// CLogFile类的变量
+	CLogFile m_oLogFile;
+protected: 
 	// 初始化选项卡控件
 	void InitTabControlItems(void);
 	// 载入XML配置文件

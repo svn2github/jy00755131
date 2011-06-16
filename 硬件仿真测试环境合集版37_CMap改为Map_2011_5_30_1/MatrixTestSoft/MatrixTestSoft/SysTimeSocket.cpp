@@ -110,15 +110,9 @@ void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
 	memset(&m_cCollectSysTimeSendData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
 	// CString转换为const char*
-	char pach[100];
-	CStringW strw;
-	wstring wstr;
-	strw = m_csIPSource;
-	wstr = strw;
-	string mstring = WideCharToMultiChar(wstr );
-	strcpy_s( pach, sizeof(pach), mstring.c_str() );
+	const char* pChar = ConvertCStringToConstCharPointer(m_csIPSource);
 
-	uiIPSource	=	inet_addr(pach);
+	uiIPSource	=	inet_addr(pChar);
 	for (int i=0; i<InstrumentNum; i++)
 	{
 		ProcessMessages();
@@ -219,11 +213,6 @@ void CSysTimeSocket::OnProcSysTimeReturn(int iPos)
 // 		}
 		strOutput.Format(_T("设置ADC数据采样TB开始时间为%d\n"), m_uiSysTime + TBSleepTimeHigh);
 		//因为需要保存的内容包含中文，所以需要如下的转换过程
-		int ansiCount=WideCharToMultiByte(CP_ACP,0,strOutput,-1,NULL,0,NULL,NULL);
-		char * pTempChar=(char*)malloc(ansiCount*sizeof(char));
-		memset(pTempChar,0,ansiCount);
-		WideCharToMultiByte(CP_ACP,0,strOutput,-1,pTempChar,ansiCount,NULL,NULL);
-		m_pADCFrameInfo->m_FileSave.Write(pTempChar, ansiCount);
-		free(pTempChar);
+		WriteCHToCFile(&(m_pADCFrameInfo->m_FileSave), strOutput);
 	}
 }

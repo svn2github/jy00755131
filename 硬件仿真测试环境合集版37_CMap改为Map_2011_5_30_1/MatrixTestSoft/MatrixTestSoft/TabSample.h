@@ -23,9 +23,6 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
-private:
-	// 保存数据到文件的存储路径
-	CString m_csSaveFilePath;
 
 private:
 	// 打开
@@ -36,6 +33,8 @@ private:
 	BOOL m_bMatrixNetwork;
 
 public:
+	// 保存数据到文件的存储路径
+	CString m_csSaveFilePath;
 	// 选择仪器对象
 	int m_iSelectObject[InstrumentNum];
 	// 选择仪器对象做噪声监测
