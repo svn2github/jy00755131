@@ -1,7 +1,7 @@
 #pragma once
 #include "InstrumentList.h"
 #include <hash_map>
-
+#include "LogFile.h"
 using namespace stdext;
 // CTailTimeFrameSocket
 class CTailTimeFrameSocket : public CSocket
@@ -49,6 +49,8 @@ public:
 	unsigned int m_uiSendPort;
 	// 仪器位置索引表
 	hash_map<unsigned int, CInstrument*> m_oInstrumentLocationMap;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 public:
 	// 生成时统报文设置帧
 	void MakeTimeDelayFrameData(CInstrument* pInstrument, unsigned int uiTimeHigh, unsigned int uiTimeLow);

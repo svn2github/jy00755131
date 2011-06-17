@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="gb2312"?>
 <MatrixTestSoft>
 	<UartToUDP>
-		<UartToUDPHost Com="6" Baud="11" HostPort="36866"/>
+		<UartToUDPHost Com="0" Baud="11" HostPort="36866"/>
 		<UartToUDPServer ServerIP="127.0.0.1" ServerPort="36865"/>
 	</UartToUDP>
 	<UDPPortMonitoring>

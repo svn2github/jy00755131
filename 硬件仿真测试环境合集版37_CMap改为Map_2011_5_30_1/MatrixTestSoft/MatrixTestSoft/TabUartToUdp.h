@@ -3,6 +3,7 @@
 #include "mscomm1.h"
 #include "UartToUdpSocket.h"
 #include "Parameter.h"
+#include "LogFile.h"
 
 // CTabUartToUdp 对话框
 
@@ -50,6 +51,8 @@ public:
 	unsigned int m_uiRecPort;
 	// 服务器的IP地址
 	CString m_csIPAddress;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 private:
 	int OnGetSerialPortCom(void);
 	// 得到当前选择的波特率
@@ -60,6 +63,10 @@ private:
 	void ProcessMessages(void);
 	// 避免端口阻塞
 	void OnAvoidIOBlock(SOCKET socket);
+	// 关闭串口
+	void OnCloseCom(void);
+	// 关闭UDP端口
+	void OnCloseUDP(void);
 public:
 	// 初始化设置
 	void OnInit(void);

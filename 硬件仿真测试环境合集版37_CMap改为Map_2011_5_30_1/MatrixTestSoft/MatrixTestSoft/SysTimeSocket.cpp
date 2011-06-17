@@ -16,6 +16,7 @@ CSysTimeSocket::CSysTimeSocket()
 , m_pwnd(NULL)
 , m_uiSysTimeCount(0)
 , m_pADCFrameInfo(NULL)
+, m_pLogFile(NULL)
 {
 }
 
@@ -35,6 +36,11 @@ CSysTimeSocket::~CSysTimeSocket()
 	{
 		m_pADCFrameInfo = NULL;
 		delete m_pADCFrameInfo;
+	}
+	if (m_pLogFile != NULL)
+	{
+		m_pLogFile = NULL;
+		delete m_pLogFile;
 	}
 }
 
@@ -102,6 +108,7 @@ void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
 	unsigned int uiIPAim	=	0;
 	unsigned int usPortAim	=	0;
 	unsigned int usCommand	=	0;
+	CString str = _T("");
 	memset(m_cCollectSysTimeSendData, SndFrameBufInit, SndFrameSize);
 	m_cCollectSysTimeSendData[0] = FrameHeadCheck0;
 	m_cCollectSysTimeSendData[1] = FrameHeadCheck1;
@@ -131,7 +138,6 @@ void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
 	// 目标IP地址
 	memcpy(&m_cCollectSysTimeSendData[iPos], &uiIPAim, FramePacketSize4B);
 	iPos += FramePacketSize4B;
-	TRACE1("采集站本地时间查询帧-仪器IP地址：%d\r\n", uiIPAim);
 	// 目标端口号
 	memcpy(&m_cCollectSysTimeSendData[iPos], &usPortAim, FramePacketSize2B);
 	iPos += FramePacketSize2B;
@@ -151,6 +157,8 @@ void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
 	unsigned short usCRC16 = 0;
 	usCRC16 = get_crc_16(&m_cCollectSysTimeSendData[FrameHeadSize], SndFrameSize - FrameHeadSize - CRCCheckSize);
 	memcpy(&m_cCollectSysTimeSendData[SndFrameSize - CRCSize], &usCRC16, CRCSize);
+	str.Format(_T("查询IP地址为%d的采集站本地时间！"), uiIPAim);
+	m_pLogFile->OnWriteLogFile(_T("CSysTimeSocket::MakeCollectSysTimeFrameData"), str, SuccessStatus);
 }
 
 // 发送采集站本地时间查询帧
@@ -203,7 +211,6 @@ void CSysTimeSocket::OnProcSysTimeReturn(int iPos)
 		CString strOutput = _T("");
 		m_uiSysTime = uiSysTime;
 		// 广播命令开始采样
-		TRACE(_T("查询到的本地时间%d"), m_uiSysTime);
 		OnADCStartSample(m_uiSysTime);
 		// 在ADC数据帧信息文件中写入TB时间
 // 		if (m_pADCFrameInfo->m_pFileSave != NULL)

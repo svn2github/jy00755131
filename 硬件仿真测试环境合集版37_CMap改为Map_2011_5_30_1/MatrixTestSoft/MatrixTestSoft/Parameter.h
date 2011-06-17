@@ -325,7 +325,13 @@ using namespace std;
 #define PortMonitoringSendTimerNb						1
 // PortMonitoringSend界面刷新接收帧的定时器延时设置
 #define PortMonitoringSendTimerSet					1000
-
+//__________________日志记录状态__________________
+// 正常工作状态
+#define SuccessStatus												1
+// 警告状态
+#define WarningStatus											2
+// 出错状态
+#define ErrorStatus													3
 //__________________全局变量设置___________________
 // 发送尾包时刻查询帧计数
 extern unsigned int m_uiSendTailTimeFrameCount;

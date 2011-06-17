@@ -2,11 +2,17 @@
 #include "ThreadManage.h"
 
 CThreadManage::CThreadManage(void)
+: m_pLogFile(NULL)
 {
 }
 
 CThreadManage::~CThreadManage(void)
 {
+	if (m_pLogFile != NULL)
+	{
+		m_pLogFile = NULL;
+		delete m_pLogFile;
+	}
 }
 
 // 初始化
@@ -32,14 +38,23 @@ void CThreadManage::OnInit(void)
 	m_oADCDataRecThread.m_pADCDataSaveToFile = & m_oADCDataSaveToFile;
 	m_oADCDataRecThread.m_pADCFrameInfo = &m_oADCFrameInfo;
 	m_oSysTimeSocket.m_pADCFrameInfo = &m_oADCFrameInfo;
+
+	m_oADCSetSocket.m_pLogFile = m_pLogFile;
+	m_oHeadFrameSocket.m_pLogFile = m_pLogFile;
+	m_oTailTimeFrameSocket.m_pLogFile = m_pLogFile;
+	m_oTailFrameSocket.m_pLogFile = m_pLogFile;
+	m_oInstrumentList.m_pLogFile = m_pLogFile;
+	m_oSysTimeSocket.m_pLogFile = m_pLogFile;
+	m_oADCDataRecThread.m_pLogFile = m_pLogFile;
+
 	m_oHeartBeatThread.OnInit();
 	m_oHeartBeatThread.CreateThread();
 	m_oHeartBeatThread.SuspendThread();
-	TRACE(_T("心跳发送线程创建"));
+	m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnInit"), _T("心跳发送线程创建成功！"), SuccessStatus);
 	m_oADCDataRecThread.OnInit();
 	m_oADCDataRecThread.CreateThread();
 	m_oADCDataRecThread.SuspendThread();
-	TRACE(_T("ADC数据接收线程创建"));
+	m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnInit"), _T("ADC数据接收线程创建成功！"), SuccessStatus);
 }
 
 // 关闭并结束线程
@@ -56,13 +71,20 @@ void CThreadManage::OnClose(void)
 	int iResult = 0;
 	CString str = _T("");
 
+	m_oHeartBeatThread.ResumeThread();
+	m_oADCDataRecThread.ResumeThread();
 	m_oHeartBeatThread.OnClose();
 	m_oADCDataRecThread.OnClose();
 	iResult = WaitForSingleObject(m_oHeartBeatThread.m_hHeartBeatThreadClose, WaitForThreadCloseTime);
 	if (iResult != WAIT_OBJECT_0)
 	{
 		str.Format(_T("心跳线程在%dms内未能正常结束！"), WaitForThreadCloseTime);
+		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnClose"), str, ErrorStatus);
 		AfxMessageBox(str);
+	}
+	else
+	{
+		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnClose"), _T("心跳线程正常结束！"), SuccessStatus);
 	}
 	::CloseHandle(m_oHeartBeatThread.m_hHeartBeatThreadClose);
 
@@ -70,7 +92,12 @@ void CThreadManage::OnClose(void)
 	if (iResult != WAIT_OBJECT_0)
 	{
 		str.Format(_T("ADC数据接收线程在%dms内未能正常结束！"), WaitForThreadCloseTime);
+		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnClose"), str, ErrorStatus);
 		AfxMessageBox(str);
+	}
+	else
+	{
+		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnClose"), _T("ADC数据接收线程正常结束！"), SuccessStatus);
 	}
 	::CloseHandle(m_oADCDataRecThread.m_hADCDataThreadClose);
 	m_oHeadFrameSocket.ShutDown(2);
@@ -201,6 +228,7 @@ void CThreadManage::OnCreateAndSetSocket(CSocket* socket, bool bBroadCast,
 	{
 		strTemp = str + _T("创建失败！");
 		AfxMessageBox(strTemp);
+		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 	}
 	else
 	{
@@ -214,6 +242,7 @@ void CThreadManage::OnCreateAndSetSocket(CSocket* socket, bool bBroadCast,
 			{
 				strTemp = str + _T("设置为广播端口失败！");
 				AfxMessageBox(strTemp);
+				m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 			}
 		}
 		int iOptionValue = iSendBuf;
@@ -223,6 +252,7 @@ void CThreadManage::OnCreateAndSetSocket(CSocket* socket, bool bBroadCast,
 		{
 			strTemp = str + _T("发送缓冲区设置失败！");
 			AfxMessageBox(strTemp);
+			m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 		}
 
 		iOptionValue = iRecBuf;
@@ -231,6 +261,7 @@ void CThreadManage::OnCreateAndSetSocket(CSocket* socket, bool bBroadCast,
 		{
 			strTemp = str + _T("接收缓冲区设置失败！");
 			AfxMessageBox(strTemp);
+			m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 		}
 	}
 }

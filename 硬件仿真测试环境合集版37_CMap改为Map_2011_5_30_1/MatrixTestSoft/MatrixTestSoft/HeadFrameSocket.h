@@ -1,6 +1,6 @@
 #pragma once
 #include "InstrumentList.h"
-
+#include "LogFile.h"
 // CHeadFrameSocket 命令目标
 
 class CHeadFrameSocket : public CSocket
@@ -29,6 +29,8 @@ public:
 	unsigned int m_uiSendPort;
 	// 界面指针
 	CWnd* m_pwnd;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 protected:
 	// 处理单个首包
 	void ProcHeadFrameOne();

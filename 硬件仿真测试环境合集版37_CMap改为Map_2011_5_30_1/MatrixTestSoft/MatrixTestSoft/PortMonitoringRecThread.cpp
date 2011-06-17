@@ -24,6 +24,7 @@ CPortMonitoringRecThread::CPortMonitoringRecThread()
 , m_uiSendFrameNum(0)
 , m_bclose(false)
 , m_uiUdpCount(0)
+, m_pLogFile(NULL)
 {
 }
 
@@ -33,6 +34,11 @@ CPortMonitoringRecThread::~CPortMonitoringRecThread()
 	{
 		m_pSaveFile = NULL;
 		delete m_pSaveFile;
+	}
+	if (m_pLogFile != NULL)
+	{
+		m_pLogFile = NULL;
+		delete m_pLogFile;
 	}
 }
 
@@ -222,24 +228,31 @@ void CPortMonitoringRecThread::OnInit(void)
 //************************************
 void CPortMonitoringRecThread::OnOpen(void)
 {
+	CString str = _T("");
 	m_RecSocket.ShutDown(2);
 	m_RecSocket.Close();
 	BOOL bReturn =  m_RecSocket.Create(m_iRecPort,SOCK_DGRAM);
 	if (bReturn == FALSE)
 	{
-		AfxMessageBox(_T("端口监视程序的接收端口创建失败！"));
+		str = _T("端口监视程序的接收端口创建失败！");
+		AfxMessageBox(str);
+		m_pLogFile->OnWriteLogFile(_T("CPortMonitoringRecThread::OnOpen"), str, ErrorStatus);
 	}
 	else
 	{
 		bReturn = m_RecSocket.SetSockOpt(SO_SNDBUF,&m_RecSocket,PortMonitoringBufSize,SOL_SOCKET);
 		if (bReturn == FALSE)
 		{
-			AfxMessageBox(_T("端口监视程序的接收端口发送缓冲区设置失败！"));
+			str = _T("端口监视程序的接收端口发送缓冲区设置失败！");
+			AfxMessageBox(str);
+			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringRecThread::OnOpen"), str, ErrorStatus);
 		}
 		bReturn = m_RecSocket.SetSockOpt(SO_RCVBUF,&m_RecSocket,PortMonitoringBufSize,SOL_SOCKET);
 		if (bReturn == FALSE)
 		{
-			AfxMessageBox(_T("端口监视程序的接收端口接收缓冲区设置失败！"));
+			str = _T("端口监视程序的接收端口接收缓冲区设置失败！");
+			AfxMessageBox(str);
+			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringRecThread::OnOpen"), str, ErrorStatus);
 		}
 		// 避免端口阻塞
 		OnAvoidIOBlock(m_RecSocket);

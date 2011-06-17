@@ -2,6 +2,7 @@
 #include "ADCSet.h"
 #include "Parameter.h"
 #include "ADCFrameInfo.h"
+#include "LogFile.h"
 #pragma once
 // CSysTimeSocket 命令目标
 
@@ -32,6 +33,8 @@ public:
 	unsigned int m_uiSysTimeCount;
 	// 类CADCFrameInfo成员变量指针
 	CADCFrameInfo* m_pADCFrameInfo;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 protected:
 	// ADC设置TB时刻开始采集
 	void OnADCStartSample(unsigned int tnow);

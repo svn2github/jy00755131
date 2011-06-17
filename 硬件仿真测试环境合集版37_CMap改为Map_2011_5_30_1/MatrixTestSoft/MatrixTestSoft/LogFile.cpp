@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "LogFile.h"
-#include "Parameter.h"
 
 CLogFile::CLogFile(void)
 : m_csSaveLogFilePath(_T(""))
@@ -40,8 +39,29 @@ void CLogFile::OnCloseLogFile(void)
 }
 
 // 写程序运行的日志文件
-void CLogFile::OnWriteLogFile(CString csFuncName, CString csLogNews)
+void CLogFile::OnWriteLogFile(CString csFuncName, CString csLogNews, unsigned int uiStatus)
 {
+	SYSTEMTIME  sysTime;
 	CString str = _T("");
-
+	CString strOutput = _T("");
+	GetLocalTime(&sysTime);
+	str.Format(_T("%04d年%02d月%02d日 %02d:%02d:%02d:%03d\t"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
+		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
+	if (uiStatus == SuccessStatus)
+	{
+		strOutput += _T("Success\t");
+	}
+	else if (uiStatus == WarningStatus)
+	{
+		strOutput += _T("Warning\t");
+	}
+	else if (uiStatus == ErrorStatus)
+	{
+		strOutput += _T("Error\t");
+	}
+	strOutput += str;
+	strOutput += _T("程序运行到函数：") + csFuncName + _T("\t");
+	strOutput += _T("日志信息：") + csLogNews + _T("\r\n");
+	//因为需要保存的内容包含中文，所以需要如下的转换过程
+	WriteCHToCFile(&m_SaveLogFile, strOutput);
 }

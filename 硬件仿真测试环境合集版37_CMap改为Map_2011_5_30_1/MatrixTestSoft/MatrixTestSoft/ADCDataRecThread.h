@@ -3,6 +3,7 @@
 #include "Parameter.h"
 #include "ADCDataSaveToFile.h"
 #include "ADCFrameInfo.h"
+#include "LogFile.h"
 #include <hash_map>
 
 using namespace stdext;
@@ -89,6 +90,8 @@ public:
 	CADCDataSaveToFile* m_pADCDataSaveToFile;
 	// 类CADCFrameInfo成员变量指针
 	CADCFrameInfo* m_pADCFrameInfo;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 protected:
 	// 被选择仪器的ADC数据个数的最小值
 	unsigned int OnADCRecDataMinNum(void);

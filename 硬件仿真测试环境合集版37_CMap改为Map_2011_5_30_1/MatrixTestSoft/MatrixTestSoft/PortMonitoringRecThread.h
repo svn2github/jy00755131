@@ -1,7 +1,7 @@
 #pragma once
 #include "Parameter.h"
 #include "SaveFile.h"
-
+#include "LogFile.h"
 
 // CPortMonitoringRecThread
 
@@ -56,6 +56,8 @@ public:
 	HANDLE m_hPortMonitoringRecThreadClose;
 	// 发送帧数
 	unsigned int m_uiSendFrameNum;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 protected:
 	// 避免端口阻塞
 	void OnAvoidIOBlock(SOCKET socket);

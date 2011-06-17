@@ -8,6 +8,7 @@ CADCSet::CADCSet(void)
 , m_csIPSource(_T(""))
 , m_uiSendPort(0)
 , m_pSelectObject(NULL)
+, m_pLogFile(NULL)
 {
 }
 
@@ -27,6 +28,11 @@ CADCSet::~CADCSet(void)
 	{
 		m_pSelectObject = NULL;
 		delete m_pSelectObject;
+	}
+	if (m_pLogFile != NULL)
+	{
+		m_pLogFile = NULL;
+		delete m_pLogFile;
 	}
 }
 void CADCSet::OnReceive(int nErrorCode)
@@ -73,8 +79,8 @@ void CADCSet::OnReceive(int nErrorCode)
 void CADCSet::OnProcADCZeroDriftReturn(int iPos)
 {
 	unsigned int uiIPAim = 0;
+	CString str = _T("");
 	memcpy(&uiIPAim, &udp_buf[iPos], FramePacketSize4B);
-	TRACE1("接收零漂矫正查询-仪器IP地址：%d\r\n", uiIPAim);
 	for (int i=0; i<InstrumentNum; i++)
 	{
 		ProcessMessages();
@@ -87,6 +93,8 @@ void CADCSet::OnProcADCZeroDriftReturn(int iPos)
 			memcpy(&m_ucZeroDrift[i][2], &udp_buf[iPos], FramePacketSize2B);
 			iPos += FramePacketSize2B;
 			memcpy(&m_ucZeroDrift[i][4], &udp_buf[iPos], FramePacketSize2B);
+			str.Format(_T("接收零漂矫正查询-仪器IP地址：%d！"), uiIPAim);
+			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
 			break;
 		}
 	}
@@ -394,7 +402,6 @@ void CADCSet::OnSetTB(int iPos, unsigned int tnow, bool bSwitch)
 		tbh = 0;
 		tbl = 0;
 	}
-	TRACE(_T("TB高位%d\r\n"), tbh);
 	
 	//写TB时刻高位
 	m_ucFrameData[iPos] = CmdTBHigh;
@@ -840,6 +847,8 @@ void CADCSet::OnADCSet(void)
 
 	OnADCSetReturn(iPos);
  	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
+
+	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCSet"), _T("广播发送ADC参数设置命令！"), SuccessStatus);
 }
 
 // ADC数据采集停止
@@ -868,6 +877,8 @@ void CADCSet::OnADCSampleStop(void)
 
 	OnStopSample(iPos);
 	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
+
+	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCSampleStop"), _T("广播发送ADC数据采集停止命令！"), SuccessStatus);
 }
 
 // ADC零漂校正
@@ -958,6 +969,8 @@ void CADCSet::OnADCZeroDrift(void)
  	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
 
  	Sleep(ADCOperationSleepTime);
+
+	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCZeroDrift"), _T("广播发送ADC零漂校正命令！"), SuccessStatus);
 }
 
 // ADC设置TB时刻开始采集
@@ -972,8 +985,9 @@ void CADCSet::OnADCZeroDrift(void)
 //************************************
 void CADCSet::OnADCStartSample(unsigned int tnow)
 {
-	POSITION pos = NULL;				// 位置	
-	unsigned int uiKey = 0;					// 索引键	
+	CString str = _T("");
+	str.Format(_T("查询到的本地时间%d！"), tnow);
+	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
 	int iPos = 0;
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
 
@@ -1012,7 +1026,6 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 						iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, ADSetReturnPort);
 						OnADCZeroDriftSetFromIP(iPos, m_ucZeroDrift[i]);
 						SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
-						TRACE1("向寄存器写入零漂矫正-仪器IP地址：%d\r\n", iter->second->m_uiIPAddress);
 						break;
 					}
 				}
@@ -1034,7 +1047,6 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 			iPos = ADCSetFrameHead(uiIPAim, SendSetCmd, ADSetReturnPort);
 			OnADCReadContinuous(iPos);
 			SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
-			TRACE(_T("ADC连续读命令IP%d\r\n"), uiIPAim);
 		}
 	}
 	// 	m_pADCSet->ADCSetFrameHead(uiIPAim, true, SendSetCmd, ADSetReturnPort);
@@ -1045,6 +1057,8 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
 	OnSetTB(iPos, tnow, false);
+	str.Format(_T("设置ADC数据采样TB开始时间为%d！"), tnow + TBSleepTimeHigh);
+	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
 	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
 }
 // 防止程序在循环中运行无法响应消息

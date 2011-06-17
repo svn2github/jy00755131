@@ -6,6 +6,7 @@ CInstrumentList::CInstrumentList(void)
 : m_pInstrumentArray(NULL)
 , m_uiCountFree(0)
 , m_pwnd(NULL)
+, m_pLogFile(NULL)
 {
 }
 
@@ -20,6 +21,11 @@ CInstrumentList::~CInstrumentList(void)
 	{
 		m_pwnd = NULL;
 		delete m_pwnd;
+	}
+	if (m_pLogFile != NULL)
+	{
+		m_pLogFile = NULL;
+		delete m_pLogFile;
 	}
 }
 
@@ -87,6 +93,7 @@ CInstrument* CInstrumentList::GetFreeInstrument(void)
 	else
 	{
 		AfxMessageBox(_T("已无空闲仪器！"));
+		m_pLogFile->OnWriteLogFile(_T("CInstrumentList::GetFreeInstrument"), _T("已无空闲仪器！"), ErrorStatus);
 	}
 	return pInstrument;
 }
@@ -160,20 +167,6 @@ BOOL CInstrumentList::GetInstrumentFromMap(unsigned int uiIndex, CInstrument* &p
 	return bResult;
 }
 
-// 由索引号从索引表中删除一个仪器
-//************************************
-// Method:    DeleteInstrumentFromMap
-// FullName:  CInstrumentList::DeleteInstrumentFromMap
-// Access:    public 
-// Returns:   void
-// Qualifier:
-// Parameter: unsigned int uiIndex
-//************************************
-void CInstrumentList::DeleteInstrumentFromMap(unsigned int uiIndex)
-{
-	m_oInstrumentMap.erase(uiIndex);
-}
-
 // 设备根据首包时刻排序
 //************************************
 // Method:    SetInstrumentLocation
@@ -185,9 +178,8 @@ void CInstrumentList::DeleteInstrumentFromMap(unsigned int uiIndex)
 //************************************
 void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrumentAdd)
 {
-	POSITION pos = NULL;				// 位置	
-	unsigned int uiKey = 0;					// 索引键	
 	unsigned int uiLocation = 0;
+	CString str = _T("");
 	// hash_map迭代器，效率比map高
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end(); iter++)
@@ -214,8 +206,9 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrumentAdd)
 		pInstrumentAdd->m_iHeadFrameCount = 0;
 		pInstrumentAdd->m_uiLocation = uiLocation;
 	}
-	TRACE(_T("仪器SN%04x,"), pInstrumentAdd->m_uiSN);
-	TRACE(_T("仪器位置%d\r\n"), pInstrumentAdd->m_uiLocation);
+	str.Format(_T("仪器SN%x，仪器首包时刻%d，仪器位置%d！"), pInstrumentAdd->m_uiSN, 
+		pInstrumentAdd->m_uiHeadFrameTime, pInstrumentAdd->m_uiLocation);
+	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::SetInstrumentLocation"), str, SuccessStatus);
 }
 
 // 删除采集站尾包之后的仪器
@@ -229,11 +222,10 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrumentAdd)
 //************************************
 void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 {
-	POSITION pos = NULL;				// 位置	
-	unsigned int uiKey = 0;					// 索引键	
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
-	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end(); iter++)
+	CString str = _T("");
+	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end();)
 	{
 		ProcessMessages();
 		if (NULL != iter->second)
@@ -243,14 +235,24 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 			{
 				// 显示设备断开连接的图标
 				OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
-				// 将仪器从索引表中删除
-				DeleteInstrumentFromMap(uiKey);
+				str.Format(_T("清理尾包之后的仪器IP为%d"), iter->second->m_uiIPAddress);
+				m_pLogFile->OnWriteLogFile(_T("CInstrumentList::TailFrameDeleteInstrument"), str, WarningStatus);
 				// 重置仪器
 				iter->second->OnReset();
 				// 仪器加在空闲仪器队列尾部
 				m_olsInstrumentFree.push_back(iter->second);
 				m_uiCountFree++;
+				// 将仪器从索引表中删除
+				m_oInstrumentMap.erase(iter++);
 			}
+			else
+			{
+				iter++;
+			}
+		}
+		else
+		{
+			iter++;
 		}
 	}
 }	
@@ -266,9 +268,6 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 //************************************
 void CInstrumentList::ClearExperiedTailTimeResult(void)
 {
-	POSITION pos = NULL;	// 位置	
-	unsigned int uiKey = 0;	// 索引键
-
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end(); iter++)
@@ -288,6 +287,7 @@ void CInstrumentList::ClearExperiedTailTimeResult(void)
 			iter->second->m_bTailTimeReturnOK = false;
 		}
 	}
+	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::ClearExperiedTailTimeResult"), _T("清理过期的尾包时刻查询帧！"), WarningStatus);
 }
 
 // 开始
@@ -305,6 +305,12 @@ void CInstrumentList::OnOpen(void)
 	m_olsInstrumentFree.clear();
 	// 删除索引表中所有仪器
 	m_oInstrumentMap.clear();
+	if (m_pInstrumentArray != NULL)
+	{
+		m_pInstrumentArray = NULL;
+	}
+	m_pInstrumentArray = new CInstrument[InstrumentMaxCount];
+
 	for(unsigned int i = 0; i < InstrumentMaxCount; i++)
 	{
 		// 仪器在仪器数组中的位置
@@ -345,8 +351,6 @@ void CInstrumentList::OnStop(void)
 //************************************
 void CInstrumentList::DeleteAllInstrument(void)
 {
-	POSITION pos = NULL;				// 位置	
-	unsigned int uiKey = 0;					// 索引键	
 	unsigned int icount = m_oInstrumentMap.size();
 	if (icount == 0)
 	{
@@ -354,22 +358,27 @@ void CInstrumentList::DeleteAllInstrument(void)
 	}
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
-	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end(); iter++)
+	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end();)
 	{
 		ProcessMessages();
 		if (NULL != iter->second)
 		{
 			// 显示设备断开连接的图标
 			OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
-			// 将仪器从索引表中删除
-			DeleteInstrumentFromMap(uiKey);
 			// 重置仪器
 			iter->second->OnReset();
 			// 仪器加在空闲仪器队列尾部
 			m_olsInstrumentFree.push_back(iter->second);
 			m_uiCountFree++;
+			// 将仪器从索引表中删除
+			m_oInstrumentMap.erase(iter++);
+		}
+		else
+		{
+			iter++;
 		}
 	}
+	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::DeleteAllInstrument"), _T("未收到尾包，删除所有在线仪器！"), WarningStatus);
 }
 
 // 根据IP地址显示设备断开连接的图标

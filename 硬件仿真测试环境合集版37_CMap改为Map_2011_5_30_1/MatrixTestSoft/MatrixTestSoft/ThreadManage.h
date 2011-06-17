@@ -11,6 +11,7 @@
 #include "ADCSet.h"
 #include "ADCDataSaveToFile.h"
 #include "ADCFrameInfo.h"
+#include "LogFile.h"
 class CThreadManage
 {
 public:
@@ -42,7 +43,8 @@ public:
 	CHeartBeatThread	m_oHeartBeatThread;
 	// ADC数据接收线程
 	CADCDataRecThread	m_oADCDataRecThread;
-
+	// 日志类指针
+	CLogFile* m_pLogFile;
 private:
 	// 创建查询采集站本地时间的广播端口
 	void OnCreateGetSysTimeSocket(void);

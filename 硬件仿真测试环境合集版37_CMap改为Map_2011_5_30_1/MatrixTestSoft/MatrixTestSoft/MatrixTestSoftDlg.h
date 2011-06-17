@@ -55,7 +55,7 @@ protected:
 	// 初始化选项卡控件
 	void InitTabControlItems(void);
 	// 载入XML配置文件
-	void LoadXmlFile(CString csXmlFileName);
+	BOOL LoadXmlFile(CString csXmlFileName);
 	// 打开XML配置文件
 	BOOL OpenXmlFile(CString csXmlFileName);
 	// XMLDOM文件对象
@@ -79,7 +79,7 @@ protected:
 	// 保存ADC参数设置配置
 	bool SaveADCSettingsSetup(void);
 	// 保存配置文件
-	void SaveXmlFile(void);
+	BOOL SaveXmlFile(void);
 public:
 	afx_msg void OnTcnSelchangeTabItems(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnClose();

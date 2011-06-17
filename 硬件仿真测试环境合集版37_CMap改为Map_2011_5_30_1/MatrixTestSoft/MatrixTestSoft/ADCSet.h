@@ -2,6 +2,7 @@
 #include "TabADCSettings.h"
 #include "Parameter.h"
 #include "InstrumentList.h"
+#include "LogFile.h"
 class CADCSet : public CSocket
 {
 public:
@@ -20,6 +21,8 @@ public:
 	CTabADCSettings* m_pTabADCSettings;
 	// 设备选择指针
 	int* m_pSelectObject;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 protected:
 	// 数据接收缓冲区
 	unsigned char udp_buf[RcvFrameSize];

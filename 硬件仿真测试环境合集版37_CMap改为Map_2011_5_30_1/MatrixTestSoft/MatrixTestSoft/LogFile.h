@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Parameter.h"
 class CLogFile
 {
 public:
@@ -15,5 +15,5 @@ public:
 	// 关闭程序运行日志文件
 	void OnCloseLogFile(void);
 	// 写程序运行的日志文件
-	void OnWriteLogFile(CString csFuncName, CString csLogNews);
+	void OnWriteLogFile(CString csFuncName, CString csLogNews, unsigned int uiStatus);
 };

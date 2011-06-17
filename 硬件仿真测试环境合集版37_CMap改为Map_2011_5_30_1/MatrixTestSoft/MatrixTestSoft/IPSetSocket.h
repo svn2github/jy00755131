@@ -1,6 +1,7 @@
 #pragma once
 #include "InstrumentList.h"
 #include "ADCSet.h"
+#include "LogFile.h"
 // CIPSetSocket 命令目标
 
 class CIPSetSocket : public CSocket
@@ -33,6 +34,8 @@ public:
 	int m_iButtonIDFDU[InstrumentNum];
 	// 采集站设备仪器选择Check控件ID
 	int m_iCheckIDInstrumentFDU[InstrumentNum];
+	// 日志类指针
+	CLogFile* m_pLogFile;
 protected:
 	// 单个IP地址设置应答帧处理
 	void ProcIPSetReturnFrameOne(void);

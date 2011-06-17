@@ -5,6 +5,7 @@
 #include "SaveFile.h"
 #include "PortMonitoringRecThread.h"
 #include "PortMonitoringSendThread.h"
+#include "LogFile.h"
 #include <afxmt.h>
 // CPortMonitoring 对话框
 
@@ -63,6 +64,8 @@ public:
 	int m_iSaveSize;
 	// 显示监测信息变量
 	BOOL m_bShowMessage;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 
 private:
 	// 初始化选项卡控件

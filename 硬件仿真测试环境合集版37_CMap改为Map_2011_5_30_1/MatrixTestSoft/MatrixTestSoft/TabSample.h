@@ -3,6 +3,7 @@
 #include "ThreadManage.h"
 #include "Parameter.h"
 #include "GraphShowDlg.h"
+#include "LogFile.h"
 #include <afxmt.h>
 
 using namespace std;
@@ -65,6 +66,8 @@ public:
 	CCriticalSection m_Sec_Sample;
 	// 测网数据发送端口
 	unsigned int m_uiSendPort;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 
 public:
 	// 初始化

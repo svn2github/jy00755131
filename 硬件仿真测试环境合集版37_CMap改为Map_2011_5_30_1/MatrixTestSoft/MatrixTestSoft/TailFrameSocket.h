@@ -1,5 +1,6 @@
 #pragma once
 #include "InstrumentList.h"
+#include "LogFile.h"
 // CTailFrameSocket 命令目标
 
 class CTailFrameSocket : public CSocket
@@ -28,6 +29,8 @@ public:
 	unsigned int m_uiSendPort;
 	// 尾包接收标志位
 	BOOL m_bTailRec;
+	// 日志类指针
+	CLogFile* m_pLogFile;
 private:
 	// 处理单个尾包
 	void ProcTailFrameOne(void);

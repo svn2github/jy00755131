@@ -3,6 +3,8 @@
 #include "Parameter.h"
 #include <hash_map>
 #include <list>
+#include "LogFile.h"
+
 using stdext::hash_map;
 using std::list;
 class CInstrumentList
@@ -12,7 +14,8 @@ public:
 	~CInstrumentList(void);
 public:
 	CInstrument* m_pInstrumentArray;
-
+	// 日志类指针
+	CLogFile* m_pLogFile;
 protected:
 	// 空闲仪器数量
 	unsigned int m_uiCountFree;
@@ -53,8 +56,6 @@ public:
 	BOOL IfIndexExistInMap(unsigned int uiIndex);
 	// 根据输入索引号，由索引表得到仪器指针
 	BOOL GetInstrumentFromMap(unsigned int uiIndex, CInstrument* &pInstrument);
-	// 由索引号从索引表中删除一个仪器
-	void DeleteInstrumentFromMap(unsigned int uiIndex);
 	// 设备根据首包时刻排序
 	void SetInstrumentLocation(CInstrument* pInstrumentAdd);
 	// 删除采集站尾包之后的仪器
