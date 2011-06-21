@@ -63,5 +63,5 @@ void CLogFile::OnWriteLogFile(CString csFuncName, CString csLogNews, unsigned in
 	strOutput += _T("程序运行到函数：") + csFuncName + _T("\t");
 	strOutput += _T("日志信息：") + csLogNews + _T("\r\n");
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
-	WriteCHToCFile(&m_SaveLogFile, strOutput);
+ 	WriteCHToCFile(&m_SaveLogFile, strOutput);
 }

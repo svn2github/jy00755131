@@ -6,7 +6,7 @@
 	</UartToUDP>
 	<UDPPortMonitoring>
 		<UDPPortMonitoringHost HostIP="127.0.0.1" HostRecPort="36865" HostSendPort="33281"/>
-		<UDPPortMonitoringServer ServerIP="192.168.0.12" ServerRecPort="33282" ServerSendPort="36866"/>
+		<UDPPortMonitoringServer ServerIP="192.168.0.77" ServerRecPort="33282" ServerSendPort="36866"/>
 		<UDPPortMonitoringSetup AutoSaveLength="1024"/>
 	</UDPPortMonitoring>
 	<Sample>

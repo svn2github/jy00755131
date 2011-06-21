@@ -46,6 +46,7 @@ void CThreadManage::OnInit(void)
 	m_oInstrumentList.m_pLogFile = m_pLogFile;
 	m_oSysTimeSocket.m_pLogFile = m_pLogFile;
 	m_oADCDataRecThread.m_pLogFile = m_pLogFile;
+	m_oIPSetSocket.m_pLogFile = m_pLogFile;
 
 	m_oHeartBeatThread.OnInit();
 	m_oHeartBeatThread.CreateThread();
