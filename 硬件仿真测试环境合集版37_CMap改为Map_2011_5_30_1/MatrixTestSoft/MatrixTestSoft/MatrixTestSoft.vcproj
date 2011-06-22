@@ -71,8 +71,8 @@
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				StackReserveSize="16384000"
-				StackCommitSize="16384000"
+				StackReserveSize="80000000"
+				StackCommitSize="80000000"
 				TargetMachine="1"
 			/>
 			<Tool

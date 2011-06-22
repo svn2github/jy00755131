@@ -40,13 +40,13 @@ using namespace std;
 // 串口转端口中端口缓冲区大小
 #define UartToUdpRcvSize			1024
 // ADC数据缓冲区大小
-#define ADCBufSize						655360
+#define ADCBufSize						10000000
 // 端口监视缓冲区大小
-#define PortMonitoringBufSize		655360
+#define PortMonitoringBufSize		10000000
 // 串口转UDP端口缓冲区大小
 #define UartToUDPBufSize			655360
 // UDP通讯ADC采样接收缓冲区大小
-#define ADCDataBufSize				655360
+#define ADCDataBufSize				10000000
 // 心跳发送缓冲区大小
 #define HeartBeatSndBufSize		1280
 // 接收的网络数据包大小
@@ -56,7 +56,7 @@ using namespace std;
 // 发送帧缓冲区初值设定
 #define SndFrameBufInit				0x00
 // ADC处理过程中预设的缓冲区帧数
-#define ADCDataTempFrameNum	40
+#define ADCDataTempFrameNum	100
 // ADC处理过程中预设的缓冲区大小
 #define ADCDataTempDataSize	(ADCDataTempFrameNum * ReceiveDataSize)
 //__________________串口端口定义__________________

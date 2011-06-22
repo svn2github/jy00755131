@@ -119,7 +119,7 @@ void CPortMonitoringSendThread::OnProcess(int iCount)
 	unsigned short usCRC16 = 0;
 	for (int i=0; i<iCount; i++)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		switch(m_uiUdpCount)
 		{
 		case 0:

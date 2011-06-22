@@ -83,7 +83,7 @@ void CADCSet::OnProcADCZeroDriftReturn(int iPos)
 	memcpy(&uiIPAim, &udp_buf[iPos], FramePacketSize4B);
 	for (int i=0; i<InstrumentNum; i++)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		if (uiIPAim == IPSetAddrStart + (i + 1) * IPSetAddrInterval)
 		{
 			iPos = 0x29;
@@ -1013,14 +1013,14 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	for(iter=m_pInstrumentList->m_oInstrumentMap.begin(); iter!=m_pInstrumentList->m_oInstrumentMap.end(); iter++)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		if (NULL != iter->second)
 		{
 			if (iter->second->m_bIPSetOK == true)
 			{
 				for (int i=0; i<InstrumentNum; i++)
 				{
-					ProcessMessages();
+//					ProcessMessages();
 					if (iter->second->m_uiIPAddress == IPSetAddrStart + (i + 1) * IPSetAddrInterval)
 					{
 						iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, ADSetReturnPort);

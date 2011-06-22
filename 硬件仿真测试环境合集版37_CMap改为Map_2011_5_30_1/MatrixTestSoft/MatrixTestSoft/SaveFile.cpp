@@ -282,7 +282,7 @@ void CSaveFile::OnSaveReceiveData(unsigned char* buf, int iRecLength)
 
 	for (int i=0; i<iRecLength; i++)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		str.Format(_T("%02x "),buf[i]);
 		strtemp += str;
 	}
@@ -330,7 +330,7 @@ void CSaveFile::OnSaveSendData(unsigned char* buf, int iSendLength)
 
 	for (int i=0; i<iSendLength; i++)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		str.Format(_T("%02x "),buf[i]);
 		strtemp += str;
 	}

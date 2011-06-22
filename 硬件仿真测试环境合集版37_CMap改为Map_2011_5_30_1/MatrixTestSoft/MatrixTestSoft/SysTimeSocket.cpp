@@ -122,7 +122,7 @@ void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
 	uiIPSource	=	inet_addr(pChar);
 	for (int i=0; i<InstrumentNum; i++)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		if (pSelectObject[i] == 1)
 		{
 			uiIPAim	= IPSetAddrStart + IPSetAddrInterval * (i+1);

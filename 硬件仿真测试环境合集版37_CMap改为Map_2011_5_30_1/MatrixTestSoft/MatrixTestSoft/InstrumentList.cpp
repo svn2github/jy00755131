@@ -184,7 +184,7 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrumentAdd)
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end(); iter++)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		if (NULL != iter->second)
 		{
 			if (iter->second->m_uiSN != pInstrumentAdd->m_uiSN)
@@ -227,10 +227,10 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 	CString str = _T("");
 	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end();)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		if (NULL != iter->second)
 		{
-			ProcessMessages();
+//			ProcessMessages();
 			if (pInstrumentDelete->m_uiLocation < iter->second->m_uiLocation)
 			{
 				// 显示设备断开连接的图标
@@ -272,7 +272,7 @@ void CInstrumentList::ClearExperiedTailTimeResult(void)
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end(); iter++)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		if (NULL != iter->second)
 		{
 			// 发送尾包时刻查询但是在下一个尾包接收之前未回复的设置过期标志
@@ -360,7 +360,7 @@ void CInstrumentList::DeleteAllInstrument(void)
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end();)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		if (NULL != iter->second)
 		{
 			// 显示设备断开连接的图标
@@ -398,7 +398,7 @@ void CInstrumentList::OnShowDisconnectedIcon(unsigned int uiIPAddress)
 
 	for (int i=0 ;i<= InstrumentNum; i++)
 	{
-		ProcessMessages();
+//		ProcessMessages();
 		if (uiIPAddress == (IPSetAddrStart + i * IPSetAddrInterval))
 		{
 			if (i == 0)
