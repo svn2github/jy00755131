@@ -22,6 +22,8 @@ CPortMonitoringSendThread::CPortMonitoringSendThread()
 , m_uiDelayTimeReturnNum(0)
 , m_uiADCSetReturnNum(0)
 , m_uiErrorCodeReturnNum(0)
+, m_uiCollectSysTimeReturnNum(0)
+, m_uiADCRecNum(0)
 , m_csHeadFrameShow(_T(""))
 , m_csIPSetReturnShow(_T(""))
 , m_csTailFrameShow(_T(""))
@@ -352,6 +354,10 @@ void CPortMonitoringSendThread::OnReset(void)
 	m_uiADCSetReturnNum = 0;
 	// 硬件设备错误查询应答帧个数
 	m_uiErrorCodeReturnNum = 0;
+	// 查询得到的本地时间帧数
+	m_uiCollectSysTimeReturnNum = 0;
+	// 接收得到的ADC数据帧数
+	m_uiADCRecNum = 0;
 	// 显示首包帧，包含SN和首包时刻
 	m_csHeadFrameShow.Empty();
 	// 显示IP地址设置应答帧，包含SN和设置的IP地址
@@ -687,6 +693,19 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			m_csErrorCodeReturnShow += _T("\r\n");
 		}
 		m_uiErrorCodeReturnNum++;
+	}
+	else if (uiPort == CollectSysTimePort)
+	{
+		m_uiCollectSysTimeReturnNum++;
+	}
+	else if (uiPort == ADRecPort)
+	{
+		m_uiADCRecNum++;
+	}
+	else
+	{
+		strTemp.Format(_T("错误的端口号%d"), uiPort);
+		m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 	}
 	m_uiRecFrameNum++;
 	// 					strTemp.Format(_T("%d"),m_uiRecFrameNum);

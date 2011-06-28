@@ -387,27 +387,16 @@ void CADCSet::OnADCReadContinuous(int iPos)
 // Parameter: unsigned int tnow
 // Parameter: bool bSwitch
 //************************************
-void CADCSet::OnSetTB(int iPos, unsigned int tnow, bool bSwitch)
+void CADCSet::OnSetTB(int iPos, unsigned int tbh, unsigned int tbl, bool bSwitch)
 {
-	unsigned int tbh = 0;
-	unsigned int tbl = 0;
-	
 	if (bSwitch == false)
 	{
-		tbh = tnow + TBSleepTimeHigh;
-		tbl = TBSleepTimeLow;
+		//写TB时刻高位
+		m_ucFrameData[iPos] = CmdTBHigh;
+		iPos += FrameCmdSize1B;
+		memcpy(&m_ucFrameData[iPos], &tbh, FramePacketSize4B);
+		iPos += FramePacketSize4B;
 	}
-	else
-	{
-		tbh = 0;
-		tbl = 0;
-	}
-	
-	//写TB时刻高位
-	m_ucFrameData[iPos] = CmdTBHigh;
-	iPos += FrameCmdSize1B;
-	memcpy(&m_ucFrameData[iPos], &tbh, FramePacketSize4B);
-	iPos += FramePacketSize4B;
 	//写TB时刻低位
 	m_ucFrameData[iPos] = CmdTbLow;
 	iPos += FrameCmdSize1B;
@@ -878,6 +867,10 @@ void CADCSet::OnADCSampleStop(void)
 	OnStopSample(iPos);
 	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
 
+	Sleep(ADCOperationSleepTime);
+	OnSetTB(iPos, 0, 0, true);
+	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
+
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCSampleStop"), _T("广播发送ADC数据采集停止命令！"), SuccessStatus);
 }
 
@@ -998,7 +991,7 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 	OnStopSample(iPos);
 	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
 
-	OnSetTB(iPos, 0, true);
+	OnSetTB(iPos, 0, 0, true);
 	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
 	Sleep(ADCOperationSleepTime);
 
@@ -1056,7 +1049,7 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 	Sleep(ADCOperationSleepTime);
 
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-	OnSetTB(iPos, tnow, false);
+	OnSetTB(iPos, tnow + TBSleepTimeHigh, TBSleepTimeLow + CmdTBCtrl, false);
 	str.Format(_T("设置ADC数据采样TB开始时间为%d！"), tnow + TBSleepTimeHigh);
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
 	SendTo(m_ucFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);

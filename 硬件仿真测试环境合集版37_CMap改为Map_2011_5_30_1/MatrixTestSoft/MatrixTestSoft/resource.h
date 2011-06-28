@@ -243,7 +243,10 @@
 #define IDC_CHECK1                      1187
 #define IDC_CHECK_SHOWMESSAGE           1187
 #define IDC_COMBO_SYNC                  1188
+#define IDC_STATIC_COLLECTSYSTIMERETURNNUM 1188
 #define IDC_COMBO_MODE                  1189
+#define IDC_STATIC_ADCREC               1189
+#define IDC_STATIC_ADCRECNUM            1189
 #define IDC_EDIT_ADCDATA                1190
 #define IDC_COMBO_SPS                   1191
 #define IDC_COMBO_PHS                   1192
@@ -259,7 +262,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        142
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1188
+#define _APS_NEXT_CONTROL_VALUE         1190
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

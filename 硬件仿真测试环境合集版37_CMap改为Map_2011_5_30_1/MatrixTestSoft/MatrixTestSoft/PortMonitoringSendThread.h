@@ -43,6 +43,10 @@ public:
 	unsigned int m_uiADCSetReturnNum;
 	// 硬件设备错误查询应答帧个数
 	unsigned int m_uiErrorCodeReturnNum;
+	// 查询得到的本地时间帧数
+	unsigned int m_uiCollectSysTimeReturnNum;
+	// 接收得到的ADC数据帧数
+	unsigned int m_uiADCRecNum;
 	// 硬件设备错误查询应答帧计数
 	unsigned int m_uiErrorCodeReturnCount[InstrumentNum];
 	// 记录硬件设备错误查询首个应答帧

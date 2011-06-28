@@ -59,7 +59,7 @@ public:
 	// ADC连续读取数据
 	void OnADCReadContinuous(int iPos);
 	// 设置TB时间
-	void OnSetTB(int iPos, unsigned int tnow, bool bSwitch);
+	void OnSetTB(int iPos, unsigned int tbh, unsigned int tbl, bool bSwitch);
 	// 打开零漂矫正电源及开关
 	void OnOpenPowerZeroDrift(int iPos);
 	// 查询ADC寄存器

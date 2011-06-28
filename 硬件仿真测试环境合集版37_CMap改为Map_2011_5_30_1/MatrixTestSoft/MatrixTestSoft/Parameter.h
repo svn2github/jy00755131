@@ -19,8 +19,6 @@ using namespace std;
 #define ADRecPort						0x8300
 // 采集站本地时刻查询端口
 #define CollectSysTimePort		0x8205
-// 状态查询帧应答端口
-#define GetStatusPort					0x8206
 // 查询硬件设备出错计数返回端口
 #define QueryErrorCodePort		0x8207 
 // ADC设置广播端口
@@ -134,7 +132,7 @@ using namespace std;
 // TB设置延时高位
 #define TBSleepTimeHigh									0x5000
 // TB设置延时低位
-#define TBSleepTimeLow									0xfa
+#define TBSleepTimeLow									0x00fa
 // ADC数据显示界面每行显示的个数
 #define ADCDataShowPerLineNum					6
 // IP广播地址
@@ -151,6 +149,8 @@ using namespace std;
 #define SendQueryCmd							0x0002
 // 发送ADC采样数据重发命令
 #define SendADCRetransmissionCmd	0x0003
+// TB开始采集开关控制命令(TB_L高8位)
+#define CmdTBCtrl									0x010000
 // 串号
 #define CmdSn										0x01
 // 首包时间

@@ -53,6 +53,8 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 		unsigned int uiDelayTimeReturnNum = 0;
 		unsigned int uiADCSetReturnNum = 0;
 		unsigned int uiErrorCodeReturnNum = 0;
+		unsigned int uiCollectSysTimeReturnNum = 0;
+		unsigned int uiADCRecNum = 0;
 		CString csHeadFrameShow = _T("");
 		CString csIPSetReturnShow = _T("");
 		CString csTailFrameShow = _T("");
@@ -67,6 +69,8 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 		uiDelayTimeReturnNum = m_pSendThread->m_uiDelayTimeReturnNum;
 		uiErrorCodeReturnNum = m_pSendThread->m_uiErrorCodeReturnNum;
 		uiADCSetReturnNum = m_pSendThread->m_uiADCSetReturnNum;
+		uiCollectSysTimeReturnNum = m_pSendThread->m_uiCollectSysTimeReturnNum;
+		uiADCRecNum = m_pSendThread->m_uiADCRecNum;
 		csHeadFrameShow = m_pSendThread->m_csHeadFrameShow;
 		csIPSetReturnShow = m_pSendThread->m_csIPSetReturnShow;
 		csTailFrameShow = m_pSendThread->m_csTailFrameShow;
@@ -131,7 +135,23 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 			strTemp.Format(_T("%d"), uiErrorCodeReturnNum);
 			GetDlgItem(IDC_STATIC_ERRORCODERETURNNUM)->SetWindowText(strTemp);
 		}
-	
+		// 查询得到的本地时间帧数
+		GetDlgItem(IDC_STATIC_COLLECTSYSTIMERETURNNUM)->GetWindowText(str);
+		uiTemp = _tstoi(str);
+		if (uiTemp != uiCollectSysTimeReturnNum)
+		{
+			strTemp.Format(_T("%d"), uiCollectSysTimeReturnNum);
+			GetDlgItem(IDC_STATIC_COLLECTSYSTIMERETURNNUM)->SetWindowText(strTemp);
+		}
+		// 接收得到的ADC数据帧数
+		GetDlgItem(IDC_STATIC_ADCRECNUM)->GetWindowText(str);
+		uiTemp = _tstoi(str);
+		if (uiTemp != uiADCRecNum)
+		{
+			strTemp.Format(_T("%d"), uiADCRecNum);
+			GetDlgItem(IDC_STATIC_ADCRECNUM)->SetWindowText(strTemp);
+		}
+
 		// 显示首包帧，包含SN和首包时刻
 		GetDlgItem(IDC_EDIT_HEADFRAMESHOW)->GetWindowText(strTemp);
 		if (strTemp != csHeadFrameShow)
