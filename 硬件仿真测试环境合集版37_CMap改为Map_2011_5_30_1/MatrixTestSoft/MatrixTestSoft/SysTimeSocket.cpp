@@ -75,7 +75,7 @@ void CSysTimeSocket::OnReceive(int nErrorCode)
 			}
 		}
 	}
-	CAsyncSocket::OnReceive(nErrorCode);
+	CSocket::OnReceive(nErrorCode);
 }
 
 // ADC设置TB时刻开始采集

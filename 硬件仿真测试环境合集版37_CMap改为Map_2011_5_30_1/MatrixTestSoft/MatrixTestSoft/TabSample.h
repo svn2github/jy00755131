@@ -32,7 +32,8 @@ private:
 	void OnStop(void);
 	// 测网建立标志位
 	BOOL m_bMatrixNetwork;
-
+	// 尾包时刻查询过程计数
+	unsigned int m_uiTailTimeCount;
 public:
 	// 保存数据到文件的存储路径
 	CString m_csSaveFilePath;

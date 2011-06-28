@@ -81,6 +81,8 @@ using namespace std;
 #define IPAddrResetTimes						3
 // 尾包计数
 #define TailFrameCount							15
+// 尾包查询计数
+#define TailTimeFrameCount					4
 // 仪器类型-采集站
 #define InstrumentTypeFDU					3
 // 仪器类型-交叉站

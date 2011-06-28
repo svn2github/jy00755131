@@ -51,6 +51,8 @@ public:
 	hash_map<unsigned int, CInstrument*> m_oInstrumentLocationMap;
 	// 日志类指针
 	CLogFile* m_pLogFile;
+	// 界面指针
+	CWnd* m_pwnd;
 public:
 	// 生成时统报文设置帧
 	void MakeTimeDelayFrameData(CInstrument* pInstrument, unsigned int uiTimeHigh, unsigned int uiTimeLow);

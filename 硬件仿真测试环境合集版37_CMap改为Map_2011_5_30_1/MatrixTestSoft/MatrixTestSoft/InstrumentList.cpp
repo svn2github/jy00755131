@@ -27,6 +27,7 @@ CInstrumentList::~CInstrumentList(void)
 		m_pLogFile = NULL;
 		delete m_pLogFile;
 	}
+	m_oInstrumentMap.clear();
 }
 
 // ≥ı ºªØ
