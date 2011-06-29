@@ -341,10 +341,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\UartToUdpSocket.h"
-				>
-			</File>
-			<File
 				RelativePath=".\XMLDOMTool.h"
 				>
 			</File>
@@ -522,10 +518,6 @@
 			</File>
 			<File
 				RelativePath=".\ThreadManage.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\UartToUdpSocket.cpp"
 				>
 			</File>
 			<File

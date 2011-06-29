@@ -1,5 +1,7 @@
 #include <string>
 using namespace std;
+// 串口转UDP套接字事件
+#define WM_UARTTOUDPSOCKET		WM_USER + 1001
 //__________________通讯端口设置__________________
 // 心跳帧发送创建端口
 #define HeartBeatRec					0x7000

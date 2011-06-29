@@ -1,7 +1,6 @@
 #pragma once
 #include "afxwin.h"
 #include "mscomm1.h"
-#include "UartToUdpSocket.h"
 #include "Parameter.h"
 #include "LogFile.h"
 
@@ -27,15 +26,18 @@ private:
 	CComboBox m_comboSerialPortCom;
 	// 控件IDC_COMBO_SERIALPORT_BAUD的控制变量
 	CComboBox m_comboSerialPortBaud;
-	// 串口转UDP通讯Socket
-	CUartToUdpSocket m_socketUartToUdp;
 	// 串口数据接收数组
 	unsigned char m_ucUartBuf[RcvBufNum][RcvFrameSize];
 	// 串口接收缓冲区计数
 	unsigned short m_usUartBufCount;
 	// 串口成功接收数据计数
 	unsigned int m_uiUartCount;
-	// 得到当前选择的串口号
+	// Socket套接字
+	sockaddr_in addr, addr2;
+	SOCKET m_UdpSocket;
+	// UDP接收缓冲区计数
+	unsigned char m_ucUdpBuf[RcvBufNum][UartToUdpRcvSize];
+	unsigned short m_usUdpBufCount;
 public:
 	// 	// 串口接收线程函数结束标志位
 	// 	BOOL m_bUartThreadclose;
@@ -54,6 +56,7 @@ public:
 	// 日志类指针
 	CLogFile* m_pLogFile;
 private:
+	// 得到当前选择的串口号
 	int OnGetSerialPortCom(void);
 	// 得到当前选择的波特率
 	int OnGetSerialPortBaud(void);
@@ -67,6 +70,8 @@ private:
 	void OnCloseCom(void);
 	// 关闭UDP端口
 	void OnCloseUDP(void);
+	// 从串口发送数据
+	void OnSendFromSerialPort(unsigned char* TXDATA, unsigned int uiCount);
 public:
 	// 初始化设置
 	void OnInit(void);
@@ -85,4 +90,5 @@ public:
 	afx_msg void OnBnClickedButtonSerialportOpen();
 	afx_msg void OnBnClickedButtonSerialportClose();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg LRESULT OnSocket(WPARAM wParam, LPARAM lParam);
 };
