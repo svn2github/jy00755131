@@ -63,8 +63,10 @@ public:
 	CString m_csDelayTimeReturnShow;
 	// 显示硬件错误码和码差
 	CString m_csErrorCodeReturnShow;
-	// 发送方Socket
-	CSocket m_SendSocket;
+	// 发送方Socket套接字
+//	CSocket m_SendSocket;
+	sockaddr_in addr, addr2;
+	SOCKET m_SendSocket;
 	// 接收端口
 	int m_iRecPort;
 	// 发送端口

@@ -10,7 +10,7 @@
 #include "TabADCSettings.h"
 #include "TabADCDataShow.h"
 #include "LogFile.h"
-
+#include <WinSock2.h>
 
 // CMatrixTestSoftDlg dialog
 class CMatrixTestSoftDlg : public CDialog

@@ -139,7 +139,14 @@ void CADCDataSaveToFile::OnCloseADCSaveFile(void)
 	// 		return;
 	// 	}
 	// 	fclose(m_pFileSave); 
-	m_FileSave.Close();
+	CFileStatus status;
+	if(m_FileSave.GetStatus(status))    // virtual member function
+	{
+		if (status.m_size != 0)
+		{
+			m_FileSave.Close();
+		}
+	}
 	m_bOpenADCSaveFile = FALSE;
 }
 // 防止程序在循环中运行无法响应消息

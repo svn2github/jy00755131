@@ -40,8 +40,10 @@ public:
 	unsigned int m_uiDelayTimeSetNum;
 	// ADC设置计数
 	unsigned int m_uiADCSetNum;
-	// 接收方Socket
-	CSocket m_RecSocket;
+	// 接收方Socket套接字
+//	CSocket m_RecSocket;
+	sockaddr_in addr, addr2;
+	SOCKET m_RecSocket;
 	// 接收端口
 	int m_iRecPort;
 	// 发送端口

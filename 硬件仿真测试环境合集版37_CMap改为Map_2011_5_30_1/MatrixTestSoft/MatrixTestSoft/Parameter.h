@@ -32,7 +32,7 @@ using namespace std;
 // 绘图控件个数
 #define InstrumentNum					48
 // 接收数据包的大小
-#define ReceiveDataSize				74
+#define ReceiveDataSize				72
 // 缓冲区个数
 #define RcvBufNum						8
 // 串口转端口中端口缓冲区大小
@@ -80,7 +80,7 @@ using namespace std;
 // IP地址重设次数
 #define IPAddrResetTimes						3
 // 尾包计数
-#define TailFrameCount							15
+#define TailFrameCount							5
 // 尾包查询计数
 #define TailTimeFrameCount					4
 // 仪器类型-采集站

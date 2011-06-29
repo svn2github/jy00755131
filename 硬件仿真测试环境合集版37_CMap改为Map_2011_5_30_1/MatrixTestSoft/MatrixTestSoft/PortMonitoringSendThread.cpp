@@ -76,6 +76,7 @@ int CPortMonitoringSendThread::Run()
 	// TODO: 在此添加专用代码和/或调用基类
 	DWORD dwFrameCount = 0;
 	int icount = 0;
+	int n = sizeof(addr);
 	// 循环，直到关闭标志为真
 	while(true)
 	{
@@ -85,11 +86,13 @@ int CPortMonitoringSendThread::Run()
 		}
 		// 得到网络接收缓冲区数据字节数
 		// 可以解决粘包现象
-		while(m_SendSocket.IOCtl(FIONREAD, &dwFrameCount))
+//		while(m_SendSocket.IOCtl(FIONREAD, &dwFrameCount))
+		while(SOCKET_ERROR != ioctlsocket(m_SendSocket, FIONREAD, &dwFrameCount))
 		{
 			if(dwFrameCount > 0) 
 			{
-				icount = m_SendSocket.Receive(m_ucUdpBuf, PortMonitoringBufSize);
+//				icount = m_SendSocket.Receive(m_ucUdpBuf, PortMonitoringBufSize);
+				icount = recvfrom(m_SendSocket, (char*)&m_ucUdpBuf, sizeof(m_ucUdpBuf), 0, (sockaddr*)&addr, &n);
 				OnProcess(icount);
 			}
 			else
@@ -242,12 +245,16 @@ void CPortMonitoringSendThread::OnInit(void)
 //************************************
 void CPortMonitoringSendThread::OnOpen(void)
 {
-	BOOL bReturn = FALSE;
 	CString str = _T("");
-	m_SendSocket.ShutDown(2);
-	m_SendSocket.Close();
-	bReturn = m_SendSocket.Create(m_iRecPort,SOCK_DGRAM);
-	if (bReturn == FALSE)
+//	BOOL bReturn = m_SendSocket.Create(m_iRecPort,SOCK_DGRAM);
+	m_SendSocket = ::socket(AF_INET, SOCK_DGRAM, 0);
+	addr.sin_family = AF_INET;											// 填充套接字地址结构
+	addr.sin_port = htons(m_iRecPort);
+	addr.sin_addr.S_un.S_addr = INADDR_ANY;
+	int iReturn = bind(m_SendSocket, (sockaddr*)&addr, sizeof(addr));	// 绑定本地地址
+	listen(m_SendSocket, 2);
+//	if (bReturn == FALSE)
+	if (iReturn == SOCKET_ERROR)
 	{
 		str = _T("端口监视程序的发送端口创建失败！");
 		AfxMessageBox(str);
@@ -255,15 +262,21 @@ void CPortMonitoringSendThread::OnOpen(void)
 	}
 	else
 	{
-		bReturn = m_SendSocket.SetSockOpt(SO_SNDBUF,&m_SendSocket,PortMonitoringBufSize,SOL_SOCKET);
-		if (bReturn == FALSE)
+//		bReturn = m_SendSocket.SetSockOpt(SO_SNDBUF,&m_SendSocket,PortMonitoringBufSize,SOL_SOCKET);
+		int nSendBuf = PortMonitoringBufSize;
+		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_SNDBUF,  ( const char* )&nSendBuf, sizeof(int));
+//		if (bReturn == FALSE)
+		if (iReturn == SOCKET_ERROR)
 		{
 			str = _T("端口监视程序的接收端口发送缓冲区设置失败！");
 			AfxMessageBox(str);
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnOpen"), str, ErrorStatus);
 		}
-		bReturn = m_SendSocket.SetSockOpt(SO_RCVBUF,&m_SendSocket,PortMonitoringBufSize,SOL_SOCKET);
-		if (bReturn == FALSE)
+//		bReturn = m_SendSocket.SetSockOpt(SO_RCVBUF,&m_SendSocket,PortMonitoringBufSize,SOL_SOCKET);
+		int nRecvBuf = PortMonitoringBufSize;
+		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_RCVBUF,  ( const char* )&nRecvBuf, sizeof(int));
+//		if (bReturn == FALSE)
+		if (iReturn == SOCKET_ERROR)
 		{
 			str = _T("端口监视程序的发送端口接收缓冲区设置失败！");
 			AfxMessageBox(str);
@@ -303,8 +316,10 @@ void CPortMonitoringSendThread::OnAvoidIOBlock(SOCKET socket)
 //************************************
 void CPortMonitoringSendThread::OnStop(void)
 {
-	m_SendSocket.ShutDown(2);
-	m_SendSocket.Close();
+// 	m_SendSocket.ShutDown(2);
+// 	m_SendSocket.Close();
+	shutdown(m_SendSocket, SD_BOTH);
+	closesocket(m_SendSocket);
 	// 硬件设备错误查询应答帧个数
 	m_uiErrorCodeReturnNum = 0;
 	for (int i=0; i<InstrumentNum; i++)
@@ -325,8 +340,10 @@ void CPortMonitoringSendThread::OnStop(void)
 //************************************
 void CPortMonitoringSendThread::OnClose(void)
 {
-	m_SendSocket.ShutDown(2);
-	m_SendSocket.Close();
+// 	m_SendSocket.ShutDown(2);
+// 	m_SendSocket.Close();
+	shutdown(m_SendSocket, SD_BOTH);
+	closesocket(m_SendSocket);
 	m_bclose = true;
 }
 // 重置界面
@@ -712,12 +729,22 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 	// 					m_pWndTab->GetDlgItem(IDC_STATIC_RECFRAMENUM)->SetWindowText(strTemp);
 	if (m_bPortDistribution == TRUE)
 	{
+		addr2.sin_family = AF_INET;											// 填充套接字地址结构
+		addr2.sin_port = htons(uiPort);
+		addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(m_csIP));
+
 		// 开启端口分发功能
-		m_SendSocket.SendTo(m_ucudp_buf[m_usudp_count], RcvFrameSize, uiPort, m_csIP);
+//		m_SendSocket.SendTo(m_ucudp_buf[m_usudp_count], RcvFrameSize, uiPort, m_csIP);
+		sendto(m_SendSocket, (const char*)&m_ucudp_buf[m_usudp_count], RcvFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 	}
 	else
 	{
-		m_SendSocket.SendTo(m_ucudp_buf[m_usudp_count],RcvFrameSize,m_iSendPort,m_csIP);
+		addr2.sin_family = AF_INET;											// 填充套接字地址结构
+		addr2.sin_port = htons(m_iSendPort);
+		addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(m_csIP));
+
+//		m_SendSocket.SendTo(m_ucudp_buf[m_usudp_count],RcvFrameSize,m_iSendPort,m_csIP);
+		sendto(m_SendSocket, (const char*)&m_ucudp_buf[m_usudp_count], RcvFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 	}
 	m_pSaveFile->OnSaveSendData(m_ucudp_buf[m_usudp_count],RcvFrameSize);
 }

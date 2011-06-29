@@ -64,5 +64,12 @@ void CADCFrameInfo::OnCloseFile(void)
 // 		return;
 // 	}
 // 	fclose(m_pFileSave); 
-	m_FileSave.Close();
+	CFileStatus status;
+	if(m_FileSave.GetStatus(status))    // virtual member function
+	{
+		if (status.m_size != 0)
+		{
+			m_FileSave.Close();
+		}
+	}
 }
