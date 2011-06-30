@@ -158,4 +158,10 @@ public:
 	afx_msg void OnBnClickedButtonFdu47();
 	afx_msg void OnBnClickedButtonFdu48();
 	afx_msg void OnBnClickedButtonSetbyhand();
+	afx_msg LRESULT OnTailTimeSocket(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnSysTimeSocket(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnADCSetSocket(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnTailFrameSocket(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnIPSetSocket(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnHeadFrameSocket(WPARAM wParam, LPARAM lParam);
 };

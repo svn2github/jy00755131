@@ -6,13 +6,11 @@
 #pragma once
 // CSysTimeSocket 命令目标
 
-class CSysTimeSocket : public CSocket
+class CSysTime
 {
 public:
-	CSysTimeSocket();
-	virtual ~CSysTimeSocket();
-public:
-	virtual void OnReceive(int nErrorCode);
+	CSysTime();
+	virtual ~CSysTime();
 protected:
 	unsigned char udp_buf[RcvFrameSize];
 	unsigned char ADCSampleCmd[SndFrameSize];
@@ -35,6 +33,9 @@ public:
 	CADCFrameInfo* m_pADCFrameInfo;
 	// 日志类指针
 	CLogFile* m_pLogFile;
+	// Socket套接字
+	sockaddr_in addr, addr2;
+	SOCKET m_SysTimeSocket;
 protected:
 	// ADC设置TB时刻开始采集
 	void OnADCStartSample(unsigned int tnow);
@@ -47,6 +48,8 @@ public:
 	void SendCollectSysTimeFrameToSocket(void);
 	// 处理本地时间查询应答
 	void OnProcSysTimeReturn(int iPos);
+	// 消息处理函数
+	void OnReceive(void);
 };
 
 

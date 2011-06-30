@@ -14,17 +14,11 @@ CHeartBeatThread::CHeartBeatThread()
 : m_bclose(false)
 , m_uiSendPort(0)
 , m_csIPSource(_T(""))
-, m_pHeartBeatSocket(NULL)
 {
 }
 
 CHeartBeatThread::~CHeartBeatThread()
 {
-	if (m_pHeartBeatSocket != NULL)
-	{
-		m_pHeartBeatSocket = NULL;
-		delete m_pHeartBeatSocket;
-	}
 }
 
 BOOL CHeartBeatThread::InitInstance()
@@ -155,8 +149,11 @@ void CHeartBeatThread::MakeHeartBeatFrame(void)
 //************************************
 void CHeartBeatThread::SendHeartBeatFrame(void)
 {
+	addr2.sin_family = AF_INET;											// 填充套接字地址结构
+	addr2.sin_port = htons(m_uiSendPort);
+	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(IPBroadcastAddr));
 	// 发送广播命令帧
-	int iCount = m_pHeartBeatSocket->SendTo(m_pFrameData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
+	int icount = sendto(m_HeartBeatSocket, (const char*)&m_pFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 }
 
 // 关闭并结束线程
@@ -170,6 +167,8 @@ void CHeartBeatThread::SendHeartBeatFrame(void)
 //************************************
 void CHeartBeatThread::OnClose(void)
 {
+	shutdown(m_HeartBeatSocket, SD_BOTH);
+	closesocket(m_HeartBeatSocket);
 	m_bclose = true;
 }
 

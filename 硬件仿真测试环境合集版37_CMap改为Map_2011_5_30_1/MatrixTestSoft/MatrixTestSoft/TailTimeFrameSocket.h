@@ -4,12 +4,11 @@
 #include "LogFile.h"
 using namespace stdext;
 // CTailTimeFrameSocket
-class CTailTimeFrameSocket : public CSocket
+class CTailTimeFrame
 {
 public:
-	CTailTimeFrameSocket();
-	virtual ~CTailTimeFrameSocket();
-	virtual void OnReceive(int nErrorCode);
+	CTailTimeFrame();
+	virtual ~CTailTimeFrame();
 private:
 	// 尾包时刻查询结果数据接收缓冲
 	byte m_pTailTimeRecData[RcvFrameSize];
@@ -53,6 +52,9 @@ public:
 	CLogFile* m_pLogFile;
 	// 界面指针
 	CWnd* m_pwnd;
+	// Socket套接字
+	sockaddr_in addr, addr2;
+	SOCKET m_TailTimeSocket;
 public:
 	// 生成时统报文设置帧
 	void MakeTimeDelayFrameData(CInstrument* pInstrument, unsigned int uiTimeHigh, unsigned int uiTimeLow);
@@ -60,6 +62,8 @@ public:
 	void SendTimeDelayFrameData(void);
 	// 设置设备的本地时间
 	void OnSetTimeDelay(unsigned int uiTimeHigh, unsigned int uiTimeLow);
+	// 消息处理函数
+	void OnReceive(void);
 };
 
 

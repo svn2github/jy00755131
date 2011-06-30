@@ -72,6 +72,8 @@ private:
 	void OnCloseUDP(void);
 	// 从串口发送数据
 	void OnSendFromSerialPort(unsigned char* TXDATA, unsigned int uiCount);
+	// 创建UDP的SOCKET套接字并设置
+	void OnCreateUDPSocket(void);
 public:
 	// 初始化设置
 	void OnInit(void);

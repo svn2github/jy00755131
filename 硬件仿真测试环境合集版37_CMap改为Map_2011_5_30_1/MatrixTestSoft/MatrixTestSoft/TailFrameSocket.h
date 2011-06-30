@@ -3,12 +3,11 @@
 #include "LogFile.h"
 // CTailFrameSocket 命令目标
 
-class CTailFrameSocket : public CSocket
+class CTailFrame
 {
 public:
-	CTailFrameSocket();
-	virtual ~CTailFrameSocket();
-	virtual void OnReceive(int nErrorCode);
+	CTailFrame();
+	virtual ~CTailFrame();
 private:
 	// 尾包接收数据缓冲
 	byte m_pTailFrameData[RcvFrameSize];
@@ -31,6 +30,9 @@ public:
 	BOOL m_bTailRec;
 	// 日志类指针
 	CLogFile* m_pLogFile;
+	// Socket套接字
+	sockaddr_in addr, addr2;
+	SOCKET m_TailFrameSocket;
 private:
 	// 处理单个尾包
 	void ProcTailFrameOne(void);
@@ -47,6 +49,8 @@ public:
 	void SendTailTimeFrame(void);
 	// 监测尾包
 	bool OnTailMonitor(void);
+	// 消息处理函数
+	void OnReceive(void);
 };
 
 

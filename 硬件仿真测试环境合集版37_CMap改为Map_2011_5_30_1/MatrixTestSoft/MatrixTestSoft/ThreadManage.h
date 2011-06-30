@@ -20,21 +20,17 @@ public:
 public:
 	CInstrumentList		m_oInstrumentList;
 	// 首包接收Socket
-	CHeadFrameSocket m_oHeadFrameSocket;
+	CHeadFrame m_oHeadFrame;
 	// IP地址设置Socket
-	CIPSetSocket m_oIPSetSocket;
+	CIPSet m_oIPSet;
 	// 尾包接收Socket
-	CTailFrameSocket m_oTailFrameSocket;
+	CTailFrame m_oTailFrame;
 	// 尾包时刻查询应答Socket
-	CTailTimeFrameSocket m_oTailTimeFrameSocket;
+	CTailTimeFrame m_oTailTimeFrame;
 	// 查询采集站本地时间Socket
-	CSysTimeSocket m_oSysTimeSocket;
+	CSysTime m_oSysTime;
 	// ADC设置类对象
-	CADCSet m_oADCSetSocket;
-	// 心跳Socket对象
-	CSocket m_oHeartBeatSocket;
-	// ADC数据接收Socket
-	CSocket m_oADCDataSocket;
+	CADCSet m_oADCSet;
 	// 类CADCDataSaveToFile成员变量
 	CADCDataSaveToFile m_oADCDataSaveToFile;
 	// 类CADCFrameInfo成员变量
@@ -64,10 +60,12 @@ private:
 	void OnCreateADCDataSocket(void);
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);
+	// 创建和设置Socket套接字
+	SOCKET OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast, int iSocketPort, CString str, int iRecBuf, int iSendBuf);
 	// 避免端口阻塞
 	void OnAvoidIOBlock(SOCKET socket);
-	// 创建和设置Socket
-	void OnCreateAndSetSocket(CSocket* socket, bool bBroadCast, int iSocketPort, CString str, int iRecBuf, int iSendBuf);
+	// 关闭UDP套接字
+	void OnCloseUDPSocket(void);
 public:
 	// 初始化
 	void OnInit(void);

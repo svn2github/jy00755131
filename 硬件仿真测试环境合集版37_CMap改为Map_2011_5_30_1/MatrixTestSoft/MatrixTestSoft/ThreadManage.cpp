@@ -27,26 +27,24 @@ CThreadManage::~CThreadManage(void)
 void CThreadManage::OnInit(void)
 {
 	m_oInstrumentList.OnInit();
-	m_oHeadFrameSocket.m_pInstrumentList = &m_oInstrumentList;
-	m_oIPSetSocket.m_pInstrumentList = &m_oInstrumentList;
-	m_oTailFrameSocket.m_pInstrumentList = &m_oInstrumentList;
-	m_oTailTimeFrameSocket.m_pInstrumentList = &m_oInstrumentList;
-	m_oADCSetSocket.m_pInstrumentList = &m_oInstrumentList;
-	m_oSysTimeSocket.m_pADCSet = &m_oADCSetSocket;
-	m_oHeartBeatThread.m_pHeartBeatSocket = &m_oHeartBeatSocket;
-	m_oADCDataRecThread.m_pADCDataSocket = & m_oADCDataSocket;
+	m_oHeadFrame.m_pInstrumentList = &m_oInstrumentList;
+	m_oIPSet.m_pInstrumentList = &m_oInstrumentList;
+	m_oTailFrame.m_pInstrumentList = &m_oInstrumentList;
+	m_oTailTimeFrame.m_pInstrumentList = &m_oInstrumentList;
+	m_oADCSet.m_pInstrumentList = &m_oInstrumentList;
+	m_oSysTime.m_pADCSet = &m_oADCSet;
 	m_oADCDataRecThread.m_pADCDataSaveToFile = & m_oADCDataSaveToFile;
 	m_oADCDataRecThread.m_pADCFrameInfo = &m_oADCFrameInfo;
-	m_oSysTimeSocket.m_pADCFrameInfo = &m_oADCFrameInfo;
+	m_oSysTime.m_pADCFrameInfo = &m_oADCFrameInfo;
 
-	m_oADCSetSocket.m_pLogFile = m_pLogFile;
-	m_oHeadFrameSocket.m_pLogFile = m_pLogFile;
-	m_oTailTimeFrameSocket.m_pLogFile = m_pLogFile;
-	m_oTailFrameSocket.m_pLogFile = m_pLogFile;
+	m_oADCSet.m_pLogFile = m_pLogFile;
+	m_oHeadFrame.m_pLogFile = m_pLogFile;
+	m_oTailTimeFrame.m_pLogFile = m_pLogFile;
+	m_oTailFrame.m_pLogFile = m_pLogFile;
 	m_oInstrumentList.m_pLogFile = m_pLogFile;
-	m_oSysTimeSocket.m_pLogFile = m_pLogFile;
+	m_oSysTime.m_pLogFile = m_pLogFile;
 	m_oADCDataRecThread.m_pLogFile = m_pLogFile;
-	m_oIPSetSocket.m_pLogFile = m_pLogFile;
+	m_oIPSet.m_pLogFile = m_pLogFile;
 
 	m_oHeartBeatThread.OnInit();
 	m_oHeartBeatThread.CreateThread();
@@ -101,22 +99,7 @@ void CThreadManage::OnClose(void)
 		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnClose"), _T("ADC数据接收线程正常结束！"), SuccessStatus);
 	}
 	::CloseHandle(m_oADCDataRecThread.m_hADCDataThreadClose);
-	m_oHeadFrameSocket.ShutDown(2);
-	m_oHeadFrameSocket.Close();
-	m_oIPSetSocket.ShutDown(2);
-	m_oIPSetSocket.Close();
-	m_oTailFrameSocket.ShutDown(2);
-	m_oTailFrameSocket.Close();
-	m_oTailTimeFrameSocket.ShutDown(2);
-	m_oTailTimeFrameSocket.Close();
-	m_oSysTimeSocket.ShutDown(2);
-	m_oSysTimeSocket.Close();
-	m_oADCSetSocket.ShutDown(2);
-	m_oADCSetSocket.Close();
-	m_oHeartBeatSocket.ShutDown(2);
-	m_oHeartBeatSocket.Close();
-	m_oADCDataSocket.ShutDown(2);
-	m_oADCDataSocket.Close();
+	OnCloseUDPSocket();
 	m_oInstrumentList.OnClose();
 }
 
@@ -132,9 +115,6 @@ void CThreadManage::OnClose(void)
 void CThreadManage::OnOpen(void)
 {
 	m_oInstrumentList.OnOpen();
-	m_oHeartBeatThread.ResumeThread();
-	m_oADCDataRecThread.OnReset();
-	m_oADCDataRecThread.ResumeThread();
 
 	OnCreateHeadSocket();
 	OnCreateIPSetSocket();
@@ -148,6 +128,10 @@ void CThreadManage::OnOpen(void)
 	m_uiSendTailTimeFrameCount = 0;
 	// 接收到的尾包时刻查询帧计数
 	m_uiRecTailTimeFrameCount = 0;	 
+
+	m_oHeartBeatThread.ResumeThread();
+	m_oADCDataRecThread.OnReset();
+	m_oADCDataRecThread.ResumeThread();
 }
 
 // 停止
@@ -161,25 +145,13 @@ void CThreadManage::OnOpen(void)
 //************************************
 void CThreadManage::OnStop(void)
 {
+	shutdown(m_oHeartBeatThread.m_HeartBeatSocket, SD_BOTH);
+	closesocket(m_oHeartBeatThread.m_HeartBeatSocket);
 	m_oHeartBeatThread.SuspendThread();
+	shutdown(m_oADCDataRecThread.m_ADCDataSocket, SD_BOTH);
+	closesocket(m_oADCDataRecThread.m_ADCDataSocket);
 	m_oADCDataRecThread.SuspendThread();
-
-	m_oHeadFrameSocket.ShutDown(2);
-	m_oHeadFrameSocket.Close();
-	m_oIPSetSocket.ShutDown(2);
-	m_oIPSetSocket.Close();
-	m_oTailFrameSocket.ShutDown(2);
-	m_oTailFrameSocket.Close();
-	m_oTailTimeFrameSocket.ShutDown(2);
-	m_oTailTimeFrameSocket.Close();
-	m_oSysTimeSocket.ShutDown(2);
-	m_oSysTimeSocket.Close();
-	m_oADCSetSocket.ShutDown(2);
-	m_oADCSetSocket.Close();
-	m_oHeartBeatSocket.ShutDown(2);
-	m_oHeartBeatSocket.Close();
-	m_oADCDataSocket.ShutDown(2);
-	m_oADCDataSocket.Close();
+	OnCloseUDPSocket();
 	m_oInstrumentList.OnStop();
 }
 // 避免端口阻塞
@@ -215,17 +187,18 @@ void CThreadManage::OnAvoidIOBlock(SOCKET socket)
 // Parameter: int iRecBuf
 // Parameter: int iSendBuf
 //************************************
-void CThreadManage::OnCreateAndSetSocket(CSocket* socket, bool bBroadCast, 
+SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast, 
 										 int iSocketPort, CString str, int iRecBuf, int iSendBuf)
 {
 	CString strTemp = _T("");
-// 	socket->ShutDown(2);
-// 	socket->Close();
-	BOOL bReturn = FALSE;
-	// 生成网络端口，接收发送命令应答帧，create函数写入第三个参数IP地址则接收固定IP地址发送的帧，不写则全网接收
-	// @@@@@@@@@需要改进
-	bReturn = socket->Create(iSocketPort, SOCK_DGRAM);
-	if (bReturn == FALSE)
+	SOCKET socketName;
+	socketName = ::socket(AF_INET, SOCK_DGRAM, 0);
+	addrName.sin_family = AF_INET;											// 填充套接字地址结构
+	addrName.sin_port = htons(iSocketPort);
+	addrName.sin_addr.S_un.S_addr = INADDR_ANY;
+	int iReturn = bind(socketName, (sockaddr*)&addrName, sizeof(addrName));	// 绑定本地地址
+	listen(socketName, 2);
+	if (iReturn == SOCKET_ERROR)
 	{
 		strTemp = str + _T("创建失败！");
 		AfxMessageBox(strTemp);
@@ -238,33 +211,33 @@ void CThreadManage::OnCreateAndSetSocket(CSocket* socket, bool bBroadCast,
 			//设置广播模式
 			int iOptlen = sizeof(int);
 			int iOptval = 1;
-			bReturn = socket->SetSockOpt(SO_BROADCAST, &iOptval, iOptlen, SOL_SOCKET);
-			if (bReturn == FALSE)
+			iReturn = setsockopt(socketName, SOL_SOCKET, SO_BROADCAST, ( const char* )&iOptval, iOptlen);
+			if (iReturn == SOCKET_ERROR)
 			{
 				strTemp = str + _T("设置为广播端口失败！");
 				AfxMessageBox(strTemp);
 				m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 			}
 		}
-		int iOptionValue = iSendBuf;
-		int iOptionLen = sizeof(int);
-		bReturn = socket->SetSockOpt(SO_SNDBUF, (void*)&iOptionValue, iOptionLen, SOL_SOCKET);
-		if (bReturn == FALSE)
+
+		iReturn = setsockopt(socketName, SOL_SOCKET, SO_SNDBUF,  ( const char* )&iSendBuf, sizeof(int));
+		if (iReturn == SOCKET_ERROR)
 		{
 			strTemp = str + _T("发送缓冲区设置失败！");
 			AfxMessageBox(strTemp);
 			m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 		}
-
-		iOptionValue = iRecBuf;
-		bReturn = socket->SetSockOpt(SO_RCVBUF, (void*)&iOptionValue, iOptionLen, SOL_SOCKET);
-		if (bReturn == FALSE)
+		iReturn = setsockopt(socketName, SOL_SOCKET, SO_RCVBUF,  ( const char* )&iRecBuf, sizeof(int));
+		if (iReturn == SOCKET_ERROR)
 		{
 			strTemp = str + _T("接收缓冲区设置失败！");
 			AfxMessageBox(strTemp);
 			m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 		}
+		// 避免端口阻塞
+		OnAvoidIOBlock(socketName);
 	}
+	return socketName;
 }
 // 创建查询采集站本地时间的广播端口
 //************************************
@@ -279,10 +252,8 @@ void CThreadManage::OnCreateGetSysTimeSocket(void)
 {
 	CString str = _T("");
 	str = _T("查询采集站本地时间的端口");
-	OnCreateAndSetSocket(&m_oSysTimeSocket, true, CollectSysTimePort, str, 
+	m_oSysTime.m_SysTimeSocket = OnCreateAndSetSocket(m_oSysTime.addr, true, CollectSysTimePort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
-	// 避免端口阻塞
-	OnAvoidIOBlock(m_oSysTimeSocket);
 }
 
 // 创建首包Socket
@@ -298,10 +269,8 @@ void CThreadManage::OnCreateHeadSocket(void)
 {
 	CString str = _T("");
 	str = _T("首包接收端口");
-	OnCreateAndSetSocket(&m_oHeadFrameSocket, true, HeadFramePort, str, 
+	m_oHeadFrame.m_HeadFrameSocket = OnCreateAndSetSocket(m_oHeadFrame.addr, true, HeadFramePort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
-	// 避免端口阻塞
-	OnAvoidIOBlock(m_oHeadFrameSocket);
 }
 
 // 创建IP地址设置Socket
@@ -317,10 +286,8 @@ void CThreadManage::OnCreateIPSetSocket(void)
 {
 	CString str = _T("");
 	str = _T("IP地址设置端口");
-	OnCreateAndSetSocket(&m_oIPSetSocket, true, IPSetPort, str, 
+	m_oIPSet.m_IPSetSocket = OnCreateAndSetSocket(m_oIPSet.addr, true, IPSetPort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
-	// 避免端口阻塞
-	OnAvoidIOBlock(m_oIPSetSocket);
 }
 
 // 创建尾包Socket
@@ -336,10 +303,8 @@ void CThreadManage::OnCreateTailSocket(void)
 {
 	CString str = _T("");
 	str = _T("尾包接收端口");
-	OnCreateAndSetSocket(&m_oTailFrameSocket, true, TailFramePort, str, 
+	m_oTailFrame.m_TailFrameSocket = OnCreateAndSetSocket(m_oTailFrame.addr, true, TailFramePort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
-	// 避免端口阻塞
-	OnAvoidIOBlock(m_oTailFrameSocket);
 }
 
 // 创建尾包时刻查询和时统Socket
@@ -355,10 +320,8 @@ void CThreadManage::OnCreateTailTimeSocket(void)
 {
 	CString str = _T("");
 	str = _T("尾包时刻查询和时统端口");
-	OnCreateAndSetSocket(&m_oTailTimeFrameSocket, true, TailTimeFramePort, str, 
+	m_oTailTimeFrame.m_TailTimeSocket = OnCreateAndSetSocket(m_oTailTimeFrame.addr, true, TailTimeFramePort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
-	// 避免端口阻塞
-	OnAvoidIOBlock(m_oTailTimeFrameSocket);
 }
 
 // 创建ADC设置Socket
@@ -374,10 +337,8 @@ void CThreadManage::OnCreateADCSetSocket(void)
 {
 	CString str = _T("");
 	str = _T("ADC设置端口");
-	OnCreateAndSetSocket(&m_oADCSetSocket, true, ADSetReturnPort, str, 
-		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
-	// 避免端口阻塞
-	OnAvoidIOBlock(m_oADCSetSocket);
+	m_oADCSet.m_ADCSetSocket = OnCreateAndSetSocket(m_oADCSet.addr, true, 
+		ADSetReturnPort, str, InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
 }
 
 // 创建心跳Socket
@@ -393,10 +354,8 @@ void CThreadManage::OnCreateHeartBeatSocket(void)
 {
 	CString str = _T("");
 	str = _T("心跳端口");
-	OnCreateAndSetSocket(&m_oHeartBeatSocket, true, HeartBeatRec, str, 
-		HeartBeatSndBufSize, HeartBeatSndBufSize);
-	// 避免端口阻塞
-	OnAvoidIOBlock(m_oHeartBeatSocket);
+	m_oHeartBeatThread.m_HeartBeatSocket = OnCreateAndSetSocket(m_oHeartBeatThread.addr, true, 
+		HeartBeatRec, str, HeartBeatSndBufSize, HeartBeatSndBufSize);
 }
 
 // 创建ADC数据接收Socket
@@ -412,10 +371,8 @@ void CThreadManage::OnCreateADCDataSocket(void)
 {
 	CString str = _T("");
 	str = _T("ADC数据接收端口");
-	OnCreateAndSetSocket(&m_oADCDataSocket, true, ADRecPort, str, 
-		ADCBufSize, ADCBufSize);
-	// 避免端口阻塞
-	OnAvoidIOBlock(m_oADCDataSocket);
+	m_oADCDataRecThread.m_ADCDataSocket = OnCreateAndSetSocket(m_oADCDataRecThread.addr, true, 
+		ADRecPort, str, ADCBufSize, ADCBufSize);
 }
 // 防止程序在循环中运行无法响应消息
 //************************************
@@ -431,4 +388,20 @@ void CThreadManage::ProcessMessages(void)
 	MSG msg;
 	::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 	::DispatchMessage(&msg);
+}
+// 关闭UDP套接字
+void CThreadManage::OnCloseUDPSocket(void)
+{
+// 	m_oHeadFrame.ShutDown(2);
+// 	m_oHeadFrame.Close();
+// 	m_oIPSet.ShutDown(2);
+// 	m_oIPSet.Close();
+// 	m_oTailFrame.ShutDown(2);
+// 	m_oTailFrame.Close();
+// 	m_oTailTimeFrame.ShutDown(2);
+// 	m_oTailTimeFrame.Close();
+	shutdown(m_oSysTime.m_SysTimeSocket, SD_BOTH);
+	closesocket(m_oSysTime.m_SysTimeSocket);
+	shutdown(m_oADCSet.m_ADCSetSocket, SD_BOTH);
+	closesocket(m_oADCSet.m_ADCSetSocket);
 }

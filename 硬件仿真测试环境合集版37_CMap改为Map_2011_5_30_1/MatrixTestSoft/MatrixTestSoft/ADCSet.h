@@ -3,7 +3,7 @@
 #include "Parameter.h"
 #include "InstrumentList.h"
 #include "LogFile.h"
-class CADCSet : public CSocket
+class CADCSet
 {
 public:
 	CADCSet(void);
@@ -23,6 +23,9 @@ public:
 	int* m_pSelectObject;
 	// 日志类指针
 	CLogFile* m_pLogFile;
+	// Socket套接字
+	sockaddr_in addr, addr2;
+	SOCKET m_ADCSetSocket;
 protected:
 	// 数据接收缓冲区
 	unsigned char udp_buf[RcvFrameSize];
@@ -88,5 +91,6 @@ public:
 	void OnADCZeroDrift(void);
 	// ADC设置TB时刻开始采集
 	void OnADCStartSample(unsigned int tnow);
-	virtual void OnReceive(int nErrorCode);
+	// 消息处理函数
+	void OnReceive(void);
 };

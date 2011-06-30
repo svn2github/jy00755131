@@ -1,7 +1,20 @@
 #include <string>
 using namespace std;
+//____________UDP套接字事件消息设置____________
 // 串口转UDP套接字事件
 #define WM_UARTTOUDPSOCKET		WM_USER + 1001
+// 首包UDP套接字事件
+#define WM_HEADFRAMESOCKET		WM_USER + 1002
+// IP地址设置UDP套接字事件
+#define WM_IPSETSOCKET					WM_USER + 1003
+// 尾包UDP套接字事件
+#define WM_TAILFRAMESOCKET		WM_USER + 1004
+// 尾包时刻查询UDP套接字事件
+#define WM_TAILTIMESOCKET			WM_USER + 1005
+// 本地时间查询UDP套接字事件
+#define WM_SYSTIMESOCKET				WM_USER + 1006
+// ADC设置UDP套接字事件
+#define WM_ADCSETSOCKET				WM_USER + 1007
 //__________________通讯端口设置__________________
 // 心跳帧发送创建端口
 #define HeartBeatRec					0x7000

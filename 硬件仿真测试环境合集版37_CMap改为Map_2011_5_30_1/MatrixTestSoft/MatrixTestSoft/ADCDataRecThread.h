@@ -28,8 +28,9 @@ public:
 public:
 	// 线程结束事件
 	HANDLE m_hADCDataThreadClose;
-	// ADC数据接收Socket
-	CSocket* m_pADCDataSocket;
+	// ADC数据接收Socket套接字
+	sockaddr_in addr, addr2;
+	SOCKET m_ADCDataSocket;
 	// 线程关闭标志
 	bool m_bclose;
 	// 选择仪器对象

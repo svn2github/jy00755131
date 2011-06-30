@@ -30,8 +30,9 @@ public:
 	HANDLE m_hHeartBeatThreadClose;
 	// 发送端口
 	unsigned int m_uiSendPort;
-	// 心跳Socket对象
-	CSocket * m_pHeartBeatSocket;
+	// 心跳Socket套接字
+	sockaddr_in addr, addr2;
+	SOCKET m_HeartBeatSocket;
 protected:
 	// 生成心跳帧
 	void MakeHeartBeatFrame(void);

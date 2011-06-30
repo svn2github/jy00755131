@@ -93,7 +93,18 @@ int CPortMonitoringSendThread::Run()
 			{
 //				icount = m_SendSocket.Receive(m_ucUdpBuf, PortMonitoringBufSize);
 				icount = recvfrom(m_SendSocket, (char*)&m_ucUdpBuf, sizeof(m_ucUdpBuf), 0, (sockaddr*)&addr, &n);
-				OnProcess(icount);
+				if (icount != SOCKET_ERROR)
+				{
+					OnProcess(icount);
+				}
+				else
+				{
+					int iError = 0;
+					CString str = _T("");
+					iError = WSAGetLastError();
+					str.Format(_T("端口监视发送的接收帧错误，错误号为%d！"), iError);
+					m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::Run"), str, ErrorStatus);
+				}
 			}
 			else
 			{

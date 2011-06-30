@@ -3,12 +3,11 @@
 #include "LogFile.h"
 // CHeadFrameSocket 命令目标
 
-class CHeadFrameSocket : public CSocket
+class CHeadFrame
 {
 public:
-	CHeadFrameSocket();
-	virtual ~CHeadFrameSocket();
-	virtual void OnReceive(int nErrorCode);
+	CHeadFrame();
+	virtual ~CHeadFrame();
 protected:
 	// 仪器串号
 	DWORD m_uiSN;
@@ -31,6 +30,9 @@ public:
 	CWnd* m_pwnd;
 	// 日志类指针
 	CLogFile* m_pLogFile;
+	// Socket套接字
+	sockaddr_in addr, addr2;
+	SOCKET m_HeadFrameSocket;
 protected:
 	// 处理单个首包
 	void ProcHeadFrameOne();
@@ -45,4 +47,6 @@ public:
 	void SendIPSetFrame(void);
 	// 监测IP地址设置应答帧
 	bool OnMonitorIPSetReturn(void);
+	// 消息处理函数
+	void OnReceive(void);
 };

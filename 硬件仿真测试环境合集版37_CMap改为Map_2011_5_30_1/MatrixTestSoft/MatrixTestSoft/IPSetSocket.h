@@ -4,12 +4,11 @@
 #include "LogFile.h"
 // CIPSetSocket 命令目标
 
-class CIPSetSocket : public CSocket
+class CIPSet
 {
 public:
-	CIPSetSocket();
-	virtual ~CIPSetSocket();
-	virtual void OnReceive(int nErrorCode);
+	CIPSet();
+	virtual ~CIPSet();
 protected:
 	// 仪器串号
 	DWORD m_uiSN;
@@ -36,6 +35,9 @@ public:
 	int m_iCheckIDInstrumentFDU[InstrumentNum];
 	// 日志类指针
 	CLogFile* m_pLogFile;
+	// Socket套接字
+	sockaddr_in addr;
+	SOCKET m_IPSetSocket;
 protected:
 	// 单个IP地址设置应答帧处理
 	void ProcIPSetReturnFrameOne(void);
@@ -45,6 +47,9 @@ protected:
 	void OnShowConnectedIcon(unsigned int uiIPAddress);
 	// 防止程序在循环过程中无法响应消息
 	void PorcessMessages(void);
+public:
+	// 消息处理函数
+	void OnReceive(void);
 };
 
 

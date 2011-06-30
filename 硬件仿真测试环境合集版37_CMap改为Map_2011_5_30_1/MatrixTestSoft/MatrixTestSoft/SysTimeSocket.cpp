@@ -8,7 +8,7 @@
 
 // CSysTimeSocket
 
-CSysTimeSocket::CSysTimeSocket()
+CSysTime::CSysTime()
 : m_uiSysTime(0)
 , m_csIPSource(_T(""))
 , m_uiSendPort(0)
@@ -20,7 +20,7 @@ CSysTimeSocket::CSysTimeSocket()
 {
 }
 
-CSysTimeSocket::~CSysTimeSocket()
+CSysTime::~CSysTime()
 {
 	if (m_pADCSet != NULL)
 	{
@@ -46,11 +46,12 @@ CSysTimeSocket::~CSysTimeSocket()
 
 
 // CSysTimeSocket 成员函数
-void CSysTimeSocket::OnReceive(int nErrorCode) 
+void CSysTime::OnReceive(void) 
 {
 	// TODO: Add your specialized code here and/or call the base class
 	int ret=0;
-	ret = Receive(udp_buf, RcvFrameSize);
+	int n = sizeof(addr);
+	ret = recvfrom(m_SysTimeSocket, (char*)&udp_buf, sizeof(udp_buf), 0, (sockaddr*)&addr, &n);
 	if(ret == RcvFrameSize) 
 	{
 		unsigned short usCommand = 0;
@@ -75,7 +76,20 @@ void CSysTimeSocket::OnReceive(int nErrorCode)
 			}
 		}
 	}
-	CSocket::OnReceive(nErrorCode);
+	else if (ret == SOCKET_ERROR)
+	{
+		int iError = 0;
+		CString str = _T("");
+		iError = WSAGetLastError();
+		str.Format(_T("本地时间查询接收帧错误，错误号为%d！"), iError);
+		m_pLogFile->OnWriteLogFile(_T("CSysTime::OnReceive"), str, ErrorStatus);
+	}
+	else
+	{
+		CString str = _T("");
+		str.Format(_T("本地时间查询接收帧帧长错误，帧长为%d！"), ret);
+		m_pLogFile->OnWriteLogFile(_T("CSysTime::OnReceive"), str, ErrorStatus);
+	}
 }
 
 // ADC设置TB时刻开始采集
@@ -88,7 +102,7 @@ void CSysTimeSocket::OnReceive(int nErrorCode)
 // Parameter: unsigned int uiIPAim
 // Parameter: unsigned int tnow
 //************************************
-void CSysTimeSocket::OnADCStartSample(unsigned int tnow)
+void CSysTime::OnADCStartSample(unsigned int tnow)
 {
 	m_pADCSet->OnADCStartSample(tnow);
 	SetTimer(m_pwnd->m_hWnd, TabSampleStartSampleTimerNb, TabSampleStartSampleTimerSet, NULL);
@@ -102,7 +116,7 @@ void CSysTimeSocket::OnADCStartSample(unsigned int tnow)
 // Qualifier:
 // Parameter: int * pSelectObject
 //************************************
-void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
+void CSysTime::MakeCollectSysTimeFrameData(int* pSelectObject)
 {
 	unsigned int uiIPSource =	0;
 	unsigned int uiIPAim	=	0;
@@ -170,10 +184,13 @@ void CSysTimeSocket::MakeCollectSysTimeFrameData(int* pSelectObject)
 // Qualifier:
 // Parameter: void
 //************************************
-void CSysTimeSocket::SendCollectSysTimeFrameToSocket(void)
+void CSysTime::SendCollectSysTimeFrameToSocket(void)
 {
+	addr2.sin_family = AF_INET;											// 填充套接字地址结构
+	addr2.sin_port = htons(m_uiSendPort);
+	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(IPBroadcastAddr));
 	// 发送帧
-	int iCount = SendTo(m_cCollectSysTimeSendData, SndFrameSize, m_uiSendPort, IPBroadcastAddr);
+	int iCount = sendto(m_SysTimeSocket, (const char*)&m_cCollectSysTimeSendData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 }
 
 // 防止程序在循环中运行无法响应消息
@@ -185,7 +202,7 @@ void CSysTimeSocket::SendCollectSysTimeFrameToSocket(void)
 // Qualifier:
 // Parameter: void
 //************************************
-void CSysTimeSocket::ProcessMessages(void)
+void CSysTime::ProcessMessages(void)
 {
 	MSG msg;
 	::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
@@ -201,7 +218,7 @@ void CSysTimeSocket::ProcessMessages(void)
 // Qualifier:
 // Parameter: int iPos
 //************************************
-void CSysTimeSocket::OnProcSysTimeReturn(int iPos)
+void CSysTime::OnProcSysTimeReturn(int iPos)
 {
 	unsigned int uiSysTime = 0;
 	memcpy(&uiSysTime, &udp_buf[iPos], FramePacketSize4B);
