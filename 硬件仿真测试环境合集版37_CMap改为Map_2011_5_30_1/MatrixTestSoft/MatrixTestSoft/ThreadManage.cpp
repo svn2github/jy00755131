@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "ThreadManage.h"
-
+#include <Mswsock.h>
 CThreadManage::CThreadManage(void)
 : m_pLogFile(NULL)
 {
@@ -42,12 +42,12 @@ void CThreadManage::OnInit(void)
 	m_oIPSet.m_pLogFile = m_pLogFile;
 
 	m_oHeartBeatThread.OnInit();
-	m_oHeartBeatThread.CreateThread();
-	m_oHeartBeatThread.SuspendThread();
+	m_oHeartBeatThread.CreateThread(CREATE_SUSPENDED, 0, 0);
+/*	m_oHeartBeatThread.SuspendThread();*/
 	m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnInit"), _T("心跳发送线程创建成功！"), SuccessStatus);
 	m_oADCDataRecThread.OnInit();
-	m_oADCDataRecThread.CreateThread();
-	m_oADCDataRecThread.SuspendThread();
+	m_oADCDataRecThread.CreateThread(CREATE_SUSPENDED, 0, 0);
+/*	m_oADCDataRecThread.SuspendThread();*/
 	m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnInit"), _T("ADC数据接收线程创建成功！"), SuccessStatus);
 }
 
@@ -110,10 +110,6 @@ void CThreadManage::OnClose(void)
 void CThreadManage::OnOpen(void)
 {
 	m_oInstrumentList.OnOpen();
-<<<<<<< .mine
-=======
-
->>>>>>> .r142
 	OnCreateHeadSocket();
 	OnCreateIPSetSocket();
 	OnCreateTailSocket();
@@ -189,25 +185,14 @@ SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast
 										 int iSocketPort, CString str, int iRecBuf, int iSendBuf)
 {
 	CString strTemp = _T("");
-<<<<<<< .mine
 	SOCKET socketName = INVALID_SOCKET;
-	socketName = ::socket(AF_INET, SOCK_DGRAM, 0);
+	socketName = socket(AF_INET, SOCK_DGRAM, 0);
 	addrName.sin_family = AF_INET;											// 填充套接字地址结构
 	addrName.sin_port = htons(iSocketPort);
 	addrName.sin_addr.S_un.S_addr = INADDR_ANY;
 	int iReturn = bind(socketName, (sockaddr*)&addrName, sizeof(addrName));	// 绑定本地地址
 	listen(socketName, 2);
 	if (iReturn == SOCKET_ERROR)
-=======
-	SOCKET socketName;
-	socketName = ::socket(AF_INET, SOCK_DGRAM, 0);
-	addrName.sin_family = AF_INET;											// 填充套接字地址结构
-	addrName.sin_port = htons(iSocketPort);
-	addrName.sin_addr.S_un.S_addr = INADDR_ANY;
-	int iReturn = bind(socketName, (sockaddr*)&addrName, sizeof(addrName));	// 绑定本地地址
-	listen(socketName, 2);
-	if (iReturn == SOCKET_ERROR)
->>>>>>> .r142
 	{
 		strTemp = str + _T("创建失败！");
 		AfxMessageBox(strTemp);
@@ -244,7 +229,7 @@ SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast
 			m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 		}
 		// 避免端口阻塞
-		OnAvoidIOBlock(socketName);
+//		OnAvoidIOBlock(socketName);
 	}
 	return socketName;
 }
@@ -380,29 +365,8 @@ void CThreadManage::OnCreateADCDataSocket(void)
 {
 	CString str = _T("");
 	str = _T("ADC数据接收端口");
-<<<<<<< .mine
 	m_oADCDataRecThread.m_ADCDataSocket = OnCreateAndSetSocket(m_oADCDataRecThread.addr, true, 
 		ADRecPort, str, ADCDataBufSize, ADCDataBufSize);
-=======
-	m_oADCDataRecThread.m_ADCDataSocket = OnCreateAndSetSocket(m_oADCDataRecThread.addr, true, 
-		ADRecPort, str, ADCBufSize, ADCBufSize);
->>>>>>> .r142
-}
-// 防止程序在循环中运行无法响应消息
-//************************************
-// Method:    ProcessMessages
-// FullName:  CThreadManage::ProcessMessages
-// Access:    private 
-// Returns:   void
-// Qualifier:
-// Parameter: void
-//************************************
-void CThreadManage::ProcessMessages(void)
-{
-	MSG msg;
-	::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
-	::DispatchMessage(&msg);
-<<<<<<< .mine
 }
 // 关闭UDP套接字
 void CThreadManage::OnCloseUDPSocket(void)
@@ -420,22 +384,3 @@ void CThreadManage::OnCloseUDPSocket(void)
 	shutdown(m_oADCSet.m_ADCSetSocket, SD_BOTH);
 	closesocket(m_oADCSet.m_ADCSetSocket);
 }
-=======
-}
-// 关闭UDP套接字
-void CThreadManage::OnCloseUDPSocket(void)
-{
-// 	m_oHeadFrame.ShutDown(2);
-// 	m_oHeadFrame.Close();
-// 	m_oIPSet.ShutDown(2);
-// 	m_oIPSet.Close();
-// 	m_oTailFrame.ShutDown(2);
-// 	m_oTailFrame.Close();
-// 	m_oTailTimeFrame.ShutDown(2);
-// 	m_oTailTimeFrame.Close();
-	shutdown(m_oSysTime.m_SysTimeSocket, SD_BOTH);
-	closesocket(m_oSysTime.m_SysTimeSocket);
-	shutdown(m_oADCSet.m_ADCSetSocket, SD_BOTH);
-	closesocket(m_oADCSet.m_ADCSetSocket);
-}
->>>>>>> .r142

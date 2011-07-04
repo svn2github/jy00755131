@@ -58,8 +58,6 @@ private:
 	void OnCreateHeartBeatSocket(void);
 	// 创建ADC数据接收Socket
 	void OnCreateADCDataSocket(void);
-	// 防止程序在循环中运行无法响应消息
-	void ProcessMessages(void);
 	// 创建和设置Socket套接字
 	SOCKET OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast, int iSocketPort, CString str, int iRecBuf, int iSendBuf);
 	// 避免端口阻塞

@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MatrixTestSoft.h"
 #include "PortMonitoringRecThread.h"
-
+#include <Mswsock.h>
 
 // CPortMonitoringRecThread
 
@@ -234,7 +234,7 @@ void CPortMonitoringRecThread::OnOpen(void)
 {
 	CString str = _T("");
 //	BOOL bReturn =  m_RecSocket.Create(m_iRecPort,SOCK_DGRAM);
-	m_RecSocket = ::socket(AF_INET, SOCK_DGRAM, 0);
+	m_RecSocket = socket(AF_INET, SOCK_DGRAM, 0);
 	addr.sin_family = AF_INET;											// 填充套接字地址结构
 	addr.sin_port = htons(m_iRecPort);
 	addr.sin_addr.S_un.S_addr = INADDR_ANY;
