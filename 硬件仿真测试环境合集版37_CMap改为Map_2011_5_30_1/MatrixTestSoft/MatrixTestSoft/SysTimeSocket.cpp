@@ -22,26 +22,6 @@ CSysTime::CSysTime()
 
 CSysTime::~CSysTime()
 {
-	if (m_pADCSet != NULL)
-	{
-		m_pADCSet = NULL;
-		delete m_pADCSet;
-	}
-	if (m_pwnd != NULL)
-	{
-		m_pwnd = NULL;
-		delete m_pwnd;
-	}
-	if (m_pADCFrameInfo != NULL)
-	{
-		m_pADCFrameInfo = NULL;
-		delete m_pADCFrameInfo;
-	}
-	if (m_pLogFile != NULL)
-	{
-		m_pLogFile = NULL;
-		delete m_pLogFile;
-	}
 }
 
 

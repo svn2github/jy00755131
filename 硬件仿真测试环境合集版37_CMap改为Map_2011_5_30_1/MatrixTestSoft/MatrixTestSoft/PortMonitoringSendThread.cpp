@@ -41,16 +41,6 @@ CPortMonitoringSendThread::CPortMonitoringSendThread()
 
 CPortMonitoringSendThread::~CPortMonitoringSendThread()
 {
-	if (m_pSaveFile != NULL)
-	{
-		m_pSaveFile = NULL;
-		delete m_pSaveFile;
-	}
-	if (m_pLogFile != NULL)
-	{
-		m_pLogFile = NULL;
-		delete m_pLogFile;
-	}
 }
 
 BOOL CPortMonitoringSendThread::InitInstance()

@@ -8,11 +8,6 @@ CThreadManage::CThreadManage(void)
 
 CThreadManage::~CThreadManage(void)
 {
-	if (m_pLogFile != NULL)
-	{
-		m_pLogFile = NULL;
-		delete m_pLogFile;
-	}
 }
 
 // 初始化
@@ -115,7 +110,10 @@ void CThreadManage::OnClose(void)
 void CThreadManage::OnOpen(void)
 {
 	m_oInstrumentList.OnOpen();
+<<<<<<< .mine
+=======
 
+>>>>>>> .r142
 	OnCreateHeadSocket();
 	OnCreateIPSetSocket();
 	OnCreateTailSocket();
@@ -191,6 +189,16 @@ SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast
 										 int iSocketPort, CString str, int iRecBuf, int iSendBuf)
 {
 	CString strTemp = _T("");
+<<<<<<< .mine
+	SOCKET socketName = INVALID_SOCKET;
+	socketName = ::socket(AF_INET, SOCK_DGRAM, 0);
+	addrName.sin_family = AF_INET;											// 填充套接字地址结构
+	addrName.sin_port = htons(iSocketPort);
+	addrName.sin_addr.S_un.S_addr = INADDR_ANY;
+	int iReturn = bind(socketName, (sockaddr*)&addrName, sizeof(addrName));	// 绑定本地地址
+	listen(socketName, 2);
+	if (iReturn == SOCKET_ERROR)
+=======
 	SOCKET socketName;
 	socketName = ::socket(AF_INET, SOCK_DGRAM, 0);
 	addrName.sin_family = AF_INET;											// 填充套接字地址结构
@@ -199,6 +207,7 @@ SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast
 	int iReturn = bind(socketName, (sockaddr*)&addrName, sizeof(addrName));	// 绑定本地地址
 	listen(socketName, 2);
 	if (iReturn == SOCKET_ERROR)
+>>>>>>> .r142
 	{
 		strTemp = str + _T("创建失败！");
 		AfxMessageBox(strTemp);
@@ -371,8 +380,13 @@ void CThreadManage::OnCreateADCDataSocket(void)
 {
 	CString str = _T("");
 	str = _T("ADC数据接收端口");
+<<<<<<< .mine
+	m_oADCDataRecThread.m_ADCDataSocket = OnCreateAndSetSocket(m_oADCDataRecThread.addr, true, 
+		ADRecPort, str, ADCDataBufSize, ADCDataBufSize);
+=======
 	m_oADCDataRecThread.m_ADCDataSocket = OnCreateAndSetSocket(m_oADCDataRecThread.addr, true, 
 		ADRecPort, str, ADCBufSize, ADCBufSize);
+>>>>>>> .r142
 }
 // 防止程序在循环中运行无法响应消息
 //************************************
@@ -388,6 +402,25 @@ void CThreadManage::ProcessMessages(void)
 	MSG msg;
 	::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 	::DispatchMessage(&msg);
+<<<<<<< .mine
+}
+// 关闭UDP套接字
+void CThreadManage::OnCloseUDPSocket(void)
+{
+	shutdown(m_oHeadFrame.m_HeadFrameSocket, SD_BOTH);
+	closesocket(m_oHeadFrame.m_HeadFrameSocket);
+	shutdown(m_oIPSet.m_IPSetSocket, SD_BOTH);
+	closesocket(m_oIPSet.m_IPSetSocket);
+	shutdown(m_oTailFrame.m_TailFrameSocket, SD_BOTH);
+	closesocket(m_oTailFrame.m_TailFrameSocket);
+	shutdown(m_oTailTimeFrame.m_TailTimeSocket, SD_BOTH);
+	closesocket(m_oTailTimeFrame.m_TailTimeSocket);
+	shutdown(m_oSysTime.m_SysTimeSocket, SD_BOTH);
+	closesocket(m_oSysTime.m_SysTimeSocket);
+	shutdown(m_oADCSet.m_ADCSetSocket, SD_BOTH);
+	closesocket(m_oADCSet.m_ADCSetSocket);
+}
+=======
 }
 // 关闭UDP套接字
 void CThreadManage::OnCloseUDPSocket(void)
@@ -405,3 +438,4 @@ void CThreadManage::OnCloseUDPSocket(void)
 	shutdown(m_oADCSet.m_ADCSetSocket, SD_BOTH);
 	closesocket(m_oADCSet.m_ADCSetSocket);
 }
+>>>>>>> .r142

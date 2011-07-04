@@ -12,22 +12,6 @@ CInstrumentList::CInstrumentList(void)
 
 CInstrumentList::~CInstrumentList(void)
 {
-	if (m_pInstrumentArray != NULL)
-	{
-		m_pInstrumentArray = NULL;
-		delete[] m_pInstrumentArray;
-	}
-	if (m_pwnd != NULL)
-	{
-		m_pwnd = NULL;
-		delete m_pwnd;
-	}
-	if (m_pLogFile != NULL)
-	{
-		m_pLogFile = NULL;
-		delete m_pLogFile;
-	}
-	m_oInstrumentMap.clear();
 }
 
 // 初始化
@@ -62,7 +46,6 @@ void CInstrumentList::OnClose(void)
 	m_olsInstrumentFree.clear();
 	if (m_pInstrumentArray != NULL)
 	{
-		m_pInstrumentArray = NULL;
 		delete[] m_pInstrumentArray;
 	}
 	// 删除索引表中所有仪器
@@ -308,7 +291,7 @@ void CInstrumentList::OnOpen(void)
 	m_oInstrumentMap.clear();
 	if (m_pInstrumentArray != NULL)
 	{
-		m_pInstrumentArray = NULL;
+		delete []m_pInstrumentArray;
 	}
 	m_pInstrumentArray = new CInstrument[InstrumentMaxCount];
 

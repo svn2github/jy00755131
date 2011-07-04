@@ -43,33 +43,31 @@ using namespace std;
 
 //___________________缓冲区设置____________________
 // 最多连接的设备数
-#define InstrumentMaxCount			49	
+#define InstrumentMaxCount			21	
 // 绘图控件个数
-#define InstrumentNum					48
+#define InstrumentNum					20
 // 接收数据包的大小
 #define ReceiveDataSize				72
 // 缓冲区个数
-#define RcvBufNum						8
-// 串口转端口中端口缓冲区大小
-#define UartToUdpRcvSize			1024
-// ADC数据缓冲区大小
-#define ADCBufSize						10000000
-// 端口监视缓冲区大小
-#define PortMonitoringBufSize		10000000
-// 串口转UDP端口缓冲区大小
-#define UartToUDPBufSize			655360
-// UDP通讯ADC采样接收缓冲区大小
-#define ADCDataBufSize				10000000
+#define RcvBufNum						4
 // 心跳发送缓冲区大小
 #define HeartBeatSndBufSize		1280
 // 接收的网络数据包大小
 #define RcvFrameSize					256
 // 发送的网络数据包大小
 #define SndFrameSize						128
+// 串口转端口中端口缓冲区大小
+#define UartToUdpRcvSize			1024
+// ADC数据缓冲区大小，4K采样率单个设备一秒钟最多上传56帧数据
+#define ADCDataBufSize				(56 * InstrumentNum * RcvFrameSize)
+// 端口监视缓冲区大小，ADC数据缓冲区大小的2倍
+#define PortMonitoringBufSize		(ADCDataBufSize * 2)
+// 串口转UDP端口缓冲区大小
+#define UartToUDPBufSize			65536
 // 发送帧缓冲区初值设定
 #define SndFrameBufInit				0x00
 // ADC处理过程中预设的缓冲区帧数
-#define ADCDataTempFrameNum	100
+#define ADCDataTempFrameNum	20
 // ADC处理过程中预设的缓冲区大小
 #define ADCDataTempDataSize	(ADCDataTempFrameNum * ReceiveDataSize)
 //__________________串口端口定义__________________

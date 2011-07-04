@@ -14,26 +14,6 @@ CADCSet::CADCSet(void)
 
 CADCSet::~CADCSet(void)
 {
-	if (m_pTabADCSettings != NULL)
-	{
-		m_pTabADCSettings = NULL;
-		delete m_pTabADCSettings;
-	}
-	if (m_pInstrumentList != NULL)
-	{
-		m_pInstrumentList = NULL;
-		delete m_pInstrumentList;
-	}
-	if (m_pSelectObject != NULL)
-	{
-		m_pSelectObject = NULL;
-		delete m_pSelectObject;
-	}
-	if (m_pLogFile != NULL)
-	{
-		m_pLogFile = NULL;
-		delete m_pLogFile;
-	}
 }
 void CADCSet::OnReceive(void)
 {
