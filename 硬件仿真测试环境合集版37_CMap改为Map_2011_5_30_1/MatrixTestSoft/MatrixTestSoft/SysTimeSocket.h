@@ -20,9 +20,7 @@ protected:
 	byte m_cCollectSysTimeSendData[SndFrameSize];
 public:
 	// 源IP地址
-	CString m_csIPSource;
-	// 目标端口
-	unsigned int m_uiSendPort;
+	unsigned int m_uiIPSource;
 	// ADC设置类指针
 	CADCSet* m_pADCSet;
 	// 界面指针
@@ -50,6 +48,8 @@ public:
 	void OnProcSysTimeReturn(int iPos);
 	// 消息处理函数
 	void OnReceive(void);
+	// 关闭UDP套接字
+	void OnCloseUDP(void);
 };
 
 

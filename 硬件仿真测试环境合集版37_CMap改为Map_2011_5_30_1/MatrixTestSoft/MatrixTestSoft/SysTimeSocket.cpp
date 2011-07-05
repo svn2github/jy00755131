@@ -10,13 +10,13 @@
 
 CSysTime::CSysTime()
 : m_uiSysTime(0)
-, m_csIPSource(_T(""))
-, m_uiSendPort(0)
+, m_uiIPSource(0)
 , m_pADCSet(NULL)
 , m_pwnd(NULL)
 , m_uiSysTimeCount(0)
 , m_pADCFrameInfo(NULL)
 , m_pLogFile(NULL)
+, m_SysTimeSocket(INVALID_SOCKET)
 {
 }
 
@@ -110,10 +110,7 @@ void CSysTime::MakeCollectSysTimeFrameData(int* pSelectObject)
 	m_cCollectSysTimeSendData[3] = FrameHeadCheck3;
 	memset(&m_cCollectSysTimeSendData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
-	// CString转换为const char*
-	const char* pChar = ConvertCStringToConstCharPointer(m_csIPSource);
-
-	uiIPSource	=	inet_addr(pChar);
+	uiIPSource	=	m_uiIPSource;
 	for (int i=0; i<InstrumentNum; i++)
 	{
 //		ProcessMessages();
@@ -166,9 +163,6 @@ void CSysTime::MakeCollectSysTimeFrameData(int* pSelectObject)
 //************************************
 void CSysTime::SendCollectSysTimeFrameToSocket(void)
 {
-	addr2.sin_family = AF_INET;											// 填充套接字地址结构
-	addr2.sin_port = htons(m_uiSendPort);
-	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(IPBroadcastAddr));
 	// 发送帧
 	int iCount = sendto(m_SysTimeSocket, (const char*)&m_cCollectSysTimeSendData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 }
@@ -209,14 +203,15 @@ void CSysTime::OnProcSysTimeReturn(int iPos)
 		m_uiSysTime = uiSysTime;
 		// 广播命令开始采样
 		OnADCStartSample(m_uiSysTime);
-		// 在ADC数据帧信息文件中写入TB时间
-// 		if (m_pADCFrameInfo->m_pFileSave != NULL)
-// 		{
-// 			strOutput.Format(_T("设置ADC数据采样TB开始时间为%d\n"), m_uiSysTime + TBSleepTimeHigh);
-// 			fprintf(m_pADCFrameInfo->m_pFileSave, _T("%s"), strOutput); 			
-// 		}
 		strOutput.Format(_T("设置ADC数据采样TB开始时间为%d\n"), m_uiSysTime + TBSleepTimeHigh);
 		//因为需要保存的内容包含中文，所以需要如下的转换过程
 		WriteCHToCFile(&(m_pADCFrameInfo->m_FileSave), strOutput);
 	}
+}
+// 关闭UDP套接字
+void CSysTime::OnCloseUDP(void)
+{
+	shutdown(m_SysTimeSocket, SD_BOTH);
+	closesocket(m_SysTimeSocket);
+	m_SysTimeSocket = INVALID_SOCKET;
 }

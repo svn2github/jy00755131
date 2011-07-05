@@ -71,8 +71,8 @@
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				StackReserveSize="5000000"
-				StackCommitSize="5000000"
+				StackReserveSize="80000000"
+				StackCommitSize="80000000"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -155,8 +155,8 @@
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				StackReserveSize="5000000"
-				StackCommitSize="5000000"
+				StackReserveSize="20000000"
+				StackCommitSize="20000000"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"

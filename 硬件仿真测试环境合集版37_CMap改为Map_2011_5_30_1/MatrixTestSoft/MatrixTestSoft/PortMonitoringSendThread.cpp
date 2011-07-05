@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MatrixTestSoft.h"
 #include "PortMonitoringSendThread.h"
-#include <Mswsock.h>
 
 // CPortMonitoringSendThread
 
@@ -317,10 +316,7 @@ void CPortMonitoringSendThread::OnAvoidIOBlock(SOCKET socket)
 //************************************
 void CPortMonitoringSendThread::OnStop(void)
 {
-// 	m_SendSocket.ShutDown(2);
-// 	m_SendSocket.Close();
-	shutdown(m_SendSocket, SD_BOTH);
-	closesocket(m_SendSocket);
+	OnCloseUDP();
 	// 硬件设备错误查询应答帧个数
 	m_uiErrorCodeReturnNum = 0;
 	for (int i=0; i<InstrumentNum; i++)
@@ -341,10 +337,7 @@ void CPortMonitoringSendThread::OnStop(void)
 //************************************
 void CPortMonitoringSendThread::OnClose(void)
 {
-// 	m_SendSocket.ShutDown(2);
-// 	m_SendSocket.Close();
-	shutdown(m_SendSocket, SD_BOTH);
-	closesocket(m_SendSocket);
+	OnCloseUDP();
 	m_bclose = true;
 }
 // 重置界面
@@ -452,6 +445,11 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			m_csHeadFrameShow += _T("\r\n");
 			m_uiHeadFrameNum++;
 		}
+		else
+		{
+			strTemp.Format(_T("首包端口正确，命令字错误，错误的命令字为%d"), uiCommand);
+			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
+		}
 	}
 	else if (uiPort == IPSetPort)
 	{
@@ -478,6 +476,11 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			}
 			m_csIPSetReturnShow += _T("\r\n");
 			m_uiIPSetReturnNum++;
+		}
+		else
+		{
+			strTemp.Format(_T("IP地址设置应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
+			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
 	}
 	else if (uiPort == TailFramePort)
@@ -506,6 +509,11 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			}
 			m_csTailFrameShow += _T("\r\n");
 			m_uiTailFrameNum++;
+		}
+		else
+		{
+			strTemp.Format(_T("尾包端口正确，命令字错误，错误的命令字为%d"), uiCommand);
+			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
 	}
 	else if (uiPort == TailTimeFramePort)
@@ -542,6 +550,11 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			}
 			m_csTailTimeReturnShow += _T("\r\n");
 			m_uiTailTimeReturnNum++;
+		}
+		else
+		{
+			strTemp.Format(_T("尾包时刻查询应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
+			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
 	}
 	else if (uiPort == TimeSetPort)
@@ -580,6 +593,11 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			}
 			m_csDelayTimeReturnShow += _T("\r\n");
 			m_uiDelayTimeReturnNum++;
+		}
+		else
+		{
+			strTemp.Format(_T("时统设置应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
+			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
 	}
 	else if (uiPort == ADSetReturnPort)
@@ -710,6 +728,11 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			}
 			m_csErrorCodeReturnShow += _T("\r\n");
 		}
+		else
+		{
+			strTemp.Format(_T("误码查询应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
+			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
+		}
 		m_uiErrorCodeReturnNum++;
 	}
 	else if (uiPort == CollectSysTimePort)
@@ -748,4 +771,11 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		sendto(m_SendSocket, (const char*)&m_ucudp_buf[m_usudp_count], RcvFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 	}
 	m_pSaveFile->OnSaveSendData(m_ucudp_buf[m_usudp_count],RcvFrameSize);
+}
+// 关闭UDP套接字
+void CPortMonitoringSendThread::OnCloseUDP(void)
+{
+	shutdown(m_SendSocket, SD_BOTH);
+	closesocket(m_SendSocket);
+	m_SendSocket = INVALID_SOCKET;
 }

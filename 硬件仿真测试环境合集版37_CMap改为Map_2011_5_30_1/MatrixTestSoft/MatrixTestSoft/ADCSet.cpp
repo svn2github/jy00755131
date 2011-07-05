@@ -5,10 +5,10 @@
 CADCSet::CADCSet(void)
 : m_pTabADCSettings(NULL)
 , m_pInstrumentList(NULL)
-, m_csIPSource(_T(""))
-, m_uiSendPort(0)
+, m_uiIPSource(0)
 , m_pSelectObject(NULL)
 , m_pLogFile(NULL)
+, m_ADCSetSocket(INVALID_SOCKET)
 {
 }
 
@@ -74,22 +74,49 @@ void CADCSet::OnProcADCZeroDriftReturn(int iPos)
 {
 	unsigned int uiIPAim = 0;
 	CString str = _T("");
+	byte	ucCommand = 0;
 	memcpy(&uiIPAim, &udp_buf[iPos], FramePacketSize4B);
 	for (int i=0; i<InstrumentNum; i++)
 	{
 //		ProcessMessages();
 		if (uiIPAim == IPSetAddrStart + (i + 1) * IPSetAddrInterval)
 		{
-			iPos = 0x29;
-			memcpy(&m_ucZeroDrift[i][0], &udp_buf[iPos], FramePacketSize2B);
-			iPos += FramePacketSize2B;
+			iPos = 33;
+			memcpy(&ucCommand, &udp_buf[iPos], FrameCmdSize1B);
 			iPos += FrameCmdSize1B;
-			memcpy(&m_ucZeroDrift[i][2], &udp_buf[iPos], FramePacketSize2B);
-			iPos += FramePacketSize2B;
-			memcpy(&m_ucZeroDrift[i][4], &udp_buf[iPos], FramePacketSize2B);
-			str.Format(_T("接收零漂矫正查询-仪器IP地址：%d！"), uiIPAim);
-			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
-			break;
+			if (ucCommand == CmdADCSet)
+			{
+				iPos = 41;
+				memcpy(&m_ucZeroDrift[i][0], &udp_buf[iPos], FramePacketSize2B);
+				iPos += FramePacketSize2B;
+				iPos += FrameCmdSize1B;
+				memcpy(&m_ucZeroDrift[i][2], &udp_buf[iPos], FramePacketSize2B);
+				iPos += FramePacketSize2B;
+				memcpy(&m_ucZeroDrift[i][4], &udp_buf[iPos], FramePacketSize2B);
+				str.Format(_T("接收零漂矫正查询-仪器IP地址：%d！"), uiIPAim);
+				m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
+				break;
+			}
+			else if (ucCommand == CmdTBHigh)
+			{
+				unsigned int uiTBHigh = 0;
+				unsigned int uiTBLow = 0;
+				unsigned int uiSysTime = 0;
+				memcpy(&uiTBHigh, &udp_buf[iPos], FramePacketSize4B);
+				iPos += FramePacketSize4B;
+				
+				iPos += FrameCmdSize1B;
+				memcpy(&uiTBLow, &udp_buf[iPos], FramePacketSize4B);
+				iPos += FramePacketSize4B;
+
+				iPos += FrameCmdSize1B;
+				memcpy(&uiSysTime, &udp_buf[iPos], FramePacketSize4B);
+				iPos += FramePacketSize4B;
+
+				str.Format(_T("接收TB时刻查询帧-仪器IP地址：%d，TB高位为0x%04x，TB低位为0x%04x, 本地时间为0x%04x！"), uiIPAim, uiTBHigh, uiTBLow, uiSysTime);
+				m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
+				break;
+			}
 		}
 	}
 }
@@ -120,10 +147,7 @@ int CADCSet::ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, uns
 	m_ucFrameData[3] = FrameHeadCheck3;
 	memset(&m_ucFrameData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
-	// CString转换为const char*
-	const char* pChar = ConvertCStringToConstCharPointer(m_csIPSource);
-
-	uiIPSource	=	inet_addr(pChar);
+	uiIPSource	=	m_uiIPSource;
 	iPos = 16;
 	// 源IP地址
 	memcpy(&m_ucFrameData[iPos], &uiIPSource, FramePacketSize4B);
@@ -323,11 +347,8 @@ void CADCSet::OnADCSetReturn(int iPos)
 	unsigned int uiReturnPort = 0;
 	unsigned int uiReturnPortMove = 0;
 
-	// CString转换为const char*
-	const char* pChar = ConvertCStringToConstCharPointer(m_csIPSource);
-
 	//自动AD返回地址
-	uiIPSource = inet_addr(pChar);
+	uiIPSource = m_uiIPSource;
 	m_ucFrameData[iPos] = CmdADCDataReturnAddr;
 	iPos += FrameCmdSize1B;
 	memcpy(&m_ucFrameData[iPos], &uiIPSource, FramePacketSize4B);
@@ -764,9 +785,6 @@ void CADCSet::OnQueryErrorCodeLAUX(int iPos)
 void CADCSet::OnQueryErrorCode(void)
 {
 	int iPos = 0;
-	addr2.sin_family = AF_INET;											// 填充套接字地址结构
-	addr2.sin_port = htons(m_uiSendPort);
-	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(IPBroadcastAddr));
 
 	// 广播查询采集站
 	iPos = ADCSetFrameHead(BroadCastPort, SendQueryCmd, QueryErrorCodePort);
@@ -790,11 +808,12 @@ void CADCSet::OnQueryErrorCode(void)
 void CADCSet::OnADCSet(void)
 {
 	int iPos = 0;
-	addr2.sin_family = AF_INET;											// 填充套接字地址结构
-	addr2.sin_port = htons(m_uiSendPort);
-	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(IPBroadcastAddr));
-
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
+	
+// 	OnSetTB(iPos, 0, 0, true);
+// 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+// 	Sleep(ADCOperationSleepTime);
+
 	OnSetSine(iPos);
 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 
@@ -855,9 +874,6 @@ void CADCSet::OnADCSampleStop(void)
 {
 	int iPos = 0;
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-	addr2.sin_family = AF_INET;											// 填充套接字地址结构
-	addr2.sin_port = htons(m_uiSendPort);
-	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(IPBroadcastAddr));
 
 	OnStopSample(iPos);
 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
@@ -893,9 +909,6 @@ void CADCSet::OnADCZeroDrift(void)
 {
 	int iPos = 0;
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-	addr2.sin_family = AF_INET;											// 填充套接字地址结构
-	addr2.sin_port = htons(m_uiSendPort);
-	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(IPBroadcastAddr));
 
 	OnOpenPowerZeroDrift(iPos);
 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
@@ -993,9 +1006,6 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
 	int iPos = 0;
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-	addr2.sin_family = AF_INET;											// 填充套接字地址结构
-	addr2.sin_port = htons(m_uiSendPort);
-	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(IPBroadcastAddr));
 
 	OnSetTBSwitchOpen(iPos);
 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
@@ -1067,6 +1077,11 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 	str.Format(_T("设置ADC数据采样TB开始时间为%d！"), tnow + TBSleepTimeHigh);
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+
+	Sleep(ADCOperationSleepTime);
+
+	// 广播查询采集站TB时刻
+	OnQueryTBTime();
 }
 // 防止程序在循环中运行无法响应消息
 //************************************
@@ -1082,4 +1097,40 @@ void CADCSet::ProcessMessages(void)
 	MSG msg;
 	::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 	::DispatchMessage(&msg);
+}
+// 广播查询采集站TB时刻
+void CADCSet::OnQueryTBTime(void)
+{
+	CString str = _T("");
+	str.Format(_T("查询采集站的TB时刻和本地时间！"));
+	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnQueryTBTime"), str, SuccessStatus);
+	int iPos = 0;
+
+	// 广播查询采集站TB时刻
+	iPos = ADCSetFrameHead(BroadCastPort, SendQueryCmd, ADSetReturnPort);
+
+	unsigned int uitmp = 0;
+	m_ucFrameData[iPos] = CmdTBHigh;
+	iPos += FrameCmdSize1B;
+	memcpy(&m_ucFrameData[iPos], &uitmp, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+	m_ucFrameData[iPos] = CmdTbLow;
+	iPos += FrameCmdSize1B;
+	memcpy(&m_ucFrameData[iPos], &uitmp, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+	m_ucFrameData[iPos] = CmdLocalSysTime;
+	iPos += FrameCmdSize1B;
+	memcpy(&m_ucFrameData[iPos], &uitmp, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+	m_ucFrameData[iPos] = SndFrameBufInit;
+	OnCRCCal();
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+}
+
+// 关闭UDP套接字
+void CADCSet::OnCloseUDP(void)
+{
+	shutdown(m_ADCSetSocket, SD_BOTH);
+	closesocket(m_ADCSetSocket);
+	m_ADCSetSocket = INVALID_SOCKET;
 }

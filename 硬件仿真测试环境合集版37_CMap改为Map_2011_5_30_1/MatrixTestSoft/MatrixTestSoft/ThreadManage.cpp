@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "ThreadManage.h"
-#include <Mswsock.h>
 CThreadManage::CThreadManage(void)
 : m_pLogFile(NULL)
 {
@@ -42,12 +41,12 @@ void CThreadManage::OnInit(void)
 	m_oIPSet.m_pLogFile = m_pLogFile;
 
 	m_oHeartBeatThread.OnInit();
+	// 创建线程并挂起
 	m_oHeartBeatThread.CreateThread(CREATE_SUSPENDED, 0, 0);
-/*	m_oHeartBeatThread.SuspendThread();*/
 	m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnInit"), _T("心跳发送线程创建成功！"), SuccessStatus);
 	m_oADCDataRecThread.OnInit();
+	// 创建线程并挂起
 	m_oADCDataRecThread.CreateThread(CREATE_SUSPENDED, 0, 0);
-/*	m_oADCDataRecThread.SuspendThread();*/
 	m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnInit"), _T("ADC数据接收线程创建成功！"), SuccessStatus);
 }
 
@@ -80,7 +79,8 @@ void CThreadManage::OnClose(void)
 	{
 		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnClose"), _T("心跳线程正常结束！"), SuccessStatus);
 	}
-	::CloseHandle(m_oHeartBeatThread.m_hHeartBeatThreadClose);
+	// 关闭事件句柄
+	CloseHandle(m_oHeartBeatThread.m_hHeartBeatThreadClose);
 
 	iResult = WaitForSingleObject(m_oADCDataRecThread.m_hADCDataThreadClose, WaitForThreadCloseTime);
 	if (iResult != WAIT_OBJECT_0)
@@ -93,7 +93,8 @@ void CThreadManage::OnClose(void)
 	{
 		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnClose"), _T("ADC数据接收线程正常结束！"), SuccessStatus);
 	}
-	::CloseHandle(m_oADCDataRecThread.m_hADCDataThreadClose);
+	// 关闭事件句柄
+	CloseHandle(m_oADCDataRecThread.m_hADCDataThreadClose);
 	OnCloseUDPSocket();
 	m_oInstrumentList.OnClose();
 }
@@ -139,11 +140,9 @@ void CThreadManage::OnOpen(void)
 //************************************
 void CThreadManage::OnStop(void)
 {
-	shutdown(m_oHeartBeatThread.m_HeartBeatSocket, SD_BOTH);
-	closesocket(m_oHeartBeatThread.m_HeartBeatSocket);
+	m_oHeartBeatThread.OnCloseUDP();
 	m_oHeartBeatThread.SuspendThread();
-	shutdown(m_oADCDataRecThread.m_ADCDataSocket, SD_BOTH);
-	closesocket(m_oADCDataRecThread.m_ADCDataSocket);
+	m_oADCDataRecThread.OnCloseUDP();
 	m_oADCDataRecThread.SuspendThread();
 	OnCloseUDPSocket();
 	m_oInstrumentList.OnStop();
@@ -229,7 +228,7 @@ SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast
 			m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 		}
 		// 避免端口阻塞
-//		OnAvoidIOBlock(socketName);
+		OnAvoidIOBlock(socketName);
 	}
 	return socketName;
 }
@@ -371,16 +370,10 @@ void CThreadManage::OnCreateADCDataSocket(void)
 // 关闭UDP套接字
 void CThreadManage::OnCloseUDPSocket(void)
 {
-	shutdown(m_oHeadFrame.m_HeadFrameSocket, SD_BOTH);
-	closesocket(m_oHeadFrame.m_HeadFrameSocket);
-	shutdown(m_oIPSet.m_IPSetSocket, SD_BOTH);
-	closesocket(m_oIPSet.m_IPSetSocket);
-	shutdown(m_oTailFrame.m_TailFrameSocket, SD_BOTH);
-	closesocket(m_oTailFrame.m_TailFrameSocket);
-	shutdown(m_oTailTimeFrame.m_TailTimeSocket, SD_BOTH);
-	closesocket(m_oTailTimeFrame.m_TailTimeSocket);
-	shutdown(m_oSysTime.m_SysTimeSocket, SD_BOTH);
-	closesocket(m_oSysTime.m_SysTimeSocket);
-	shutdown(m_oADCSet.m_ADCSetSocket, SD_BOTH);
-	closesocket(m_oADCSet.m_ADCSetSocket);
+	m_oHeadFrame.OnCloseUDP();
+	m_oIPSet.OnCloseUDP();
+	m_oTailFrame.OnCloseUDP();
+	m_oTailTimeFrame.OnCloseUDP();
+	m_oSysTime.OnCloseUDP();
+	m_oADCSet.OnCloseUDP();
 }

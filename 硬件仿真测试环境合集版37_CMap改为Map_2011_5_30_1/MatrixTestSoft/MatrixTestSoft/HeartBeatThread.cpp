@@ -12,8 +12,8 @@ IMPLEMENT_DYNCREATE(CHeartBeatThread, CWinThread)
 
 CHeartBeatThread::CHeartBeatThread()
 : m_bclose(false)
-, m_uiSendPort(0)
-, m_csIPSource(_T(""))
+, m_uiIPSource(0)
+, m_HeartBeatSocket(INVALID_SOCKET)
 {
 }
 
@@ -104,11 +104,8 @@ void CHeartBeatThread::MakeHeartBeatFrame(void)
 	m_pFrameData[3] = FrameHeadCheck3;
 	memset(&m_pFrameData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
-	// CString转换为const char*
-	const char* pChar = ConvertCStringToConstCharPointer(m_csIPSource);
-
 	// 源IP地址
-	uiIPSource = inet_addr(pChar);
+	uiIPSource = m_uiIPSource;
 	// 目标IP地址
 	uiIPAim = BroadCastPort;
 	// 目标端口号
@@ -149,9 +146,6 @@ void CHeartBeatThread::MakeHeartBeatFrame(void)
 //************************************
 void CHeartBeatThread::SendHeartBeatFrame(void)
 {
-	addr2.sin_family = AF_INET;											// 填充套接字地址结构
-	addr2.sin_port = htons(m_uiSendPort);
-	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(IPBroadcastAddr));
 	// 发送广播命令帧
 	int icount = sendto(m_HeartBeatSocket, (const char*)&m_pFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 }
@@ -167,8 +161,7 @@ void CHeartBeatThread::SendHeartBeatFrame(void)
 //************************************
 void CHeartBeatThread::OnClose(void)
 {
-	shutdown(m_HeartBeatSocket, SD_BOTH);
-	closesocket(m_HeartBeatSocket);
+	OnCloseUDP();
 	m_bclose = true;
 }
 
@@ -186,4 +179,12 @@ void CHeartBeatThread::ProcessMessages(void)
 	MSG msg;
 	::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 	::DispatchMessage(&msg);
+}
+
+// 关闭UDP套接字
+void CHeartBeatThread::OnCloseUDP(void)
+{
+	shutdown(m_HeartBeatSocket, SD_BOTH);
+	closesocket(m_HeartBeatSocket);
+	m_HeartBeatSocket = INVALID_SOCKET;
 }

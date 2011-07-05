@@ -81,6 +81,8 @@ public:
 	void OnPortMonitoringProc(void);
 	// 处理数据
 	void OnProcess(int iCount);
+	// 关闭UDP套接字
+	void OnCloseUDP(void);
 };
 
 

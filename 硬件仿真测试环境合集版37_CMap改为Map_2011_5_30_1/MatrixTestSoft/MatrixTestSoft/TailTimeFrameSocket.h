@@ -43,9 +43,7 @@ public:
 	// 仪器列表指针
 	CInstrumentList* m_pInstrumentList;
 	// 源IP地址
-	CString m_csIPSource;
-	// 发送端口
-	unsigned int m_uiSendPort;
+	unsigned int m_uiIPSource;
 	// 仪器位置索引表
 	hash_map<unsigned int, CInstrument*> m_oInstrumentLocationMap;
 	// 日志类指针
@@ -64,6 +62,8 @@ public:
 	void OnSetTimeDelay(unsigned int uiTimeHigh, unsigned int uiTimeLow);
 	// 消息处理函数
 	void OnReceive(void);
+	// 关闭UDP套接字
+	void OnCloseUDP(void);
 };
 
 

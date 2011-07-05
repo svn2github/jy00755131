@@ -23,13 +23,11 @@ protected:
 	byte m_pFrameData[SndFrameSize];
 public:
 	// 源IP地址
-	CString m_csIPSource;
+	unsigned int m_uiIPSource;
 	// 线程关闭标志
 	bool m_bclose;
 	// 线程结束事件
 	HANDLE m_hHeartBeatThreadClose;
-	// 发送端口
-	unsigned int m_uiSendPort;
 	// 心跳Socket套接字
 	sockaddr_in addr, addr2;
 	SOCKET m_HeartBeatSocket;
@@ -45,6 +43,8 @@ public:
 	void OnInit(void);
 	// 关闭并结束线程
 	void OnClose(void);
+	// 关闭UDP套接字
+	void OnCloseUDP(void);
 };
 
 

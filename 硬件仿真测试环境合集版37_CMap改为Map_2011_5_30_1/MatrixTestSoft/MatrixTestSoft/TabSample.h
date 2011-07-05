@@ -69,7 +69,6 @@ public:
 	unsigned int m_uiSendPort;
 	// 日志类指针
 	CLogFile* m_pLogFile;
-
 public:
 	// 初始化
 	void OnInit(void);

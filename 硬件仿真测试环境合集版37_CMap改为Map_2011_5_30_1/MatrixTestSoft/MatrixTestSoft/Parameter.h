@@ -1,5 +1,20 @@
 #include <string>
 using namespace std;
+//______________选项卡控件位置设置______________
+// 采样选项卡位置
+#define TabSampleCtl									0
+// ADC参数设置选项卡位置
+#define TabADCSettingsCtl						1
+// ADC接收数据显示选项卡位置
+#define TabADCDataShowCtl					2
+// 串口转UDP选项卡位置
+#define TabUartToUdpCtl							3
+// 端口监视选项卡位置
+#define TabPortMonitoringCtl					4
+// 端口监视接收帧选项卡位置
+#define TabPortMonitoringRecCtl				0
+// 端口监视接收帧选项卡位置
+#define TabPortMonitoringSndCtl				1
 //____________UDP套接字事件消息设置____________
 // 串口转UDP套接字事件
 #define WM_UARTTOUDPSOCKET		WM_USER + 1001
@@ -43,9 +58,9 @@ using namespace std;
 
 //___________________缓冲区设置____________________
 // 最多连接的设备数
-#define InstrumentMaxCount			21	
+#define InstrumentMaxCount			49	
 // 绘图控件个数
-#define InstrumentNum					20
+#define InstrumentNum					48
 // 接收数据包的大小
 #define ReceiveDataSize				72
 // 缓冲区个数
@@ -59,15 +74,15 @@ using namespace std;
 // 串口转端口中端口缓冲区大小
 #define UartToUdpRcvSize			1024
 // ADC数据缓冲区大小，4K采样率单个设备一秒钟最多上传56帧数据
-#define ADCDataBufSize				(56 * InstrumentNum * RcvFrameSize)
+#define ADCDataBufSize				10000000
 // 端口监视缓冲区大小，ADC数据缓冲区大小的2倍
-#define PortMonitoringBufSize		(ADCDataBufSize * 2)
+#define PortMonitoringBufSize		10000000
 // 串口转UDP端口缓冲区大小
 #define UartToUDPBufSize			65536
 // 发送帧缓冲区初值设定
 #define SndFrameBufInit				0x00
 // ADC处理过程中预设的缓冲区帧数
-#define ADCDataTempFrameNum	20
+#define ADCDataTempFrameNum	60
 // ADC处理过程中预设的缓冲区大小
 #define ADCDataTempDataSize	(ADCDataTempFrameNum * ReceiveDataSize)
 //__________________串口端口定义__________________
@@ -151,9 +166,7 @@ using namespace std;
 // ADC数据显示界面每行显示的个数
 #define ADCDataShowPerLineNum					6
 // IP广播地址
-#define IPBroadcastAddr		_T("255.255.255.255")
-// 默认的本机IP地址
-#define IPHostAddr				_T("127.0.0.1")
+#define IPBroadcastAddr		0xFFFFFFFF
 // XML配置文件名
 #define XMLFileName			_T("MatrixTestSoft.xml")
 
@@ -295,7 +308,7 @@ using namespace std;
 // TabSample界面停止采样定时器序号
 #define TabSampleStopSampleTimerNb				2
 // TabSample界面停止采样定时器延时设置
-#define TabSampleStopSampleTimerSet				1000
+#define TabSampleStopSampleTimerSet				3000
 // TabSample界面查询硬件设备出错计数定时器序号
 #define TabSampleQueryErrorCountTimerNb		3
 // TabSample界面查询硬件设备出错计数定时器延时设置
@@ -324,6 +337,11 @@ using namespace std;
 #define TabSampleADCZeroDriftTimerNb			9
 // TabSample界面做ADC零漂校正的定时器延时设置
 #define TabSampleADCZeroDriftTimerSet			2000
+// TabSample界面做ADC零漂校正的定时器序号
+#define TabSampleADCZeroDriftTimerNb			9
+// TabSample界面做ADC零漂校正的定时器延时设置
+#define TabSampleADCZeroDriftTimerSet			2000
+
 // TabPortMonitoring界面刷新接收发送帧数的定时器序号
 #define TabPortMonitoringFrameNumTimerNb	1
 // TabPortMonitoring界面刷新接收发送帧数的定时器延时设置
@@ -335,11 +353,11 @@ using namespace std;
 // PortMonitoringRec界面刷新接收帧的定时器序号
 #define PortMonitoringRecTimerNb						1
 // PortMonitoringRec界面刷新接收帧的定时器延时设置
-#define PortMonitoringRecTimerSet						1000
+#define PortMonitoringRecTimerSet						2000
 // PortMonitoringSend界面刷新接收帧的定时器序号
 #define PortMonitoringSendTimerNb						1
 // PortMonitoringSend界面刷新接收帧的定时器延时设置
-#define PortMonitoringSendTimerSet					1000
+#define PortMonitoringSendTimerSet					2000
 //__________________日志记录状态__________________
 // 正常工作状态
 #define SuccessStatus												1

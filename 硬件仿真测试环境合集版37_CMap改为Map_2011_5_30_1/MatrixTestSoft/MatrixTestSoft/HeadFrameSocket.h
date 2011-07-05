@@ -23,9 +23,7 @@ public:
 	// 仪器列表指针
 	CInstrumentList* m_pInstrumentList;
 	// 源IP地址
-	CString m_csIPSource;
-	// 发送端口
-	unsigned int m_uiSendPort;
+	unsigned int m_uiIPSource;
 	// 界面指针
 	CWnd* m_pwnd;
 	// 日志类指针
@@ -49,4 +47,6 @@ public:
 	bool OnMonitorIPSetReturn(void);
 	// 消息处理函数
 	void OnReceive(void);
+	// 关闭UDP套接字
+	void OnCloseUDP(void);
 };

@@ -9,10 +9,9 @@ CSaveFile::CSaveFile(void)
 , m_csSaveReceiveFile(_T(""))
 , m_csSaveSendFile(_T(""))
 , m_csSaveFilePath(_T(""))
-, m_iSaveSize(1024)
+, m_iSaveSize(0)
 , m_bStartSave(false)
 , m_pWndTab(NULL)
-/*, m_file(NULL)*/
 {
 }
 
@@ -85,10 +84,10 @@ void CSaveFile::OnSelectSaveFilePath(void)
 	BROWSEINFO bi;
 	ITEMIDLIST *pidl;
 
-	bi.hwndOwner = m_hWnd; // 指定父窗口，在对话框显示期间，父窗口将被禁用 
-	bi.pidlRoot = NULL; // 如果指定NULL，就以“桌面”为根 
+	bi.hwndOwner = m_hWnd;	// 指定父窗口，在对话框显示期间，父窗口将被禁用 
+	bi.pidlRoot = NULL;				// 如果指定NULL，就以“桌面”为根 
 	bi.pszDisplayName = szDir; 
-	bi.lpszTitle = _T("请选择数据存储目录"); // 这一行将显示在对话框的顶端 
+	bi.lpszTitle = _T("请选择数据存储目录");	// 这一行将显示在对话框的顶端 
 	bi.ulFlags = BIF_STATUSTEXT | BIF_USENEWUI | BIF_RETURNONLYFSDIRS;
 	bi.lpfn = NULL;
 	bi.lParam = 0;
@@ -289,8 +288,6 @@ void CSaveFile::OnSaveReceiveData(unsigned char* buf, int iRecLength)
 	m_csEditShow += strtemp;
 	icsSaveFileLength = m_csSaveFile.GetLength();
 	m_Sec_SavePortMonitorFrame.Unlock();
-	//	GetDlgItem(IDC_EDIT_RECEIVE)->SetWindowText(m_cseditshow);
-	//	UpdateData(FALSE);
 	if (icsSaveFileLength> (m_iSaveSize*1024))
 	{	
 		OnSaveToFile();

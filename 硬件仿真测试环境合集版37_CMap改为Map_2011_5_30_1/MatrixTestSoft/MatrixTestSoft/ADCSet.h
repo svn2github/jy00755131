@@ -12,9 +12,7 @@ public:
 	// ADC设置帧
 	unsigned char m_ucFrameData[SndFrameSize];
 	// 源IP地址
-	CString m_csIPSource;
-	// 目标端口号
-	unsigned int m_uiSendPort;
+	unsigned int m_uiIPSource;
 	// 设备类指针
 	CInstrumentList* m_pInstrumentList;
 	// ADC参数设置选择界面指针
@@ -93,4 +91,8 @@ public:
 	void OnADCStartSample(unsigned int tnow);
 	// 消息处理函数
 	void OnReceive(void);
+	// 广播查询采集站TB时刻
+	void OnQueryTBTime(void);
+	// 关闭UDP套接字
+	void OnCloseUDP(void);
 };

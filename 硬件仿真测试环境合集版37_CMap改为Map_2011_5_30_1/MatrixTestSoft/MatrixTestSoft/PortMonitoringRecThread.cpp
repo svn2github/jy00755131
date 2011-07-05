@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MatrixTestSoft.h"
 #include "PortMonitoringRecThread.h"
-#include <Mswsock.h>
 
 // CPortMonitoringRecThread
 
@@ -25,6 +24,7 @@ CPortMonitoringRecThread::CPortMonitoringRecThread()
 , m_bclose(false)
 , m_uiUdpCount(0)
 , m_pLogFile(NULL)
+, m_RecSocket(INVALID_SOCKET)
 {
 }
 
@@ -300,10 +300,7 @@ void CPortMonitoringRecThread::OnAvoidIOBlock(SOCKET socket)
 //************************************
 void CPortMonitoringRecThread::OnStop(void)
 {
-	shutdown(m_RecSocket, SD_BOTH);
-	closesocket(m_RecSocket);
-// 	m_RecSocket.ShutDown(2);
-// 	m_RecSocket.Close();
+	OnCloseUDP();
 }
 
 // 关闭
@@ -317,10 +314,7 @@ void CPortMonitoringRecThread::OnStop(void)
 //************************************
 void CPortMonitoringRecThread::OnClose(void)
 {
-// 	m_RecSocket.ShutDown(2);
-// 	m_RecSocket.Close();
-	shutdown(m_RecSocket, SD_BOTH);
-	closesocket(m_RecSocket);
+	OnCloseUDP();
 	m_bclose = true;
 }
 // 重置界面
@@ -398,4 +392,11 @@ void CPortMonitoringRecThread::OnPortMonitoringProc(void)
 //	m_RecSocket.SendTo(m_ucudp_buf[m_usudp_count],SndFrameSize,m_iSendPort,m_csIP);
 	sendto(m_RecSocket, (const char*)&m_ucudp_buf[m_usudp_count], SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 	m_pSaveFile->OnSaveReceiveData(m_ucudp_buf[m_usudp_count],SndFrameSize);
+}
+// 关闭UDP套接字
+void CPortMonitoringRecThread::OnCloseUDP(void)
+{
+	shutdown(m_RecSocket, SD_BOTH);
+	closesocket(m_RecSocket);
+	m_RecSocket = INVALID_SOCKET;
 }

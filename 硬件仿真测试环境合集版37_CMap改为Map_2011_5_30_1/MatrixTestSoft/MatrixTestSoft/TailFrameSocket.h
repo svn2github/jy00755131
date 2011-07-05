@@ -23,9 +23,7 @@ public:
 	// 仪器列表指针
 	CInstrumentList* m_pInstrumentList;
 	// 源IP地址
-	CString m_csIPSource;
-	// 发送端口
-	unsigned int m_uiSendPort;
+	unsigned int m_uiIPSource;
 	// 尾包接收标志位
 	BOOL m_bTailRec;
 	// 日志类指针
@@ -51,6 +49,8 @@ public:
 	bool OnTailMonitor(void);
 	// 消息处理函数
 	void OnReceive(void);
+	// 关闭UDP套接字
+	void OnCloseUDP(void);
 };
 
 

@@ -50,9 +50,7 @@ public:
 	// ADC数据重发帧
 	unsigned char m_ucADCRetransmission[SndFrameSize];
 	// 源IP地址
-	CString m_csIPSource;
-	// 发送端口
-	unsigned int m_uiSendPort;
+	unsigned int m_uiIPSource;
 	// 需要重发的ADC数据信息结构
 	typedef struct m_structADC
 	{
@@ -129,6 +127,8 @@ public:
 	void OnReset(void);
 	// 数据处理
 	void OnProcess(int iCount);
+	// 关闭UDP套接字
+	void OnCloseUDP(void);
 };
 
 
