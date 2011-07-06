@@ -1063,6 +1063,8 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 			uiIPAim	= IPSetAddrStart + IPSetAddrInterval * (i + 1);
 			iPos = ADCSetFrameHead(uiIPAim, SendSetCmd, ADSetReturnPort);
 			OnADCReadContinuous(iPos);
+			str.Format(_T("向IP地址为%d的仪器发送连续ADC数据采样的命令！"), uiIPAim);
+			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
 			sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 		}
 	}

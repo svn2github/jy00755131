@@ -34,9 +34,9 @@ public:
 	// 线程关闭标志
 	bool m_bclose;
 	// 选择仪器对象
-	int m_iSelectObject[InstrumentNum];
+	int *m_pSelectObject;
 	// 选择仪器对象做噪声监测
-	int m_iSelectObjectNoise[InstrumentNum];
+	int *m_pSelectObjectNoise;
 	// 图形模板指针
 	COScopeCtrl* m_pOScopeCtrl[InstrumentNum];
 	// 记录前一个接收到的ADC数据的指针偏移量                  

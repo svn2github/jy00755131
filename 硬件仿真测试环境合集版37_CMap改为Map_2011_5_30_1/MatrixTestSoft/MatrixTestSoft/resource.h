@@ -233,28 +233,25 @@
 #define IDC_CHECK_GRAPHVIEW46           1181
 #define IDC_CHECK_GRAPHVIEW47           1182
 #define IDC_CHECK_GRAPHVIEW48           1183
-#define IDC_EDIT_MESSAGE                1184
-#define IDC_STATIC_GRAPHSHOW            1185
-#define IDC_BUTTON1                     1185
-#define IDC_BUTTON_SETBYHAND            1185
-#define IDC_EDIT_HPFLOW                 1186
-#define IDC_BUTTON2                     1186
-#define IDC_EDIT_HPFHIGH                1187
-#define IDC_CHECK1                      1187
-#define IDC_CHECK_SHOWMESSAGE           1187
-#define IDC_COMBO_SYNC                  1188
+#define IDC_EDIT_MESSAGE							1184
+#define IDC_STATIC_GRAPHSHOW				1185
+#define IDC_BUTTON_SETBYHAND				1185
+#define IDC_EDIT_HPFLOW							1186
+#define IDC_EDIT_HPFHIGH							1187
+#define IDC_CHECK_SHOWMESSAGE         1187
+#define IDC_COMBO_SYNC							1188
 #define IDC_STATIC_COLLECTSYSTIMERETURNNUM 1188
-#define IDC_COMBO_MODE                  1189
-#define IDC_STATIC_ADCREC               1189
-#define IDC_STATIC_ADCRECNUM            1189
-#define IDC_EDIT_ADCDATA                1190
-#define IDC_COMBO_SPS                   1191
-#define IDC_COMBO_PHS                   1192
-#define IDC_COMBO_FILTER                1193
-#define IDC_COMBO_MUX                   1194
-#define IDC_COMBO_CHOP                  1195
-#define IDC_COMBO_SPS6                  1196
-#define IDC_COMBO_PGA                   1197
+#define IDC_COMBO_MODE							1189
+#define IDC_STATIC_ADCREC						1189
+#define IDC_STATIC_ADCRECNUM				1189
+#define IDC_EDIT_ADCDATA						1190
+#define IDC_COMBO_SPS								1191
+#define IDC_COMBO_PHS								1192
+#define IDC_COMBO_FILTER							1193
+#define IDC_COMBO_MUX								1194
+#define IDC_COMBO_CHOP							1195
+#define IDC_COMBO_SPS6								1196
+#define IDC_COMBO_PGA								1197
 
 // Next default values for new objects
 // 

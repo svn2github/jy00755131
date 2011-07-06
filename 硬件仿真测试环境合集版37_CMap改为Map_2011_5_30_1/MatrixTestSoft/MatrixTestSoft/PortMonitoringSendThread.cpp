@@ -66,6 +66,8 @@ int CPortMonitoringSendThread::Run()
 	DWORD dwFrameCount = 0;
 	int icount = 0;
 	int n = sizeof(addr);
+	int iError = 0;
+	CString str = _T("");
 	// 循环，直到关闭标志为真
 	while(true)
 	{
@@ -84,10 +86,13 @@ int CPortMonitoringSendThread::Run()
 				{
 					OnProcess(icount);
 				}
+				else if(icount == PortMonitoringBufSize)
+				{
+					str.Format(_T("端口监视发送线程数据接收超过缓冲区大小，缓冲区大小为%d！"), PortMonitoringBufSize);
+					m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::Run"), str, ErrorStatus);
+				}
 				else
 				{
-					int iError = 0;
-					CString str = _T("");
 					iError = WSAGetLastError();
 					str.Format(_T("端口监视发送的接收帧错误，错误号为%d！"), iError);
 					m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::Run"), str, ErrorStatus);
