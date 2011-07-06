@@ -134,18 +134,9 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 // 关闭ADC保存数据文件
 void CADCDataSaveToFile::OnCloseADCSaveFile(void)
 {
-	// 	if (m_pFileSave == NULL)
-	// 	{
-	// 		return;
-	// 	}
-	// 	fclose(m_pFileSave); 
-	CFileStatus status;
-	if(m_FileSave.GetStatus(status))    // virtual member function
+	if(m_FileSave.m_hFile != CFile::hFileNull)    // virtual member function
 	{
-		if (status.m_size != 0)
-		{
-			m_FileSave.Close();
-		}
+		m_FileSave.Close();
 	}
 	m_bOpenADCSaveFile = FALSE;
 }

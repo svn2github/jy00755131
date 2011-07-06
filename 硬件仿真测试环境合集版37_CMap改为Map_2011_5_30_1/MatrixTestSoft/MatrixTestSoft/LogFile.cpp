@@ -35,7 +35,10 @@ void CLogFile::OnOpenLogFile(void)
 // 关闭程序运行日志文件
 void CLogFile::OnCloseLogFile(void)
 {
-	m_SaveLogFile.Close();
+	if (m_SaveLogFile.m_hFile != CFile::hFileNull)
+	{
+		m_SaveLogFile.Close();
+	}
 }
 
 // 写程序运行的日志文件

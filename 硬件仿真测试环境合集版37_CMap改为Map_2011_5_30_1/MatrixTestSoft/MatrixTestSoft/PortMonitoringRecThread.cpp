@@ -12,8 +12,6 @@ IMPLEMENT_DYNCREATE(CPortMonitoringRecThread, CWinThread)
 CPortMonitoringRecThread::CPortMonitoringRecThread()
 : m_usudp_count(0)
 , m_iRecPort(0)
-, m_iSendPort(0)
-, m_csIP(_T(""))
 , m_pSaveFile(NULL)
 , m_uiHeartBeatNum(0)
 , m_uiIPSetNum(0)
@@ -66,12 +64,10 @@ int CPortMonitoringRecThread::Run()
 		}
 		// 得到网络接收缓冲区数据字节数
 		// 可以解决粘包现象
-//		while(m_RecSocket.IOCtl(FIONREAD, &dwFrameCount))
 		while(SOCKET_ERROR != ioctlsocket(m_RecSocket, FIONREAD, &dwFrameCount))
 		{
 			if(dwFrameCount > 0) 
 			{
-//				icount = m_RecSocket.Receive(m_ucUdpBuf, PortMonitoringBufSize);
 				icount = recvfrom(m_RecSocket, (char*)&m_ucUdpBuf, sizeof(m_ucUdpBuf), 0, (sockaddr*)&addr, &n);
 				if (icount != SOCKET_ERROR)
 				{
@@ -233,7 +229,6 @@ void CPortMonitoringRecThread::OnInit(void)
 void CPortMonitoringRecThread::OnOpen(void)
 {
 	CString str = _T("");
-//	BOOL bReturn =  m_RecSocket.Create(m_iRecPort,SOCK_DGRAM);
 	m_RecSocket = socket(AF_INET, SOCK_DGRAM, 0);
 	addr.sin_family = AF_INET;											// 填充套接字地址结构
 	addr.sin_port = htons(m_iRecPort);
@@ -250,7 +245,6 @@ void CPortMonitoringRecThread::OnOpen(void)
 	{
 		int nSendBuf = PortMonitoringBufSize;
 		iReturn = setsockopt(m_RecSocket, SOL_SOCKET, SO_SNDBUF,  ( const char* )&nSendBuf, sizeof(int));
-//		bReturn = m_RecSocket.SetSockOpt(SO_SNDBUF,&m_RecSocket,PortMonitoringBufSize,SOL_SOCKET);
 		if (iReturn == SOCKET_ERROR)
 		{
 			str = _T("端口监视程序的接收端口发送缓冲区设置失败！");
@@ -259,7 +253,6 @@ void CPortMonitoringRecThread::OnOpen(void)
 		}
 		int nRecvBuf = PortMonitoringBufSize;
 		iReturn = setsockopt(m_RecSocket, SOL_SOCKET, SO_RCVBUF,  ( const char* )&nRecvBuf, sizeof(int));
-//		bReturn = m_RecSocket.SetSockOpt(SO_RCVBUF,&m_RecSocket,PortMonitoringBufSize,SOL_SOCKET);
 		if (iReturn == SOCKET_ERROR)
 		{
 			str = _T("端口监视程序的接收端口接收缓冲区设置失败！");
@@ -359,10 +352,6 @@ void CPortMonitoringRecThread::OnPortMonitoringProc(void)
 	int iPos = 0;
 	unsigned short uiPort = 0;
 
-	addr2.sin_family = AF_INET;											// 填充套接字地址结构
-	addr2.sin_port = htons(m_iSendPort);
-	addr2.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(m_csIP));
-
 	// 注释掉下面的输出信息后在ADC参数设置和零漂过程中心跳就不会出现停顿现象
 	// 通过端口识别功能
 	iPos = 24;
@@ -389,7 +378,6 @@ void CPortMonitoringRecThread::OnPortMonitoringProc(void)
 	}
 	m_uiSendFrameNum ++;
 
-//	m_RecSocket.SendTo(m_ucudp_buf[m_usudp_count],SndFrameSize,m_iSendPort,m_csIP);
 	sendto(m_RecSocket, (const char*)&m_ucudp_buf[m_usudp_count], SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
 	m_pSaveFile->OnSaveReceiveData(m_ucudp_buf[m_usudp_count],SndFrameSize);
 }

@@ -59,20 +59,7 @@ void CADCFrameInfo::OnSaveFile(unsigned int uiInstrumentNb, unsigned int uiDataP
 // ¹Ø±ÕÎÄ¼þ
 void CADCFrameInfo::OnCloseFile(void)
 {
-// 	if (m_pFileSave == NULL)
-// 	{
-// 		return;
-// 	}
-// 	fclose(m_pFileSave); 
-// 	CFileStatus status;
-// 	if(m_FileSave.GetStatus(status))    // virtual member function
-// 	{
-// 		if (status.m_size != 0)
-// 		{
-// 			m_FileSave.Close();
-// 		}
-// 	}
-	if (m_FileSave.m_hFile != NULL)
+	if (m_FileSave.m_hFile != CFile::hFileNull)
 	{
 		m_FileSave.Close();
 	}

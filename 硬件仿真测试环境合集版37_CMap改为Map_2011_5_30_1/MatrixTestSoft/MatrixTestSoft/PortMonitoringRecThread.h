@@ -46,10 +46,6 @@ public:
 	SOCKET m_RecSocket;
 	// 接收端口
 	int m_iRecPort;
-	// 发送端口
-	int m_iSendPort;
-	// 目标IP地址
-	CString m_csIP;
 	// 保存文件类的指针
 	CSaveFile* m_pSaveFile;
 	// 线程关闭标志
