@@ -152,13 +152,13 @@ using namespace std;
 // ADC操作过程延时
 #define ADCOperationSleepTime			100
 // 端口监视发送线程Sleep时间
-#define PortMonitoringSendThreadSleepTime	1
+#define PortMonitoringSendThreadSleepTime	50
 // 端口监视接收线程Sleep时间
-#define PortMonitoringRecThreadSleepTime	1
+#define PortMonitoringRecThreadSleepTime	50
 // 心跳线程Sleep时间
 #define HeartBeatThreadSleepTime					500
 // ADC数据接收线程Sleep时间
-#define ADCDataRecThreadSleepTime				1
+#define ADCDataRecThreadSleepTime				50
 // TB设置延时高位
 #define TBSleepTimeHigh									0x5000
 // TB设置延时低位
@@ -328,7 +328,7 @@ using namespace std;
 // TabSample界面做时统设置的定时器序号
 #define TabSampleTimeCalTimerNb						7
 // TabSample界面做时统设置的定时器延时设置
-#define TabSampleTimeCalTimerSet						2000
+#define TabSampleTimeCalTimerSet						2300
 // TabSample界面做ADC参数设置的定时器序号
 #define TabSampleADCSetTimerNb						8
 // TabSample界面做ADC参数设置的定时器延时设置
@@ -378,3 +378,5 @@ extern string WideCharToMultiChar(wstring str);
 extern void WriteCHToCFile(CFile *file, CString str);
 // CString转换为const char*
 extern const char* ConvertCStringToConstCharPointer(CString str);
+// 
+extern char* Convert(char* ch,int dec,int sign);

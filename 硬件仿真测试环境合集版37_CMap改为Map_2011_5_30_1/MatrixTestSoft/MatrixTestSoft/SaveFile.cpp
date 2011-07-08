@@ -266,6 +266,7 @@ void CSaveFile::OnSaveReceiveData(unsigned char* buf, int iRecLength)
 	CString str = _T("");
 	CString strtemp = _T("");
 	int icsSaveFileLength = 0;
+	wchar_t buffer[_CVTBUFSIZE];
 
 	SYSTEMTIME  sysTime;
 	GetLocalTime(&sysTime);
@@ -276,9 +277,11 @@ void CSaveFile::OnSaveReceiveData(unsigned char* buf, int iRecLength)
 
 	for (int i=0; i<iRecLength; i++)
 	{
-//		ProcessMessages();
-		str.Format(_T("%02x "),buf[i]);
-		strtemp += str;
+		// 方法2：采用_stprintf_s函数的方法，CPU占用率达到10%
+		_stprintf_s(buffer, _CVTBUFSIZE, _T("%02x "), buf[i]);
+		strtemp += buffer;
+// 		str.Format(_T("%02x "),buf[i]);
+// 		strtemp += str;
 	}
 
 	strtemp += _T("\r\n");
@@ -315,6 +318,7 @@ void CSaveFile::OnSaveSendData(unsigned char* buf, int iSendLength)
 	int icsSaveFileLength = 0;
 	SYSTEMTIME  sysTime;
 	GetLocalTime(&sysTime);
+	wchar_t buffer[_CVTBUFSIZE];
 
 	str.Format(_T("%04d.%02d.%02d %02d:%02d:%02d:%03d 发送数据 数据包大小为 %d 数据为：\r\n"),sysTime.wYear, sysTime.wMonth, sysTime.wDay,
 		sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds, iSendLength);
@@ -322,9 +326,11 @@ void CSaveFile::OnSaveSendData(unsigned char* buf, int iSendLength)
 
 	for (int i=0; i<iSendLength; i++)
 	{
-//		ProcessMessages();
-		str.Format(_T("%02x "),buf[i]);
-		strtemp += str;
+		// 方法2：采用_stprintf_s函数的方法，CPU占用率达到10%
+		_stprintf_s(buffer, _CVTBUFSIZE, _T("%02x "), buf[i]);
+		strtemp += buffer;
+// 		str.Format(_T("%02x "),buf[i]);
+// 		strtemp += str;
 	}
 
 	strtemp += _T("\r\n");

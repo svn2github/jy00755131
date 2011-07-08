@@ -82,6 +82,8 @@ int CPortMonitoringSendThread::Run()
 			if(dwFrameCount > 0) 
 			{
 				icount = recvfrom(m_SendSocket, (char*)&m_ucUdpBuf, sizeof(m_ucUdpBuf), 0, (sockaddr*)&addr, &n);
+// 				str.Format(_T("从端口监视发送线程接收缓冲区读取数据大小为%d！"), icount);
+// 				m_pLogFile->OnWriteLogFile(_T("CADCDataRecThread::Run"), str, SuccessStatus);
 				if (icount != SOCKET_ERROR)
 				{
 					OnProcess(icount);
@@ -606,14 +608,8 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 	{
 		unsigned int uiIP = 0;
 		unsigned int uiInstrumentNb = 0;
-		// 显示IP
-		iPos = 16;
-		for (int j=0; j<FramePacketSize4B; j++)
-		{
-			strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
-			iPos++;
-			m_csErrorCodeReturnShow += strTemp;
-		}
+		CString str = _T("");
+		// 显示设备序号
 		iPos = 16;
 		memcpy(&uiIP, &m_ucudp_buf[m_usudp_count][iPos], FramePacketSize4B);
 		for (int k=0; k<InstrumentMaxCount; k++)
@@ -625,111 +621,65 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 				break;
 			}
 		}
+		strTemp.Format(_T("%d"), uiInstrumentNb);
+		str += strTemp;
 		iPos = 33;
 		memcpy(&uiCommand, &m_ucudp_buf[m_usudp_count][iPos], FrameCmdSize1B);
-		if (uiCommand == CmdFDUErrorCode)
+
+		iPos += FrameCmdSize1B;
+		str += _T("\t");
+		for (int j=0; j<FramePacketSize4B; j++)
 		{
-			iPos += FrameCmdSize1B;
-			m_csErrorCodeReturnShow += _T("\t");
-			for (int j=0; j<FramePacketSize4B; j++)
+			strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
+			iPos++;
+			if (uiCommand == CmdLAUXErrorCode1)
 			{
-				strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
-				iPos++;
-				m_csErrorCodeReturnShow += strTemp;
-			}
-			m_csErrorCodeReturnShow += _T("\t");
-			if (m_uiErrorCodeReturnCount[uiInstrumentNb] == 1)
-			{
-				iPos = 34;
-				for (int j=0; j<FramePacketSize4B; j++)
-				{
-					m_ucErrorCodeReturn[uiInstrumentNb][j] = m_ucudp_buf[m_usudp_count][iPos];
-					strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
-					iPos++;
-					m_csErrorCodeReturnShow += strTemp;
-				}
-			}
-			else
-			{
-				iPos = 34;
-				for (int j=0; j<FramePacketSize4B; j++)
-				{
-					if (m_ucudp_buf[m_usudp_count][iPos] < m_ucErrorCodeReturn[uiInstrumentNb][j])
-					{
-						uiTemp = 256 + m_ucudp_buf[m_usudp_count][iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j];
-					}
-					else
-					{
-						uiTemp = m_ucudp_buf[m_usudp_count][iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j] ;
-					}
-					m_ucErrorCodeReturn[uiInstrumentNb][j] = m_ucudp_buf[m_usudp_count][iPos];
-					strTemp.Format(_T("%02x "), uiTemp);
-					iPos++;
-					m_csErrorCodeReturnShow += strTemp;
-				}
-			}
-			m_csErrorCodeReturnShow += _T("\r\n");
-		}
-		else if (uiCommand == CmdLAUXErrorCode1)
-		{
-			m_csErrorCodeReturnShow += _T("\t");
-			iPos = 34;
-			for (int j=0; j<FramePacketSize4B; j++)
-			{
-				strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
-				iPos++;
 				if (iPos == 36)
 				{
 					iPos = 39;
 				}
-				m_csErrorCodeReturnShow += strTemp;
 			}
-			m_csErrorCodeReturnShow += _T("\t");
+			str += strTemp;
+		}
+		str += _T("\t");
+		iPos = 34;
+		for (int j=0; j<FramePacketSize4B; j++)
+		{
 			if (m_uiErrorCodeReturnCount[uiInstrumentNb] == 1)
 			{
-				iPos = 34;
-				for (int j=0; j<FramePacketSize4B; j++)
-				{
-					m_ucErrorCodeReturn[uiInstrumentNb][j] = m_ucudp_buf[m_usudp_count][iPos];
-					strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
-					iPos++;
-					if (iPos == 36)
-					{
-						iPos = 39;
-					}
-					m_csErrorCodeReturnShow += strTemp;
-				}
+				strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
 			}
 			else
 			{
-				iPos = 34;
-				for (int j=0; j<FramePacketSize4B; j++)
+				if (m_ucudp_buf[m_usudp_count][iPos] < m_ucErrorCodeReturn[uiInstrumentNb][j])
 				{
-					if (m_ucudp_buf[m_usudp_count][iPos] < m_ucErrorCodeReturn[uiInstrumentNb][j])
-					{
-						uiTemp = 256 + m_ucudp_buf[m_usudp_count][iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j];
-					}
-					else
-					{
-						uiTemp = m_ucudp_buf[m_usudp_count][iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j] ;
-					}
-					m_ucErrorCodeReturn[uiInstrumentNb][j] = m_ucudp_buf[m_usudp_count][iPos];
-					strTemp.Format(_T("%02x "), uiTemp);
-					iPos++;
-					if (iPos == 36)
-					{
-						iPos = 39;
-					}
-					m_csErrorCodeReturnShow += strTemp;
+					uiTemp = 256 + m_ucudp_buf[m_usudp_count][iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j];
+				}
+				else
+				{
+					uiTemp = m_ucudp_buf[m_usudp_count][iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j] ;
+				}
+				strTemp.Format(_T("%02x "), uiTemp);
+			}
+			m_ucErrorCodeReturn[uiInstrumentNb][j] = m_ucudp_buf[m_usudp_count][iPos];
+			iPos++;
+			if (uiCommand == CmdLAUXErrorCode1)
+			{
+				if (iPos == 36)
+				{
+					iPos = 39;
 				}
 			}
-			m_csErrorCodeReturnShow += _T("\r\n");
+			str += strTemp;
 		}
-		else
+		if(!((uiCommand == CmdFDUErrorCode) || (uiCommand == CmdLAUXErrorCode1)))
 		{
 			strTemp.Format(_T("误码查询应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
+		strTemp = _T("误码查询结果为：") + str;
+		m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, SuccessStatus);
+		m_csErrorCodeReturnShow += str + _T("\r\n");
 		m_uiErrorCodeReturnNum++;
 	}
 	else if (uiPort == CollectSysTimePort)

@@ -22,7 +22,9 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 	CString strOutput = _T("");
 	CString strTemp = _T("");
 	unsigned int uiDataLength = 0;
-
+// 	char   buffer[_CVTBUFSIZE]; 
+// 	int dec,sign;
+	wchar_t buffer[_CVTBUFSIZE];
 	if(m_bOpenADCSaveFile == FALSE)
 	{
 		OnOpenADCSaveFile();
@@ -42,9 +44,24 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 				continue;
 			}
 			if (uiDataLength > i)
-			{	
-				strTemp.Format(_T("%2.*lf\t"), DecimalPlaces, dpADCDataBuf[j][i]);
-				strOutput += strTemp;
+			{
+				// 方法1：也可以实现double转换为string，只是转换后的数据采用科学计数法，CPU占用率达到22%
+// 				_gcvt_s(buffer, _CVTBUFSIZE, dpADCDataBuf[j][i], 9);
+// 				strOutput += buffer;
+
+				// 方法2：采用_stprintf_s函数的方法，CPU占用率达到10%
+				_stprintf_s(buffer, _CVTBUFSIZE, _T("%2.*lf"), DecimalPlaces, dpADCDataBuf[j][i]);
+				strOutput += buffer;
+				strOutput +=  _T("\t");
+				// 方法3：采用_fcvt_s函数的方法，CPU占用率达到25%
+// 				_fcvt_s(buffer, _CVTBUFSIZE, dpADCDataBuf[j][i], DecimalPlaces, &dec, &sign);
+// 				char* length = Convert(buffer,dec,sign);
+// 				strOutput += length;
+// 				strOutput +=  _T("\t");
+
+				// 方法4：采用Format函数的方法，CPU占用率达到20%
+//				strTemp.Format(_T("%2.*lf\t"), DecimalPlaces, dpADCDataBuf[j][i]);
+//				strOutput += strTemp;
 			}
 			else
 			{
