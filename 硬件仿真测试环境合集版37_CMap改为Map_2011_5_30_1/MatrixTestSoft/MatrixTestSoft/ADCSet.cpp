@@ -52,8 +52,11 @@ void CADCSet::OnReceive(void)
 		int iError = 0;
 		CString str = _T("");
 		iError = WSAGetLastError();
-		str.Format(_T("ADC参数设置应答接收帧错误，错误号为%d！"), iError);
-		m_pLogFile->OnWriteLogFile(_T("CADCSet::OnReceive"), str, ErrorStatus);
+		if (iError != WSAEWOULDBLOCK)
+		{
+			str.Format(_T("ADC参数设置应答接收帧错误，错误号为%d！"), iError);
+			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnReceive"), str, ErrorStatus);
+		}	
 	}
 	else
 	{

@@ -15,10 +15,6 @@ private:
 	byte m_pTailTimeSendData[SndFrameSize];
 	// 仪器SN号
 	DWORD m_uiSN;
-	// 未收到尾包计数
-	unsigned int m_uiTailRecCount;
-	// 尾包开始计数标志位
-	bool m_bTailCountStart;
 public:
 	// 仪器列表指针
 	CInstrumentList* m_pInstrumentList;
@@ -26,6 +22,8 @@ public:
 	unsigned int m_uiIPSource;
 	// 尾包接收标志位
 	BOOL m_bTailRec;
+	// 未收到尾包计数
+	unsigned int m_uiTailRecCount;
 	// 日志类指针
 	CLogFile* m_pLogFile;
 	// Socket套接字
@@ -45,8 +43,6 @@ private:
 public:
 	// 向仪器发送尾包时刻查询帧
 	void SendTailTimeFrame(void);
-	// 监测尾包
-	bool OnTailMonitor(void);
 	// 消息处理函数
 	void OnReceive(void);
 	// 关闭UDP套接字

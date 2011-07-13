@@ -34,6 +34,8 @@ private:
 	BOOL m_bMatrixNetwork;
 	// 尾包时刻查询过程计数
 	unsigned int m_uiTailTimeCount;
+	// 尾包监测计数
+	unsigned int m_uiTailFrameTimerCount;
 public:
 	// 保存数据到文件的存储路径
 	CString m_csSaveFilePath;
