@@ -703,8 +703,9 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			strTemp.Format(_T("误码查询应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
-		strTemp = _T("误码查询结果为：") + str;
-		m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, SuccessStatus);
+		// 暂时不在日志文件中写入每次误码查询结果
+// 		strTemp = _T("误码查询结果为：") + str;
+// 		m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, SuccessStatus);
 		// 把误码查询结果由界面显示改为写入文件
 //		m_csErrorCodeReturnShow += str + _T("\r\n");
 		m_uiErrorCodeReturnNum++;

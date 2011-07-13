@@ -120,7 +120,7 @@ using namespace std;
 // ADC数据小数点后位数
 #define DecimalPlaces							9
 // ADC数据帧重发次数
-#define ADCFrameRetransmissionNum	1
+#define ADCFrameRetransmissionNum	5
 // 线程关闭等待时间
 #define WaitForThreadCloseTime			550
 // IP地址设置的起始地址
@@ -353,11 +353,11 @@ using namespace std;
 // PortMonitoringRec界面刷新接收帧的定时器序号
 #define PortMonitoringRecTimerNb						1
 // PortMonitoringRec界面刷新接收帧的定时器延时设置
-#define PortMonitoringRecTimerSet						2000
+#define PortMonitoringRecTimerSet						1000
 // PortMonitoringSend界面刷新接收帧的定时器序号
 #define PortMonitoringSendTimerNb						1
 // PortMonitoringSend界面刷新接收帧的定时器延时设置
-#define PortMonitoringSendTimerSet					2000
+#define PortMonitoringSendTimerSet					1000
 //__________________日志记录状态__________________
 // 正常工作状态
 #define SuccessStatus												1

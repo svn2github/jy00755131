@@ -814,9 +814,9 @@ void CADCSet::OnADCSet(void)
 	int iPos = 0;
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
 	
-// 	OnSetTB(iPos, 0, 0, true);
-// 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
-// 	Sleep(ADCOperationSleepTime);
+	OnSetTB(iPos, 0, 0, true);
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
+	Sleep(ADCOperationSleepTime);
 
 	OnSetSine(iPos);
 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
