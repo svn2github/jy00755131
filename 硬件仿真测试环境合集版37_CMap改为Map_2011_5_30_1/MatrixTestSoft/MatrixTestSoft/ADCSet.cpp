@@ -19,8 +19,9 @@ void CADCSet::OnReceive(void)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	int ret=0;
-	int n = sizeof(addr);
-	ret = recvfrom(m_ADCSetSocket, (char*)&udp_buf, sizeof(udp_buf), 0, (sockaddr*)&addr, &n);
+	sockaddr_in SenderAddr;
+	int n = sizeof(SenderAddr);
+	ret = recvfrom(m_ADCSetSocket, (char*)&udp_buf, sizeof(udp_buf), 0, (sockaddr*)&SenderAddr, &n);
 	if(ret == RcvFrameSize) 
 	{
 		unsigned short usCommand = 0;
@@ -789,11 +790,11 @@ void CADCSet::OnQueryErrorCode(void)
 	// 广播查询采集站
 	iPos = ADCSetFrameHead(BroadCastPort, SendQueryCmd, QueryErrorCodePort);
 	OnQueryErrorCodeFdu(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	// 按IP地址查询交叉站
 	iPos = ADCSetFrameHead(IPSetAddrStart, SendQueryCmd, QueryErrorCodePort);
 	OnQueryErrorCodeLAUX(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 }
 
 // ADC参数设置
@@ -815,48 +816,48 @@ void CADCSet::OnADCSet(void)
 // 	Sleep(ADCOperationSleepTime);
 
 	OnSetSine(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	OnOpenPowerTBLow(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
 
 	OnOpenPowerTBHigh(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	
 	Sleep(ADCOperationSleepTime);
 
 	OnOpenSwitchTBLow(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
 
  	OnOpenSwitchTBHigh(iPos);
- 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+ 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  
  	Sleep(ADCOperationSleepTime);
 
  	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
 	
  	OnADCRegisterWrite(iPos, false);
- 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+ 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  
  	Sleep(ADCOperationSleepTime);
  
  	OnADCRegisterRead(iPos);
- 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+ 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  
  	Sleep(ADCOperationSleepTime);
 
 	OnADCSetReturn(iPos);
- 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+ 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCSet"), _T("广播发送ADC参数设置命令！"), SuccessStatus);
 }
@@ -876,22 +877,22 @@ void CADCSet::OnADCSampleStop(void)
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
 
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  
 	Sleep(ADCOperationSleepTime);
  
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
 
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
 
 	OnSetTB(iPos, 0, 0, true);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCSampleStop"), _T("广播发送ADC数据采集停止命令！"), SuccessStatus);
 }
@@ -911,78 +912,78 @@ void CADCSet::OnADCZeroDrift(void)
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
 
 	OnOpenPowerZeroDrift(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  	
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	
 	Sleep(ADCOperationSleepTime);
 	
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  
 	Sleep(ADCOperationSleepTime);
  	
 	OnADCRegisterWrite(iPos, true);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	 
 	OnADCRegisterRead(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	
 	Sleep(ADCOperationSleepTime);
 	iPos = ADCSetFrameHead(BroadCastPort, SendQueryCmd, ADSetReturnPort);
 	OnADCRegisterQuery(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	 
 	Sleep(ADCOperationSleepTime);
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
 	OnStopSample(iPos);
- 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+ 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  
 	Sleep(ADCOperationSleepTime);
  
 	OnADCSampleSynchronization(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  
 	Sleep(ADCOperationSleepTime);
 	
 	OnADCReadContinuous(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  	
 	Sleep(ADCOperationSleepTime);
 	
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	
 	Sleep(ADCOperationSleepTime);
 
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
  
 	OnADCZeroDriftCorrection(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
  
 	OnADCReadContinuous(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  
 	Sleep(ADCOperationSleepTime);
  
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
 
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
  
 	OnADCRegisterRead(iPos);
- 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+ 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
  	Sleep(ADCOperationSleepTime);
 
@@ -1008,15 +1009,15 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 	iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
 
 	OnSetTBSwitchOpen(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	Sleep(ADCOperationSleepTime);
 
 	OnStopSample(iPos);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	Sleep(ADCOperationSleepTime);
 
 	OnSetTB(iPos, 0, 0, true);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 	Sleep(ADCOperationSleepTime);
 
 
@@ -1042,7 +1043,7 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 					{
 						iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, ADSetReturnPort);
 						OnADCZeroDriftSetFromIP(iPos, m_ucZeroDrift[i]);
-						sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+						sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 						break;
 					}
 				}
@@ -1065,7 +1066,7 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 			OnADCReadContinuous(iPos);
 			str.Format(_T("向IP地址为%d的仪器发送连续ADC数据采样的命令！"), uiIPAim);
 			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
-			sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+			sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 		}
 	}
 	// 	m_pADCSet->ADCSetFrameHead(uiIPAim, true, SendSetCmd, ADSetReturnPort);
@@ -1078,7 +1079,7 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 	OnSetTB(iPos, tnow + TBSleepTimeHigh, TBSleepTimeLow + CmdTBCtrl, false);
 	str.Format(_T("设置ADC数据采样TB开始时间为%d！"), tnow + TBSleepTimeHigh);
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 
 	Sleep(ADCOperationSleepTime);
 
@@ -1126,7 +1127,7 @@ void CADCSet::OnQueryTBTime(void)
 	iPos += FramePacketSize4B;
 	m_ucFrameData[iPos] = SndFrameBufInit;
 	OnCRCCal();
-	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 }
 
 // 关闭UDP套接字

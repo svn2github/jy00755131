@@ -54,7 +54,8 @@ int CPortMonitoringRecThread::Run()
 
 	DWORD dwFrameCount = 0;
 	int icount = 0;
-	int n = sizeof(addr);
+	sockaddr_in SenderAddr;
+	int n = sizeof(SenderAddr);
 	int iError = 0;
 	CString str = _T("");
 	// 循环，直到关闭标志为真
@@ -70,7 +71,7 @@ int CPortMonitoringRecThread::Run()
 		{
 			if(dwFrameCount > 0) 
 			{
-				icount = recvfrom(m_RecSocket, (char*)&m_ucUdpBuf, sizeof(m_ucUdpBuf), 0, (sockaddr*)&addr, &n);
+				icount = recvfrom(m_RecSocket, (char*)&m_ucUdpBuf, sizeof(m_ucUdpBuf), 0, (sockaddr*)&SenderAddr, &n);
 // 				str.Format(_T("从端口监视接收线程接收缓冲区读取数据大小为%d！"), icount);
 // 				m_pLogFile->OnWriteLogFile(_T("CADCDataRecThread::Run"), str, SuccessStatus);
 				if (icount != SOCKET_ERROR)
@@ -237,10 +238,10 @@ void CPortMonitoringRecThread::OnOpen(void)
 {
 	CString str = _T("");
 	m_RecSocket = socket(AF_INET, SOCK_DGRAM, 0);
-	addr.sin_family = AF_INET;											// 填充套接字地址结构
-	addr.sin_port = htons(m_iRecPort);
-	addr.sin_addr.S_un.S_addr = INADDR_ANY;
-	int iReturn = bind(m_RecSocket, (sockaddr*)&addr, sizeof(addr));	// 绑定本地地址
+	m_RecvAddr.sin_family = AF_INET;											// 填充套接字地址结构
+	m_RecvAddr.sin_port = htons(m_iRecPort);
+	m_RecvAddr.sin_addr.S_un.S_addr = INADDR_ANY;
+	int iReturn = bind(m_RecSocket, (sockaddr*)&m_RecvAddr, sizeof(m_RecvAddr));	// 绑定本地地址
 	listen(m_RecSocket, 2);
 	if (iReturn == SOCKET_ERROR)
 	{
@@ -263,6 +264,16 @@ void CPortMonitoringRecThread::OnOpen(void)
 		if (iReturn == SOCKET_ERROR)
 		{
 			str = _T("端口监视程序的接收端口接收缓冲区设置失败！");
+			AfxMessageBox(str);
+			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringRecThread::OnOpen"), str, ErrorStatus);
+		}
+		//设置广播模式
+		int iOptlen = sizeof(int);
+		int iOptval = 1;
+		iReturn = setsockopt(m_RecSocket, SOL_SOCKET, SO_BROADCAST, ( const char* )&iOptval, iOptlen);
+		if (iReturn == SOCKET_ERROR)
+		{
+			str = _T("端口监视程序的接收端口设置为广播端口失败！");
 			AfxMessageBox(str);
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringRecThread::OnOpen"), str, ErrorStatus);
 		}
@@ -385,7 +396,14 @@ void CPortMonitoringRecThread::OnPortMonitoringProc(void)
 	}
 	m_uiSendFrameNum ++;
 
-	sendto(m_RecSocket, (const char*)&m_ucudp_buf[m_usudp_count], SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	int icount = sendto(m_RecSocket, (const char*)&m_ucudp_buf[m_usudp_count], SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
+	if (icount == SOCKET_ERROR)
+	{
+		CString str = _T("");
+		int iError = WSAGetLastError();
+		str.Format(_T("端口监视接收线程sendto出错, 错误代码为%d"), iError);
+		m_pLogFile->OnWriteLogFile(_T("CPortMonitoringRecThread::OnPortMonitoringProc"), str, ErrorStatus);
+	}
 	m_pSaveFile->OnSaveReceiveData(m_ucudp_buf[m_usudp_count],SndFrameSize);
 }
 // 关闭UDP套接字

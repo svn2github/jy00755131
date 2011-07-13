@@ -30,8 +30,9 @@ void CSysTime::OnReceive(void)
 {
 	// TODO: Add your specialized code here and/or call the base class
 	int ret=0;
-	int n = sizeof(addr);
-	ret = recvfrom(m_SysTimeSocket, (char*)&udp_buf, sizeof(udp_buf), 0, (sockaddr*)&addr, &n);
+	sockaddr_in SenderAddr;
+	int n = sizeof(SenderAddr);
+	ret = recvfrom(m_SysTimeSocket, (char*)&udp_buf, sizeof(udp_buf), 0, (sockaddr*)&SenderAddr, &n);
 	if(ret == RcvFrameSize) 
 	{
 		unsigned short usCommand = 0;
@@ -164,7 +165,7 @@ void CSysTime::MakeCollectSysTimeFrameData(int* pSelectObject)
 void CSysTime::SendCollectSysTimeFrameToSocket(void)
 {
 	// 发送帧
-	int iCount = sendto(m_SysTimeSocket, (const char*)&m_cCollectSysTimeSendData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	int iCount = sendto(m_SysTimeSocket, (const char*)&m_cCollectSysTimeSendData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 }
 
 // 防止程序在循环中运行无法响应消息

@@ -71,7 +71,7 @@ void CPortMonitoringRec::OnTimer(UINT_PTR nIDEvent)
 		csTailFrameShow = m_pSendThread->m_csTailFrameShow;
 		csTailTimeReturnShow = m_pSendThread->m_csTailTimeReturnShow;
 		csDelayTimeReturnShow = m_pSendThread->m_csDelayTimeReturnShow;
-//		csErrorCodeReturnShow = m_pSendThread->m_csErrorCodeReturnShow;
+
 		m_Sec_PortMonitorRec.Unlock();
 
 		// 首包计数

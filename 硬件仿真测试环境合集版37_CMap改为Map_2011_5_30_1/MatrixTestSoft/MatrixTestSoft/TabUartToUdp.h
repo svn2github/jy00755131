@@ -33,7 +33,7 @@ private:
 	// 串口成功接收数据计数
 	unsigned int m_uiUartCount;
 	// Socket套接字
-	sockaddr_in addr, addr2;
+	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_UdpSocket;
 	// UDP接收缓冲区计数
 	unsigned char m_ucUdpBuf[RcvBufNum][UartToUdpRcvSize];

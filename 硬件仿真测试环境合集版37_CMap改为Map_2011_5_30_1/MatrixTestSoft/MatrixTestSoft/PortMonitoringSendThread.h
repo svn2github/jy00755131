@@ -63,9 +63,13 @@ public:
 	CString m_csDelayTimeReturnShow;
 	// 显示硬件错误码和码差
 	CString m_csErrorCodeReturnShow;
+	// 统计数据误码计数
+	unsigned int m_uiDataErrorCount[InstrumentMaxCount];
+	// 统计命令误码计数
+	unsigned int m_uiCmdErrorCount[InstrumentMaxCount];
 	// 发送方Socket套接字
 //	CSocket m_SendSocket;
-	sockaddr_in addr, addr2;
+	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_SendSocket;
 	// 接收端口
 	int m_iRecPort;

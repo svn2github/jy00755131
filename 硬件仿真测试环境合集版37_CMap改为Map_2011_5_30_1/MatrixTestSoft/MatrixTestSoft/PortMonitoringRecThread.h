@@ -42,7 +42,7 @@ public:
 	unsigned int m_uiADCSetNum;
 	// 接收方Socket套接字
 //	CSocket m_RecSocket;
-	sockaddr_in addr, addr2;
+	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_RecSocket;
 	// 接收端口
 	int m_iRecPort;

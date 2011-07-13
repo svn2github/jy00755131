@@ -245,7 +245,7 @@ void CThreadManage::OnCreateGetSysTimeSocket(void)
 {
 	CString str = _T("");
 	str = _T("查询采集站本地时间的端口");
-	m_oSysTime.m_SysTimeSocket = OnCreateAndSetSocket(m_oSysTime.addr, true, CollectSysTimePort, str, 
+	m_oSysTime.m_SysTimeSocket = OnCreateAndSetSocket(m_oSysTime.m_RecvAddr, true, CollectSysTimePort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
 }
 
@@ -262,7 +262,7 @@ void CThreadManage::OnCreateHeadSocket(void)
 {
 	CString str = _T("");
 	str = _T("首包接收端口");
-	m_oHeadFrame.m_HeadFrameSocket = OnCreateAndSetSocket(m_oHeadFrame.addr, true, HeadFramePort, str, 
+	m_oHeadFrame.m_HeadFrameSocket = OnCreateAndSetSocket(m_oHeadFrame.m_RecvAddr, true, HeadFramePort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
 }
 
@@ -279,7 +279,7 @@ void CThreadManage::OnCreateIPSetSocket(void)
 {
 	CString str = _T("");
 	str = _T("IP地址设置端口");
-	m_oIPSet.m_IPSetSocket = OnCreateAndSetSocket(m_oIPSet.addr, true, IPSetPort, str, 
+	m_oIPSet.m_IPSetSocket = OnCreateAndSetSocket(m_oIPSet.m_RecvAddr, true, IPSetPort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
 }
 
@@ -296,7 +296,7 @@ void CThreadManage::OnCreateTailSocket(void)
 {
 	CString str = _T("");
 	str = _T("尾包接收端口");
-	m_oTailFrame.m_TailFrameSocket = OnCreateAndSetSocket(m_oTailFrame.addr, true, TailFramePort, str, 
+	m_oTailFrame.m_TailFrameSocket = OnCreateAndSetSocket(m_oTailFrame.m_RecvAddr, true, TailFramePort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
 }
 
@@ -313,7 +313,7 @@ void CThreadManage::OnCreateTailTimeSocket(void)
 {
 	CString str = _T("");
 	str = _T("尾包时刻查询和时统端口");
-	m_oTailTimeFrame.m_TailTimeSocket = OnCreateAndSetSocket(m_oTailTimeFrame.addr, true, TailTimeFramePort, str, 
+	m_oTailTimeFrame.m_TailTimeSocket = OnCreateAndSetSocket(m_oTailTimeFrame.m_RecvAddr, true, TailTimeFramePort, str, 
 		InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
 }
 
@@ -330,7 +330,7 @@ void CThreadManage::OnCreateADCSetSocket(void)
 {
 	CString str = _T("");
 	str = _T("ADC设置端口");
-	m_oADCSet.m_ADCSetSocket = OnCreateAndSetSocket(m_oADCSet.addr, true, 
+	m_oADCSet.m_ADCSetSocket = OnCreateAndSetSocket(m_oADCSet.m_RecvAddr, true, 
 		ADSetReturnPort, str, InstrumentMaxCount * RcvFrameSize, InstrumentMaxCount * SndFrameSize);
 }
 
@@ -347,7 +347,7 @@ void CThreadManage::OnCreateHeartBeatSocket(void)
 {
 	CString str = _T("");
 	str = _T("心跳端口");
-	m_oHeartBeatThread.m_HeartBeatSocket = OnCreateAndSetSocket(m_oHeartBeatThread.addr, true, 
+	m_oHeartBeatThread.m_HeartBeatSocket = OnCreateAndSetSocket(m_oHeartBeatThread.m_RecvAddr, true, 
 		HeartBeatRec, str, HeartBeatSndBufSize, HeartBeatSndBufSize);
 }
 
@@ -364,7 +364,7 @@ void CThreadManage::OnCreateADCDataSocket(void)
 {
 	CString str = _T("");
 	str = _T("ADC数据接收端口");
-	m_oADCDataRecThread.m_ADCDataSocket = OnCreateAndSetSocket(m_oADCDataRecThread.addr, true, 
+	m_oADCDataRecThread.m_ADCDataSocket = OnCreateAndSetSocket(m_oADCDataRecThread.m_RecvAddr, true, 
 		ADRecPort, str, ADCDataBufSize, ADCDataBufSize);
 }
 // 关闭UDP套接字

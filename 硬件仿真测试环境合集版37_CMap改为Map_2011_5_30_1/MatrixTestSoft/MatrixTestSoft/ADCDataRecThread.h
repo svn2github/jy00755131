@@ -29,7 +29,7 @@ public:
 	// 线程结束事件
 	HANDLE m_hADCDataThreadClose;
 	// ADC数据接收Socket套接字
-	sockaddr_in addr, addr2;
+	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_ADCDataSocket;
 	// 线程关闭标志
 	bool m_bclose;

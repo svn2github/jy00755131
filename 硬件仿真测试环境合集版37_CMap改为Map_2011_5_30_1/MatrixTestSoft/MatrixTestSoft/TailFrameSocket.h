@@ -29,7 +29,7 @@ public:
 	// 日志类指针
 	CLogFile* m_pLogFile;
 	// Socket套接字
-	sockaddr_in addr, addr2;
+	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_TailFrameSocket;
 private:
 	// 处理单个尾包

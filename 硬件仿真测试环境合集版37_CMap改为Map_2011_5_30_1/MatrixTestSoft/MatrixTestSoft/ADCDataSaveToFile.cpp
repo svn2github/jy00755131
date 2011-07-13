@@ -1,5 +1,7 @@
 #include "StdAfx.h"
 #include "ADCDataSaveToFile.h"
+#include <iostream>
+#include <iomanip>
 
 CADCDataSaveToFile::CADCDataSaveToFile(void)
 : m_bOpenADCSaveFile(FALSE)
@@ -51,8 +53,10 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 
 				// 方法2：采用_stprintf_s函数的方法，CPU占用率达到10%
 				_stprintf_s(buffer, _CVTBUFSIZE, _T("%2.*lf"), DecimalPlaces, dpADCDataBuf[j][i]);
+//				_stprintf_s(buffer, _CVTBUFSIZE, _T("%2.*lf"), DecimalPlaces, 1.234567891);
 				strOutput += buffer;
 				strOutput +=  _T("\t");
+
 				// 方法3：采用_fcvt_s函数的方法，CPU占用率达到25%
 // 				_fcvt_s(buffer, _CVTBUFSIZE, dpADCDataBuf[j][i], DecimalPlaces, &dec, &sign);
 // 				char* length = Convert(buffer,dec,sign);
@@ -75,7 +79,7 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 // 	ar.WriteString(strOutput);
 // 	ar.Close();
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
-	WriteCHToCFile(&m_FileSave, strOutput);
+ 	WriteCHToCFile(&m_FileSave, strOutput);
 
 	if (bFinish == false)
 	{
@@ -120,7 +124,6 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 		AfxMessageBox(_T("ADC数据存储文件创建失败！"));	
 		return;
 	}
-
 	GetLocalTime(&sysTime);
 	str.Format(_T("%04d年%02d月%02d日%02d:%02d:%02d:%03d开始记录ADC采样数据：\r\n\r\n"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
@@ -145,7 +148,6 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
 	WriteCHToCFile(&m_FileSave, strOutput);
-
 	m_bOpenADCSaveFile = TRUE;
 }
 // 关闭ADC保存数据文件

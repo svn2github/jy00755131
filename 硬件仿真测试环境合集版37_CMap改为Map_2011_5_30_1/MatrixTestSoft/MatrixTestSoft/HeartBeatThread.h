@@ -29,7 +29,7 @@ public:
 	// 线程结束事件
 	HANDLE m_hHeartBeatThreadClose;
 	// 心跳Socket套接字
-	sockaddr_in addr, addr2;
+	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_HeartBeatSocket;
 protected:
 	// 生成心跳帧

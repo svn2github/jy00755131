@@ -51,7 +51,7 @@ public:
 	// 界面指针
 	CWnd* m_pwnd;
 	// Socket套接字
-	sockaddr_in addr, addr2;
+	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_TailTimeSocket;
 public:
 	// 生成时统报文设置帧

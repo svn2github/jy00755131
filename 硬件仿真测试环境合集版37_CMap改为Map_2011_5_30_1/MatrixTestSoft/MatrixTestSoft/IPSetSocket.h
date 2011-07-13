@@ -34,7 +34,7 @@ public:
 	// 日志类指针
 	CLogFile* m_pLogFile;
 	// Socket套接字
-	sockaddr_in addr;
+	sockaddr_in m_RecvAddr;
 	SOCKET m_IPSetSocket;
 protected:
 	// 单个IP地址设置应答帧处理

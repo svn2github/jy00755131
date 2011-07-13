@@ -111,7 +111,7 @@ void CHeartBeatThread::MakeHeartBeatFrame(void)
 	// 目标端口号
 	usPortAim = HeartBeatRec;
 	// 命令号 1-设置命令应答；2-查询命令应答；3-AD采样数据重发
-	usCommand = SendSetCmd;
+	usCommand = SendQueryCmd;
 	// 源IP地址
 	iPos = 16;
 	memcpy(&m_pFrameData[iPos], &uiIPSource, FramePacketSize4B);
@@ -147,7 +147,7 @@ void CHeartBeatThread::MakeHeartBeatFrame(void)
 void CHeartBeatThread::SendHeartBeatFrame(void)
 {
 	// 发送广播命令帧
-	int icount = sendto(m_HeartBeatSocket, (const char*)&m_pFrameData, SndFrameSize, 0, (sockaddr*)&addr2, sizeof(addr2));
+	int icount = sendto(m_HeartBeatSocket, (const char*)&m_pFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 }
 
 // 关闭并结束线程
