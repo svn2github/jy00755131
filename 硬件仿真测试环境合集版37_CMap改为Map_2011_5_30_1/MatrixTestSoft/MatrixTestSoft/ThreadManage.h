@@ -12,6 +12,7 @@
 #include "ADCDataSaveToFile.h"
 #include "ADCFrameInfo.h"
 #include "LogFile.h"
+#include "InstrumentMonitorThread.h"
 class CThreadManage
 {
 public:
@@ -38,7 +39,9 @@ public:
 	// 心跳线程
 	CHeartBeatThread	m_oHeartBeatThread;
 	// ADC数据接收线程
-	CADCDataRecThread	m_oADCDataRecThread;
+	CADCDataRecThread m_oADCDataRecThread;
+	// 设备监视线程，监视设备全部掉线（5秒内无交叉站尾包）
+	CInstrumentMonitorThread m_oInstrumentMonitorThread;
 	// 日志类指针
 	CLogFile* m_pLogFile;
 private:

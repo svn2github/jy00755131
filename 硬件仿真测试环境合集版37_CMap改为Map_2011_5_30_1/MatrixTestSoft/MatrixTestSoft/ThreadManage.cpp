@@ -26,7 +26,10 @@ void CThreadManage::OnInit(void)
 	m_oTailFrame.m_pInstrumentList = &m_oInstrumentList;
 	m_oTailTimeFrame.m_pInstrumentList = &m_oInstrumentList;
 	m_oADCSet.m_pInstrumentList = &m_oInstrumentList;
+	m_oInstrumentMonitorThread.m_pInstrumentList = &m_oInstrumentList;
+	m_oInstrumentMonitorThread.m_pTailFrame = &m_oTailFrame;
 	m_oSysTime.m_pADCSet = &m_oADCSet;
+	m_oInstrumentMonitorThread.m_pADCSet = &m_oADCSet;
 	m_oADCDataRecThread.m_pADCDataSaveToFile = & m_oADCDataSaveToFile;
 	m_oADCDataRecThread.m_pADCFrameInfo = &m_oADCFrameInfo;
 	m_oSysTime.m_pADCFrameInfo = &m_oADCFrameInfo;
@@ -38,16 +41,23 @@ void CThreadManage::OnInit(void)
 	m_oInstrumentList.m_pLogFile = m_pLogFile;
 	m_oSysTime.m_pLogFile = m_pLogFile;
 	m_oADCDataRecThread.m_pLogFile = m_pLogFile;
+	m_oInstrumentMonitorThread.m_pLogFile = m_pLogFile;
 	m_oIPSet.m_pLogFile = m_pLogFile;
 
 	m_oHeartBeatThread.OnInit();
 	// 创建线程并挂起
 	m_oHeartBeatThread.CreateThread(CREATE_SUSPENDED, 0, 0);
 	m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnInit"), _T("心跳发送线程创建成功！"), SuccessStatus);
+
 	m_oADCDataRecThread.OnInit();
 	// 创建线程并挂起
 	m_oADCDataRecThread.CreateThread(CREATE_SUSPENDED, 0, 0);
 	m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnInit"), _T("ADC数据接收线程创建成功！"), SuccessStatus);
+
+	m_oInstrumentMonitorThread.OnInit();
+	// 创建线程并挂起
+	m_oInstrumentMonitorThread.CreateThread(CREATE_SUSPENDED, 0, 0);
+	m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnInit"), _T("设备监视线程创建成功！"), SuccessStatus);
 }
 
 // 关闭并结束线程
@@ -66,8 +76,10 @@ void CThreadManage::OnClose(void)
 
 	m_oHeartBeatThread.ResumeThread();
 	m_oADCDataRecThread.ResumeThread();
+	m_oInstrumentMonitorThread.ResumeThread();
 	m_oHeartBeatThread.OnClose();
 	m_oADCDataRecThread.OnClose();
+	m_oInstrumentMonitorThread.OnClose();
 	iResult = WaitForSingleObject(m_oHeartBeatThread.m_hHeartBeatThreadClose, WaitForThreadCloseTime);
 	if (iResult != WAIT_OBJECT_0)
 	{
@@ -95,6 +107,21 @@ void CThreadManage::OnClose(void)
 	}
 	// 关闭事件句柄
 	CloseHandle(m_oADCDataRecThread.m_hADCDataThreadClose);
+
+	iResult = WaitForSingleObject(m_oInstrumentMonitorThread.m_hInstrumentMonitorThreadClose, WaitForThreadCloseTime);
+	if (iResult != WAIT_OBJECT_0)
+	{
+		str.Format(_T("设备监视线程在%dms内未能正常结束！"), WaitForThreadCloseTime);
+		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnClose"), str, ErrorStatus);
+		AfxMessageBox(str);
+	}
+	else
+	{
+		m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnClose"), _T("设备监视线程正常结束！"), SuccessStatus);
+	}
+	// 关闭事件句柄
+	CloseHandle(m_oInstrumentMonitorThread.m_hInstrumentMonitorThreadClose);
+
 	OnCloseUDPSocket();
 	m_oInstrumentList.OnClose();
 }
@@ -127,6 +154,7 @@ void CThreadManage::OnOpen(void)
 	m_oHeartBeatThread.ResumeThread();
 	m_oADCDataRecThread.OnReset();
 	m_oADCDataRecThread.ResumeThread();
+	m_oInstrumentMonitorThread.ResumeThread();
 }
 
 // 停止
@@ -144,6 +172,7 @@ void CThreadManage::OnStop(void)
 	m_oHeartBeatThread.SuspendThread();
 	m_oADCDataRecThread.OnCloseUDP();
 	m_oADCDataRecThread.SuspendThread();
+	m_oInstrumentMonitorThread.SuspendThread();
 	OnCloseUDPSocket();
 	m_oInstrumentList.OnStop();
 }

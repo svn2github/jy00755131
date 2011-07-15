@@ -107,8 +107,14 @@ using namespace std;
 #define HeadFrameCount						4
 // IP地址重设次数
 #define IPAddrResetTimes						3
-// 尾包计数
-#define TailFrameCount							5
+// 交叉站尾包计数
+#define TailFrameLAUXCount				5
+// 交叉站尾包稳定计数
+#define TailFrameStableLAUXCount		8
+// 采集站尾包计数
+#define TailFrameFDUCount					8
+// 采集站尾包稳定计数
+#define TailFrameStableFDUCount		10
 // 尾包查询计数
 #define TailTimeFrameCount					4
 // 仪器类型-采集站
@@ -157,6 +163,8 @@ using namespace std;
 #define PortMonitoringRecThreadSleepTime	50
 // 心跳线程Sleep时间
 #define HeartBeatThreadSleepTime					500
+// 设备仪器监视线程Sleep时间
+#define InstrumentMonitorThreadSleepTime		1000
 // ADC数据接收线程Sleep时间
 #define ADCDataRecThreadSleepTime				50
 // TB设置延时高位

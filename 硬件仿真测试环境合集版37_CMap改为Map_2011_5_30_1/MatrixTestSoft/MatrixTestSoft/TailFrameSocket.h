@@ -13,17 +13,21 @@ private:
 	byte m_pTailFrameData[RcvFrameSize];
 	// 尾包时刻查询帧
 	byte m_pTailTimeSendData[SndFrameSize];
+public:
 	// 仪器SN号
 	DWORD m_uiSN;
-public:
 	// 仪器列表指针
 	CInstrumentList* m_pInstrumentList;
 	// 源IP地址
 	unsigned int m_uiIPSource;
-	// 尾包接收标志位
-	BOOL m_bTailRec;
-	// 未收到尾包计数
-	unsigned int m_uiTailRecCount;
+	// 交叉站尾包接收标志位
+	BOOL m_bTailRecLAUX;
+	// 交叉站收到尾包计数
+	unsigned int m_uiTailRecLAUXCount;
+	// 采集站尾包接收标志位
+	BOOL m_bTailRecFDU;
+	// 采集站收到尾包计数
+	unsigned int m_uiTailRecFDUCount;
 	// 日志类指针
 	CLogFile* m_pLogFile;
 	// Socket套接字

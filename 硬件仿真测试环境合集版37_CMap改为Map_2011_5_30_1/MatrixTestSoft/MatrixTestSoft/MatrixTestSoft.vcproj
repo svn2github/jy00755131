@@ -246,6 +246,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InstrumentMonitorThread.h"
+				>
+			</File>
+			<File
 				RelativePath=".\IPSetSocket.h"
 				>
 			</File>
@@ -419,6 +423,10 @@
 			</File>
 			<File
 				RelativePath=".\InstrumentList.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\InstrumentMonitorThread.cpp"
 				>
 			</File>
 			<File
