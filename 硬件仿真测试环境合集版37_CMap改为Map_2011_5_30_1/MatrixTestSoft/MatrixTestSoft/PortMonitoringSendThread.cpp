@@ -462,11 +462,6 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			m_csHeadFrameShow += _T("\r\n");
 			m_uiHeadFrameNum++;
 		}
-		else
-		{
-			strTemp.Format(_T("首包端口正确，命令字错误，错误的命令字为%d"), uiCommand);
-			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
-		}
 	}
 	else if (uiPort == IPSetPort)
 	{
@@ -493,11 +488,6 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			}
 			m_csIPSetReturnShow += _T("\r\n");
 			m_uiIPSetReturnNum++;
-		}
-		else
-		{
-			strTemp.Format(_T("IP地址设置应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
-			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
 	}
 	else if (uiPort == TailFramePort)
@@ -526,11 +516,6 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			}
 			m_csTailFrameShow += _T("\r\n");
 			m_uiTailFrameNum++;
-		}
-		else
-		{
-			strTemp.Format(_T("尾包端口正确，命令字错误，错误的命令字为%d"), uiCommand);
-			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
 	}
 	else if (uiPort == TailTimeFramePort)
@@ -567,11 +552,6 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			}
 			m_csTailTimeReturnShow += _T("\r\n");
 			m_uiTailTimeReturnNum++;
-		}
-		else
-		{
-			strTemp.Format(_T("尾包时刻查询应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
-			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
 	}
 	else if (uiPort == TimeSetPort)
@@ -613,7 +593,13 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		}
 		else
 		{
-			strTemp.Format(_T("时统设置应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
+			CString strtemp2 = _T("");
+			strTemp.Format(_T("解析时统设置应答帧出错！\r\n"));
+			for (int i=0; i<RcvFrameSize; i++)
+			{
+				strtemp2.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][i]);
+				strTemp += strtemp2;
+			}
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
 	}
@@ -700,7 +686,13 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		}
 		if(!((uiCommand == CmdFDUErrorCode) || (uiCommand == CmdLAUXErrorCode1)))
 		{
-			strTemp.Format(_T("误码查询应答端口正确，命令字错误，错误的命令字为%d"), uiCommand);
+			CString strtemp2 = _T("");
+			strTemp.Format(_T("解析误码查询应答帧出错！\r\n"));
+			for (int i=0; i<RcvFrameSize; i++)
+			{
+				strtemp2.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][i]);
+				strTemp += strtemp2;
+			}
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 		}
 		// 暂时不在日志文件中写入每次误码查询结果
@@ -720,7 +712,13 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 	}
 	else
 	{
-		strTemp.Format(_T("错误的端口号%d"), uiPort);
+		CString strtemp2 = _T("");
+		strTemp.Format(_T("解析端口监视接收帧端口出错！\r\n"));
+		for (int i=0; i<RcvFrameSize; i++)
+		{
+			strtemp2.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][i]);
+			strTemp += strtemp2;
+		}
 		m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
 	}
 	m_uiRecFrameNum++;

@@ -44,13 +44,13 @@ using namespace std;
 // 用于发送仪器时延设置的端口号
 #define TimeSetPort					0x9300
 // 数据采样设置应答帧端口
-#define ADSetReturnPort			0x8204
+#define ADSetReturnPort			0x8300
 // AD数据采集接收端口
-#define ADRecPort						0x8300
+#define ADRecPort						0x8400
 // 采集站本地时刻查询端口
-#define CollectSysTimePort		0x8205
+#define CollectSysTimePort		0x8500
 // 查询硬件设备出错计数返回端口
-#define QueryErrorCodePort		0x8207 
+#define QueryErrorCodePort		0x8600 
 // ADC设置广播端口
 #define ADCSetBroadcastPort	0x66666666
 // 广播端口

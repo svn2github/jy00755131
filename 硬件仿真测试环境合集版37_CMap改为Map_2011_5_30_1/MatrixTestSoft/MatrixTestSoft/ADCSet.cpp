@@ -954,6 +954,10 @@ void CADCSet::OnADCZeroDrift(void)
 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  	
 	Sleep(ADCOperationSleepTime);
+	Sleep(ADCOperationSleepTime);
+	Sleep(ADCOperationSleepTime);
+	Sleep(ADCOperationSleepTime);
+	Sleep(ADCOperationSleepTime);
 	
 	OnStopSample(iPos);
 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
@@ -973,6 +977,10 @@ void CADCSet::OnADCZeroDrift(void)
 	OnADCReadContinuous(iPos);
 	sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
  
+	Sleep(ADCOperationSleepTime);
+	Sleep(ADCOperationSleepTime);
+	Sleep(ADCOperationSleepTime);
+	Sleep(ADCOperationSleepTime);
 	Sleep(ADCOperationSleepTime);
  
 	OnStopSample(iPos);
