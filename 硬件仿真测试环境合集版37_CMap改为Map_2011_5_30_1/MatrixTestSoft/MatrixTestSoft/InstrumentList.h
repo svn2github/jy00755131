@@ -23,7 +23,9 @@ protected:
 	list<CInstrument*> m_olsInstrumentFree;
 public:
 	// 仪器SN索引表
-	hash_map<unsigned int, CInstrument*> m_oInstrumentMap;
+	hash_map<unsigned int, CInstrument*> m_oInstrumentSNMap;
+	// 仪器IP地址索引表
+	hash_map<unsigned int, CInstrument*> m_oInstrumentIPMap;
 	// 采集站设备未连接显示的图标指针
 	HICON m_iconFDUDisconnected;
 	// 交叉站设备未连接显示的图标指针
@@ -50,12 +52,18 @@ public:
 	void OnStop(void);
 	// 得到一个空闲仪器
 	CInstrument* GetFreeInstrument(void);
-	// 将一个仪器加入索引表
-	void AddInstrumentToMap(unsigned int uiIndex, CInstrument* pInstrument);
-	// 判断仪器索引号是否已加入索引表
-	BOOL IfIndexExistInMap(unsigned int uiIndex);
-	// 根据输入索引号，由索引表得到仪器指针
-	BOOL GetInstrumentFromMap(unsigned int uiIndex, CInstrument* &pInstrument);
+	// 将一个仪器加入SN索引表
+	void AddInstrumentToSNMap(unsigned int uiIndex, CInstrument* pInstrument);
+	// 判断仪器SN索引号是否已加入SN索引表
+	BOOL IfIndexExistInSNMap(unsigned int uiIndex);
+	// 根据输入SN索引号，由SN索引表得到仪器指针
+	BOOL GetInstrumentFromSNMap(unsigned int uiIndex, CInstrument* &pInstrument);
+	// 将一个仪器加入IP地址索引表
+	void AddInstrumentToIPMap(unsigned int uiIndex, CInstrument* pInstrument);
+	// 判断仪器索引号是否已加入IP地址索引表
+	BOOL IfIndexExistInIPMap(unsigned int uiIndex);
+	// 根据输入IP地址索引号，由IP地址索引表得到仪器指针
+	BOOL GetInstrumentFromIPMap(unsigned int uiIndex, CInstrument* &pInstrument);
 	// 设备根据首包时刻排序
 	void SetInstrumentLocation(CInstrument* pInstrumentAdd);
 	// 删除采集站尾包之后的仪器

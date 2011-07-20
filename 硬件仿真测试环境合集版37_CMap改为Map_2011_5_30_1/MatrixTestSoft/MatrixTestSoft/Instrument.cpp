@@ -22,6 +22,7 @@ CInstrument::CInstrument(void)
 , m_bSendTailTimeFrame(false)
 , m_bADCSet(false)
 , m_uiIPResetTimes(0)
+, m_uiADCSetOperationNb(0)
 {
 }
 
@@ -52,4 +53,5 @@ void CInstrument::OnReset(void)
 	m_bSendTailTimeFrame = false;
 	m_bADCSet = false;
 	m_uiIPResetTimes = 0;
+	m_uiADCSetOperationNb = 0;
 }

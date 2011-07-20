@@ -49,7 +49,7 @@ void CInstrumentList::OnClose(void)
 		delete[] m_pInstrumentArray;
 	}
 	// 删除索引表中所有仪器
-	m_oInstrumentMap.clear();
+	m_oInstrumentSNMap.clear();
 }
 
 // 得到一个空闲仪器
@@ -92,10 +92,10 @@ CInstrument* CInstrumentList::GetFreeInstrument(void)
 // Parameter: unsigned int uiIndex
 // Parameter: CInstrument * pInstrument
 //************************************
-void CInstrumentList::AddInstrumentToMap(unsigned int uiIndex, CInstrument* pInstrument)
+void CInstrumentList::AddInstrumentToSNMap(unsigned int uiIndex, CInstrument* pInstrument)
 {
 //	SetInstrumentLocation(pInstrument);
-	m_oInstrumentMap.insert(hash_map<unsigned int, CInstrument*>::value_type (uiIndex, pInstrument));
+	m_oInstrumentSNMap.insert(hash_map<unsigned int, CInstrument*>::value_type (uiIndex, pInstrument));
 }
 
 // 判断仪器索引号是否已加入索引表
@@ -107,13 +107,13 @@ void CInstrumentList::AddInstrumentToMap(unsigned int uiIndex, CInstrument* pIns
 // Qualifier:
 // Parameter: unsigned int uiIndex
 //************************************
-BOOL CInstrumentList::IfIndexExistInMap(unsigned int uiIndex)
+BOOL CInstrumentList::IfIndexExistInSNMap(unsigned int uiIndex)
 {
 	BOOL bResult = FALSE;
 	CInstrument* pInstrument = NULL;
 	hash_map<unsigned int, CInstrument*>::iterator iter;
-	iter = m_oInstrumentMap.find(uiIndex);
-	if (iter != m_oInstrumentMap.end())
+	iter = m_oInstrumentSNMap.find(uiIndex);
+	if (iter != m_oInstrumentSNMap.end())
 	{
 		bResult = TRUE;
 	}
@@ -134,12 +134,12 @@ BOOL CInstrumentList::IfIndexExistInMap(unsigned int uiIndex)
 // Parameter: unsigned int uiIndex
 // Parameter: CInstrument *  & pInstrument
 //************************************
-BOOL CInstrumentList::GetInstrumentFromMap(unsigned int uiIndex, CInstrument* &pInstrument)
+BOOL CInstrumentList::GetInstrumentFromSNMap(unsigned int uiIndex, CInstrument* &pInstrument)
 {
 	BOOL bResult = FALSE;
 	hash_map<unsigned int, CInstrument*>::iterator iter;
-	iter = m_oInstrumentMap.find(uiIndex);
-	if (iter != m_oInstrumentMap.end())
+	iter = m_oInstrumentSNMap.find(uiIndex);
+	if (iter != m_oInstrumentSNMap.end())
 	{
 		pInstrument = iter->second;
 		bResult = TRUE;
@@ -151,6 +151,74 @@ BOOL CInstrumentList::GetInstrumentFromMap(unsigned int uiIndex, CInstrument* &p
 	return bResult;
 }
 
+// 将一个仪器加入IP地址索引表
+//************************************
+// Method:    AddInstrumentToIPMap
+// FullName:  CInstrumentList::AddInstrumentToIPMap
+// Access:    public 
+// Returns:   void
+// Qualifier:
+// Parameter: unsigned int uiIndex
+// Parameter: CInstrument * pInstrument
+//************************************
+void CInstrumentList::AddInstrumentToIPMap(unsigned int uiIndex, CInstrument* pInstrument)
+{
+//	SetInstrumentLocation(pInstrument);
+	m_oInstrumentIPMap.insert(hash_map<unsigned int, CInstrument*>::value_type (uiIndex, pInstrument));
+}
+
+// 判断仪器索引号是否已加入IP地址索引表
+//************************************
+// Method:    IfIndexExistInIPMap
+// FullName:  CInstrumentList::IfIndexExistInIPMap
+// Access:    public 
+// Returns:   BOOL
+// Qualifier:
+// Parameter: unsigned int uiIndex
+//************************************
+BOOL CInstrumentList::IfIndexExistInIPMap(unsigned int uiIndex)
+{
+	BOOL bResult = FALSE;
+	CInstrument* pInstrument = NULL;
+	hash_map<unsigned int, CInstrument*>::iterator iter;
+	iter = m_oInstrumentIPMap.find(uiIndex);
+	if (iter != m_oInstrumentIPMap.end())
+	{
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
+
+// 根据输入IP地址索引号，由IP地址索引表得到仪器指针
+//************************************
+// Method:    GetInstrumentFromIPMap
+// FullName:  CInstrumentList::GetInstrumentFromIPMap
+// Access:    public 
+// Returns:   BOOL
+// Qualifier:
+// Parameter: unsigned int uiIndex
+// Parameter: CInstrument *  & pInstrument
+//************************************
+BOOL CInstrumentList::GetInstrumentFromIPMap(unsigned int uiIndex, CInstrument* &pInstrument)
+{
+	BOOL bResult = FALSE;
+	hash_map<unsigned int, CInstrument*>::iterator iter;
+	iter = m_oInstrumentIPMap.find(uiIndex);
+	if (iter != m_oInstrumentIPMap.end())
+	{
+		pInstrument = iter->second;
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
 // 设备根据首包时刻排序
 //************************************
 // Method:    SetInstrumentLocation
@@ -166,7 +234,7 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrumentAdd)
 	CString str = _T("");
 	// hash_map迭代器，效率比map高
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
-	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end(); iter++)
+	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end(); iter++)
 	{
 //		ProcessMessages();
 		if (NULL != iter->second)
@@ -209,7 +277,7 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	CString str = _T("");
-	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end();)
+	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end();)
 	{
 //		ProcessMessages();
 		if (NULL != iter->second)
@@ -226,8 +294,10 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 				// 仪器加在空闲仪器队列尾部
 				m_olsInstrumentFree.push_back(iter->second);
 				m_uiCountFree++;
-				// 将仪器从索引表中删除
-				m_oInstrumentMap.erase(iter++);
+				// 将仪器从IP索引表中删除
+				m_oInstrumentIPMap.erase(iter);
+				// 将仪器从SN索引表中删除
+				m_oInstrumentSNMap.erase(iter++);
 			}
 			else
 			{
@@ -254,7 +324,7 @@ void CInstrumentList::ClearExperiedTailTimeResult(void)
 {
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
-	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end(); iter++)
+	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end(); iter++)
 	{
 //		ProcessMessages();
 		if (NULL != iter->second)
@@ -288,7 +358,7 @@ void CInstrumentList::OnOpen(void)
 	// 清空空闲仪器队列
 	m_olsInstrumentFree.clear();
 	// 删除索引表中所有仪器
-	m_oInstrumentMap.clear();
+	m_oInstrumentSNMap.clear();
 	if (m_pInstrumentArray != NULL)
 	{
 		delete []m_pInstrumentArray;
@@ -321,7 +391,7 @@ void CInstrumentList::OnStop(void)
 	m_olsInstrumentFree.clear();
 	m_pInstrumentArray = NULL;
 	// 删除索引表中所有仪器
-	m_oInstrumentMap.clear();
+	m_oInstrumentSNMap.clear();
 }
 
 // 删除所有仪器
@@ -335,14 +405,14 @@ void CInstrumentList::OnStop(void)
 //************************************
 void CInstrumentList::DeleteAllInstrument(void)
 {
-	unsigned int icount = m_oInstrumentMap.size();
+	unsigned int icount = m_oInstrumentSNMap.size();
 	if (icount == 0)
 	{
 		return;
 	}
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
-	for(iter=m_oInstrumentMap.begin(); iter!=m_oInstrumentMap.end();)
+	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end();)
 	{
 //		ProcessMessages();
 		if (NULL != iter->second)
@@ -354,8 +424,10 @@ void CInstrumentList::DeleteAllInstrument(void)
 			// 仪器加在空闲仪器队列尾部
 			m_olsInstrumentFree.push_back(iter->second);
 			m_uiCountFree++;
+			// 将仪器从IP索引表中删除
+			m_oInstrumentIPMap.erase(iter);
 			// 将仪器从索引表中删除
-			m_oInstrumentMap.erase(iter++);
+			m_oInstrumentSNMap.erase(iter++);
 		}
 		else
 		{

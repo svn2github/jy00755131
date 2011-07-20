@@ -156,7 +156,9 @@ using namespace std;
 // 查询设备误码种类个数
 #define QueryErrorCodeNum					4
 // ADC操作过程延时
-#define ADCOperationSleepTime			100
+#define ADCOperationSleepTime						100
+// ADC零漂校正过程连续采集延时
+#define ADCReadContinuousSleepTime			500
 // 端口监视发送线程Sleep时间
 #define PortMonitoringSendThreadSleepTime	50
 // 端口监视接收线程Sleep时间
@@ -345,10 +347,10 @@ using namespace std;
 #define TabSampleADCZeroDriftTimerNb			9
 // TabSample界面做ADC零漂校正的定时器延时设置
 #define TabSampleADCZeroDriftTimerSet			2000
-// TabSample界面做ADC零漂校正的定时器序号
-#define TabSampleADCZeroDriftTimerNb			9
-// TabSample界面做ADC零漂校正的定时器延时设置
-#define TabSampleADCZeroDriftTimerSet			2000
+// TabSample界面做ADC命令设置应答监视的定时器序号
+#define TabSampleADCSetReturnTimerNb			10
+// TabSample界面做ADC命令设置应答监视的定时器延时设置
+#define TabSampleADCSetReturnTimerSet			1000
 
 // TabPortMonitoring界面刷新接收发送帧数的定时器序号
 #define TabPortMonitoringFrameNumTimerNb	1

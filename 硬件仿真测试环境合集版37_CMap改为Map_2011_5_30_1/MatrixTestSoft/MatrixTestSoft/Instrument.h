@@ -46,6 +46,8 @@ public:
 	bool m_bADCSet;
 	// IP地址重设次数
 	unsigned int m_uiIPResetTimes;
+	// ADC命令设置序号
+	unsigned int m_uiADCSetOperationNb;
 public:
 	// 重置成员变量
 	void OnReset(void);

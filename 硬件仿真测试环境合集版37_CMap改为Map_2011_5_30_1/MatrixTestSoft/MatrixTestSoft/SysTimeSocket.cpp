@@ -89,7 +89,7 @@ void CSysTime::OnReceive(void)
 void CSysTime::OnADCStartSample(unsigned int tnow)
 {
 	m_pADCSet->OnADCStartSample(tnow);
-	SetTimer(m_pwnd->m_hWnd, TabSampleStartSampleTimerNb, TabSampleStartSampleTimerSet, NULL);
+//	SetTimer(m_pwnd->m_hWnd, TabSampleStartSampleTimerNb, TabSampleStartSampleTimerSet, NULL);
 }
 // 生成采集站本地时间查询帧
 //************************************

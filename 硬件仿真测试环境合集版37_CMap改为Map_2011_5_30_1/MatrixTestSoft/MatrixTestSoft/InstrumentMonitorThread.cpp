@@ -163,7 +163,7 @@ void CInstrumentMonitorThread::OnMonitorFDU(void)
 				m_pTailFrame->m_bTailRecFDU = FALSE;
 				m_Sec_InstrumentMonitor.Unlock();
 				// 连续5秒未收到采集站尾包则删除交叉站后所有仪器
-				if(TRUE == m_pInstrumentList->GetInstrumentFromMap(m_pTailFrame->m_uiSN, pInstrument))
+				if(TRUE == m_pInstrumentList->GetInstrumentFromSNMap(m_pTailFrame->m_uiSN, pInstrument))
 				{
 					m_pInstrumentList->TailFrameDeleteInstrument(pInstrument);
 				}

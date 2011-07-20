@@ -24,6 +24,10 @@ public:
 	// Socket套接字
 	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_ADCSetSocket;
+	// 界面指针
+	CWnd* m_pwnd;
+	// 采集站本地时间
+	unsigned int m_uiTnow;
 protected:
 	// 数据接收缓冲区
 	unsigned char udp_buf[RcvFrameSize];
@@ -33,7 +37,7 @@ protected:
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);
 	// 处理零漂校正查询应答
-	void OnProcADCZeroDriftReturn(int iPos);
+	void OnProcADCZeroDriftReturn(unsigned int uiIPAim);
 public:
 	// ADC设置帧头
 	int ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, unsigned short usPortAim);
@@ -95,4 +99,12 @@ public:
 	void OnQueryTBTime(void);
 	// 关闭UDP套接字
 	void OnCloseUDP(void);
+	// ADC命令设置序号
+	unsigned int m_uiADCSetOperationNb;
+	// 处理ADC设置应答帧
+	void OnProcADCSetReturn(unsigned int uiIP);
+	// 检查是否收到所有采集站的ADC命令应答
+	BOOL OnCheckADCSetReturn(void);
+	// 发送ADC命令设置帧
+	void OnSendADCSetCmd(void);
 };
