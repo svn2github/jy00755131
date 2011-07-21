@@ -3,6 +3,7 @@
 #include "Parameter.h"
 #include "InstrumentList.h"
 #include "LogFile.h"
+#include "ADCDataRecThread.h"
 class CADCSet
 {
 public:
@@ -28,6 +29,8 @@ public:
 	CWnd* m_pwnd;
 	// 采集站本地时间
 	unsigned int m_uiTnow;
+	// ADC数据接收类指针
+	CADCDataRecThread* m_pADCDataRecThread;
 protected:
 	// 数据接收缓冲区
 	unsigned char udp_buf[RcvFrameSize];

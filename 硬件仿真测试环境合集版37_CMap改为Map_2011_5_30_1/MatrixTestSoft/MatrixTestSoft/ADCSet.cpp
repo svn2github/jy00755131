@@ -12,6 +12,7 @@ CADCSet::CADCSet(void)
 , m_uiADCSetOperationNb(0)
 , m_pwnd(NULL)
 , m_uiTnow(0)
+, m_pADCDataRecThread(NULL)
 {
 }
 
@@ -512,6 +513,7 @@ void CADCSet::OnADCZeroDriftSetFromIP(int iPos, unsigned char* ucZeroDrift)
 	byte pga0 = 0,pga1 = 0,pga2 = 0;
 	//sps1=1 1000k sps1=0 250k
 	byte mux0 = 0,mux1 = 0,mux2 = 0,sps0 = 0,sps1 = 1,sps2 = 0,filtr0 = 0,filtr1 = 1;
+	unsigned int uispsSelect = 0;
 	byte mode = 1,sync = 0,phs = 0,chop = 1;
 //	byte cOnADCZeroDriftSetFromIP[16] = {0x8d, 0x40, 0x0a, 0x00, 0x52, 0x08, 0x32, 0x03, 0x6f, 0x0c, 0xff, 0x7d, 0x52, 0x40, 0x00, 0x00};
 	// 不设置零漂校正值
@@ -571,6 +573,10 @@ void CADCSet::OnADCZeroDriftSetFromIP(int iPos, unsigned char* ucZeroDrift)
 	default:
 		break;
 	}
+	uispsSelect = sps0 + sps1*2 + sps2*4;
+	// 幂运算用pow(X,Y)函数，x^y以X为底的Y次幂，需要math.h
+/*	m_pADCDataRecThread->m_uispsSelect = pow(2, uispsSelect);*/
+	m_pADCDataRecThread->m_uispsSelect = (0x01)<<uispsSelect;
 	m_pTabADCSettings->m_uiADCPhs = ((CComboBox*)m_pTabADCSettings->GetDlgItem(IDC_COMBO_PHS))->GetCurSel();
 	switch(m_pTabADCSettings->m_uiADCPhs)
 	{

@@ -32,6 +32,7 @@ void CThreadManage::OnInit(void)
 	m_oInstrumentMonitorThread.m_pADCSet = &m_oADCSet;
 	m_oADCDataRecThread.m_pADCDataSaveToFile = & m_oADCDataSaveToFile;
 	m_oADCDataRecThread.m_pADCFrameInfo = &m_oADCFrameInfo;
+	m_oADCSet.m_pADCDataRecThread = &m_oADCDataRecThread;
 	m_oSysTime.m_pADCFrameInfo = &m_oADCFrameInfo;
 
 	m_oADCSet.m_pLogFile = m_pLogFile;

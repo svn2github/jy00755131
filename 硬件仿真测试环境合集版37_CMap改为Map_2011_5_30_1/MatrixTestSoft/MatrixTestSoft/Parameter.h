@@ -127,6 +127,8 @@ using namespace std;
 #define DecimalPlaces							9
 // ADC数据帧重发次数
 #define ADCFrameRetransmissionNum	5
+// 硬件存储ADC数据个数缓冲区大小
+#define HardwareSaveADCNum			2000
 // 线程关闭等待时间
 #define WaitForThreadCloseTime			550
 // IP地址设置的起始地址

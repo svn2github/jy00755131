@@ -91,6 +91,8 @@ public:
 	CADCFrameInfo* m_pADCFrameInfo;
 	// 日志类指针
 	CLogFile* m_pLogFile;
+	// ADC数据采样采样率设置
+	unsigned int m_uispsSelect;
 protected:
 	// 被选择仪器的ADC数据个数的最小值
 	unsigned int OnADCRecDataMinNum(void);

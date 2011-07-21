@@ -156,8 +156,8 @@ void CADCDataSaveToFile::OnCloseADCSaveFile(void)
 	if(m_FileSave.m_hFile != CFile::hFileNull)    // virtual member function
 	{
 		m_FileSave.Close();
+		m_bOpenADCSaveFile = FALSE;
 	}
-	m_bOpenADCSaveFile = FALSE;
 }
 // 防止程序在循环中运行无法响应消息
 void CADCDataSaveToFile::ProcessMessages(void)
