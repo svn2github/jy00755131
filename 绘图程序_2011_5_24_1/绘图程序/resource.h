@@ -32,6 +32,7 @@
 #define IDC_STATIC_GRAPHSHOWNUM         1023
 #define IDC_BUTTON1                     1024
 #define IDC_BUTTON_SELECTSAVEPATH       1024
+#define IDC_BUTTON_OPENADCFILE          1024
 #define IDC_BUTTON_SAVECHART            1025
 
 // Next default values for new objects

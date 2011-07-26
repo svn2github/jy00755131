@@ -7,6 +7,7 @@
 #include "HotSpotDlg.h"
 #include <math.h>
 #include <algorithm>
+#include <fstream>
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -63,12 +64,19 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_pControlArray(NULL)
 	, m_iControlNumber(0)
 	, m_bShowSizeIcon(TRUE)
+	, m_csOpenFilePath(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 C绘图程序Dlg::~C绘图程序Dlg()
 {
 	delete m_ChartViewer.getChart();
+	// 记录X轴坐标点信息
+	m_DrawPoint_X.clear();
+	// 记录各个绘制点信息
+	m_DrawPoint_Y.clear();
+	// 记录各条图线点的信息
+	m_DrawLine_Y.clear();
 }
 void C绘图程序Dlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -100,6 +108,7 @@ BEGIN_MESSAGE_MAP(C绘图程序Dlg, CDialog)
 	ON_WM_SIZE()
 	ON_WM_SIZING()
 	ON_BN_CLICKED(IDC_BUTTON_SAVECHART, &C绘图程序Dlg::OnBnClickedButtonSavechart)
+	ON_BN_CLICKED(IDC_BUTTON_OPENADCFILE, &C绘图程序Dlg::OnBnClickedButtonOpenadcfile)
 END_MESSAGE_MAP()
 
 
@@ -147,47 +156,11 @@ BOOL C绘图程序Dlg::OnInitDialog()
 
 	// 将对话框及其控件设为尺寸可变的
 	OnSiteSizeBox();
-	//
-	// 初始化成员变量
-	//
-
-	// 得到默认背景颜色
-	m_extBgColor = getDefaultBgColor();
-	// Y轴范围
-	m_minValue = m_maxValue = 0;
-
-	LoadData();
-
-	// 横坐标的最小值为m_timeStamps数组的第一个值
-	m_minData = m_timeStamps[0];
-	m_maxData = m_timeStamps[m_timeStamps.len - 1];
-
-	// 横坐标取值的变化范围
-	m_dateRange = m_maxData - m_minData;
-	m_minDuration = 10;
-
-	// 绘图区域左侧间隔个数
-	double maxData = 0.0;
-	maxData = m_maxData;
-	m_uiIntervalNum = 0;
-	while(maxData > 1)
-	{
-		maxData = maxData / 10;
-		m_uiIntervalNum++;
-	}
-
-	// 设置ChartViewer能反映有效且最小的持续时间
-	m_ChartViewer.setZoomInHeightLimit(m_minDuration / m_dateRange);
-	m_ChartViewer.setViewPortHeight(m_currentDuration / m_dateRange);
-	m_ChartViewer.setViewPortTop(1 - m_ChartViewer.getViewPortHeight());
 
 	// 初始设置鼠标为横向拖动滚动条模式
 	m_PointerPB.SetCheck(1);
 	m_XZoomPB.SetCheck(1);
 //	m_ChartViewer.setMouseUsage(Chart::MouseUsageScroll);
-
-	// 重绘绘图区
-	m_ChartViewer.updateViewPort(true, true);
 	
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -285,7 +258,7 @@ void C绘图程序Dlg::OnSiteSizeBox(void)
 		{IDC_ZoomOutPB, ELASTICY, 5},
 		{IDC_ZoomOutPB, ELASTICX, 5},
 		{IDC_STATIC_ZOOMMODE, MOVEY, 25},
-		{IDC_STATIC_ZOOMMODE, ELASTICY, 8},
+		{IDC_STATIC_ZOOMMODE, ELASTICY, 12},
 		{IDC_STATIC_ZOOMMODE, ELASTICX, 5},
 		{IDC_XZoomPB, MOVEY, 27},
 		{IDC_XZoomPB, ELASTICY, 5},
@@ -296,7 +269,10 @@ void C绘图程序Dlg::OnSiteSizeBox(void)
 		{IDC_STATIC_GRAPHSHOWNUM, MOVEY, 44},
 		{IDC_Duration, MOVEY, 46},
 		{IDC_Duration, ELASTICX, 5},
-		{IDC_BUTTON_SAVECHART, MOVEY, 48},
+		{IDC_BUTTON_OPENADCFILE, MOVEY, 48},
+		{IDC_BUTTON_OPENADCFILE, ELASTICY, 5},
+		{IDC_BUTTON_OPENADCFILE, ELASTICX, 5},
+		{IDC_BUTTON_SAVECHART, MOVEY, 53},
 		{IDC_BUTTON_SAVECHART, ELASTICY, 5},
 		{IDC_BUTTON_SAVECHART, ELASTICX, 5},
 		{IDC_HScrollBar, MOVEX, 5},
@@ -329,29 +305,17 @@ int C绘图程序Dlg::getDefaultBgColor(void)
 }
 
 // 载入数据
-void C绘图程序Dlg::LoadData(void)
+void C绘图程序Dlg::OnOpenFile(void)
 {
-	// The data for the line chart
-	for (int i=0; i<2000; i++)
+	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text||");
+	CFileDialog dlg(TRUE, _T(".text"), _T("1.text"),OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT,pszFilter, this);
+
+	if ( dlg.DoModal()!=IDOK )
 	{
-		timeTemp[i] = i;
-		data0[i] = 1 + sin(3.1415926*i/2000);
-		data1[i] = 2 + sin(3.1415926*i/2000);
-		data2[i] = 3 + sin(3.1415926*i/2000);
+		return;
 	}
-
-	// The initial view port is to show 1 year of data.
-	m_currentDuration = 100;
-	//
-	// Get the data and stores them in a memory buffer for fast scrolling / zooming. In 
-	// this demo, we just use a random number generator. In practice, you may get the data
-	// from a database or XML or by other means.
-
-	// Read random data into the data arrays
-	m_timeStamps = DoubleArray(timeTemp, 2000);
-	m_dataSeriesA = DoubleArray(data0, 2000);
-	m_dataSeriesB = DoubleArray(data1, 2000);
-	m_dataSeriesC = DoubleArray(data2, 2000);
+	m_csOpenFilePath=dlg.GetPathName();
+	LoadData(m_csOpenFilePath);
 }
 
 void C绘图程序Dlg::OnBnClickedPointerpb()
@@ -589,16 +553,16 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 		m_dateRange + 0.5);
 
 	// Get the starting index of the array using the start date
-	int startIndex = (int)(std::lower_bound(m_timeStamps.data, m_timeStamps.data + m_timeStamps.len,
-		viewPortStartDate) - m_timeStamps.data);
-	if ((startIndex > 0) && (m_timeStamps[startIndex] != viewPortStartDate)) 
+	int startIndex = (int)(std::lower_bound(&m_DrawPoint_X[0], &m_DrawPoint_X[0] + m_DrawPoint_X.size(), 
+		viewPortStartDate) - &m_DrawPoint_X[0]);
+	if ((startIndex > 0) && (m_DrawPoint_X[startIndex] != viewPortStartDate)) 
 		--startIndex;
 
 	// Get the ending index of the array using the end date
-	int endIndex = (int)(std::upper_bound(m_timeStamps.data, m_timeStamps.data + m_timeStamps.len, 
-		viewPortEndDate) - m_timeStamps.data);
-	if (endIndex >= m_timeStamps.len - 1)
-		endIndex = m_timeStamps.len - 1;
+	int endIndex = (int)(std::upper_bound(&m_DrawPoint_X[0], &m_DrawPoint_X[0] + m_DrawPoint_X.size(), 
+		viewPortEndDate) - &m_DrawPoint_X[0]);
+	if (endIndex >= (m_DrawPoint_X.size() - 1))
+		endIndex = m_DrawPoint_X.size() - 1;
 
 	// Get the length
 	int noOfPoints = endIndex - startIndex + 1;
@@ -609,7 +573,11 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	double* viewPortDataSeriesB = new double[noOfPoints];
 	double* viewPortDataSeriesC = new double[noOfPoints];
 	int arraySizeInBytes = noOfPoints * sizeof(double);
-	memcpy(viewPortTimeStamps, m_timeStamps.data + startIndex, arraySizeInBytes);
+//	memcpy(viewPortTimeStamps, m_DrawPoint_X[startIndex], arraySizeInBytes);
+	for (int i=0; i<noOfPoints; i++)
+	{
+		viewPortTimeStamps[i] = m_DrawPoint_X[startIndex + i];
+	}
 	memcpy(viewPortDataSeriesA, m_dataSeriesA.data + startIndex, arraySizeInBytes);
 	memcpy(viewPortDataSeriesB, m_dataSeriesB.data + startIndex, arraySizeInBytes);
 	memcpy(viewPortDataSeriesC, m_dataSeriesC.data + startIndex, arraySizeInBytes);
@@ -992,7 +960,7 @@ void C绘图程序Dlg::OnBnClickedButtonSavechart()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CString sPathName = _T("");
-	const char pszFilter[] = _T("位图(*.bmp)|*.bmp||");
+	const wchar_t pszFilter[] = _T("位图(*.bmp)|*.bmp||");
 	CFileDialog dlg(FALSE, _T(".bmp"), _T("Matrix428.bmp"),OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT,pszFilter, this);
 
 	if ( dlg.DoModal()!=IDOK )
@@ -1000,6 +968,99 @@ void C绘图程序Dlg::OnBnClickedButtonSavechart()
 	sPathName=dlg.GetPathName();
 	if (NULL != m_ChartViewer.getChart())
 	{
-		m_ChartViewer.getChart()->makeChart(sPathName);
+		//因为需要保存的内容包含中文，所以需要如下的转换过程
+		int ansiCount = WideCharToMultiByte(CP_ACP, 0, sPathName, -1, NULL, 0, NULL, NULL);
+		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
+		memset(pTempChar, 0, ansiCount);
+		WideCharToMultiByte(CP_ACP, 0, sPathName, -1, pTempChar, ansiCount, NULL, NULL);
+		m_ChartViewer.getChart()->makeChart(pTempChar);
+		free(pTempChar);
+	}
+}
+
+void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//
+	// 初始化成员变量
+	//
+	// 得到默认背景颜色
+	m_extBgColor = getDefaultBgColor();
+	// Y轴范围
+	m_minValue = m_maxValue = 0;
+
+	OnOpenFile();
+	// 初始状态每条线显示的点数
+	m_currentDuration = 3000;
+
+	// 横坐标的最小值为m_timeStamps数组的第一个值
+	m_minData = m_DrawPoint_X[0];
+	m_maxData = m_DrawPoint_X[m_DrawPoint_X.size() - 1];
+
+	// 横坐标取值的变化范围
+	m_dateRange = m_maxData - m_minData;
+	m_minDuration = 10;
+
+	// 绘图区域左侧间隔个数
+	double maxData = 0.0;
+	maxData = m_maxData;
+	m_uiIntervalNum = 0;
+	while(maxData > 1)
+	{
+		maxData = maxData / 10;
+		m_uiIntervalNum++;
+	}
+
+	// 设置ChartViewer能反映有效且最小的持续时间
+	m_ChartViewer.setZoomInHeightLimit(m_minDuration / m_dateRange);
+	m_ChartViewer.setViewPortHeight(m_currentDuration / m_dateRange);
+	m_ChartViewer.setViewPortTop(1 - m_ChartViewer.getViewPortHeight());
+
+	// 重绘绘图区
+	m_ChartViewer.updateViewPort(true, true);
+}
+
+// 从文件中载入数据
+void C绘图程序Dlg::LoadData(CString csOpenFilePath)
+{
+	// The data for the line chart
+	for (int i=0; i<2000; i++)
+	{
+		m_DrawPoint_X.push_back(i);
+		data0[i] = 1 + sin(3.1415926*i/2000);
+		data1[i] = 2 + sin(3.1415926*i/2000);
+		data2[i] = 3 + sin(3.1415926*i/2000);
+	}
+	// Read data into the data arrays
+	m_dataSeriesA = DoubleArray(data0, 2000);
+	m_dataSeriesB = DoubleArray(data1, 2000);
+	m_dataSeriesC = DoubleArray(data2, 2000);
+
+	if ((_waccess(csOpenFilePath,0))!=-1)
+	{
+		ifstream fp_str;
+		fp_str.open(csOpenFilePath, ios::in);
+
+		if(fp_str.fail())
+		{
+			::AfxMessageBox(_T("打开光谱文件出错！"));
+
+		}
+		else
+		{
+			char wholeline[256];
+			int samplenum=0,wavelengthnum=0;
+			int maxx=0;
+
+			fp_str.getline(wholeline, 256, '\n');
+			sscanf_s (wholeline, "*****Sample Num: %d, W.L. %d Target Num.:", &samplenum, &wavelengthnum);
+
+			for (int m=0;m<(samplenum+1)*wavelengthnum;m++)
+			{
+// 				fp_str >>datatemp;
+// 				data.push_back(datatemp);
+			}
+			fp_str.close();
+		}
 	}
 }

@@ -5,6 +5,8 @@
 #include "ChartViewer.h"
 #include "afxwin.h"
 #include "Parameter.h"
+#include <vector>
+using namespace std;
 // C绘图程序Dlg 对话框
 class C绘图程序Dlg : public CDialog
 {
@@ -55,8 +57,12 @@ private:
 	double m_maxValue;					// 纵坐标的最大值
 	double m_minValue;					// 纵坐标的最小值
 	unsigned int m_uiIntervalNum;	// 绘图区域左侧间隔个数
-
-	DoubleArray m_timeStamps;		// 横坐标数值所在双数组
+	// 记录X轴坐标点信息
+	vector <unsigned int>	m_DrawPoint_X;
+	// 记录各个绘制点信息
+	vector <double> m_DrawPoint_Y;
+	// 记录各条图线点的信息
+	vector <vector <double>> m_DrawLine_Y;
 	DoubleArray m_dataSeriesA;		// 第一条曲线所在双数组
 	DoubleArray m_dataSeriesB;		// 第二条曲线所在双数组
 	DoubleArray m_dataSeriesC;		// 第三条曲线所在双数组
@@ -80,7 +86,6 @@ public:
 	CScrollBar m_HScrollBar;			// 横向滚动条的控制变量
 	CScrollBar m_VScrollBar;			// 纵向滚动条的控制变量
 	CComboBox m_Duration;			// 绘图显示点数选项卡控制变量
-	double timeTemp[2000];				// 横坐标数值数组
 	double data0[2000];					// 第一条曲线数组	
 	double data1[2000];					// 第二条曲线数组
 	double data2[2000];					// 第三条曲线数组
@@ -89,7 +94,7 @@ private:
 	// 得到默认的背景颜色
 	int getDefaultBgColor(void);
 	// 载入数据
-	void LoadData(void);
+	void OnOpenFile(void);
 	// 载入一个图标资源到按钮
 	void loadButtonIcon(int buttonId, int iconId, int width, int height);
 	// 当用户选中时移动滚动条
@@ -121,4 +126,9 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
 	afx_msg void OnBnClickedButtonSavechart();
+	afx_msg void OnBnClickedButtonOpenadcfile();
+	// 打开文件的路径
+	CString m_csOpenFilePath;
+	// 从文件中载入数据
+	void LoadData(CString csOpenFilePath);
 };
