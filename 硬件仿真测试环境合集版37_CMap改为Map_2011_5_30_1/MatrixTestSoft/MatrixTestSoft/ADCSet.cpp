@@ -1526,7 +1526,7 @@ void CADCSet::OnSendADCSetCmd(void)
 		Sleep(ADCOperationSleepTime);
 		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
 		OnSetTB(iPos, m_uiTnow + TBSleepTimeHigh, TBSleepTimeLow + CmdTBCtrl, false);
-		str.Format(_T("设置ADC数据采样TB开始时间为%d！"), m_uiTnow + TBSleepTimeHigh);
+		str.Format(_T("设置ADC数据采样TB开始时间为0x%x！"), m_uiTnow + TBSleepTimeHigh);
 		m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
 		sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 		break;

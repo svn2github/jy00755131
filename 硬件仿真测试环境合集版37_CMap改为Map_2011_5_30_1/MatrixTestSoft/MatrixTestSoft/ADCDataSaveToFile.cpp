@@ -50,10 +50,9 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 				// 方法1：也可以实现double转换为string，只是转换后的数据采用科学计数法，CPU占用率达到22%
 // 				_gcvt_s(buffer, _CVTBUFSIZE, dpADCDataBuf[j][i], 9);
 // 				strOutput += buffer;
-
+				ZeroMemory(buffer, _CVTBUFSIZE);
 				// 方法2：采用_stprintf_s函数的方法，CPU占用率达到10%
 				_stprintf_s(buffer, _CVTBUFSIZE, _T("%2.*lf"), DecimalPlaces, dpADCDataBuf[j][i]);
-//				_stprintf_s(buffer, _CVTBUFSIZE, _T("%2.*lf"), DecimalPlaces, 1.234567891);
 				strOutput += buffer;
 				strOutput +=  _T("\t");
 

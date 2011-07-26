@@ -229,6 +229,9 @@ SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast
 	}
 	else
 	{
+		//设置非堵塞通讯
+// 		DWORD ul = 1;
+// 		ioctlsocket(socketName, FIONBIO, &ul);
 		if (bBroadCast == true)
 		{
 			//设置广播模式

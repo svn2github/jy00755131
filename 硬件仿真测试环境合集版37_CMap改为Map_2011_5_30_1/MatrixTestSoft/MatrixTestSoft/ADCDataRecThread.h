@@ -113,10 +113,12 @@ public:
 	void OnSaveADCToFile(bool bfinish);
 	// ADC数据重发
 	void OnADCDataRetransmission(void);
+	// ADC数据重发
+	void OnADCDataRetransmission(unsigned int uiInstrumentNb);
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);
 	// 检查接收帧是否为重发帧
-	BOOL OnCheckFrameIsRetransmission(unsigned int uiInstrumentNb, unsigned int uiIPAim, unsigned short usDataPointNow);
+	DWORD OnCheckFrameIsRetransmission(unsigned int uiInstrumentNb, unsigned int uiIPAim, unsigned short usDataPointNow);
 	// 该帧为最后一个数据重发帧
 	void OnRecOkIsRetransimissionFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, double* pReceiveData);
 	// 该帧为普通帧且之前没有重发帧
