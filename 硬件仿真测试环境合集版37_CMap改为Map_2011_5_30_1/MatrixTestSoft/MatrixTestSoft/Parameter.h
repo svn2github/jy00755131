@@ -181,6 +181,10 @@ using namespace std;
 #define IPBroadcastAddr		0xFFFFFFFF
 // XML配置文件名
 #define XMLFileName			_T("MatrixTestSoft.xml")
+// ADC数据转换
+#define ADCDataConvert									1
+// ADC数据不转换
+#define ADCDataNoConvert								0
 
 //____________________命令字设置__________________
 // 发送设置命令

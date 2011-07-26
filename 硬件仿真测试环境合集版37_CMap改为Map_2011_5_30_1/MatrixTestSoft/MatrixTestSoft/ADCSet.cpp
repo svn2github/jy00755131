@@ -1267,16 +1267,29 @@ BOOL CADCSet::OnCheckADCSetReturn(void)
 {
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	CString str = _T("");
-	for(iter=m_pInstrumentList->m_oInstrumentIPMap.begin(); iter!=m_pInstrumentList->m_oInstrumentIPMap.end(); iter++)
+	for (int i=0; i<InstrumentNum; i++)
 	{
-		//		ProcessMessages();
-		if (NULL != iter->second)
+		if (m_pSelectObject[i] == 1)
 		{
-			if (iter->second->m_uiInstrumentType == InstrumentTypeFDU)
+			unsigned int uiIPAim = 0;
+			uiIPAim	= IPSetAddrStart + IPSetAddrInterval * (i + 1);
+			iter = m_pInstrumentList->m_oInstrumentIPMap.find(uiIPAim);
+			if (iter == m_pInstrumentList->m_oInstrumentIPMap.end())
 			{
-				if (iter->second->m_uiADCSetOperationNb != m_uiADCSetOperationNb)
+				// 索引中未找到该设备
+				continue;
+			}
+			else
+			{
+				if (NULL != iter->second)
 				{
-					return FALSE;
+					if (iter->second->m_uiInstrumentType == InstrumentTypeFDU)
+					{
+						if (iter->second->m_uiADCSetOperationNb != m_uiADCSetOperationNb)
+						{
+							return FALSE;
+						}
+					}
 				}
 			}
 		}

@@ -42,7 +42,7 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 			uiDataLength = upADCDataNum[j];
 			if (uiDataLength == 0 )
 			{
-				strOutput += _T("\t\t");
+				strOutput += _T("  \t \t");
 				continue;
 			}
 			if (uiDataLength > i)
@@ -54,7 +54,7 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 				// 方法2：采用_stprintf_s函数的方法，CPU占用率达到10%
 				_stprintf_s(buffer, _CVTBUFSIZE, _T("%2.*lf"), DecimalPlaces, dpADCDataBuf[j][i]);
 				strOutput += buffer;
-				strOutput +=  _T("\t");
+				strOutput +=  _T(" \t");
 
 				// 方法3：采用_fcvt_s函数的方法，CPU占用率达到25%
 // 				_fcvt_s(buffer, _CVTBUFSIZE, dpADCDataBuf[j][i], DecimalPlaces, &dec, &sign);
@@ -68,7 +68,7 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 			}
 			else
 			{
-				strOutput += _T("\t\t");
+				strOutput += _T("  \t \t");
 			}
 		}
 		strOutput += _T("\r\n");
@@ -99,16 +99,18 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 // 创建并打开ADC保存数据文件
 void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 {
-	m_uiADCSaveFileNum++;
 	CString strFileName = _T("");
 	CString strOutput = _T("");
 	CString strTemp = _T("");
 	//	errno_t err;
 	CString str = _T("");
+	unsigned int uiADCStartNum = 0;
+	unsigned int uiADCDataCovNb = ADCDataConvert;
 	SYSTEMTIME  sysTime;
 	// 选中的仪器对象名称
 	wchar_t cSelectObjectName[InstrumentNum][RcvFrameSize];
 	strFileName += m_csSaveFilePath;
+	m_uiADCSaveFileNum++;
 	strTemp.Format(_T("\\%d.text"), m_uiADCSaveFileNum);
 	strFileName += strTemp;
 	// 将ADC采样数据保存成ANSI格式的文件
@@ -124,10 +126,12 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 		return;
 	}
 	GetLocalTime(&sysTime);
-	str.Format(_T("%04d年%02d月%02d日%02d:%02d:%02d:%03d开始记录ADC采样数据：\r\n\r\n"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
+	str.Format(_T("%04d年%02d月%02d日%02d:%02d:%02d:%03d开始记录ADC采样数据：\r\n"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 	strOutput += str;
-
+	uiADCStartNum = (m_uiADCSaveFileNum - 1) * m_uiADCFileLength + 1;
+	str.Format(_T("从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！\r\n"), uiADCStartNum, uiADCDataCovNb);
+	strOutput += str;
 	// 输出仪器标签
 	for (int i=0; i<InstrumentNum; i++)
 	{
@@ -135,7 +139,7 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 		strTemp.Format(_T("仪器%d"), i+1);
 		wchar_t* pchar = strTemp.GetBuffer(0); 
 		_tcscpy_s(cSelectObjectName[i],pchar);
-		strTemp.Format(_T("%s\t\t"), cSelectObjectName[i]);
+		strTemp.Format(_T("%s \t\t"), cSelectObjectName[i]);
 		strOutput += strTemp;
 	}
 
