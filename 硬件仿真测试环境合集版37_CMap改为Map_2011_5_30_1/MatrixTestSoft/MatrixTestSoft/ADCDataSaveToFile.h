@@ -26,9 +26,9 @@ public:
 		unsigned int uiADCDataToSaveNum, bool bFinish);
 	// 关闭ADC保存数据文件
 	void OnCloseADCSaveFile(void);
-protected:
 	// 创建并打开ADC保存数据文件
 	void OnOpenADCSaveFile(void);
+protected:
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);
 };

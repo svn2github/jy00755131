@@ -54,7 +54,7 @@ void CADCFrameInfo::OnSaveFile(unsigned int uiInstrumentNb, unsigned int uiDataP
 	str.Format(_T("%04d年%02d月%02d日 %02d:%02d:%02d:%03d\t"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 
-	strOutput.Format(_T("设备ID %d\t帧的PointNum %d\t\t帧发送的SysTime %d\n"), uiInstrumentNb, uiDataPointNum, uiSysTime);
+	strOutput.Format(_T("设备ID %d\t帧的PointNum %d\t\t帧发送的SysTime %d\r\n"), uiInstrumentNb, uiDataPointNum, uiSysTime);
 	strOutput = str + strOutput;
 //	fprintf(m_pFileSave, _T("%s"), strOutput); 
 // 	CArchive ar(&m_FileSave, CArchive::store);

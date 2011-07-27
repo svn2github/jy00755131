@@ -207,7 +207,7 @@ void CSysTime::OnProcSysTimeReturn(int iPos)
 		m_uiSysTime = uiSysTime;
 		// 广播命令开始采样
 		OnADCStartSample(m_uiSysTime);
-		strOutput.Format(_T("设置ADC数据采样TB开始时间为%d\n"), m_uiSysTime + TBSleepTimeHigh);
+		strOutput.Format(_T("设置ADC数据采样TB开始时间为%d\r\n"), m_uiSysTime + TBSleepTimeHigh);
 		//因为需要保存的内容包含中文，所以需要如下的转换过程
 		WriteCHToCFile(&(m_pADCFrameInfo->m_FileSave), strOutput);
 	}

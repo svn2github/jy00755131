@@ -68,7 +68,13 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 			}
 			else
 			{
-				strOutput += _T("  \t \t");
+				// 针对有采集站数据不全的情况采用补零处理
+				ZeroMemory(buffer, _CVTBUFSIZE);
+				// 方法2：采用_stprintf_s函数的方法，CPU占用率达到10%
+				_stprintf_s(buffer, _CVTBUFSIZE, _T("%2.*lf"), DecimalPlaces, 0.0);
+				strOutput += buffer;
+				strOutput +=  _T(" \t");
+//				strOutput += _T("  \t \t");
 			}
 		}
 		strOutput += _T("\r\n");
@@ -130,7 +136,7 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 	strOutput += str;
 	uiADCStartNum = (m_uiADCSaveFileNum - 1) * m_uiADCFileLength + 1;
-	str.Format(_T("从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！\r\n"), uiADCStartNum, uiADCDataCovNb);
+	str.Format(_T("采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！\r\n"), InstrumentNum, uiADCStartNum, uiADCDataCovNb);
 	strOutput += str;
 	// 输出仪器标签
 	for (int i=0; i<InstrumentNum; i++)
