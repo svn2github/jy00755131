@@ -49,7 +49,6 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 private:
-	
 	int m_extBgColor;						// 默认的背景颜色
 	double m_minData;						// 横坐标的最小值
 	double m_maxData;					// 横坐标的最大值
@@ -78,6 +77,22 @@ private:
 	// 保存图标的bitmap
 	CBitmap m_bmpSizeIcon; 
 	BITMAP m_bitmap; 
+	// 打开文件的路径
+	CString m_csOpenFilePath;
+	// 采集站设备总数
+	unsigned int m_uiInstrumentMaxNum;
+	// 参与ADC数据采集的采集站设备数
+	unsigned int m_uiInstrumentADCNum;
+	// ADC数据开始的数据点数
+	unsigned int m_uiADCStartNum;
+	// ADC数据转换格式
+	unsigned int m_uiADCDataCovNb;
+	// 采集站采集到的ADC数据总数
+	unsigned int m_uiADCDataNum;
+	// 每个采集站采集到的ADC数据个数
+	unsigned int m_uiADCDataFduNum;
+	// 采集站ADC数据存储
+	vector<double>* m_dbFduData;
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
 	double m_currentDuration;			// 当前显示数据点的个数
@@ -111,6 +126,8 @@ private:
 	void ShowSizeIcon(BOOL bShow = TRUE);
 	// 将对话框及其控件设为尺寸可变的
 	void OnSiteSizeBox(void);
+	// 从文件中载入数据
+	void LoadData(CString csOpenFilePath);
 public:
 	afx_msg void OnBnClickedPointerpb();
 	afx_msg void OnBnClickedZoominpb();
@@ -127,8 +144,4 @@ public:
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
 	afx_msg void OnBnClickedButtonSavechart();
 	afx_msg void OnBnClickedButtonOpenadcfile();
-	// 打开文件的路径
-	CString m_csOpenFilePath;
-	// 从文件中载入数据
-	void LoadData(CString csOpenFilePath);
 };

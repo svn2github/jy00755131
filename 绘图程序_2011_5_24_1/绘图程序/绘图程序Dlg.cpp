@@ -65,6 +65,13 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_iControlNumber(0)
 	, m_bShowSizeIcon(TRUE)
 	, m_csOpenFilePath(_T(""))
+	, m_uiInstrumentMaxNum(0)
+	, m_uiInstrumentADCNum(0)
+	, m_uiADCStartNum(0)
+	, m_uiADCDataCovNb(0)
+	, m_uiADCDataNum(0)
+	, m_uiADCDataFduNum(0)
+	, m_dbFduData(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -77,6 +84,12 @@ C绘图程序Dlg::~C绘图程序Dlg()
 	m_DrawPoint_Y.clear();
 	// 记录各条图线点的信息
 	m_DrawLine_Y.clear();
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		m_dbFduData[i].clear();
+	}
+	m_dbFduData = NULL;
+	delete m_dbFduData;
 }
 void C绘图程序Dlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -561,7 +574,7 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	// Get the ending index of the array using the end date
 	int endIndex = (int)(std::upper_bound(&m_DrawPoint_X[0], &m_DrawPoint_X[0] + m_DrawPoint_X.size(), 
 		viewPortEndDate) - &m_DrawPoint_X[0]);
-	if (endIndex >= (m_DrawPoint_X.size() - 1))
+	if (endIndex >= ((int)(m_DrawPoint_X.size()) - 1))
 		endIndex = m_DrawPoint_X.size() - 1;
 
 	// Get the length
@@ -577,10 +590,13 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	for (int i=0; i<noOfPoints; i++)
 	{
 		viewPortTimeStamps[i] = m_DrawPoint_X[startIndex + i];
+		viewPortDataSeriesA[i] = m_dbFduData[0][startIndex + i];
+		viewPortDataSeriesB[i] = m_dbFduData[1][startIndex + i];
+		viewPortDataSeriesC[i] = m_dbFduData[2][startIndex + i];
 	}
-	memcpy(viewPortDataSeriesA, m_dataSeriesA.data + startIndex, arraySizeInBytes);
-	memcpy(viewPortDataSeriesB, m_dataSeriesB.data + startIndex, arraySizeInBytes);
-	memcpy(viewPortDataSeriesC, m_dataSeriesC.data + startIndex, arraySizeInBytes);
+// 	memcpy(viewPortDataSeriesA, m_dataSeriesA.data + startIndex, arraySizeInBytes);
+// 	memcpy(viewPortDataSeriesB, m_dataSeriesB.data + startIndex, arraySizeInBytes);
+// 	memcpy(viewPortDataSeriesC, m_dataSeriesC.data + startIndex, arraySizeInBytes);
 
 	if (noOfPoints >= 520)
 	{
@@ -1023,44 +1039,115 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
 // 从文件中载入数据
 void C绘图程序Dlg::LoadData(CString csOpenFilePath)
 {
-	// The data for the line chart
-	for (int i=0; i<2000; i++)
-	{
-		m_DrawPoint_X.push_back(i);
-		data0[i] = 1 + sin(3.1415926*i/2000);
-		data1[i] = 2 + sin(3.1415926*i/2000);
-		data2[i] = 3 + sin(3.1415926*i/2000);
-	}
-	// Read data into the data arrays
-	m_dataSeriesA = DoubleArray(data0, 2000);
-	m_dataSeriesB = DoubleArray(data1, 2000);
-	m_dataSeriesC = DoubleArray(data2, 2000);
-
-	if ((_waccess(csOpenFilePath,0))!=-1)
+	if ((_taccess(csOpenFilePath,0))!=-1)
 	{
 		ifstream fp_str;
 		fp_str.open(csOpenFilePath, ios::in);
-
 		if(fp_str.fail())
 		{
-			::AfxMessageBox(_T("打开光谱文件出错！"));
-
+			AfxMessageBox(_T("打开数据采样文件出错！"));
 		}
 		else
 		{
-			char wholeline[256];
-			int samplenum=0,wavelengthnum=0;
-			int maxx=0;
-
-			fp_str.getline(wholeline, 256, '\n');
-			sscanf_s (wholeline, "*****Sample Num: %d, W.L. %d Target Num.:", &samplenum, &wavelengthnum);
-
-			for (int m=0;m<(samplenum+1)*wavelengthnum;m++)
+			// 保存数据文件每一行的缓冲区
+			char ADCInfoBuf[SetReadFileHeadBufSize]; 
+			char *ADCDataRowBuf = NULL;
+			unsigned int uiADCDataRowBufSize = 0;
+			double datatemp = 0.0;
+			CString str = _T("");
+			CString cstmp = _T("");
+			int iDirectionPrevious = 0;
+			int iDirectionNow = 0;
+			int iDirectionEnd = 0;
+			vector<double> dbADCData;
+			double *dbDataTemp;
+			// 初始化变量
+			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 			{
-// 				fp_str >>datatemp;
-// 				data.push_back(datatemp);
+				m_dbFduData[i].clear();
+			}
+			m_DrawPoint_X.clear();
+			m_dbFduData = NULL;
+			delete m_dbFduData;
+			// 采集站设备总数
+			m_uiInstrumentMaxNum = 0;
+			// 参与ADC数据采集的采集站设备数
+			m_uiInstrumentADCNum = 0;
+			// ADC数据开始的数据点数
+			m_uiADCStartNum = 0;
+			// ADC数据转换格式
+			m_uiADCDataCovNb = 0;
+			// 采集站采集到的ADC数据总数
+			m_uiADCDataNum = 0;
+			// 每个采集站采集到的ADC数据个数
+			m_uiADCDataFduNum = 0;
+			// ADC数据采样开始时间
+			fp_str.getline(ADCInfoBuf, SetReadFileHeadBufSize, '\n');
+			// ADC数据采样信息
+			fp_str.getline(ADCInfoBuf, SetReadFileHeadBufSize, '\n');
+			sscanf_s (ADCInfoBuf, "采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！", &m_uiInstrumentMaxNum, &m_uiADCStartNum, &m_uiADCDataCovNb);
+			if (m_uiInstrumentMaxNum == 0)
+			{
+				fp_str.close();
+				AfxMessageBox(_T("采集站设备总数为0！"));
+				return;
+			}
+			uiADCDataRowBufSize = (ADCDataBufSize + ADCDataInterval) * m_uiInstrumentMaxNum;
+			ADCDataRowBuf = new char[uiADCDataRowBufSize];
+			// 采集站设备标签
+			fp_str.getline(ADCDataRowBuf, uiADCDataRowBufSize, '\n');
+			// 第一行ADC数据，用于分析参与采集的站的个数
+			fp_str.getline(ADCDataRowBuf, uiADCDataRowBufSize, '\n');
+			str = ADCDataRowBuf;
+			delete ADCDataRowBuf;
+			
+			dbDataTemp = new double[m_uiInstrumentMaxNum];
+			iDirectionEnd = str.GetLength();
+			while(iDirectionEnd != iDirectionPrevious)
+			{
+				iDirectionNow = str.Find(_T(" \t"), iDirectionPrevious);
+				cstmp = str.Mid(iDirectionPrevious, iDirectionNow-iDirectionPrevious);
+				iDirectionPrevious = iDirectionNow + 2;
+				if (cstmp == _T(" "))
+				{
+					iDirectionPrevious += 2;
+					continue;
+				}
+				else
+				{
+					dbDataTemp[m_uiInstrumentADCNum] = _tstof(cstmp);
+					m_uiInstrumentADCNum++;
+					m_uiADCDataNum++;
+				}
+			}
+			dbADCData.clear();
+			while(fp_str.eof() == false)
+			{
+				fp_str >> datatemp;
+				dbADCData.push_back(datatemp);
+				m_uiADCDataNum++;
 			}
 			fp_str.close();
+			m_uiADCDataFduNum = m_uiADCDataNum / m_uiInstrumentADCNum;
+			m_uiADCDataNum = m_uiADCDataFduNum * m_uiInstrumentADCNum;
+			for (unsigned int i=0; i<m_uiADCDataFduNum; i++)
+			{
+				m_DrawPoint_X.push_back(i);
+			}
+			m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
+			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+			{
+				m_dbFduData[i].push_back(dbDataTemp[i]);
+			}
+			delete dbDataTemp;
+			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+			{
+				for (unsigned int j=0; j<(m_uiADCDataFduNum - 1); j++)
+				{
+					m_dbFduData[i].push_back(dbADCData[i + j * m_uiInstrumentADCNum]);
+				}
+			}
+			dbADCData.clear();
 		}
 	}
 }
