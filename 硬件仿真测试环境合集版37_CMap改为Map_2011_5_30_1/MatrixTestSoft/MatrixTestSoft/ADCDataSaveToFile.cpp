@@ -135,7 +135,7 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 	str.Format(_T("%04d年%02d月%02d日%02d:%02d:%02d:%03d开始记录ADC采样数据：\r\n"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 	strOutput += str;
-	uiADCStartNum = (m_uiADCSaveFileNum - 1) * m_uiADCFileLength + 1;
+	uiADCStartNum = (m_uiADCSaveFileNum - 1) * m_uiADCFileLength;
 	str.Format(_T("采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！\r\n"), InstrumentNum, uiADCStartNum, uiADCDataCovNb);
 	strOutput += str;
 	// 输出仪器标签
