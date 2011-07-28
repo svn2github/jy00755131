@@ -72,6 +72,8 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_uiADCDataNum(0)
 	, m_uiADCDataFduNum(0)
 	, m_dbFduData(NULL)
+	, m_viewPortDataSeries(NULL)
+	, m_dbDataTemp(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -80,16 +82,13 @@ C绘图程序Dlg::~C绘图程序Dlg()
 	delete m_ChartViewer.getChart();
 	// 记录X轴坐标点信息
 	m_DrawPoint_X.clear();
-	// 记录各个绘制点信息
-	m_DrawPoint_Y.clear();
 	// 记录各条图线点的信息
 	m_DrawLine_Y.clear();
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
 		m_dbFduData[i].clear();
 	}
-	m_dbFduData = NULL;
-	delete m_dbFduData;
+	delete[] m_dbFduData;
 }
 void C绘图程序Dlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -318,17 +317,17 @@ int C绘图程序Dlg::getDefaultBgColor(void)
 }
 
 // 载入数据
-void C绘图程序Dlg::OnOpenFile(void)
+BOOL C绘图程序Dlg::OnOpenFile(void)
 {
-	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text||");
-	CFileDialog dlg(TRUE, _T(".text"), _T("1.text"),OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT,pszFilter, this);
+	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
+	CFileDialog dlg(TRUE, _T(".text"), _T("1.text"), OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT, pszFilter, this);
 
 	if ( dlg.DoModal()!=IDOK )
 	{
-		return;
+		return FALSE;
 	}
 	m_csOpenFilePath=dlg.GetPathName();
-	LoadData(m_csOpenFilePath);
+	return LoadData(m_csOpenFilePath);
 }
 
 void C绘图程序Dlg::OnBnClickedPointerpb()
@@ -582,23 +581,13 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 
 	// We copy the visible data from the main arrays to separate data arrays
 	double* viewPortTimeStamps = new double[noOfPoints];
-	double* viewPortDataSeriesA = new double[noOfPoints];
-	double* viewPortDataSeriesB = new double[noOfPoints];
-	double* viewPortDataSeriesC = new double[noOfPoints];
-	int arraySizeInBytes = noOfPoints * sizeof(double);
-//	memcpy(viewPortTimeStamps, m_DrawPoint_X[startIndex], arraySizeInBytes);
-	for (int i=0; i<noOfPoints; i++)
-	{
-		viewPortTimeStamps[i] = m_DrawPoint_X[startIndex + i];
-		viewPortDataSeriesA[i] = m_dbFduData[0][startIndex + i];
-		viewPortDataSeriesB[i] = m_dbFduData[1][startIndex + i];
-		viewPortDataSeriesC[i] = m_dbFduData[2][startIndex + i];
-	}
-// 	memcpy(viewPortDataSeriesA, m_dataSeriesA.data + startIndex, arraySizeInBytes);
-// 	memcpy(viewPortDataSeriesB, m_dataSeriesB.data + startIndex, arraySizeInBytes);
-// 	memcpy(viewPortDataSeriesC, m_dataSeriesC.data + startIndex, arraySizeInBytes);
 
-	if (noOfPoints >= 520)
+
+	int arraySizeInBytes = noOfPoints * sizeof(double);
+	memcpy(viewPortTimeStamps, &m_DrawPoint_X[startIndex], arraySizeInBytes);
+
+
+	if (noOfPoints >= FullScreenLineShowPointsNum)
 	{
 		//
 		// Zoomable chart with high zooming ratios often need to plot many thousands of 
@@ -618,17 +607,17 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 
 		// Set up an aggregator to aggregate the data based on regular sized slots
 		ArrayMath m(DoubleArray(viewPortTimeStamps, noOfPoints));
-		m.selectRegularSpacing(noOfPoints / 260);
+		m.selectRegularSpacing(noOfPoints / (FullScreenLineShowPointsNum / 2));
 
 		// For the timestamps, take the first timestamp on each slot
 		int aggregatedNoOfPoints = m.aggregate(DoubleArray(viewPortTimeStamps, noOfPoints), 
 			Chart::AggregateFirst).len;
 
 		// For the data values, aggregate by taking the averages
-		m.aggregate(DoubleArray(viewPortDataSeriesA, noOfPoints), Chart::AggregateAvg);
-		m.aggregate(DoubleArray(viewPortDataSeriesB, noOfPoints), Chart::AggregateAvg);
-		m.aggregate(DoubleArray(viewPortDataSeriesC, noOfPoints), Chart::AggregateAvg);
-
+		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+		{
+			m.aggregate(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), Chart::AggregateAvg);
+		}
 		noOfPoints = aggregatedNoOfPoints;
 	}
 
@@ -652,7 +641,7 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	rectWindow.bottom = rectWindowCtrl.bottom;
 	GetDlgItem(IDC_ChartViewer)->MoveWindow(&rectWindow);
 
-	XYChart *c = new XYChart(rectWindow.Width(), rectWindow.Height(), 0xf0f0ff, 0, 1);
+	XYChart *c = new XYChart(rectWindow.Width(), rectWindow.Height(), SetPlotCtrlBackgroundColor, 0, 1);
 	c->setRoundedFrame(m_extBgColor);
 
 	// Set the plotarea at (55, 58) and of size 520 x 195 pixels, with white
@@ -662,18 +651,18 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	int iHeight = 0;
 	iWidth = rectWindow.Width() - SetLegendWidth - m_uiIntervalNum * SetPlotAreaXInterval - SetLegendXInterval;
 	iHeight = rectWindow.Height() - SetPlotAreaYInterval - SetPlotAreaBottomInterval;
-	c->setPlotArea(m_uiIntervalNum * SetPlotAreaXInterval, SetPlotAreaYInterval, iWidth, iHeight, 0xffffff, -1, -1, 0xcccccc, 0xcccccc);
+	c->setPlotArea(m_uiIntervalNum * SetPlotAreaXInterval, SetPlotAreaYInterval, iWidth, iHeight, SetPlotAreaBackgroundColor, -1, -1, SetHGridColor, SetVGridColor);
 	c->setClipping();
 
 	// Add a legend box at (50, 30) (top of the chart) with horizontal layout. Use 9
 	// pts Arial Bold font. Set the background and border color to Transparent.
-	c->addLegend(rectWindow.Width() - SetLegendWidth, SetLegendYInterval, false, "arialbd.ttf", 9)->setBackground(Chart::Transparent);
+	c->addLegend(rectWindow.Width() - SetLegendWidth, SetLegendYInterval, false, "arialbd.ttf", SetLegnedBoxFontSize)->setBackground(Chart::Transparent);
 
 	// Add a title box to the chart using 15 pts Times Bold Italic font, on a light
 	// blue (CCCCFF) background with glass effect. white (0xffffff) on a dark red
 	// (0x800000) background, with a 1 pixel 3D border.
-	c->addTitle("Hitech Matrix428", "timesbi.ttf", 12)->setBackground(
-		0xccccff, 0x000000, Chart::glassEffect());
+	c->addTitle("Hitech Matrix428", "timesbi.ttf", SetTitleBoxFontSize)->setBackground(
+		SetTitleBackgroundColor, SetTitleEdgeColor, Chart::glassEffect());
 
  	// Swap the x and y axis to become a rotated chart
  	c->swapXY();
@@ -707,18 +696,43 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	LineLayer *layer = c->addLineLayer();
 
 	// Set the default line width to 2 pixels
-	layer->setLineWidth(2);
+	layer->setLineWidth(SetLineWidth);
 
 	// Set the axes width to 2 pixels
-	c->xAxis()->setWidth(2);
-	c->yAxis()->setWidth(2);
+	c->xAxis()->setWidth(SetXAxisWidth);
+	c->yAxis()->setWidth(SetYAxisWidth);
 
 	// Now we add the 3 data series to a line layer, using the color red (ff0000), green
 	// (00cc00) and blue (0000ff)
 	layer->setXData(DoubleArray(viewPortTimeStamps, noOfPoints));
-	layer->addDataSet(DoubleArray(viewPortDataSeriesA, noOfPoints), 0xff0000, "FDU #1");
-	layer->addDataSet(DoubleArray(viewPortDataSeriesB, noOfPoints), 0x00cc00, "FDU #2");
-	layer->addDataSet(DoubleArray(viewPortDataSeriesC, noOfPoints), 0x0000ff, "FDU #3");
+// 	layer->addDataSet(DoubleArray(&m_dbFduData[0][startIndex], noOfPoints), 0xff0000, "FDU #1");
+// 	layer->addDataSet(DoubleArray(&m_dbFduData[1][startIndex], noOfPoints), 0x00cc00, "FDU #2");
+// 	layer->addDataSet(DoubleArray(&m_dbFduData[2][startIndex], noOfPoints), 0x0000ff, "FDU #3");
+
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		CString str = _T("");
+		int color = -1;
+		if (i % 3 == 0)
+		{
+			color = RedColor;
+		} 
+		else if(i % 3 == 1)
+		{
+			color = GreenColor;
+		}
+		else
+		{
+			color = BlueColor;
+		}
+		str.Format(_T("FDU #%d"), i+1);
+		int ansiCount = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
+		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
+		memset(pTempChar, 0, ansiCount);
+		WideCharToMultiByte(CP_ACP, 0, str, -1, pTempChar, ansiCount, NULL, NULL);
+		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, pTempChar);
+		free(pTempChar);
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Step 3 - Set up x-axis scale
@@ -766,7 +780,7 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	// Step 4 - Set up y-axis scale
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	if ((viewer->getZoomDirection() == Chart::DirectionHorizontal) || 
+	if ((viewer->getZoomDirection() == Chart::DirectionVertical) || 
 		((m_minValue == 0) && (m_maxValue == 0)))
 	{
 		// y-axis is auto-scaled - save the chosen y-axis scaled to support xy-zoom mode
@@ -777,8 +791,8 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	else
 	{
 		// xy-zoom mode - compute the actual axis scale in the view port 
-		double axisLowerLimit =  (m_maxValue - m_minValue) * viewer->getViewPortLeft();
-		double axisUpperLimit =  (m_maxValue - m_minValue) * (viewer->getViewPortLeft() + viewer->getViewPortWidth());
+		double axisLowerLimit = m_minValue + (m_maxValue - m_minValue) * viewer->getViewPortLeft();
+		double axisUpperLimit = m_minValue + (m_maxValue - m_minValue) * (viewer->getViewPortLeft() + viewer->getViewPortWidth());
 		// *** use the following formula if you are using a log scale axis ***
 		// double axisLowerLimit = m_maxValue * pow(m_minValue / m_maxValue, 
 		//  viewer->getViewPortTop() + viewer->getViewPortHeight());
@@ -802,9 +816,6 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 
 	// 释放资源
 	delete[] viewPortTimeStamps;
-	delete[] viewPortDataSeriesA;
-	delete[] viewPortDataSeriesB;
-	delete[] viewPortDataSeriesC;
 }
 //
 // Update the image map
@@ -1005,17 +1016,33 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
 	// Y轴范围
 	m_minValue = m_maxValue = 0;
 
-	OnOpenFile();
+	if(FALSE == OnOpenFile())
+	{
+		return;
+	}
 	// 初始状态每条线显示的点数
-	m_currentDuration = 3000;
-
+	if (m_uiADCDataFduNum > ShowLinePointsNumNow)
+	{
+		m_currentDuration = ShowLinePointsNumNow;
+	} 
+	else
+	{
+		m_currentDuration = m_uiADCDataFduNum;
+	}
 	// 横坐标的最小值为m_timeStamps数组的第一个值
 	m_minData = m_DrawPoint_X[0];
 	m_maxData = m_DrawPoint_X[m_DrawPoint_X.size() - 1];
 
 	// 横坐标取值的变化范围
 	m_dateRange = m_maxData - m_minData;
-	m_minDuration = 10;
+	if (m_uiADCDataFduNum > ShowLinePointsNumMin)
+	{
+		m_minDuration = ShowLinePointsNumMin;
+	}
+	else
+	{
+		m_minDuration = m_uiADCDataFduNum;
+	}
 
 	// 绘图区域左侧间隔个数
 	double maxData = 0.0;
@@ -1026,7 +1053,10 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
 		maxData = maxData / 10;
 		m_uiIntervalNum++;
 	}
-
+	if (m_uiIntervalNum < SetLegendXIntervalNumMin)
+	{
+		m_uiIntervalNum = SetLegendXIntervalNumMin;
+	}
 	// 设置ChartViewer能反映有效且最小的持续时间
 	m_ChartViewer.setZoomInHeightLimit(m_minDuration / m_dateRange);
 	m_ChartViewer.setViewPortHeight(m_currentDuration / m_dateRange);
@@ -1037,7 +1067,7 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
 }
 
 // 从文件中载入数据
-void C绘图程序Dlg::LoadData(CString csOpenFilePath)
+BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 {
 	if ((_taccess(csOpenFilePath,0))!=-1)
 	{
@@ -1046,6 +1076,7 @@ void C绘图程序Dlg::LoadData(CString csOpenFilePath)
 		if(fp_str.fail())
 		{
 			AfxMessageBox(_T("打开数据采样文件出错！"));
+			return FALSE;
 		}
 		else
 		{
@@ -1055,20 +1086,15 @@ void C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			unsigned int uiADCDataRowBufSize = 0;
 			double datatemp = 0.0;
 			CString str = _T("");
-			CString cstmp = _T("");
-			int iDirectionPrevious = 0;
-			int iDirectionNow = 0;
-			int iDirectionEnd = 0;
 			vector<double> dbADCData;
-			double *dbDataTemp;
+			
 			// 初始化变量
 			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 			{
 				m_dbFduData[i].clear();
 			}
 			m_DrawPoint_X.clear();
-			m_dbFduData = NULL;
-			delete m_dbFduData;
+			delete[] m_dbFduData;
 			// 采集站设备总数
 			m_uiInstrumentMaxNum = 0;
 			// 参与ADC数据采集的采集站设备数
@@ -1090,7 +1116,7 @@ void C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			{
 				fp_str.close();
 				AfxMessageBox(_T("采集站设备总数为0！"));
-				return;
+				return FALSE;
 			}
 			uiADCDataRowBufSize = (ADCDataBufSize + ADCDataInterval) * m_uiInstrumentMaxNum;
 			ADCDataRowBuf = new char[uiADCDataRowBufSize];
@@ -1099,27 +1125,10 @@ void C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			// 第一行ADC数据，用于分析参与采集的站的个数
 			fp_str.getline(ADCDataRowBuf, uiADCDataRowBufSize, '\n');
 			str = ADCDataRowBuf;
-			delete ADCDataRowBuf;
+			delete[] ADCDataRowBuf;
+
+			OnPhraseFirstLine(str);
 			
-			dbDataTemp = new double[m_uiInstrumentMaxNum];
-			iDirectionEnd = str.GetLength();
-			while(iDirectionEnd != iDirectionPrevious)
-			{
-				iDirectionNow = str.Find(_T(" \t"), iDirectionPrevious);
-				cstmp = str.Mid(iDirectionPrevious, iDirectionNow-iDirectionPrevious);
-				iDirectionPrevious = iDirectionNow + 2;
-				if (cstmp == _T(" "))
-				{
-					iDirectionPrevious += 2;
-					continue;
-				}
-				else
-				{
-					dbDataTemp[m_uiInstrumentADCNum] = _tstof(cstmp);
-					m_uiInstrumentADCNum++;
-					m_uiADCDataNum++;
-				}
-			}
 			dbADCData.clear();
 			while(fp_str.eof() == false)
 			{
@@ -1132,14 +1141,14 @@ void C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			m_uiADCDataNum = m_uiADCDataFduNum * m_uiInstrumentADCNum;
 			for (unsigned int i=0; i<m_uiADCDataFduNum; i++)
 			{
-				m_DrawPoint_X.push_back(i);
+				m_DrawPoint_X.push_back(i + m_uiADCStartNum);
 			}
 			m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
 			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 			{
-				m_dbFduData[i].push_back(dbDataTemp[i]);
+				m_dbFduData[i].push_back(m_dbDataTemp[i]);
 			}
-			delete dbDataTemp;
+			delete[] m_dbDataTemp;
 			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 			{
 				for (unsigned int j=0; j<(m_uiADCDataFduNum - 1); j++)
@@ -1148,6 +1157,46 @@ void C绘图程序Dlg::LoadData(CString csOpenFilePath)
 				}
 			}
 			dbADCData.clear();
+			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+			{
+				for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
+				{
+					m_dbFduData[i][j] = m_dbFduData[i][j] + i;
+				}
+			}
+			return TRUE;
+		}
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+// 解码一行ADC数据
+void C绘图程序Dlg::OnPhraseFirstLine(CString str)
+{
+	int iDirectionPrevious = 0;
+	int iDirectionNow = 0;
+	int iDirectionEnd = 0;
+	CString cstmp = _T("");
+
+	m_dbDataTemp = new double[m_uiInstrumentMaxNum];
+	iDirectionEnd = str.GetLength();
+	while(iDirectionEnd != iDirectionPrevious)
+	{
+		iDirectionNow = str.Find(_T(" \t"), iDirectionPrevious);
+		cstmp = str.Mid(iDirectionPrevious, iDirectionNow-iDirectionPrevious);
+		iDirectionPrevious = iDirectionNow + ADCDataInterval;
+		if (cstmp == _T(" "))
+		{
+			iDirectionPrevious += ADCDataInterval;
+			continue;
+		}
+		else
+		{
+			m_dbDataTemp[m_uiInstrumentADCNum] = _tstof(cstmp);
+			m_uiInstrumentADCNum++;
+			m_uiADCDataNum++;
 		}
 	}
 }

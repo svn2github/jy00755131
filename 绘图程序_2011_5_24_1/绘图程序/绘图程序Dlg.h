@@ -57,14 +57,9 @@ private:
 	double m_minValue;					// 纵坐标的最小值
 	unsigned int m_uiIntervalNum;	// 绘图区域左侧间隔个数
 	// 记录X轴坐标点信息
-	vector <unsigned int>	m_DrawPoint_X;
-	// 记录各个绘制点信息
-	vector <double> m_DrawPoint_Y;
+	vector <double>	m_DrawPoint_X;
 	// 记录各条图线点的信息
 	vector <vector <double>> m_DrawLine_Y;
-	DoubleArray m_dataSeriesA;		// 第一条曲线所在双数组
-	DoubleArray m_dataSeriesB;		// 第二条曲线所在双数组
-	DoubleArray m_dataSeriesC;		// 第三条曲线所在双数组
 private:
 	int m_iClientWidth;				// 对话框client区域的宽度
 	int m_iClientHeight;			// 对话框client区域的高度
@@ -93,6 +88,10 @@ private:
 	unsigned int m_uiADCDataFduNum;
 	// 采集站ADC数据存储
 	vector<double>* m_dbFduData;
+	// ADC数据缓冲区指针数组
+	double** m_viewPortDataSeries;
+	// 记录第一行数据开辟的缓冲区
+	double *m_dbDataTemp;
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
 	double m_currentDuration;			// 当前显示数据点的个数
@@ -101,15 +100,12 @@ public:
 	CScrollBar m_HScrollBar;			// 横向滚动条的控制变量
 	CScrollBar m_VScrollBar;			// 纵向滚动条的控制变量
 	CComboBox m_Duration;			// 绘图显示点数选项卡控制变量
-	double data0[2000];					// 第一条曲线数组	
-	double data1[2000];					// 第二条曲线数组
-	double data2[2000];					// 第三条曲线数组
 	double m_minDuration;				// 最少显示点的个数
 private:
 	// 得到默认的背景颜色
 	int getDefaultBgColor(void);
 	// 载入数据
-	void OnOpenFile(void);
+	BOOL OnOpenFile(void);
 	// 载入一个图标资源到按钮
 	void loadButtonIcon(int buttonId, int iconId, int width, int height);
 	// 当用户选中时移动滚动条
@@ -127,7 +123,9 @@ private:
 	// 将对话框及其控件设为尺寸可变的
 	void OnSiteSizeBox(void);
 	// 从文件中载入数据
-	void LoadData(CString csOpenFilePath);
+	BOOL LoadData(CString csOpenFilePath);
+	// 解码第一行ADC数据
+	void OnPhraseFirstLine(CString str);
 public:
 	afx_msg void OnBnClickedPointerpb();
 	afx_msg void OnBnClickedZoominpb();

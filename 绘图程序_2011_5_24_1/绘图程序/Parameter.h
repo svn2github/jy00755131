@@ -1,28 +1,65 @@
 // ____________界面设置___________
 // 设置纵向滚动条宽度
-#define SetVScrollWidth						25
+#define SetVScrollWidth							25
 // 设置横向滚动条宽度
-#define SetHScrollWidth					25
+#define SetHScrollWidth						25
 // 设置绘图控件X方向间隔
-#define SetPlotCtrlXInterval				15
+#define SetPlotCtrlXInterval					15
 // 设置绘图控件Y方向间隔
-#define SetPlotCtrlYInterval				15
+#define SetPlotCtrlYInterval					15
 // 设置绘图区X方向间隔
-#define SetPlotAreaXInterval				10
+#define SetPlotAreaXInterval					10
 // 设置绘图区Y方向间隔
-#define SetPlotAreaYInterval				45
+#define SetPlotAreaYInterval					45
 // 设置绘图区底部间隔
-#define SetPlotAreaBottomInterval	30
+#define SetPlotAreaBottomInterval		30
 // 设置标签宽度
-#define SetLegendWidth					80	
+#define SetLegendWidth						80	
 // 设置标签X方向间隔
-#define SetLegendXInterval				5
+#define SetLegendXInterval					5
 // 设置标签Y方向间隔
-#define SetLegendYInterval				45
+#define SetLegendYInterval					45
+// 设置绘图控件背景颜色
+#define SetPlotCtrlBackgroundColor		0xf0f0ff
+// 设置绘图区背景颜色
+#define SetPlotAreaBackgroundColor	0xffffff
+// 设置横向栅格线颜色
+#define SetHGridColor							0xcccccc
+// 设置纵向栅格线颜色					
+#define SetVGridColor							0xcccccc
+// 设置标题栏背景颜色
+#define SetTitleBackgroundColor			0xccccff
+// 设置标题栏边框颜色
+#define SetTitleEdgeColor						0x000000
+// 设置标签栏字体大小
+#define SetLegnedBoxFontSize				9
+// 设置标题栏字体大小
+#define SetTitleBoxFontSize					12
+// 设置绘线的宽度
+#define SetLineWidth								2
+// 设置X轴的宽度
+#define SetXAxisWidth							2
+// 设置Y轴的宽度
+#define SetYAxisWidth							2
 // _________常量设置____________
 // 设置读取文件头的缓冲区大小
-#define SetReadFileHeadBufSize		1000
+#define SetReadFileHeadBufSize			1000
 // 一个ADC数据占用缓冲区大小
-#define ADCDataBufSize					12
-// ADC数据间的间隔大小
-#define ADCDataInterval					2
+#define ADCDataBufSize						12
+// ADC数据间的间隔大小（空格+\t）
+#define ADCDataInterval						2
+// 初始状态每条线显示的点数
+#define ShowLinePointsNumNow			3000
+// 每条线最少显示的点数
+#define ShowLinePointsNumMin			10
+// X轴坐标标签最小显示间隔数
+#define SetLegendXIntervalNumMin		3
+// 全屏时每条线显示的点数
+#define FullScreenLineShowPointsNum	520
+// _________定义曲线颜色___________
+// 红色RGB
+#define RedColor								0xFF0000
+// 绿色RGB
+#define GreenColor								0x00FF00
+// 蓝色RGB
+#define BlueColor								0x0000FF
