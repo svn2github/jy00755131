@@ -99,7 +99,7 @@ public:
 	// 消息处理函数
 	void OnReceive(void);
 	// 广播查询采集站TB时刻
-	void OnQueryTBTime(void);
+	void OnQueryTBTime(int iPos);
 	// 关闭UDP套接字
 	void OnCloseUDP(void);
 	// ADC命令设置序号
@@ -110,4 +110,6 @@ public:
 	BOOL OnCheckADCSetReturn(void);
 	// 发送ADC命令设置帧
 	void OnSendADCSetCmd(void);
+	// 重置ADC参数设置操作序号
+	void OnResetADCOperationNb(void);
 };
