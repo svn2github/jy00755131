@@ -92,6 +92,8 @@ private:
 	double** m_viewPortDataSeries;
 	// 记录第一行数据开辟的缓冲区
 	double *m_dbDataTemp;
+	// 读取文件中数据的行数
+	unsigned int m_uiADCFileLineNum;
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
 	double m_currentDuration;			// 当前显示数据点的个数

@@ -8,6 +8,8 @@
 #include <math.h>
 #include <algorithm>
 #include <fstream>
+#include  <io.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -74,6 +76,7 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_dbFduData(NULL)
 	, m_viewPortDataSeries(NULL)
 	, m_dbDataTemp(NULL)
+	, m_uiADCFileLineNum(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -319,7 +322,8 @@ int C绘图程序Dlg::getDefaultBgColor(void)
 // 载入数据
 BOOL C绘图程序Dlg::OnOpenFile(void)
 {
-	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
+//	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
+	const char pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
 	CFileDialog dlg(TRUE, _T(".text"), _T("1.text"), OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT, pszFilter, this);
 
 	if ( dlg.DoModal()!=IDOK )
@@ -726,12 +730,13 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 			color = BlueColor;
 		}
 		str.Format(_T("FDU #%d"), i+1);
-		int ansiCount = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
-		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
-		memset(pTempChar, 0, ansiCount);
-		WideCharToMultiByte(CP_ACP, 0, str, -1, pTempChar, ansiCount, NULL, NULL);
-		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, pTempChar);
-		free(pTempChar);
+// 		int ansiCount = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
+// 		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
+// 		memset(pTempChar, 0, ansiCount);
+// 		WideCharToMultiByte(CP_ACP, 0, str, -1, pTempChar, ansiCount, NULL, NULL);
+// 		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, pTempChar);
+// 		free(pTempChar);
+		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, str);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -987,7 +992,8 @@ void C绘图程序Dlg::OnBnClickedButtonSavechart()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CString sPathName = _T("");
-	const wchar_t pszFilter[] = _T("位图(*.bmp)|*.bmp||");
+//	const wchar_t pszFilter[] = _T("位图(*.bmp)|*.bmp||");
+	const char pszFilter[] = _T("位图(*.bmp)|*.bmp||");
 	CFileDialog dlg(FALSE, _T(".bmp"), _T("Matrix428.bmp"),OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT,pszFilter, this);
 
 	if ( dlg.DoModal()!=IDOK )
@@ -996,12 +1002,13 @@ void C绘图程序Dlg::OnBnClickedButtonSavechart()
 	if (NULL != m_ChartViewer.getChart())
 	{
 		//因为需要保存的内容包含中文，所以需要如下的转换过程
-		int ansiCount = WideCharToMultiByte(CP_ACP, 0, sPathName, -1, NULL, 0, NULL, NULL);
-		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
-		memset(pTempChar, 0, ansiCount);
-		WideCharToMultiByte(CP_ACP, 0, sPathName, -1, pTempChar, ansiCount, NULL, NULL);
-		m_ChartViewer.getChart()->makeChart(pTempChar);
-		free(pTempChar);
+// 		int ansiCount = WideCharToMultiByte(CP_ACP, 0, sPathName, -1, NULL, 0, NULL, NULL);
+// 		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
+// 		memset(pTempChar, 0, ansiCount);
+// 		WideCharToMultiByte(CP_ACP, 0, sPathName, -1, pTempChar, ansiCount, NULL, NULL);
+// 		m_ChartViewer.getChart()->makeChart(pTempChar);
+// 		free(pTempChar);
+		m_ChartViewer.getChart()->makeChart(sPathName);
 	}
 }
 
@@ -1071,29 +1078,30 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 {
 	if ((_taccess(csOpenFilePath,0))!=-1)
 	{
-		ifstream fp_str;
-		fp_str.open(csOpenFilePath, ios::in);
-		if(fp_str.fail())
+//		ifstream fp_str;
+		CFile file;
+// 		fp_str.open(csOpenFilePath, ios::in);
+// 		if(fp_str.fail())
+// 		{
+// 			AfxMessageBox(_T("打开数据采样文件出错！"));
+// 			return FALSE;
+// 		}
+
+		if(file.Open(csOpenFilePath, CFile::modeRead) == FALSE)
 		{
-			AfxMessageBox(_T("打开数据采样文件出错！"));
+			AfxMessageBox(_T("打开数据采样文件出错！"));	
 			return FALSE;
 		}
 		else
 		{
-			// 保存数据文件每一行的缓冲区
-			char ADCInfoBuf[SetReadFileHeadBufSize]; 
-			char *ADCDataRowBuf = NULL;
-			unsigned int uiADCDataRowBufSize = 0;
-			double datatemp = 0.0;
 			CString str = _T("");
-			vector<double> dbADCData;
-			
+			CArchive ar(&file, CArchive::load);
 			// 初始化变量
+			m_DrawPoint_X.clear();
 			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 			{
 				m_dbFduData[i].clear();
 			}
-			m_DrawPoint_X.clear();
 			delete[] m_dbFduData;
 			// 采集站设备总数
 			m_uiInstrumentMaxNum = 0;
@@ -1107,56 +1115,40 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			m_uiADCDataNum = 0;
 			// 每个采集站采集到的ADC数据个数
 			m_uiADCDataFduNum = 0;
+			// 读取文件中数据的行数
+			m_uiADCFileLineNum = 0;
 			// ADC数据采样开始时间
-			fp_str.getline(ADCInfoBuf, SetReadFileHeadBufSize, '\n');
+			ar.ReadString(str);
 			// ADC数据采样信息
-			fp_str.getline(ADCInfoBuf, SetReadFileHeadBufSize, '\n');
-			sscanf_s (ADCInfoBuf, "采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！", &m_uiInstrumentMaxNum, &m_uiADCStartNum, &m_uiADCDataCovNb);
+			ar.ReadString(str);
+			sscanf_s (str, "采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！", &m_uiInstrumentMaxNum, &m_uiADCStartNum, &m_uiADCDataCovNb);
 			if (m_uiInstrumentMaxNum == 0)
 			{
-				fp_str.close();
+//				fp_str.close();
+				ar.Close();
+				file.Close();
 				AfxMessageBox(_T("采集站设备总数为0！"));
 				return FALSE;
 			}
-			uiADCDataRowBufSize = (ADCDataBufSize + ADCDataInterval) * m_uiInstrumentMaxNum;
-			ADCDataRowBuf = new char[uiADCDataRowBufSize];
 			// 采集站设备标签
-			fp_str.getline(ADCDataRowBuf, uiADCDataRowBufSize, '\n');
-			// 第一行ADC数据，用于分析参与采集的站的个数
-			fp_str.getline(ADCDataRowBuf, uiADCDataRowBufSize, '\n');
-			str = ADCDataRowBuf;
-			delete[] ADCDataRowBuf;
+			ar.ReadString(str);
+			m_dbDataTemp = new double[m_uiInstrumentMaxNum];
 
-			OnPhraseFirstLine(str);
-			
-			dbADCData.clear();
-			while(fp_str.eof() == false)
+			while(ar.ReadString(str))
 			{
-				fp_str >> datatemp;
-				dbADCData.push_back(datatemp);
-				m_uiADCDataNum++;
+				OnPhraseFirstLine(str);
+				m_uiADCFileLineNum++;
 			}
-			fp_str.close();
+			ar.Close();
+			file.Close();
+
 			m_uiADCDataFduNum = m_uiADCDataNum / m_uiInstrumentADCNum;
 			m_uiADCDataNum = m_uiADCDataFduNum * m_uiInstrumentADCNum;
 			for (unsigned int i=0; i<m_uiADCDataFduNum; i++)
 			{
 				m_DrawPoint_X.push_back(i + m_uiADCStartNum);
 			}
-			m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
-			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-			{
-				m_dbFduData[i].push_back(m_dbDataTemp[i]);
-			}
-			delete[] m_dbDataTemp;
-			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-			{
-				for (unsigned int j=0; j<(m_uiADCDataFduNum - 1); j++)
-				{
-					m_dbFduData[i].push_back(dbADCData[i + j * m_uiInstrumentADCNum]);
-				}
-			}
-			dbADCData.clear();
+
 			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 			{
 				for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
@@ -1179,8 +1171,6 @@ void C绘图程序Dlg::OnPhraseFirstLine(CString str)
 	int iDirectionNow = 0;
 	int iDirectionEnd = 0;
 	CString cstmp = _T("");
-
-	m_dbDataTemp = new double[m_uiInstrumentMaxNum];
 	iDirectionEnd = str.GetLength();
 	while(iDirectionEnd != iDirectionPrevious)
 	{
@@ -1194,9 +1184,26 @@ void C绘图程序Dlg::OnPhraseFirstLine(CString str)
 		}
 		else
 		{
-			m_dbDataTemp[m_uiInstrumentADCNum] = _tstof(cstmp);
-			m_uiInstrumentADCNum++;
+			// 第一行ADC数据，用于分析参与采集的站的个数
+			if (m_uiADCFileLineNum == 0)
+			{
+				m_dbDataTemp[m_uiInstrumentADCNum] = _tstof(cstmp);
+				m_uiInstrumentADCNum++;
+			}
+			else
+			{
+				m_dbFduData[m_uiADCDataNum%m_uiInstrumentADCNum].push_back(_tstof(cstmp));
+			}
 			m_uiADCDataNum++;
 		}
+	}
+	if (m_uiADCFileLineNum == 0)
+	{
+		m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
+		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+		{
+			m_dbFduData[i].push_back(m_dbDataTemp[i]);
+		}
+		delete[] m_dbDataTemp;
 	}
 }
