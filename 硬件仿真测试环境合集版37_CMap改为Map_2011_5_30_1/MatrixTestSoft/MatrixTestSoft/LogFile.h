@@ -9,6 +9,8 @@ public:
 	CString m_csSaveLogFilePath;
 	// 保存成CFile文件
 	CFile m_SaveLogFile;
+	// 保存文件
+	CArchive* m_arFileSave;
 public:
 	// 打开程序运行日志文件
 	void OnOpenLogFile(void);

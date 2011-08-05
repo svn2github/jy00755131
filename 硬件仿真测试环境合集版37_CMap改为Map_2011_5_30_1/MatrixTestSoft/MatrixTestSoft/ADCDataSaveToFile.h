@@ -11,6 +11,8 @@ protected:
 	// 保存文件的文件指针
 //	FILE * m_pFileSave;
 	CFile m_FileSave;
+	// 保存文件
+	CArchive* m_arFileSave;
 public:
 	// 保存ADC数据文件个数
 	unsigned int m_uiADCSaveFileNum;

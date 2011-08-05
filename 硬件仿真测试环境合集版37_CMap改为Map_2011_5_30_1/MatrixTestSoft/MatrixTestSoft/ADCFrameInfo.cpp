@@ -3,6 +3,7 @@
 CADCFrameInfo::CADCFrameInfo(void)
 : m_csSaveFilePath(_T(""))
 /*, m_pFileSave(NULL)*/
+, m_arFileSave(NULL)
 {
 }
 
@@ -33,14 +34,14 @@ void CADCFrameInfo::OnOpenFile(void)
 		AfxMessageBox(_T("ADC数据帧信息文件创建失败！"));	
 		return;
 	}
-
+	m_arFileSave = new CArchive(&m_FileSave, CArchive::store);
 	GetLocalTime(&sysTime);
 	str.Format(_T("%04d年%02d月%02d日%02d:%02d:%02d:%03d开始记录ADC帧信息：\r\n"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 
 //	fprintf(m_pFileSave, _T("%s"), strOutput);
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
-	WriteCHToCFile(&m_FileSave, str);
+	WriteCHToCFile(m_arFileSave, str);
 }
 
 // 保存文件
@@ -61,7 +62,7 @@ void CADCFrameInfo::OnSaveFile(unsigned int uiInstrumentNb, unsigned int uiDataP
 // 	ar.WriteString(strOutput);
 // 	ar.Close();
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
-	WriteCHToCFile(&m_FileSave, strOutput);
+	WriteCHToCFile(m_arFileSave, strOutput);
 }
 
 // 关闭文件
@@ -69,6 +70,8 @@ void CADCFrameInfo::OnCloseFile(void)
 {
 	if (m_FileSave.m_hFile != CFile::hFileNull)
 	{
+		m_arFileSave->Close();
 		m_FileSave.Close();
+		delete m_arFileSave;
 	}
 }

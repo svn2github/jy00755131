@@ -11,6 +11,8 @@ public:
 	// 保存文件的文件指针
 //	FILE * m_pFileSave;
 	CFile m_FileSave;
+	// 保存文件
+	CArchive* m_arFileSave;
 public:
 	// 打开文件
 	void OnOpenFile(void);

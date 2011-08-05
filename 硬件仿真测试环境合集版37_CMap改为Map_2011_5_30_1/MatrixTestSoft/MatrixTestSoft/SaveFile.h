@@ -21,6 +21,8 @@ protected:
 	// 保存文件
 //	FILE* m_file;
 	CFile m_file;
+	// 保存文件
+	CArchive* m_arFileSave;
 public:
 	// 自动保存文件的大小
 	int m_iSaveSize;

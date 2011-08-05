@@ -3,6 +3,7 @@
 
 CLogFile::CLogFile(void)
 : m_csSaveLogFilePath(_T(""))
+, m_arFileSave(NULL)
 {
 }
 
@@ -23,13 +24,13 @@ void CLogFile::OnOpenLogFile(void)
 		AfxMessageBox(_T("程序运行日志文件创建失败！"));	
 		return;
 	}
-
+	m_arFileSave = new CArchive(&m_SaveLogFile, CArchive::store);
 	GetLocalTime(&sysTime);
 	str.Format(_T("%04d年%02d月%02d日%02d:%02d:%02d:%03d开始记录程序运行日志：\r\n"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
-	WriteCHToCFile(&m_SaveLogFile, str);
+	WriteCHToCFile(m_arFileSave, str);
 }
 
 // 关闭程序运行日志文件
@@ -37,7 +38,9 @@ void CLogFile::OnCloseLogFile(void)
 {
 	if (m_SaveLogFile.m_hFile != CFile::hFileNull)
 	{
+		m_arFileSave->Close();
 		m_SaveLogFile.Close();
+		delete m_arFileSave;
 	}
 }
 
@@ -66,5 +69,5 @@ void CLogFile::OnWriteLogFile(CString csFuncName, CString csLogNews, unsigned in
 	strOutput += _T("程序运行到函数：") + csFuncName + _T("\t");
 	strOutput += _T("日志信息：") + csLogNews + _T("\r\n");
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
- 	WriteCHToCFile(&m_SaveLogFile, strOutput);
+ 	WriteCHToCFile(m_arFileSave, strOutput);
 }

@@ -12,6 +12,7 @@ CSaveFile::CSaveFile(void)
 , m_iSaveSize(0)
 , m_bStartSave(false)
 , m_pWndTab(NULL)
+, m_arFileSave(NULL)
 {
 }
 
@@ -80,7 +81,8 @@ void CSaveFile::OnSaveStop(void)
 //************************************
 void CSaveFile::OnSelectSaveFilePath(void)
 {
-	wchar_t szDir[MAX_PATH];
+//	wchar_t szDir[MAX_PATH];
+	char szDir[MAX_PATH];
 	BROWSEINFO bi;
 	ITEMIDLIST *pidl;
 
@@ -182,9 +184,12 @@ void CSaveFile::OnSaveToFile(void)
 // 		CArchive ar(&m_file, CArchive::store);
 // 		ar.WriteString(csSaveFileTemp);
 // 		ar.Close();
+		m_arFileSave = new CArchive(&m_file, CArchive::store);
 		//因为需要保存的内容包含中文，所以需要如下的转换过程
-		WriteCHToCFile(&m_file, csSaveFileTemp);
+		WriteCHToCFile(m_arFileSave, csSaveFileTemp);
+		m_arFileSave->Close();
 		m_file.Close();
+		delete m_arFileSave;
 	}
 	// 保存接收到的数据到文件
 	if (csSaveReceiveFileTemp.GetLength() != 0)
@@ -210,9 +215,12 @@ void CSaveFile::OnSaveToFile(void)
 // 			CArchive ar(&m_file, CArchive::store);
 // 			ar.WriteString(csSaveReceiveFileTemp);
 // 			ar.Close();
+			m_arFileSave = new CArchive(&m_file, CArchive::store);
 			//因为需要保存的内容包含中文，所以需要如下的转换过程
-			WriteCHToCFile(&m_file, csSaveReceiveFileTemp);
+			WriteCHToCFile(m_arFileSave, csSaveReceiveFileTemp);
+			m_arFileSave->Close();
 			m_file.Close();
+			delete m_arFileSave;
 		}
 	}
 	// 保存发送的数据到文件
@@ -239,9 +247,12 @@ void CSaveFile::OnSaveToFile(void)
 // 			CArchive ar(&m_file, CArchive::store);
 // 			ar.WriteString(csSaveSendFileTemp);
 // 			ar.Close();
+			m_arFileSave = new CArchive(&m_file, CArchive::store);
 			//因为需要保存的内容包含中文，所以需要如下的转换过程
-			WriteCHToCFile(&m_file, csSaveSendFileTemp);
+			WriteCHToCFile(m_arFileSave, csSaveSendFileTemp);
+			m_arFileSave->Close();
 			m_file.Close();
+			delete m_arFileSave;
 		}
 	}
 }
@@ -266,7 +277,8 @@ void CSaveFile::OnSaveReceiveData(unsigned char* buf, int iRecLength)
 	CString str = _T("");
 	CString strtemp = _T("");
 	int icsSaveFileLength = 0;
-	wchar_t buffer[_CVTBUFSIZE];
+//	wchar_t buffer[_CVTBUFSIZE];
+	char buffer[_CVTBUFSIZE];
 
 	SYSTEMTIME  sysTime;
 	GetLocalTime(&sysTime);
@@ -318,7 +330,8 @@ void CSaveFile::OnSaveSendData(unsigned char* buf, int iSendLength)
 	int icsSaveFileLength = 0;
 	SYSTEMTIME  sysTime;
 	GetLocalTime(&sysTime);
-	wchar_t buffer[_CVTBUFSIZE];
+//	wchar_t buffer[_CVTBUFSIZE];
+	char buffer[_CVTBUFSIZE];
 
 	str.Format(_T("%04d.%02d.%02d %02d:%02d:%02d:%03d 发送数据 数据包大小为 %d 数据为：\r\n"),sysTime.wYear, sysTime.wMonth, sysTime.wDay,
 		sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds, iSendLength);

@@ -116,7 +116,7 @@ using namespace std;
 // 采集站尾包稳定计数
 #define TailFrameStableFDUCount		10
 // 尾包查询计数
-#define TailTimeFrameCount					4
+#define TailTimeFrameCount					8
 // 仪器类型-采集站
 #define InstrumentTypeFDU					3
 // 仪器类型-交叉站
@@ -391,7 +391,8 @@ extern unsigned short get_crc_16(unsigned char* buf, int buf_size);
 // 宽字节字符串转换为多字节字符串
 extern string WideCharToMultiChar(wstring str);
 // 将含有中文的字符串写入文件
-extern void WriteCHToCFile(CFile *file, CString str);
+// extern void WriteCHToCFile(CFile *file, CString str);
+extern void WriteCHToCFile(CArchive *ar, CString str);
 // CString转换为const char*
 extern const char* ConvertCStringToConstCharPointer(CString str);
 // 
