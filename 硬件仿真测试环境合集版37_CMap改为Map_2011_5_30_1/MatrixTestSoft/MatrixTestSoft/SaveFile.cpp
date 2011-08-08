@@ -187,7 +187,7 @@ void CSaveFile::OnSaveToFile(void)
 		m_arFileSave = new CArchive(&m_file, CArchive::store);
 		//因为需要保存的内容包含中文，所以需要如下的转换过程
 //		WriteCHToCFile(m_arFileSave, csSaveFileTemp);
-		if (m_file.m_hFile != NULL)
+		if (m_file.m_hFile != CFile::hFileNull)
 		{
 			m_arFileSave->WriteString(csSaveFileTemp);
 		}
@@ -222,7 +222,7 @@ void CSaveFile::OnSaveToFile(void)
 			m_arFileSave = new CArchive(&m_file, CArchive::store);
 			//因为需要保存的内容包含中文，所以需要如下的转换过程
 //			WriteCHToCFile(m_arFileSave, csSaveReceiveFileTemp);
-			if (m_file.m_hFile != NULL)
+			if (m_file.m_hFile != CFile::hFileNull)
 			{
 				m_arFileSave->WriteString(csSaveReceiveFileTemp);
 			}
@@ -258,7 +258,7 @@ void CSaveFile::OnSaveToFile(void)
 			m_arFileSave = new CArchive(&m_file, CArchive::store);
 			//因为需要保存的内容包含中文，所以需要如下的转换过程
 //			WriteCHToCFile(m_arFileSave, csSaveSendFileTemp);
-			if (m_file.m_hFile != NULL)
+			if (m_file.m_hFile != CFile::hFileNull)
 			{
 				m_arFileSave->WriteString(csSaveSendFileTemp);
 			}

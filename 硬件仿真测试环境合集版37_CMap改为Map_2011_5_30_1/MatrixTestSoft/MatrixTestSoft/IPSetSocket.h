@@ -25,8 +25,6 @@ public:
 	HICON m_iconLAUXConnected;
 	// 界面指针
 	CWnd* m_pwnd;
-	// 选择仪器对象
-	int* m_pSelectObject;
 	// 采集站设备Button控件ID
 	int m_iButtonIDFDU[InstrumentNum];
 	// 采集站设备仪器选择Check控件ID

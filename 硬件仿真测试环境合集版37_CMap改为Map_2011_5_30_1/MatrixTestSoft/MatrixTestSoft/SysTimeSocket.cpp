@@ -210,7 +210,7 @@ void CSysTime::OnProcSysTimeReturn(int iPos)
 		strOutput.Format(_T("设置ADC数据采样TB开始时间为%d\r\n"), m_uiSysTime + TBSleepTimeHigh);
 		//因为需要保存的内容包含中文，所以需要如下的转换过程
 //		WriteCHToCFile(m_pADCFrameInfo->m_arFileSave, strOutput);
-		if (m_pADCFrameInfo->m_FileSave.m_hFile != NULL)
+		if (m_pADCFrameInfo->m_FileSave.m_hFile != CFile::hFileNull)
 		{
 			m_pADCFrameInfo->m_arFileSave->WriteString(strOutput);
 		}

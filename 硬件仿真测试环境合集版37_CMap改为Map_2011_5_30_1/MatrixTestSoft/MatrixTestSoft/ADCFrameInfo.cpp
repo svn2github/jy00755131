@@ -42,7 +42,7 @@ void CADCFrameInfo::OnOpenFile(void)
 //	fprintf(m_pFileSave, _T("%s"), strOutput);
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
 //	WriteCHToCFile(m_arFileSave, str);
-	if (m_FileSave.m_hFile != NULL)
+	if (m_FileSave.m_hFile != CFile::hFileNull)
 	{
 		m_arFileSave->WriteString(str);
 	}
@@ -67,7 +67,7 @@ void CADCFrameInfo::OnSaveFile(unsigned int uiInstrumentNb, unsigned int uiDataP
 // 	ar.Close();
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
 //	WriteCHToCFile(m_arFileSave, strOutput);
-	if (m_FileSave.m_hFile != NULL)
+	if (m_FileSave.m_hFile != CFile::hFileNull)
 	{
 		m_arFileSave->WriteString(strOutput);
 	}

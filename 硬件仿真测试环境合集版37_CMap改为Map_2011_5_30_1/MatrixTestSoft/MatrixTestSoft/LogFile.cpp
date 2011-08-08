@@ -31,7 +31,7 @@ void CLogFile::OnOpenLogFile(void)
 
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
 //	WriteCHToCFile(m_arFileSave, str);
-	if (m_SaveLogFile.m_hFile != NULL)
+	if (m_SaveLogFile.m_hFile != CFile::hFileNull)
 	{
 		m_arFileSave->WriteString(str);
 	}
@@ -74,7 +74,7 @@ void CLogFile::OnWriteLogFile(CString csFuncName, CString csLogNews, unsigned in
 	strOutput += _T("日志信息：") + csLogNews + _T("\r\n");
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
  //	WriteCHToCFile(m_arFileSave, strOutput);
-	if (m_SaveLogFile.m_hFile != NULL)
+	if (m_SaveLogFile.m_hFile != CFile::hFileNull)
 	{
 		m_arFileSave->WriteString(strOutput);
 	}
