@@ -30,7 +30,11 @@ void CLogFile::OnOpenLogFile(void)
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
-	WriteCHToCFile(m_arFileSave, str);
+//	WriteCHToCFile(m_arFileSave, str);
+	if (m_SaveLogFile.m_hFile != NULL)
+	{
+		m_arFileSave->WriteString(str);
+	}
 }
 
 // 关闭程序运行日志文件
@@ -69,5 +73,9 @@ void CLogFile::OnWriteLogFile(CString csFuncName, CString csLogNews, unsigned in
 	strOutput += _T("程序运行到函数：") + csFuncName + _T("\t");
 	strOutput += _T("日志信息：") + csLogNews + _T("\r\n");
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
- 	WriteCHToCFile(m_arFileSave, strOutput);
+ //	WriteCHToCFile(m_arFileSave, strOutput);
+	if (m_SaveLogFile.m_hFile != NULL)
+	{
+		m_arFileSave->WriteString(strOutput);
+	}
 }

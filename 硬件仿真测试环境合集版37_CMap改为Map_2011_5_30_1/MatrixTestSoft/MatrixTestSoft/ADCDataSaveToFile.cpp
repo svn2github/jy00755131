@@ -85,7 +85,11 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 // 	ar.WriteString(strOutput);
 // 	ar.Close();
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
- 	WriteCHToCFile(m_arFileSave, strOutput);
+// 	WriteCHToCFile(m_arFileSave, strOutput);
+	if (m_FileSave.m_hFile != NULL)
+	{
+		m_arFileSave->WriteString(strOutput);
+	}
 
 	if (bFinish == false)
 	{
@@ -160,7 +164,11 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 // 	ar.Close();
 
 	//因为需要保存的内容包含中文，所以需要如下的转换过程
-	WriteCHToCFile(m_arFileSave, strOutput);
+//	WriteCHToCFile(m_arFileSave, strOutput);
+	if (m_FileSave.m_hFile != NULL)
+	{
+		m_arFileSave->WriteString(strOutput);
+	}
 	m_bOpenADCSaveFile = TRUE;
 }
 // 关闭ADC保存数据文件

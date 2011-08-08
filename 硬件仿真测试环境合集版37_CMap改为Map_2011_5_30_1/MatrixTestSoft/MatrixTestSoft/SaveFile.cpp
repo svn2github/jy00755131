@@ -186,7 +186,11 @@ void CSaveFile::OnSaveToFile(void)
 // 		ar.Close();
 		m_arFileSave = new CArchive(&m_file, CArchive::store);
 		//因为需要保存的内容包含中文，所以需要如下的转换过程
-		WriteCHToCFile(m_arFileSave, csSaveFileTemp);
+//		WriteCHToCFile(m_arFileSave, csSaveFileTemp);
+		if (m_file.m_hFile != NULL)
+		{
+			m_arFileSave->WriteString(csSaveFileTemp);
+		}
 		m_arFileSave->Close();
 		m_file.Close();
 		delete m_arFileSave;
@@ -217,7 +221,11 @@ void CSaveFile::OnSaveToFile(void)
 // 			ar.Close();
 			m_arFileSave = new CArchive(&m_file, CArchive::store);
 			//因为需要保存的内容包含中文，所以需要如下的转换过程
-			WriteCHToCFile(m_arFileSave, csSaveReceiveFileTemp);
+//			WriteCHToCFile(m_arFileSave, csSaveReceiveFileTemp);
+			if (m_file.m_hFile != NULL)
+			{
+				m_arFileSave->WriteString(csSaveReceiveFileTemp);
+			}
 			m_arFileSave->Close();
 			m_file.Close();
 			delete m_arFileSave;
@@ -249,7 +257,11 @@ void CSaveFile::OnSaveToFile(void)
 // 			ar.Close();
 			m_arFileSave = new CArchive(&m_file, CArchive::store);
 			//因为需要保存的内容包含中文，所以需要如下的转换过程
-			WriteCHToCFile(m_arFileSave, csSaveSendFileTemp);
+//			WriteCHToCFile(m_arFileSave, csSaveSendFileTemp);
+			if (m_file.m_hFile != NULL)
+			{
+				m_arFileSave->WriteString(csSaveSendFileTemp);
+			}
 			m_arFileSave->Close();
 			m_file.Close();
 			delete m_arFileSave;
