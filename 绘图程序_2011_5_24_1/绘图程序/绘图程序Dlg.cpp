@@ -323,7 +323,7 @@ int C绘图程序Dlg::getDefaultBgColor(void)
 BOOL C绘图程序Dlg::OnOpenFile(void)
 {
 //	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
-	const char pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
+	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
 	CFileDialog dlg(TRUE, _T(".text"), _T("1.text"), OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT, pszFilter, this);
 
 	if ( dlg.DoModal()!=IDOK )
@@ -730,13 +730,13 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 			color = BlueColor;
 		}
 		str.Format(_T("FDU #%d"), i+1);
-// 		int ansiCount = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
-// 		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
-// 		memset(pTempChar, 0, ansiCount);
-// 		WideCharToMultiByte(CP_ACP, 0, str, -1, pTempChar, ansiCount, NULL, NULL);
-// 		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, pTempChar);
-// 		free(pTempChar);
-		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, str);
+		int ansiCount = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
+		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
+		memset(pTempChar, 0, ansiCount);
+		WideCharToMultiByte(CP_ACP, 0, str, -1, pTempChar, ansiCount, NULL, NULL);
+		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, pTempChar);
+		free(pTempChar);
+//		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, str);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -992,8 +992,8 @@ void C绘图程序Dlg::OnBnClickedButtonSavechart()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CString sPathName = _T("");
-//	const wchar_t pszFilter[] = _T("位图(*.bmp)|*.bmp||");
-	const char pszFilter[] = _T("位图(*.bmp)|*.bmp||");
+	const wchar_t pszFilter[] = _T("位图(*.bmp)|*.bmp||");
+//	const char pszFilter[] = _T("位图(*.bmp)|*.bmp||");
 	CFileDialog dlg(FALSE, _T(".bmp"), _T("Matrix428.bmp"),OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT,pszFilter, this);
 
 	if ( dlg.DoModal()!=IDOK )
@@ -1002,13 +1002,13 @@ void C绘图程序Dlg::OnBnClickedButtonSavechart()
 	if (NULL != m_ChartViewer.getChart())
 	{
 		//因为需要保存的内容包含中文，所以需要如下的转换过程
-// 		int ansiCount = WideCharToMultiByte(CP_ACP, 0, sPathName, -1, NULL, 0, NULL, NULL);
-// 		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
-// 		memset(pTempChar, 0, ansiCount);
-// 		WideCharToMultiByte(CP_ACP, 0, sPathName, -1, pTempChar, ansiCount, NULL, NULL);
-// 		m_ChartViewer.getChart()->makeChart(pTempChar);
-// 		free(pTempChar);
-		m_ChartViewer.getChart()->makeChart(sPathName);
+		int ansiCount = WideCharToMultiByte(CP_ACP, 0, sPathName, -1, NULL, 0, NULL, NULL);
+		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
+		memset(pTempChar, 0, ansiCount);
+		WideCharToMultiByte(CP_ACP, 0, sPathName, -1, pTempChar, ansiCount, NULL, NULL);
+		m_ChartViewer.getChart()->makeChart(pTempChar);
+ 		free(pTempChar);
+//		m_ChartViewer.getChart()->makeChart(sPathName);
 	}
 }
 
@@ -1121,7 +1121,7 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			ar.ReadString(str);
 			// ADC数据采样信息
 			ar.ReadString(str);
-			sscanf_s (str, "采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！", &m_uiInstrumentMaxNum, &m_uiADCStartNum, &m_uiADCDataCovNb);
+			_stscanf_s(str, _T("采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！"), &m_uiInstrumentMaxNum, &m_uiADCStartNum, &m_uiADCDataCovNb);
 			if (m_uiInstrumentMaxNum == 0)
 			{
 //				fp_str.close();
@@ -1149,13 +1149,13 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 				m_DrawPoint_X.push_back(i + m_uiADCStartNum);
 			}
 
-			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-			{
-				for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
-				{
-					m_dbFduData[i][j] = m_dbFduData[i][j] + i;
-				}
-			}
+// 			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+// 			{
+// 				for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
+// 				{
+// 					m_dbFduData[i][j] = m_dbFduData[i][j] + i;
+// 				}
+// 			}
 			return TRUE;
 		}
 	}
