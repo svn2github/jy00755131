@@ -34,6 +34,7 @@ void CADCFrameInfo::OnOpenFile(void)
 		AfxMessageBox(_T("ADC数据帧信息文件创建失败！"));	
 		return;
 	}
+	m_FileSave.Write("\xff\xfe", 2);    // 设置Unicode编码文件头
 	m_arFileSave = new CArchive(&m_FileSave, CArchive::store);
 	GetLocalTime(&sysTime);
 	str.Format(_T("%04d年%02d月%02d日%02d:%02d:%02d:%03d开始记录ADC帧信息：\r\n"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,

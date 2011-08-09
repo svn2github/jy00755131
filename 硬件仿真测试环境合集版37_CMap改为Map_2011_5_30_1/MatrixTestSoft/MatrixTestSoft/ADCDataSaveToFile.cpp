@@ -25,9 +25,9 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 	CString strOutput = _T("");
 	CString strTemp = _T("");
 	unsigned int uiDataLength = 0;
- 	char   buffer[_CVTBUFSIZE]; 
+// 	char   buffer[_CVTBUFSIZE]; 
 // 	int dec,sign;
-//	wchar_t buffer[_CVTBUFSIZE];
+	wchar_t buffer[_CVTBUFSIZE];
 	if(m_bOpenADCSaveFile == FALSE)
 	{
 		OnOpenADCSaveFile();
@@ -120,7 +120,7 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 	SYSTEMTIME  sysTime;
 	// 选中的仪器对象名称
 //	wchar_t cSelectObjectName[InstrumentNum][RcvFrameSize];
-	char cSelectObjectName[InstrumentNum][RcvFrameSize];
+//	char cSelectObjectName[InstrumentNum][RcvFrameSize];
 	strFileName += m_csSaveFilePath;
 	m_uiADCSaveFileNum++;
 	strTemp.Format(_T("\\%d.text"), m_uiADCSaveFileNum);
@@ -137,6 +137,7 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 		AfxMessageBox(_T("ADC数据存储文件创建失败！"));	
 		return;
 	}
+	m_FileSave.Write("\xff\xfe", 2);    // 设置Unicode编码文件头
 	m_arFileSave = new CArchive(&m_FileSave, CArchive::store);
 	GetLocalTime(&sysTime);
 	str.Format(_T("%04d年%02d月%02d日%02d:%02d:%02d:%03d开始记录ADC采样数据：\r\n"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
@@ -148,12 +149,11 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 	// 输出仪器标签
 	for (int i=0; i<InstrumentNum; i++)
 	{
-//		ProcessMessages();
-		strTemp.Format(_T("仪器%d"), i+1);
-//		wchar_t* pchar = strTemp.GetBuffer(0); 
-		char* pchar = strTemp.GetBuffer(0); 
-		_tcscpy_s(cSelectObjectName[i],pchar);
-		strTemp.Format(_T("%s \t\t"), cSelectObjectName[i]);
+		strTemp.Format(_T("仪器%d \t\t"), i+1);
+// 		wchar_t* pchar = strTemp.GetBuffer(0); 
+// //		char* pchar = strTemp.GetBuffer(0); 
+// 		_tcscpy_s(cSelectObjectName[i],pchar);
+// 		strTemp.Format(_T("%s \t\t"), cSelectObjectName[i]);
 		strOutput += strTemp;
 	}
 

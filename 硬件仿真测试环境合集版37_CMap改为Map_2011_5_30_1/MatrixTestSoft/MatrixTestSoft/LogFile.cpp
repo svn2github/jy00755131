@@ -24,6 +24,7 @@ void CLogFile::OnOpenLogFile(void)
 		AfxMessageBox(_T("程序运行日志文件创建失败！"));	
 		return;
 	}
+	m_SaveLogFile.Write("\xff\xfe", 2);    // 设置Unicode编码文件头
 	m_arFileSave = new CArchive(&m_SaveLogFile, CArchive::store);
 	GetLocalTime(&sysTime);
 	str.Format(_T("%04d年%02d月%02d日%02d:%02d:%02d:%03d开始记录程序运行日志：\r\n"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
