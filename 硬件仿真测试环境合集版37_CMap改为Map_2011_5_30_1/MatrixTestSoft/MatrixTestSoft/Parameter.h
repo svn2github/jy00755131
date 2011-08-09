@@ -336,7 +336,7 @@ using namespace std;
 // TabSample界面IP地址设置监测定时器序号
 #define TabSampleIPSetMonitorTimerNb				5
 // TabSample界面IP地址设置监测定时器延时设置
-#define TabSampleIPSetMonitorTimerSet				5000
+#define TabSampleIPSetMonitorTimerSet				8000
 // TabSample界面初始化仪器本地时间的定时器序号
 #define TabSampleInitSysTimeTimerNb				6
 // TabSample界面初始化仪器本地时间的定时器延时设置

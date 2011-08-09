@@ -149,7 +149,7 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 	// Êä³öÒÇÆ÷±êÇ©
 	for (int i=0; i<InstrumentNum; i++)
 	{
-		strTemp.Format(_T("ÒÇÆ÷%d \t\t"), i+1);
+		strTemp.Format(_T("ÒÇÆ÷%d\t\t\t\t\t"), i+1);
 // 		wchar_t* pchar = strTemp.GetBuffer(0); 
 // //		char* pchar = strTemp.GetBuffer(0); 
 // 		_tcscpy_s(cSelectObjectName[i],pchar);
