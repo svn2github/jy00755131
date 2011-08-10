@@ -320,7 +320,7 @@ using namespace std;
 // TabSample界面开始采样定时器序号
 #define TabSampleStartSampleTimerNb				1
 // TabSample界面开始采样定时器延时设置
-#define TabSampleStartSampleTimerSet				4000
+#define TabSampleStartSampleTimerSet				1000
 // TabSample界面停止采样定时器序号
 #define TabSampleStopSampleTimerNb				2
 // TabSample界面停止采样定时器延时设置

@@ -112,4 +112,8 @@ public:
 	void OnSendADCSetCmd(void);
 	// 重置ADC参数设置操作序号
 	void OnResetADCOperationNb(void);
+	// 生成心跳帧
+	void MakeHeartBeatFrame(void);
+	// 清空交叉站的接收缓冲区
+	void OnClearADCSetBuf(void);
 };

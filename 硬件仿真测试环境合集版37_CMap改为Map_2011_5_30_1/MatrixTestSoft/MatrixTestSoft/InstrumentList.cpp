@@ -277,12 +277,30 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	CString str = _T("");
-	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end();)
+	for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
 	{
-//		ProcessMessages();
 		if (NULL != iter->second)
 		{
-//			ProcessMessages();
+			if (pInstrumentDelete->m_uiLocation < iter->second->m_uiLocation)
+			{
+				// 将仪器从IP索引表中删除
+				m_oInstrumentIPMap.erase(iter++);
+			}
+			else
+			{
+				iter++;
+			}
+		}
+		else
+		{
+			iter++;
+		}
+	}
+
+	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end();)
+	{
+		if (NULL != iter->second)
+		{
 			if (pInstrumentDelete->m_uiLocation < iter->second->m_uiLocation)
 			{
 				// 显示设备断开连接的图标
@@ -294,8 +312,6 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 				// 仪器加在空闲仪器队列尾部
 				m_olsInstrumentFree.push_back(iter->second);
 				m_uiCountFree++;
-				// 将仪器从IP索引表中删除
-				m_oInstrumentIPMap.erase(iter);
 				// 将仪器从SN索引表中删除
 				m_oInstrumentSNMap.erase(iter++);
 			}
@@ -412,9 +428,23 @@ void CInstrumentList::DeleteAllInstrument(void)
 	}
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
+	for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
+	{
+		//		ProcessMessages();
+		if (NULL != iter->second)
+		{
+			// 将仪器从IP索引表中删除
+			m_oInstrumentIPMap.erase(iter++);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+
 	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end();)
 	{
-//		ProcessMessages();
+		//		ProcessMessages();
 		if (NULL != iter->second)
 		{
 			// 显示设备断开连接的图标
@@ -424,8 +454,6 @@ void CInstrumentList::DeleteAllInstrument(void)
 			// 仪器加在空闲仪器队列尾部
 			m_olsInstrumentFree.push_back(iter->second);
 			m_uiCountFree++;
-			// 将仪器从IP索引表中删除
-			m_oInstrumentIPMap.erase(iter);
 			// 将仪器从索引表中删除
 			m_oInstrumentSNMap.erase(iter++);
 		}
