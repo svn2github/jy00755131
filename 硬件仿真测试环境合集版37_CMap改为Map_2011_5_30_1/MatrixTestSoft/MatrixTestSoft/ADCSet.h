@@ -18,8 +18,6 @@ public:
 	CInstrumentList* m_pInstrumentList;
 	// ADC参数设置选择界面指针
 	CTabADCSettings* m_pTabADCSettings;
-	// 设备选择指针
-	int* m_pSelectObject;
 	// 日志类指针
 	CLogFile* m_pLogFile;
 	// Socket套接字
@@ -112,8 +110,4 @@ public:
 	void OnSendADCSetCmd(void);
 	// 重置ADC参数设置操作序号
 	void OnResetADCOperationNb(void);
-	// 生成心跳帧
-	void MakeHeartBeatFrame(void);
-	// 清空交叉站的接收缓冲区
-	void OnClearADCSetBuf(void);
 };

@@ -98,6 +98,8 @@ public:
 	void OnResetCheckButton(void);
 	// 重置设备按键的图标
 	void OnResetButtonIcon(void);
+	// 填充套接字地址结构
+	void OnSetSocketAddr(sockaddr_in* addr, u_short hostshort, ULONG Saddr);
 
 public:
 	afx_msg void OnBnClickedCheckMatrixnetwork();
