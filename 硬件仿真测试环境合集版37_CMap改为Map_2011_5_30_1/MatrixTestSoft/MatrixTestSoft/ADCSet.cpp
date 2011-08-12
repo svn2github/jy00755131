@@ -90,47 +90,46 @@ void CADCSet::OnProcADCZeroDriftReturn(unsigned int uiIPAim)
 	CString str = _T("");
 	int iPos = 0;
 	byte	ucCommand = 0;
-	for (int i=0; i<InstrumentNum; i++)
+	// hash_map迭代器
+	hash_map<unsigned int, CInstrument*>::iterator  iter;
+	CInstrument* pInstrument = NULL;
+	if (m_pInstrumentList->GetInstrumentFromIPMap(uiIPAim, pInstrument))
 	{
-//		ProcessMessages();
-		if (uiIPAim == IPSetAddrStart + (i + 1) * IPSetAddrInterval)
+		unsigned int uiLocation = 0;
+		uiLocation = pInstrument->m_uiLocation - 1;
+		iPos = 33;
+		memcpy(&ucCommand, &udp_buf[iPos], FrameCmdSize1B);
+		iPos += FrameCmdSize1B;
+		if (ucCommand == CmdADCSet)
 		{
-			iPos = 33;
-			memcpy(&ucCommand, &udp_buf[iPos], FrameCmdSize1B);
+			iPos = 41;
+			memcpy(&m_ucZeroDrift[uiLocation][0], &udp_buf[iPos], FramePacketSize2B);
+			iPos += FramePacketSize2B;
 			iPos += FrameCmdSize1B;
-			if (ucCommand == CmdADCSet)
-			{
-				iPos = 41;
-				memcpy(&m_ucZeroDrift[i][0], &udp_buf[iPos], FramePacketSize2B);
-				iPos += FramePacketSize2B;
-				iPos += FrameCmdSize1B;
-				memcpy(&m_ucZeroDrift[i][2], &udp_buf[iPos], FramePacketSize2B);
-				iPos += FramePacketSize2B;
-				memcpy(&m_ucZeroDrift[i][4], &udp_buf[iPos], FramePacketSize2B);
-				str.Format(_T("接收零漂矫正查询-仪器IP地址：%d！"), uiIPAim);
-				m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
-				break;
-			}
-			else if (ucCommand == CmdTBHigh)
-			{
-				unsigned int uiTBHigh = 0;
-				unsigned int uiTBLow = 0;
-				unsigned int uiSysTime = 0;
-				memcpy(&uiTBHigh, &udp_buf[iPos], FramePacketSize4B);
-				iPos += FramePacketSize4B;
-				
-				iPos += FrameCmdSize1B;
-				memcpy(&uiTBLow, &udp_buf[iPos], FramePacketSize4B);
-				iPos += FramePacketSize4B;
+			memcpy(&m_ucZeroDrift[uiLocation][2], &udp_buf[iPos], FramePacketSize2B);
+			iPos += FramePacketSize2B;
+			memcpy(&m_ucZeroDrift[uiLocation][4], &udp_buf[iPos], FramePacketSize2B);
+			str.Format(_T("接收零漂矫正查询-仪器IP地址：%d！"), uiIPAim);
+			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
+		}
+		else if (ucCommand == CmdTBHigh)
+		{
+			unsigned int uiTBHigh = 0;
+			unsigned int uiTBLow = 0;
+			unsigned int uiSysTime = 0;
+			memcpy(&uiTBHigh, &udp_buf[iPos], FramePacketSize4B);
+			iPos += FramePacketSize4B;
 
-				iPos += FrameCmdSize1B;
-				memcpy(&uiSysTime, &udp_buf[iPos], FramePacketSize4B);
-				iPos += FramePacketSize4B;
+			iPos += FrameCmdSize1B;
+			memcpy(&uiTBLow, &udp_buf[iPos], FramePacketSize4B);
+			iPos += FramePacketSize4B;
 
-				str.Format(_T("接收TB时刻查询帧-仪器IP地址：%d，TB高位为0x%04x，TB低位为0x%04x, 本地时间为0x%04x！"), uiIPAim, uiTBHigh, uiTBLow, uiSysTime);
-				m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
-				break;
-			}
+			iPos += FrameCmdSize1B;
+			memcpy(&uiSysTime, &udp_buf[iPos], FramePacketSize4B);
+			iPos += FramePacketSize4B;
+
+			str.Format(_T("接收TB时刻查询帧-仪器IP地址：%d，TB高位为0x%04x，TB低位为0x%04x, 本地时间为0x%04x！"), uiIPAim, uiTBHigh, uiTBLow, uiSysTime);
+			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
 		}
 	}
 }
@@ -1020,10 +1019,10 @@ BOOL CADCSet::OnCheckADCSetReturn(void)
 	CString str = _T("");
 	for(iter=m_pInstrumentList->m_oInstrumentIPMap.begin(); iter!=m_pInstrumentList->m_oInstrumentIPMap.end(); iter++)
 	{
-		//		ProcessMessages();
 		if (NULL != iter->second)
 		{
-			if (iter->second->m_uiInstrumentType == InstrumentTypeFDU)
+			if ((iter->second->m_iSelectObject == BST_CHECKED)&&(iter->second->m_bIPSetOK == true)
+				&&(iter->second->m_uiInstrumentType == InstrumentTypeFDU))
 			{
 				if (iter->second->m_uiADCSetOperationNb != m_uiADCSetOperationNb)
 				{
@@ -1225,24 +1224,15 @@ void CADCSet::OnSendADCSetCmd(void)
 	case 31:
 		Sleep(ADCOperationSleepTime);
 		// 按照IP地址发送零漂矫正帧写寄存器
-		for(iter=m_pInstrumentList->m_oInstrumentSNMap.begin(); iter!=m_pInstrumentList->m_oInstrumentSNMap.end(); iter++)
+		for(iter=m_pInstrumentList->m_oInstrumentIPMap.begin(); iter!=m_pInstrumentList->m_oInstrumentIPMap.end(); iter++)
 		{
-			//		ProcessMessages();
 			if (NULL != iter->second)
 			{
-				if (iter->second->m_bIPSetOK == true)
+				if ((iter->second->m_bIPSetOK == true)&&(iter->second->m_uiInstrumentType == InstrumentTypeFDU))
 				{
-					for (int i=0; i<InstrumentNum; i++)
-					{
-						//					ProcessMessages();
-						if (iter->second->m_uiIPAddress == IPSetAddrStart + (i + 1) * IPSetAddrInterval)
-						{
-							iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, ADSetReturnPort);
-							OnADCZeroDriftSetFromIP(iPos, m_ucZeroDrift[i]);
-							sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
-							break;
-						}
-					}
+						iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, ADSetReturnPort);
+						OnADCZeroDriftSetFromIP(iPos, m_ucZeroDrift[iter->second->m_uiLocation - 1]);
+						sendto(m_ADCSetSocket, (const char*)&m_ucFrameData, SndFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
 				}
 			}
 		}
@@ -1255,7 +1245,8 @@ void CADCSet::OnSendADCSetCmd(void)
 			//		ProcessMessages();
 			if (NULL != iter->second)
 			{
-				if (iter->second->m_uiInstrumentType == InstrumentTypeFDU)
+				if ((iter->second->m_uiInstrumentType == InstrumentTypeFDU) && (iter->second->m_iSelectObject == BST_CHECKED)
+					&&(iter->second->m_bIPSetOK == true))
 				{
 					iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, ADSetReturnPort);
 					OnADCReadContinuous(iPos);
@@ -1315,12 +1306,14 @@ void CADCSet::OnResetADCOperationNb(void)
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	for(iter=m_pInstrumentList->m_oInstrumentIPMap.begin(); iter!=m_pInstrumentList->m_oInstrumentIPMap.end(); iter++)
 	{
-		//		ProcessMessages();
 		if (NULL != iter->second)
 		{
-			if (iter->second->m_uiInstrumentType == InstrumentTypeFDU)
+			if (iter->second->m_bIPSetOK == true)
 			{
-				iter->second->m_uiADCSetOperationNb = 0;
+				if (iter->second->m_uiInstrumentType == InstrumentTypeFDU)
+				{
+					iter->second->m_uiADCSetOperationNb = 0;
+				}
 			}
 		}
 	}

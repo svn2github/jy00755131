@@ -85,8 +85,6 @@ int CPortMonitoringSendThread::Run()
 			if(dwFrameCount > 0) 
 			{
 				icount = recvfrom(m_SendSocket, (char*)&m_ucUdpBuf, sizeof(m_ucUdpBuf), 0, (sockaddr*)&SenderAddr, &n);
-// 				str.Format(_T("从端口监视发送线程接收缓冲区读取数据大小为%d！"), icount);
-// 				m_pLogFile->OnWriteLogFile(_T("CADCDataRecThread::Run"), str, SuccessStatus);
 				if (icount != SOCKET_ERROR)
 				{
 					OnProcess(icount);

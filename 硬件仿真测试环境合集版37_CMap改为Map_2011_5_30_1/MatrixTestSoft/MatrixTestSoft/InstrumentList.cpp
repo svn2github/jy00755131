@@ -480,24 +480,23 @@ void CInstrumentList::OnShowDisconnectedIcon(unsigned int uiIPAddress)
 	CStatic* iconstatic = NULL;
 	CButton* pButton = NULL;
 
-	for (int i=0 ;i<= InstrumentNum; i++)
+	// hash_mapµü´úÆ÷
+	hash_map<unsigned int, CInstrument*>::iterator  iter;
+	CInstrument* pInstrument = NULL;
+	if (GetInstrumentFromIPMap(uiIPAddress, pInstrument))
 	{
-//		ProcessMessages();
-		if (uiIPAddress == (IPSetAddrStart + i * IPSetAddrInterval))
+		if (pInstrument->m_uiInstrumentType == InstrumentTypeLAUX)
 		{
-			if (i == 0)
-			{
-				iconstatic =(CStatic*)m_pwnd->GetDlgItem(IDC_STATIC_LAUX);
-				iconstatic->SetIcon(m_iconLAUXDisconnected);
-			}
-			else
-			{
-				iconbutton = (CButton*)m_pwnd->GetDlgItem(m_iButtonIDFDU[i-1]);
-				iconbutton->SetIcon(m_iconFDUDisconnected);
-				pButton = (CButton*)m_pwnd->GetDlgItem(m_iCheckIDInstrumentFDU[i-1]);
-				pButton->SetCheck(0);
-			}
-			break;
+			iconstatic =(CStatic*)m_pwnd->GetDlgItem(IDC_STATIC_LAUX);
+			iconstatic->SetIcon(m_iconLAUXDisconnected);
+		}
+		else if (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
+		{
+
+			iconbutton = (CButton*)m_pwnd->GetDlgItem(m_iButtonIDFDU[pInstrument->m_uiLocation - 1]);
+			iconbutton->SetIcon(m_iconFDUDisconnected);
+			pButton = (CButton*)m_pwnd->GetDlgItem(m_iCheckIDInstrumentFDU[pInstrument->m_uiLocation - 1]);
+			pButton->SetCheck(0);
 		}
 	}
 }

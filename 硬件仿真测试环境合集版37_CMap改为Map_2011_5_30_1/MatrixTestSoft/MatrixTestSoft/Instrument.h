@@ -48,6 +48,10 @@ public:
 	unsigned int m_uiIPResetTimes;
 	// ADC命令设置序号
 	unsigned int m_uiADCSetOperationNb;
+	// 仪器被选中参与采集ADC数据
+	int m_iSelectObject;
+	// 仪器被选中为噪声采集，不存储数据
+	int m_iSelectObjectNoise;
 public:
 	// 重置成员变量
 	void OnReset(void);

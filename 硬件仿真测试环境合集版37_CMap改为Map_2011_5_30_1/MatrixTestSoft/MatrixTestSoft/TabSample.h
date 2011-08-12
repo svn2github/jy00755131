@@ -39,10 +39,6 @@ private:
 public:
 	// 保存数据到文件的存储路径
 	CString m_csSaveFilePath;
-	// 选择仪器对象
-	int m_iSelectObject[InstrumentNum];
-	// 选择仪器对象做噪声监测
-	int m_iSelectObjectNoise[InstrumentNum];
 	// 线程控制类的对象
 	CThreadManage m_oThreadManage;
 	// 采集站设备断开连接图标
@@ -85,7 +81,7 @@ public:
 	// 求采样数据的均方根
 	double SampleDataRms(double* dSampleData, unsigned int uiLength);
 	// 发送数据采集命令帧
-	void OnSendCmdFrame(int* pSelectObject);
+	void OnSendCmdFrame(void);
 	// 使能button控件
 	void OnEnableButtons(void);
 	// 禁用Button控件

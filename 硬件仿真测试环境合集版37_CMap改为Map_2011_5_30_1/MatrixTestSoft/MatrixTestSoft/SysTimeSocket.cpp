@@ -17,6 +17,7 @@ CSysTime::CSysTime()
 , m_pADCFrameInfo(NULL)
 , m_pLogFile(NULL)
 , m_SysTimeSocket(INVALID_SOCKET)
+, m_pInstrumentList(NULL)
 {
 }
 
@@ -89,7 +90,6 @@ void CSysTime::OnReceive(void)
 void CSysTime::OnADCStartSample(unsigned int tnow)
 {
 	m_pADCSet->OnADCStartSample(tnow);
-//	SetTimer(m_pwnd->m_hWnd, TabSampleStartSampleTimerNb, TabSampleStartSampleTimerSet, NULL);
 }
 // 生成采集站本地时间查询帧
 //************************************
@@ -100,7 +100,7 @@ void CSysTime::OnADCStartSample(unsigned int tnow)
 // Qualifier:
 // Parameter: int * pSelectObject
 //************************************
-void CSysTime::MakeCollectSysTimeFrameData(int* pSelectObject)
+void CSysTime::MakeCollectSysTimeFrameData(void)
 {
 	unsigned int uiIPSource =	0;
 	unsigned int uiIPAim	=	0;
@@ -115,15 +115,8 @@ void CSysTime::MakeCollectSysTimeFrameData(int* pSelectObject)
 	memset(&m_cCollectSysTimeSendData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
 	uiIPSource	=	m_uiIPSource;
-	for (int i=0; i<InstrumentNum; i++)
-	{
-//		ProcessMessages();
-		if (pSelectObject[i] == 1)
-		{
-			uiIPAim	= IPSetAddrStart + IPSetAddrInterval * (i+1);
-			break;
-		}
-	}
+	// 查询第一个采集站的本地时间
+	uiIPAim = IPSetAddrStart + IPSetAddrInterval;
 	usPortAim	=	CollectSysTimePort;
 	usCommand	=	SendQueryCmd;
 	int iPos = 16;

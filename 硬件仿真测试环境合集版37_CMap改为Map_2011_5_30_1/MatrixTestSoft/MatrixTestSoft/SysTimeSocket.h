@@ -34,6 +34,8 @@ public:
 	// Socket套接字
 	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_SysTimeSocket;
+	// 仪器设备列表类CInstrumentList的指针
+	CInstrumentList* m_pInstrumentList;
 protected:
 	// ADC设置TB时刻开始采集
 	void OnADCStartSample(unsigned int tnow);
@@ -41,7 +43,7 @@ protected:
 	void ProcessMessages(void);
 public:
 	// 生成采集站本地时间查询帧
-	void MakeCollectSysTimeFrameData(int* pSelectObject);
+	void MakeCollectSysTimeFrameData(void);
 	// 发送采集站本地时间查询帧
 	void SendCollectSysTimeFrameToSocket(void);
 	// 处理本地时间查询应答
