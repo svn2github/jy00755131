@@ -283,6 +283,8 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 		{
 			if (pInstrumentDelete->m_uiLocation < iter->second->m_uiLocation)
 			{
+				// 显示设备断开连接的图标
+				OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
 				// 将仪器从IP索引表中删除
 				m_oInstrumentIPMap.erase(iter++);
 			}
@@ -303,8 +305,6 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 		{
 			if (pInstrumentDelete->m_uiLocation < iter->second->m_uiLocation)
 			{
-				// 显示设备断开连接的图标
-				OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
 				str.Format(_T("清理尾包之后的仪器IP为%d"), iter->second->m_uiIPAddress);
 				m_pLogFile->OnWriteLogFile(_T("CInstrumentList::TailFrameDeleteInstrument"), str, WarningStatus);
 				// 重置仪器
@@ -433,6 +433,8 @@ void CInstrumentList::DeleteAllInstrument(void)
 		//		ProcessMessages();
 		if (NULL != iter->second)
 		{
+			// 显示设备断开连接的图标
+			OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
 			// 将仪器从IP索引表中删除
 			m_oInstrumentIPMap.erase(iter++);
 		}
@@ -447,8 +449,6 @@ void CInstrumentList::DeleteAllInstrument(void)
 		//		ProcessMessages();
 		if (NULL != iter->second)
 		{
-			// 显示设备断开连接的图标
-			OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
 			// 重置仪器
 			iter->second->OnReset();
 			// 仪器加在空闲仪器队列尾部
