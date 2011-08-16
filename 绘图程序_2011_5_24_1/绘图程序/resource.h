@@ -13,6 +13,8 @@
 #define IDI_XZoomPB                     132
 #define IDI_ZoomInPB                    133
 #define IDD_HOTSPOTPARAM                134
+#define IDI_ICON1                       140
+#define IDI_YZoomPB                     140
 #define IDC_                            1000
 #define IDC_ChartViewer                 1000
 #define IDC_PointerPB                   1005
@@ -34,14 +36,15 @@
 #define IDC_BUTTON_SELECTSAVEPATH       1024
 #define IDC_BUTTON_OPENADCFILE          1024
 #define IDC_BUTTON_SAVECHART            1025
+#define IDC_YZoomPB                     1026
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        136
+#define _APS_NEXT_RESOURCE_VALUE        141
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1026
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

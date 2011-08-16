@@ -124,6 +124,7 @@ BEGIN_MESSAGE_MAP(C绘图程序Dlg, CDialog)
 	ON_WM_SIZING()
 	ON_BN_CLICKED(IDC_BUTTON_SAVECHART, &C绘图程序Dlg::OnBnClickedButtonSavechart)
 	ON_BN_CLICKED(IDC_BUTTON_OPENADCFILE, &C绘图程序Dlg::OnBnClickedButtonOpenadcfile)
+	ON_BN_CLICKED(IDC_YZoomPB, &C绘图程序Dlg::OnBnClickedYzoompb)
 END_MESSAGE_MAP()
 
 
@@ -167,6 +168,7 @@ BOOL C绘图程序Dlg::OnInitDialog()
 
 	// 载入图标到变焦/滚动位置控制按钮
 	loadButtonIcon(IDC_XZoomPB, IDI_XZoomPB, 105, 20);
+	loadButtonIcon(IDC_YZoomPB, IDI_YZoomPB, 105, 20);
 	loadButtonIcon(IDC_XYZoomPB, IDI_XYZoomPB, 105, 20);
 
 	// 将对话框及其控件设为尺寸可变的
@@ -176,6 +178,8 @@ BOOL C绘图程序Dlg::OnInitDialog()
 	m_PointerPB.SetCheck(1);
 	m_XZoomPB.SetCheck(1);
 //	m_ChartViewer.setMouseUsage(Chart::MouseUsageScroll);
+	m_ChartViewer.setZoomDirection(Chart::DirectionVertical); 
+	m_ChartViewer.setScrollDirection(Chart::DirectionVertical);
 	
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -359,8 +363,8 @@ void C绘图程序Dlg::OnBnClickedXzoompb()
 	m_ChartViewer.setScrollDirection(Chart::DirectionVertical);
 
 	// Viewport is always unzoomed as x-axis is auto-scaled
-	m_ChartViewer.setViewPortLeft(0);
-	m_ChartViewer.setViewPortWidth(1);
+// 	m_ChartViewer.setViewPortLeft(0);
+// 	m_ChartViewer.setViewPortWidth(1);
 
 	// Update chart to auto-scale axis
 	m_ChartViewer.updateViewPort(true, true);
@@ -591,39 +595,39 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	memcpy(viewPortTimeStamps, &m_DrawPoint_X[startIndex], arraySizeInBytes);
 
 
-	if (noOfPoints >= FullScreenLineShowPointsNum)
-	{
-		//
-		// Zoomable chart with high zooming ratios often need to plot many thousands of 
-		// points when fully zoomed out. However, it is usually not needed to plot more
-		// data points than the resolution of the chart. Plotting too many points may cause
-		// the points and the lines to overlap. So rather than increasing resolution, this 
-		// reduces the clarity of the chart. So it is better to aggregate the data first if
-		// there are too many points.
-		//
-		// In our current example, the chart only has 520 pixels in width and is using a 2
-		// pixel line width. So if there are more than 520 data points, we aggregate the 
-		// data using the ChartDirector aggregation utility method.
-		//
-		// If in your real application, you do not have too many data points, you may 
-		// remove the following code altogether.
-		//
-
-		// Set up an aggregator to aggregate the data based on regular sized slots
-		ArrayMath m(DoubleArray(viewPortTimeStamps, noOfPoints));
-		m.selectRegularSpacing(noOfPoints / (FullScreenLineShowPointsNum / 2));
-
-		// For the timestamps, take the first timestamp on each slot
-		int aggregatedNoOfPoints = m.aggregate(DoubleArray(viewPortTimeStamps, noOfPoints), 
-			Chart::AggregateFirst).len;
-
-		// For the data values, aggregate by taking the averages
-		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-		{
-			m.aggregate(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), Chart::AggregateAvg);
-		}
-		noOfPoints = aggregatedNoOfPoints;
-	}
+// 	if (noOfPoints >= FullScreenLineShowPointsNum)
+// 	{
+// 		//
+// 		// Zoomable chart with high zooming ratios often need to plot many thousands of 
+// 		// points when fully zoomed out. However, it is usually not needed to plot more
+// 		// data points than the resolution of the chart. Plotting too many points may cause
+// 		// the points and the lines to overlap. So rather than increasing resolution, this 
+// 		// reduces the clarity of the chart. So it is better to aggregate the data first if
+// 		// there are too many points.
+// 		//
+// 		// In our current example, the chart only has 520 pixels in width and is using a 2
+// 		// pixel line width. So if there are more than 520 data points, we aggregate the 
+// 		// data using the ChartDirector aggregation utility method.
+// 		//
+// 		// If in your real application, you do not have too many data points, you may 
+// 		// remove the following code altogether.
+// 		//
+// 
+// 		// Set up an aggregator to aggregate the data based on regular sized slots
+// 		ArrayMath m(DoubleArray(viewPortTimeStamps, noOfPoints));
+// 		m.selectRegularSpacing(noOfPoints / (FullScreenLineShowPointsNum / 2));
+// 
+// 		// For the timestamps, take the first timestamp on each slot
+// 		int aggregatedNoOfPoints = m.aggregate(DoubleArray(viewPortTimeStamps, noOfPoints), 
+// 			Chart::AggregateFirst).len;
+// 
+// 		// For the data values, aggregate by taking the averages
+// 		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+// 		{
+// 			m.aggregate(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), Chart::AggregateAvg);
+// 		}
+// 		noOfPoints = aggregatedNoOfPoints;
+// 	}
 
 	//
 	// Now we have obtained the data, we can plot the chart. 
@@ -1133,7 +1137,6 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			// 采集站设备标签
 			ar.ReadString(str);
 			m_dbDataTemp = new double[m_uiInstrumentMaxNum];
-
 			while(ar.ReadString(str))
 			{
 				OnPhraseFirstLine(str);
@@ -1149,13 +1152,13 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 				m_DrawPoint_X.push_back(i + m_uiADCStartNum);
 			}
 
-// 			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-// 			{
-// 				for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
-// 				{
-// 					m_dbFduData[i][j] = m_dbFduData[i][j] + i;
-// 				}
-// 			}
+			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+			{
+				for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
+				{
+					m_dbFduData[i][j] = m_dbFduData[i][j] + i * 0.001;
+				}
+			}
 			return TRUE;
 		}
 	}
@@ -1206,4 +1209,18 @@ void C绘图程序Dlg::OnPhraseFirstLine(CString str)
 		}
 		delete[] m_dbDataTemp;
 	}
+}
+
+void C绘图程序Dlg::OnBnClickedYzoompb()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_ChartViewer.setZoomDirection(Chart::DirectionHorizontal); 
+	m_ChartViewer.setScrollDirection(Chart::DirectionHorizontal);
+
+	// Viewport is always unzoomed as x-axis is auto-scaled
+// 	m_ChartViewer.setViewPortTop(1);
+// 	m_ChartViewer.setViewPortHeight(0);
+
+	// Update chart to auto-scale axis
+	m_ChartViewer.updateViewPort(true, true);
 }

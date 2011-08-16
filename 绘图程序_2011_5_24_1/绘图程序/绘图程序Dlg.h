@@ -144,4 +144,5 @@ public:
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
 	afx_msg void OnBnClickedButtonSavechart();
 	afx_msg void OnBnClickedButtonOpenadcfile();
+	afx_msg void OnBnClickedYzoompb();
 };

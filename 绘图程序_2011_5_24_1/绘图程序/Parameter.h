@@ -49,7 +49,7 @@
 // ADC数据间的间隔大小（空格+\t）
 #define ADCDataInterval						2
 // 初始状态每条线显示的点数
-#define ShowLinePointsNumNow			3000
+#define ShowLinePointsNumNow			500
 // 每条线最少显示的点数
 #define ShowLinePointsNumMin			10
 // X轴坐标标签最小显示间隔数

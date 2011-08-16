@@ -101,7 +101,7 @@
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="1"
-			CharacterSet="2"
+			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -280,6 +280,14 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath=".\res\bitmap1.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\icon1.ico"
+				>
+			</File>
+			<File
 				RelativePath=".\res\My.rc2"
 				>
 			</File>
@@ -293,6 +301,10 @@
 			</File>
 			<File
 				RelativePath=".\res\xzoomPB.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\res\yzoomPB.ico"
 				>
 			</File>
 			<File
