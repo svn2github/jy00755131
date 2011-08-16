@@ -88,6 +88,8 @@ private:
 	unsigned int m_uiADCDataFduNum;
 	// 采集站ADC数据存储
 	vector<double>* m_dbFduData;
+	// 采集站ADC数据绘图
+	vector<double>* m_dbFduShow;
 	// ADC数据缓冲区指针数组
 	double** m_viewPortDataSeries;
 	// 记录第一行数据开辟的缓冲区
@@ -145,4 +147,5 @@ public:
 	afx_msg void OnBnClickedButtonSavechart();
 	afx_msg void OnBnClickedButtonOpenadcfile();
 	afx_msg void OnBnClickedYzoompb();
+	afx_msg void OnBnClickedButtonRedraw();
 };

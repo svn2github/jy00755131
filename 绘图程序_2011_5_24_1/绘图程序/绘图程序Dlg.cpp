@@ -74,6 +74,7 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_uiADCDataNum(0)
 	, m_uiADCDataFduNum(0)
 	, m_dbFduData(NULL)
+	, m_dbFduShow(NULL)
 	, m_viewPortDataSeries(NULL)
 	, m_dbDataTemp(NULL)
 	, m_uiADCFileLineNum(0)
@@ -90,8 +91,10 @@ C绘图程序Dlg::~C绘图程序Dlg()
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
 		m_dbFduData[i].clear();
+		m_dbFduShow[i].clear();
 	}
 	delete[] m_dbFduData;
+	delete[] m_dbFduShow;
 }
 void C绘图程序Dlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -125,6 +128,7 @@ BEGIN_MESSAGE_MAP(C绘图程序Dlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_SAVECHART, &C绘图程序Dlg::OnBnClickedButtonSavechart)
 	ON_BN_CLICKED(IDC_BUTTON_OPENADCFILE, &C绘图程序Dlg::OnBnClickedButtonOpenadcfile)
 	ON_BN_CLICKED(IDC_YZoomPB, &C绘图程序Dlg::OnBnClickedYzoompb)
+	ON_BN_CLICKED(IDC_BUTTON_REDRAW, &C绘图程序Dlg::OnBnClickedButtonRedraw)
 END_MESSAGE_MAP()
 
 
@@ -167,8 +171,8 @@ BOOL C绘图程序Dlg::OnInitDialog()
 	loadButtonIcon(IDC_ZoomOutPB, IDI_ZoomOutPB, 100, 20);
 
 	// 载入图标到变焦/滚动位置控制按钮
-	loadButtonIcon(IDC_XZoomPB, IDI_XZoomPB, 105, 20);
-	loadButtonIcon(IDC_YZoomPB, IDI_YZoomPB, 105, 20);
+	loadButtonIcon(IDC_XZoomPB, IDI_YZoomPB, 105, 20);
+	loadButtonIcon(IDC_YZoomPB, IDI_XZoomPB, 105, 20);
 	loadButtonIcon(IDC_XYZoomPB, IDI_XYZoomPB, 105, 20);
 
 	// 将对话框及其控件设为尺寸可变的
@@ -177,9 +181,12 @@ BOOL C绘图程序Dlg::OnInitDialog()
 	// 初始设置鼠标为横向拖动滚动条模式
 	m_PointerPB.SetCheck(1);
 	m_XZoomPB.SetCheck(1);
-//	m_ChartViewer.setMouseUsage(Chart::MouseUsageScroll);
+	m_ChartViewer.setMouseUsage(Chart::MouseUsageScroll);
 	m_ChartViewer.setZoomDirection(Chart::DirectionVertical); 
 	m_ChartViewer.setScrollDirection(Chart::DirectionVertical);
+
+	GetDlgItem(IDC_EDIT_LINEINTERVAL)->SetWindowText(_T("0.001"));
+	GetDlgItem(IDC_EDIT_LINEZOOM)->SetWindowText(_T("1"));
 	
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -265,7 +272,7 @@ void C绘图程序Dlg::OnSiteSizeBox(void)
 	{
 		{IDC_STATIC_CONTROL, ELASTICY,	100},
 		{IDC_STATIC_CONTROL, ELASTICX,	5},
-		{IDC_STATIC_MOUSEMODE, ELASTICY, 22},
+		{IDC_STATIC_MOUSEMODE, ELASTICY, 20},
 		{IDC_STATIC_MOUSEMODE, ELASTICX, 5},
 		{IDC_PointerPB, MOVEY, 2},
 		{IDC_PointerPB, ELASTICY, 5},
@@ -277,12 +284,15 @@ void C绘图程序Dlg::OnSiteSizeBox(void)
 		{IDC_ZoomOutPB, ELASTICY, 5},
 		{IDC_ZoomOutPB, ELASTICX, 5},
 		{IDC_STATIC_ZOOMMODE, MOVEY, 25},
-		{IDC_STATIC_ZOOMMODE, ELASTICY, 12},
+		{IDC_STATIC_ZOOMMODE, ELASTICY, 20},
 		{IDC_STATIC_ZOOMMODE, ELASTICX, 5},
 		{IDC_XZoomPB, MOVEY, 27},
 		{IDC_XZoomPB, ELASTICY, 5},
 		{IDC_XZoomPB, ELASTICX, 5},
-		{IDC_XYZoomPB, MOVEY, 33},
+		{IDC_YZoomPB, MOVEY, 33},
+		{IDC_YZoomPB, ELASTICY, 5},
+		{IDC_YZoomPB, ELASTICX, 5},
+		{IDC_XYZoomPB, MOVEY, 39},
 		{IDC_XYZoomPB, ELASTICY, 5},
 		{IDC_XYZoomPB, ELASTICX, 5},
 		{IDC_STATIC_GRAPHSHOWNUM, MOVEY, 44},
@@ -291,7 +301,22 @@ void C绘图程序Dlg::OnSiteSizeBox(void)
 		{IDC_BUTTON_OPENADCFILE, MOVEY, 48},
 		{IDC_BUTTON_OPENADCFILE, ELASTICY, 5},
 		{IDC_BUTTON_OPENADCFILE, ELASTICX, 5},
-		{IDC_BUTTON_SAVECHART, MOVEY, 53},
+		{IDC_STATIC_LINEINTERVAL, MOVEY, 53},
+		{IDC_STATIC_LINEINTERVAL, ELASTICY, 5},
+		{IDC_STATIC_LINEINTERVAL, ELASTICX, 5},
+		{IDC_EDIT_LINEINTERVAL, MOVEY, 53},
+		{IDC_EDIT_LINEINTERVAL, ELASTICY, 0},
+		{IDC_EDIT_LINEINTERVAL, ELASTICX, 5},
+		{IDC_STATIC_LINEZOOM, MOVEY, 56},
+		{IDC_STATIC_LINEZOOM, ELASTICY, 5},
+		{IDC_STATIC_LINEZOOM, ELASTICX, 5},
+		{IDC_EDIT_LINEZOOM, MOVEY, 56},
+		{IDC_EDIT_LINEZOOM, ELASTICY, 0},
+		{IDC_EDIT_LINEZOOM, ELASTICX, 5},
+		{IDC_BUTTON_REDRAW, MOVEY, 61},
+		{IDC_BUTTON_REDRAW, ELASTICY, 5},
+		{IDC_BUTTON_REDRAW, ELASTICX, 5},
+		{IDC_BUTTON_SAVECHART, MOVEY, 66},
 		{IDC_BUTTON_SAVECHART, ELASTICY, 5},
 		{IDC_BUTTON_SAVECHART, ELASTICX, 5},
 		{IDC_HScrollBar, MOVEX, 5},
@@ -326,7 +351,6 @@ int C绘图程序Dlg::getDefaultBgColor(void)
 // 载入数据
 BOOL C绘图程序Dlg::OnOpenFile(void)
 {
-//	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
 	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
 	CFileDialog dlg(TRUE, _T(".text"), _T("1.text"), OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT, pszFilter, this);
 
@@ -365,7 +389,10 @@ void C绘图程序Dlg::OnBnClickedXzoompb()
 	// Viewport is always unzoomed as x-axis is auto-scaled
 // 	m_ChartViewer.setViewPortLeft(0);
 // 	m_ChartViewer.setViewPortWidth(1);
-
+	if (m_dbFduData == NULL)
+	{
+		return;
+	}
 	// Update chart to auto-scale axis
 	m_ChartViewer.updateViewPort(true, true);
 }
@@ -738,7 +765,7 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
 		memset(pTempChar, 0, ansiCount);
 		WideCharToMultiByte(CP_ACP, 0, str, -1, pTempChar, ansiCount, NULL, NULL);
-		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, pTempChar);
+		layer->addDataSet(DoubleArray(&m_dbFduShow[i][startIndex], noOfPoints), color, pTempChar);
 		free(pTempChar);
 //		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, str);
 	}
@@ -789,8 +816,9 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	// Step 4 - Set up y-axis scale
 	///////////////////////////////////////////////////////////////////////////////////////
 
-	if ((viewer->getZoomDirection() == Chart::DirectionVertical) || 
-		((m_minValue == 0) && (m_maxValue == 0)))
+// 	if ((viewer->getZoomDirection() == Chart::DirectionVertical) || 
+// 		((m_minValue == 0) && (m_maxValue == 0)))
+	if (((m_minValue == 0) && (m_maxValue == 0)))
 	{
 		// y-axis is auto-scaled - save the chosen y-axis scaled to support xy-zoom mode
 		c->layout();
@@ -1012,7 +1040,6 @@ void C绘图程序Dlg::OnBnClickedButtonSavechart()
 		WideCharToMultiByte(CP_ACP, 0, sPathName, -1, pTempChar, ansiCount, NULL, NULL);
 		m_ChartViewer.getChart()->makeChart(pTempChar);
  		free(pTempChar);
-//		m_ChartViewer.getChart()->makeChart(sPathName);
 	}
 }
 
@@ -1082,15 +1109,7 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 {
 	if ((_taccess(csOpenFilePath,0))!=-1)
 	{
-//		ifstream fp_str;
 		CFile file;
-// 		fp_str.open(csOpenFilePath, ios::in);
-// 		if(fp_str.fail())
-// 		{
-// 			AfxMessageBox(_T("打开数据采样文件出错！"));
-// 			return FALSE;
-// 		}
-
 		if(file.Open(csOpenFilePath, CFile::modeRead) == FALSE)
 		{
 			AfxMessageBox(_T("打开数据采样文件出错！"));	
@@ -1105,8 +1124,10 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 			{
 				m_dbFduData[i].clear();
+				m_dbFduShow[i].clear();
 			}
 			delete[] m_dbFduData;
+			delete[] m_dbFduShow;
 			// 采集站设备总数
 			m_uiInstrumentMaxNum = 0;
 			// 参与ADC数据采集的采集站设备数
@@ -1151,12 +1172,18 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			{
 				m_DrawPoint_X.push_back(i + m_uiADCStartNum);
 			}
-
+			
+			double dbLineInterval = 0.0;
+			double dbLineZoom = 0.0;
+			GetDlgItem(IDC_EDIT_LINEINTERVAL)->GetWindowText(str);
+			dbLineInterval = _tstof(str);
+			GetDlgItem(IDC_EDIT_LINEZOOM)->GetWindowText(str);
+			dbLineZoom = _tstof(str);
 			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 			{
 				for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
 				{
-					m_dbFduData[i][j] = m_dbFduData[i][j] + i * 0.001;
+					m_dbFduShow[i].push_back(m_dbFduData[i][j] * dbLineZoom + i * dbLineInterval);
 				}
 			}
 			return TRUE;
@@ -1203,6 +1230,7 @@ void C绘图程序Dlg::OnPhraseFirstLine(CString str)
 	if (m_uiADCFileLineNum == 0)
 	{
 		m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
+		m_dbFduShow = new vector<double>[m_uiInstrumentADCNum];
 		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 		{
 			m_dbFduData[i].push_back(m_dbDataTemp[i]);
@@ -1216,11 +1244,45 @@ void C绘图程序Dlg::OnBnClickedYzoompb()
 	// TODO: 在此添加控件通知处理程序代码
 	m_ChartViewer.setZoomDirection(Chart::DirectionHorizontal); 
 	m_ChartViewer.setScrollDirection(Chart::DirectionHorizontal);
-
+	if (m_dbFduData == NULL)
+	{
+		return;
+	}
 	// Viewport is always unzoomed as x-axis is auto-scaled
 // 	m_ChartViewer.setViewPortTop(1);
 // 	m_ChartViewer.setViewPortHeight(0);
 
 	// Update chart to auto-scale axis
 	m_ChartViewer.updateViewPort(true, true);
+}
+
+void C绘图程序Dlg::OnBnClickedButtonRedraw()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("");
+	double dbLineInterval = 0.0;
+	double dbLineZoom = 0.0;
+	// 判断是否有数据可以重绘
+	if (m_dbFduData == NULL)
+	{
+		return;
+	}
+	// 禁用按键直到绘图重绘操作完成
+	GetDlgItem(IDC_BUTTON_REDRAW)->EnableWindow(FALSE);
+	// 得到界面设置值
+	GetDlgItem(IDC_EDIT_LINEINTERVAL)->GetWindowText(str);
+	dbLineInterval = _tstof(str);
+	GetDlgItem(IDC_EDIT_LINEZOOM)->GetWindowText(str);
+	dbLineZoom = _tstof(str);
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
+		{
+			m_dbFduShow[i][j] = m_dbFduData[i][j] * dbLineZoom + i * dbLineInterval;
+		}
+	}
+	// 重绘绘图区
+	m_ChartViewer.updateViewPort(true, true);
+
+	GetDlgItem(IDC_BUTTON_REDRAW)->EnableWindow(TRUE);
 }

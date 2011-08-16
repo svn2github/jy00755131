@@ -13,7 +13,6 @@
 #define IDI_XZoomPB                     132
 #define IDI_ZoomInPB                    133
 #define IDD_HOTSPOTPARAM                134
-#define IDI_ICON1                       140
 #define IDI_YZoomPB                     140
 #define IDC_                            1000
 #define IDC_ChartViewer                 1000
@@ -37,6 +36,12 @@
 #define IDC_BUTTON_OPENADCFILE          1024
 #define IDC_BUTTON_SAVECHART            1025
 #define IDC_YZoomPB                     1026
+#define IDC_STATIC_LINEINTERVAL         1027
+#define IDC_EDIT_LINEINTERVAL           1028
+#define IDC_STATIC_LINEZOOM             1029
+#define IDC_EDIT_LINEZOOM               1030
+#define IDC_BUTTON2                     1031
+#define IDC_BUTTON_REDRAW               1031
 
 // Next default values for new objects
 // 
@@ -44,7 +49,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        141
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1028
+#define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
