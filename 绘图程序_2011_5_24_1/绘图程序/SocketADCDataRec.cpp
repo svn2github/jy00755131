@@ -1,0 +1,196 @@
+// SocketADCDataRec.cpp : 实现文件
+//
+
+#include "stdafx.h"
+#include "绘图程序.h"
+#include "SocketADCDataRec.h"
+
+
+// CSocketADCDataRec
+
+CSocketADCDataRec::CSocketADCDataRec()
+: m_pwnd(NULL)
+, m_uipRecFrameNum(NULL)
+, m_uiDrawPointXNb(0)
+, m_uiInstrumentADCNum(0)
+{
+}
+
+CSocketADCDataRec::~CSocketADCDataRec()
+{
+	// 记录X轴坐标点信息
+	m_DrawPoint_X.clear();
+}
+
+
+// CSocketADCDataRec 成员函数
+
+void CSocketADCDataRec::OnReceive(int nErrorCode)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	int ret=0;
+	unsigned short uiPort = 0;
+	ret = Receive(m_oADCRecFrameBuf, ADCRecFrameBufSize);
+	if(ret == ADCRecFrameBufSize) 
+	{
+		// 单个帧处理
+		ProcFrameOne();
+	}
+
+	CSocket::OnReceive(nErrorCode);
+}
+
+// 单个帧处理
+void CSocketADCDataRec::ProcFrameOne(void)
+{
+	// uiNb表明接收到帧所对应的仪器号
+	unsigned int	uiNb = 0;
+	unsigned short usCommand = 0;
+	int iPos = FrameHeadSize;
+	unsigned short usInstrumentNum = 0;
+	int	iSampleData = 0;
+	double dSampleDataToV = 0.0;
+	unsigned int uiFrameNb = 0;									// 接收的帧的序号
+	double dbReceiveData [ReceiveDataNum];			// 接收数据缓存
+	// 设m_oADCRecFrameBuf[16]到m_oADCRecFrameBuf[19]为通道号（从0开始）
+	memcpy(&uiNb, &m_oADCRecFrameBuf[iPos], FramePacketSize4B);
+	iPos += FramePacketSize4B;
+	iPos += FramePacketSize4B;
+	iPos += FramePacketSize2B;
+	// 设m_oADCRecFrameBuf[26]到m_oADCRecFrameBuf[27]为命令字
+	memcpy(&usCommand, &m_oADCRecFrameBuf[iPos], FramePacketSize2B);
+	iPos += FramePacketSize2B;
+	if (usCommand == SendSetCmd)
+	{
+		// 为1则28~29为参与采样的设备个数
+		memcpy(&usInstrumentNum, &m_oADCRecFrameBuf[iPos], FramePacketSize2B);
+		iPos += FramePacketSize2B;
+		if (usInstrumentNum == 0)
+		{
+			AfxMessageBox(_T("采样设备个数为0！"));
+			return;
+		}
+		// 创建图形显示数据缓冲区
+		OnPrepareToShow(usInstrumentNum);
+		// 开启图形显示刷新定时器
+		KillTimer(m_pwnd->m_hWnd, GraphRefreshTimerNb);
+		SetTimer(m_pwnd->m_hWnd, GraphRefreshTimerNb, GraphRefreshTimerSet, NULL);
+	}
+	else if (usCommand == SendADCCmd)
+	{
+		// 为3则36开始为ADC数据，30~33为接收帧序号（从0开始），从而计算出每个点对应的X坐标值
+		iPos += FramePacketSize2B;
+		memcpy(&uiFrameNb, &m_oADCRecFrameBuf[iPos], FramePacketSize4B);
+		iPos += FramePacketSize4B;
+		iPos += FramePacketSize2B;
+		// 之后为数据区
+		for (int j=0; j<ReceiveDataNum; j++)
+		{
+			memcpy(&iSampleData, &m_oADCRecFrameBuf[iPos], ADCDataSize3B);
+			iPos += ADCDataSize3B;
+			// 24位数转换为电压值
+			dSampleDataToV = iSampleData;
+			if (dSampleDataToV < 0x7FFFFF)
+			{
+				dSampleDataToV = dSampleDataToV/( 0x7FFFFE ) * DrawGraphYAxisUpper;
+			}
+			else if (dSampleDataToV > 0x800000)
+			{
+				dSampleDataToV = (0xFFFFFF - dSampleDataToV)/( 0x7FFFFE ) * (DrawGraphYAxisLower);
+			}
+			dbReceiveData[j] = dSampleDataToV;
+		}
+		// 将数据复制到图形显示缓冲区
+		if (m_uipRecFrameNum[uiNb] < ADCRecFrameShowNum)
+		{
+			for (int j=0; j<ReceiveDataNum; j++)
+			{
+				m_dbFduData[uiNb].push_back(dbReceiveData[j]);
+				if (uiNb == m_uiDrawPointXNb)
+				{
+					m_DrawPoint_X.push_back(uiFrameNb * ReceiveDataNum + j);
+				}
+			}
+		}
+		else
+		{
+			// 删除vector中部分元素可以用erase
+			m_dbFduData[uiNb].erase(m_dbFduData[uiNb].begin(), m_dbFduData[uiNb].begin() + ReceiveDataNum);
+			for (int i=0; i<ReceiveDataNum; i++)
+			{
+				m_dbFduData[uiNb].push_back(dbReceiveData[i]);
+			}
+			if (uiNb == m_uiDrawPointXNb)
+			{
+				m_DrawPoint_X.erase(m_DrawPoint_X.begin(), m_DrawPoint_X.begin() + ReceiveDataNum);
+				for (int j=0; j<ReceiveDataNum; j++)
+				{
+					m_DrawPoint_X.push_back(uiFrameNb * ReceiveDataNum + j);
+				}
+			}
+// 			int iSize1 = m_dbFduData[uiNb].size();
+// 			int iSize2 = m_DrawPoint_X.size();
+// 			TRACE(_T("%u		%u		%u\r\n"), uiNb, iSize1, iSize2);
+		}
+		m_uipRecFrameNum[uiNb]++;
+	}
+}
+
+// ADC数据绘图准备
+void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
+{
+	// 初始化变量
+	m_DrawPoint_X.clear();
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		m_dbFduData[i].clear();
+		m_dbFduShow[i].clear();
+	}
+	delete[] m_dbFduData;
+	delete[] m_dbFduShow;
+	delete[] m_uipRecFrameNum;
+	if (usInstrumentNum == 0)
+	{
+		return;
+	}
+	m_uiInstrumentADCNum = usInstrumentNum;
+	m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
+	m_dbFduShow = new vector<double>[m_uiInstrumentADCNum];
+	m_uipRecFrameNum = new unsigned int[m_uiInstrumentADCNum];
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		m_uipRecFrameNum[i] = 0;
+	}
+}
+
+// 得到当前ADC数据接收帧最小帧数，并返回仪器序号
+unsigned int CSocketADCDataRec::GetRecFrameNumMin(void)
+{
+	unsigned int uiMin = m_uipRecFrameNum[0];
+	unsigned int uiMinNb = 0;
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		if (uiMin >= m_uipRecFrameNum[i])
+		{
+			uiMin = m_uipRecFrameNum[i];
+			uiMinNb = i;
+		}
+	}
+	return uiMinNb;
+}
+
+// 得到当前ADC数据接收帧最大帧数，并返回仪器序号
+unsigned int CSocketADCDataRec::GetRecFrameNumMax(void)
+{
+	unsigned int uiMax = m_uipRecFrameNum[0];
+	unsigned int uiMaxNb = 0;
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		if (uiMax <= m_uipRecFrameNum[i])
+		{
+			uiMax = m_uipRecFrameNum[i];
+			uiMaxNb = i;
+		}
+	}
+	return uiMaxNb;
+}

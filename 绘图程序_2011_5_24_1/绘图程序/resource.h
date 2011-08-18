@@ -40,8 +40,10 @@
 #define IDC_EDIT_LINEINTERVAL           1028
 #define IDC_STATIC_LINEZOOM             1029
 #define IDC_EDIT_LINEZOOM               1030
-#define IDC_BUTTON2                     1031
 #define IDC_BUTTON_REDRAW               1031
+#define IDC_BUTTON_START                1032
+#define IDC_BUTTON3                     1033
+#define IDC_BUTTON_STOP                 1033
 
 // Next default values for new objects
 // 
@@ -49,7 +51,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        141
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1032
+#define _APS_NEXT_CONTROL_VALUE         1034
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

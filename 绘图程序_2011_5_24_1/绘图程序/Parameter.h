@@ -1,3 +1,5 @@
+#include <vector>
+using namespace std;
 // ____________界面设置___________
 // 设置纵向滚动条宽度
 #define SetVScrollWidth							25
@@ -54,8 +56,8 @@
 #define ShowLinePointsNumMin			10
 // X轴坐标标签最小显示间隔数
 #define SetLegendXIntervalNumMin		3
-// 全屏时每条线显示的点数
-#define FullScreenLineShowPointsNum	520
+// 网络传输显示帧数
+#define ADCRecFrameShowNum			7
 // _________定义曲线颜色___________
 // 红色RGB
 #define RedColor								0xFF0000
@@ -63,3 +65,55 @@
 #define GreenColor								0x00FF00
 // 蓝色RGB
 #define BlueColor								0x0000FF
+// _________ADC数据接受___________
+// ADC数据图形化显示接收端口
+#define ADCGraphShowPort				0x7800
+// 接收ADC数据一帧的缓冲区大小
+#define ADCRecFrameBufSize			256
+// 接收数据包的ADC数据个数
+#define ReceiveDataNum					72
+// ADC数据端口接收缓冲区大小
+#define ADCRecPortBufSize				10000 * ADCRecFrameBufSize
+
+//___________________帧格式设置___________________
+// 帧头长度
+#define FrameHeadSize				16
+// 帧头校验字长度
+#define FrameHeadCheckSize	4
+// 帧头第一个字节
+#define FrameHeadCheck0		0x11
+// 帧头第二个字节
+#define FrameHeadCheck1		0x22
+// 帧头第三个字节
+#define FrameHeadCheck2		0x33
+// 帧头第四个字节
+#define FrameHeadCheck3		0x44
+// 命令字长度1字节
+#define FrameCmdSize1B			1
+// 命令包长度2字节
+#define FramePacketSize2B		2
+// 命令包长度4字节
+#define FramePacketSize4B		4
+// ADC数据所占字节数
+#define ADCDataSize3B			3
+//____________________命令字设置__________________
+// 发送设置命令
+#define SendSetCmd								0x0001
+// 发送查询命令
+#define SendQueryCmd							0x0002
+// 发送ADC采样数据命令
+#define SendADCCmd							0x0003
+//___________________定时器设置____________________
+// 界面刷新定时器序号
+#define GraphRefreshTimerNb								1
+// 界面刷新定时器延时设置
+#define GraphRefreshTimerSet								500
+
+// 设置Y轴下限
+#define DrawGraphYAxisLower							-2.5
+// 设置Y轴上限
+#define DrawGraphYAxisUpper								2.5
+// 采集站ADC数据存储
+extern vector<double>* m_dbFduData;
+// 采集站ADC数据绘图
+extern vector<double>* m_dbFduShow;

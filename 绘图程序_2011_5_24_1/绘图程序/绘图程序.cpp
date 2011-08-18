@@ -47,6 +47,12 @@ BOOL C绘图程序App::InitInstance()
 
 	CWinApp::InitInstance();
 
+	if (!AfxSocketInit())
+	{
+		AfxMessageBox(_T("初始化套接字失败！"));
+		return FALSE;
+	}
+
 	AfxEnableControlContainer();
 
 	// 标准初始化

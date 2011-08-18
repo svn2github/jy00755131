@@ -5,8 +5,7 @@
 #include "ChartViewer.h"
 #include "afxwin.h"
 #include "Parameter.h"
-#include <vector>
-using namespace std;
+#include "SocketADCDataRec.h"
 // C绘图程序Dlg 对话框
 class C绘图程序Dlg : public CDialog
 {
@@ -56,10 +55,10 @@ private:
 	double m_maxValue;					// 纵坐标的最大值
 	double m_minValue;					// 纵坐标的最小值
 	unsigned int m_uiIntervalNum;	// 绘图区域左侧间隔个数
-	// 记录X轴坐标点信息
-	vector <double>	m_DrawPoint_X;
 	// 记录各条图线点的信息
 	vector <vector <double>> m_DrawLine_Y;
+	// 记录X轴坐标点信息指针
+	vector <double>	m_DrawPoint_X;
 private:
 	int m_iClientWidth;				// 对话框client区域的宽度
 	int m_iClientHeight;			// 对话框client区域的高度
@@ -76,8 +75,6 @@ private:
 	CString m_csOpenFilePath;
 	// 采集站设备总数
 	unsigned int m_uiInstrumentMaxNum;
-	// 参与ADC数据采集的采集站设备数
-	unsigned int m_uiInstrumentADCNum;
 	// ADC数据开始的数据点数
 	unsigned int m_uiADCStartNum;
 	// ADC数据转换格式
@@ -86,16 +83,14 @@ private:
 	unsigned int m_uiADCDataNum;
 	// 每个采集站采集到的ADC数据个数
 	unsigned int m_uiADCDataFduNum;
-	// 采集站ADC数据存储
-	vector<double>* m_dbFduData;
-	// 采集站ADC数据绘图
-	vector<double>* m_dbFduShow;
 	// ADC数据缓冲区指针数组
 	double** m_viewPortDataSeries;
 	// 记录第一行数据开辟的缓冲区
 	double *m_dbDataTemp;
 	// 读取文件中数据的行数
 	unsigned int m_uiADCFileLineNum;
+	// 参与ADC数据采集的采集站设备数
+	unsigned int m_uiInstrumentADCNum;
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
 	double m_currentDuration;			// 当前显示数据点的个数
@@ -105,6 +100,7 @@ public:
 	CScrollBar m_VScrollBar;			// 纵向滚动条的控制变量
 	CComboBox m_Duration;			// 绘图显示点数选项卡控制变量
 	double m_minDuration;				// 最少显示点的个数
+	CSocketADCDataRec m_oSocketADCDataRec;	// ADC数据接收CSocket类对象
 private:
 	// 得到默认的背景颜色
 	int getDefaultBgColor(void);
@@ -130,6 +126,8 @@ private:
 	BOOL LoadData(CString csOpenFilePath);
 	// 解码第一行ADC数据
 	void OnPhraseFirstLine(CString str);
+	// 创建ADC数据接收Socket
+	void OnCreateADCRecSocket(void);
 public:
 	afx_msg void OnBnClickedPointerpb();
 	afx_msg void OnBnClickedZoominpb();
@@ -148,4 +146,14 @@ public:
 	afx_msg void OnBnClickedButtonOpenadcfile();
 	afx_msg void OnBnClickedYzoompb();
 	afx_msg void OnBnClickedButtonRedraw();
+	afx_msg void OnClose();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedButtonStart();
+	afx_msg void OnBnClickedButtonStop();
+private:
+	// 绘制网络ADC数据
+	void OnNetADCGraph(void);
+public:
+	// 设置X轴取值范围和标签间隔
+	void OnSetXAxisRange(double dbmaxData, double dbminData);
 };

@@ -18,6 +18,11 @@
 #ifndef OBM_SIZE
 #define OBM_SIZE 32766
 #endif
+// 采集站ADC数据存储
+vector<double>* m_dbFduData;
+// 采集站ADC数据绘图
+vector<double>* m_dbFduShow;
+
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialog
@@ -68,16 +73,14 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_bShowSizeIcon(TRUE)
 	, m_csOpenFilePath(_T(""))
 	, m_uiInstrumentMaxNum(0)
-	, m_uiInstrumentADCNum(0)
 	, m_uiADCStartNum(0)
 	, m_uiADCDataCovNb(0)
 	, m_uiADCDataNum(0)
 	, m_uiADCDataFduNum(0)
-	, m_dbFduData(NULL)
-	, m_dbFduShow(NULL)
 	, m_viewPortDataSeries(NULL)
 	, m_dbDataTemp(NULL)
 	, m_uiADCFileLineNum(0)
+	, m_uiInstrumentADCNum(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -129,6 +132,10 @@ BEGIN_MESSAGE_MAP(C绘图程序Dlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_OPENADCFILE, &C绘图程序Dlg::OnBnClickedButtonOpenadcfile)
 	ON_BN_CLICKED(IDC_YZoomPB, &C绘图程序Dlg::OnBnClickedYzoompb)
 	ON_BN_CLICKED(IDC_BUTTON_REDRAW, &C绘图程序Dlg::OnBnClickedButtonRedraw)
+	ON_WM_CLOSE()
+	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BUTTON_START, &C绘图程序Dlg::OnBnClickedButtonStart)
+	ON_BN_CLICKED(IDC_BUTTON_STOP, &C绘图程序Dlg::OnBnClickedButtonStop)
 END_MESSAGE_MAP()
 
 
@@ -187,7 +194,15 @@ BOOL C绘图程序Dlg::OnInitDialog()
 
 	GetDlgItem(IDC_EDIT_LINEINTERVAL)->SetWindowText(_T("0.001"));
 	GetDlgItem(IDC_EDIT_LINEZOOM)->SetWindowText(_T("1"));
-	
+	m_oSocketADCDataRec.m_pwnd = this;
+	// 采集站ADC数据存储
+	m_dbFduData = NULL;
+	// 采集站ADC数据绘图
+	m_dbFduShow = NULL;
+
+	// 创建Socket
+	OnCreateADCRecSocket();
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -319,6 +334,12 @@ void C绘图程序Dlg::OnSiteSizeBox(void)
 		{IDC_BUTTON_SAVECHART, MOVEY, 66},
 		{IDC_BUTTON_SAVECHART, ELASTICY, 5},
 		{IDC_BUTTON_SAVECHART, ELASTICX, 5},
+		{IDC_BUTTON_START, MOVEY, 71},
+		{IDC_BUTTON_START, ELASTICY, 5},
+		{IDC_BUTTON_START, ELASTICX, 5},
+		{IDC_BUTTON_STOP, MOVEY, 76},
+		{IDC_BUTTON_STOP, ELASTICY, 5},
+		{IDC_BUTTON_STOP, ELASTICX, 5},
 		{IDC_HScrollBar, MOVEX, 5},
 		{IDC_HScrollBar, MOVEY, 100},
 		{IDC_HScrollBar, ELASTICX, 95},
@@ -1067,12 +1088,6 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
 	{
 		m_currentDuration = m_uiADCDataFduNum;
 	}
-	// 横坐标的最小值为m_timeStamps数组的第一个值
-	m_minData = m_DrawPoint_X[0];
-	m_maxData = m_DrawPoint_X[m_DrawPoint_X.size() - 1];
-
-	// 横坐标取值的变化范围
-	m_dateRange = m_maxData - m_minData;
 	if (m_uiADCDataFduNum > ShowLinePointsNumMin)
 	{
 		m_minDuration = ShowLinePointsNumMin;
@@ -1081,25 +1096,11 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
 	{
 		m_minDuration = m_uiADCDataFduNum;
 	}
+	// 横坐标的最小值为m_timeStamps数组的第一个值
+	m_minData = m_DrawPoint_X[0];
+	m_maxData = m_DrawPoint_X[m_DrawPoint_X.size() - 1];
 
-	// 绘图区域左侧间隔个数
-	double maxData = 0.0;
-	maxData = m_maxData;
-	m_uiIntervalNum = 0;
-	while(maxData > 1)
-	{
-		maxData = maxData / 10;
-		m_uiIntervalNum++;
-	}
-	if (m_uiIntervalNum < SetLegendXIntervalNumMin)
-	{
-		m_uiIntervalNum = SetLegendXIntervalNumMin;
-	}
-	// 设置ChartViewer能反映有效且最小的持续时间
-	m_ChartViewer.setZoomInHeightLimit(m_minDuration / m_dateRange);
-	m_ChartViewer.setViewPortHeight(m_currentDuration / m_dateRange);
-	m_ChartViewer.setViewPortTop(1 - m_ChartViewer.getViewPortHeight());
-
+	OnSetXAxisRange(m_maxData, m_minData);
 	// 重绘绘图区
 	m_ChartViewer.updateViewPort(true, true);
 }
@@ -1285,4 +1286,167 @@ void C绘图程序Dlg::OnBnClickedButtonRedraw()
 	m_ChartViewer.updateViewPort(true, true);
 
 	GetDlgItem(IDC_BUTTON_REDRAW)->EnableWindow(TRUE);
+}
+
+// 创建ADC数据接收Socket
+void C绘图程序Dlg::OnCreateADCRecSocket(void)
+{
+	BOOL bReturn = FALSE;
+	// 生成网络端口，接收发送命令应答帧，create函数写入第三个参数IP地址则接收固定IP地址发送的帧，不写则全网接收
+	m_oSocketADCDataRec.Close();
+	bReturn = m_oSocketADCDataRec.Create(ADCGraphShowPort, SOCK_DGRAM);
+	if (bReturn == FALSE)
+	{
+		AfxMessageBox(_T("ADC数据接收端口创建失败！"));
+	}
+	else
+	{
+		int iOptionValue = ADCRecPortBufSize;
+		int iOptionLen = sizeof(int);
+		bReturn = m_oSocketADCDataRec.SetSockOpt(SO_RCVBUF, (void*)&iOptionValue, iOptionLen, SOL_SOCKET);
+		if (bReturn == FALSE)
+		{
+			AfxMessageBox(_T("ADC数据接收端口接收缓冲区设置失败！"));
+		}
+	}
+}
+
+void C绘图程序Dlg::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	m_oSocketADCDataRec.Close();
+	CDialog::OnClose();
+}
+
+void C绘图程序Dlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	// ADC命令设置应答监视
+	if (nIDEvent == GraphRefreshTimerNb)
+	{
+		KillTimer(GraphRefreshTimerNb);
+		// 进行绘图操作
+		OnNetADCGraph();
+		SetTimer(GraphRefreshTimerNb, GraphRefreshTimerSet, NULL);
+	}
+
+	CDialog::OnTimer(nIDEvent);
+}
+
+void C绘图程序Dlg::OnBnClickedButtonStart()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	GetDlgItem(IDC_BUTTON_START)->EnableWindow(FALSE);
+	SetTimer(GraphRefreshTimerNb, GraphRefreshTimerSet, NULL);
+	GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(TRUE);
+}
+
+void C绘图程序Dlg::OnBnClickedButtonStop()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(FALSE);
+	KillTimer(GraphRefreshTimerNb);
+	GetDlgItem(IDC_BUTTON_START)->EnableWindow(TRUE);
+}
+
+// 绘制网络ADC数据
+void C绘图程序Dlg::OnNetADCGraph(void)
+{
+	// 得到默认背景颜色
+	m_extBgColor = getDefaultBgColor();
+	// Y轴范围
+	m_minValue = m_maxValue = 0;
+
+// 	if(FALSE == OnOpenFile())
+// 	{
+// 		return;
+// 	}
+	// 初始状态每条线显示的点数
+	unsigned int uiRecFrameNumMinNb = 0;
+	unsigned int uiRecFrameNumMaxNb = 0;
+	if (m_oSocketADCDataRec.m_uipRecFrameNum == NULL)
+	{
+		return;
+	}
+	uiRecFrameNumMinNb = m_oSocketADCDataRec.GetRecFrameNumMin();
+	uiRecFrameNumMaxNb = m_oSocketADCDataRec.GetRecFrameNumMax();
+	if (m_oSocketADCDataRec.m_uipRecFrameNum[uiRecFrameNumMinNb] == 0)
+	{
+		return;
+	}
+	else if (m_oSocketADCDataRec.m_uipRecFrameNum[uiRecFrameNumMinNb] < ADCRecFrameShowNum)
+	{
+		m_currentDuration = m_oSocketADCDataRec.m_uipRecFrameNum[uiRecFrameNumMinNb] * ReceiveDataNum;
+	}
+	else
+	{
+		m_currentDuration = (ADCRecFrameShowNum - ( m_oSocketADCDataRec.m_uipRecFrameNum[uiRecFrameNumMaxNb] 
+		-  m_oSocketADCDataRec.m_uipRecFrameNum[uiRecFrameNumMinNb])) * ReceiveDataNum;
+	}
+	if (m_oSocketADCDataRec.m_uipRecFrameNum[uiRecFrameNumMinNb] * ReceiveDataNum > ShowLinePointsNumMin)
+	{
+		m_minDuration = ShowLinePointsNumMin;
+	}
+	else
+	{
+		m_minDuration = m_oSocketADCDataRec.m_uipRecFrameNum[uiRecFrameNumMinNb] * ReceiveDataNum;
+	}
+	unsigned int icurrentDuration = (unsigned int)m_currentDuration;
+	m_DrawPoint_X.clear();
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		m_dbFduShow[i].clear();
+	}
+	for (unsigned int i=0; i<icurrentDuration; i++)
+	{
+		m_DrawPoint_X.push_back(m_oSocketADCDataRec.m_DrawPoint_X[i]);
+	}
+	m_uiInstrumentADCNum = m_oSocketADCDataRec.m_uiInstrumentADCNum;
+
+	double dbLineInterval = 0.0;
+	double dbLineZoom = 0.0;
+	CString str = _T("");
+	GetDlgItem(IDC_EDIT_LINEINTERVAL)->GetWindowText(str);
+	dbLineInterval = _tstof(str);
+	GetDlgItem(IDC_EDIT_LINEZOOM)->GetWindowText(str);
+	dbLineZoom = _tstof(str);
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		for (unsigned int j=0; j<icurrentDuration; j++)
+		{
+			m_dbFduShow[i].push_back(m_dbFduData[i][j] * dbLineZoom + i * dbLineInterval);
+		}
+	}
+
+	// 横坐标的最小值为m_DrawPoint_X数组的第一个值
+	m_minData = m_DrawPoint_X[0];
+	m_maxData = m_DrawPoint_X[m_DrawPoint_X.size() - 1];
+	OnSetXAxisRange(m_maxData, m_minData);
+	// 重绘绘图区
+	m_ChartViewer.updateViewPort(true, false);
+}
+
+// 设置X轴取值范围和标签间隔
+void C绘图程序Dlg::OnSetXAxisRange(double dbmaxData, double dbminData)
+{
+	// 横坐标取值的变化范围
+	m_dateRange = dbmaxData - dbminData;
+
+	// 绘图区域左侧间隔个数
+	double maxData = 0.0;
+	maxData = dbmaxData;
+	m_uiIntervalNum = 0;
+	while(maxData > 1)
+	{
+		maxData = maxData / 10;
+		m_uiIntervalNum++;
+	}
+	if (m_uiIntervalNum < SetLegendXIntervalNumMin)
+	{
+		m_uiIntervalNum = SetLegendXIntervalNumMin;
+	}
+	// 设置ChartViewer能反映有效且最小的持续时间
+	m_ChartViewer.setZoomInHeightLimit(m_minDuration / m_dateRange);
+	m_ChartViewer.setViewPortHeight(m_currentDuration / m_dateRange);
+	m_ChartViewer.setViewPortTop(1 - m_ChartViewer.getViewPortHeight());
 }
