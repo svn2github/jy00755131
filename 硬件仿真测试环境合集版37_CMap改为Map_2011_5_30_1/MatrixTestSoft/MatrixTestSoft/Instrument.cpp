@@ -25,6 +25,7 @@ CInstrument::CInstrument(void)
 , m_uiADCSetOperationNb(0)
 , m_iSelectObject(0)
 , m_iSelectObjectNoise(0)
+, m_uiUnCheckedNum(0)
 {
 }
 
@@ -58,4 +59,5 @@ void CInstrument::OnReset(void)
 	m_uiADCSetOperationNb = 0;
 	m_iSelectObject = 0;
 	m_iSelectObjectNoise = 0;
+	m_uiUnCheckedNum = 0;
 }

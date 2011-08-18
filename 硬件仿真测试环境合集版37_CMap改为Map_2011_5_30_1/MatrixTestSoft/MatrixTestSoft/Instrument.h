@@ -52,6 +52,8 @@ public:
 	int m_iSelectObject;
 	// 仪器被选中为噪声采集，不存储数据
 	int m_iSelectObjectNoise;
+	// 在该设备之前未被选择绘图的设备个数
+	unsigned int m_uiUnCheckedNum;
 public:
 	// 重置成员变量
 	void OnReset(void);

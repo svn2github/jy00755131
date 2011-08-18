@@ -51,6 +51,8 @@ using namespace std;
 #define CollectSysTimePort		0x8500
 // 查询硬件设备出错计数返回端口
 #define QueryErrorCodePort		0x8600 
+// ADC数据图形化显示发送端口
+#define ADCGraphShowPort		0x7800
 // ADC设置广播端口
 #define ADCSetBroadcastPort	0x66666666
 // 广播端口
@@ -192,7 +194,7 @@ using namespace std;
 // 发送查询命令
 #define SendQueryCmd							0x0002
 // 发送ADC采样数据重发命令
-#define SendADCRetransmissionCmd	0x0003
+#define SendADCCmd							0x0003
 // TB开始采集开关控制命令(TB_L高8位)
 #define CmdTBCtrl									0x010000
 // 串号

@@ -370,7 +370,7 @@ void CADCSet::OnADCSetReturn(int iPos)
 	// ad返回端口：返回固定端口则ad_cmd(7) = 0,
 	// 例如0x00035005,其中03为ADC数据返回命令，5005为返回端口号
 	// 返回端口递增则ad_cmd(7) = 1,例如0x80035005
-	uiReturnPort = (SendADCRetransmissionCmd << 16) + ADRecPort;	// 0x00038300
+	uiReturnPort = (SendADCCmd << 16) + ADRecPort;	// 0x00038300
 	m_ucFrameData[iPos] = CmdADCDataReturnPort;
 	iPos += FrameCmdSize1B;
 	memcpy(&m_ucFrameData[iPos], &uiReturnPort, FramePacketSize4B);

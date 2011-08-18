@@ -29,8 +29,10 @@ public:
 public:
 	// 线程结束事件
 	HANDLE m_hADCDataThreadClose;
-	// ADC数据接收Socket套接字
+	// ADC数据接收和重发Socket套接字
 	sockaddr_in m_RecvAddr, m_SendToAddr;
+	// ADC数据图形化显示发送套接字
+	sockaddr_in m_SendADCGraphToAddr;
 	SOCKET m_ADCDataSocket;
 	// 线程关闭标志
 	bool m_bclose;
@@ -132,6 +134,12 @@ public:
 	void OnProcess(int iCount);
 	// 关闭UDP套接字
 	void OnCloseUDP(void);
+	// 生成ADC数据图形化显示帧
+	void OnMakeADCGraphShowFrame(unsigned short usCommand);
+	// 发送ADC数据图形化显示帧
+	void OnSendADCGraphShowFrame(void);
+	// 计算绘图序号
+	unsigned int CalLocationGraph(unsigned int uiLocation);
 };
 
 

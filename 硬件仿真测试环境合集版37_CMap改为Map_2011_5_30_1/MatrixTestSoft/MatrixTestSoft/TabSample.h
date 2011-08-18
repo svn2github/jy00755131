@@ -36,6 +36,8 @@ private:
 	unsigned int m_uiTailTimeCount;
 	// 尾包监测计数
 	unsigned int m_uiTailFrameTimerCount;
+	// 本机IP地址
+	unsigned int m_uiIPSource;
 public:
 	// 保存数据到文件的存储路径
 	CString m_csSaveFilePath;
@@ -163,4 +165,5 @@ public:
 	afx_msg LRESULT OnTailFrameSocket(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnIPSetSocket(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnHeadFrameSocket(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnBnClickedButtonGraphexe();
 };
