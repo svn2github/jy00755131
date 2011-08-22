@@ -81,6 +81,9 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_dbDataTemp(NULL)
 	, m_uiADCFileLineNum(0)
 	, m_uiInstrumentADCNum(0)
+	, m_bCheckYAxisFixed(FALSE)
+	, m_bStartShow(FALSE)
+	, m_csSaveFolderPath(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -136,6 +139,9 @@ BEGIN_MESSAGE_MAP(C绘图程序Dlg, CDialog)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BUTTON_START, &C绘图程序Dlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &C绘图程序Dlg::OnBnClickedButtonStop)
+	ON_BN_CLICKED(IDC_CHECK_YAXISFIXED, &C绘图程序Dlg::OnBnClickedCheckYaxisfixed)
+	ON_BN_CLICKED(IDC_BUTTON_OPENADCFOLDER, &C绘图程序Dlg::OnBnClickedButtonOpenadcfolder)
+	ON_LBN_DBLCLK(IDC_LIST_FILE, &C绘图程序Dlg::OnLbnDblclkListFile)
 END_MESSAGE_MAP()
 
 
@@ -194,7 +200,6 @@ BOOL C绘图程序Dlg::OnInitDialog()
 
 	GetDlgItem(IDC_EDIT_LINEINTERVAL)->SetWindowText(_T("0.001"));
 	GetDlgItem(IDC_EDIT_LINEZOOM)->SetWindowText(_T("1"));
-	m_oSocketADCDataRec.m_pwnd = this;
 	// 采集站ADC数据存储
 	m_dbFduData = NULL;
 	// 采集站ADC数据绘图
@@ -287,59 +292,70 @@ void C绘图程序Dlg::OnSiteSizeBox(void)
 	{
 		{IDC_STATIC_CONTROL, ELASTICY,	100},
 		{IDC_STATIC_CONTROL, ELASTICX,	5},
-		{IDC_STATIC_MOUSEMODE, ELASTICY, 20},
+		{IDC_STATIC_MOUSEMODE, ELASTICY, 16},
 		{IDC_STATIC_MOUSEMODE, ELASTICX, 5},
 		{IDC_PointerPB, MOVEY, 2},
 		{IDC_PointerPB, ELASTICY, 5},
-		{IDC_PointerPB, ELASTICX, 5},
-		{IDC_ZoomInPB, MOVEY, 8},
+		{IDC_PointerPB, ELASTICX, 2},
+		{IDC_ZoomInPB, MOVEX, 3},
+		{IDC_ZoomInPB, MOVEY, 2},
 		{IDC_ZoomInPB, ELASTICY, 5},
-		{IDC_ZoomInPB, ELASTICX, 5},
-		{IDC_ZoomOutPB, MOVEY, 14},
+		{IDC_ZoomInPB, ELASTICX, 2},
+		{IDC_ZoomOutPB, MOVEY, 9},
 		{IDC_ZoomOutPB, ELASTICY, 5},
-		{IDC_ZoomOutPB, ELASTICX, 5},
-		{IDC_STATIC_ZOOMMODE, MOVEY, 25},
-		{IDC_STATIC_ZOOMMODE, ELASTICY, 20},
+		{IDC_ZoomOutPB, ELASTICX, 2},
+		{IDC_STATIC_ZOOMMODE, MOVEY, 18},
+		{IDC_STATIC_ZOOMMODE, ELASTICY, 16},
 		{IDC_STATIC_ZOOMMODE, ELASTICX, 5},
-		{IDC_XZoomPB, MOVEY, 27},
+		{IDC_XZoomPB, MOVEY, 20},
 		{IDC_XZoomPB, ELASTICY, 5},
-		{IDC_XZoomPB, ELASTICX, 5},
-		{IDC_YZoomPB, MOVEY, 33},
+		{IDC_XZoomPB, ELASTICX, 2},
+		{IDC_YZoomPB, MOVEX, 3},
+		{IDC_YZoomPB, MOVEY, 20},
 		{IDC_YZoomPB, ELASTICY, 5},
-		{IDC_YZoomPB, ELASTICX, 5},
-		{IDC_XYZoomPB, MOVEY, 39},
+		{IDC_YZoomPB, ELASTICX, 2},
+		{IDC_XYZoomPB, MOVEY, 27},
 		{IDC_XYZoomPB, ELASTICY, 5},
-		{IDC_XYZoomPB, ELASTICX, 5},
-		{IDC_STATIC_GRAPHSHOWNUM, MOVEY, 44},
-		{IDC_Duration, MOVEY, 46},
+		{IDC_XYZoomPB, ELASTICX, 2},
+		{IDC_STATIC_GRAPHSHOWNUM, MOVEY, 35},
+		{IDC_Duration, MOVEY, 35},
 		{IDC_Duration, ELASTICX, 5},
-		{IDC_BUTTON_OPENADCFILE, MOVEY, 48},
+		{IDC_BUTTON_OPENADCFILE, MOVEY, 37},
 		{IDC_BUTTON_OPENADCFILE, ELASTICY, 5},
 		{IDC_BUTTON_OPENADCFILE, ELASTICX, 5},
+		{IDC_BUTTON_OPENADCFOLDER, MOVEY, 43},
+		{IDC_BUTTON_OPENADCFOLDER, ELASTICY, 5},
+		{IDC_BUTTON_OPENADCFOLDER, ELASTICX, 5},
+		{IDC_STATIC_FILELIST, MOVEY, 48},
+		{IDC_LIST_FILE, MOVEY, 48},
+		{IDC_LIST_FILE, ELASTICX, 5},
+		{IDC_LIST_FILE, ELASTICY, 5},
+		{IDC_CHECK_YAXISFIXED, MOVEY, 48},
+		{IDC_CHECK_YAXISFIXED, ELASTICY, 5},
 		{IDC_STATIC_LINEINTERVAL, MOVEY, 53},
-		{IDC_STATIC_LINEINTERVAL, ELASTICY, 5},
-		{IDC_STATIC_LINEINTERVAL, ELASTICX, 5},
+		{IDC_STATIC_LINEINTERVAL, ELASTICX, 2},
 		{IDC_EDIT_LINEINTERVAL, MOVEY, 53},
-		{IDC_EDIT_LINEINTERVAL, ELASTICY, 0},
-		{IDC_EDIT_LINEINTERVAL, ELASTICX, 5},
-		{IDC_STATIC_LINEZOOM, MOVEY, 56},
-		{IDC_STATIC_LINEZOOM, ELASTICY, 5},
-		{IDC_STATIC_LINEZOOM, ELASTICX, 5},
-		{IDC_EDIT_LINEZOOM, MOVEY, 56},
-		{IDC_EDIT_LINEZOOM, ELASTICY, 0},
-		{IDC_EDIT_LINEZOOM, ELASTICX, 5},
-		{IDC_BUTTON_REDRAW, MOVEY, 61},
+		{IDC_EDIT_LINEINTERVAL, ELASTICX, 2},
+		{IDC_STATIC_LINEZOOM, MOVEY, 53},
+		{IDC_STATIC_LINEZOOM, MOVEX, 3},
+		{IDC_STATIC_LINEZOOM, ELASTICX, 2},
+		{IDC_EDIT_LINEZOOM, MOVEY, 53},
+		{IDC_EDIT_LINEZOOM, MOVEX, 3},
+		{IDC_EDIT_LINEZOOM, ELASTICX, 2},
+		{IDC_BUTTON_REDRAW, MOVEY, 58},
 		{IDC_BUTTON_REDRAW, ELASTICY, 5},
-		{IDC_BUTTON_REDRAW, ELASTICX, 5},
-		{IDC_BUTTON_SAVECHART, MOVEY, 66},
+		{IDC_BUTTON_REDRAW, ELASTICX, 2},
+		{IDC_BUTTON_SAVECHART, MOVEY, 63},
 		{IDC_BUTTON_SAVECHART, ELASTICY, 5},
-		{IDC_BUTTON_SAVECHART, ELASTICX, 5},
-		{IDC_BUTTON_START, MOVEY, 71},
+		{IDC_BUTTON_SAVECHART, ELASTICX, 2},
+		{IDC_BUTTON_START, MOVEY, 58},
+		{IDC_BUTTON_START, MOVEX, 3},
 		{IDC_BUTTON_START, ELASTICY, 5},
-		{IDC_BUTTON_START, ELASTICX, 5},
-		{IDC_BUTTON_STOP, MOVEY, 76},
+		{IDC_BUTTON_START, ELASTICX, 2},
+		{IDC_BUTTON_STOP, MOVEY, 63},
+		{IDC_BUTTON_STOP, MOVEX, 3},
 		{IDC_BUTTON_STOP, ELASTICY, 5},
-		{IDC_BUTTON_STOP, ELASTICX, 5},
+		{IDC_BUTTON_STOP, ELASTICX, 2},
 		{IDC_HScrollBar, MOVEX, 5},
 		{IDC_HScrollBar, MOVEY, 100},
 		{IDC_HScrollBar, ELASTICX, 95},
@@ -380,7 +396,7 @@ BOOL C绘图程序Dlg::OnOpenFile(void)
 		return FALSE;
 	}
 	m_csOpenFilePath=dlg.GetPathName();
-	return LoadData(m_csOpenFilePath);
+	return TRUE;
 }
 
 void C绘图程序Dlg::OnBnClickedPointerpb()
@@ -625,7 +641,7 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 		viewPortStartDate) - &m_DrawPoint_X[0]);
 	if ((startIndex > 0) && (m_DrawPoint_X[startIndex] != viewPortStartDate)) 
 		--startIndex;
-
+	
 	// Get the ending index of the array using the end date
 	int endIndex = (int)(std::upper_bound(&m_DrawPoint_X[0], &m_DrawPoint_X[0] + m_DrawPoint_X.size(), 
 		viewPortEndDate) - &m_DrawPoint_X[0]);
@@ -786,7 +802,7 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
 		memset(pTempChar, 0, ansiCount);
 		WideCharToMultiByte(CP_ACP, 0, str, -1, pTempChar, ansiCount, NULL, NULL);
-		layer->addDataSet(DoubleArray(&m_dbFduShow[i][startIndex], noOfPoints), color, pTempChar);
+		layer->addDataSet(DoubleArray(&m_dbFduShow[i][startIndex - m_uiADCStartNum], noOfPoints), color, pTempChar);
 		free(pTempChar);
 //		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, str);
 	}
@@ -1067,48 +1083,24 @@ void C绘图程序Dlg::OnBnClickedButtonSavechart()
 void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	//
-	// 初始化成员变量
-	//
-	// 得到默认背景颜色
-	m_extBgColor = getDefaultBgColor();
-	// Y轴范围
-	m_minValue = m_maxValue = 0;
-
+	// 打开文件
 	if(FALSE == OnOpenFile())
 	{
 		return;
 	}
-	// 初始状态每条线显示的点数
-	if (m_uiADCDataFduNum > ShowLinePointsNumNow)
+	// 载入数据
+	if(FALSE == LoadData(m_csOpenFilePath))
 	{
-		m_currentDuration = ShowLinePointsNumNow;
-	} 
-	else
-	{
-		m_currentDuration = m_uiADCDataFduNum;
+		return;
 	}
-	if (m_uiADCDataFduNum > ShowLinePointsNumMin)
-	{
-		m_minDuration = ShowLinePointsNumMin;
-	}
-	else
-	{
-		m_minDuration = m_uiADCDataFduNum;
-	}
-	// 横坐标的最小值为m_timeStamps数组的第一个值
-	m_minData = m_DrawPoint_X[0];
-	m_maxData = m_DrawPoint_X[m_DrawPoint_X.size() - 1];
-
-	OnSetXAxisRange(m_maxData, m_minData);
-	// 重绘绘图区
-	m_ChartViewer.updateViewPort(true, true);
+	// 绘图
+	OnPrepareToDrawGraph();
 }
 
 // 从文件中载入数据
 BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 {
-	if ((_taccess(csOpenFilePath,0))!=-1)
+	if ((_taccess(csOpenFilePath,0)) != -1)
 	{
 		CFile file;
 		if(file.Open(csOpenFilePath, CFile::modeRead) == FALSE)
@@ -1159,9 +1151,14 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			// 采集站设备标签
 			ar.ReadString(str);
 			m_dbDataTemp = new double[m_uiInstrumentMaxNum];
+// 			file.Seek(-1200,CFile::end);///从文件末尾往上移动50字节
+// 			wchar_t pbufRead[6000];
+// 			file.Read(pbufRead, sizeof(pbufRead));
+// 			CString strtemp = pbufRead;
+
 			while(ar.ReadString(str))
 			{
-				OnPhraseFirstLine(str);
+				OnPhraseEachLine(str);
 				m_uiADCFileLineNum++;
 			}
 			ar.Close();
@@ -1169,9 +1166,9 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 
 			m_uiADCDataFduNum = m_uiADCDataNum / m_uiInstrumentADCNum;
 			m_uiADCDataNum = m_uiADCDataFduNum * m_uiInstrumentADCNum;
-			for (unsigned int i=0; i<m_uiADCDataFduNum; i++)
+			for (unsigned int i=0; i<m_uiADCDataFduNum + m_uiADCStartNum; i++)
 			{
-				m_DrawPoint_X.push_back(i + m_uiADCStartNum);
+				m_DrawPoint_X.push_back(i);
 			}
 			
 			double dbLineInterval = 0.0;
@@ -1196,7 +1193,7 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 	}
 }
 // 解码一行ADC数据
-void C绘图程序Dlg::OnPhraseFirstLine(CString str)
+void C绘图程序Dlg::OnPhraseEachLine(CString str)
 {
 	int iDirectionPrevious = 0;
 	int iDirectionNow = 0;
@@ -1338,6 +1335,7 @@ void C绘图程序Dlg::OnBnClickedButtonStart()
 	// TODO: 在此添加控件通知处理程序代码
 	GetDlgItem(IDC_BUTTON_START)->EnableWindow(FALSE);
 	SetTimer(GraphRefreshTimerNb, GraphRefreshTimerSet, NULL);
+	m_bStartShow = TRUE;
 	GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(TRUE);
 }
 
@@ -1355,12 +1353,22 @@ void C绘图程序Dlg::OnNetADCGraph(void)
 	// 得到默认背景颜色
 	m_extBgColor = getDefaultBgColor();
 	// Y轴范围
-	m_minValue = m_maxValue = 0;
+	// 如果Y轴坐标固定则只有第一次需要重新画Y轴坐标
+	if (m_bStartShow == TRUE)
+	{
+		m_bStartShow = FALSE;
+		// 重新画Y轴坐标
+		m_minValue = m_maxValue = 0;
+	} 
+	else
+	{
+		// 如果Y轴坐标不固定则每次都重新画Y轴坐标
+		if (m_bCheckYAxisFixed == FALSE)
+		{
+			m_minValue = m_maxValue = 0;
+		}
+	}
 
-// 	if(FALSE == OnOpenFile())
-// 	{
-// 		return;
-// 	}
 	// 初始状态每条线显示的点数
 	unsigned int uiRecFrameNumMinNb = 0;
 	unsigned int uiRecFrameNumMaxNb = 0;
@@ -1450,3 +1458,143 @@ void C绘图程序Dlg::OnSetXAxisRange(double dbmaxData, double dbminData)
 	m_ChartViewer.setViewPortHeight(m_currentDuration / m_dateRange);
 	m_ChartViewer.setViewPortTop(1 - m_ChartViewer.getViewPortHeight());
 }
+
+void C绘图程序Dlg::OnBnClickedCheckYaxisfixed()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	BOOL bStatus = (BOOL)::SendMessage(GetDlgItem(IDC_CHECK_YAXISFIXED)->GetSafeHwnd(),   BM_GETCHECK,   0,   0);
+	if (bStatus == TRUE)
+	{
+		m_bCheckYAxisFixed = TRUE;
+	}
+	else
+	{
+		m_bCheckYAxisFixed = FALSE;
+	}
+}
+
+// 载入数据文件后做绘图的准备工作
+void C绘图程序Dlg::OnPrepareToDrawGraph(void)
+{
+	//
+	// 初始化成员变量
+	//
+	// 得到默认背景颜色
+	m_extBgColor = getDefaultBgColor();
+	// Y轴范围
+	m_minValue = m_maxValue = 0;
+
+	// 初始状态每条线显示的点数
+	if (m_uiADCDataFduNum > ShowLinePointsNumNow)
+	{
+		m_currentDuration = ShowLinePointsNumNow;
+	} 
+	else
+	{
+		m_currentDuration = m_uiADCDataFduNum;
+	}
+	if (m_uiADCDataFduNum > ShowLinePointsNumMin)
+	{
+		m_minDuration = ShowLinePointsNumMin;
+	}
+	else
+	{
+		m_minDuration = m_uiADCDataFduNum;
+	}
+	// 横坐标的最小值为m_timeStamps数组的第一个值
+	m_minData = m_DrawPoint_X[0];
+	m_maxData = m_DrawPoint_X[m_DrawPoint_X.size() - 1];
+
+	OnSetXAxisRange(m_maxData, m_minData);
+	// 重绘绘图区
+	m_ChartViewer.updateViewPort(true, true);
+}
+
+void C绘图程序Dlg::OnBnClickedButtonOpenadcfolder()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	wchar_t szDir[MAX_PATH];
+	//	char szDir[MAX_PATH];
+	BROWSEINFO bi;
+	ITEMIDLIST *pidl;
+
+	bi.hwndOwner = this->m_hWnd; // 指定父窗口，在对话框显示期间，父窗口将被禁用 
+	bi.pidlRoot = NULL; // 如果指定NULL，就以“桌面”为根 
+	bi.pszDisplayName = szDir; 
+	bi.lpszTitle = _T("请选择采样数据存储目录"); // 这一行将显示在对话框的顶端 
+	bi.ulFlags = BIF_STATUSTEXT | BIF_USENEWUI | BIF_RETURNONLYFSDIRS;
+	bi.lpfn = NULL;
+	bi.lParam = 0;
+	bi.iImage = 0;
+	pidl = SHBrowseForFolder(&bi);
+
+	if(pidl == NULL) 
+	{
+		return;
+	}
+	if(!SHGetPathFromIDList(pidl, szDir))
+	{	
+		return;
+	}
+	else
+	{
+		m_csSaveFolderPath = szDir;
+		FindFileAndList(m_csSaveFolderPath);
+	}
+}
+
+// 查找文件夹下的文件并列出
+void C绘图程序Dlg::FindFileAndList(CString csSaveFolderPath)
+{
+	CListBox* pListBox = (CListBox* )GetDlgItem(IDC_LIST_FILE);
+	CFileFind findFile;	// 文件查找对象
+	CString strPath = csSaveFolderPath + _T("\\*.text");
+	CString strFileName = _T("");
+	BOOL bWorking = findFile.FindFile(strPath);          //执行文件搜索
+	// 先清空ListBox控件
+	for (int i = 0; i < pListBox->GetCount(); i++)
+	{
+		pListBox->DeleteString(i);
+	}
+	while(bWorking)
+	{
+		 bWorking = findFile.FindNextFile();						//查找下一个文件
+		 if(findFile.IsDirectory())										//若为目录，结束本次循环
+		 {
+			 continue;
+		 }
+		 if (findFile.IsDots())
+		 {
+			 continue;
+		 }
+		 strFileName=findFile.GetFileName();					//获取文件名称，包括后缀
+		 pListBox->AddString(strFileName);						// 加入到ListBox控件中
+	}
+}
+
+void C绘图程序Dlg::OnLbnDblclkListFile()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CListBox* pListBox = (CListBox* )GetDlgItem(IDC_LIST_FILE);
+	int nIndex = pListBox->GetCurSel();
+	if (nIndex == CB_ERR)
+	{
+		return;
+	}
+	CString str;
+	int n = pListBox->GetTextLen(nIndex);
+	pListBox->GetText(nIndex, str.GetBuffer(n));
+	str.ReleaseBuffer();
+	if (str != _T(""))
+	{
+		m_csOpenFilePath = m_csSaveFolderPath + _T("\\") + str;
+	}
+	// 载入数据
+	if(FALSE == LoadData(m_csOpenFilePath))
+	{
+		return;
+	}
+	// 绘图
+	OnPrepareToDrawGraph();
+}
+

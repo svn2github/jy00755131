@@ -13,9 +13,9 @@ public:
 private:
 	// 设置ADC数据帧接收缓冲区
 	unsigned char m_oADCRecFrameBuf[ADCRecFrameBufSize];
+	// 接收到ADC设置信息帧标志位
+	BOOL m_bRecADCSetInfoFrame;
 public:
-	// 界面指针
-	CWnd* m_pwnd;
 	// 接收到的帧数
 	unsigned int* m_uipRecFrameNum;
 	// 绘X轴坐标参考点的仪器序号

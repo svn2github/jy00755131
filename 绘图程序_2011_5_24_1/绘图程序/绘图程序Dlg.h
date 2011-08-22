@@ -59,6 +59,10 @@ private:
 	vector <vector <double>> m_DrawLine_Y;
 	// 记录X轴坐标点信息指针
 	vector <double>	m_DrawPoint_X;
+	// Y轴坐标固定标志
+	BOOL m_bCheckYAxisFixed;
+	// 开始界面刷新标志位
+	BOOL m_bStartShow;
 private:
 	int m_iClientWidth;				// 对话框client区域的宽度
 	int m_iClientHeight;			// 对话框client区域的高度
@@ -125,7 +129,7 @@ private:
 	// 从文件中载入数据
 	BOOL LoadData(CString csOpenFilePath);
 	// 解码第一行ADC数据
-	void OnPhraseFirstLine(CString str);
+	void OnPhraseEachLine(CString str);
 	// 创建ADC数据接收Socket
 	void OnCreateADCRecSocket(void);
 public:
@@ -153,7 +157,16 @@ public:
 private:
 	// 绘制网络ADC数据
 	void OnNetADCGraph(void);
-public:
 	// 设置X轴取值范围和标签间隔
 	void OnSetXAxisRange(double dbmaxData, double dbminData);
+	// 载入数据文件后做绘图的准备工作
+	void OnPrepareToDrawGraph(void);
+	// 查找文件夹下的文件并列出
+	void FindFileAndList(CString csSaveFolderPath);
+public:
+	afx_msg void OnBnClickedCheckYaxisfixed();
+	afx_msg void OnBnClickedButtonOpenadcfolder();
+	afx_msg void OnLbnDblclkListFile();
+	// 选择数据文件夹的路径
+	CString m_csSaveFolderPath;
 };

@@ -43,21 +43,6 @@ using namespace std;
 #define SetXAxisWidth							2
 // 设置Y轴的宽度
 #define SetYAxisWidth							2
-// _________常量设置____________
-// 设置读取文件头的缓冲区大小
-#define SetReadFileHeadBufSize			1000
-// 一个ADC数据占用缓冲区大小
-#define ADCDataBufSize						12
-// ADC数据间的间隔大小（空格+\t）
-#define ADCDataInterval						2
-// 初始状态每条线显示的点数
-#define ShowLinePointsNumNow			500
-// 每条线最少显示的点数
-#define ShowLinePointsNumMin			10
-// X轴坐标标签最小显示间隔数
-#define SetLegendXIntervalNumMin		3
-// 网络传输显示帧数
-#define ADCRecFrameShowNum			7
 // _________定义曲线颜色___________
 // 红色RGB
 #define RedColor								0xFF0000
@@ -74,6 +59,21 @@ using namespace std;
 #define ReceiveDataNum					72
 // ADC数据端口接收缓冲区大小
 #define ADCRecPortBufSize				10000 * ADCRecFrameBufSize
+// _________常量设置____________
+// 设置读取文件头的缓冲区大小
+#define SetReadFileHeadBufSize			1000
+// 一个ADC数据占用缓冲区大小
+#define ADCDataBufSize						12
+// ADC数据间的间隔大小（空格+\t）
+#define ADCDataInterval						2
+// 网络传输显示帧数
+#define ADCRecFrameShowNum			7
+// 初始状态每条线显示的点数
+#define ShowLinePointsNumNow			ADCRecFrameShowNum * ReceiveDataNum
+// 每条线最少显示的点数
+#define ShowLinePointsNumMin			10
+// X轴坐标标签最小显示间隔数
+#define SetLegendXIntervalNumMin		3
 
 //___________________帧格式设置___________________
 // 帧头长度

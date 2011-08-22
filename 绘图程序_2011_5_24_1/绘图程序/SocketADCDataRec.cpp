@@ -9,10 +9,10 @@
 // CSocketADCDataRec
 
 CSocketADCDataRec::CSocketADCDataRec()
-: m_pwnd(NULL)
-, m_uipRecFrameNum(NULL)
+: m_uipRecFrameNum(NULL)
 , m_uiDrawPointXNb(0)
 , m_uiInstrumentADCNum(0)
+, m_bRecADCSetInfoFrame(FALSE)
 {
 }
 
@@ -70,14 +70,16 @@ void CSocketADCDataRec::ProcFrameOne(void)
 			AfxMessageBox(_T("采样设备个数为0！"));
 			return;
 		}
+		m_bRecADCSetInfoFrame = TRUE;
 		// 创建图形显示数据缓冲区
 		OnPrepareToShow(usInstrumentNum);
-		// 开启图形显示刷新定时器
-		KillTimer(m_pwnd->m_hWnd, GraphRefreshTimerNb);
-		SetTimer(m_pwnd->m_hWnd, GraphRefreshTimerNb, GraphRefreshTimerSet, NULL);
 	}
 	else if (usCommand == SendADCCmd)
 	{
+		if (m_bRecADCSetInfoFrame == FALSE)
+		{
+			return;
+		}
 		// 为3则36开始为ADC数据，30~33为接收帧序号（从0开始），从而计算出每个点对应的X坐标值
 		iPos += FramePacketSize2B;
 		memcpy(&uiFrameNb, &m_oADCRecFrameBuf[iPos], FramePacketSize4B);
