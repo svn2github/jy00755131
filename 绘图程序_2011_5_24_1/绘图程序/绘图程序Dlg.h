@@ -6,6 +6,7 @@
 #include "afxwin.h"
 #include "Parameter.h"
 #include "SocketADCDataRec.h"
+
 // C绘图程序Dlg 对话框
 class C绘图程序Dlg : public CDialog
 {
@@ -36,7 +37,6 @@ public:
 		ELASTICY,
 		ELASTICXY
 	};
-
 // 实现
 protected:
 	HICON m_hIcon;
@@ -75,8 +75,6 @@ private:
 	// 保存图标的bitmap
 	CBitmap m_bmpSizeIcon; 
 	BITMAP m_bitmap; 
-	// 打开文件的路径
-	CString m_csOpenFilePath;
 	// 采集站设备总数
 	unsigned int m_uiInstrumentMaxNum;
 	// ADC数据开始的数据点数
@@ -95,6 +93,11 @@ private:
 	unsigned int m_uiADCFileLineNum;
 	// 参与ADC数据采集的采集站设备数
 	unsigned int m_uiInstrumentADCNum;
+	// 文件列表信息
+	vector<CString> m_FileInfo;
+	// 存储ADC数据信息
+	vector<CString> m_ADCDataInfo;
+
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
 	double m_currentDuration;			// 当前显示数据点的个数
@@ -108,8 +111,6 @@ public:
 private:
 	// 得到默认的背景颜色
 	int getDefaultBgColor(void);
-	// 载入数据
-	BOOL OnOpenFile(void);
 	// 载入一个图标资源到按钮
 	void loadButtonIcon(int buttonId, int iconId, int width, int height);
 	// 当用户选中时移动滚动条
@@ -126,10 +127,10 @@ private:
 	void ShowSizeIcon(BOOL bShow = TRUE);
 	// 将对话框及其控件设为尺寸可变的
 	void OnSiteSizeBox(void);
-	// 从文件中载入数据
-	BOOL LoadData(CString csOpenFilePath);
+	// 从文件中载入数据，如果载入的是上一个文件则vector需要重新排序
+	BOOL LoadData(CString csOpenFilePath, BOOL bLoadLastFile);
 	// 解码第一行ADC数据
-	void OnPhraseEachLine(CString str);
+	void OnPhraseEachLine(unsigned int uiLineNum, CString str);
 	// 创建ADC数据接收Socket
 	void OnCreateADCRecSocket(void);
 public:
@@ -167,6 +168,16 @@ public:
 	afx_msg void OnBnClickedCheckYaxisfixed();
 	afx_msg void OnBnClickedButtonOpenadcfolder();
 	afx_msg void OnLbnDblclkListFile();
-	// 选择数据文件夹的路径
-	CString m_csSaveFolderPath;
+private:
+	// 每个文件中存储的ADC数据帧个数
+	unsigned int m_uiADCFrameNumPerFile;
+public:
+	// 从ADC数据信息向量表中解析数据用于绘图
+	BOOL FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned int uiEndDrawPointsNum);
+	// 开始绘制ADC数据点的起始位置
+	unsigned int m_uiStartDrawPointsNum;
+	// 打开文件的文件序号（从0开始）
+	unsigned int m_uiOpenFileNb;
+	// 解析数据并绘图
+	BOOL FraseDataAndDrawGraph(void);
 };

@@ -71,7 +71,6 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_pControlArray(NULL)
 	, m_iControlNumber(0)
 	, m_bShowSizeIcon(TRUE)
-	, m_csOpenFilePath(_T(""))
 	, m_uiInstrumentMaxNum(0)
 	, m_uiADCStartNum(0)
 	, m_uiADCDataCovNb(0)
@@ -83,7 +82,9 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_uiInstrumentADCNum(0)
 	, m_bCheckYAxisFixed(FALSE)
 	, m_bStartShow(FALSE)
-	, m_csSaveFolderPath(_T(""))
+	, m_uiADCFrameNumPerFile(406)
+	, m_uiStartDrawPointsNum(0)
+	, m_uiOpenFileNb(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -94,6 +95,8 @@ C绘图程序Dlg::~C绘图程序Dlg()
 	m_DrawPoint_X.clear();
 	// 记录各条图线点的信息
 	m_DrawLine_Y.clear();
+	m_FileInfo.clear();
+	m_ADCDataInfo.clear();
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
 		m_dbFduData[i].clear();
@@ -384,21 +387,6 @@ int C绘图程序Dlg::getDefaultBgColor(void)
 	int ret = LogBrush.lbColor;
 	return ((ret & 0xff) << 16) | (ret & 0xff00) | ((ret & 0xff0000) >> 16);
 }
-
-// 载入数据
-BOOL C绘图程序Dlg::OnOpenFile(void)
-{
-	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
-	CFileDialog dlg(TRUE, _T(".text"), _T("1.text"), OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT, pszFilter, this);
-
-	if ( dlg.DoModal()!=IDOK )
-	{
-		return FALSE;
-	}
-	m_csOpenFilePath=dlg.GetPathName();
-	return TRUE;
-}
-
 void C绘图程序Dlg::OnBnClickedPointerpb()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -635,6 +623,20 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 		m_dateRange + 0.5);
 	double viewPortEndDate = viewPortStartDate + (__int64)(viewer->getViewPortHeight() * 
 		m_dateRange + 0.5);
+// 	unsigned int uiStartDrawPointsNum = 0;
+// 	unsigned int uiEndDrawPointsNum = 0;
+// 	if (viewPortStartDate == 0)
+// 	{
+// 		uiStartDrawPointsNum = 0;
+// 	}
+// 	else
+// 	{
+// 		uiStartDrawPointsNum + 1;
+// 	}
+	if (FALSE == FraseDataToDraw((unsigned int)(viewPortStartDate), (unsigned int)(viewPortEndDate)))
+	{
+		return;
+	}
 
 	// Get the starting index of the array using the start date
 	int startIndex = (int)(std::lower_bound(&m_DrawPoint_X[0], &m_DrawPoint_X[0] + m_DrawPoint_X.size(), 
@@ -802,7 +804,8 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
 		memset(pTempChar, 0, ansiCount);
 		WideCharToMultiByte(CP_ACP, 0, str, -1, pTempChar, ansiCount, NULL, NULL);
-		layer->addDataSet(DoubleArray(&m_dbFduShow[i][startIndex - m_uiADCStartNum], noOfPoints), color, pTempChar);
+/*		layer->addDataSet(DoubleArray(&m_dbFduShow[i][startIndex - m_uiADCStartNum], noOfPoints), color, pTempChar);*/
+		layer->addDataSet(DoubleArray(&m_dbFduShow[i][startIndex], noOfPoints), color, pTempChar);
 		free(pTempChar);
 //		layer->addDataSet(DoubleArray(&m_dbFduData[i][startIndex], noOfPoints), color, str);
 	}
@@ -1084,12 +1087,22 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 打开文件
-	if(FALSE == OnOpenFile())
+	const wchar_t pszFilter[] = _T("文本文件(*.text)|*.text|文本文件(*.txt)|*.txt|All Files (*.*)|*.*||");
+	CFileDialog dlg(TRUE, _T(".text"), _T("1.text"), OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT, pszFilter, this);
+
+	if ( dlg.DoModal()!=IDOK )
 	{
 		return;
 	}
 	// 载入数据
-	if(FALSE == LoadData(m_csOpenFilePath))
+	m_ADCDataInfo.clear();
+	// 读取文件中数据的行数
+	m_uiADCFileLineNum = 0;
+	if(FALSE == LoadData(dlg.GetPathName(), FALSE))
+	{
+		return;
+	}
+	if (FALSE == FraseDataAndDrawGraph())
 	{
 		return;
 	}
@@ -1098,7 +1111,7 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfile()
 }
 
 // 从文件中载入数据
-BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
+BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath, BOOL bLoadLastFile)
 {
 	if ((_taccess(csOpenFilePath,0)) != -1)
 	{
@@ -1112,29 +1125,13 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 		{
 			CString str = _T("");
 			CArchive ar(&file, CArchive::load);
-			// 初始化变量
-			m_DrawPoint_X.clear();
-			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-			{
-				m_dbFduData[i].clear();
-				m_dbFduShow[i].clear();
-			}
-			delete[] m_dbFduData;
-			delete[] m_dbFduShow;
+			unsigned int uiADCLastFileLineNum = 0;
 			// 采集站设备总数
 			m_uiInstrumentMaxNum = 0;
-			// 参与ADC数据采集的采集站设备数
-			m_uiInstrumentADCNum = 0;
 			// ADC数据开始的数据点数
 			m_uiADCStartNum = 0;
 			// ADC数据转换格式
 			m_uiADCDataCovNb = 0;
-			// 采集站采集到的ADC数据总数
-			m_uiADCDataNum = 0;
-			// 每个采集站采集到的ADC数据个数
-			m_uiADCDataFduNum = 0;
-			// 读取文件中数据的行数
-			m_uiADCFileLineNum = 0;
 			// ADC数据采样开始时间
 			ar.ReadString(str);
 			// ADC数据采样信息
@@ -1150,39 +1147,30 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 			}
 			// 采集站设备标签
 			ar.ReadString(str);
-			m_dbDataTemp = new double[m_uiInstrumentMaxNum];
-// 			file.Seek(-1200,CFile::end);///从文件末尾往上移动50字节
-// 			wchar_t pbufRead[6000];
-// 			file.Read(pbufRead, sizeof(pbufRead));
-// 			CString strtemp = pbufRead;
-
 			while(ar.ReadString(str))
 			{
-				OnPhraseEachLine(str);
 				m_uiADCFileLineNum++;
+				if (bLoadLastFile == TRUE)
+				{
+					uiADCLastFileLineNum++;
+				}
+				m_ADCDataInfo.push_back(str);
 			}
 			ar.Close();
 			file.Close();
-
-			m_uiADCDataFduNum = m_uiADCDataNum / m_uiInstrumentADCNum;
-			m_uiADCDataNum = m_uiADCDataFduNum * m_uiInstrumentADCNum;
-			for (unsigned int i=0; i<m_uiADCDataFduNum + m_uiADCStartNum; i++)
+			if (bLoadLastFile == TRUE)
 			{
-				m_DrawPoint_X.push_back(i);
-			}
-			
-			double dbLineInterval = 0.0;
-			double dbLineZoom = 0.0;
-			GetDlgItem(IDC_EDIT_LINEINTERVAL)->GetWindowText(str);
-			dbLineInterval = _tstof(str);
-			GetDlgItem(IDC_EDIT_LINEZOOM)->GetWindowText(str);
-			dbLineZoom = _tstof(str);
-			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-			{
-				for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
+				vector<CString> temp;
+				for (unsigned int i=0; i<(m_uiADCFileLineNum - uiADCLastFileLineNum); i++)
 				{
-					m_dbFduShow[i].push_back(m_dbFduData[i][j] * dbLineZoom + i * dbLineInterval);
+					temp.push_back(m_ADCDataInfo[i]);
 				}
+				m_ADCDataInfo.erase(m_ADCDataInfo.begin(), m_ADCDataInfo.begin() + m_uiADCFileLineNum - uiADCLastFileLineNum);
+				for (unsigned int i=0; i<(m_uiADCFileLineNum - uiADCLastFileLineNum); i++)
+				{
+					m_ADCDataInfo.push_back(temp[i]);
+				}
+				temp.clear();
 			}
 			return TRUE;
 		}
@@ -1193,7 +1181,7 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath)
 	}
 }
 // 解码一行ADC数据
-void C绘图程序Dlg::OnPhraseEachLine(CString str)
+void C绘图程序Dlg::OnPhraseEachLine(unsigned int uiLineNum, CString str)
 {
 	int iDirectionPrevious = 0;
 	int iDirectionNow = 0;
@@ -1213,7 +1201,7 @@ void C绘图程序Dlg::OnPhraseEachLine(CString str)
 		else
 		{
 			// 第一行ADC数据，用于分析参与采集的站的个数
-			if (m_uiADCFileLineNum == 0)
+			if (uiLineNum == 0)
 			{
 				m_dbDataTemp[m_uiInstrumentADCNum] = _tstof(cstmp);
 				m_uiInstrumentADCNum++;
@@ -1225,7 +1213,7 @@ void C绘图程序Dlg::OnPhraseEachLine(CString str)
 			m_uiADCDataNum++;
 		}
 	}
-	if (m_uiADCFileLineNum == 0)
+	if (uiLineNum == 0)
 	{
 		m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
 		m_dbFduShow = new vector<double>[m_uiInstrumentADCNum];
@@ -1438,7 +1426,7 @@ void C绘图程序Dlg::OnNetADCGraph(void)
 void C绘图程序Dlg::OnSetXAxisRange(double dbmaxData, double dbminData)
 {
 	// 横坐标取值的变化范围
-	m_dateRange = dbmaxData - dbminData;
+	m_dateRange = dbmaxData - dbminData + 1;
 
 	// 绘图区域左侧间隔个数
 	double maxData = 0.0;
@@ -1502,8 +1490,10 @@ void C绘图程序Dlg::OnPrepareToDrawGraph(void)
 		m_minDuration = m_uiADCDataFduNum;
 	}
 	// 横坐标的最小值为m_timeStamps数组的第一个值
-	m_minData = m_DrawPoint_X[0];
-	m_maxData = m_DrawPoint_X[m_DrawPoint_X.size() - 1];
+// 	m_minData = m_DrawPoint_X[0];
+// 	m_maxData = m_DrawPoint_X[m_DrawPoint_X.size() - 1];
+	m_minData = 0;
+	m_maxData = m_DrawPoint_X[m_uiADCDataFduNum - 1];
 
 	OnSetXAxisRange(m_maxData, m_minData);
 	// 重绘绘图区
@@ -1517,7 +1507,7 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfolder()
 	//	char szDir[MAX_PATH];
 	BROWSEINFO bi;
 	ITEMIDLIST *pidl;
-
+	CString csSaveFolderPath = _T("");
 	bi.hwndOwner = this->m_hWnd; // 指定父窗口，在对话框显示期间，父窗口将被禁用 
 	bi.pidlRoot = NULL; // 如果指定NULL，就以“桌面”为根 
 	bi.pszDisplayName = szDir; 
@@ -1538,8 +1528,9 @@ void C绘图程序Dlg::OnBnClickedButtonOpenadcfolder()
 	}
 	else
 	{
-		m_csSaveFolderPath = szDir;
-		FindFileAndList(m_csSaveFolderPath);
+		csSaveFolderPath = szDir;
+		m_FileInfo.clear();
+		FindFileAndList(csSaveFolderPath);
 	}
 }
 
@@ -1550,6 +1541,7 @@ void C绘图程序Dlg::FindFileAndList(CString csSaveFolderPath)
 	CFileFind findFile;	// 文件查找对象
 	CString strPath = csSaveFolderPath + _T("\\*.text");
 	CString strFileName = _T("");
+	CString strFilePath = _T("");
 	BOOL bWorking = findFile.FindFile(strPath);          //执行文件搜索
 	// 先清空ListBox控件
 	for (int i = 0; i < pListBox->GetCount(); i++)
@@ -1567,8 +1559,10 @@ void C绘图程序Dlg::FindFileAndList(CString csSaveFolderPath)
 		 {
 			 continue;
 		 }
-		 strFileName=findFile.GetFileName();					//获取文件名称，包括后缀
-		 pListBox->AddString(strFileName);						// 加入到ListBox控件中
+		strFileName=findFile.GetFileName();					//获取文件名称，包括后缀
+		pListBox->AddString(strFileName);						// 加入到ListBox控件中
+		strFilePath = csSaveFolderPath + _T("\\") + strFileName;
+		m_FileInfo.push_back(strFilePath);
 	}
 }
 
@@ -1577,20 +1571,27 @@ void C绘图程序Dlg::OnLbnDblclkListFile()
 	// TODO: 在此添加控件通知处理程序代码
 	CListBox* pListBox = (CListBox* )GetDlgItem(IDC_LIST_FILE);
 	int nIndex = pListBox->GetCurSel();
+	CString csOpenFilePath = _T("");
 	if (nIndex == CB_ERR)
 	{
 		return;
 	}
-	CString str;
-	int n = pListBox->GetTextLen(nIndex);
-	pListBox->GetText(nIndex, str.GetBuffer(n));
-	str.ReleaseBuffer();
-	if (str != _T(""))
-	{
-		m_csOpenFilePath = m_csSaveFolderPath + _T("\\") + str;
-	}
+// 	CString strFileName = _T("");
+// 	int n = pListBox->GetTextLen(nIndex);
+// 	pListBox->GetText(nIndex, strFileName.GetBuffer(n));
+// 	strFileName.ReleaseBuffer();
+
+	csOpenFilePath = m_FileInfo[nIndex];
+	m_uiOpenFileNb = nIndex;
+	m_ADCDataInfo.clear();
+	// 读取文件中数据的行数
+	m_uiADCFileLineNum = 0;
 	// 载入数据
-	if(FALSE == LoadData(m_csOpenFilePath))
+	if(FALSE == LoadData(csOpenFilePath, FALSE))
+	{
+		return;
+	}
+	if (FALSE == FraseDataAndDrawGraph())
 	{
 		return;
 	}
@@ -1598,3 +1599,103 @@ void C绘图程序Dlg::OnLbnDblclkListFile()
 	OnPrepareToDrawGraph();
 }
 
+
+// 从ADC数据信息向量表中解析数据用于绘图
+BOOL C绘图程序Dlg::FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned int uiEndDrawPointsNum)
+{
+	CString str = _T("");
+	if (m_uiADCFileLineNum == 0)
+	{
+		return FALSE;
+	}
+	if (uiStartDrawPointsNum < m_uiADCStartNum)
+	{
+		CString csOpenFilePath = _T("");
+		if (m_uiOpenFileNb >= 1)
+		{
+			m_uiOpenFileNb = m_uiOpenFileNb - 1;
+			csOpenFilePath = m_FileInfo[m_uiOpenFileNb];
+			// 载入数据
+			if(FALSE == LoadData(csOpenFilePath, TRUE))
+			{
+				return FALSE;
+			}
+		}
+		else
+		{
+			AfxMessageBox(_T("111"));
+			return FALSE;
+		}
+	}
+	// 初始化变量
+	m_DrawPoint_X.clear();
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		m_dbFduData[i].clear();
+		m_dbFduShow[i].clear();
+	}
+	delete[] m_dbFduData;
+	delete[] m_dbFduShow;
+
+	// 参与ADC数据采集的采集站设备数
+	m_uiInstrumentADCNum = 0;
+	// 采集站采集到的ADC数据总数
+	m_uiADCDataNum = 0;
+	// 每个采集站采集到的ADC数据个数
+	m_uiADCDataFduNum = 0;
+	m_dbDataTemp = new double[m_uiInstrumentMaxNum];
+
+// 	for (unsigned int i=0; i<m_uiADCFileLineNum; i++)
+// 	{
+// 		OnPhraseEachLine(i, m_ADCDataInfo[i]);
+// 	}
+	for (unsigned int i=0; i<(uiEndDrawPointsNum - uiStartDrawPointsNum); i++)
+	{
+		OnPhraseEachLine(i, m_ADCDataInfo[i + uiStartDrawPointsNum - m_uiADCStartNum]);
+	}
+	m_uiADCDataFduNum = m_uiADCDataNum / m_uiInstrumentADCNum;
+	m_uiADCDataNum = m_uiADCDataFduNum * m_uiInstrumentADCNum;
+// 	for (unsigned int i=0; i<(m_uiADCDataFduNum+ m_uiADCStartNum); i++)
+// 	{
+// 		m_DrawPoint_X.push_back(i);
+// 	}
+	for (unsigned int i=0; i<m_uiADCDataFduNum; i++)
+	{
+		m_DrawPoint_X.push_back(i + uiStartDrawPointsNum);
+	}
+	double dbLineInterval = 0.0;
+	double dbLineZoom = 0.0;
+	GetDlgItem(IDC_EDIT_LINEINTERVAL)->GetWindowText(str);
+	dbLineInterval = _tstof(str);
+	GetDlgItem(IDC_EDIT_LINEZOOM)->GetWindowText(str);
+	dbLineZoom = _tstof(str);
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
+		{
+			m_dbFduShow[i].push_back(m_dbFduData[i][j] * dbLineZoom + i * dbLineInterval);
+		}
+	}
+	return TRUE;
+}
+
+// 解析数据并绘图
+BOOL C绘图程序Dlg::FraseDataAndDrawGraph(void)
+{
+	unsigned int uiStartDrawPointsNum = 0;
+	unsigned int uiEndDrawPointsNum = 0;
+	if (m_uiADCFileLineNum > ShowLinePointsNumNow)
+	{
+		uiStartDrawPointsNum = m_uiADCFileLineNum - ShowLinePointsNumNow + m_uiADCStartNum;
+	}
+	else
+	{
+		uiStartDrawPointsNum = m_uiADCStartNum;
+	}
+	uiEndDrawPointsNum = m_uiADCFileLineNum + m_uiADCStartNum;
+	if (FALSE == FraseDataToDraw(uiStartDrawPointsNum, uiEndDrawPointsNum))
+	{
+		return FALSE;
+	}
+	return TRUE;
+}
