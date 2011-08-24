@@ -19,7 +19,7 @@ CADCDataSaveToFile::~CADCDataSaveToFile(void)
 }
 
 // 将ADC数据保存到文件中
-void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataSize], unsigned int* upADCDataNum,
+void CADCDataSaveToFile::OnSaveADCToFile(int(* iADCDataBuf)[ADCDataTempDataSize], unsigned int* upADCDataNum,
 										 unsigned int uiADCDataToSaveNum, bool bFinish)
 {
 	CString strOutput = _T("");
@@ -43,7 +43,7 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 			uiDataLength = upADCDataNum[j];
 			if (uiDataLength == 0 )
 			{
-				strOutput += _T("  \t \t");
+//				strOutput += _T("  \t \t");
 				continue;
 			}
 			if (uiDataLength > i)
@@ -53,7 +53,7 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 // 				strOutput += buffer;
 				ZeroMemory(buffer, _CVTBUFSIZE);
 				// 方法2：采用_stprintf_s函数的方法，CPU占用率达到10%
-				_stprintf_s(buffer, _CVTBUFSIZE, _T("%2.*lf"), DecimalPlaces, dpADCDataBuf[j][i]);
+				_stprintf_s(buffer, _CVTBUFSIZE, _T("%*d"), DecimalPlaces, iADCDataBuf[j][i]);
 				strOutput += buffer;
 				strOutput +=  _T(" \t");
 
@@ -72,10 +72,9 @@ void CADCDataSaveToFile::OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataS
 				// 针对有采集站数据不全的情况采用补零处理
 				ZeroMemory(buffer, _CVTBUFSIZE);
 				// 方法2：采用_stprintf_s函数的方法，CPU占用率达到10%
-				_stprintf_s(buffer, _CVTBUFSIZE, _T("%2.*lf"), DecimalPlaces, 0.0);
+				_stprintf_s(buffer, _CVTBUFSIZE, _T("%*d"), DecimalPlaces, 0);
 				strOutput += buffer;
 				strOutput +=  _T(" \t");
-//				strOutput += _T("  \t \t");
 			}
 		}
 		strOutput += _T("\r\n");

@@ -24,7 +24,7 @@ public:
 	unsigned int m_uiADCDataToSaveNum;
 public:
 	// 将ADC数据保存到文件中
-	void OnSaveADCToFile(double(* dpADCDataBuf)[ADCDataTempDataSize], unsigned int* uiADCDataNum,
+	void OnSaveADCToFile(int(* iADCDataBuf)[ADCDataTempDataSize], unsigned int* uiADCDataNum,
 		unsigned int uiADCDataToSaveNum, bool bFinish);
 	// 关闭ADC保存数据文件
 	void OnCloseADCSaveFile(void);

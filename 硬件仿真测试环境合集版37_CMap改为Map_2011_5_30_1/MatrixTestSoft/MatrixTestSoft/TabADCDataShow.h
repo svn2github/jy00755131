@@ -24,7 +24,7 @@ private:
 	void ProcessMessages(void);
 public:
 	// ADC数据界面显示缓冲区指针
-	double* m_pADCDataShow;
+	unsigned int* m_pADCDataShow;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

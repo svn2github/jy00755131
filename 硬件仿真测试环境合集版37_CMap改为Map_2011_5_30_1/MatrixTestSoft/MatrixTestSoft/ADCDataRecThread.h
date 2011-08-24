@@ -59,21 +59,21 @@ public:
 	// 需要重发的ADC索引表
 	hash_map<unsigned int, m_structADC> m_oADCLostMap[InstrumentNum];
 	// 有ADC数据重发故先保留不连续的数据
-	double m_dSampleTemp[InstrumentNum][ADCDataTempDataSize];
+	int m_iSampleTemp[InstrumentNum][ADCDataTempDataSize];
 	// 有ADC数据重发故先保留不连续的数据个数
 	unsigned int m_uiSampleTempNum[InstrumentNum];
 	// ADC数据保存成文件的数据缓冲区
-	double m_dADCSave[InstrumentNum][ADCDataTempDataSize];
+	int m_iADCSave[InstrumentNum][ADCDataTempDataSize];
 	// ADC数据保存成文件的数据缓冲区中数据个数
 	unsigned int m_uiADCSaveNum[InstrumentNum];
 	// ADC数据处理过程缓冲区
-	double m_dTemp[ADCDataTempDataSize];
+	int m_iTemp[ADCDataTempDataSize];
 	// 测试丢帧情况
 	unsigned int m_uiTestADCLost;
 	// ADC图形显示设备IP
 	unsigned int m_uiADCGraphIP[InstrumentNum];
 	// ADC数据界面显示缓冲区
-	double m_dADCDataShow[InstrumentNum];
+	unsigned int m_uiADCDataShow[InstrumentNum];
 	// ADC接收到的数据重发帧的序号
 	unsigned int m_uiADCRetransmissionNb;
 	// 数据帧接收缓冲
@@ -121,13 +121,13 @@ public:
 	// 检查接收帧是否为重发帧
 	DWORD OnCheckFrameIsRetransmission(unsigned int uiInstrumentNb, unsigned int uiIPAim, unsigned short usDataPointNow);
 	// 该帧为最后一个数据重发帧
-	void OnRecOkIsRetransimissionFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, double* pReceiveData);
+	void OnRecOkIsRetransimissionFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, int* piReceiveData);
 	// 该帧为普通帧且之前没有重发帧
-	void OnRecOkIsNormalFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, double* pReceiveData);
+	void OnRecOkIsNormalFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, int* piReceiveData);
 	// 该帧为重发帧但不是最后一个重发帧
-	void OnRecNotOkIsRetransimissionFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, double* pReceiveData);
+	void OnRecNotOkIsRetransimissionFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, int* piReceiveData);
 	// 该帧为普通帧且之前有重发帧
-	void OnRecNotOkIsNormalFrame(unsigned int uiInstrumentNb, double* pReceiveData);
+	void OnRecNotOkIsNormalFrame(unsigned int uiInstrumentNb, int* piReceiveData);
 	// 重置变量的值
 	void OnReset(void);
 	// 数据处理
