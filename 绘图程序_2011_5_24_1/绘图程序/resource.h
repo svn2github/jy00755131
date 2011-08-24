@@ -47,6 +47,8 @@
 #define IDC_CHECK_YAXISFIXED            1034
 #define IDC_BUTTON_OPENADCFOLDER        1035
 #define IDC_STATIC_FILELIST             1036
+#define IDC_EDIT_SAMPLINGRATE           1037
+#define IDC_STATIC_SAMPLINGRATE         1038
 
 // Next default values for new objects
 // 
@@ -54,7 +56,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        141
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

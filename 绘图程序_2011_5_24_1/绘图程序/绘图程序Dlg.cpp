@@ -203,6 +203,7 @@ BOOL C绘图程序Dlg::OnInitDialog()
 
 	GetDlgItem(IDC_EDIT_LINEINTERVAL)->SetWindowText(_T("0.001"));
 	GetDlgItem(IDC_EDIT_LINEZOOM)->SetWindowText(_T("1"));
+	GetDlgItem(IDC_EDIT_SAMPLINGRATE)->SetWindowText(_T("1"));
 	// 采集站ADC数据存储
 	m_dbFduData = NULL;
 	// 采集站ADC数据绘图
@@ -333,6 +334,8 @@ void C绘图程序Dlg::OnSiteSizeBox(void)
 		{IDC_LIST_FILE, MOVEY, 48},
 		{IDC_LIST_FILE, ELASTICX, 5},
 		{IDC_LIST_FILE, ELASTICY, 5},
+		{IDC_STATIC_SAMPLINGRATE, MOVEY, 48},
+		{IDC_EDIT_SAMPLINGRATE, MOVEY, 48},
 		{IDC_CHECK_YAXISFIXED, MOVEY, 48},
 		{IDC_CHECK_YAXISFIXED, ELASTICY, 5},
 		{IDC_STATIC_LINEINTERVAL, MOVEY, 53},
@@ -1544,7 +1547,8 @@ void C绘图程序Dlg::FindFileAndList(CString csSaveFolderPath)
 	CString strFilePath = _T("");
 	BOOL bWorking = findFile.FindFile(strPath);          //执行文件搜索
 	// 先清空ListBox控件
-	for (int i = 0; i < pListBox->GetCount(); i++)
+	int icount = pListBox->GetCount();
+	for (int i = icount - 1; i >= 0; i--)
 	{
 		pListBox->DeleteString(i);
 	}
@@ -1604,6 +1608,9 @@ void C绘图程序Dlg::OnLbnDblclkListFile()
 BOOL C绘图程序Dlg::FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned int uiEndDrawPointsNum)
 {
 	CString str = _T("");
+	double dbLineInterval = 0.0;
+	double dbLineZoom = 0.0;
+	unsigned int uiSamplingRate = 0;
 	if (m_uiADCFileLineNum == 0)
 	{
 		return FALSE;
@@ -1623,7 +1630,7 @@ BOOL C绘图程序Dlg::FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned i
 		}
 		else
 		{
-			AfxMessageBox(_T("111"));
+			AfxMessageBox(_T("文件不存在！"));
 			return FALSE;
 		}
 	}
@@ -1644,27 +1651,28 @@ BOOL C绘图程序Dlg::FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned i
 	// 每个采集站采集到的ADC数据个数
 	m_uiADCDataFduNum = 0;
 	m_dbDataTemp = new double[m_uiInstrumentMaxNum];
-
-// 	for (unsigned int i=0; i<m_uiADCFileLineNum; i++)
-// 	{
-// 		OnPhraseEachLine(i, m_ADCDataInfo[i]);
-// 	}
+	
+	GetDlgItem(IDC_EDIT_SAMPLINGRATE)->GetWindowText(str);
+	uiSamplingRate = _tstoi(str);
 	for (unsigned int i=0; i<(uiEndDrawPointsNum - uiStartDrawPointsNum); i++)
 	{
-		OnPhraseEachLine(i, m_ADCDataInfo[i + uiStartDrawPointsNum - m_uiADCStartNum]);
+		if (i % uiSamplingRate == 0)
+		{
+			OnPhraseEachLine(i, m_ADCDataInfo[i + uiStartDrawPointsNum - m_uiADCStartNum]);
+		}
+	}
+	if ((uiEndDrawPointsNum - uiStartDrawPointsNum - 1) % uiSamplingRate != 0)
+	{
+		OnPhraseEachLine((uiEndDrawPointsNum - uiStartDrawPointsNum - 1), m_ADCDataInfo[uiEndDrawPointsNum - m_uiADCStartNum - 1]);
 	}
 	m_uiADCDataFduNum = m_uiADCDataNum / m_uiInstrumentADCNum;
 	m_uiADCDataNum = m_uiADCDataFduNum * m_uiInstrumentADCNum;
-// 	for (unsigned int i=0; i<(m_uiADCDataFduNum+ m_uiADCStartNum); i++)
-// 	{
-// 		m_DrawPoint_X.push_back(i);
-// 	}
-	for (unsigned int i=0; i<m_uiADCDataFduNum; i++)
+
+	for (unsigned int i=0; i<(m_uiADCDataFduNum - 1); i++)
 	{
-		m_DrawPoint_X.push_back(i + uiStartDrawPointsNum);
+		m_DrawPoint_X.push_back(i * uiSamplingRate + uiStartDrawPointsNum);
 	}
-	double dbLineInterval = 0.0;
-	double dbLineZoom = 0.0;
+	m_DrawPoint_X.push_back(uiEndDrawPointsNum -1 );
 	GetDlgItem(IDC_EDIT_LINEINTERVAL)->GetWindowText(str);
 	dbLineInterval = _tstof(str);
 	GetDlgItem(IDC_EDIT_LINEZOOM)->GetWindowText(str);
@@ -1684,9 +1692,9 @@ BOOL C绘图程序Dlg::FraseDataAndDrawGraph(void)
 {
 	unsigned int uiStartDrawPointsNum = 0;
 	unsigned int uiEndDrawPointsNum = 0;
-	if (m_uiADCFileLineNum > ShowLinePointsNumNow)
+	if ((m_uiADCFileLineNum + m_uiADCStartNum) > ShowLinePointsNumNow)
 	{
-		uiStartDrawPointsNum = m_uiADCFileLineNum - ShowLinePointsNumNow + m_uiADCStartNum;
+		uiStartDrawPointsNum = m_uiADCFileLineNum + m_uiADCStartNum - ShowLinePointsNumNow;
 	}
 	else
 	{
