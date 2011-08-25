@@ -626,16 +626,8 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 		m_dateRange + 0.5);
 	double viewPortEndDate = viewPortStartDate + (__int64)(viewer->getViewPortHeight() * 
 		m_dateRange + 0.5);
-// 	unsigned int uiStartDrawPointsNum = 0;
-// 	unsigned int uiEndDrawPointsNum = 0;
-// 	if (viewPortStartDate == 0)
-// 	{
-// 		uiStartDrawPointsNum = 0;
-// 	}
-// 	else
-// 	{
-// 		uiStartDrawPointsNum + 1;
-// 	}
+	
+	// @@@@@网络传输时需要注释掉
 	if (FALSE == FraseDataToDraw((unsigned int)(viewPortStartDate), (unsigned int)(viewPortEndDate)))
 	{
 		return;
