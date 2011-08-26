@@ -28,6 +28,7 @@ void CThreadManage::OnInit(void)
 	m_oADCSet.m_pInstrumentList = &m_oInstrumentList;
 	m_oSysTime.m_pInstrumentList = &m_oInstrumentList;
 	m_oADCDataRecThread.m_pInstrumentList = &m_oInstrumentList;
+	m_oADCDataSaveToFile.m_pInstrumentList = &m_oInstrumentList;
 	m_oInstrumentMonitorThread.m_pInstrumentList = &m_oInstrumentList;
 	m_oInstrumentMonitorThread.m_pTailFrame = &m_oTailFrame;
 	m_oSysTime.m_pADCSet = &m_oADCSet;

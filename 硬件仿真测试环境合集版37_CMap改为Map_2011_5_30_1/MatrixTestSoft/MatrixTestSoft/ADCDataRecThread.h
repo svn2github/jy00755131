@@ -138,8 +138,6 @@ public:
 	void OnMakeADCGraphShowFrame(unsigned short usCommand);
 	// 发送ADC数据图形化显示帧
 	void OnSendADCGraphShowFrame(void);
-	// 计算绘图序号
-	unsigned int CalLocationGraph(unsigned int uiLocation);
 };
 
 

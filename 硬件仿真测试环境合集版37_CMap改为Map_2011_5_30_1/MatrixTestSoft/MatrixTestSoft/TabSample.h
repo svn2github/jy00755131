@@ -98,7 +98,8 @@ public:
 	void OnResetButtonIcon(void);
 	// 填充套接字地址结构
 	void OnSetSocketAddr(sockaddr_in* addr, u_short hostshort, ULONG Saddr);
-
+	// 计算绘图序号
+	unsigned int CalLocationGraph(unsigned int uiLocation);
 public:
 	afx_msg void OnBnClickedCheckMatrixnetwork();
 	afx_msg void OnBnClickedButtotStartsample();

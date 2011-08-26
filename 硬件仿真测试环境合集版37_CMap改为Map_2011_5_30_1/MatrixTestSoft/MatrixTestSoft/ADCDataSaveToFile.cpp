@@ -11,6 +11,8 @@ CADCDataSaveToFile::CADCDataSaveToFile(void)
 , m_uiADCFileLength(0)
 , m_csSaveFilePath(_T(""))
 , m_arFileSave(NULL)
+, m_uiSampleInstrumentNum(0)
+, m_pInstrumentList(NULL)
 {
 }
 
@@ -143,17 +145,30 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
 	strOutput += str;
 	uiADCStartNum = (m_uiADCSaveFileNum - 1) * m_uiADCFileLength;
-	str.Format(_T("采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！\r\n"), InstrumentNum, uiADCStartNum, uiADCDataCovNb);
+	str.Format(_T("采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！\r\n"), m_uiSampleInstrumentNum, uiADCStartNum, uiADCDataCovNb);
 	strOutput += str;
+	CInstrument* pInstrument = NULL;
 	// 输出仪器标签
-	for (int i=0; i<InstrumentNum; i++)
+	for (unsigned int i=0; i<InstrumentNum; i++)
 	{
-		strTemp.Format(_T("仪器%d\t\t"), i+1);
-// 		wchar_t* pchar = strTemp.GetBuffer(0); 
-// //		char* pchar = strTemp.GetBuffer(0); 
-// 		_tcscpy_s(cSelectObjectName[i],pchar);
-// 		strTemp.Format(_T("%s \t\t"), cSelectObjectName[i]);
-		strOutput += strTemp;
+		if (m_pInstrumentList->GetInstrumentFromIPMap(IPSetAddrStart + IPSetAddrInterval * (i + 1), pInstrument))
+		{
+			if ((pInstrument->m_bIPSetOK == true) 
+				&& (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
+				&& (pInstrument->m_iSelectObject == BST_CHECKED))
+			{
+				strTemp.Format(_T("仪器%d \t"), pInstrument->m_uiLocation);
+				int iLength = strTemp.GetLength();
+				if (iLength < DecimalPlaces + ADCDataPlaces)
+				{
+					for (int j=0; j<(DecimalPlaces + ADCDataPlaces - iLength); j++)
+					{
+						strTemp = _T(" ") + strTemp;
+					}
+				}
+				strOutput += strTemp;
+			}
+		}
 	}
 
 	strOutput += _T("\r\n");

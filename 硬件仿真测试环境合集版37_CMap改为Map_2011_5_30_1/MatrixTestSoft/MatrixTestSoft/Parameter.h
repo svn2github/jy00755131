@@ -127,6 +127,8 @@ using namespace std;
 #define ADCFileHeadRow						3
 // ADC数据小数点后位数
 #define DecimalPlaces							8
+// ADC数据间隔
+#define ADCDataPlaces							2
 // ADC数据帧重发次数
 #define ADCFrameRetransmissionNum	5
 // 硬件存储ADC数据个数缓冲区大小

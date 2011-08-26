@@ -1,5 +1,6 @@
 #pragma once
 #include "Parameter.h"
+#include "InstrumentList.h"
 class CADCDataSaveToFile
 {
 public:
@@ -22,6 +23,10 @@ public:
 	CString m_csSaveFilePath;
 	// 被保存的ADC数据个数
 	unsigned int m_uiADCDataToSaveNum;
+	// 参与采样的设备个数
+	unsigned int m_uiSampleInstrumentNum;
+	// 设备类指针
+	CInstrumentList* m_pInstrumentList;
 public:
 	// 将ADC数据保存到文件中
 	void OnSaveADCToFile(int(* iADCDataBuf)[ADCDataTempDataSize], unsigned int* uiADCDataNum,
