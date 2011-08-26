@@ -18,6 +18,8 @@ private:
 public:
 	// 接收到的帧数
 	unsigned int* m_uipRecFrameNum;
+	// 设备标记点序号数组指针
+	unsigned int* m_uiInstrumentNb;
 	// 绘X轴坐标参考点的仪器序号
 	unsigned int m_uiDrawPointXNb;
 	// 记录X轴坐标点信息指针

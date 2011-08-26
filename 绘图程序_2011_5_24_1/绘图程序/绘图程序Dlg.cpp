@@ -85,6 +85,7 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_uiADCFrameNumPerFile(406)
 	, m_uiStartDrawPointsNum(0)
 	, m_uiOpenFileNb(0)
+	, m_bLoadFile(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -627,12 +628,13 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	double viewPortEndDate = viewPortStartDate + (__int64)(viewer->getViewPortHeight() * 
 		m_dateRange + 0.5);
 	
-	// @@@@@网络传输时需要注释掉
-	if (FALSE == FraseDataToDraw((unsigned int)(viewPortStartDate), (unsigned int)(viewPortEndDate)))
+	if (m_bLoadFile == TRUE)
 	{
-		return;
+		if (FALSE == FraseDataToDraw((unsigned int)(viewPortStartDate), (unsigned int)(viewPortEndDate)))
+		{
+			return;
+		}
 	}
-
 	// Get the starting index of the array using the start date
 	int startIndex = (int)(std::lower_bound(&m_DrawPoint_X[0], &m_DrawPoint_X[0] + m_DrawPoint_X.size(), 
 		viewPortStartDate) - &m_DrawPoint_X[0]);
@@ -794,7 +796,7 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 		{
 			color = BlueColor;
 		}
-		str.Format(_T("FDU #%d"), i+1);
+		str.Format(_T("FDU #%d"), m_oSocketADCDataRec.m_uiInstrumentNb[i]);
 		int ansiCount = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
 		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
 		memset(pTempChar, 0, ansiCount);
@@ -1255,9 +1257,18 @@ void C绘图程序Dlg::OnBnClickedButtonRedraw()
 	dbLineInterval = _tstof(str);
 	GetDlgItem(IDC_EDIT_LINEZOOM)->GetWindowText(str);
 	dbLineZoom = _tstof(str);
+
+// 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+// 	{
+// 		for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
+// 		{
+// 			m_dbFduShow[i][j] = m_dbFduData[i][j] * dbLineZoom + i * dbLineInterval;
+// 		}
+// 	}
+	unsigned int icurrentDuration = (unsigned int)m_currentDuration;
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
-		for (unsigned int j=0; j<m_uiADCDataFduNum; j++)
+		for (unsigned int j=0; j<icurrentDuration; j++)
 		{
 			m_dbFduShow[i][j] = m_dbFduData[i][j] * dbLineZoom + i * dbLineInterval;
 		}
@@ -1317,6 +1328,7 @@ void C绘图程序Dlg::OnBnClickedButtonStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	GetDlgItem(IDC_BUTTON_START)->EnableWindow(FALSE);
+	m_bLoadFile = FALSE;
 	SetTimer(GraphRefreshTimerNb, GraphRefreshTimerSet, NULL);
 	m_bStartShow = TRUE;
 	GetDlgItem(IDC_BUTTON_STOP)->EnableWindow(TRUE);
@@ -1384,6 +1396,7 @@ void C绘图程序Dlg::OnNetADCGraph(void)
 	}
 	unsigned int icurrentDuration = (unsigned int)m_currentDuration;
 	m_DrawPoint_X.clear();
+	m_uiInstrumentADCNum = m_oSocketADCDataRec.m_uiInstrumentADCNum;
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
 		m_dbFduShow[i].clear();
@@ -1392,7 +1405,6 @@ void C绘图程序Dlg::OnNetADCGraph(void)
 	{
 		m_DrawPoint_X.push_back(m_oSocketADCDataRec.m_DrawPoint_X[i]);
 	}
-	m_uiInstrumentADCNum = m_oSocketADCDataRec.m_uiInstrumentADCNum;
 
 	double dbLineInterval = 0.0;
 	double dbLineZoom = 0.0;
@@ -1607,6 +1619,7 @@ BOOL C绘图程序Dlg::FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned i
 	{
 		return FALSE;
 	}
+	m_bLoadFile = TRUE;
 	if (uiStartDrawPointsNum < m_uiADCStartNum)
 	{
 		CString csOpenFilePath = _T("");

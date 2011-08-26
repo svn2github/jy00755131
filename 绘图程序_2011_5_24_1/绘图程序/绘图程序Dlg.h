@@ -180,4 +180,6 @@ public:
 	unsigned int m_uiOpenFileNb;
 	// 解析数据并绘图
 	BOOL FraseDataAndDrawGraph(void);
+	// 读取文件绘图标志位
+	BOOL m_bLoadFile;
 };

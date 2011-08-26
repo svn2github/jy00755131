@@ -10,6 +10,7 @@
 
 CSocketADCDataRec::CSocketADCDataRec()
 : m_uipRecFrameNum(NULL)
+, m_uiInstrumentNb(NULL)
 , m_uiDrawPointXNb(0)
 , m_uiInstrumentADCNum(0)
 , m_bRecADCSetInfoFrame(FALSE)
@@ -45,6 +46,8 @@ void CSocketADCDataRec::ProcFrameOne(void)
 {
 	// uiNb表明接收到帧所对应的仪器号
 	unsigned int	uiNb = 0;
+	// 设备标记点号
+	unsigned int uiLocation = 0;
 	unsigned short usCommand = 0;
 	int iPos = FrameHeadSize;
 	unsigned short usInstrumentNum = 0;
@@ -55,6 +58,7 @@ void CSocketADCDataRec::ProcFrameOne(void)
 	// 设m_oADCRecFrameBuf[16]到m_oADCRecFrameBuf[19]为通道号（从0开始）
 	memcpy(&uiNb, &m_oADCRecFrameBuf[iPos], FramePacketSize4B);
 	iPos += FramePacketSize4B;
+	memcpy(&uiLocation, &m_oADCRecFrameBuf[iPos], FramePacketSize4B);
 	iPos += FramePacketSize4B;
 	iPos += FramePacketSize2B;
 	// 设m_oADCRecFrameBuf[26]到m_oADCRecFrameBuf[27]为命令字
@@ -85,6 +89,7 @@ void CSocketADCDataRec::ProcFrameOne(void)
 		memcpy(&uiFrameNb, &m_oADCRecFrameBuf[iPos], FramePacketSize4B);
 		iPos += FramePacketSize4B;
 		iPos += FramePacketSize2B;
+		m_uiInstrumentNb[uiNb] = uiLocation;
 		// 之后为数据区
 		for (int j=0; j<ReceiveDataNum; j++)
 		{
@@ -151,6 +156,7 @@ void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
 	delete[] m_dbFduData;
 	delete[] m_dbFduShow;
 	delete[] m_uipRecFrameNum;
+	delete[] m_uiInstrumentNb;
 	if (usInstrumentNum == 0)
 	{
 		return;
@@ -159,9 +165,11 @@ void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
 	m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
 	m_dbFduShow = new vector<double>[m_uiInstrumentADCNum];
 	m_uipRecFrameNum = new unsigned int[m_uiInstrumentADCNum];
+	m_uiInstrumentNb = new unsigned int[m_uiInstrumentADCNum];
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
 		m_uipRecFrameNum[i] = 0;
+		m_uiInstrumentNb[i] = 0;
 	}
 }
 
