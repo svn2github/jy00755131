@@ -21,6 +21,14 @@ CSocketADCDataRec::~CSocketADCDataRec()
 {
 	// 记录X轴坐标点信息
 	m_DrawPoint_X.clear();
+	if (m_uipRecFrameNum != NULL)
+	{
+		delete[] m_uipRecFrameNum;
+	}
+	if (m_uiInstrumentNb != NULL)
+	{
+		delete[] m_uiInstrumentNb;
+	}
 }
 
 
@@ -148,15 +156,35 @@ void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
 {
 	// 初始化变量
 	m_DrawPoint_X.clear();
-	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	if (m_dbFduData != NULL)
 	{
-		m_dbFduData[i].clear();
-		m_dbFduShow[i].clear();
+		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+		{
+			m_dbFduData[i].clear();
+		}
+		delete[] m_dbFduData;
+		m_dbFduData = NULL;
 	}
-	delete[] m_dbFduData;
-	delete[] m_dbFduShow;
-	delete[] m_uipRecFrameNum;
-	delete[] m_uiInstrumentNb;
+	if (m_dbFduShow != NULL)
+	{
+		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+		{
+			m_dbFduShow[i].clear();
+		}
+		delete[] m_dbFduShow;
+		m_dbFduShow = NULL;
+	}
+	if (m_uipRecFrameNum != NULL)
+	{
+		delete[] m_uipRecFrameNum;
+		m_uipRecFrameNum = NULL;
+	}
+	if (m_uiInstrumentNb != NULL)
+	{
+		delete[] m_uiInstrumentNb;
+		m_uiInstrumentNb = NULL;
+	}
+
 	if (usInstrumentNum == 0)
 	{
 		return;

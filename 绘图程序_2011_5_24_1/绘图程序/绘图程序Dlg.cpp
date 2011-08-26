@@ -71,13 +71,11 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_pControlArray(NULL)
 	, m_iControlNumber(0)
 	, m_bShowSizeIcon(TRUE)
-	, m_uiInstrumentMaxNum(0)
 	, m_uiADCStartNum(0)
 	, m_uiADCDataCovNb(0)
 	, m_uiADCDataNum(0)
 	, m_uiADCDataFduNum(0)
 	, m_viewPortDataSeries(NULL)
-	, m_dbDataTemp(NULL)
 	, m_uiADCFileLineNum(0)
 	, m_uiInstrumentADCNum(0)
 	, m_bCheckYAxisFixed(FALSE)
@@ -86,6 +84,7 @@ C绘图程序Dlg::C绘图程序Dlg(CWnd* pParent /*=NULL*/)
 	, m_uiStartDrawPointsNum(0)
 	, m_uiOpenFileNb(0)
 	, m_bLoadFile(FALSE)
+	, m_uiInstrumentNb(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -98,13 +97,26 @@ C绘图程序Dlg::~C绘图程序Dlg()
 	m_DrawLine_Y.clear();
 	m_FileInfo.clear();
 	m_ADCDataInfo.clear();
-	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	if (m_dbFduData != NULL)
 	{
-		m_dbFduData[i].clear();
-		m_dbFduShow[i].clear();
+		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+		{
+			m_dbFduData[i].clear();
+		}
+		delete[] m_dbFduData;
 	}
-	delete[] m_dbFduData;
-	delete[] m_dbFduShow;
+	if (m_dbFduShow != NULL)
+	{
+		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+		{
+			m_dbFduShow[i].clear();
+		}
+		delete[] m_dbFduShow;
+	}
+	if (m_uiInstrumentNb != NULL)
+	{
+		delete[] m_uiInstrumentNb;
+	}
 }
 void C绘图程序Dlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -622,10 +634,15 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 	// not needed), and let ChartDirector "clip" the chart to the plot area. 
 	//
 
+	if (m_dbFduShow == NULL)
+	{
+		return;
+	}
+
 	// Using ViewPortLeft and ViewPortWidth, get the start and end dates of the view port.
-	double viewPortStartDate = m_minData + (__int64)(viewer->getViewPortTop() * 
+	double viewPortStartDate = m_minData + (__int32)(viewer->getViewPortTop() * 
 		m_dateRange + 0.5);
-	double viewPortEndDate = viewPortStartDate + (__int64)(viewer->getViewPortHeight() * 
+	double viewPortEndDate = viewPortStartDate + (__int32)(viewer->getViewPortHeight() * 
 		m_dateRange + 0.5);
 	
 	if (m_bLoadFile == TRUE)
@@ -796,7 +813,14 @@ void C绘图程序Dlg::drawChart(CChartViewer *viewer)
 		{
 			color = BlueColor;
 		}
-		str.Format(_T("FDU #%d"), m_oSocketADCDataRec.m_uiInstrumentNb[i]);
+		if (m_bLoadFile == TRUE)
+		{
+			str.Format(_T("FDU #%d"), m_uiInstrumentNb[i]);
+		}
+		else
+		{
+			str.Format(_T("FDU #%d"), m_oSocketADCDataRec.m_uiInstrumentNb[i]);
+		}
 		int ansiCount = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
 		char * pTempChar = (char*)malloc(ansiCount*sizeof(char));
 		memset(pTempChar, 0, ansiCount);
@@ -1123,18 +1147,45 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath, BOOL bLoadLastFile)
 			CString str = _T("");
 			CArchive ar(&file, CArchive::load);
 			unsigned int uiADCLastFileLineNum = 0;
-			// 采集站设备总数
-			m_uiInstrumentMaxNum = 0;
+
+			// 参与ADC数据采集的采集站设备数
+			m_uiInstrumentADCNum = 0;
 			// ADC数据开始的数据点数
 			m_uiADCStartNum = 0;
 			// ADC数据转换格式
 			m_uiADCDataCovNb = 0;
 			// ADC数据采样开始时间
 			ar.ReadString(str);
+
+			// 初始化变量
+			m_DrawPoint_X.clear();
+			if (m_dbFduData != NULL)
+			{
+				for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+				{
+					m_dbFduData[i].clear();
+				}
+				delete[] m_dbFduData;
+				m_dbFduData = NULL;
+			}
+			if (m_dbFduShow != NULL)
+			{
+				for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+				{
+					m_dbFduShow[i].clear();
+				}
+				delete[] m_dbFduShow;
+				m_dbFduShow = NULL;
+			}
+			if (m_uiInstrumentNb != NULL)
+			{
+				delete[] m_uiInstrumentNb;
+				m_uiInstrumentNb = NULL;
+			}
 			// ADC数据采样信息
 			ar.ReadString(str);
-			_stscanf_s(str, _T("采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！"), &m_uiInstrumentMaxNum, &m_uiADCStartNum, &m_uiADCDataCovNb);
-			if (m_uiInstrumentMaxNum == 0)
+			_stscanf_s(str, _T("采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！"), &m_uiInstrumentADCNum, &m_uiADCStartNum, &m_uiADCDataCovNb);
+			if (m_uiInstrumentADCNum == 0)
 			{
 //				fp_str.close();
 				ar.Close();
@@ -1142,8 +1193,14 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath, BOOL bLoadLastFile)
 				AfxMessageBox(_T("采集站设备总数为0！"));
 				return FALSE;
 			}
+			m_uiInstrumentNb = new unsigned int[m_uiInstrumentADCNum];
+			for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+			{
+				m_uiInstrumentNb[i] = 0;
+			}
 			// 采集站设备标签
 			ar.ReadString(str);
+			OnPhraseEachLine(PhraseLabels, str);
 			while(ar.ReadString(str))
 			{
 				m_uiADCFileLineNum++;
@@ -1178,12 +1235,14 @@ BOOL C绘图程序Dlg::LoadData(CString csOpenFilePath, BOOL bLoadLastFile)
 	}
 }
 // 解码一行ADC数据
-void C绘图程序Dlg::OnPhraseEachLine(unsigned int uiLineNum, CString str)
+void C绘图程序Dlg::OnPhraseEachLine(unsigned int uiLineType, CString str)
 {
 	int iDirectionPrevious = 0;
 	int iDirectionNow = 0;
 	int iDirectionEnd = 0;
 	CString cstmp = _T("");
+	unsigned int uiNb = 0;
+	unsigned int uiLocation = 0;
 	iDirectionEnd = str.GetLength();
 	while(iDirectionEnd != iDirectionPrevious)
 	{
@@ -1197,28 +1256,23 @@ void C绘图程序Dlg::OnPhraseEachLine(unsigned int uiLineNum, CString str)
 		}
 		else
 		{
-			// 第一行ADC数据，用于分析参与采集的站的个数
-			if (uiLineNum == 0)
+			if (uiLineType == PhraseLabels)
 			{
-				m_dbDataTemp[m_uiInstrumentADCNum] = _tstof(cstmp);
-				m_uiInstrumentADCNum++;
+				int iDirectionLable = 0;
+				int iLength = cstmp.GetLength();
+				CString csTemp = _T("");
+				iDirectionLable = cstmp.Find(_T("仪器"), 0);
+				csTemp = cstmp.Mid(iDirectionLable, iLength);
+				_stscanf_s(csTemp, _T("仪器%d"), &uiLocation);
+				m_uiInstrumentNb[uiNb] = uiLocation;
+				uiNb++;
 			}
-			else
+			else if (uiLineType == PhraseADCDatas)
 			{
 				m_dbFduData[m_uiADCDataNum%m_uiInstrumentADCNum].push_back(_tstof(cstmp));
+				m_uiADCDataNum++;
 			}
-			m_uiADCDataNum++;
 		}
-	}
-	if (uiLineNum == 0)
-	{
-		m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
-		m_dbFduShow = new vector<double>[m_uiInstrumentADCNum];
-		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-		{
-			m_dbFduData[i].push_back(m_dbDataTemp[i]);
-		}
-		delete[] m_dbDataTemp;
 	}
 }
 
@@ -1641,34 +1695,44 @@ BOOL C绘图程序Dlg::FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned i
 	}
 	// 初始化变量
 	m_DrawPoint_X.clear();
-	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	if (m_dbFduData != NULL)
 	{
-		m_dbFduData[i].clear();
-		m_dbFduShow[i].clear();
+		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+		{
+			m_dbFduData[i].clear();
+		}
+		delete[] m_dbFduData;
+		m_dbFduData = NULL;
 	}
-	delete[] m_dbFduData;
-	delete[] m_dbFduShow;
+	if (m_dbFduShow != NULL)
+	{
+		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+		{
+			m_dbFduShow[i].clear();
+		}
+		delete[] m_dbFduShow;
+		m_dbFduShow = NULL;
+	}
 
-	// 参与ADC数据采集的采集站设备数
-	m_uiInstrumentADCNum = 0;
 	// 采集站采集到的ADC数据总数
 	m_uiADCDataNum = 0;
 	// 每个采集站采集到的ADC数据个数
 	m_uiADCDataFduNum = 0;
-	m_dbDataTemp = new double[m_uiInstrumentMaxNum];
-	
+	m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
+	m_dbFduShow = new vector<double>[m_uiInstrumentADCNum];
+
 	GetDlgItem(IDC_EDIT_SAMPLINGRATE)->GetWindowText(str);
 	uiSamplingRate = _tstoi(str);
 	for (unsigned int i=0; i<(uiEndDrawPointsNum - uiStartDrawPointsNum); i++)
 	{
 		if (i % uiSamplingRate == 0)
 		{
-			OnPhraseEachLine(i, m_ADCDataInfo[i + uiStartDrawPointsNum - m_uiADCStartNum]);
+			OnPhraseEachLine(PhraseADCDatas, m_ADCDataInfo[i + uiStartDrawPointsNum - m_uiADCStartNum]);
 		}
 	}
 	if ((uiEndDrawPointsNum - uiStartDrawPointsNum - 1) % uiSamplingRate != 0)
 	{
-		OnPhraseEachLine((uiEndDrawPointsNum - uiStartDrawPointsNum - 1), m_ADCDataInfo[uiEndDrawPointsNum - m_uiADCStartNum - 1]);
+		OnPhraseEachLine(PhraseADCDatas, m_ADCDataInfo[uiEndDrawPointsNum - m_uiADCStartNum - 1]);
 	}
 	m_uiADCDataFduNum = m_uiADCDataNum / m_uiInstrumentADCNum;
 	m_uiADCDataNum = m_uiADCDataFduNum * m_uiInstrumentADCNum;

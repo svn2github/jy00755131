@@ -75,8 +75,6 @@ private:
 	// 保存图标的bitmap
 	CBitmap m_bmpSizeIcon; 
 	BITMAP m_bitmap; 
-	// 采集站设备总数
-	unsigned int m_uiInstrumentMaxNum;
 	// ADC数据开始的数据点数
 	unsigned int m_uiADCStartNum;
 	// ADC数据转换格式
@@ -87,8 +85,6 @@ private:
 	unsigned int m_uiADCDataFduNum;
 	// ADC数据缓冲区指针数组
 	double** m_viewPortDataSeries;
-	// 记录第一行数据开辟的缓冲区
-	double *m_dbDataTemp;
 	// 读取文件中数据的行数
 	unsigned int m_uiADCFileLineNum;
 	// 参与ADC数据采集的采集站设备数
@@ -97,6 +93,8 @@ private:
 	vector<CString> m_FileInfo;
 	// 存储ADC数据信息
 	vector<CString> m_ADCDataInfo;
+	// 设备标记点序号数组指针
+	unsigned int* m_uiInstrumentNb;
 
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
@@ -130,7 +128,7 @@ private:
 	// 从文件中载入数据，如果载入的是上一个文件则vector需要重新排序
 	BOOL LoadData(CString csOpenFilePath, BOOL bLoadLastFile);
 	// 解码第一行ADC数据
-	void OnPhraseEachLine(unsigned int uiLineNum, CString str);
+	void OnPhraseEachLine(unsigned int uiLineType, CString str);
 	// 创建ADC数据接收Socket
 	void OnCreateADCRecSocket(void);
 public:

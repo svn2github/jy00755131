@@ -74,6 +74,10 @@ using namespace std;
 #define ShowLinePointsNumMin			10
 // X轴坐标标签最小显示间隔数
 #define SetLegendXIntervalNumMin		3
+// 解析设备标志位
+#define PhraseLabels								1
+// 解析ADC数据
+#define PhraseADCDatas						2
 
 //___________________帧格式设置___________________
 // 帧头长度
