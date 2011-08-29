@@ -95,6 +95,8 @@ private:
 	vector<CString> m_ADCDataInfo;
 	// 设备标记点序号数组指针
 	unsigned int* m_uiInstrumentNb;
+	// 读取文件
+	CFile m_file;
 
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
@@ -128,7 +130,7 @@ private:
 	// 从文件中载入数据，如果载入的是上一个文件则vector需要重新排序
 	BOOL LoadData(CString csOpenFilePath, BOOL bLoadLastFile);
 	// 解码第一行ADC数据
-	void OnPhraseEachLine(unsigned int uiLineType, CString str);
+	void OnPhraseEachLine(CString str);
 	// 创建ADC数据接收Socket
 	void OnCreateADCRecSocket(void);
 public:
@@ -166,9 +168,6 @@ public:
 	afx_msg void OnBnClickedCheckYaxisfixed();
 	afx_msg void OnBnClickedButtonOpenadcfolder();
 	afx_msg void OnLbnDblclkListFile();
-private:
-	// 每个文件中存储的ADC数据帧个数
-	unsigned int m_uiADCFrameNumPerFile;
 public:
 	// 从ADC数据信息向量表中解析数据用于绘图
 	BOOL FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned int uiEndDrawPointsNum);
@@ -180,4 +179,18 @@ public:
 	BOOL FraseDataAndDrawGraph(void);
 	// 读取文件绘图标志位
 	BOOL m_bLoadFile;
+	// 从文件中载入数据
+	void LoadADCDataFromFile(unsigned int uiStartDrawPointsNum, unsigned int uiEndDrawPointsNum);
+	// 载入最后一个ADC数据采样文件
+	BOOL LoadLastADCDataFromFile(void);
+	// 解析设备标签
+	void OnPhraseLabels(CString str);
+	// 文件夹中每个采样设备在所有采样数据文件中所含的ADC数据总数
+	unsigned int m_uiEndDrawPointsNumMax;
+	// 从文件中找到并读出的行数
+	unsigned int m_uiFindLineCount;
+	// ADC数据文件一行所占字节数
+	unsigned int m_uiADCLineBufNum;
+	// ADC数据文件一行读取缓冲区
+	wchar_t* m_pLinebufRead;
 };

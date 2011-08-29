@@ -57,6 +57,10 @@ using namespace std;
 #define ADCRecFrameBufSize			256
 // 接收数据包的ADC数据个数
 #define ReceiveDataNum					72
+// 每个文件存储每个仪器的ADC数据包个数
+#define SaveADCDataPackageNum	406
+// 每个数据在文件中所占空间大小
+#define ADCDataSaveSize					10
 // ADC数据端口接收缓冲区大小
 #define ADCRecPortBufSize				10000 * ADCRecFrameBufSize
 // _________常量设置____________
@@ -74,10 +78,6 @@ using namespace std;
 #define ShowLinePointsNumMin			10
 // X轴坐标标签最小显示间隔数
 #define SetLegendXIntervalNumMin		3
-// 解析设备标志位
-#define PhraseLabels								1
-// 解析ADC数据
-#define PhraseADCDatas						2
 
 //___________________帧格式设置___________________
 // 帧头长度
