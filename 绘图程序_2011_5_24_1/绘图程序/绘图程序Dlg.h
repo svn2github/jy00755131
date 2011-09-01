@@ -97,6 +97,20 @@ private:
 	unsigned int* m_uiInstrumentNb;
 	// 读取文件
 	CFile m_file;
+	// 开始绘制ADC数据点的起始位置
+	unsigned int m_uiStartDrawPointsNum;
+	// 打开文件的文件序号（从0开始）
+	unsigned int m_uiOpenFileNb;
+	// 读取文件绘图标志位
+	BOOL m_bLoadFile;
+	// 文件夹中每个采样设备在所有采样数据文件中所含的ADC数据总数
+	unsigned int m_uiEndDrawPointsNumMax;
+	// 从文件中找到并读出的行数
+	unsigned int m_uiFindLineCount;
+	// ADC数据文件一行所占字节数
+	unsigned int m_uiADCLineBufNum;
+	// ADC数据文件一行读取缓冲区
+	wchar_t* m_pLinebufRead;
 
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
@@ -133,6 +147,31 @@ private:
 	void OnPhraseEachLine(CString str);
 	// 创建ADC数据接收Socket
 	void OnCreateADCRecSocket(void);
+	// 从ADC数据信息向量表中解析数据用于绘图
+	BOOL FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned int uiEndDrawPointsNum);
+	// 解析数据并绘图
+	BOOL FraseDataAndDrawGraph(void);
+	// 从文件中载入数据
+	void LoadADCDataFromFile(unsigned int uiStartDrawPointsNum, unsigned int uiEndDrawPointsNum);
+	// 载入最后一个ADC数据采样文件
+	BOOL LoadLastADCDataFromFile(void);
+	// 解析设备标签
+	void OnPhraseLabels(CString str);
+	// 绘制网络ADC数据
+	void OnNetADCGraph(void);
+	// 设置X轴取值范围和标签间隔
+	void OnSetXAxisRange(double dbmaxData, double dbminData);
+	// 载入数据文件后做绘图的准备工作
+	void OnPrepareToDrawGraph(void);
+	// 查找文件夹下的文件并列出
+	void FindFileAndList(CString csSaveFolderPath);
+	// 	// 载入位图
+	// 	BOOL LoadBitmapAndPrint(CString   csPathName);
+	// 	void OnPrint(CDC* pdc,CPrintInfo * lParam,CString strFileName);
+	// 得到并设置打印机信息
+	void GetAndSetPrinterInfo(void);
+	// 从文件中读取bmp并打印
+	void LoadBmpFromFileAndPrint(CString csPathName);
 public:
 	afx_msg void OnBnClickedPointerpb();
 	afx_msg void OnBnClickedZoominpb();
@@ -155,45 +194,7 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
-private:
-	// 绘制网络ADC数据
-	void OnNetADCGraph(void);
-	// 设置X轴取值范围和标签间隔
-	void OnSetXAxisRange(double dbmaxData, double dbminData);
-	// 载入数据文件后做绘图的准备工作
-	void OnPrepareToDrawGraph(void);
-	// 查找文件夹下的文件并列出
-	void FindFileAndList(CString csSaveFolderPath);
-public:
 	afx_msg void OnBnClickedCheckYaxisfixed();
 	afx_msg void OnBnClickedButtonOpenadcfolder();
 	afx_msg void OnLbnDblclkListFile();
-public:
-	// 从ADC数据信息向量表中解析数据用于绘图
-	BOOL FraseDataToDraw(unsigned int uiStartDrawPointsNum, unsigned int uiEndDrawPointsNum);
-	// 开始绘制ADC数据点的起始位置
-	unsigned int m_uiStartDrawPointsNum;
-	// 打开文件的文件序号（从0开始）
-	unsigned int m_uiOpenFileNb;
-	// 解析数据并绘图
-	BOOL FraseDataAndDrawGraph(void);
-	// 读取文件绘图标志位
-	BOOL m_bLoadFile;
-	// 从文件中载入数据
-	void LoadADCDataFromFile(unsigned int uiStartDrawPointsNum, unsigned int uiEndDrawPointsNum);
-	// 载入最后一个ADC数据采样文件
-	BOOL LoadLastADCDataFromFile(void);
-	// 解析设备标签
-	void OnPhraseLabels(CString str);
-	// 文件夹中每个采样设备在所有采样数据文件中所含的ADC数据总数
-	unsigned int m_uiEndDrawPointsNumMax;
-	// 从文件中找到并读出的行数
-	unsigned int m_uiFindLineCount;
-	// ADC数据文件一行所占字节数
-	unsigned int m_uiADCLineBufNum;
-	// ADC数据文件一行读取缓冲区
-	wchar_t* m_pLinebufRead;
-	// 载入位图
-	BOOL LoadBitmapAndPrint(CString   lpszPathName);
-	void OnPrint(CDC* pdc,CPrintInfo * lParam,CString strFileName);
 };
