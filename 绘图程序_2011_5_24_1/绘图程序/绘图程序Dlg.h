@@ -193,4 +193,7 @@ public:
 	unsigned int m_uiADCLineBufNum;
 	// ADC数据文件一行读取缓冲区
 	wchar_t* m_pLinebufRead;
+	// 载入位图
+	BOOL LoadBitmapAndPrint(CString   lpszPathName);
+	void OnPrint(CDC* pdc,CPrintInfo * lParam,CString strFileName);
 };

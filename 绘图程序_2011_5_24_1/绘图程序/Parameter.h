@@ -38,7 +38,7 @@ using namespace std;
 // 设置标题栏字体大小
 #define SetTitleBoxFontSize					12
 // 设置绘线的宽度
-#define SetLineWidth								2
+#define SetLineWidth								1
 // 设置X轴的宽度
 #define SetXAxisWidth							2
 // 设置Y轴的宽度
