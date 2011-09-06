@@ -143,8 +143,6 @@ public:
 	void OnCloseUDP(void);
 	// 生成ADC数据图形化显示帧
 	void OnMakeADCGraphShowFrame(unsigned short usCommand);
-	// 发送ADC数据图形化显示帧
-	void OnSendADCGraphShowFrame(void);
 	// ADC数据图形化显示设置接收函数
 	void OnReceive(void);
 	// ADC图形化显示设置帧处理函数
@@ -154,6 +152,14 @@ private:
 	BOOL m_bStartGraphShow;
 	// 监测参与采样的设备应收ADC数据包个数是否一致
 	BOOL m_bCheckADCDataFrameCountEqule;
+	// ADC数据图形化显示设置缓冲区
+	unsigned char m_ucADCGraphShowSetFrame[RcvFrameSize];
+	// ADC数据图形化显示数据缓冲区
+	unsigned char m_ucADCGraphShowDataFrame[InstrumentNum][RcvFrameSize];
+	// ADC数据图形化显示抽样点数
+	unsigned int m_uiADCGraphShowSamplingNum[InstrumentNum];
+	// ADC数据图形化显示数据源指针坐标
+	unsigned int m_uiADCGraphShowSourcePoint[InstrumentNum];
 };
 
 
