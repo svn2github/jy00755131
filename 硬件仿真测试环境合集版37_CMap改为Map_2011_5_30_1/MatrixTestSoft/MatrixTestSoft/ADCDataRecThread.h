@@ -29,11 +29,16 @@ public:
 public:
 	// 线程结束事件
 	HANDLE m_hADCDataThreadClose;
-	// ADC数据接收和重发Socket套接字
-	sockaddr_in m_RecvAddr, m_SendToAddr;
-	// ADC数据图形化显示发送套接字
+	// ADC数据接收sockaddr_in
+	sockaddr_in m_RecvAddr;
+	// ADC数据重发sockaddr_in
+	sockaddr_in m_SendToAddr;
+	// ADC数据图形化显示发送sockaddr_in
 	sockaddr_in m_SendADCGraphToAddr;
+	// ADC数据接收和发送Socket套接字
 	SOCKET m_ADCDataSocket;
+	// ADC数据图形化显示Socket套接字
+	SOCKET m_ADCGraphShowSocket;
 	// 线程关闭标志
 	bool m_bclose;
 	// 图形模板指针
@@ -94,11 +99,13 @@ public:
 	unsigned int m_uispsSelect;
 	// 设备类指针
 	CInstrumentList* m_pInstrumentList;
+	// ADC数据图形化显示设置接收缓冲区
+	byte m_pADCGraphSetFrameData[RcvFrameSize];
+	// ADC数据图形化显示抽样率
+	unsigned int m_uiSamplingRate;
 protected:
-	// 被选择仪器的ADC数据个数的最小值
-	unsigned int OnADCRecDataMinNum(void);
-	// 被选择仪器的ADC数据个数的最大值
-	unsigned int OnADCRecDataMaxNum(void);
+	// 被选择仪器的数值比较
+	int OnADCRecDataCheckOpt(unsigned short usOperation, unsigned int* pData);
 public:
 	// 初始化
 	void OnInit(void);
@@ -138,6 +145,15 @@ public:
 	void OnMakeADCGraphShowFrame(unsigned short usCommand);
 	// 发送ADC数据图形化显示帧
 	void OnSendADCGraphShowFrame(void);
+	// ADC数据图形化显示设置接收函数
+	void OnReceive(void);
+	// ADC图形化显示设置帧处理函数
+	void ProcADCGraphSetFrame(void);
+private:
+	// 开始ADC数据图形化显示标志位
+	BOOL m_bStartGraphShow;
+	// 监测参与采样的设备应收ADC数据包个数是否一致
+	BOOL m_bCheckADCDataFrameCountEqule;
 };
 
 

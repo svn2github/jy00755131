@@ -402,6 +402,9 @@ void CThreadManage::OnCreateADCDataSocket(void)
 	str = _T("ADC数据接收端口");
 	m_oADCDataRecThread.m_ADCDataSocket = OnCreateAndSetSocket(m_oADCDataRecThread.m_RecvAddr, true, 
 		ADRecPort, str, ADCDataBufSize, ADCDataBufSize);
+	str = _T("ADC数据图形化显示接收设置端口");
+	m_oADCDataRecThread.m_ADCGraphShowSocket = OnCreateAndSetSocket(m_oADCDataRecThread.m_RecvAddr, false, 
+		ADCGraphSetRecPort, str, ADCDataBufSize, ADCDataBufSize);
 }
 // 关闭UDP套接字
 void CThreadManage::OnCloseUDPSocket(void)

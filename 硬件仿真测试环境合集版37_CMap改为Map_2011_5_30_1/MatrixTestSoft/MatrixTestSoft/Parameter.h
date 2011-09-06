@@ -30,6 +30,8 @@ using namespace std;
 #define WM_SYSTIMESOCKET				WM_USER + 1006
 // ADC设置UDP套接字事件
 #define WM_ADCSETSOCKET				WM_USER + 1007
+// ADC数据图形化显示UDP套接字事件
+#define WM_ADCGRAPHSOCKET			WM_USER + 1008
 //__________________通讯端口设置__________________
 // 心跳帧发送创建端口
 #define HeartBeatRec					0x7000
@@ -53,6 +55,8 @@ using namespace std;
 #define QueryErrorCodePort		0x8600 
 // ADC数据图形化显示发送端口
 #define ADCGraphShowPort		0x7800
+// ADC数据图形化显示设置接收端口
+#define ADCGraphSetRecPort	0x7900
 // ADC设置广播端口
 #define ADCSetBroadcastPort	0x66666666
 // 广播端口
@@ -176,7 +180,7 @@ using namespace std;
 // ADC数据接收线程Sleep时间
 #define ADCDataRecThreadSleepTime				50
 // TB设置延时高位
-#define TBSleepTimeHigh									0x5000
+#define TBSleepTimeHigh									0xa000
 // TB设置延时低位
 #define TBSleepTimeLow									0x00fa
 // ADC数据显示界面每行显示的个数
@@ -189,7 +193,16 @@ using namespace std;
 #define ADCDataConvert									1
 // ADC数据不转换
 #define ADCDataNoConvert								0
-
+// 取最小值操作
+#define OptMinValue											1
+// 取最大值操作
+#define OptMaxValue											2
+// 判断是否相等操作
+#define OptCheckEqule										3
+// 比较值后相等的返回值
+#define CheckEquleReturn									-1
+// 比较值后不相等的返回值
+#define CheckNotEquleReturn							-2
 //____________________命令字设置__________________
 // 发送设置命令
 #define SendSetCmd								0x0001
@@ -241,8 +254,14 @@ using namespace std;
 #define CmdLAUXErrorCode2				0x1e
 // 交叉站路由分配
 #define CmdLAUXSetRout					0x1f
+// ADC数据图形化显示抽样率
+#define CmdADCDataSamplingRate		0x20
 // 返回路由
 #define CmdReturnRout							0x3f
+// ADC数据开始图形化显示标志位
+#define StartGraphShow							1
+// ADC数据停止图形化显示标志位
+#define StopGraphShow							2
 //__________________ADC设置命令__________________
 // ADC设置正弦波命令
 #define SetADCSetSine							{0xb2, 0x00, 0x80, 0x00}

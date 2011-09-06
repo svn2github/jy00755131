@@ -166,5 +166,6 @@ public:
 	afx_msg LRESULT OnTailFrameSocket(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnIPSetSocket(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnHeadFrameSocket(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnADCGraphSocket(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedButtonGraphexe();
 };
