@@ -15,6 +15,7 @@ CSocketADCDataRec::CSocketADCDataRec()
 , m_uiInstrumentADCNum(0)
 , m_bRecADCSetInfoFrame(FALSE)
 , m_uiSamplingRate(0)
+, m_uiInstrumentRecFrameNum(0)
 {
 }
 
@@ -99,6 +100,10 @@ void CSocketADCDataRec::ProcFrameOne(void)
 		iPos += FramePacketSize4B;
 		iPos += FramePacketSize2B;
 		m_uiInstrumentNb[uiNb] = uiLocation;
+		if (uiNb == m_uiDrawPointXNb)
+		{
+			m_uiInstrumentRecFrameNum++;
+		}
 		// 之后为数据区
 		for (int j=0; j<ReceiveDataNum; j++)
 		{
@@ -124,7 +129,16 @@ void CSocketADCDataRec::ProcFrameOne(void)
 				m_dbFduData[uiNb].push_back(dbReceiveData[j]);
 				if (uiNb == m_uiDrawPointXNb)
 				{
-					m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
+					if (m_uiInstrumentRecFrameNum == 1)
+					{
+						m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
+					}
+					else
+					{
+						int iSize = m_DrawPoint_X.size();
+						double dbPointX = m_DrawPoint_X[iSize - 1];
+						m_DrawPoint_X.push_back(dbPointX + m_uiSamplingRate);
+					}
 				}
 			}
 		}
@@ -141,7 +155,10 @@ void CSocketADCDataRec::ProcFrameOne(void)
 				m_DrawPoint_X.erase(m_DrawPoint_X.begin(), m_DrawPoint_X.begin() + ReceiveDataNum);
 				for (int j=0; j<ReceiveDataNum; j++)
 				{
-					m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
+//					m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
+					int iSize = m_DrawPoint_X.size();
+					double dbPointX = m_DrawPoint_X[iSize - 1];
+					m_DrawPoint_X.push_back(dbPointX + m_uiSamplingRate);
 				}
 			}
 // 			int iSize1 = m_dbFduData[uiNb].size();

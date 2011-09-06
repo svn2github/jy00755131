@@ -30,6 +30,8 @@ public:
 	unsigned int m_uiInstrumentADCNum;
 	// 抽样率
 	unsigned int m_uiSamplingRate;
+	// 单个采集站接收帧数
+	unsigned int m_uiInstrumentRecFrameNum;
 private:
 	// 单个帧处理
 	void ProcFrameOne(void);
