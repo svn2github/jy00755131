@@ -53,8 +53,14 @@ using namespace std;
 // _________ADC数据接受___________
 // ADC数据图形化显示接收端口
 #define ADCGraphShowPort				0x7800
+// ADC数据图形化显示设置发送目标端口
+#define ADCGraphSetRecPort			0x7900
+// IP广播地址
+#define IPHostAddr							_T("127.0.0.1")
 // 接收ADC数据一帧的缓冲区大小
 #define ADCRecFrameBufSize			256
+// 发送ADC数据图形显示设置帧的缓冲区大小
+#define ADCSendFrameBufSize			256
 // 接收数据包的ADC数据个数
 #define ReceiveDataNum					72
 // 每个文件存储每个仪器的ADC数据包个数
@@ -63,6 +69,14 @@ using namespace std;
 #define ADCDataSaveSize					10
 // ADC数据端口接收缓冲区大小
 #define ADCRecPortBufSize				10000 * ADCRecFrameBufSize
+// ADC数据开始图形化显示标志位
+#define StartGraphShow						1
+// ADC数据停止图形化显示标志位
+#define StopGraphShow						2
+// 取最小值操作
+#define OptMinValue							1
+// 取最大值操作
+#define OptMaxValue							2
 // _________常量设置____________
 // 设置读取文件头的缓冲区大小
 #define SetReadFileHeadBufSize			1000
@@ -78,6 +92,8 @@ using namespace std;
 #define ShowLinePointsNumMin			10
 // X轴坐标标签最小显示间隔数
 #define SetLegendXIntervalNumMin		3
+// 发送帧缓冲区初值设定
+#define SndFrameBufInit				0x00
 
 //___________________帧格式设置___________________
 // 帧头长度
@@ -92,6 +108,8 @@ using namespace std;
 #define FrameHeadCheck2		0x33
 // 帧头第四个字节
 #define FrameHeadCheck3		0x44
+// ADC数据图形化显示抽样率
+#define CmdADCDataSamplingRate		0x20
 // 命令字长度1字节
 #define FrameCmdSize1B			1
 // 命令包长度2字节

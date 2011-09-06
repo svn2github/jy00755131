@@ -111,6 +111,8 @@ private:
 	unsigned int m_uiADCLineBufNum;
 	// ADC数据文件一行读取缓冲区
 	wchar_t* m_pLinebufRead;
+	// 绘图过程事件
+	HANDLE m_hDrawGraph;
 
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量

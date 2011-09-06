@@ -14,6 +14,7 @@ CSocketADCDataRec::CSocketADCDataRec()
 , m_uiDrawPointXNb(0)
 , m_uiInstrumentADCNum(0)
 , m_bRecADCSetInfoFrame(FALSE)
+, m_uiSamplingRate(0)
 {
 }
 
@@ -123,7 +124,7 @@ void CSocketADCDataRec::ProcFrameOne(void)
 				m_dbFduData[uiNb].push_back(dbReceiveData[j]);
 				if (uiNb == m_uiDrawPointXNb)
 				{
-					m_DrawPoint_X.push_back(uiFrameNb * ReceiveDataNum + j);
+					m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
 				}
 			}
 		}
@@ -140,7 +141,7 @@ void CSocketADCDataRec::ProcFrameOne(void)
 				m_DrawPoint_X.erase(m_DrawPoint_X.begin(), m_DrawPoint_X.begin() + ReceiveDataNum);
 				for (int j=0; j<ReceiveDataNum; j++)
 				{
-					m_DrawPoint_X.push_back(uiFrameNb * ReceiveDataNum + j);
+					m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
 				}
 			}
 // 			int iSize1 = m_dbFduData[uiNb].size();
@@ -231,4 +232,41 @@ unsigned int CSocketADCDataRec::GetRecFrameNumMax(void)
 		}
 	}
 	return uiMaxNb;
+}
+
+// 发送采样参数设置命令
+void CSocketADCDataRec::OnMakeAndSendSetFrame(unsigned short usSetOperation)
+{
+	int iPos = 0;
+	CString str = _T("");
+	byte ucCommand = 0;
+	memset(m_oADCGraphSetFrameBuf, SndFrameBufInit, ADCSendFrameBufSize);
+	m_oADCGraphSetFrameBuf[0] = FrameHeadCheck0;
+	m_oADCGraphSetFrameBuf[1] = FrameHeadCheck1;
+	m_oADCGraphSetFrameBuf[2] = FrameHeadCheck2;
+	m_oADCGraphSetFrameBuf[3] = FrameHeadCheck3;
+	memset(&m_oADCGraphSetFrameBuf[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
+
+	// 源IP地址
+	iPos = FrameHeadSize;
+	iPos += FramePacketSize4B;
+	// 目标IP地址
+	iPos += FramePacketSize4B;
+	// 目标端口号
+	iPos += FramePacketSize2B;
+	// 命令号 1-开始图形化显示；2-停止图形化显示
+	memcpy(&m_oADCGraphSetFrameBuf[iPos], &usSetOperation, FramePacketSize2B);
+	iPos += FramePacketSize2B;
+	if (usSetOperation == StartGraphShow)
+	{
+		// 设置抽样率命令字
+		ucCommand = CmdADCDataSamplingRate;
+		memcpy(&m_oADCGraphSetFrameBuf[iPos], &ucCommand, FrameCmdSize1B);
+		iPos += FrameCmdSize1B;
+		// 设置抽样率
+		memcpy(&m_oADCGraphSetFrameBuf[iPos], &m_uiSamplingRate, FramePacketSize4B);
+		iPos += FramePacketSize4B;
+	}
+	m_oADCGraphSetFrameBuf[iPos] = SndFrameBufInit;
+	int icount = SendTo(&m_oADCGraphSetFrameBuf, ADCSendFrameBufSize, ADCGraphSetRecPort, IPHostAddr);
 }
