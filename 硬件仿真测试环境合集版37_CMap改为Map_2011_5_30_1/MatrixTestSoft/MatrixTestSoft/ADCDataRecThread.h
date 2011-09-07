@@ -105,7 +105,7 @@ public:
 	unsigned int m_uiSamplingRate;
 protected:
 	// 被选择仪器的数值比较
-	int OnADCRecDataCheckOpt(unsigned short usOperation, unsigned int* pData);
+	int OnADCRecDataCheckOpt(unsigned short usOperation);
 public:
 	// 初始化
 	void OnInit(void);
