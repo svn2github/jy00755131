@@ -93,8 +93,13 @@ using namespace std;
 // X轴坐标标签最小显示间隔数
 #define SetLegendXIntervalNumMin		3
 // 发送帧缓冲区初值设定
-#define SndFrameBufInit				0x00
-
+#define SndFrameBufInit						0x00
+// 载入文件
+#define OptTypeLoadFile						1
+// 载入文件夹
+#define OptTypeLoadFolder					2
+// 网络传输绘图
+#define OptTypeNetwork						3
 //___________________帧格式设置___________________
 // 帧头长度
 #define FrameHeadSize				16

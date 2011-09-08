@@ -102,7 +102,7 @@ private:
 	// 打开文件的文件序号（从0开始）
 	unsigned int m_uiOpenFileNb;
 	// 读取文件绘图标志位
-	BOOL m_bLoadFile;
+	unsigned int m_uiOptType;
 	// 文件夹中每个采样设备在所有采样数据文件中所含的ADC数据总数
 	unsigned int m_uiEndDrawPointsNumMax;
 	// 从文件中找到并读出的行数
@@ -128,7 +128,7 @@ private:
 	// 得到默认的背景颜色
 	int getDefaultBgColor(void);
 	// 载入一个图标资源到按钮
-	void loadButtonIcon(int buttonId, int iconId, int width, int height);
+	void LoadButtonIcon(int buttonId, int iconId, int width, int height);
 	// 当用户选中时移动滚动条
 	double moveScrollBar(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	// 绘制图形
@@ -199,4 +199,6 @@ public:
 	afx_msg void OnBnClickedCheckYaxisfixed();
 	afx_msg void OnBnClickedButtonOpenadcfolder();
 	afx_msg void OnLbnDblclkListFile();
+	// 载入绘图软件License
+	bool LoadChartDirLicense(void);
 };

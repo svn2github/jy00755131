@@ -14,7 +14,7 @@ CSocketADCDataRec::CSocketADCDataRec()
 , m_uiDrawPointXNb(0)
 , m_uiInstrumentADCNum(0)
 , m_bRecADCSetInfoFrame(FALSE)
-, m_uiSamplingRate(0)
+, m_uiSamplingRate(1)
 , m_uiInstrumentRecFrameNum(0)
 {
 }
@@ -65,9 +65,10 @@ void CSocketADCDataRec::ProcFrameOne(void)
 	double dSampleDataToV = 0.0;
 	unsigned int uiFrameNb = 0;									// 接收的帧的序号
 	double dbReceiveData [ReceiveDataNum];			// 接收数据缓存
-	// 设m_oADCRecFrameBuf[16]到m_oADCRecFrameBuf[19]为通道号（从0开始）
+	// [16]到[19]为采样设备绘图序号（从0开始）
 	memcpy(&uiNb, &m_oADCRecFrameBuf[iPos], FramePacketSize4B);
 	iPos += FramePacketSize4B;
+	// [20]到[23]为采样设备标记点号
 	memcpy(&uiLocation, &m_oADCRecFrameBuf[iPos], FramePacketSize4B);
 	iPos += FramePacketSize4B;
 	iPos += FramePacketSize2B;
@@ -161,9 +162,6 @@ void CSocketADCDataRec::ProcFrameOne(void)
 					m_DrawPoint_X.push_back(dbPointX + m_uiSamplingRate);
 				}
 			}
-// 			int iSize1 = m_dbFduData[uiNb].size();
-// 			int iSize2 = m_DrawPoint_X.size();
-// 			TRACE(_T("%u		%u		%u\r\n"), uiNb, iSize1, iSize2);
 		}
 		m_uipRecFrameNum[uiNb]++;
 	}

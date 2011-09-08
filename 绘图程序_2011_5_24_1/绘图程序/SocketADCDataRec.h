@@ -13,17 +13,17 @@ public:
 private:
 	// 设置ADC数据帧接收缓冲区
 	unsigned char m_oADCRecFrameBuf[ADCRecFrameBufSize];
-	// 接收到ADC设置信息帧标志位
-	BOOL m_bRecADCSetInfoFrame;
 	// 设置ADC数据图形显示设置帧缓冲区
 	unsigned char m_oADCGraphSetFrameBuf[ADCSendFrameBufSize];
+	// 接收到ADC设置信息帧标志位
+	BOOL m_bRecADCSetInfoFrame;
+	// 绘X轴坐标参考点的仪器序号
+	unsigned int m_uiDrawPointXNb;
 public:
 	// 接收到的帧数
 	unsigned int* m_uipRecFrameNum;
 	// 设备标记点序号数组指针
 	unsigned int* m_uiInstrumentNb;
-	// 绘X轴坐标参考点的仪器序号
-	unsigned int m_uiDrawPointXNb;
 	// 记录X轴坐标点信息指针
 	vector <double>	m_DrawPoint_X;
 	// 参与ADC数据采集的采集站设备数
