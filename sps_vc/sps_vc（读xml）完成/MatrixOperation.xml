@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Matrix>
+	<Operation>
+		<!--施工模式设置 -->
+		<Operating Mode="0" Automation="0"/>
+		<!--施工延时设置 -->
+		<OperationDelay AtendofAcq="1" AtendofVP="1" SlipTime="11.1"/>
+		<!--放炮表-->
+		<OperationTable Count="250">
+				<Record VPStatus="0" ShotID="1" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22695" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="2" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22697" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="3" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22699" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="4" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22701" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="5" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22703" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="6" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22705" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="7" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22707" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="8" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22709" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="9" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22711" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="10" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22713" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="11" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22715" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="12" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22717" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="13" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22719" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="14" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22721" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="15" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22723" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="16" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22725" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="17" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22727" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="18" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22729" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="19" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22731" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="20" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22733" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="21" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22735" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="22" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22737" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="23" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22739" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="24" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22741" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="25" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22743" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="26" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22745" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="27" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22747" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="28" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22749" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="29" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22751" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="30" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22753" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="31" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22755" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="32" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22757" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="33" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22759" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="34" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22761" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="35" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22763" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="36" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22765" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="37" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22767" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="38" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22769" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="39" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22771" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="40" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22773" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="41" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22775" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="42" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22777" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="43" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22779" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="44" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22781" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="45" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22783" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="46" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22785" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="47" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22787" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="48" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22789" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="49" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22791" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="50" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22793" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="51" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22795" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="52" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22797" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="53" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22799" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="54" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22801" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="55" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22803" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="56" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22805" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="57" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22807" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="58" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22809" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="59" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22811" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="60" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22813" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="61" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22815" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="62" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22817" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="63" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22819" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="64" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22821" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="65" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22823" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="66" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22825" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="67" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22827" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="68" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22829" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="69" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22831" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="70" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22833" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="71" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22835" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="72" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22837" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="73" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22839" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="74" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22841" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="75" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22843" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="76" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22845" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="77" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22847" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="78" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22849" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="79" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22851" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="80" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22853" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="81" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22855" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="82" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22857" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="83" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22859" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="84" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22861" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="85" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22863" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="86" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22865" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="87" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22867" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="88" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22869" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="89" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22871" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="90" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22873" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="91" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22875" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="92" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22877" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="93" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22879" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="94" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22881" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="95" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22883" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="96" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22885" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="97" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22887" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="98" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22889" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="99" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22891" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="100" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22893" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="101" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22895" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="102" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22897" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="103" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22899" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="104" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22901" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="105" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22903" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="106" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22905" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="107" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22907" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="108" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22909" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="109" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22911" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="110" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22913" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="111" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22915" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="112" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22917" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="113" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22919" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="114" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22921" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="115" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22923" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="116" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22925" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="117" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22927" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="118" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22929" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="119" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22931" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="120" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22933" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="121" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22935" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="122" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22937" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="123" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22939" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="124" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22941" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="125" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22943" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="126" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22945" SpreadSFL="1" SpreadSFN="2" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="127" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22947" SpreadSFL="1" SpreadSFN="3" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="128" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22949" SpreadSFL="1" SpreadSFN="4" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="129" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22951" SpreadSFL="1" SpreadSFN="5" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="130" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22953" SpreadSFL="1" SpreadSFN="6" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="131" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22955" SpreadSFL="1" SpreadSFN="7" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="132" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22957" SpreadSFL="1" SpreadSFN="8" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="133" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22959" SpreadSFL="1" SpreadSFN="9" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="134" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22961" SpreadSFL="1" SpreadSFN="10" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="135" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22963" SpreadSFL="1" SpreadSFN="11" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="136" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22965" SpreadSFL="1" SpreadSFN="12" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="137" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22967" SpreadSFL="1" SpreadSFN="13" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="138" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22969" SpreadSFL="1" SpreadSFN="14" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="139" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22971" SpreadSFL="1" SpreadSFN="15" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="140" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22973" SpreadSFL="1" SpreadSFN="16" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="141" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22975" SpreadSFL="1" SpreadSFN="17" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="142" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22977" SpreadSFL="1" SpreadSFN="18" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="143" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22979" SpreadSFL="1" SpreadSFN="19" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="144" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22981" SpreadSFL="1" SpreadSFN="20" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="145" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22983" SpreadSFL="1" SpreadSFN="21" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="146" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22985" SpreadSFL="1" SpreadSFN="22" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="147" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22987" SpreadSFL="1" SpreadSFN="23" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="148" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22989" SpreadSFL="1" SpreadSFN="24" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="149" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22991" SpreadSFL="1" SpreadSFN="25" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="150" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22993" SpreadSFL="1" SpreadSFN="26" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="151" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22995" SpreadSFL="1" SpreadSFN="27" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="152" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22997" SpreadSFL="1" SpreadSFN="28" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="153" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="22999" SpreadSFL="1" SpreadSFN="29" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="154" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23001" SpreadSFL="1" SpreadSFN="30" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="155" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23003" SpreadSFL="1" SpreadSFN="31" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="156" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23005" SpreadSFL="1" SpreadSFN="32" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="157" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23007" SpreadSFL="1" SpreadSFN="33" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="158" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23009" SpreadSFL="1" SpreadSFN="34" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="159" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23011" SpreadSFL="1" SpreadSFN="35" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="160" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23013" SpreadSFL="1" SpreadSFN="36" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="161" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23015" SpreadSFL="1" SpreadSFN="37" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="162" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23017" SpreadSFL="1" SpreadSFN="38" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="163" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23019" SpreadSFL="1" SpreadSFN="39" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="164" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23021" SpreadSFL="1" SpreadSFN="40" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="165" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23023" SpreadSFL="1" SpreadSFN="41" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="166" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23025" SpreadSFL="1" SpreadSFN="42" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="167" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23027" SpreadSFL="1" SpreadSFN="43" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="168" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23029" SpreadSFL="1" SpreadSFN="44" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="169" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23031" SpreadSFL="1" SpreadSFN="45" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="170" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23033" SpreadSFL="1" SpreadSFN="46" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="171" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23035" SpreadSFL="1" SpreadSFN="47" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="172" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23037" SpreadSFL="1" SpreadSFN="48" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="173" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23039" SpreadSFL="1" SpreadSFN="49" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="174" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23041" SpreadSFL="1" SpreadSFN="50" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="175" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23043" SpreadSFL="1" SpreadSFN="51" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="176" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23045" SpreadSFL="1" SpreadSFN="52" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="177" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23047" SpreadSFL="1" SpreadSFN="53" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="178" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23049" SpreadSFL="1" SpreadSFN="54" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="179" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23051" SpreadSFL="1" SpreadSFN="55" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="180" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23053" SpreadSFL="1" SpreadSFN="56" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="181" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23055" SpreadSFL="1" SpreadSFN="57" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="182" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23057" SpreadSFL="1" SpreadSFN="58" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="183" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23059" SpreadSFL="1" SpreadSFN="59" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="184" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23061" SpreadSFL="1" SpreadSFN="60" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="185" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23063" SpreadSFL="1" SpreadSFN="61" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="186" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23065" SpreadSFL="1" SpreadSFN="62" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="187" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23067" SpreadSFL="1" SpreadSFN="63" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="188" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23069" SpreadSFL="1" SpreadSFN="64" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="189" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23071" SpreadSFL="1" SpreadSFN="65" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="190" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23073" SpreadSFL="1" SpreadSFN="66" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="191" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23075" SpreadSFL="1" SpreadSFN="67" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="192" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23077" SpreadSFL="1" SpreadSFN="68" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="193" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23079" SpreadSFL="1" SpreadSFN="69" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="194" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23081" SpreadSFL="1" SpreadSFN="70" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="195" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23083" SpreadSFL="1" SpreadSFN="71" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="196" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23085" SpreadSFL="1" SpreadSFN="72" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="197" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23087" SpreadSFL="1" SpreadSFN="73" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="198" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23089" SpreadSFL="1" SpreadSFN="74" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="199" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23091" SpreadSFL="1" SpreadSFN="75" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="200" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23093" SpreadSFL="1" SpreadSFN="76" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="201" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23095" SpreadSFL="1" SpreadSFN="77" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="202" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23097" SpreadSFL="1" SpreadSFN="78" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="203" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23099" SpreadSFL="1" SpreadSFN="79" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="204" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23101" SpreadSFL="1" SpreadSFN="80" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="205" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23103" SpreadSFL="1" SpreadSFN="81" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="206" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23105" SpreadSFL="1" SpreadSFN="82" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="207" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23107" SpreadSFL="1" SpreadSFN="83" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="208" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23109" SpreadSFL="1" SpreadSFN="84" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="209" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23111" SpreadSFL="1" SpreadSFN="85" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="210" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23113" SpreadSFL="1" SpreadSFN="86" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="211" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23115" SpreadSFL="1" SpreadSFN="87" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="212" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23117" SpreadSFL="1" SpreadSFN="88" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="213" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23119" SpreadSFL="1" SpreadSFN="89" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="214" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23121" SpreadSFL="1" SpreadSFN="90" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="215" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23123" SpreadSFL="1" SpreadSFN="91" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="216" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23125" SpreadSFL="1" SpreadSFN="92" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="217" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23127" SpreadSFL="1" SpreadSFN="93" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="218" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23129" SpreadSFL="1" SpreadSFN="94" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="219" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23131" SpreadSFL="1" SpreadSFN="95" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="220" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23133" SpreadSFL="1" SpreadSFN="96" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="221" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23135" SpreadSFL="1" SpreadSFN="97" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="222" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23137" SpreadSFL="1" SpreadSFN="98" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="223" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23139" SpreadSFL="1" SpreadSFN="99" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="224" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23141" SpreadSFL="1" SpreadSFN="100" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="225" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23143" SpreadSFL="1" SpreadSFN="101" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="226" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23145" SpreadSFL="1" SpreadSFN="102" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="227" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23147" SpreadSFL="1" SpreadSFN="103" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="228" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23149" SpreadSFL="1" SpreadSFN="104" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="229" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23151" SpreadSFL="1" SpreadSFN="105" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="230" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23153" SpreadSFL="1" SpreadSFN="106" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="231" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23155" SpreadSFL="1" SpreadSFN="107" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="232" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23157" SpreadSFL="1" SpreadSFN="108" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="233" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23159" SpreadSFL="1" SpreadSFN="109" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="234" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23161" SpreadSFL="1" SpreadSFN="110" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="235" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23163" SpreadSFL="1" SpreadSFN="111" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="236" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23165" SpreadSFL="1" SpreadSFN="112" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="237" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23167" SpreadSFL="1" SpreadSFN="113" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="238" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23169" SpreadSFL="1" SpreadSFN="114" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="239" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23171" SpreadSFL="1" SpreadSFN="115" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="240" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23173" SpreadSFL="1" SpreadSFN="116" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="241" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23175" SpreadSFL="1" SpreadSFN="117" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="242" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23177" SpreadSFL="1" SpreadSFN="118" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="243" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23179" SpreadSFL="1" SpreadSFN="119" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="244" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23181" SpreadSFL="1" SpreadSFN="120" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="245" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23183" SpreadSFL="1" SpreadSFN="121" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="246" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23185" SpreadSFL="1" SpreadSFN="122" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="247" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23187" SpreadSFL="1" SpreadSFN="123" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="248" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23189" SpreadSFL="1" SpreadSFN="124" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="249" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23191" SpreadSFL="1" SpreadSFN="125" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+				<Record VPStatus="0" ShotID="250" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="6" SourceReceiver="23193" SpreadSFL="1" SpreadSFN="126" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+			</OperationTable>
+		<!--震源类型定义-->
+		<SourceType>
+			<!--脉冲类型定义-->
+			<SourceExplo Count="2">
+				<Record SourceStatus="2" SourceNb="1" Label="Explo One" ShooterNb="123456" IncrNb="1" Comment="第一个震源SourceExplo震源描述"/>
+				<Record SourceStatus="2" SourceNb="2" Label="Explo two" ShooterNb="213256" IncrNb="1" Comment="震源描述"/>
+			</SourceExplo>
+			<!--可控震源类型定义-->
+			<SourceVibro Count="2">
+				<Record SourceStatus="2" SourceNb="1001" Label="Vibro one" ShooterNb="12345" Moving="1" Step="1" WorkByAcq="0" ClusterNb="1" Comment=""/>
+				<Record SourceStatus="3" SourceNb="1002" Label="Vibro two" ShooterNb="12333" Moving="1" Step="1" WorkByAcq="0" ClusterNb="1" Comment=""/>
+			</SourceVibro>
+		</SourceType>
+		<!--处理类型定义-->
+		<ProcessType Count="3">
+			<ProcessRecord Nb="1" Type="0" Label="record1" ProcessSetup="1" SerialNb="12345" RecordLength="20000" RefractingDelay="1000" TBWindow="1000">
+				<Auxiliaries Count="3">
+					<Record AuxiNb="1" AuxiProcessing="Aux1*Aux2"/>
+					<Record AuxiNb="2" AuxiProcessing="Aux1"/>
+					<Record AuxiNb="3" AuxiProcessing="Aux1"/>
+				</Auxiliaries>
+			</ProcessRecord>
+			<ProcessRecord Nb="2" Type="0" Label="Impulsive" ProcessSetup="1" SerialNb="32514" RecordLength="10000" RefractingDelay="1000" TBWindow="3000">
+				<Auxiliaries Count="1">
+					<Record AuxiNb="1" AuxiProcessing="Aux1*Aux2"/>
+				</Auxiliaries>
+			</ProcessRecord>
+			<ProcessRecord Nb="3" Type="0" Label="record3" ProcessSetup="1" SerialNb="12345" RecordLength="20000" RefractingDelay="1500" TBWindow="1000">
+				<Auxiliaries Count="3">
+					<Record AuxiNb="1" AuxiProcessing="Aux1*Aux2"/>
+					<Record AuxiNb="2" AuxiProcessing="Aux1"/>
+					<Record AuxiNb="3" AuxiProcessing="Aux1"/>
+				</Auxiliaries>
+			</ProcessRecord>
+		</ProcessType>
+		<!--操作员注释定义-->
+		<OperationComment Count="2">
+			<Record Nb="1" Label="label1" Comment="操作员方放炮的记录“中文”  &quot;english&quot;"/>
+			<Record Nb="2" Label="label22" Comment="操作员施工注释"/>
+		</OperationComment>
+		<SpreadType>
+			<AbsoluteSetup Count="5" TabCount="4">
+				<Record Nb="1" Label="Absolute1" Spread="1:10-13g2"/>
+				<Record Nb="2" Label="Absolute2" Spread="2:10-20g1"/>
+				<Record Nb="3" Label="Absolute3" Spread="3:1-10g1,11-1000g2;8:1-10g1,11-1000g2;9:1-10g1,11-1000g2"/>
+				<Record Nb="4" Label="Absolute4" Spread="1:1-10g1,11-20g2;2:1-10g1,11-20g2;3:1-10g1,11-20g2"/>
+				<Record Nb="5" Label="Absolute5" Spread="1:1-10g1,11-2000g2;2:1-10g1,11-2000g2;3:1-10g1,11-2000g2"/>
+			</AbsoluteSetup>
+			<GenericSetup Count="3" TabCount="4">
+				<Record Nb="1" Label="Generic1" Line="50g1+50g2" Spread="10l1+10l2"/>
+				<Record Nb="2" Label="Generic2" Line="50g1+50g2" Spread="10l1+10l2"/>
+				<Record Nb="3" Label="Generic3" Line="50g1+50g2" Spread="10l1+10l2"/>
+			</GenericSetup>
+		</SpreadType>
+	</Operation>
+</Matrix>
