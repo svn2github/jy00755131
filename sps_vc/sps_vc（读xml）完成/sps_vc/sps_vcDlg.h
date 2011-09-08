@@ -3,20 +3,19 @@
 
 #pragma once
 #include "afxwin.h"
-#define PATH_FILE_X "..\\JO.X"
-#define PATH_FILE_R "..\\JO.R"
-#define PATH_FILE_S "..\\JO.S"
-#define PATH_FILE_XML_LINE "..\\Matrix.xml"
-#define PATH_FILE_XML_OPERATION "..\\MatrixOperation.xml" 
-
-#define FLAG_X "X"
-#define FLAG_S "S"
-#define FLAG_R "R"
-#define PKG 128
-#define ARRAY_SIZE 2048
-#define HEADER_INSTRUMENT_TYPE _T("400")
-#define HEADER_REC_TYPE _T("600")
-#define HEADER_SHOT_TYPE _T("700")
+#define PATH_FILE_X									_T("..\\JO.X")
+#define PATH_FILE_R									_T("..\\JO.R")
+#define PATH_FILE_S									_T("..\\JO.S")
+#define PATH_FILE_XML_LINE					_T("..\\Matrix.xml")
+#define PATH_FILE_XML_OPERATION	_T("..\\MatrixOperation.xml")
+#define FLAG_X											_T("X")
+#define FLAG_S												_T("S")
+#define FLAG_R											_T("R")
+#define PKG													128
+#define ARRAY_SIZE									2048
+#define HEADER_INSTRUMENT_TYPE	_T("400")
+#define HEADER_REC_TYPE						_T("600")
+#define HEADER_SHOT_TYPE					_T("700")
 #define LINE_SUM 5
 
 struct survey_setup_struct 

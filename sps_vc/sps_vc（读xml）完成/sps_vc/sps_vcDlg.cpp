@@ -204,58 +204,58 @@ int Csps_vcDlg::read_file_rec(void)
 		str = m_str.GetAt(0);
 		if (str == FLAG_R)
 		{
-			str_line = "";
-			str_point = "";
-			str_type = "";
+			str_line = _T("");
+			str_point = _T("");
+			str_type = _T("");
 			str_line = readbyte(1, 17, m_str);
-			if (atoi(str_line) != rec_file[cnt_rec].lineName)     //如果测线号有变，则数组位置递增（起始位置为1），测点号为下限
+			if (_tstoi(str_line) != rec_file[cnt_rec].lineName)     //如果测线号有变，则数组位置递增（起始位置为1），测点号为下限
 			{
 				cnt_rec++;
-				rec_file[cnt_rec].lineName = atoi(str_line);
-				rec_file[cnt_rec].type = atoi(readbyte(27, 28, m_str));
+				rec_file[cnt_rec].lineName = _tstoi(str_line);
+				rec_file[cnt_rec].type = _tstoi(readbyte(27, 28, m_str));
 				str_point = readbyte(17, 25, m_str);
-				rec_file[cnt_rec].point_lower = atof(str_point); 	            
+				rec_file[cnt_rec].point_lower = _tstof(str_point); 	            
 			}    
 			else                                                //否则测点号上限不断更新                                                       
 			{
 				str_point = readbyte(17, 25, m_str);
 				if (rec_file[cnt_rec].point_upper == 0)              //该测线上第二个点，计算间隔
 				{
-					rec_file[cnt_rec].interval = atof(str_point) - rec_file[cnt_rec].point_lower;
-					rec_file[cnt_rec].point_upper = atof(str_point); 
+					rec_file[cnt_rec].interval = _tstof(str_point) - rec_file[cnt_rec].point_lower;
+					rec_file[cnt_rec].point_upper = _tstof(str_point); 
 				}
 				else
 				{
-					intvl = atof(str_point) - rec_file[cnt_rec].point_upper;   //同测线上，间隔不等
+					intvl = _tstof(str_point) - rec_file[cnt_rec].point_upper;   //同测线上，间隔不等
 					if (intvl != rec_file[cnt_rec].interval)
 					{
 						cnt_rec++;
-						rec_file[cnt_rec].lineName = atoi(str_line);
-						rec_file[cnt_rec].type = atoi(readbyte(27, 28, m_str));
-						rec_file[cnt_rec].point_lower = atof(str_point);						
+						rec_file[cnt_rec].lineName = _tstoi(str_line);
+						rec_file[cnt_rec].type = _tstoi(readbyte(27, 28, m_str));
+						rec_file[cnt_rec].point_lower = _tstof(str_point);						
 					}
-					else rec_file[cnt_rec].point_upper = atof(str_point); 
+					else rec_file[cnt_rec].point_upper = _tstof(str_point); 
 				}				
 			}
 			rec_file[cnt_rec].count++;
 		}
 		else if (str == _T('H'))
 		{
-			str_header_type = "";
+			str_header_type = _T("");
 			str_header_type = readbyte(1, 4, m_str);
 			if (str_header_type == HEADER_INSTRUMENT_TYPE)
 			{
-				str_instr_type = "";
+				str_instr_type = _T("");
 				str_instr_type = readbyte(32, 33, m_str);		
 			}
 			else if (str_header_type == HEADER_REC_TYPE)
 			{
-				str_rec_type = "";
+				str_rec_type = _T("");
 				str_rec_type = readbyte(32, 34, m_str);
 			}
 			if (str_header_type == HEADER_SHOT_TYPE)
 			{
-				str_shot_type = "";
+				str_shot_type = _T("");
 				str_shot_type = readbyte(32, 34, m_str);
 			}
 		}
@@ -280,8 +280,8 @@ int Csps_vcDlg::read_file_comm(void)
 		str = m_str.GetAt(0);
 		if (str == FLAG_X)
 		{
-			shot_line = atoi(readbyte(13, 29, m_str));
-			shot_point = atof(readbyte(29, 37, m_str));
+			shot_line = _tstoi(readbyte(13, 29, m_str));
+			shot_point = _tstof(readbyte(29, 37, m_str));
 			if (comm_file[cnt_comm].shot_lineName!=0 && comm_file[cnt_comm].shot_point!=0)
 			{
 				if (comm_file[cnt_comm].shot_lineName != shot_line || comm_file[cnt_comm].shot_point != shot_point)
@@ -300,35 +300,35 @@ int Csps_vcDlg::read_file_comm(void)
 			}
 			comm_file[cnt_comm].rec_line_num ++;
             
-			comm_file[cnt_comm].rec_point_index[comm_file[cnt_comm].rec_line_num-1]= atoi(readbyte(37, 38, m_str));
-			comm_file[cnt_comm].record_channel_lower[comm_file[cnt_comm].rec_line_num-1] = atoi(readbyte(38, 42, m_str));
-			comm_file[cnt_comm].record_channel_upper[comm_file[cnt_comm].rec_line_num-1] = atoi(readbyte(42, 46, m_str));
-			comm_file[cnt_comm].record_channel_interval[comm_file[cnt_comm].rec_line_num-1] = atoi(readbyte(46, 47, m_str));
-			comm_file[cnt_comm].rec_lineName[comm_file[cnt_comm].rec_line_num-1] = atoi(readbyte(47, 63, m_str));
-			comm_file[cnt_comm].rec_point_lower[comm_file[cnt_comm].rec_line_num-1] = atof(readbyte(63, 71, m_str));
-			comm_file[cnt_comm].rec_point_upper[comm_file[cnt_comm].rec_line_num-1] = atof(readbyte(71, 79, m_str));	
+			comm_file[cnt_comm].rec_point_index[comm_file[cnt_comm].rec_line_num-1]= _tstoi(readbyte(37, 38, m_str));
+			comm_file[cnt_comm].record_channel_lower[comm_file[cnt_comm].rec_line_num-1] = _tstoi(readbyte(38, 42, m_str));
+			comm_file[cnt_comm].record_channel_upper[comm_file[cnt_comm].rec_line_num-1] = _tstoi(readbyte(42, 46, m_str));
+			comm_file[cnt_comm].record_channel_interval[comm_file[cnt_comm].rec_line_num-1] = _tstoi(readbyte(46, 47, m_str));
+			comm_file[cnt_comm].rec_lineName[comm_file[cnt_comm].rec_line_num-1] = _tstoi(readbyte(47, 63, m_str));
+			comm_file[cnt_comm].rec_point_lower[comm_file[cnt_comm].rec_line_num-1] = _tstof(readbyte(63, 71, m_str));
+			comm_file[cnt_comm].rec_point_upper[comm_file[cnt_comm].rec_line_num-1] = _tstof(readbyte(71, 79, m_str));	
 
-			comm_file[cnt_comm].channel_lower[comm_file[cnt_comm].rec_line_num-1] = (comm_file[cnt_comm].rec_point_lower[comm_file[cnt_comm].rec_line_num-1] - rec_file[comm_file[cnt_comm].rec_line_num].point_lower)/rec_file[comm_file[cnt_comm].rec_line_num].interval + 1;
-            comm_file[cnt_comm].channel_upper[comm_file[cnt_comm].rec_line_num-1] = (comm_file[cnt_comm].rec_point_upper[comm_file[cnt_comm].rec_line_num-1] - rec_file[comm_file[cnt_comm].rec_line_num].point_lower)/rec_file[comm_file[cnt_comm].rec_line_num].interval + 1;
+			comm_file[cnt_comm].channel_lower[comm_file[cnt_comm].rec_line_num-1] = (int)((comm_file[cnt_comm].rec_point_lower[comm_file[cnt_comm].rec_line_num-1] - rec_file[comm_file[cnt_comm].rec_line_num].point_lower)/rec_file[comm_file[cnt_comm].rec_line_num].interval + 1);
+            comm_file[cnt_comm].channel_upper[comm_file[cnt_comm].rec_line_num-1] = (int)((comm_file[cnt_comm].rec_point_upper[comm_file[cnt_comm].rec_line_num-1] - rec_file[comm_file[cnt_comm].rec_line_num].point_lower)/rec_file[comm_file[cnt_comm].rec_line_num].interval + 1);
 
 		}
 		else if (str == _T('H'))
 		{
-			str_header_type = "";
+			str_header_type = _T("");
 			str_header_type = readbyte(1, 4, m_str);
 			if (str_header_type == HEADER_INSTRUMENT_TYPE)
 			{
-				str_instr_type = "";
+				str_instr_type = _T("");
 				str_instr_type = readbyte(32, 33, m_str);		
 			}
 			else if (str_header_type == HEADER_REC_TYPE)
 			{
-				str_rec_type = "";
+				str_rec_type = _T("");
 				str_rec_type = readbyte(32, 34, m_str);
 			}
 			if (str_header_type == HEADER_SHOT_TYPE)
 			{
-				str_shot_type = "";
+				str_shot_type = _T("");
 				str_shot_type = readbyte(32, 34, m_str);
 			}
 		}
@@ -342,11 +342,11 @@ int Csps_vcDlg::read_file_comm(void)
 CString Csps_vcDlg::readbyte(int m_frm_byte, int m_to_byte, CString m_str)
 {
 	CString str,str2;
-	str = "";
+	str = _T("");
 	for (int i = m_frm_byte; i<m_to_byte; i++)
 	{
 		str2 = m_str.GetAt(i);
-		if(str2 != " ")
+		if(str2 != _T(" "))
 		{
 		    str += str2;
 		}
@@ -365,7 +365,7 @@ void Csps_vcDlg::OpenMatrixIniXMLFile(void)
 	COleException oError;
 	COleVariant oVariant;
 
-	strOLEObject = "msxml2.domdocument";
+	strOLEObject = _T("msxml2.domdocument");
 	BOOL bData = m_oXMLDOMDocument.CreateDispatch(strOLEObject, &oError);
 
 	oVariant = PATH_FILE_XML_LINE;
@@ -398,14 +398,14 @@ void Csps_vcDlg::OnSave_rec(void)
 	LPDISPATCH lpDispatch;
 
 	// 找到检波器设置区
-	strKey = "SurverySetup";
+	strKey = _T("SurverySetup");
 	lpDispatch = m_oXMLDOMDocument.getElementsByTagName(strKey);
 	oNodeList.AttachDispatch(lpDispatch);
 	// 找到入口
 	lpDispatch = oNodeList.get_item(0);
 	oElementParent.AttachDispatch(lpDispatch);
 	// 设置总数
-	strKey = "Count";
+	strKey = _T("Count");
 	oVariant = (long)cnt_rec;
 	oElementParent.setAttribute(strKey, oVariant);
 	// 删除所有子节点
@@ -417,16 +417,16 @@ void Csps_vcDlg::OnSave_rec(void)
 	// 增加新节点
 	for(int i = 1; i < cnt_rec + 1; i++)
 	{
-		lpDispatch = m_oXMLDOMDocument.createTextNode("\n\t\t\t\t");
+		lpDispatch = m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t\t"));
 		oElementParent.appendChild(lpDispatch);
-		lpDispatch = m_oXMLDOMDocument.createElement("Record");
+		lpDispatch = m_oXMLDOMDocument.createElement(_T("Record"));
 		oElementChild.AttachDispatch(lpDispatch);
 		AddToXML_rec(&oElementChild, &rec_file[i]);
 		oElementParent.appendChild(lpDispatch);
 
 		if(i == cnt_rec)
 		{
-			lpDispatch = m_oXMLDOMDocument.createTextNode("\n\t\t\t");
+			lpDispatch = m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t"));
 			oElementParent.appendChild(lpDispatch);
 		}		
 	}
@@ -454,12 +454,12 @@ void Csps_vcDlg::AddToXML_rec(CXMLDOMElement* pElement, rec_file_struct *ptr_rec
 	COleVariant oVariant;
 	CString str;
 
-	strKey = "LineName";
+	strKey = _T("LineName");
 	oVariant = (long)ptr_rec_file->lineName;
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "ReceiverSection";
-	str.Format("%d-%d%s%d", 1, ptr_rec_file->count, "p", ptr_rec_file->type);
+	strKey = _T("ReceiverSection");
+	str.Format(_T("%d-%d%s%d"), 1, ptr_rec_file->count, _T("p"), ptr_rec_file->type);
 	oVariant = str;
 	pElement->setAttribute(strKey, oVariant);
 
@@ -471,17 +471,17 @@ void Csps_vcDlg::AddToXML_comm(CXMLDOMElement* pElement, comm_file_struct *ptr_c
 	COleVariant oVariant;
 	CString str;
 
-	strKey = "Nb";
+	strKey = _T("Nb");
 	oVariant = (long)(cnt_line + 1);
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "Label";
-	str.Format("%s%d", "Absolute",cnt_line + 1);
+	strKey = _T("Label");
+	str.Format(_T("%s%d"), _T("Absolute"),cnt_line + 1);
 	oVariant = str;
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "Spread";
-	str.Format("%d:%d-%d", ptr_comm_file->rec_lineName[cnt_line], ptr_comm_file->channel_lower[cnt_line], ptr_comm_file->channel_upper[cnt_line]);
+	strKey = _T("Spread");
+	str.Format(_T("%d:%d-%d"), ptr_comm_file->rec_lineName[cnt_line], ptr_comm_file->channel_lower[cnt_line], ptr_comm_file->channel_upper[cnt_line]);
     oVariant = str;
 	pElement->setAttribute(strKey, oVariant);
 }
@@ -496,14 +496,14 @@ void Csps_vcDlg::OnSave_comm(void)
 	LPDISPATCH lpDispatch;
 
 	// 找到检波器设置区
-	strKey = "AbsoluteSetup";
+	strKey = _T("AbsoluteSetup");
 	lpDispatch = m_oXMLDOMDocument.getElementsByTagName(strKey);
 	oNodeList.AttachDispatch(lpDispatch);
 	// 找到入口
 	lpDispatch = oNodeList.get_item(0);
 	oElementParent.AttachDispatch(lpDispatch);
 	// 设置总数
-	strKey = "Count";
+	strKey = _T("Count");
 	oVariant = (long)cnt_comm;
 	oElementParent.setAttribute(strKey, oVariant);
 
@@ -517,20 +517,20 @@ void Csps_vcDlg::OnSave_comm(void)
     for (int j = 1; j < cnt_comm + 1; j++)
     {
     
-		lpDispatch = m_oXMLDOMDocument.createTextNode("\n\t\t\t\t");  //无尖括号
+		lpDispatch = m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t\t"));  //无尖括号
 		oElementParent.appendChild(lpDispatch);
 
-        strKey.Format("%s%d", "AbsoluteSetup", j);
+        strKey.Format(_T("%s%d"), _T("AbsoluteSetup"), j);
 		oElementChild = m_oXMLDOMDocument.createElement(strKey);
-		strKey = "Count";
+		strKey = _T("Count");
 		oVariant = (long)comm_file[j].rec_line_num;
 		oElementChild.setAttribute(strKey, oVariant);
 		oElementParent.appendChild(oElementChild);
-        strKey = "TabCount";
-		oVariant = "4";
+        strKey = _T("TabCount");
+		oVariant = _T("4");
 		oElementChild.setAttribute(strKey, oVariant);
 		oElementParent.appendChild(oElementChild);
-		strKey = "ShotPoint";
+		strKey = _T("ShotPoint");
 		oVariant = comm_file[j].shot_point;
 		oElementChild.setAttribute(strKey, oVariant);
 		oElementParent.appendChild(oElementChild);
@@ -540,25 +540,25 @@ void Csps_vcDlg::OnSave_comm(void)
 		// 增加新节点
 		for(int i = 0; i < comm_file[j].rec_line_num; i++)
 		{
-			lpDispatch = m_oXMLDOMDocument.createTextNode("\n\t\t\t\t\t");
+			lpDispatch = m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t\t\t"));
 			oElementParent.appendChild(lpDispatch);
 
-			lpDispatch = m_oXMLDOMDocument.createElement("Record");
+			lpDispatch = m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			AddToXML_comm(&oElementChild, &comm_file[j], j, i);
 			oElementParent.appendChild(lpDispatch);
 
 			if(i == comm_file[j].rec_line_num)
 			{
-				lpDispatch = m_oXMLDOMDocument.createTextNode("\n\t\t\t\t");
+				lpDispatch = m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t\t"));
 				oElementParent.appendChild(lpDispatch);
 			}		
 		}
-		oElementParent.appendChild(m_oXMLDOMDocument.createTextNode("\n\t\t\t\t"));  
+		oElementParent.appendChild(m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t\t")));  
 
 		oElementParent = oElementParent.get_parentNode();
 	}
-	lpDispatch = m_oXMLDOMDocument.createTextNode("\n\t\t\t");  //无尖括号
+	lpDispatch = m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t"));  //无尖括号
 	oElementParent.appendChild(lpDispatch);
 }
 
@@ -569,52 +569,52 @@ void Csps_vcDlg::AddToXML_shot(CXMLDOMElement* pElement, comm_file_struct *ptr_c
 	COleVariant oVariant;
 	CString str;
 
-	strKey = "VPStatus";
-	oVariant = "0";
+	strKey = _T("VPStatus");
+	oVariant = _T("0");
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "ShotID";
+	strKey = _T("ShotID");
 	oVariant = (long)cnt;
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "BreakPoint";
-	oVariant = "N";
+	strKey = _T("BreakPoint");
+	oVariant = _T("N");
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "SwathNb";
-	oVariant = "1";
+	strKey = _T("SwathNb");
+	oVariant = _T("1");
     pElement->setAttribute(strKey, oVariant);
 
-	strKey = "SourcePointIndex";
+	strKey = _T("SourcePointIndex");
 	oVariant = (long)ptr_comm_file->rec_point_index[0];
 	pElement->setAttribute(strKey, oVariant);
 
-    strKey = "SourceLine";
+    strKey = _T("SourceLine");
 	oVariant = ptr_comm_file->shot_lineName;
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "SourceReceiver";
+	strKey = _T("SourceReceiver");
 	oVariant = ptr_comm_file->shot_point;
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "SpreadSFL";
+	strKey = _T("SpreadSFL");
 	oVariant = (long)ptr_comm_file->rec_lineName[0];
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "SpreadSFN";
+	strKey = _T("SpreadSFN");
 	oVariant = (long)ptr_comm_file->channel_lower[0];
 	pElement->setAttribute(strKey, oVariant);
 
-    strKey = "SpreadType";
-	oVariant = "1";
+    strKey = _T("SpreadType");
+	oVariant = _T("1");
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "ProcessTypeID";
-	oVariant = "1";
+	strKey = _T("ProcessTypeID");
+	oVariant = _T("1");
 	pElement->setAttribute(strKey, oVariant);
 
-	strKey = "Comment";
-	oVariant = "注释";
+	strKey = _T("Comment");
+	oVariant = _T("注释");
 	pElement->setAttribute(strKey, oVariant);
 
 }
@@ -628,14 +628,14 @@ void Csps_vcDlg::OnSave_shot(void)
 	LPDISPATCH lpDispatch;
 
 	// 找到检波器设置区
-	strKey = "OperationTable";
+	strKey = _T("OperationTable");
 	lpDispatch = m_oXMLDOMDocument_operation.getElementsByTagName(strKey);
 	oNodeList.AttachDispatch(lpDispatch);
 	// 找到入口
 	lpDispatch = oNodeList.get_item(0);
 	oElementParent.AttachDispatch(lpDispatch);
 	// 设置总数
-	strKey = "Count";
+	strKey = _T("Count");
 	oVariant = (long)cnt_comm;
 	oElementParent.setAttribute(strKey, oVariant);
 	// 删除所有子节点
@@ -647,16 +647,16 @@ void Csps_vcDlg::OnSave_shot(void)
 	// 增加新节点
 	for(int i = 1; i < cnt_comm + 1; i++)
 	{
-		lpDispatch = m_oXMLDOMDocument_operation.createTextNode("\n\t\t\t\t");
+		lpDispatch = m_oXMLDOMDocument_operation.createTextNode(_T("\n\t\t\t\t"));
 		oElementParent.appendChild(lpDispatch);
-		lpDispatch = m_oXMLDOMDocument_operation.createElement("Record");
+		lpDispatch = m_oXMLDOMDocument_operation.createElement(_T("Record"));
 		oElementChild.AttachDispatch(lpDispatch);
 		AddToXML_shot(&oElementChild, &comm_file[i], i);
 		oElementParent.appendChild(lpDispatch);
 
 		if(i == cnt_comm)
 		{
-			lpDispatch = m_oXMLDOMDocument_operation.createTextNode("\n\t\t\t");
+			lpDispatch = m_oXMLDOMDocument_operation.createTextNode(_T("\n\t\t\t"));
 			oElementParent.appendChild(lpDispatch);
 		}		
 	}  
@@ -673,7 +673,7 @@ void Csps_vcDlg::OpenMatrixIniXMLFile_operation(void)
 	COleException oError;
 	COleVariant oVariant;
 
-	strOLEObject = "msxml2.domdocument";
+	strOLEObject = _T("msxml2.domdocument");
 	BOOL bData = m_oXMLDOMDocument_operation.CreateDispatch(strOLEObject, &oError);
 
 	oVariant = PATH_FILE_XML_OPERATION;
