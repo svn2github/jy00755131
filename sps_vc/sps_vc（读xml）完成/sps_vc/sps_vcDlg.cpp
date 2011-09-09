@@ -55,22 +55,6 @@ Csps_vcDlg::Csps_vcDlg(CWnd* pParent /*=NULL*/)
 void Csps_vcDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDIT_RECORD, m_edt_record);
-	DDX_Control(pDX, IDC_EDIT_REC_INCR, m_edt_rec_incr);
-	DDX_Control(pDX, IDC_EDIT_INSTR, m_edt_instr);
-	DDX_Control(pDX, IDC_EDIT_LINE, m_edt_line);
-	DDX_Control(pDX, IDC_EDIT_PNT_NB, m_edt_pnt_nb);
-	DDX_Control(pDX, IDC_EDIT_PNT_INDX, m_edt_pnt_indx);
-	DDX_Control(pDX, IDC_EDIT_FRM_CHNL, m_edt_frm_chnl);
-	DDX_Control(pDX, IDC_EDIT_TO_CHNL, m_edt_to_chnl);
-	DDX_Control(pDX, IDC_EDIT_CHNL_INCR, m_edt_chnl_incr);
-	DDX_Control(pDX, IDC_EDIT_LINE_REC, m_edt_line_rec);
-	DDX_Control(pDX, IDC_EDIT_FROM_REC, m_edt_frm_rec);
-	DDX_Control(pDX, IDC_EDIT_T_REC, m_edt_to_rec);
-	DDX_Control(pDX, IDC_EDIT_REC_INDX, m_edt_rec_indx);
-	DDX_Control(pDX, IDC_BUTTON1, m_btn_read);
-	DDX_Control(pDX, IDC_BUTTON2, m_btn_xml);
-	DDX_Control(pDX, IDC_BUTTON3, m_btn_operation);
 }
 
 BEGIN_MESSAGE_MAP(Csps_vcDlg, CDialog)
@@ -174,189 +158,202 @@ void Csps_vcDlg::OnBnClickedOk()
 	// TODO: 在此添加控件通知处理程序代码
 	OnOK();
 }
-
+// 读入SPS文件
 void Csps_vcDlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	read_file_rec();
-	read_file_comm();
+	if (FALSE == read_file_rec(PATH_FILE_R))
+	{
+		return;
+	}
+	if (FALSE == read_file_comm(PATH_FILE_X))
+	{
+		return;
+	}
 }
 
 
-int Csps_vcDlg::read_file_rec(void)
+BOOL Csps_vcDlg::read_file_rec(CString strPath)
 {
-	CString m_str,str;
+	CString str1,str2;
 	CString str_header_type;
 	CString str_line ;
 	CString str_point;
 	CString str_type;
 	int m_list = 0;
 	int flag = 0;
-	cnt_rec = 0;
+	m_icnt_rec = 0;
 	double intvl = 0;
 	CStdioFile file;
 	memset(&rec_file[0], 0, ARRAY_SIZE*sizeof(rec_file_struct));
-	file.Open(PATH_FILE_R, CFile::modeRead);
-
+	if (FALSE == file.Open(strPath, CFile::modeRead))
+	{
+		AfxMessageBox(_T("Open Sps_R file error, Please check it again!"));
+		return FALSE;
+	}
 	while (file.GetPosition()<file.GetLength())
 	{
-		file.ReadString(m_str);
-		str = m_str.GetAt(0);
-		if (str == FLAG_R)
+		file.ReadString(str1);
+		str2 = str1.GetAt(0);
+		if (str2 == FLAG_R)
 		{
 			str_line = _T("");
 			str_point = _T("");
 			str_type = _T("");
-			str_line = readbyte(1, 17, m_str);
-			if (_tstoi(str_line) != rec_file[cnt_rec].lineName)     //如果测线号有变，则数组位置递增（起始位置为1），测点号为下限
+			str_line = readbyte(1, 17, str1);
+			if (_tstoi(str_line) != rec_file[m_icnt_rec].lineName)     //如果测线号有变，则数组位置递增（起始位置为1），测点号为下限
 			{
-				cnt_rec++;
-				rec_file[cnt_rec].lineName = _tstoi(str_line);
-				rec_file[cnt_rec].type = _tstoi(readbyte(27, 28, m_str));
-				str_point = readbyte(17, 25, m_str);
-				rec_file[cnt_rec].point_lower = _tstof(str_point); 	            
+				m_icnt_rec++;
+				rec_file[m_icnt_rec].lineName = _tstoi(str_line);
+				rec_file[m_icnt_rec].type = _tstoi(readbyte(27, 28, str1));
+				str_point = readbyte(17, 25, str1);
+				rec_file[m_icnt_rec].point_lower = _tstof(str_point); 	            
 			}    
 			else                                                //否则测点号上限不断更新                                                       
 			{
-				str_point = readbyte(17, 25, m_str);
-				if (rec_file[cnt_rec].point_upper == 0)              //该测线上第二个点，计算间隔
+				str_point = readbyte(17, 25, str1);
+				if (rec_file[m_icnt_rec].point_upper == 0)              //该测线上第二个点，计算间隔
 				{
-					rec_file[cnt_rec].interval = _tstof(str_point) - rec_file[cnt_rec].point_lower;
-					rec_file[cnt_rec].point_upper = _tstof(str_point); 
+					rec_file[m_icnt_rec].interval = _tstof(str_point) - rec_file[m_icnt_rec].point_lower;
+					rec_file[m_icnt_rec].point_upper = _tstof(str_point); 
 				}
 				else
 				{
-					intvl = _tstof(str_point) - rec_file[cnt_rec].point_upper;   //同测线上，间隔不等
-					if (intvl != rec_file[cnt_rec].interval)
+					intvl = _tstof(str_point) - rec_file[m_icnt_rec].point_upper;   //同测线上，间隔不等
+					if (intvl != rec_file[m_icnt_rec].interval)
 					{
-						cnt_rec++;
-						rec_file[cnt_rec].lineName = _tstoi(str_line);
-						rec_file[cnt_rec].type = _tstoi(readbyte(27, 28, m_str));
-						rec_file[cnt_rec].point_lower = _tstof(str_point);						
+						m_icnt_rec++;
+						rec_file[m_icnt_rec].lineName = _tstoi(str_line);
+						rec_file[m_icnt_rec].type = _tstoi(readbyte(27, 28, str1));
+						rec_file[m_icnt_rec].point_lower = _tstof(str_point);						
 					}
-					else rec_file[cnt_rec].point_upper = _tstof(str_point); 
+					else rec_file[m_icnt_rec].point_upper = _tstof(str_point); 
 				}				
 			}
-			rec_file[cnt_rec].count++;
+			rec_file[m_icnt_rec].count++;
 		}
-		else if (str == _T('H'))
+		else if (str2 == _T('H'))
 		{
 			str_header_type = _T("");
-			str_header_type = readbyte(1, 4, m_str);
+			str_header_type = readbyte(1, 4, str1);
 			if (str_header_type == HEADER_INSTRUMENT_TYPE)
 			{
-				str_instr_type = _T("");
-				str_instr_type = readbyte(32, 33, m_str);		
+				m_str_instr_type = _T("");
+				m_str_instr_type = readbyte(32, 33, str1);		
 			}
 			else if (str_header_type == HEADER_REC_TYPE)
 			{
-				str_rec_type = _T("");
-				str_rec_type = readbyte(32, 34, m_str);
+				m_str_rec_type = _T("");
+				m_str_rec_type = readbyte(32, 34, str1);
 			}
 			if (str_header_type == HEADER_SHOT_TYPE)
 			{
-				str_shot_type = _T("");
-				str_shot_type = readbyte(32, 34, m_str);
+				m_str_shot_type = _T("");
+				m_str_shot_type = readbyte(32, 34, str1);
 			}
 		}
 		else break;
 	}
-	return cnt_rec;
+	return TRUE;
 }
 
-int Csps_vcDlg::read_file_comm(void)
+BOOL Csps_vcDlg::read_file_comm(CString strPath)
 {
 	CStdioFile file;
-	CString m_str, str, str_header_type;
+	CString str1, str2, str_header_type;
 	double shot_line;
 	double shot_point;
-	cnt_comm = 0;
+	m_icnt_comm = 0;
 	memset(&comm_file[0], 0, ARRAY_SIZE*sizeof(comm_file_struct));
-	file.Open(PATH_FILE_X, CFile::modeRead);
+	if (FALSE == file.Open(strPath, CFile::modeRead))
+	{
+		AfxMessageBox(_T("Open Sps_X file error, Please check it again!"));
+		return FALSE;
+	}
 
 	while (file.GetPosition()<file.GetLength())
 	{
-		file.ReadString(m_str);
-		str = m_str.GetAt(0);
-		if (str == FLAG_X)
+		file.ReadString(str1);
+		str2 = str1.GetAt(0);
+		if (str2 == FLAG_X)
 		{
-			shot_line = _tstoi(readbyte(13, 29, m_str));
-			shot_point = _tstof(readbyte(29, 37, m_str));
-			if (comm_file[cnt_comm].shot_lineName!=0 && comm_file[cnt_comm].shot_point!=0)
+			shot_line = _tstoi(readbyte(13, 29, str1));
+			shot_point = _tstof(readbyte(29, 37, str1));
+			if (comm_file[m_icnt_comm].shot_lineName!=0 && comm_file[m_icnt_comm].shot_point!=0)
 			{
-				if (comm_file[cnt_comm].shot_lineName != shot_line || comm_file[cnt_comm].shot_point != shot_point)
+				if (comm_file[m_icnt_comm].shot_lineName != shot_line || comm_file[m_icnt_comm].shot_point != shot_point)
 				{
-					cnt_comm++;
-					comm_file[cnt_comm].shot_lineName = shot_line;
-					comm_file[cnt_comm].shot_point = shot_point;
+					m_icnt_comm++;
+					comm_file[m_icnt_comm].shot_lineName = shot_line;
+					comm_file[m_icnt_comm].shot_point = shot_point;
 					
 				}
 			}
 			else 
 			{
-				cnt_comm++;
-				comm_file[cnt_comm].shot_lineName = shot_line;
-				comm_file[cnt_comm].shot_point = shot_point;
+				m_icnt_comm++;
+				comm_file[m_icnt_comm].shot_lineName = shot_line;
+				comm_file[m_icnt_comm].shot_point = shot_point;
 			}
-			comm_file[cnt_comm].rec_line_num ++;
+			comm_file[m_icnt_comm].rec_line_num ++;
             
-			comm_file[cnt_comm].rec_point_index[comm_file[cnt_comm].rec_line_num-1]= _tstoi(readbyte(37, 38, m_str));
-			comm_file[cnt_comm].record_channel_lower[comm_file[cnt_comm].rec_line_num-1] = _tstoi(readbyte(38, 42, m_str));
-			comm_file[cnt_comm].record_channel_upper[comm_file[cnt_comm].rec_line_num-1] = _tstoi(readbyte(42, 46, m_str));
-			comm_file[cnt_comm].record_channel_interval[comm_file[cnt_comm].rec_line_num-1] = _tstoi(readbyte(46, 47, m_str));
-			comm_file[cnt_comm].rec_lineName[comm_file[cnt_comm].rec_line_num-1] = _tstoi(readbyte(47, 63, m_str));
-			comm_file[cnt_comm].rec_point_lower[comm_file[cnt_comm].rec_line_num-1] = _tstof(readbyte(63, 71, m_str));
-			comm_file[cnt_comm].rec_point_upper[comm_file[cnt_comm].rec_line_num-1] = _tstof(readbyte(71, 79, m_str));	
+			comm_file[m_icnt_comm].rec_point_index[comm_file[m_icnt_comm].rec_line_num-1]= _tstoi(readbyte(37, 38, str1));
+			comm_file[m_icnt_comm].record_channel_lower[comm_file[m_icnt_comm].rec_line_num-1] = _tstoi(readbyte(38, 42, str1));
+			comm_file[m_icnt_comm].record_channel_upper[comm_file[m_icnt_comm].rec_line_num-1] = _tstoi(readbyte(42, 46, str1));
+			comm_file[m_icnt_comm].record_channel_interval[comm_file[m_icnt_comm].rec_line_num-1] = _tstoi(readbyte(46, 47, str1));
+			comm_file[m_icnt_comm].rec_lineName[comm_file[m_icnt_comm].rec_line_num-1] = _tstoi(readbyte(47, 63, str1));
+			comm_file[m_icnt_comm].rec_point_lower[comm_file[m_icnt_comm].rec_line_num-1] = _tstof(readbyte(63, 71, str1));
+			comm_file[m_icnt_comm].rec_point_upper[comm_file[m_icnt_comm].rec_line_num-1] = _tstof(readbyte(71, 79, str1));	
 
-			comm_file[cnt_comm].channel_lower[comm_file[cnt_comm].rec_line_num-1] = (int)((comm_file[cnt_comm].rec_point_lower[comm_file[cnt_comm].rec_line_num-1] - rec_file[comm_file[cnt_comm].rec_line_num].point_lower)/rec_file[comm_file[cnt_comm].rec_line_num].interval + 1);
-            comm_file[cnt_comm].channel_upper[comm_file[cnt_comm].rec_line_num-1] = (int)((comm_file[cnt_comm].rec_point_upper[comm_file[cnt_comm].rec_line_num-1] - rec_file[comm_file[cnt_comm].rec_line_num].point_lower)/rec_file[comm_file[cnt_comm].rec_line_num].interval + 1);
+			comm_file[m_icnt_comm].channel_lower[comm_file[m_icnt_comm].rec_line_num-1] = (int)((comm_file[m_icnt_comm].rec_point_lower[comm_file[m_icnt_comm].rec_line_num-1] - rec_file[comm_file[m_icnt_comm].rec_line_num].point_lower)/rec_file[comm_file[m_icnt_comm].rec_line_num].interval + 1);
+            comm_file[m_icnt_comm].channel_upper[comm_file[m_icnt_comm].rec_line_num-1] = (int)((comm_file[m_icnt_comm].rec_point_upper[comm_file[m_icnt_comm].rec_line_num-1] - rec_file[comm_file[m_icnt_comm].rec_line_num].point_lower)/rec_file[comm_file[m_icnt_comm].rec_line_num].interval + 1);
 
 		}
-		else if (str == _T('H'))
+		else if (str2 == _T('H'))
 		{
 			str_header_type = _T("");
-			str_header_type = readbyte(1, 4, m_str);
+			str_header_type = readbyte(1, 4, str1);
 			if (str_header_type == HEADER_INSTRUMENT_TYPE)
 			{
-				str_instr_type = _T("");
-				str_instr_type = readbyte(32, 33, m_str);		
+				m_str_instr_type = _T("");
+				m_str_instr_type = readbyte(32, 33, str1);		
 			}
 			else if (str_header_type == HEADER_REC_TYPE)
 			{
-				str_rec_type = _T("");
-				str_rec_type = readbyte(32, 34, m_str);
+				m_str_rec_type = _T("");
+				m_str_rec_type = readbyte(32, 34, str1);
 			}
 			if (str_header_type == HEADER_SHOT_TYPE)
 			{
-				str_shot_type = _T("");
-				str_shot_type = readbyte(32, 34, m_str);
+				m_str_shot_type = _T("");
+				m_str_shot_type = readbyte(32, 34, str1);
 			}
 		}
 		else break;
 	}
-	return cnt_comm;   
+	return TRUE;   
 }
 
 
 //解析sps文件，返回string
-CString Csps_vcDlg::readbyte(int m_frm_byte, int m_to_byte, CString m_str)
+CString Csps_vcDlg::readbyte(int ifrm_byte, int ito_byte, CString str)
 {
-	CString str,str2;
-	str = _T("");
-	for (int i = m_frm_byte; i<m_to_byte; i++)
+	CString str1,str2;
+	str1 = _T("");
+	for (int i = ifrm_byte; i<ito_byte; i++)
 	{
-		str2 = m_str.GetAt(i);
+		str2 = str.GetAt(i);
 		if(str2 != _T(" "))
 		{
-		    str += str2;
+		    str1 += str2;
 		}
 	}
-	return str;
+	return str1;
 }
 
 
 //打开xml文件
-void Csps_vcDlg::OpenMatrixIniXMLFile(void)
+BOOL Csps_vcDlg::OpenMatrixIniXMLFile(CString strPath)
 {
 	// 初始化COM库
 	CoInitialize(NULL);
@@ -366,10 +363,18 @@ void Csps_vcDlg::OpenMatrixIniXMLFile(void)
 	COleVariant oVariant;
 
 	strOLEObject = _T("msxml2.domdocument");
-	BOOL bData = m_oXMLDOMDocument.CreateDispatch(strOLEObject, &oError);
-
-	oVariant = PATH_FILE_XML_LINE;
-	bData = m_oXMLDOMDocument.load(oVariant);
+	if (FALSE == m_oXMLDOMDocument.CreateDispatch(strOLEObject, &oError))
+	{
+		AfxMessageBox(_T("Create XML dispatch error!"));
+		return FALSE;
+	}
+	oVariant = strPath;
+	if (FALSE == m_oXMLDOMDocument.load(oVariant))
+	{
+		AfxMessageBox(_T("Load Matrix XML file error!"));
+		return FALSE;
+	}
+	return TRUE;
 }
 
 //关闭xml文件
@@ -381,10 +386,10 @@ void Csps_vcDlg::CloseMatrixIniXMLFile(void)
 }
 
 //保存xml文件
-void Csps_vcDlg::SaveMatrixIniXMLFile(void)
+void Csps_vcDlg::SaveMatrixIniXMLFile(CString strPath)
 {
 	COleVariant oVariant;
-	oVariant = PATH_FILE_XML_LINE;
+	oVariant = strPath;
 	m_oXMLDOMDocument.save(oVariant);
 }
 
@@ -406,7 +411,7 @@ void Csps_vcDlg::OnSave_rec(void)
 	oElementParent.AttachDispatch(lpDispatch);
 	// 设置总数
 	strKey = _T("Count");
-	oVariant = (long)cnt_rec;
+	oVariant = (long)m_icnt_rec;
 	oElementParent.setAttribute(strKey, oVariant);
 	// 删除所有子节点
 	while(TRUE == oElementParent.hasChildNodes())
@@ -415,7 +420,7 @@ void Csps_vcDlg::OnSave_rec(void)
 		oElementParent.removeChild(lpDispatch);
 	}
 	// 增加新节点
-	for(int i = 1; i < cnt_rec + 1; i++)
+	for(int i = 1; i < m_icnt_rec + 1; i++)
 	{
 		lpDispatch = m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t\t"));
 		oElementParent.appendChild(lpDispatch);
@@ -424,24 +429,27 @@ void Csps_vcDlg::OnSave_rec(void)
 		AddToXML_rec(&oElementChild, &rec_file[i]);
 		oElementParent.appendChild(lpDispatch);
 
-		if(i == cnt_rec)
+		if(i == m_icnt_rec)
 		{
 			lpDispatch = m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t"));
 			oElementParent.appendChild(lpDispatch);
 		}		
 	}
 }
-
+// 保存测线XML文件
 void Csps_vcDlg::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 打开配置文件
-	OpenMatrixIniXMLFile();
+	if (FALSE == OpenMatrixIniXMLFile(PATH_FILE_XML_LINE))
+	{
+		return;
+	}
 	// 保存FormLine设置
 	OnSave_rec();
 	OnSave_comm();
 	// 保存配置文件
-	SaveMatrixIniXMLFile();
+	SaveMatrixIniXMLFile(PATH_FILE_XML_LINE);
 	// 关闭配置文件
 	CloseMatrixIniXMLFile();
 
@@ -504,7 +512,7 @@ void Csps_vcDlg::OnSave_comm(void)
 	oElementParent.AttachDispatch(lpDispatch);
 	// 设置总数
 	strKey = _T("Count");
-	oVariant = (long)cnt_comm;
+	oVariant = (long)m_icnt_comm;
 	oElementParent.setAttribute(strKey, oVariant);
 
 	// 删除所有子节点
@@ -514,7 +522,7 @@ void Csps_vcDlg::OnSave_comm(void)
 		oElementParent.removeChild(lpDispatch);
 	}
 	
-    for (int j = 1; j < cnt_comm + 1; j++)
+    for (int j = 1; j < m_icnt_comm + 1; j++)
     {
     
 		lpDispatch = m_oXMLDOMDocument.createTextNode(_T("\n\t\t\t\t"));  //无尖括号
@@ -636,7 +644,7 @@ void Csps_vcDlg::OnSave_shot(void)
 	oElementParent.AttachDispatch(lpDispatch);
 	// 设置总数
 	strKey = _T("Count");
-	oVariant = (long)cnt_comm;
+	oVariant = (long)m_icnt_comm;
 	oElementParent.setAttribute(strKey, oVariant);
 	// 删除所有子节点
 	while(TRUE == oElementParent.hasChildNodes())
@@ -645,7 +653,7 @@ void Csps_vcDlg::OnSave_shot(void)
 		oElementParent.removeChild(lpDispatch);
 	}
 	// 增加新节点
-	for(int i = 1; i < cnt_comm + 1; i++)
+	for(int i = 1; i < m_icnt_comm + 1; i++)
 	{
 		lpDispatch = m_oXMLDOMDocument_operation.createTextNode(_T("\n\t\t\t\t"));
 		oElementParent.appendChild(lpDispatch);
@@ -654,7 +662,7 @@ void Csps_vcDlg::OnSave_shot(void)
 		AddToXML_shot(&oElementChild, &comm_file[i], i);
 		oElementParent.appendChild(lpDispatch);
 
-		if(i == cnt_comm)
+		if(i == m_icnt_comm)
 		{
 			lpDispatch = m_oXMLDOMDocument_operation.createTextNode(_T("\n\t\t\t"));
 			oElementParent.appendChild(lpDispatch);
@@ -664,7 +672,7 @@ void Csps_vcDlg::OnSave_shot(void)
 
 
 //打开xml文件
-void Csps_vcDlg::OpenMatrixIniXMLFile_operation(void)
+BOOL Csps_vcDlg::OpenMatrixIniXMLFile_operation(CString strPath)
 {
 	// 初始化COM库
 	CoInitialize(NULL);
@@ -674,10 +682,18 @@ void Csps_vcDlg::OpenMatrixIniXMLFile_operation(void)
 	COleVariant oVariant;
 
 	strOLEObject = _T("msxml2.domdocument");
-	BOOL bData = m_oXMLDOMDocument_operation.CreateDispatch(strOLEObject, &oError);
-
-	oVariant = PATH_FILE_XML_OPERATION;
-	bData = m_oXMLDOMDocument_operation.load(oVariant);
+	if (FALSE == m_oXMLDOMDocument_operation.CreateDispatch(strOLEObject, &oError))
+	{
+		AfxMessageBox(_T("Create Operation XML dispatch error!"));
+		return FALSE;
+	}
+	oVariant = strPath;
+	if (FALSE == m_oXMLDOMDocument_operation.load(oVariant))
+	{
+		AfxMessageBox(_T("Load Operation XML file error!"));
+		return FALSE;
+	}
+	return TRUE;
 }
 
 //关闭xml文件
@@ -689,22 +705,25 @@ void Csps_vcDlg::CloseMatrixIniXMLFile_operation(void)
 }
 
 //保存xml文件
-void Csps_vcDlg::SaveMatrixIniXMLFile_operation(void)
+void Csps_vcDlg::SaveMatrixIniXMLFile_operation(CString strPath)
 {
 	COleVariant oVariant;
-	oVariant = PATH_FILE_XML_OPERATION;
+	oVariant = strPath;
 	m_oXMLDOMDocument_operation.save(oVariant);
 }
-
+// 保存施工XML文件
 void Csps_vcDlg::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
 
-	OpenMatrixIniXMLFile_operation();
+	if (FALSE == OpenMatrixIniXMLFile_operation(PATH_FILE_XML_OPERATION))
+	{
+		return;
+	}
 	// 保存FormLine设置
 	OnSave_shot();
 	// 保存配置文件
-	SaveMatrixIniXMLFile_operation();
+	SaveMatrixIniXMLFile_operation(PATH_FILE_XML_OPERATION);
 	// 关闭配置文件
 	CloseMatrixIniXMLFile_operation();
 

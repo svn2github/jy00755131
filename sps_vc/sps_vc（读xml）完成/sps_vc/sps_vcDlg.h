@@ -5,25 +5,15 @@
 #include "afxwin.h"
 #define PATH_FILE_X									_T("..\\JO.X")
 #define PATH_FILE_R									_T("..\\JO.R")
-#define PATH_FILE_S									_T("..\\JO.S")
 #define PATH_FILE_XML_LINE					_T("..\\Matrix.xml")
 #define PATH_FILE_XML_OPERATION	_T("..\\MatrixOperation.xml")
 #define FLAG_X											_T("X")
-#define FLAG_S												_T("S")
 #define FLAG_R											_T("R")
-#define PKG													128
 #define ARRAY_SIZE									2048
 #define HEADER_INSTRUMENT_TYPE	_T("400")
 #define HEADER_REC_TYPE						_T("600")
 #define HEADER_SHOT_TYPE					_T("700")
-#define LINE_SUM 5
-
-struct survey_setup_struct 
-{
-	int m_count;
-	int m_lineName;
-	CString m_recSection;
-};
+#define LINE_SUM										5
 
 typedef struct rec_file_struct 
 {
@@ -82,69 +72,39 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOk();
-	CEdit m_edt_record;
-	CEdit m_edt_rec_incr;
-	CEdit m_edt_instr;
-	CEdit m_edt_line;
-	CEdit m_edt_pnt_nb;
-	CEdit m_edt_pnt_indx;
-	CEdit m_edt_frm_chnl;
-	CEdit m_edt_to_chnl;
-	CEdit m_edt_chnl_incr;
-	CEdit m_edt_line_rec;
-	CEdit m_edt_frm_rec;
-	CEdit m_edt_to_rec;
-	CEdit m_edt_rec_indx;
-	CButton m_btn_read;
-	CButton m_btn_xml;
-	CButton m_btn_operation;
 
 	/** XMLDOM文件对象*/
 	CXMLDOMDocument m_oXMLDOMDocument;
 	CXMLDOMDocument m_oXMLDOMDocument_operation;
 
-	/** 总数*/
-	unsigned int m_uiCountAll;
-	/** 队列*/
-	CList<int, int> m_ols;
+	CString m_str_shot_type;
+	CString m_str_rec_type;
+	CString m_str_instr_type;
 
-	/**  Tab键数量*/
-	unsigned int m_uiTabCount;
-	/** 写格式化XML文件用*/
-	CString m_strTabChild;
-	/** 写格式化XML文件用*/
-	CString m_strTabParent;
-
-	CString str_shot_type;
-	CString str_rec_type;
-	CString str_instr_type;
-
-	struct survey_setup_struct survey_setup[ARRAY_SIZE];
 	struct rec_file_struct rec_file[ARRAY_SIZE];
 	struct comm_file_struct comm_file[ARRAY_SIZE];
-	int cnt_rec;  //解析sps文件中的第几行，结构
-	int cnt_comm;
+	int m_icnt_rec;  //解析sps文件中的第几行，结构
+	int m_icnt_comm;
 
-	afx_msg void OnBnClickedButton1();
-	afx_msg void OnBnClickedButton2();
-	int read_file_rec(void);
-	int read_file_comm(void);
-	CString readbyte(int m_frm_byte, int m_to_byte, CString m_str);
+	BOOL read_file_rec(CString strPath);
+	BOOL read_file_comm(CString strPath);
+	CString readbyte(int ifrm_byte, int ito_byte, CString str);
 
-	void OpenMatrixIniXMLFile();
+	BOOL OpenMatrixIniXMLFile(CString strPath);
 	void CloseMatrixIniXMLFile();
-	void SaveMatrixIniXMLFile();
+	void SaveMatrixIniXMLFile(CString strPath);
 
-	void OpenMatrixIniXMLFile_operation();
+	BOOL OpenMatrixIniXMLFile_operation(CString strPath);
 	void CloseMatrixIniXMLFile_operation();
-	void SaveMatrixIniXMLFile_operation(); 
+	void SaveMatrixIniXMLFile_operation(CString strPath); 
 
 	void OnSave_rec(void);	
 	void OnSave_comm(void);	
-    void AddToXML_rec(CXMLDOMElement* pElement, rec_file_struct *ptr_rec_file);
+	void AddToXML_rec(CXMLDOMElement* pElement, rec_file_struct *ptr_rec_file);
 	void AddToXML_comm(CXMLDOMElement* pElement, comm_file_struct *ptr_comm_file, int cnt, int cnt_line);
 	void AddToXML_shot(CXMLDOMElement* pElement, comm_file_struct *ptr_comm_file, int cnt);
 	void OnSave_shot(void);
-
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
 };
