@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="gb2312" ?>
+<Matrix>
+	<OperationServer HostIP = "192.168.0.12" RevFilePath="E:\\Temp" />		
+	<MainCross       MainCrsIP = "192.168.0.11" MainCrsPort ="20496" />  
+</Matrix>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Matrix>
+	<Operation>
+		<!--施工模式设置 -->
+		<Operating Mode="0" Automation="0"/>
+		<!--施工延时设置 -->
+		<OperationDelay AtendofAcq="1" AtendofVP="1" SlipTime="11.1"/>
+		<!--放炮表-->
+		<OperationTable Count="18">
+			<Record VPStatus="0" ShotID="1" BreakPoint="N" SwathNb="1" SourcePointIndex="0" SourceLine="20.5" SourceReceiver="10.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="第一个炮点"/>
+			<Record VPStatus="2" ShotID="4" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="4" ProcessTypeID="1" Comment="BBBBBB"/>
+			<Record VPStatus="0" ShotID="5" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="2" ProcessTypeID="1" Comment="AAAAAA"/>
+			<Record VPStatus="2" ShotID="6" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="2" ProcessTypeID="1" Comment="注释"/>
+			<Record VPStatus="4" ShotID="7" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="3" ProcessTypeID="1" Comment="注释"/>
+			<Record VPStatus="0" ShotID="8" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="4" ProcessTypeID="1" Comment="注释"/>
+			<Record VPStatus="4" ShotID="9" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+			<Record VPStatus="2" ShotID="10" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+			<Record VPStatus="4" ShotID="11" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="5" ProcessTypeID="1" Comment="注释"/>
+			<Record VPStatus="0" ShotID="12" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+			<Record VPStatus="4" ShotID="13" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="5" ProcessTypeID="1" Comment="注释"/>
+			<Record VPStatus="0" ShotID="14" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="25.5" SourceReceiver="30.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="注释"/>
+			<Record VPStatus="0" ShotID="15" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="21.5" SourceReceiver="31.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="新增"/>
+			<Record VPStatus="0" ShotID="16" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="21.5" SourceReceiver="31.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="新增"/>
+			<Record VPStatus="0" ShotID="17" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="21.5" SourceReceiver="31.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="新增"/>
+			<Record VPStatus="0" ShotID="18" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="21.5" SourceReceiver="31.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="新增"/>
+			<Record VPStatus="0" ShotID="19" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="21.5" SourceReceiver="31.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="新增"/>
+			<Record VPStatus="0" ShotID="20" BreakPoint="N" SwathNb="1" SourcePointIndex="1" SourceLine="21.5" SourceReceiver="31.5" SpreadSFL="1" SpreadSFN="1" SpreadType="1" ProcessTypeID="1" Comment="新增"/>
+		</OperationTable>
+		<!--震源类型定义-->
+		<SourceType>
+			<!--脉冲类型定义-->
+			<SourceExplo Count="2">
+				<Record SourceStatus="2" SourceNb="1" Label="Explo One" ShooterNb="123456" IncrNb="1" Comment="第一个震源SourceExplo震源描述"/>
+				<Record SourceStatus="2" SourceNb="2" Label="Explo two" ShooterNb="213256" IncrNb="1" Comment="震源描述"/>
+			</SourceExplo>
+			<!--可控震源类型定义-->
+			<SourceVibro Count="2">
+				<Record SourceStatus="2" SourceNb="1001" Label="Vibro one" ShooterNb="12345" Moving="1" Step="1" WorkByAcq="0" ClusterNb="1" Comment=""/>
+				<Record SourceStatus="3" SourceNb="1002" Label="Vibro two" ShooterNb="12333" Moving="1" Step="1" WorkByAcq="0" ClusterNb="1" Comment=""/>
+			</SourceVibro>
+		</SourceType>
+		<!--处理类型定义-->
+		<ProcessType Count="3">
+			<ProcessRecord Nb="1" Type="0" Label="record1" ProcessSetup="1" SerialNb="12345" RecordLength="20000" RefractingDelay="1000" TBWindow="1000">
+				<Auxiliaries Count="3">
+					<Record AuxiNb="1" AuxiProcessing="Aux1*Aux2"/>
+					<Record AuxiNb="2" AuxiProcessing="Aux1"/>
+					<Record AuxiNb="3" AuxiProcessing="Aux1"/>
+				</Auxiliaries>
+			</ProcessRecord>
+			<ProcessRecord Nb="2" Type="0" Label="Impulsive" ProcessSetup="1" SerialNb="32514" RecordLength="10000" RefractingDelay="1000" TBWindow="3000">
+				<Auxiliaries Count="1">
+					<Record AuxiNb="1" AuxiProcessing="Aux1*Aux2"/>
+				</Auxiliaries>
+			</ProcessRecord>
+			<ProcessRecord Nb="3" Type="0" Label="record3" ProcessSetup="1" SerialNb="12345" RecordLength="20000" RefractingDelay="1500" TBWindow="1000">
+				<Auxiliaries Count="3">
+					<Record AuxiNb="1" AuxiProcessing="Aux1*Aux2"/>
+					<Record AuxiNb="2" AuxiProcessing="Aux1"/>
+					<Record AuxiNb="3" AuxiProcessing="Aux1"/>
+				</Auxiliaries>
+			</ProcessRecord>
+		</ProcessType>
+		<!--操作员注释定义-->
+		<OperationComment Count="2">
+			<Record Nb="1" Label="label1" Comment="操作员方放炮的记录“中文”  &quot;english&quot;"/>
+			<Record Nb="2" Label="label22" Comment="操作员施工注释"/>
+		</OperationComment>
+	</Operation>
+</Matrix>

@@ -1,0 +1,711 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\Config.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英语(美国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\Config.ico"
+IDR_ConfigTYPE          ICON                    "res\\ConfigDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDB_NORMAL              BITMAP                  "res\\bitmapNormal.bmp"
+IDB_BITMAPRED           BITMAP                  "res\\bitmap1.bmp"
+IDB_BITMAPORANGE        BITMAP                  "res\\bmpOrange.bmp"
+IDB_BITMAPGREEN         BITMAP                  "res\\bmpGREEN.bmp"
+IDR_ONOFFLINE           BITMAP                  "res\\toolbar1.bmp"
+IDB_MAINFRAME256        BITMAP                  "res\\bmpMainFrame.bmp"
+IDB_ONOFFLINE256        BITMAP                  "res\\bmpONLineOffLine.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  16, 16
+BEGIN
+    BUTTON      ID_SETUP_CREW
+    BUTTON      ID_SETUP_USERINFO
+    SEPARATOR
+    BUTTON      ID_SETUP_SEGD
+    SEPARATOR
+    BUTTON      ID_SETUP_DISKRECORD
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_ONOFFLINE TOOLBAR  16, 16
+BEGIN
+    BUTTON      ID_LINE_ON
+    BUTTON      ID_LINE_OFF
+    BUTTON      ID_LINE_ONBACK
+    BUTTON      ID_LINE_OFFBACK
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM "S&plit",                      ID_WINDOW_SPLIT
+    END
+    POPUP "&Setup"
+    BEGIN
+        MENUITEM "&Crew...\tCtrl+Shift+C",      ID_SETUP_CREW
+        MENUITEM "&UserInfo\tCtrl+Shift+U",     ID_SETUP_USERINFO
+        MENUITEM "&SEGD\tCtrl+Shift+S",         ID_SETUP_SEGD
+        MENUITEM "&DiskRecord\tCtrl+Shift+D",   ID_SETUP_DISKRECORD
+        MENUITEM "S&wath\tCtrl+Shift+W",        32775
+        MENUITEM SEPARATOR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Config...",            ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS 
+BEGIN
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+    "C",            ID_SETUP_CREW,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "U",            ID_SETUP_USERINFO,      VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "S",            ID_SETUP_SEGD,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "D",            ID_SETUP_DISKRECORD,    VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "W",            ID_SETUP_SWATH,         VIRTKEY, SHIFT, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Config"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
+    LTEXT           "Config, Version 1.0",IDC_STATIC,39,5,114,8,SS_NOPREFIX
+    LTEXT           "Tianjing HiTech",IDC_STATIC,39,19,114,8
+    DEFPUSHBUTTON   "OK",IDOK,60,44,50,14,WS_GROUP
+    LTEXT           "Copyright (C) 2010,",IDC_STATIC,39,33,114,8
+END
+
+IDD_CONFIG_FORM DIALOGEX 0, 0, 250, 66
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    CONTROL         137,IDC_STATICACQ,"Static",SS_BITMAP,91,28,12,20
+    LTEXT           "ACQ",IDC_STATIC,92,18,15,8
+    CONTROL         140,IDC_STATICPROC,"Static",SS_BITMAP,129,28,12,20
+    LTEXT           "PROC",IDC_STATIC,126,18,21,8
+    CONTROL         139,IDC_STATICRTV,"Static",SS_BITMAP | SS_REALSIZEIMAGE,109,28,12,20
+    LTEXT           "RTV",IDC_STATIC,110,18,14,8
+    LTEXT           "REC",IDC_STATIC,149,18,15,8
+    CONTROL         137,IDC_STATICREC,"Static",SS_BITMAP,148,28,12,20
+    GROUPBOX        "Activity",IDC_STATICACTIVITY,1,0,246,63
+END
+
+IDD_CONFIG_STATUS DIALOGEX 0, 0, 250, 20
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    GROUPBOX        "Status Mail",IDC_STATICSTATUSMAIL,0,0,248,18
+    LISTBOX         IDC_LISTSTATUSMAIL,2,7,244,9,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_CREWDLG DIALOGEX 0, 0, 276, 252
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Crew setup"
+FONT 9, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    LTEXT           "Crew Name:",IDC_STATIC,84,20,42,8
+    LTEXT           "Sample rate:",IDC_STATIC,75,50,47,8,0,WS_EX_RIGHT
+    LTEXT           "FIR:",IDC_STATIC,75,87,47,8,0,WS_EX_RIGHT
+    LTEXT           "IIR:",IDC_STATIC,75,104,47,8,0,WS_EX_RIGHT
+    LTEXT           "Preamp gain:",IDC_STATIC,20,69,102,8,0,WS_EX_RIGHT
+    LTEXT           "Analog Gate:",IDC_STATIC,30,120,92,8,0,WS_EX_RIGHT
+    LTEXT           "5373 Mode:",IDC_STATIC,43,138,79,8,0,WS_EX_RIGHT
+    LTEXT           "DA Weaken:",IDC_STATIC,48,156,74,8,0,WS_EX_RIGHT
+    LTEXT           "Default Line Data Rate:",IDC_STATIC,46,173,76,8,0,WS_EX_RIGHT
+    GROUPBOX        "Description",IDC_STATIC,10,7,256,29
+    EDITTEXT        IDC_EDITCREWNAME,137,18,121,12,ES_AUTOHSCROLL
+    GROUPBOX        "Acquisition",IDC_STATIC,10,41,256,149
+    COMBOBOX        IDC_COMBOSAMPLERATE,136,48,121,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBOGAIN,136,65,121,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBOFILTERFIR,136,83,121,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBOFILTERIIR,136,102,121,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBOANALOGGATECHANNEL,136,118,121,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO5373MODE,136,136,121,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBODAWEAKEN,136,151,121,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBOLINERATE,136,171,121,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Time Management",IDC_STATIC,10,195,256,29
+    PUSHBUTTON      "Apply",IDC_BUTTONAPPLY,76,230,50,14
+    PUSHBUTTON      "Reset",IDC_BUTTONRESET,150,230,50,14
+END
+
+IDD_USERINFODLG DIALOGEX 0, 0, 179, 84
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "User Info setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "OK",IDC_BTNOK,7,64,50,16
+    PUSHBUTTON      "Apply",IDC_BTNAPPLY,62,64,50,16
+    PUSHBUTTON      "Reset",IDC_BTNRESET,118,64,50,16
+    EDITTEXT        IDC_EDITUSERINFO,7,16,165,43,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN
+    LTEXT           "User Info : ",IDC_STATIC,7,4,89,8
+END
+
+IDD_SEGDDLG DIALOGEX 0, 0, 259, 154
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SEGD setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_COMBOSEGDSETUPTYPE,83,9,92,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME,3,26,252,101
+    LTEXT           "Segd Level",IDC_STATIC,11,33,99,8,0,WS_EX_RIGHT
+    LTEXT           "Nb of Record Channel Sets",IDC_STATIC,11,49,99,8,0,WS_EX_RIGHT
+    LTEXT           "External Header Size",IDC_STATIC,11,64,99,8,0,WS_EX_RIGHT
+    LTEXT           "Producer code",IDC_STATIC,12,81,99,8,0,WS_EX_RIGHT
+    LTEXT           "Serial Number",IDC_STATIC,10,100,99,8,0,WS_EX_RIGHT
+    LTEXT           "Use External Tape Labels",IDC_STATIC,10,116,99,8,0,WS_EX_RIGHT
+    COMBOBOX        IDC_COMBOSEGDLEVEL,123,30,123,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO3,123,46,123,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO4,123,62,123,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT1,123,78,55,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT2,123,96,123,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,123,114,16,10
+    PUSHBUTTON      "API Producer",IDC_BTNAPIPRODUCER,181,78,67,14
+    PUSHBUTTON      "OK",IDC_BTNOK,48,135,50,16
+    PUSHBUTTON      "Apply",IDC_BTNAPPLY,104,135,50,16
+    PUSHBUTTON      "Reset",IDC_BTNRESET,160,135,50,16
+END
+
+IDD_DISKRECORD DIALOGEX 0, 0, 238, 177
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Disk Record setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Disk record mode:",IDC_STATIC,17,17,68,8
+    COMBOBOX        IDC_COMBODISKRECORDMODE,94,15,68,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Parameters",IDC_STATIC,2,2,233,32
+    GROUPBOX        "Backup Settings",IDC_STATIC,2,41,233,40
+    LTEXT           "File Directory:",IDC_STATIC,8,105,78,8
+    CONTROL         "Flat",IDC_RADIOFLAT,"Button",BS_AUTORADIOBUTTON | WS_GROUP,37,57,37,10
+    CONTROL         "Day",IDC_RADIODAY,"Button",BS_AUTORADIOBUTTON,131,58,46,10
+    EDITTEXT        IDC_EDITFILEDIR,88,102,143,14,ES_AUTOHSCROLL
+    LTEXT           "Normal Records:",IDC_STATIC,8,122,74,8
+    LTEXT           "Test Records:",IDC_STATIC,8,137,74,8
+    GROUPBOX        "Backup Directory",IDC_STATIC,2,86,233,64
+    PUSHBUTTON      "OK",IDC_BTNOK,29,156,50,16
+    PUSHBUTTON      "Apply",IDC_BTNAPPLY,84,156,50,16
+    PUSHBUTTON      "Reset",IDC_BTNRESET,140,156,50,16
+    LTEXT           "??",IDC_STATICNORMALDIR,88,122,143,8
+    LTEXT           "??",IDC_STATICTESTDIR,88,138,143,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "TODO: <Company name>"
+            VALUE "FileDescription", "TODO: <File description>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "Config.exe"
+            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "OriginalFilename", "Config.exe"
+            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_CONFIG_FORM, DIALOG
+    BEGIN
+        RIGHTMARGIN, 249
+        BOTTOMMARGIN, 38
+    END
+
+    IDD_CONFIG_STATUS, DIALOG
+    BEGIN
+        RIGHTMARGIN, 191
+    END
+
+    IDD_CREWDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 273
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 249
+    END
+
+    IDD_USERINFODLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 172
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 80
+    END
+
+    IDD_SEGDDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 3
+        RIGHTMARGIN, 255
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 151
+    END
+
+    IDD_DISKRECORD, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 235
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 174
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_CREWDLG DLGINIT
+BEGIN
+    IDC_COMBOSAMPLERATE, 0x403, 7, 0
+0x2e30, 0x3532, 0x736d, "\000" 
+    IDC_COMBOSAMPLERATE, 0x403, 8, 0
+0x2e30, 0x2035, 0x6d20, 0x0073, 
+    IDC_COMBOSAMPLERATE, 0x403, 9, 0
+0x2020, 0x2031, 0x2020, 0x736d, "\000" 
+    IDC_COMBOSAMPLERATE, 0x403, 9, 0
+0x2020, 0x2032, 0x2020, 0x736d, "\000" 
+    IDC_COMBOSAMPLERATE, 0x403, 9, 0
+0x2020, 0x2034, 0x2020, 0x736d, "\000" 
+    IDC_COMBOGAIN, 0x403, 3, 0
+0x3178, "\000" 
+    IDC_COMBOGAIN, 0x403, 3, 0
+0x3278, "\000" 
+    IDC_COMBOGAIN, 0x403, 3, 0
+0x3478, "\000" 
+    IDC_COMBOGAIN, 0x403, 3, 0
+0x3878, "\000" 
+    IDC_COMBOGAIN, 0x403, 4, 0
+0x3178, 0x0036, 
+    IDC_COMBOGAIN, 0x403, 4, 0
+0x3378, 0x0032, 
+    IDC_COMBOGAIN, 0x403, 4, 0
+0x3678, 0x0034, 
+    IDC_COMBOFILTERFIR, 0x403, 5, 0
+0x554e, 0x4c4c, "\000" 
+    IDC_COMBOFILTERFIR, 0x403, 9, 0
+0xdfcf, 0xd4d0, 0xe0cf, 0xbbce, "\000" 
+    IDC_COMBOFILTERFIR, 0x403, 9, 0
+0xeed7, 0xa1d0, 0xe0cf, 0xbbce, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 5, 0
+0x554e, 0x4c4c, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e30, 0x3531, 0x4949, 0x3152, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e30, 0x3033, 0x4949, 0x3152, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e30, 0x3036, 0x4949, 0x3152, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e30, 0x3039, 0x4949, 0x3152, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e31, 0x3032, 0x4949, 0x3152, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e30, 0x3531, 0x4949, 0x3252, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e30, 0x3033, 0x4949, 0x3252, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e30, 0x3036, 0x4949, 0x3252, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e30, 0x3039, 0x4949, 0x3252, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 9, 0
+0x2e31, 0x3032, 0x4949, 0x3252, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 11, 0
+0x2e30, 0x3032, 0x3134, 0x4949, 0x3352, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 11, 0
+0x2e30, 0x3034, 0x3437, 0x4949, 0x3352, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 11, 0
+0x2e30, 0x3138, 0x3235, 0x4949, 0x3352, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 11, 0
+0x2e31, 0x3232, 0x3232, 0x4949, 0x3352, "\000" 
+    IDC_COMBOFILTERIIR, 0x403, 11, 0
+0x2e31, 0x3236, 0x3339, 0x4949, 0x3352, "\000" 
+    IDC_COMBOANALOGGATECHANNEL, 0x403, 10, 0
+0x3038, 0xc530, 0xbdb7, 0xb5d3, 0x00d8, 
+    IDC_COMBOANALOGGATECHANNEL, 0x403, 6, 0
+0xa8cd, 0xc0b5, 0x0042, 
+    IDC_COMBOANALOGGATECHANNEL, 0x403, 6, 0
+0xa8cd, 0xc0b5, 0x0041, 
+    IDC_COMBOANALOGGATECHANNEL, 0x403, 8, 0
+0xa8cd, 0xc0b5, 0x2b41, 0x0042, 
+    IDC_COMBO5373MODE, 0x403, 14, 0
+0x6461, 0xb9ca, 0xdcc4, 0x442c, 0xd041, 0xc3dd, 0x00df, 
+    IDC_COMBO5373MODE, 0x403, 23, 0
+0x6461, 0xb9ca, 0xdcc4, 0x412c, 0xca43, 0xb3e4, 0xc7f6, 0x62d2, 0x6675, 
+0xe4ca, 0xf6b3, "\000" 
+    IDC_COMBO5373MODE, 0x403, 23, 0
+0x6461, 0xb9ca, 0xdcc4, 0x412c, 0xca43, 0xb3e4, 0xc7f6, 0x62d2, 0x6675, 
+0xdfb8, 0xe8d7, "\000" 
+    IDC_COMBO5373MODE, 0x403, 16, 0
+0x6461, 0xb9ca, 0xdcc4, 0xca2c, 0xb3e4, 0xb8f6, 0xd7df, 0x00e8, 
+    IDC_COMBO5373MODE, 0x403, 22, 0
+0x6461, 0xb9ca, 0xdcc4, 0x442c, 0xc643, 0xcdd5, 0xc4a8, 0xcaa3, 0xcabd, 
+0xb3e4, 0x00f6, 
+    IDC_COMBO5373MODE, 0x403, 18, 0
+0x6461, 0xb9ca, 0xdcc4, 0x442c, 0xb243, 0xb7ee, 0xcad6, 0xb3e4, 0x00f6, 
+
+    IDC_COMBO5373MODE, 0x403, 22, 0
+0x6461, 0xb9ca, 0xdcc4, 0x412c, 0xc643, 0xcdd5, 0xc4a8, 0xcaa3, 0xcabd, 
+0xb3e4, 0x00f6, 
+    IDC_COMBO5373MODE, 0x403, 14, 0
+0x6461, 0xddd0, 0xdfc3, 0x442c, 0xd041, 0xc3dd, 0x00df, 
+    IDC_COMBODAWEAKEN, 0x403, 4, 0
+0x6430, 0x0062, 
+    IDC_COMBODAWEAKEN, 0x403, 5, 0
+0x362d, 0x6264, "\000" 
+    IDC_COMBODAWEAKEN, 0x403, 6, 0
+0x312d, 0x6432, 0x0062, 
+    IDC_COMBODAWEAKEN, 0x403, 6, 0
+0x312d, 0x6438, 0x0062, 
+    IDC_COMBODAWEAKEN, 0x403, 6, 0
+0x322d, 0x6434, 0x0062, 
+    IDC_COMBODAWEAKEN, 0x403, 6, 0
+0x332d, 0x6430, 0x0062, 
+    IDC_COMBODAWEAKEN, 0x403, 6, 0
+0x332d, 0x6436, 0x0062, 
+    IDC_COMBODAWEAKEN, 0x403, 5, 0
+0xa3b1, 0xf4c1, "\000" 
+    IDC_COMBOLINERATE, 0x403, 10, 0
+0x3233, 0x624d, 0x7469, 0x2f73, 0x0073, 
+    0
+END
+
+IDD_SEGDDLG DLGINIT
+BEGIN
+    IDC_COMBOSEGDSETUPTYPE, 0x403, 9, 0
+0x7453, 0x6e61, 0x6164, 0x6472, "\000" 
+    IDC_COMBOSEGDSETUPTYPE, 0x403, 9, 0
+0x6441, 0x6176, 0x636e, 0x6465, "\000" 
+    IDC_COMBOSEGDLEVEL, 0x403, 6, 0
+0x4552, 0x2056, 0x0031, 
+    IDC_COMBOSEGDLEVEL, 0x403, 8, 0
+0x4552, 0x2056, 0x2e32, 0x0031, 
+    0
+END
+
+IDD_DISKRECORD DLGINIT
+BEGIN
+    IDC_COMBODISKRECORDMODE, 0x403, 9, 0
+0x7453, 0x6e61, 0x6164, 0x6472, "\000" 
+    IDC_COMBODISKRECORDMODE, 0x403, 9, 0
+0x6441, 0x6176, 0x636e, 0x6465, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
+    IDP_SOCKETS_INIT_FAILED "Windows sockets initialization failed."
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "Config\n\nConfig\n\n\nConfig.Document\nConfig.Document"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "Config"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_SETUP_CREW           "Crew"
+    ID_SETUP_USERINFO       "User info"
+    ID_SETUP_SEGD           "SEGD Setup"
+    ID_ONLINE               "On Line"
+    ID_OFFLINE              "Off Line"
+END
+
+#endif    // 英语(美国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\Config.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

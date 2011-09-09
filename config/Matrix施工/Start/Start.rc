@@ -1,0 +1,271 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\Start.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""     // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "trac.ico"
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_START_DIALOG DIALOGEX 0, 0, 30, 288
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE | WS_EX_APPWINDOW
+FONT 9, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    PUSHBUTTON      "",IDC_BTNCONNECT,5,14,20,20
+    CTEXT           "e-428",IDC_STATIC,3,5,24,8,SS_CENTERIMAGE
+    PUSHBUTTON      "",IDC_BTNADMINISTRATION,5,41,20,20
+    PUSHBUTTON      "",IDC_BTNINSTALL,5,63,20,20
+    PUSHBUTTON      "",IDC_BTNCONFIG,5,85,20,20
+    PUSHBUTTON      "",IDC_BTNLINE,5,107,20,20
+    PUSHBUTTON      "",IDC_BTNOPERATION,5,129,20,20
+    PUSHBUTTON      "",IDC_BTNEXPLORER,5,239,20,20
+    CTEXT           "08:08:00",IDC_STATICTIME,1,272,29,8
+    CONTROL         "",IDC_STATIC,"Static",SS_GRAYFRAME | SS_SUNKEN,0,268,30,20
+    PUSHBUTTON      "",IDC_BTNPOSITION,5,151,20,20
+    PUSHBUTTON      "",IDC_BTNEXPORT,5,173,20,20
+    PUSHBUTTON      "",IDC_BTNLOG,5,195,20,20
+    PUSHBUTTON      "",IDC_BTNPLOTTER,5,217,20,20
+END
+
+IDD_CONNECTIONDLG DIALOGEX 0, 0, 189, 93
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Start connection"
+FONT 9, "Microsoft Sans Serif", 400, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_EDITLABEL,45,11,138,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITURL,45,26,138,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITUSERNAME,45,41,138,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITPASSWORD,45,56,138,12,ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON      "Connect",IDC_BTNCONNECT,20,77,41,14
+    PUSHBUTTON      "Apply",IDC_BTNAPPLY,73,77,41,14
+    PUSHBUTTON      "Delete",IDC_BTNDELETE,126,77,41,14
+    LTEXT           "Label",IDC_STATIC,5,13,37,8
+    LTEXT           "URL",IDC_STATIC,5,27,37,8
+    LTEXT           "Login",IDC_STATIC,5,42,35,8
+    LTEXT           "Password",IDC_STATIC,5,57,38,8
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDFRAME | SS_SUNKEN,1,5,186,69
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "TODO: <Company name>"
+            VALUE "FileDescription", "TODO: <File description>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "Start.exe"
+            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "OriginalFilename", "Start.exe"
+            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_START_DIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 29
+        BOTTOMMARGIN, 287
+    END
+
+    IDD_CONNECTIONDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 182
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 86
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAPCONNECT       BITMAP                  "res\\bitmap1.bmp"
+IDB_BITMAPADMIN         BITMAP                  "res\\bmpAdmin.bmp"
+IDB_BITMAPOPERATION     BITMAP                  "res\\bmpOperation.bmp"
+IDB_BITMAPCONFIG        BITMAP                  "res\\bmpConfig.bmp"
+IDB_BITMAPINSTALL       BITMAP                  "res\\bmpInstall.bmp"
+IDB_BITMAPLINE          BITMAP                  "res\\bmpLine.bmp"
+IDB_BITMAPEXPLORER      BITMAP                  "res\\bmpExplorer.bmp"
+IDB_BITMAPPOSITION      BITMAP                  "res\\bmpPOSITION.bmp"
+IDB_BITMAPEXPORT        BITMAP                  "res\\bmpEXPORT.bmp"
+IDB_BITMAPLOG           BITMAP                  "res\\bmpLog.bmp"
+IDB_BITMAPPLOTTER       BITMAP                  "res\\bmpPlotter.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_POPUP_CONNECTION MENU 
+BEGIN
+    POPUP "Connection"
+    BEGIN
+        MENUITEM "Connection",                  ID_START_CONNECTION
+        MENUITEM "Setting",                     ID_START_SETTING
+        MENUITEM "Packager",                    ID_START_PACKAGER
+        MENUITEM "Exit",                        ID_START_EXIT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDP_SOCKETS_INIT_FAILED "Windows sockets initialization failed."
+    IDP_OLE_INIT_FAILED     "OLE ????????? OLE ????????"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_START_CONNECTION     "Connect to Server\nConnection"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\Start.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"     // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

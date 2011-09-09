@@ -1,0 +1,257 @@
+<?xml version="1.0"?>
+<Matrix>
+	<Line>
+		<Survery>
+			<SurverySetup Count="3">
+				<Record LineName="1" ReceiverSection="10-21/2p1,23-50p2"/>
+				<Record LineName="2" ReceiverSection="10-21/2p3,23-50p4"/>
+				<Record LineName="3" ReceiverSection="10-21/2p5,23-50p6"/>
+			</SurverySetup>
+			<PointCodeSetup Count="3">
+				<Record Nb="1" Label="PointCode1" SensorType="s1+s2" />
+				<Record Nb="1" Label="PointCode2" SensorType="s3+s4" />
+				<Record Nb="1" Label="PointCode3" SensorType="s5+cs" />
+			</PointCodeSetup>
+			<SensorSetup Count="3">
+				<Record Nb="1" Label="Sensor1" ContinuityMin="1" ContinuityMax="5" Tilt="12" Noise="2" Leakage="3" SEGDCode="1"/>
+				<Record Nb="2" Label="Sensor2" ContinuityMin="1" ContinuityMax="5" Tilt="12" Noise="2" Leakage="3" SEGDCode="2"/>
+				<Record Nb="3" Label="Sensor3" ContinuityMin="1" ContinuityMax="5" Tilt="12" Noise="2" Leakage="3" SEGDCode="3"/>
+			</SensorSetup>
+		</Survery>
+		<Layout>
+			<MarkerSetup Count="3">
+				<Record BoxType="1" SN="1234567" LineName="1" PointNb="5" ChannelNb="12" MarkerIncrement="1" Reversed="N"/>
+				<Record BoxType="1" SN="2345678" LineName="2" PointNb="6" ChannelNb="24" MarkerIncrement="1" Reversed="N"/>
+				<Record BoxType="1" SN="3456789" LineName="3" PointNb="7" ChannelNb="30" MarkerIncrement="1" Reversed="N"/>
+			</MarkerSetup>
+			<AuxSetup Count="3">
+				<Record Nb="1" Label="pilot" BoxType="1" SN="12345671" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>
+				<Record Nb="2" Label="pilot" BoxType="1" SN="12345672" ChannelNb="1" Gain="1600" DPGNb="2" Comments="Comments1"/>
+				<Record Nb="3" Label="pilot" BoxType="1" SN="12345673" ChannelNb="1" Gain="1600" DPGNb="3" Comments="Comments1"/>
+			</AuxSetup>
+			<DetourSetup Count="3">
+				<Record BoxTypeLow="1" SNLow="123456711" ChannelNbLow="1" BoxTypeHigh="1" SNHigh="123456714" ChannelNbHigh="1"  StopMarking="N"/>
+				<Record BoxTypeLow="1" SNLow="123456712" ChannelNbLow="1" BoxTypeHigh="1" SNHigh="123456715" ChannelNbHigh="1"  StopMarking="N"/>
+				<Record BoxTypeLow="1" SNLow="123456713" ChannelNbLow="1" BoxTypeHigh="1" SNHigh="123456716" ChannelNbHigh="1"  StopMarking="N"/>
+			</DetourSetup>
+			<MuteSetup Count="3">
+				<Record LineName="1" PointNb="5"/>
+				<Record LineName="2" PointNb="6"/>
+				<Record LineName="3" PointNb="7"/>
+			</MuteSetup>				
+		</Layout>
+		<SpreadType>
+			<AbsoluteSetup Count="3">
+				<Record Nb="1" Label="Absolute1" Spread="10:101-103g1,106-115g2"/>
+				<Record Nb="2" Label="Absolute2" Spread="20:101-103g1,106-115g2"/>
+				<Record Nb="3" Label="Absolute3" Spread="30:101-103g1,106-115g2"/>
+			</AbsoluteSetup>
+			<GenericSetup Count="3">
+				<Record Nb="1" Label="Generic1" Line="50g1+50g2" Spread="10l1+10l2"/>
+				<Record Nb="2" Label="Generic2" Line="50g1+50g2" Spread="10l1+10l2"/>
+				<Record Nb="3" Label="Generic3" Line="50g1+50g2" Spread="10l1+10l2"/>
+			</GenericSetup>						
+		</SpreadType>
+		<TestSetup>
+			<Instrument Count="3">
+				<Record TestNb="1" TestType="1" Gain="1" RecordLength="1000" Recorded="Y" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="10:101-103g1,106-115g2"/>
+				<Record TestNb="2" TestType="2" Gain="1" RecordLength="1000" Recorded="Y" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="10:101-103g1,106-115g2"/>
+				<Record TestNb="3" TestType="3" Gain="1" RecordLength="1000" Recorded="Y" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="10:101-103g1,106-115g2"/>				
+			</Instrument>
+			<Sensor Count="3">
+				<Record TestNb="1" TestType="1" Recorded="Y" AbsoluteSpread="10:101-103g1,106-115g2"/>
+				<Record TestNb="2" TestType="2" Recorded="Y" AbsoluteSpread="10:101-103g1,106-115g2"/>
+				<Record TestNb="3" TestType="3" Recorded="Y" AbsoluteSpread="10:101-103g1,106-115g2"/>
+			</Sensor>
+			<Multiple Count="10">
+				<TestSetup Count="3" Name="Test1" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+					<Record LineNb="1" TestType="1" Gain="1" LoopLineNb="0" NbLoops="0" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="10:101-103g1,106-115g2"/>
+					<Record LineNb="2" TestType="2" Gain="1" LoopLineNb="0" NbLoops="0" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="10:101-103g1,106-115g2"/>
+					<Record LineNb="3" TestType="3" Gain="1" LoopLineNb="0" NbLoops="0" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="10:101-103g1,106-115g2"/>
+				</TestSetup>
+				<TestSetup Count="0" Name="Test2" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+				</TestSetup>
+				<TestSetup Count="0" Name="Test3" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+				</TestSetup>
+				<TestSetup Count="0" Name="Test4" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+				</TestSetup>
+				<TestSetup Count="0" Name="Test5" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+				</TestSetup>
+				<TestSetup Count="0" Name="Test6" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+				</TestSetup>
+				<TestSetup Count="0" Name="Test7" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+				</TestSetup>
+				<TestSetup Count="0" Name="Test8" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+				</TestSetup>
+				<TestSetup Count="0" Name="Test9" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+				</TestSetup>
+				<TestSetup Count="0" Name="Test10" DelayBetweenTest="0" RecordResults="N" RecordLength="1000" TestFileNb="0">
+				</TestSetup>																																			
+			</Multiple>
+			<SeisMonitor Count="1">
+				<Record AbsoluteSpread="10:101-103g1,106-115g2"/>
+			</SeisMonitor>
+		</TestSetup>
+		<LAULeakage Count="1">
+			<Record Limit="20"/>
+		</LAULeakage>
+		<Look Count="1">
+			<Record AutoLook="Y" Resistance="Y" Tilt="Y" Leakage="Y"/>
+		</Look>
+		<FormLine Count="3">
+			<Record Nb="1" SN="100100" Orientation="1" Enable="N"/>
+			<Record Nb="2" SN="100100" Orientation="2" Enable="N"/>
+			<Record Nb="3" SN="100100" Orientation="3" Enable="N"/>
+		</FormLine>
+		<InstrumentList Count="2">
+			<MainCross SN="100100" IP="10001000" RoutIPTop="1" RoutIPDown="1" RoutIPLeft="1" RoutIPRight="1" LineNb="10" PointNb="50" ChannelNb="1">
+				<MainCrossTop Count="1">
+					<Cross SN="100100" IP="10001000" RoutIPLeft="1" RoutIPRight="1" LineNb="10" PointNb="50" ChannelNb="1">
+						<CrossLeft Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+						</CrossLeft>
+						<CrossRight Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>						
+						</CrossRight>
+					</Cross>
+				</MainCrossTop>
+				<MainCrossDown Count="2">
+					<Cross SN="100100" IP="10001000" RoutIPLeft="1" RoutIPRight="1" LineNb="10" PointNb="50" ChannelNb="1">
+						<CrossLeft Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+						</CrossLeft>
+						<CrossRight Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>						
+						</CrossRight>
+					</Cross>
+					<Cross SN="100100" IP="10001000" RoutIPLeft="1" RoutIPRight="1" LineNb="10" PointNb="50" ChannelNb="1">
+						<CrossLeft Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+						</CrossLeft>
+						<CrossRight Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>						
+						</CrossRight>
+					</Cross>									
+				</MainCrossDown>				
+				<MainCrossLeft Count="3">
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>				
+				</MainCrossLeft>
+				<MainCrossRight Count="3">
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>					
+				</MainCrosRight>								
+			</MainCross>
+			<MainCross SN="100100" IP="10001000" RoutIPTop="1" RoutIPDown="1" RoutIPLeft="1" RoutIPRight="1" LineNb="10" PointNb="50" ChannelNb="1">
+				<MainCrossTop Count="1">
+					<Cross SN="100100" IP="10001000" RoutIPLeft="1" RoutIPRight="1" LineNb="10" PointNb="50" ChannelNb="1">
+						<CrossLeft Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+						</CrossLeft>
+						<CrossRight Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>						
+						</CrossRight>
+					</Cross>
+				</MainCrossTop>
+				<MainCrossDown Count="2">
+					<Cross SN="100100" IP="10001000" RoutIPLeft="1" RoutIPRight="1" LineNb="10" PointNb="50" ChannelNb="1">
+						<CrossLeft Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+						</CrossLeft>
+						<CrossRight Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>						
+						</CrossRight>
+					</Cross>
+					<Cross SN="100100" IP="10001000" RoutIPLeft="1" RoutIPRight="1" LineNb="10" PointNb="50" ChannelNb="1">
+						<CrossLeft Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+						</CrossLeft>
+						<CrossRight Count="3">
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+							<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>						
+						</CrossRight>
+					</Cross>									
+				</MainCrossDown>				
+				<MainCrossLeft Count="3">
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>				
+				</MainCrossLeft>
+				<MainCrossRight Count="3">
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>
+					<Instrument SN="100100" IP="10001000" LineNb="10" PointNb="50" ChannelNb="1"/>					
+				</MainCrosRight>								
+			</MainCross>			
+		</InstrumentList>
+		<SensorList Count="3">
+			<Line Count="3" Nb="10">
+				<Point Count="3" Nb="1" PointCode="s1+cs+cs">
+					<Channel Nb="1" SensorNb="1" Jumped="N" IP="10001000" SN="100100"/>
+					<Channel Nb="2" SensorNb="0" Jumped="Y" IP="10001000" SN="100100"/>
+					<Channel Nb="3" SensorNb="0" Jumped="Y" IP="10001000" SN="100100"/>
+				</Point>
+				<Point Count="2" Nb="2" PointCode="s1+cs">
+					<Channel Nb="1" SensorNb="1" Jumped="N" IP="10001000" SN="100100"/>
+					<Channel Nb="2" SensorNb="0" Jumped="Y" IP="10001000" SN="100100"/>
+				</Point>
+				<Point Count="1" Nb="2" PointCode="s1">
+					<Channel Nb="1" SensorNb="1" Jumped="N" IP="10001000" SN="100100"/>
+				</Point>
+			</Line>
+			<Line Count="3" Nb="11">
+				<Point Count="3" Nb="1" PointCode="s1+cs+cs">
+					<Channel Nb="1" SensorNb="1" Jumped="N" IP="10001000" SN="100100"/>
+					<Channel Nb="2" SensorNb="0" Jumped="Y" IP="10001000" SN="100100"/>
+					<Channel Nb="3" SensorNb="0" Jumped="Y" IP="10001000" SN="100100"/>
+				</Point>
+				<Point Count="2" Nb="2" PointCode="s1+cs">
+					<Channel Nb="1" SensorNb="1" Jumped="N" IP="10001000" SN="100100"/>
+					<Channel Nb="2" SensorNb="0" Jumped="Y" IP="10001000" SN="100100"/>
+				</Point>
+				<Point Count="1" Nb="2" PointCode="s1">
+					<Channel Nb="1" SensorNb="1" Jumped="N" IP="10001000" SN="100100"/>
+				</Point>
+			</Line>
+			<Line Count="3" Nb="12">
+				<Point Count="3" Nb="1" PointCode="s1+cs+cs">
+					<Channel Nb="1" SensorNb="1" Jumped="N" IP="10001000" SN="100100"/>
+					<Channel Nb="2" SensorNb="0" Jumped="Y" IP="10001000" SN="100100"/>
+					<Channel Nb="3" SensorNb="0" Jumped="Y" IP="10001000" SN="100100"/>
+				</Point>
+				<Point Count="2" Nb="2" PointCode="s1+cs">
+					<Channel Nb="1" SensorNb="1" Jumped="N" IP="10001000" SN="100100"/>
+					<Channel Nb="2" SensorNb="0" Jumped="Y" IP="10001000" SN="100100"/>
+				</Point>
+				<Point Count="1" Nb="2" PointCode="s1">
+					<Channel Nb="1" SensorNb="1" Jumped="N" IP="10001000" SN="100100"/>
+				</Point>
+			</Line>						
+		</SensorList>
+	</Line>
+</Matrix>

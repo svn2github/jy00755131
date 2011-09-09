@@ -1,0 +1,320 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="CAboutDlg" Collapsed="true">
+    <Position X="4.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAhBAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Operation.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CActiveShot" Collapsed="true">
+    <Position X="8.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAIgAAhAAIAAAgEBAEAQAAAACEkSAAgBAAAEIBEAAA=</HashCode>
+      <FileName>ActiveShot.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CActiveSourceView" Collapsed="true">
+    <Position X="9.75" Y="1.5" Width="2.25" />
+    <NestedTypes>
+      <Enum Name="CActiveSourceView::__unnamed_0201_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ActiveSourceView.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>gIABAAAAQgESCAAAGhFAhAACABAAAgAgEIAAAAAAAAA=</HashCode>
+      <FileName>ActiveSourceView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CActiveSourceWnd" Collapsed="true">
+    <Position X="9.75" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AABBCAAEAAMAAEAAAgBAEAAAAKAAAEAAAAABCAAAAAA=</HashCode>
+      <FileName>ActiveSourceView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CXMLDOMDocument" Collapsed="true">
+    <Position X="13.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEDgYAAjEJqiZxLCiGAmAgOACSAADAxAAEWAgEEAACc=</HashCode>
+      <FileName>CXMLDOMDocument.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CXMLDOMElement" Collapsed="true">
+    <Position X="13.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>4ABAIAADAAoSQwBKgAAGAgMACyIACAhAAASAgEEACCI=</HashCode>
+      <FileName>CXMLDOMElement.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CXMLDOMNode" Collapsed="true">
+    <Position X="13.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABAIAADAAoCQwBCiAAGAgMACSAACAhAAASAgEEAACI=</HashCode>
+      <FileName>CXMLDOMNode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CXMLDOMNodeList" Collapsed="true">
+    <Position X="13.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAACAEAQAAAACAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>CXMLDOMNodeList.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CGridWorkspace" Collapsed="true">
+    <Position X="8" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAUEMgCABAAiBAEAAAACAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>GridWorkspace.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVPAllGridWnd" Collapsed="true">
+    <Position X="6.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAUAABAAAAAiBAAAQAAAAAAAABAAABAAAAAAA=</HashCode>
+      <FileName>GridWorkspace.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVPToDoGridWnd" Collapsed="true">
+    <Position X="8" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAUEAAAAAAAiBAAAAAABAAAgAAEAABAAAAEIA=</HashCode>
+      <FileName>GridWorkspace.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CVPDoneGridWnd" Collapsed="true">
+    <Position X="10" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgEAUEAAAAAAAiBAAAAAABAAAAEAEAABAAAAAAA=</HashCode>
+      <FileName>GridWorkspace.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CIPList" Collapsed="true">
+    <Position X="6.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAIAAAAAgAAgAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\LineStruct.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CMainFrame" Collapsed="true">
+    <Position X="6.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgFCBBAQAAAIAABKkBgiEABiDZAAgAyGChaJoALJDA=</HashCode>
+      <FileName>MainFrm.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShotPoint" Collapsed="true">
+    <Position X="1.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAgUAAAAABAgAAAIgAAAAICAAAAAoABQAAAAAgAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShotSource" Collapsed="true">
+    <Position X="11" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAQAgAAAAAAAAAIQAAAAAAAAAAEABAgAAAAgoAAQAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShotSourceExplo" Collapsed="true">
+    <Position X="9.75" Y="9.25" Width="1.75" />
+    <InheritanceLine Type="CShotSource" ManuallyRouted="true">
+      <Path>
+        <Point X="11.75" Y="8.517" />
+        <Point X="11.75" Y="8.875" />
+        <Point X="10.625" Y="8.875" />
+        <Point X="10.625" Y="9.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShotSourceVibro" Collapsed="true">
+    <Position X="12.25" Y="9.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>IAAAAgAAAAAAAAAAACAAAAAAAAAABAAAAAAAACAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShotSpread" Collapsed="true">
+    <Position X="3" Y="6.25" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAQAAIAAAAAYAAABAAAAAAoAAAAIAQAEAAAAAAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessType" Collapsed="true">
+    <Position X="3.25" Y="9" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ABQQBAAIAAAABQAAIEAAAAAAAAAAAAAwAAAAIAAgAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessImpulsive" Collapsed="true">
+    <Position X="3.25" Y="10" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQQAAAAAAAABAAAIEAACAAAAAAAAAAQQAAAAAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShotClient" Collapsed="true">
+    <Position X="10.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIACAEAAAAAAAAAAAECAAABAAQEAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="COperationApp" Collapsed="true">
+    <Position X="6.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAgBAAAABAACAAAQAAAABAAACAAA=</HashCode>
+      <FileName>Operation.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="COperationDoc" Collapsed="true">
+    <Position X="6.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAGgBAgAAAADAgEgAAEAAAAAAAAAA=</HashCode>
+      <FileName>OperationDoc.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="COperationLog" Collapsed="true">
+    <Position X="6.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAQAAAAAAAAAAEAKAAAAAAAAAAAAAQAAAAACAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperationLog.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="COperationParseXML" Collapsed="true">
+    <Position X="6.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQBAAEAAAAAAgAABABkAQAAAAAAAAAAAAAAEAAIAGAA=</HashCode>
+      <FileName>OperationParseXML.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="COperationView" Collapsed="true">
+    <Position X="6.5" Y="6.25" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="COperationView::__unnamed_01e8_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>OperationView.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAQAAIIQAFAAAAAGhBAgAABgBAAAwAQEAgoAAAAAQA=</HashCode>
+      <FileName>OperationView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CProcessTypes" Collapsed="true">
+    <Position X="4.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAAAAAAAAABAAAAAAAAAAACIAAAAAAgAAA=</HashCode>
+      <FileName>ProcessTypes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShotPoints" Collapsed="true">
+    <Position X="4.25" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAYAAgAAAAAAAAAABAAAAAAAAAAAAAAAAAQAAEACAAA=</HashCode>
+      <FileName>ShotPoints.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShotSources" Collapsed="true">
+    <Position X="4.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAQAAAAAAAAAgAAAAAAAAAAABAAAgAAAAAE=</HashCode>
+      <FileName>ShotSources.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CShotSpreads" Collapsed="true">
+    <Position X="4.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAQQAAAAAAAAAABAAAAAAAAAAAiAAAAAAAA=</HashCode>
+      <FileName>ShotSpreads.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSocketShotServer" Collapsed="true">
+    <Position X="10.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAYABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ShotSvrSocket.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CXMLDOMTool" Collapsed="true">
+    <Position X="13.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACQAAEAEIAAAAAAAIAAAAAAAAgAAAIAAIACAA=</HashCode>
+      <FileName>XMLDOMTool.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="tagSHOTSPREAD" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAABAAAAAAAAAAAQBAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="tagAuxiChannel" Collapsed="true">
+    <Position X="0.5" Y="9.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="SHOTSPREAD" Collapsed="true">
+    <Position X="0.5" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="AUXICHANNEL" Collapsed="true">
+    <Position X="0.5" Y="9" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Enum Name="VPSTATE" Collapsed="true">
+    <Position X="15" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABBAAAAAAAAAAAAAAQEAAABAAAAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="OperatingMode" Collapsed="true">
+    <Position X="15" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAQAQQAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="OperatingAuto" Collapsed="true">
+    <Position X="15" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="VibroMoving" Collapsed="true">
+    <Position X="15" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SourceState" Collapsed="true">
+    <Position X="15" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAACA=</HashCode>
+      <FileName>e:\沈志军\程序\Matrix\common\OperaStruct.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="宋体" Size="9" />
+</ClassDiagram>

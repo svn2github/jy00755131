@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="gb2312" ?>
+<Matrix>
+	<ClientComputer 	HostIP = "192.168.0.10" />
+	<FTPServer 				HostIP = "127.0.0.1" />	
+</Matrix>

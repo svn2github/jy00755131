@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Matrix>
+	<CrewSetup CrewName="Crew名字">
+		<samplerate Index="0" AllValue="4k;2k;1k;500;333;250;200;125;100;50;40;25;20;10;5"/>
+		<Gain3301 Index="1" AllValue="x1;x2;x4;x8;x16;x32;x64"/>
+		<FilterFIR Index="1" AllValue="NULL;线性相位;最小相位"/>
+		<FilterIIR Index="0" AllValue="NULL;0.15IIR1;0.30IIR1;0.60IIR1;0.90IIR1;1.20IIR1;0.15IIR2;0.30IIR2;0.60IIR2;0.90IIR2;1.20IIR2;0.2041IIR3;0.4074IIR3;0.8152IIR3;1.2222IIR3;1.6293IIR3"/>
+		<Mux3301 Index="2" AllValue="800欧接地;通道B;通道A;通道A+B"/>
+		<Mode5373 Index="0" AllValue="ad使能,DA休眠;ad使能,AC输出且buf输出;ad使能,AC输出且buf高阻;ad使能,输出高阻;ad使能,DC普通模式输出;ad使能,DC差分输出;ad使能,AC普通模式输出;ad休眠,DA休眠"/>
+		<Attr5373 Index="0" AllValue="0db;-6db;-12db;-18db;-24db;-30db;-36db;保留"/>
+	</CrewSetup>
+	<UserInfo Text="放炮信息，SEGD特殊示例AAAACCCCbbbbbbbbbbbbbb"/>
+	<SEGDSetup Mode="Standard" SEGDLevel="REV2.1" NumberOfRecordChannelSets="16" ExternalHeaderSize="1K"/>
+	<DiskRecord Mode="Standard" BackupSettings="1" FileDirectory="E:\Temp\temp"/>
+</Matrix>

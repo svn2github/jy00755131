@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Matrix>
+	<Install>
+		<Peripherals VibratorType="VE432" BlasterType="SHOT PRO" BlasterBaudRate="19200" NbOfPlotters="1" PlotterType1="Plotter12" PlotterName1="Plotter111" PlotterMacAddress1="00:00:22:33:44:55" PlotterType2="Plotter24" PlotterName2="Plotter222" PlotterMacAddress2="00:11:22:33:44:55"/>
+		<MainCross MainCrossIP="192.168.0.11" MainCrossPort="30583"/>
+	</Install>
+</Matrix>
