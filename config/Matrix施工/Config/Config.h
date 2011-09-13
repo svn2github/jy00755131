@@ -3,7 +3,7 @@
 #pragma once
 
 #ifndef __AFXWIN_H__
-	#error "include 'stdafx.h' before including this file for PCH"
+	#error include 'stdafx.h' before including this file for PCH
 #endif
 
 #include "resource.h"       // main symbols
@@ -17,7 +17,7 @@
 #include "..\common\LogMapping.h"
 #include "SocketConfig.h"
 class CConfigApp : public CWinApp,
-					public CBCGPWorkspace
+							public CBCGPWorkspace
 {
 public:
 	CConfigApp();
@@ -33,7 +33,7 @@ public:
 	CSocketConfig	m_sockConfig;
 	/** 日志内存映射区*/
 	CLogMapping		m_LogMapping;
-// 方法
+	// 方法
 public:	
 	/// 初始化参数
 	BOOL		InitParam();
@@ -43,14 +43,14 @@ public:
 	bool	SaveXMLToFTPServer();
 	/// 写日志
 	void		WriteLog(LPCTSTR strPosition,LPCTSTR strDesc,WORD wType=LOGTYPE_NORMAL,BOOL bShowed=FALSE);
-// Overrides
+	// Overrides
 public:
-// Implementation
+	// Implementation
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
-	
+
 };
 
 extern CConfigApp theApp;

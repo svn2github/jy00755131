@@ -18,7 +18,7 @@ public:
 public:
 
 // Overrides
-public:
+	public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
 

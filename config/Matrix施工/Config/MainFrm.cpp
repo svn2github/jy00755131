@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Config.h"
+
 #include "MainFrm.h"
 #include "ConfigDoc.h"
 #include "ConfigView.h"
@@ -11,25 +12,29 @@
 #include "DlgUserInfo.h"
 #include "DlgSEGDSetup.h"
 #include "DlgDiskRecord.h"
+#include "DlgSPSSetup.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
 // CMainFrame
-//添加的标识只运行一次的属性名, 自己定义一个属性值
-extern CString	 g_strProgName;
-extern HANDLE    g_hProgValue;  
 
-IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
+IMPLEMENT_DYNCREATE(CMainFrame, CBCGPFrameWnd)
 
-BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
+const int  iMaxUserToolbars		= 10;
+const UINT uiFirstUserToolBarId	= AFX_IDW_CONTROLBAR_FIRST + 40;
+const UINT uiLastUserToolBarId	= uiFirstUserToolBarId + iMaxUserToolbars - 1;
+
+BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_REGISTERED_MESSAGE(BCGM_RESETTOOLBAR, OnToolbarReset)
 	ON_COMMAND(ID_SETUP_CREW, &CMainFrame::OnSetupCrew)
 	ON_COMMAND(ID_SETUP_USERINFO, &CMainFrame::OnSetupUserinfo)
 	ON_COMMAND(ID_SETUP_SEGD, &CMainFrame::OnSetupSegd)
+	ON_COMMAND(ID_SETUP_SPS, &CMainFrame::OnSetupSps)
 	ON_COMMAND(ID_SETUP_DISKRECORD, &CMainFrame::OnSetupDiskrecord)
 	ON_COMMAND(ID_LINE_ON, &CMainFrame::OnLineOn)
 	ON_COMMAND(ID_LINE_OFF, &CMainFrame::OnLineOff)
@@ -44,7 +49,6 @@ static UINT indicators[] =
 	ID_INDICATOR_SCRL,
 };
 
-
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame()
@@ -58,24 +62,29 @@ CMainFrame::~CMainFrame()
 {
 }
 
-
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
+	if (CBCGPFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
+	// 设置界面风格
 	CBCGPVisualManager2007::SetStyle (CBCGPVisualManager2007::VS2007_Silver);
 	CBCGPVisualManager::SetDefaultManager (RUNTIME_CLASS (CBCGPVisualManager2007));
 
+	// 创建菜单栏
 	if (!m_wndMenuBar.Create (this))
 	{
 		TRACE0("Failed to create menubar\n");
 		return -1;      // fail to create
 	}
+
 	m_wndMenuBar.SetBarStyle(m_wndMenuBar.GetBarStyle() | CBRS_SIZE_DYNAMIC);
 
+	// Detect color depth. 256 color toolbars can be used in the
+	// high or true color modes only (bits per pixel is > 8):
 	CClientDC dc (this);
 	BOOL bIsHighColor = dc.GetDeviceCaps (BITSPIXEL) > 8;
+	// 创建工具条
 	UINT uiToolbarHotID = bIsHighColor ? IDB_MAINFRAME256 : IDR_MAINFRAME;
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
 		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,CRect(1,1,1,1),IDR_MAINFRAME) ||
@@ -84,6 +93,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create toolbar\n");
 		return -1;      // fail to create
 	}
+	// 创建工具条
 	uiToolbarHotID = bIsHighColor ? IDB_ONOFFLINE256 : IDR_ONOFFLINE;
 	if (!m_wndToolBarLine.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
 		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,CRect(1,1,1,1),IDR_ONOFFLINE) ||
@@ -95,7 +105,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	if (!m_wndStatusBar.Create(this) ||
 		!m_wndStatusBar.SetIndicators(indicators,
-		  sizeof(indicators)/sizeof(UINT)))
+		sizeof(indicators)/sizeof(UINT)))
 	{
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
@@ -107,17 +117,18 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndToolBarLine.EnableDocking(CBRS_ALIGN_ANY);
-	
+
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndMenuBar);
 	// DockControlBar(&m_wndToolBar);
 	DockControlBar(&m_wndToolBarLine);
 	DockControlBarLeftOf(&m_wndToolBar,&m_wndToolBarLine);
 	// 设置程序属性，确保程序仅允许一次	
-	SetProp(m_hWnd,g_strProgName,g_hProgValue);
+//	SetProp(m_hWnd,g_strProgName,g_hProgValue);
+	// VISUAL_MANAGER
 	return 0;
 }
-
+// 将视图分割为两个视图
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs,CCreateContext* pContext)
 {		
 	// 切分窗口为上下两个视图
@@ -144,18 +155,11 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs,CCreateContext* pContext)
 	//////////////////////////////////////////////////////////////////////////
 	// 设置切分成功标志为TRUE
 	m_bSplitter = TRUE ;
-/**/
-
-
-	//return CFrameWnd::OnCreateClient(lpcs, pContext);
 	return TRUE;
-
-
 }
-
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
-	if( !CFrameWnd::PreCreateWindow(cs) )
+	if( !CBCGPFrameWnd::PreCreateWindow(cs) )
 		return FALSE;
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
@@ -169,21 +173,18 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
 {
-	CFrameWnd::AssertValid();
+	CBCGPFrameWnd::AssertValid();
 }
 
 void CMainFrame::Dump(CDumpContext& dc) const
 {
-	CFrameWnd::Dump(dc);
+	CBCGPFrameWnd::Dump(dc);
 }
 
 #endif //_DEBUG
 
 
 // CMainFrame message handlers
-
-
-
 
 void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
@@ -207,18 +208,10 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 			m_wndSplitter.RecalcLayout() ; 
 		}
 	}
-	
 }
-/**
- * @brief 响应BCGM_RESETTOOLBAR消息，处理工具栏
- * @note  在框架程序启动时，从资源库中创建工具栏时，发送 BCGM_RESETTOOLBAR。
- 该函数处理此消息，初始化工具栏各个按钮。
- * @param  WPARAM wp，工具栏资源ID
- * @return LRESULT
- */
+
 LRESULT CMainFrame::OnToolbarReset(WPARAM wp,LPARAM)
 {
-
 	UINT uiToolBarId = (UINT) wp;
 	switch (uiToolBarId)
 	{
@@ -312,13 +305,14 @@ LRESULT CMainFrame::OnNewLog(WPARAM wParam, LPARAM lParam)
 	CString  strLog;
 	// 生成需要显示的日志文本字符串
 	LogRecord.GetShowString(strLog);
-	
+
 	CStatusView *pView = (CStatusView*)m_wndSplitter.GetPane(1,0);
 	// 显示在试图中
 	pView->AppendLog(strLog);
-	
+
 	return 0;
 }
+ // RIBBON_APP
 void CMainFrame::OnSetupCrew()
 {
 	// TODO: 在此添加命令处理程序代码
@@ -346,6 +340,13 @@ void CMainFrame::OnSetupDiskrecord()
 	CDlgDiskRecord  dlg;
 	dlg.DoModal();
 }
+void CMainFrame::OnSetupSps()
+{
+	// TODO: 在此添加命令处理程序代码
+	CDlgSPSSetup dlg;
+	dlg.DoModal();
+}
+
 /**
  * @brief 处理ON Line事件
  * @note  点击 “On Line”将启用数据采集和记录

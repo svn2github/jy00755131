@@ -6,6 +6,7 @@
 
 #include "ConfigDoc.h"
 #include "ConfigView.h"
+
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -25,7 +26,7 @@ END_MESSAGE_MAP()
 // CConfigView construction/destruction
 
 CConfigView::CConfigView()
-	: CBCGPFormView(CConfigView::IDD)
+: CBCGPFormView(CConfigView::IDD)
 {
 	// TODO: add construction code here
 	EnableVisualManagerStyle ();

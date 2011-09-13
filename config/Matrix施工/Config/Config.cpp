@@ -13,28 +13,13 @@
 #endif
 
 
-//添加的标识只运行一次的属性名, 自己定义一个属性值,
-// 在创建主框架时调用SetProp函数设置窗口属性。
-CString	 g_strProgName = _T("配置客户端V2011");
-HANDLE   g_hProgValue = (HANDLE)2;               
-// 被EnumWindows函数调用的回调函数，依据属性查找窗口
-BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
-{
-	HANDLE h = GetProp(hwnd,g_strProgName);
-	if( h == g_hProgValue)
-	{
-		*(HWND*)lParam = hwnd;
-		return false;
-	}
-	return true;
-}
-
 // CConfigApp
+
 BEGIN_MESSAGE_MAP(CConfigApp, CWinApp)
-	ON_COMMAND(ID_APP_ABOUT, &CConfigApp::OnAppAbout)
+	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
+	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
+	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
 END_MESSAGE_MAP()
 
 
@@ -61,14 +46,6 @@ CConfigApp theApp;
 
 BOOL CConfigApp::InitInstance()
 {
-	HWND oldHWnd = NULL;
-	EnumWindows(EnumWndProc,(LPARAM)&oldHWnd);    //枚举所有运行的窗口
-	if(oldHWnd != NULL)
-	{		
-		::ShowWindow(oldHWnd,SW_SHOWNORMAL);          //激活找到的前一个程序
-		::SetForegroundWindow(oldHWnd);                //把它设为前景窗口
-		return false;                                  //退出本次运行
-	}
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
@@ -94,6 +71,9 @@ BOOL CConfigApp::InitInstance()
 		return FALSE;
 	}
 	AfxEnableControlContainer();
+
+	globalData.SetDPIAware ();
+
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
 	// of your final executable, you should remove from the following
@@ -101,8 +81,10 @@ BOOL CConfigApp::InitInstance()
 	// Change the registry key under which our settings are stored
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
-	SetRegistryKey(_T("BCGSoft\\BCGControlBarPro\\Samples"));
-//	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
+
+	SetRegistryKey(_T("BCGP AppWizard-Generated Applications"));
+	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
+
 	SetRegistryBase (_T("Settings"));
 
 	InitContextMenuManager();
@@ -135,10 +117,9 @@ BOOL CConfigApp::InitInstance()
 	m_pMainWnd->UpdateWindow();
 	// call DragAcceptFiles only if there's a suffix
 	//  In an SDI app, this should occur after ProcessShellCommand
+	
 	return TRUE;
 }
-
-
 
 // CAboutDlg dialog used for App About
 

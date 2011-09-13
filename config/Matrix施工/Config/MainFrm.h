@@ -3,8 +3,8 @@
 
 
 #pragma once
-#define CFrameWnd CBCGPFrameWnd
-class CMainFrame : public CFrameWnd
+
+class CMainFrame : public CBCGPFrameWnd
 {
 	
 protected: // create from serialization only
@@ -16,19 +16,14 @@ protected:
 	// 拆分窗口
 	CBCGPSplitterWnd	m_wndSplitter;
 	BOOL				m_bSplitter;
-
 protected:  // control bar embedded members
-	CBCGPMenuBar		m_wndMenuBar;
-	CBCGPStatusBar		m_wndStatusBar;
-	CBCGPToolBar		m_wndToolBar;
+	CBCGPStatusBar			m_wndStatusBar;
+	CBCGPMenuBar			m_wndMenuBar;
+	CBCGPToolBar			m_wndToolBar;
 	CBCGPToolBar		m_wndToolBarLine;
 private:
 	/** 显示模式：TRUE=紧凑；FALSE=正常 */
 	BOOL				m_bCompactMode;
-
-// Operations
-public:
-
 // Overrides
 public:
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
@@ -45,12 +40,13 @@ public:
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg LRESULT OnToolbarReset(WPARAM,LPARAM);	
+	afx_msg LRESULT OnToolbarReset(WPARAM,LPARAM);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnSetupCrew();
 	afx_msg void OnSetupUserinfo();
 	afx_msg void OnSetupSegd();
 	afx_msg void OnSetupDiskrecord();
+	afx_msg void OnSetupSps();
 	afx_msg void OnLineOn();
 	afx_msg void OnLineOff();
 	afx_msg LRESULT OnNewLog(WPARAM wParam, LPARAM lParam);

@@ -228,6 +228,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgSPSSetup.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgUserInfo.cpp"
 				>
 			</File>
@@ -339,6 +343,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgSEGDSetup.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgSPSSetup.h"
 				>
 			</File>
 			<File
