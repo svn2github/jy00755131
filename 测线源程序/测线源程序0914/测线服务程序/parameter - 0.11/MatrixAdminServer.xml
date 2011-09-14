@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Matrix>
+	<AdminServer IP="192.168.0.11"/>
+	<Users Count="13">
+			<Record UserName="AAAAA" Password="12345" UserRole="Observer" RegistrationDate="2010-12-18 13:34:54" ExpiredMode="0" ExpiryDate="2010-12-30 13:34:54" AutoDelete="0" LastUsed="2011-03-06 20:43:22"/>
+			<Record UserName="BBBBB" Password="12345" UserRole="Senior Observer" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="0" ExpiryDate="2011-12-30 13:34:54" AutoDelete="0" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="User" Password="12345" UserRole="Senior Observer" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="1" ExpiryDate="2011-12-30 00:00:00" AutoDelete="1" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="User2" Password="12345" UserRole="Senior Observer" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="0" ExpiryDate="2011-12-30 13:34:54" AutoDelete="0" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="User3" Password="12345" UserRole="Observer" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="0" ExpiryDate="2011-12-30 13:34:54" AutoDelete="0" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="User4" Password="12345" UserRole="Senior Observer" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="0" ExpiryDate="2011-12-30 13:34:54" AutoDelete="0" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="User5" Password="12345" UserRole="Observer" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="0" ExpiryDate="2011-12-30 13:34:54" AutoDelete="0" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="User6" Password="12345" UserRole="Guest" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="0" ExpiryDate="2011-12-30 13:34:54" AutoDelete="0" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="User7" Password="12345" UserRole="Observer" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="0" ExpiryDate="2011-12-30 00:00:00" AutoDelete="0" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="User8" Password="12345" UserRole="Observer" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="0" ExpiryDate="2011-12-30 00:00:00" AutoDelete="0" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="User9" Password="12345" UserRole="Guest" RegistrationDate="2010-12-10 13:34:54" ExpiredMode="1" ExpiryDate="2012-01-01 00:00:00" AutoDelete="1" LastUsed="2010-12-19 13:34:54"/>
+			<Record UserName="user10" Password="1111" UserRole="Guest" RegistrationDate="2011-02-24 22:55:25" ExpiredMode="0" ExpiryDate="2011-02-24 22:55:25" AutoDelete="0" LastUsed="2011-02-24 22:55:25"/>
+			<Record UserName="User11" Password="12345" UserRole="Observer" RegistrationDate="2011-02-24 23:06:04" ExpiredMode="1" ExpiryDate="2011-06-01 00:00:00" AutoDelete="1" LastUsed="2011-02-24 23:06:04"/>
+		</Users>	
+</Matrix>

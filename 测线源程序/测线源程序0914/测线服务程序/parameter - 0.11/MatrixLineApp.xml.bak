@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Matrix>
+	<Line>
+		<LineServerAppSetup>
+			<LineServerAppIPSetup IPFTPServer="192.168.0.11" IPForInstrument="192.168.0.11" IPForInterface="192.168.0.11" IPLCI="255.255.255.255"/>
+			<LineServerAppPortSetup PortLCI="33282" PortForHeartBeat="28672" PortForHeadFrame="32768" PortForTailFrame="36864" PortForTailFrameSend="49152" PortForIPSet="37120" PortForTailTimeFrame="37376" PortForTimeSet="37632" PortForTestSetBase="37888" PortForTestDataFrameBase="38145" PortForTestSetNoise="38400" PortForTestDataFrameNoise="38656" PortForCmdRev="24576" PortForCmdSend="25088" PortForCmdSendToLine="24832" PortForCmdSendToOperation="49168" PortForDataSendTest="25600" PortForDataSendMonitor="26112" PortForDataSendTo="25344"/>
+			<LineServerAppBufferSizeSetup InstrumentCountAll="20000" IPTempCountAll="2000" LineCountAll="50" PointCountAll="20000" ChannelCountAll="20000" TestElementCountAll="20000"/>
+		</LineServerAppSetup>
+		<LineClientAppSetup>
+			<LineClientAppIPSetup IPFTPServer="192.168.0.11" IPForInterface="192.168.0.11"/>
+			<LineClientAppPortSetup PortForCmdRev="24832" PortForDataRev="25344" PortForCmdSend="25856" PortForCmdSendToServer="24576" PortForCmdSendToOperation="49168"/>
+			<LineClientAppBufferSizeSetup InstrumentCountAll="20000" ChannelCountAll="20000"/>
+		</LineClientAppSetup>
+		<LineSimAppSetup>
+			<LineSimAppIPSetup IPForInterface="192.168.0.11" IPLCI="192.168.0.11"/>
+			<LineSimAppPortSetup PortLCI="30583" PortForCmdSend="26368" PortForCmdSendTo="24576"/>
+		</LineSimAppSetup>
+	</Line>
+</Matrix>
