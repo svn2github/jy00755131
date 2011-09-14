@@ -528,16 +528,17 @@ void CFraseSPSToXML::SaveMatrixIniXMLFile_operation(CString strPath)
 	m_oXMLDOMDocument_operation.save(oVariant);
 }
 // 载入SPS文件
-void CFraseSPSToXML::LoadSPSFile(CString strPath)
+BOOL CFraseSPSToXML::LoadSPSFile(CString strRFilePath, CString strXFilePath)
 {
-	if (FALSE == read_file_rec(strPath))
+	if (FALSE == read_file_rec(strRFilePath))
 	{
-		return;
+		return FALSE;
 	}
-	if (FALSE == read_file_comm(strPath))
+	if (FALSE == read_file_comm(strXFilePath))
 	{
-		return;
+		return FALSE;
 	}
+	return TRUE;
 }
 
 // 保存修改到测线XML文件

@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\configparsexml.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ConfigView.cpp"
 				>
 			</File>

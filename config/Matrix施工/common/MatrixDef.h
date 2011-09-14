@@ -33,6 +33,7 @@ extern      UINT NEAR WM_NEWXMLFILE;		// ÔÚSocketGlobalFunction.cppÎÄ¼þÖÐ³õÊ¼»¯¶
 #define		MATRIX_CONFIG_USERINFO		2		// Userinfo¸üÐÂ
 #define		MATRIX_CONFIG_SEGDSETUP		3		// SEGDSetup¸üÐÂ
 #define		MATRIX_CONFIG_DISKRECORD	4		// DiskRecord¸üÐÂ
+#define		MATRIX_CONFIG_SPSSETUP	5		// SPSSetup¸üÐÂ
 
 //////////////////////////////////////////////////////////////////////////
 // Install

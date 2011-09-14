@@ -79,7 +79,7 @@ private:
 	void OnSave_shot(void);
 public:
 	// 载入SPS文件
-	void LoadSPSFile(CString strPath);
+	BOOL LoadSPSFile(CString strRFilePath, CString strXFilePath);
 	// 保存修改到测线XML文件
 	void SaveLineXML(CString strPath);
 	// 保存修改到施工XML

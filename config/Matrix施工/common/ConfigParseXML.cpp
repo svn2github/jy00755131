@@ -496,3 +496,88 @@ bool  CConfigParseXML::WriteDiskRecord(LPCTSTR pstrXMLFilePath,CDiskRecordConfig
 		return false;
 	}
 }
+// 解析配置程序中SPS文件设置参数
+bool CConfigParseXML::ParseSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSRFilePath, CString& strSPSXFilePath)
+{
+	try
+	{	
+		CXMLDOMNodeList oNodeList;
+		CXMLDOMElement oElement;
+		LPDISPATCH lpDispatch;	
+
+		COleException oError;
+		COleVariant oVariant;
+		CString strKey;
+		CXMLDOMDocument oXMLDOMDocument;
+		// 创建XML对象
+		strKey =_T("msxml2.domdocument");
+		oXMLDOMDocument.CreateDispatch(strKey, &oError);
+
+		oVariant = pstrXMLFilePath;
+		oXMLDOMDocument.put_preserveWhiteSpace(TRUE);
+		oXMLDOMDocument.load(oVariant);
+
+		// 找到入口
+		strKey =_T("SPSSetup");
+		lpDispatch = oXMLDOMDocument.getElementsByTagName(strKey);
+		oNodeList.AttachDispatch(lpDispatch);
+		// 找到入口
+		lpDispatch = oNodeList.get_item(0);
+		oElement.AttachDispatch(lpDispatch);
+		// 得到索引值
+		strKey =_T("SPS_R_Path");
+		strSPSRFilePath= CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
+
+		// 得到索引值
+		strKey =_T("SPS_X_Path");
+		strSPSXFilePath= CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
+
+		oXMLDOMDocument.DetachDispatch();
+		return true;
+	}
+	catch (CException* )
+	{
+		return false;
+	}
+}
+bool  CConfigParseXML::WriteSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSRFilePath, CString& strSPSXFilePath)
+{
+	CString strKey;
+	COleException oError;
+	COleVariant oVariant;
+
+	CXMLDOMNodeList oNodeList;
+	CXMLDOMElement oElement;
+	LPDISPATCH lpDispatch;	
+
+	try
+	{		
+		CXMLDOMDocument oXMLDOMDocument;
+		// 创建XML对象
+		strKey =_T("msxml2.domdocument");
+		oXMLDOMDocument.CreateDispatch(strKey, &oError);
+
+		oXMLDOMDocument.put_preserveWhiteSpace(TRUE);
+		oVariant = pstrXMLFilePath;
+		oXMLDOMDocument.load(oVariant);
+
+		// 找到Crew设置
+		strKey =_T("SPSSetup");
+		lpDispatch = oXMLDOMDocument.getElementsByTagName(strKey);
+		oNodeList.AttachDispatch(lpDispatch);
+		lpDispatch = oNodeList.get_item(0);
+		oElement.AttachDispatch(lpDispatch);		
+		oVariant = strSPSRFilePath;
+		oElement.setAttribute(_T("SPS_R_Path"), oVariant);
+		oVariant = strSPSXFilePath;
+		oElement.setAttribute(_T("SPS_X_Path"), oVariant);
+		oVariant = pstrXMLFilePath;
+		oXMLDOMDocument.save(oVariant);
+		oXMLDOMDocument.DetachDispatch();
+		return true;
+	}	
+	catch (CException* )
+	{
+		return false;
+	}
+}
