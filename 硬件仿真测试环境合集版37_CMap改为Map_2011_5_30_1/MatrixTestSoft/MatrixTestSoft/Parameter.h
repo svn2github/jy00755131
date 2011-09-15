@@ -56,7 +56,7 @@ using namespace std;
 // ADC数据图形化显示发送端口
 #define ADCGraphShowPort		0x7800
 // ADC数据图形化显示设置接收端口
-#define ADCGraphSetRecPort	0x7900
+#define ADCGraphSetRecPort	0x9401
 // ADC设置广播端口
 #define ADCSetBroadcastPort	0x66666666
 // 广播端口
@@ -259,9 +259,9 @@ using namespace std;
 // 返回路由
 #define CmdReturnRout							0x3f
 // ADC数据开始图形化显示标志位
-#define StartGraphShow							1
+#define StartGraphShow							3
 // ADC数据停止图形化显示标志位
-#define StopGraphShow							2
+#define StopGraphShow							4
 //__________________ADC设置命令__________________
 // ADC设置正弦波命令
 #define SetADCSetSine							{0xb2, 0x00, 0x80, 0x00}
