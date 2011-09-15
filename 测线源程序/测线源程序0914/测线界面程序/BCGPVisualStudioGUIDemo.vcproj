@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -58,9 +58,6 @@
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
 				PrecompiledHeaderFile=".\Debug/BCGPVisualStudioGUIDemo.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -79,12 +76,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="E:\Test\bin\Line.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="D:\海泰软件\开发软件\BCGControlBarPro\bin"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\..\..\Bin/BCGPVisualStudioGUIDemoD.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -102,7 +97,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\..\..\Bin/BCGPVisualStudioGUIDemo.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -482,6 +476,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgLookSetup.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgSelectShotPoint.cpp"
 				>
 			</File>
 			<File
@@ -865,6 +863,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TabSelectShotPoint.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TabSensor.cpp"
 				>
 			</File>
@@ -1062,6 +1064,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgLookSetup.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgSelectShotPoint.h"
 				>
 			</File>
 			<File
@@ -1382,6 +1388,10 @@
 			</File>
 			<File
 				RelativePath=".\TabPointCode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TabSelectShotPoint.h"
 				>
 			</File>
 			<File

@@ -2,6 +2,7 @@
 #include "SpreadAbsoluteList.h"
 
 CSpreadAbsoluteList::CSpreadAbsoluteList(void)
+: m_uiShotPointSelect(0)
 {
 }
 
@@ -57,7 +58,9 @@ void CSpreadAbsoluteList::ParseXML()
 	unsigned int i;
 
 	// 找到设置区
-	strKey = "AbsoluteSetup";
+//	strKey = "AbsoluteSetup";
+	// cxm 2011-09-15
+	strKey.Format("%s%d", "AbsoluteSetup", m_uiShotPointSelect + 1);
 	lpDispatch = m_pXMLDOMDocument->getElementsByTagName(strKey);
 	oNodeList.AttachDispatch(lpDispatch);
 	// 找到入口
@@ -110,7 +113,9 @@ void CSpreadAbsoluteList::OnSave()
 	LPDISPATCH lpDispatch;
 
 	// 找到设置区
-	strKey = "AbsoluteSetup";
+//	strKey = "AbsoluteSetup";
+	// cxm 2011-09-15
+	strKey.Format("%s%d", "AbsoluteSetup", m_uiShotPointSelect + 1);
 	lpDispatch = m_pXMLDOMDocument->getElementsByTagName(strKey);
 	oNodeList.AttachDispatch(lpDispatch);
 	// 找到入口

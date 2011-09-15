@@ -2,7 +2,7 @@
 
 #include "TabSpreadAbsolute.h"
 #include "TabSpreadGeneric.h"
-
+#include "DlgSelectShotPoint.h"
 #include "SiteData.h"
 
 /**
@@ -37,6 +37,8 @@ public:	// 属性
 	CTabSpreadAbsolute m_oTabSpreadAbsolute;
 	/** 属性页检波器测试设置*/
 	CTabSpreadGeneric m_oTabSpreadGeneric;
+	/**炮点选择窗口*/
+	CDlgSelectShotPoint m_oDlgSelectShotPoint;
 
 public:	// 方法
 	afx_msg void OnBnClickedButtonApply();	
@@ -44,4 +46,5 @@ public:	// 方法
 	afx_msg void OnBnClickedButtonAdd();
 	afx_msg void OnBnClickedButtonChange();
 	afx_msg void OnBnClickedButtonDelete();
+	afx_msg void OnBnClickedButtonSelectShotPoint();
 };

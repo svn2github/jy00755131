@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CDlgSpreadSetup, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_ADD, &CDlgSpreadSetup::OnBnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON_CHANGE, &CDlgSpreadSetup::OnBnClickedButtonChange)
 	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CDlgSpreadSetup::OnBnClickedButtonDelete)
+	ON_BN_CLICKED(IDC_BUTTON_SELECTSHOTPOINT, &CDlgSpreadSetup::OnBnClickedButtonSelectShotPoint)
 END_MESSAGE_MAP()
 
 // CDlgSpreadSetup 消息处理程序
@@ -58,6 +59,7 @@ BOOL CDlgSpreadSetup::OnInitDialog()
 	m_oTabSpreadAbsolute.Create("", WS_CHILD | WS_VISIBLE, oRect, &m_oTabWnd, 1);	// 属性页SpreadAbsolute
 	m_oTabSpreadGeneric.m_pSiteData = m_pSiteData;	// 现场数据
 	m_oTabSpreadGeneric.Create("", WS_CHILD | WS_VISIBLE, oRect, &m_oTabWnd, 2);	// 属性页SpreadGeneric
+	m_oDlgSelectShotPoint.m_pSiteData = m_pSiteData;
 
 	m_oTabWnd.AddTab(&m_oTabSpreadAbsolute, "    Absolute    ");	// 属性页SpreadAbsolute
 	m_oTabWnd.AddTab(&m_oTabSpreadGeneric, "    Generic    ");	// 属性页SpreadGeneric
@@ -70,8 +72,8 @@ BOOL CDlgSpreadSetup::OnInitDialog()
 	// 加载相对排列设置数据
 	m_pSiteData->OnLoadSpreadSetupDataForGeneric();
 
-	m_oTabSpreadAbsolute.OnBnClickedButtonReset();
-	m_oTabSpreadGeneric.OnBnClickedButtonReset();
+ 	m_oTabSpreadAbsolute.OnBnClickedButtonReset();
+ 	m_oTabSpreadGeneric.OnBnClickedButtonReset();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -212,4 +214,8 @@ void CDlgSpreadSetup::OnBnClickedButtonDelete()
 		m_oTabSpreadGeneric.OnBnClickedButtonDelete();
 		break;
 	}
+}
+void CDlgSpreadSetup::OnBnClickedButtonSelectShotPoint()
+{
+	m_oDlgSelectShotPoint.DoModal();
 }

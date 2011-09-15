@@ -38,4 +38,7 @@ public: //方法
 
 	// 解析配置文件
 	void ParseXML();
+private:
+	// 炮点选择
+	unsigned int m_uiShotPointSelect;
 };

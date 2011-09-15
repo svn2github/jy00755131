@@ -127,6 +127,7 @@
 #define IDR_MENU_MATRIX_VIEW_LIST       261
 #define IDR_POPUP_GRAPHVIEW_SENSOR      262
 #define IDR_TOOLBAR2                    264
+#define IDD_DIALOG_SELECTSHOTPOINT      267
 #define IDC_MAIL                        1000
 #define IDC_URL                         1001
 #define IDC_VERSION                     1002
@@ -162,6 +163,7 @@
 #define IDC_CHECK_TILT                  1038
 #define IDC_CHECK_LEAKAGE               1039
 #define IDC_BUTTON_GO                   1040
+#define IDC_BUTTON_SELECTSHOTPOINT      1042
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_USER_TOOLBAR1           32771
 #define ID_VIEW_USER_TOOLBAR2           32772
@@ -406,9 +408,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        267
+#define _APS_NEXT_RESOURCE_VALUE        268
 #define _APS_NEXT_COMMAND_VALUE         33068
-#define _APS_NEXT_CONTROL_VALUE         1042
+#define _APS_NEXT_CONTROL_VALUE         1043
 #define _APS_NEXT_SYMED_VALUE           123
 #endif
 #endif
