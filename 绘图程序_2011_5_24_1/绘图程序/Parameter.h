@@ -54,7 +54,7 @@ using namespace std;
 // ADC数据图形化显示接收端口
 #define ADCGraphShowPort				0x7800
 // ADC数据图形化显示设置发送目标端口
-#define ADCGraphSetRecPort			0x7900
+#define ADCGraphSetRecPort			0x9401
 // IP广播地址
 #define IPHostAddr							_T("127.0.0.1")
 // 接收ADC数据一帧的缓冲区大小
@@ -70,9 +70,9 @@ using namespace std;
 // ADC数据端口接收缓冲区大小
 #define ADCRecPortBufSize				10000 * ADCRecFrameBufSize
 // ADC数据开始图形化显示标志位
-#define StartGraphShow						1
+#define StartGraphShow						3
 // ADC数据停止图形化显示标志位
-#define StopGraphShow						2
+#define StopGraphShow						4
 // 取最小值操作
 #define OptMinValue							1
 // 取最大值操作
