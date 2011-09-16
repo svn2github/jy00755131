@@ -28,4 +28,8 @@ public:
 	CTabSelectShotPoint m_oTabSelectShotPoint;
 	/** 现场数据*/
 	CSiteData* m_pSiteData;
+	// 绝对排列页面指针
+	CTabSpreadAbsolute* m_pTabSpreadAbsolute;
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedCancel();
 };

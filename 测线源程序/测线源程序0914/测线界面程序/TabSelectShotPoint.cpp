@@ -10,6 +10,8 @@ IMPLEMENT_DYNAMIC(CTabSelectShotPoint, CTabPage)
 CTabSelectShotPoint::CTabSelectShotPoint()
 {
 	m_pSiteData = NULL;
+	m_pTabSpreadAbsolute = NULL;
+	m_uiTestNb = 0;
 }
 
 CTabSelectShotPoint::~CTabSelectShotPoint()
@@ -43,7 +45,9 @@ void CTabSelectShotPoint::OnDestroy()
 	// TODO: 在此处添加消息处理程序代码
 	m_oGridCtrlEdit.RemoveAll();	// 输入行
 	m_oGridCtrlList.RemoveAll();	// 列表
-	m_olsNb.RemoveAll();	// 索引号队列
+	// 删除所有列
+	m_oGridCtrlEdit.DeleteAllColumns();
+	m_oGridCtrlList.DeleteAllColumns();
 }
 
 /**
@@ -66,16 +70,14 @@ void CTabSelectShotPoint::OnCreateCtrl(LPCREATESTRUCT lpCreateStruct)
 	m_oGridCtrlEdit.EnableColumnAutoSize(TRUE);
 	m_oGridCtrlEdit.EnableDragHeaderItems(FALSE);
 	m_oGridCtrlEdit.EnableHeader(TRUE, 0);
-	strColumn = "Nb";
+	strColumn = "Shot Point ID";
 	m_oGridCtrlEdit.InsertColumn (0, strColumn, 50);
-	strColumn = "Label";
+	strColumn = "Shot Point Nb";
 	m_oGridCtrlEdit.InsertColumn (1, strColumn, 80);
-	strColumn = "Absolute Spread";
-	m_oGridCtrlEdit.InsertColumn (2, strColumn, 100);
 	pRow = m_oGridCtrlEdit.CreateRow(m_oGridCtrlEdit.GetColumnCount());
 	pRow->GetItem(0)->SetValue("");
 	pRow->GetItem(1)->SetValue("");
-	pRow->GetItem(2)->SetBackgroundColor(RGB(192, 192, 192));
+	pRow->GetItem(1)->SetBackgroundColor(RGB(192, 192, 192));
 	m_oGridCtrlEdit.AddRow(pRow, FALSE);
 
 	oRect.top = oRect.bottom + 14;
@@ -89,12 +91,10 @@ void CTabSelectShotPoint::OnCreateCtrl(LPCREATESTRUCT lpCreateStruct)
 	m_oGridCtrlList.SetReadOnly(TRUE);
 	m_oGridCtrlList.SetWholeRowSel(TRUE);
 	m_oGridCtrlList.SetSingleSel(TRUE);
-	strColumn = "Nb";
+	strColumn = "Shot Point ID";
 	m_oGridCtrlList.InsertColumn (0, strColumn, 50);
-	strColumn = "Label";
+	strColumn = "Shot Point Nb";
 	m_oGridCtrlList.InsertColumn (1, strColumn, 80);
-	strColumn = "Absolute Spread";
-	m_oGridCtrlList.InsertColumn (2, strColumn, 100);
 }
 
 /**
@@ -120,35 +120,27 @@ void CTabSelectShotPoint::OnGridCtrlListDblClk()
 void CTabSelectShotPoint::OnReset(void)
 {
 	CBCGPGridRow* pRow = NULL;
-	POSITION pos = NULL;
-	CSpreadAbsoluteData oSpread;
 	COleVariant oVariantBool;
 	COleVariant oVariantString;
-
+	map<unsigned int, unsigned int>::iterator  iter;
 	pRow = m_oGridCtrlEdit.GetRow(0);
 	pRow->GetItem(0)->SetValue("");
 	pRow->GetItem(1)->SetValue("");
-	pRow->GetItem(2)->SetValue("");
 
 	m_oGridCtrlList.RemoveAll();	// 列表
-	int iCount = m_pSiteData->m_oSpreadAbsoluteList.m_olsSpreadAbsolute.GetCount();
-	for(int i = 0; i < iCount; i++)
+	for (iter = m_pSiteData->m_oShotPointMap.m_oShotPointMap.begin();
+		iter != m_pSiteData->m_oShotPointMap.m_oShotPointMap.end(); iter++)
 	{
-		pos = m_pSiteData->m_oSpreadAbsoluteList.m_olsSpreadAbsolute.FindIndex(i);
-		oSpread = m_pSiteData->m_oSpreadAbsoluteList.m_olsSpreadAbsolute.GetAt(pos);
-
 		pRow = m_oGridCtrlList.CreateRow(m_oGridCtrlList.GetColumnCount());
-		pRow->SetData(oSpread.m_uiNb);
+		pRow->SetData(iter->second);
 
-		oVariantString = (long)oSpread.m_uiNb;
+		oVariantString = (ULONGLONG)iter->second;
 		oVariantString.ChangeType(VT_BSTR);
 		pRow->GetItem(0)->SetValue(oVariantString);
 
-		oVariantString = oSpread.m_strLabel;
+		oVariantString = (ULONGLONG)iter->first;
+		oVariantString.ChangeType(VT_BSTR);
 		pRow->GetItem(1)->SetValue(oVariantString);
-
-		oVariantString = oSpread.m_strSpread;
-		pRow->GetItem(2)->SetValue(oVariantString);
 
 		m_oGridCtrlList.AddRow(pRow, FALSE);
 	}

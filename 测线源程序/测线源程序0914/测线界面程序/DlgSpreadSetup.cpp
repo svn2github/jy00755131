@@ -60,6 +60,7 @@ BOOL CDlgSpreadSetup::OnInitDialog()
 	m_oTabSpreadGeneric.m_pSiteData = m_pSiteData;	// 现场数据
 	m_oTabSpreadGeneric.Create("", WS_CHILD | WS_VISIBLE, oRect, &m_oTabWnd, 2);	// 属性页SpreadGeneric
 	m_oDlgSelectShotPoint.m_pSiteData = m_pSiteData;
+	m_oDlgSelectShotPoint.m_pTabSpreadAbsolute = &m_oTabSpreadAbsolute;
 
 	m_oTabWnd.AddTab(&m_oTabSpreadAbsolute, "    Absolute    ");	// 属性页SpreadAbsolute
 	m_oTabWnd.AddTab(&m_oTabSpreadGeneric, "    Generic    ");	// 属性页SpreadGeneric

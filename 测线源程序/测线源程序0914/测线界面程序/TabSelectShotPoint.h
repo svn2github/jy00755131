@@ -4,6 +4,7 @@
 #include "GridCtrlList.h"
 #include "TabPage.h"
 #include "SiteData.h"
+#include "TabSpreadAbsolute.h"
 /**
 CTabSelectShotPoint Tab属性页炮点选择设置类
 */
@@ -28,13 +29,12 @@ public:	// 属性
 	CGridCtrlEdit m_oGridCtrlEdit;
 	/** 列表*/
 	CGridCtrlList m_oGridCtrlList;
-
-	/** 索引号队列*/
-	CList<int, int> m_olsNb;
 	/** 索引号*/
 	unsigned int m_uiTestNb;
 	/** 现场数据*/
 	CSiteData* m_pSiteData;
+	// 绝对排列页面指针
+	CTabSpreadAbsolute* m_pTabSpreadAbsolute;
 
 public:	// 方法
 	// 生成编辑界面

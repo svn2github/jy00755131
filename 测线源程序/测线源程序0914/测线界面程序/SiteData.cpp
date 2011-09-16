@@ -109,6 +109,9 @@ void CSiteData::OnInit()
 		m_oSpreadGenericList.m_pXMLDOMDocument = &m_oXMLDOMDocument;
 		m_oSpreadGenericList.OnInit();	// 初始化
 
+		// 炮点设置索引
+		m_oShotPointMap.m_pXMLDOMDocument = &m_oXMLDOMDocument;
+
 		// 仪器测试基本参数队列，仪器
 		m_oTestBaseListInstrument.m_pXMLDOMDocument = &m_oXMLDOMDocument;	// XMLDOM文件对象
 		m_oTestBaseListInstrument.m_uiAim = 1;	// 测试对象	1-仪器；2-检波器；3-全部
@@ -1805,7 +1808,20 @@ void CSiteData::OnLoadSpreadSetupData()
 	// 关闭配置文件
 	CloseMatrixIniXMLFile();
 }
-
+/**
+* 加载炮点和排列的对应关系数据
+* @param void
+* @return void
+*/
+void CSiteData::OnLoadShotPointSetupData()
+{
+	// 打开配置文件
+	OpenMatrixIniXMLFile();
+		// 炮点设置索引
+		m_oShotPointMap.OnReload();
+	// 关闭配置文件
+	CloseMatrixIniXMLFile();
+}
 /**
 * 加载绝对排列设置数据
 * @param void

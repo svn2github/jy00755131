@@ -158,12 +158,15 @@
 #define IDC_BUTTON_APPLY                1033
 #define IDC_BUTTON_CLEAR                1034
 #define IDC_BUTTON2                     1035
+#define IDC_CANCEL                      1035
 #define IDC_CHECK_LOOKAUTO              1036
 #define IDC_CHECK_RESISTANCE            1037
 #define IDC_CHECK_TILT                  1038
 #define IDC_CHECK_LEAKAGE               1039
 #define IDC_BUTTON_GO                   1040
 #define IDC_BUTTON_SELECTSHOTPOINT      1042
+#define IDC_BUTTON1                     1043
+#define IDC_OK                          1043
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_USER_TOOLBAR1           32771
 #define ID_VIEW_USER_TOOLBAR2           32772
@@ -410,7 +413,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        268
 #define _APS_NEXT_COMMAND_VALUE         33068
-#define _APS_NEXT_CONTROL_VALUE         1043
+#define _APS_NEXT_CONTROL_VALUE         1044
 #define _APS_NEXT_SYMED_VALUE           123
 #endif
 #endif

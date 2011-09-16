@@ -33,6 +33,7 @@
 #include "SocketInterfaceCmdRev.h"
 #include "SocketInterfaceCmdSend.h"
 #include "SocketInterfaceDataRev.h"
+#include "ShotPointMap.h"
 
 /**
 现场数据和测线设置数据类
@@ -121,6 +122,8 @@ public: // 属性
 	CSpreadAbsoluteList m_oSpreadAbsoluteList;
 	/** 相对排列设置队列*/
 	CSpreadGenericList m_oSpreadGenericList;
+	/** 炮点设置队列*/
+	CShotPointMap m_oShotPointMap;
 
 	/** 测试基本设置对象，仪器*/
 	CTestBaseList m_oTestBaseListInstrument;
@@ -352,6 +355,8 @@ public: // 方法
 	void OnLoadSpreadSetupDataForAbsolute();
 	// 加载相对排列设置数据
 	void OnLoadSpreadSetupDataForGeneric();
+	// 加载炮点和排列的对应关系数据
+	void OnLoadShotPointSetupData();
 
 	// Apply绝对排列设置数据
 	void OnApplySpreadSetupDataForAbsolute();

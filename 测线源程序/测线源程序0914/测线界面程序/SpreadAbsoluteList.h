@@ -25,6 +25,8 @@ public: //属性
 	CString m_strTabChild;
 	/** 写格式化XML文件用*/
 	CString m_strTabParent;
+	// 炮点选择
+	unsigned int m_uiShotPointSelect;
 
 public: //方法
 	// 初始化
@@ -38,7 +40,4 @@ public: //方法
 
 	// 解析配置文件
 	void ParseXML();
-private:
-	// 炮点选择
-	unsigned int m_uiShotPointSelect;
 };
