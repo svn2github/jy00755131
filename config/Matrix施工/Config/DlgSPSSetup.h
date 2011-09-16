@@ -36,4 +36,6 @@ private:
 	CString m_csLocalOptXMLFile;
 	// 本地默认Line XML路径
 	CString m_csLocalLineXMLFile;
+	// 程序当前路径
+	wchar_t m_wcExeCurrentPath[MAX_PATH];
 };

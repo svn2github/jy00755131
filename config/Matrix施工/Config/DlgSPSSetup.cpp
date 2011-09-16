@@ -20,6 +20,7 @@ CDlgSPSSetup::CDlgSPSSetup(CWnd* pParent /*=NULL*/)
 	m_csLocalOptXMLFile += OPERATION_XMLFILE;
 	m_csLocalLineXMLFile = CLIENTDIR_XMLFILE;
 	m_csLocalLineXMLFile += MATRIX_XMLFILE;
+	GetCurrentDirectory(MAX_PATH, m_wcExeCurrentPath);
 }
 
 CDlgSPSSetup::~CDlgSPSSetup()
@@ -43,24 +44,34 @@ END_MESSAGE_MAP()
 void CDlgSPSSetup::OnBnClickedBtnloadsps()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	// 在配置文件中找到SPS文件默认路径
 	CConfigParseXML  ParseXML;
-	ParseXML.ParseSPSFile(theApp.m_strLocalXMLFile, m_csSPSRFilePath, m_csSPSXFilePath);
-	// 按照路径不能正确读取文件则改为手动查找SPS文件
+	// 查找SPS文件路径
+	OnSelectSPSRFilePath();
+	OnSelectSPSXFilePath();
+	// 返回到程序当前路径
+	SetCurrentDirectory(m_wcExeCurrentPath);
+	// 手动查找SPS文件不能正确读取文件则改为默认路径下查找
 	if (FALSE == m_oFraseSPSToXML.LoadSPSFile(m_csSPSRFilePath, m_csSPSXFilePath))
 	{
-		// 查找SPS文件路径
-		OnSelectSPSRFilePath();
-		OnSelectSPSXFilePath();
-		if (TRUE == m_oFraseSPSToXML.LoadSPSFile(m_csSPSRFilePath, m_csSPSXFilePath))
+		// 在配置文件中找到SPS文件默认路径
+		ParseXML.ParseSPSFile(theApp.m_strLocalXMLFile, m_csSPSRFilePath, m_csSPSXFilePath);
+		if (FALSE == m_oFraseSPSToXML.LoadSPSFile(m_csSPSRFilePath, m_csSPSXFilePath))
 		{
-			// 将SPS文件路径保存到config配置文件中
-			ParseXML.WriteSPSFile(theApp.m_strLocalXMLFile, m_csSPSRFilePath, m_csSPSXFilePath);
-			// 将配置文件上传到FTP
-			PutMatrixXMLToFTPServer(theApp.m_strFTPServerIP,CONFIG_XMLFILE,theApp.m_strLocalXMLFile);
-			// 发送消息通知本地的其他程序
-			::SendMessage(HWND_BROADCAST,WM_NEWXMLFILE,MATRIX_CONFIG,MATRIX_CONFIG_SPSSETUP);
+			AfxMessageBox(_T("Please push this button again to find the correct sps file Path!"));
 		}
+		else
+		{
+			AfxMessageBox(_T("Open the sps file by default path!"));
+		}
+	}
+	else
+	{
+		// 将SPS文件路径保存到config配置文件中
+		ParseXML.WriteSPSFile(theApp.m_strLocalXMLFile, m_csSPSRFilePath, m_csSPSXFilePath);
+		// 将配置文件上传到FTP
+		PutMatrixXMLToFTPServer(theApp.m_strFTPServerIP,CONFIG_XMLFILE,theApp.m_strLocalXMLFile);
+		// 发送消息通知本地的其他程序
+		::SendMessage(HWND_BROADCAST,WM_NEWXMLFILE,MATRIX_CONFIG,MATRIX_CONFIG_SPSSETUP);
 	}
 }
 
