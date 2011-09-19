@@ -33,12 +33,12 @@
 		</Survery>
 		<Layout>
 			<MarkerSetup Count="10" TabCount="4">
-				<Record BoxType="1" SN="12004083" LineName="1" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
-				<Record BoxType="1" SN="20004003" LineName="2" PointNb="50" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
-				<Record BoxType="1" SN="28004003" LineName="3" PointNb="50" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
-				<Record BoxType="1" SN="36004003" LineName="4" PointNb="50" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
-				<Record BoxType="1" SN="44004003" LineName="5" PointNb="50" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
-				<Record BoxType="1" SN="52004003" LineName="6" PointNb="50" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="1" SN="12000763" LineName="1" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="1" SN="20000763" LineName="2" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="1" SN="28000763" LineName="3" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="1" SN="36000763" LineName="4" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="1" SN="44000763" LineName="5" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="1" SN="52000763" LineName="6" PointNb="10" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
 				<Record BoxType="1" SN="60004003" LineName="7" PointNb="50" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
 				<Record BoxType="1" SN="68004003" LineName="8" PointNb="50" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
 				<Record BoxType="1" SN="76004003" LineName="9" PointNb="50" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
@@ -50,9 +50,11 @@
 				<Record Nb="3" Label="pilot" BoxType="1" SN="4004563" ChannelNb="1" Gain="400" DPGNb="3" Comments="Comments3"/>
 				<Record Nb="4" Label="pilot" BoxType="1" SN="4004483" ChannelNb="1" Gain="1600" DPGNb="3" Comments="Comments1"/>
 			</BlastMachineSetup>
-			<AuxSetup Count="0" TabCount="4">
+			<AuxSetup Count="4" TabCount="4">
 				<Record Nb="1" Label="pilot" BoxType="1" SN="4004883" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>
 				<Record Nb="2" Label="pilot" BoxType="1" SN="4004963" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>
+				<Record Nb="3" Label="pilot" BoxType="1" SN="4005043" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>
+				<Record Nb="4" Label="pilot" BoxType="1" SN="4005123" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>
 			</AuxSetup>
 			<DetourSetup Count="1" TabCount="4">
 				<Record BoxTypeLow="3" SNLow="20001403" ChannelNbLow="1" BoxTypeHigh="3" SNHigh="20002123" ChannelNbHigh="1" StopMarking="0"/>
@@ -68,12 +70,12 @@
 		<SpreadType>
 			<AbsoluteSetup Count="250" TabCount="4">
 				<AbsoluteSetup1 Count="5" TabCount="4" ShotPoint="22695">
-				<Record Nb="1" Label="Absolute1" Spread="1:1-125"/>
-				<Record Nb="2" Label="Absolute2" Spread="2:1-126"/>
-				<Record Nb="3" Label="Absolute3" Spread="3:1-126"/>
-				<Record Nb="4" Label="Absolute4" Spread="4:1-126"/>
-				<Record Nb="5" Label="Absolute5" Spread="5:1-126"/>
-			</AbsoluteSetup1>
+					<Record Nb="1" Label="Absolute1" Spread="1:1-126"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-126"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-126"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-126"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-126"/>
+				</AbsoluteSetup1>
 				<AbsoluteSetup2 Count="5" TabCount="4" ShotPoint="22697">
 					<Record Nb="1" Label="Absolute1" Spread="1:1-127"/>
 					<Record Nb="2" Label="Absolute2" Spread="2:1-127"/>
@@ -1952,5 +1954,45 @@
 			<Record Nb="104" BoxType="1" SN="40004801" Orientation="4" Enable="0"/>
 			<Record Nb="105" BoxType="1" SN="40004801" Orientation="4" Enable="1"/>
 		</FormLineSetup>
+		<ShotPoint Count="36" TabCount="3">
+			<Record LineName="691" ShotSection="22695.5-23203.5" Interval="2"/>
+			<Record LineName="691" ShotSection="22697.5-23205.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22699.5-23235.5" Interval="2"/>
+			<Record LineName="691" ShotSection="22701.5-23239.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22703.5-23249.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22705.5-23345.5" Interval="2"/>
+			<Record LineName="691" ShotSection="22707.5-23350.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22709.5-23365.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22711.5-23379.5" Interval="2"/>
+			<Record LineName="691" ShotSection="22713.5-23395.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22715.5-23401.5" Interval="4"/>
+			<Record LineName="691" ShotSection="22717.5-23407.5" Interval="2"/>
+			<Record LineName="691" ShotSection="22719.5-23419.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22721.5-23761.5" Interval="2"/>
+			<Record LineName="691" ShotSection="22723.5-23765.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22725.5-23768.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22727.5-23775.5" Interval="1"/>
+			<Record LineName="691" ShotSection="22729.5-24143.5" Interval="2"/>
+			<Record LineName="691" ShotSection="22731.5-23203.5" Interval="2"/>
+			<Record LineName="691" ShotSection="23204.5-23205.5" Interval="1"/>
+			<Record LineName="691" ShotSection="23207.5-23235.5" Interval="2"/>
+			<Record LineName="691" ShotSection="23236.5-23239.5" Interval="1"/>
+			<Record LineName="691" ShotSection="23245.5-23249.5" Interval="1"/>
+			<Record LineName="691" ShotSection="23251.5-23345.5" Interval="2"/>
+			<Record LineName="691" ShotSection="23346.5-23350.5" Interval="1"/>
+			<Record LineName="691" ShotSection="23359.5-23365.5" Interval="1"/>
+			<Record LineName="691" ShotSection="23367.5-23379.5" Interval="2"/>
+			<Record LineName="691" ShotSection="23380.5-23395.5" Interval="1"/>
+			<Record LineName="691" ShotSection="23397.5-23401.5" Interval="4"/>
+			<Record LineName="691" ShotSection="23403.5-23407.5" Interval="2"/>
+			<Record LineName="691" ShotSection="23408.5-23419.5" Interval="1"/>
+			<Record LineName="691" ShotSection="23421.5-23761.5" Interval="2"/>
+			<Record LineName="691" ShotSection="23764.5-23765.5" Interval="1"/>
+			<Record LineName="691" ShotSection="23767.5-23768.5" Interval="1"/>
+			<Record LineName="691" ShotSection="23771.5-23775.5" Interval="1"/>
+		</ShotPoint>
+		<RecPoint Count="1" TabCount="3">
+			<Record LineName="691" RecSection="22694-22695" Interval="1"/>
+		</RecPoint>
 	</Line>
 </Matrix>

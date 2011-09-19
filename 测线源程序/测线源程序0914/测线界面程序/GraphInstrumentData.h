@@ -29,6 +29,8 @@ public: // 方法
 	void DrawUnitLinkLine(CDC* pDC, int iGridX, int iGridY);
 	// 画图
 	void DrawUnit(CDC* pDC, int iGridX, int iGridY, int iUnitWidth, int iUnitHight, int iUnitSizeMode, unsigned int uiTestType);
+	// 点击GO按钮则清空选中设备的测试结果
+	void OnClearCheckInstrumentTestResult(unsigned int uiTestType);
 };
 
 /*

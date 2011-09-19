@@ -196,6 +196,16 @@ void CGraphInstrumentData::DrawUnit(CDC* pDC, int iGridX, int iGridY, int iUnitW
 					// 画中心小椭圆
 					pDC->Ellipse(oRect.left + iUnitWidth / 4, oRect.top + iUnitWidth / 4, oRect.right - iUnitWidth / 4, oRect.bottom - iUnitWidth / 4);
 					break;
+// 				case 5: // 5：鼠标中键选中测试区域
+// 					oPenUnit.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+// 					oBrushUnit.CreateSolidBrush(RGB(190, 190, 190));	// 灰色
+// 					pOldPen = pDC->SelectObject(&oPenUnit);
+// 					pOldPenBrush = pDC->SelectObject(&oBrushUnit);
+// 
+// 					pDC->Ellipse(&oRect);
+// 					// 画中心小椭圆
+// 					pDC->Ellipse(oRect.left + iUnitWidth / 4, oRect.top + iUnitWidth / 4, oRect.right - iUnitWidth / 4, oRect.bottom - iUnitWidth / 4);
+// 					break;
 				}
 			}
 		}
@@ -256,4 +266,30 @@ void CGraphInstrumentData::DrawUnitLinkLine(CDC* pDC, int iGridX, int iGridY)
 		pDC->LineTo(CPoint(iCenterX, iCenterY + iGridY));
 	}
 	pDC->SelectObject(pOldPen);
+}
+// cxm 2011-09-19
+// 点击GO按钮则清空鼠标中键选中设备的测试结果
+void CGraphInstrumentData::OnClearCheckInstrumentTestResult(unsigned int uiTestType)
+{
+	switch(uiTestType)
+	{
+	case 4:	// 仪器噪声。 Noise
+		m_pInstrument->m_byNoiseCheck = 0;
+		break;
+	case 5:	// 仪器畸变。 Distortion
+		m_pInstrument->m_byDistortionCheck = 0;
+		break;
+	case 7:	// 仪器串音。 Crosstalk
+		m_pInstrument->m_byCrosstalkCheck = 0;
+		break;
+	case 6:	// 仪器增益/ 相位。 Gain/Phase
+		m_pInstrument->m_byGainAndPhaseCheck = 0;
+		break;
+	case 8:	// 仪器共模。CMRR
+		m_pInstrument->m_byCMRRCheck = 0;
+		break;
+	case 30:	// 所有仪器测试
+		m_pInstrument->m_byCheck = 0;
+		break;
+	}
 }

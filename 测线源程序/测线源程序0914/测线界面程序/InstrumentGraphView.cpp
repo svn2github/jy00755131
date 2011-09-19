@@ -1286,3 +1286,25 @@ void CInstrumentGraphView::OnRefreshForNewTestValue(int iTestType)
 		RedrawWindow();
 	}
 }
+// cxm 2011-09-19
+// 点击GO按钮则清空选中设备的测试结果
+void CInstrumentGraphView::OnClearCheckInstrumentTestResult(unsigned int uiTestType)
+{
+	POSITION pos = m_pSiteData->m_oGraphInstrumentList.m_oGraphInstrumentMap.GetStartPosition();
+	CGraphInstrumentData* pGraphInstrumentData = NULL;
+	unsigned int uiPosIndex;	// 仪器位置索引
+	while(NULL != pos)
+	{
+		// 得到一个绘图单元
+		m_pSiteData->m_oGraphInstrumentList.m_oGraphInstrumentMap.GetNextAssoc(pos, uiPosIndex, pGraphInstrumentData);
+		if(NULL != pGraphInstrumentData)
+		{
+			if ((pGraphInstrumentData->m_iPosX >= m_oSelectAreaIndex.left) && (pGraphInstrumentData->m_iPosX <= m_oSelectAreaIndex.right)
+				&& (pGraphInstrumentData->m_iPosY >= m_oSelectAreaIndex.top) && (pGraphInstrumentData->m_iPosY <= m_oSelectAreaIndex.bottom))
+			{
+				pGraphInstrumentData->OnClearCheckInstrumentTestResult(uiTestType);
+			}	
+		}
+	}
+	RedrawWindow();
+}

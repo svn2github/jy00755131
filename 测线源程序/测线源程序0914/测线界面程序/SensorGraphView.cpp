@@ -947,3 +947,20 @@ void CSensorGraphView::OnRefreshForNewTestValue(int iTestType)
 		RedrawWindow();
 	}
 }
+// cxm 2011-09-19
+// 点击GO按钮则清空选中设备的测试结果
+void CSensorGraphView::OnClearCheckInstrumentTestResult(unsigned int uiTestType)
+{
+	CGraphSensorData* pGraphSensorData = NULL;
+	unsigned int uiCount = m_pSiteData->m_oGraphSensorList.m_uiCountUsed;
+	for (unsigned int i=0; i<uiCount; i++)
+	{
+		pGraphSensorData = &m_pSiteData->m_oGraphSensorList.m_pArrayGraphSensor[i];
+		if ((pGraphSensorData->m_iPosX >= m_oSelectAreaIndex.left) && (pGraphSensorData->m_iPosX <= m_oSelectAreaIndex.right)
+			&& (pGraphSensorData->m_iPosY >= m_oSelectAreaIndex.top) && (pGraphSensorData->m_iPosY <= m_oSelectAreaIndex.bottom))
+		{
+			pGraphSensorData->OnClearCheckInstrumentTestResult(uiTestType);
+		}	
+	}
+	RedrawWindow();
+}

@@ -600,8 +600,6 @@ void CGraphInstrumentList::DrawUnitAll(CDC* pDC, int iGridX, int iGridY, unsigne
 		{
 			pGraphInstrumentData->DrawUnit(pDC, iGridX, iGridY, iUnitWidth, iUnitHight, iUnitSizeMode, uiTestType);
 		}
-		
-		
 	}
 }
 

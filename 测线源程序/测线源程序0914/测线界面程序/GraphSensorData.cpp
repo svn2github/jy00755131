@@ -270,3 +270,32 @@ void CGraphSensorData::GetSeismonitorGraphColour(CBrush *oBrushUnit, float fSeis
 		break;
 	}
 }
+// cxm 2011-09-19
+// µã»÷GO°´Å¥ÔòÇå¿ÕÊó±êÖÐ¼üÑ¡ÖÐÉè±¸µÄ²âÊÔ½á¹û
+void CGraphSensorData::OnClearCheckInstrumentTestResult(unsigned int uiTestType)
+{
+	switch(uiTestType)
+	{
+	case 15:	// ¼ì²¨Æ÷µç×è¡£ Resistance
+		m_pChannelSetupData->m_byResistanceCheck = 0;
+		break;
+	case 14:	// ¼ì²¨Æ÷Â©µç¡£ Leakage
+		m_pChannelSetupData->m_byLeakageCheck = 0;
+		break;
+	case 1:	// ¼ì²¨Æ÷ÔëÉù¡£ Noise
+		m_pChannelSetupData->m_byNoiseCheck = 0;
+		break;
+	case 20:	// ¼ì²¨Æ÷ÇãÐ±¶È¡£ Tilt
+		m_pChannelSetupData->m_byTiltCheck = 0;
+		break;
+	case 21:	// ¼ì²¨Æ÷ÇãÐ±¶ÈÄ£ÐÍ¡£Tilt Model
+		m_pChannelSetupData->m_byTiltModelCheck = 0;
+		break;
+	case 22:	// ¼ì²¨Æ÷ÔëÉù¼à²â
+		m_pChannelSetupData->m_byNoiseMonitorCheck = 0;
+		break;
+	case 40:	// ËùÓÐ¼ì²¨Æ÷²âÊÔ
+		m_pChannelSetupData->m_byCheck = 0;
+		break;
+	}
+}

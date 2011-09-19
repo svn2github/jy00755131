@@ -26,6 +26,8 @@ public: // 方法
 	int GetSeismonitorGraphHight(int iUnitHight, float fSeismonitorLimit);
 	// 得到噪声监测图形单元颜色
 	void GetSeismonitorGraphColour(CBrush *oBrushUnit, float fSeismonitorLimit);
+	// 点击GO按钮则清空选中设备的测试结果
+	void OnClearCheckInstrumentTestResult(unsigned int uiTestType);
 };
 
 /*

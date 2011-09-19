@@ -255,7 +255,9 @@ void CSensorGraphChildFrame::OnSelectSensorNb()
 */
 void CSensorGraphChildFrame::OnTestGo() 
 {
+	// cxm 2011-09-19 传感器视图Go响应函数
 	CSensorGraphView* pView = (CSensorGraphView*)GetActiveView();
+	pView->OnClearCheckInstrumentTestResult(m_uiTestType);
 	if("" != pView->m_strAbsoluteSpread)
 	{
 		// 响应仪器、检波器图形视图测试GO按钮

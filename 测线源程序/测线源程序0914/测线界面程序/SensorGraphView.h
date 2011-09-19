@@ -145,6 +145,8 @@ public: // 方法
 
 	// 为新的测试数据刷新显示
 	void OnRefreshForNewTestValue(int iTestType);
+	// 点击GO按钮则清空选中设备的测试结果
+	void OnClearCheckInstrumentTestResult(unsigned int uiTestType);
 };
 
 
