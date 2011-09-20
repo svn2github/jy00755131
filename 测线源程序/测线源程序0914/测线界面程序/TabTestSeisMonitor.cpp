@@ -54,12 +54,14 @@ void CTabTestSeisMonitor::OnCreateCtrl(LPCREATESTRUCT lpCreateStruct)
 	oRect.top = lpCreateStruct->y;
 	oRect.right = lpCreateStruct->x + lpCreateStruct->cx - 20;
 	oRect.bottom = lpCreateStruct->y + lpCreateStruct->cy - 45;	
-	m_oStaticAbsoluteSpread.Create("Absolute Spread:", WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_GROUPBOX | WS_DISABLED, oRect, this, 0);	// 绝对排列组框
+	m_oStaticAbsoluteSpread.Create("Absolute Spread:", WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_GROUPBOX | WS_DISABLED,
+		oRect, this, 0);	// 绝对排列组框
 	oRect.left = oRect.left + 10;
 	oRect.top = oRect.top + 25;
 	oRect.right = oRect.right - 10;
 	oRect.bottom = oRect.bottom - 10;
-	m_oEditAbsoluteSpread.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | WS_HSCROLL | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
+	// cxm 2011-09-20 加入ES_WANTRETURN属性，可回车换行
+	m_oEditAbsoluteSpread.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | WS_HSCROLL | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL|ES_WANTRETURN,
 		oRect, this, IDC_EDIT_ABSOLUTESPREAD);	// 绝对排列编辑框
 }
 

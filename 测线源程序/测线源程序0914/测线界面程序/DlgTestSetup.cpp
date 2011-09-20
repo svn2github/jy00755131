@@ -99,6 +99,9 @@ BOOL CDlgTestSetup::OnInitDialog()
 	m_oTabWndTestMultiple.RecalcLayout();
 	m_oTabWndTestMultiple.SetActiveTab(0);
 
+	// cxm 2011-09-20 先将该页面隐藏
+	m_oTabWndTestMultiple.ShowWindow(SW_HIDE);
+
 	m_oTabTestInstrument.OnBnClickedButtonReset();
 	m_oTabTestSensor.OnBnClickedButtonReset();
 	for(unsigned int i = 0; i < m_pSiteData->m_oTestProjectListMultiple.m_uiCountAll; i++)

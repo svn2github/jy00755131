@@ -57,7 +57,6 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\Debug/BCGPVisualStudioGUIDemo.pch"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"

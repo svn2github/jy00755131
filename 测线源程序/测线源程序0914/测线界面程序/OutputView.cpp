@@ -61,7 +61,6 @@ int COutputViewBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	UpdateFonts();
 	FillOutputWindow();
-
 	return 0;
 }
 
