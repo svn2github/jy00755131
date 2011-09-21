@@ -16,6 +16,7 @@
 #include "RzPanel.hpp"
 #include <ExtCtrls.hpp>
 #include "RzLstBox.hpp"
+#include <ComCtrls.hpp>
 //---------------------------------------------------------------------------
 class TForm1 : public TForm
 {
@@ -62,7 +63,6 @@ __published:	// IDE-managed Components
 	TStaticText *StaticText12;
 	TRzEdit *RzEdit3;
 	TRzEdit *RzEdit4;
-	TRzListBox *RzListBox1;
 	TStaticText *StaticText13;
 	TRzComboBox *RzComboBox9;
 	TStaticText *StaticText14;
@@ -75,6 +75,91 @@ __published:	// IDE-managed Components
 	TRzEdit *RzEdit5;
 	TRzEdit *RzEdit6;
 	TRzEdit *RzEdit7;
+	TStaticText *StaticText18;
+	TRzEdit *RzEdit8;
+	TStaticText *StaticText19;
+	TRzCheckBox *RzCheckBox3;
+	TRzGroupBox *RzGroupBox3;
+	TRzGroupBox *RzGroupBox4;
+	TStaticText *StaticText20;
+	TStaticText *StaticText21;
+	TStaticText *StaticText22;
+	TStaticText *StaticText23;
+	TStaticText *StaticText24;
+	TStaticText *StaticText25;
+	TRzEdit *RzEdit9;
+	TRzEdit *RzEdit10;
+	TRzEdit *RzEdit11;
+	TRzEdit *RzEdit12;
+	TRzEdit *RzEdit13;
+	TRzEdit *RzEdit14;
+	TRzCheckBox *RzCheckBox4;
+	TRzButton *RzButton11;
+	TRzButton *RzButton12;
+	TRzButton *RzButton13;
+	TRzButton *RzButton14;
+	TRzButton *RzButton15;
+	TRzButton *RzButton16;
+	TRzGroupBox *RzGroupBox5;
+	TStaticText *StaticText26;
+	TStaticText *StaticText27;
+	TStaticText *StaticText28;
+	TStaticText *StaticText29;
+	TRzPageControl *RzPageControl2;
+	TRzTabSheet *TabSheet6;
+	TRzTabSheet *TabSheet7;
+	TRzGroupBox *RzGroupBox6;
+	TRzRichEdit *RzRichEdit1;
+	TRzRichEdit *RzRichEdit2;
+	TRzGroupBox *RzGroupBox7;
+	TRzGroupBox *RzGroupBox8;
+	TRzGroupBox *RzGroupBox9;
+	TRzGroupBox *RzGroupBox10;
+	TStaticText *StaticText30;
+	TStaticText *StaticText31;
+	TStaticText *StaticText32;
+	TStaticText *StaticText33;
+	TStaticText *StaticText34;
+	TStaticText *StaticText35;
+	TStaticText *StaticText36;
+	TStaticText *StaticText37;
+	TStaticText *StaticText38;
+	TStaticText *StaticText39;
+	TRzRichEdit *RzRichEdit3;
+	TRzRichEdit *RzRichEdit4;
+	TRzRichEdit *RzRichEdit5;
+	TRzRichEdit *RzRichEdit6;
+	TRzRichEdit *RzRichEdit7;
+	TRzGroupBox *RzGroupBox11;
+	TStaticText *StaticText40;
+	TStaticText *StaticText41;
+	TRzRichEdit *RzRichEdit8;
+	TRzGroupBox *RzGroupBox12;
+	TStaticText *StaticText42;
+	TStaticText *StaticText43;
+	TRzRichEdit *RzRichEdit9;
+	TRzGroupBox *RzGroupBox13;
+	TStaticText *StaticText44;
+	TStaticText *StaticText45;
+	TRzRichEdit *RzRichEdit10;
+	TRzGroupBox *RzGroupBox14;
+	TStaticText *StaticText46;
+	TStaticText *StaticText47;
+	TRzRichEdit *RzRichEdit11;
+	TRzGroupBox *RzGroupBox15;
+	TStaticText *StaticText48;
+	TStaticText *StaticText49;
+	TRzRichEdit *RzRichEdit12;
+	TRzGroupBox *RzGroupBox16;
+	TStaticText *StaticText50;
+	TStaticText *StaticText51;
+	TRzRichEdit *RzRichEdit13;
+	TStaticText *StaticText52;
+	TStaticText *StaticText53;
+	TStaticText *StaticText54;
+	TStaticText *StaticText55;
+	TStaticText *StaticText56;
+	TStaticText *StaticText57;
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);

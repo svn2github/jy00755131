@@ -14,12 +14,12 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object RzPageControl1: TRzPageControl
-    Left = 32
-    Top = 24
-    Width = 793
+    Left = 8
+    Top = 31
+    Width = 861
     Height = 593
-    ActivePage = TabSheet5
-    TabIndex = 4
+    ActivePage = TabSheet1
+    TabIndex = 0
     TabOrder = 0
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
@@ -368,13 +368,18 @@ object Form1: TForm1
     end
     object TabSheet3: TRzTabSheet
       Caption = 'ADC'#25968#25454#26174#31034
-      object RzListBox1: TRzListBox
-        Left = 17
-        Top = 14
-        Width = 753
-        Height = 545
-        ItemHeight = 13
-        MultiSelect = True
+      object RzRichEdit1: TRzRichEdit
+        Left = 8
+        Top = 8
+        Width = 841
+        Height = 553
+        Font.Charset = GB2312_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ScrollBars = ssVertical
         TabOrder = 0
       end
     end
@@ -498,11 +503,758 @@ object Form1: TForm1
         Width = 89
         Height = 21
         Text = '127.0.0.1'
+        Alignment = taCenter
         TabOrder = 11
       end
     end
     object TabSheet5: TRzTabSheet
       Caption = #31471#21475#30417#35270
+      object StaticText18: TStaticText
+        Left = 25
+        Top = 32
+        Width = 100
+        Height = 17
+        Caption = #33258#21160#20445#23384#25991#20214#22823#23567
+        TabOrder = 0
+      end
+      object RzEdit8: TRzEdit
+        Left = 150
+        Top = 32
+        Width = 65
+        Height = 21
+        Text = '1024'
+        TabOrder = 1
+      end
+      object StaticText19: TStaticText
+        Left = 224
+        Top = 32
+        Width = 10
+        Height = 17
+        Caption = 'K'
+        TabOrder = 2
+      end
+      object RzCheckBox3: TRzCheckBox
+        Left = 54
+        Top = 72
+        Width = 91
+        Height = 15
+        Caption = #31471#21475#20998#21457#21151#33021
+        State = cbUnchecked
+        TabOrder = 3
+      end
+      object RzGroupBox3: TRzGroupBox
+        Left = 3
+        Top = 93
+        Width = 250
+        Height = 124
+        Caption = #30446#26631'1'
+        TabOrder = 4
+        object StaticText20: TStaticText
+          Left = 16
+          Top = 24
+          Width = 38
+          Height = 17
+          Caption = 'IP'#22320#22336
+          TabOrder = 0
+        end
+        object StaticText21: TStaticText
+          Left = 16
+          Top = 56
+          Width = 52
+          Height = 17
+          Caption = #25509#25910#31471#21475
+          TabOrder = 1
+        end
+        object StaticText22: TStaticText
+          Left = 16
+          Top = 88
+          Width = 52
+          Height = 17
+          Caption = #21457#36865#31471#21475
+          TabOrder = 2
+        end
+        object RzEdit9: TRzEdit
+          Left = 108
+          Top = 24
+          Width = 81
+          Height = 21
+          Text = '192.168.0.77'
+          Alignment = taCenter
+          TabOrder = 3
+        end
+        object RzEdit10: TRzEdit
+          Left = 108
+          Top = 56
+          Width = 81
+          Height = 21
+          Text = '0x8202'
+          Alignment = taCenter
+          TabOrder = 4
+        end
+        object RzEdit11: TRzEdit
+          Left = 108
+          Top = 88
+          Width = 81
+          Height = 21
+          Text = '0x9002'
+          Alignment = taCenter
+          TabOrder = 5
+        end
+      end
+      object RzGroupBox4: TRzGroupBox
+        Left = 3
+        Top = 223
+        Width = 250
+        Height = 122
+        Caption = #30446#26631'2'
+        TabOrder = 5
+        object StaticText23: TStaticText
+          Left = 16
+          Top = 24
+          Width = 38
+          Height = 17
+          Caption = 'IP'#22320#22336
+          TabOrder = 0
+        end
+        object StaticText24: TStaticText
+          Left = 16
+          Top = 56
+          Width = 52
+          Height = 17
+          Caption = #25509#25910#31471#21475
+          TabOrder = 1
+        end
+        object StaticText25: TStaticText
+          Left = 16
+          Top = 88
+          Width = 52
+          Height = 17
+          Caption = #21457#36865#31471#21475
+          TabOrder = 2
+        end
+        object RzEdit12: TRzEdit
+          Left = 108
+          Top = 88
+          Width = 81
+          Height = 21
+          Text = '0x8201'
+          Alignment = taCenter
+          TabOrder = 3
+        end
+        object RzEdit13: TRzEdit
+          Left = 108
+          Top = 56
+          Width = 81
+          Height = 21
+          Text = '0x9001'
+          Alignment = taCenter
+          TabOrder = 4
+        end
+        object RzEdit14: TRzEdit
+          Left = 108
+          Top = 24
+          Width = 81
+          Height = 21
+          Text = '127.0.0.1'
+          Alignment = taCenter
+          TabOrder = 5
+        end
+      end
+      object RzCheckBox4: TRzCheckBox
+        Left = 54
+        Top = 360
+        Width = 91
+        Height = 15
+        Caption = #26174#31034#30417#27979#20449#24687
+        State = cbUnchecked
+        TabOrder = 6
+      end
+      object RzButton11: TRzButton
+        Left = 3
+        Top = 392
+        Width = 122
+        Height = 33
+        Caption = #25171#24320#31471#21475#30417#35270
+        TabOrder = 7
+      end
+      object RzButton12: TRzButton
+        Left = 131
+        Top = 392
+        Width = 122
+        Height = 33
+        Caption = #20851#38381#31471#21475#30417#35270
+        TabOrder = 8
+      end
+      object RzButton13: TRzButton
+        Left = 3
+        Top = 448
+        Width = 122
+        Height = 33
+        Caption = #24320#22987#23384#20648#36890#35759#25968#25454
+        TabOrder = 9
+      end
+      object RzButton14: TRzButton
+        Left = 131
+        Top = 448
+        Width = 122
+        Height = 33
+        Caption = #20572#27490#23384#20648#36890#35759#25968#25454
+        TabOrder = 10
+      end
+      object RzButton15: TRzButton
+        Left = 3
+        Top = 504
+        Width = 122
+        Height = 33
+        Caption = #36873#25321#25991#20214#23384#20648#36335#24452
+        TabOrder = 11
+      end
+      object RzButton16: TRzButton
+        Left = 131
+        Top = 504
+        Width = 122
+        Height = 33
+        Caption = #37325#32622
+        TabOrder = 12
+      end
+      object RzGroupBox5: TRzGroupBox
+        Left = 259
+        Top = 13
+        Width = 595
+        Height = 134
+        Caption = #25968#25454#24103#25509#25910#21644#21457#36865#21306#22495
+        TabOrder = 13
+        object StaticText26: TStaticText
+          Left = 80
+          Top = 17
+          Width = 52
+          Height = 17
+          Caption = #25509#25910#24103#25968
+          TabOrder = 0
+        end
+        object StaticText27: TStaticText
+          Left = 160
+          Top = 17
+          Width = 10
+          Height = 17
+          Caption = '0'
+          TabOrder = 1
+        end
+        object StaticText28: TStaticText
+          Left = 264
+          Top = 17
+          Width = 52
+          Height = 17
+          Caption = #21457#36865#24103#25968
+          TabOrder = 2
+        end
+        object StaticText29: TStaticText
+          Left = 344
+          Top = 17
+          Width = 10
+          Height = 17
+          Caption = '0'
+          TabOrder = 3
+        end
+        object RzRichEdit2: TRzRichEdit
+          Left = 8
+          Top = 32
+          Width = 577
+          Height = 89
+          Font.Charset = GB2312_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          ScrollBars = ssVertical
+          TabOrder = 4
+        end
+      end
+      object RzPageControl2: TRzPageControl
+        Left = 259
+        Top = 152
+        Width = 590
+        Height = 409
+        ActivePage = TabSheet6
+        TabIndex = 0
+        TabOrder = 14
+        FixedDimension = 19
+        object TabSheet6: TRzTabSheet
+          Caption = #25509#25910#24103
+          ExplicitLeft = 0
+          ExplicitTop = 29
+          object RzGroupBox11: TRzGroupBox
+            Left = 7
+            Top = 8
+            Width = 185
+            Height = 177
+            Caption = #39318#21253
+            TabOrder = 0
+            object StaticText40: TStaticText
+              Left = 40
+              Top = 16
+              Width = 52
+              Height = 17
+              Caption = #25509#25910#24103#25968
+              TabOrder = 0
+            end
+            object StaticText41: TStaticText
+              Left = 128
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit8: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+          end
+          object RzGroupBox12: TRzGroupBox
+            Left = 198
+            Top = 8
+            Width = 185
+            Height = 177
+            Caption = 'IP'#22320#22336#35774#32622#24212#31572
+            TabOrder = 1
+            object StaticText42: TStaticText
+              Left = 40
+              Top = 16
+              Width = 52
+              Height = 17
+              Caption = #25509#25910#24103#25968
+              TabOrder = 0
+            end
+            object StaticText43: TStaticText
+              Left = 128
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit9: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+          end
+          object RzGroupBox13: TRzGroupBox
+            Left = 389
+            Top = 8
+            Width = 185
+            Height = 177
+            Caption = #23614#21253
+            TabOrder = 2
+            object StaticText44: TStaticText
+              Left = 40
+              Top = 16
+              Width = 52
+              Height = 17
+              Caption = #25509#25910#24103#25968
+              TabOrder = 0
+            end
+            object StaticText45: TStaticText
+              Left = 128
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit10: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+          end
+          object RzGroupBox14: TRzGroupBox
+            Left = 7
+            Top = 191
+            Width = 185
+            Height = 177
+            Caption = #23614#21253#26102#21051#26597#35810#24212#31572
+            TabOrder = 3
+            object StaticText46: TStaticText
+              Left = 8
+              Top = 17
+              Width = 52
+              Height = 17
+              Caption = #25509#25910#24103#25968
+              TabOrder = 0
+            end
+            object StaticText47: TStaticText
+              Left = 66
+              Top = 17
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit11: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+            object StaticText52: TStaticText
+              Left = 82
+              Top = 17
+              Width = 70
+              Height = 17
+              Caption = 'SYS'#26597#35810#24103#25968
+              TabOrder = 3
+            end
+            object StaticText53: TStaticText
+              Left = 158
+              Top = 17
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 4
+            end
+          end
+          object RzGroupBox15: TRzGroupBox
+            Left = 198
+            Top = 191
+            Width = 185
+            Height = 177
+            Caption = #26102#24310#35774#32622#24212#31572
+            TabOrder = 4
+            object StaticText48: TStaticText
+              Left = 40
+              Top = 16
+              Width = 52
+              Height = 17
+              Caption = #25509#25910#24103#25968
+              TabOrder = 0
+            end
+            object StaticText49: TStaticText
+              Left = 128
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit12: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+          end
+          object RzGroupBox16: TRzGroupBox
+            Left = 389
+            Top = 191
+            Width = 194
+            Height = 177
+            Caption = 'ADC'#35774#32622#24212#31572'/ADC'#25968#25454#25509#25910
+            TabOrder = 5
+            object StaticText50: TStaticText
+              Left = 8
+              Top = 17
+              Width = 76
+              Height = 17
+              Caption = #25509#25910#24212#31572#24103#25968
+              TabOrder = 0
+            end
+            object StaticText51: TStaticText
+              Left = 90
+              Top = 17
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit13: TRzRichEdit
+              Left = 0
+              Top = 63
+              Width = 169
+              Height = 106
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+            object StaticText54: TStaticText
+              Left = 106
+              Top = 17
+              Width = 76
+              Height = 17
+              Caption = #35823#30721#24212#31572#24103#25968
+              TabOrder = 3
+            end
+            object StaticText55: TStaticText
+              Left = 188
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 4
+            end
+            object StaticText56: TStaticText
+              Left = 10
+              Top = 40
+              Width = 73
+              Height = 17
+              Caption = 'ADC'#25968#25454#24103#25968
+              TabOrder = 5
+            end
+            object StaticText57: TStaticText
+              Left = 90
+              Top = 40
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 6
+            end
+          end
+        end
+        object TabSheet7: TRzTabSheet
+          Caption = #21457#36865#24103
+          object RzGroupBox6: TRzGroupBox
+            Left = 7
+            Top = 8
+            Width = 185
+            Height = 177
+            Caption = #24515#36339
+            TabOrder = 0
+            object StaticText30: TStaticText
+              Left = 40
+              Top = 16
+              Width = 52
+              Height = 17
+              Caption = #21457#36865#24103#25968
+              TabOrder = 0
+            end
+            object StaticText31: TStaticText
+              Left = 128
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit3: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+          end
+          object RzGroupBox7: TRzGroupBox
+            Left = 198
+            Top = 8
+            Width = 185
+            Height = 177
+            Caption = 'IP'#22320#22336#35774#32622
+            TabOrder = 1
+            object StaticText32: TStaticText
+              Left = 40
+              Top = 16
+              Width = 52
+              Height = 17
+              Caption = #21457#36865#24103#25968
+              TabOrder = 0
+            end
+            object StaticText33: TStaticText
+              Left = 128
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit4: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+          end
+          object RzGroupBox8: TRzGroupBox
+            Left = 7
+            Top = 191
+            Width = 185
+            Height = 177
+            Caption = #23614#21253#26102#21051#26597#35810
+            TabOrder = 2
+            object StaticText34: TStaticText
+              Left = 40
+              Top = 16
+              Width = 52
+              Height = 17
+              Caption = #21457#36865#24103#25968
+              TabOrder = 0
+            end
+            object StaticText35: TStaticText
+              Left = 128
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit5: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+          end
+          object RzGroupBox9: TRzGroupBox
+            Left = 198
+            Top = 191
+            Width = 185
+            Height = 177
+            Caption = #26102#24310#35774#32622
+            TabOrder = 3
+            object StaticText36: TStaticText
+              Left = 40
+              Top = 16
+              Width = 52
+              Height = 17
+              Caption = #21457#36865#24103#25968
+              TabOrder = 0
+            end
+            object StaticText37: TStaticText
+              Left = 128
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit6: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+          end
+          object RzGroupBox10: TRzGroupBox
+            Left = 389
+            Top = 191
+            Width = 185
+            Height = 177
+            Caption = 'ADC'#35774#32622
+            TabOrder = 4
+            object StaticText38: TStaticText
+              Left = 40
+              Top = 16
+              Width = 52
+              Height = 17
+              Caption = #21457#36865#24103#25968
+              TabOrder = 0
+            end
+            object StaticText39: TStaticText
+              Left = 128
+              Top = 16
+              Width = 10
+              Height = 17
+              Caption = '0'
+              TabOrder = 1
+            end
+            object RzRichEdit7: TRzRichEdit
+              Left = 8
+              Top = 40
+              Width = 169
+              Height = 129
+              Font.Charset = GB2312_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssVertical
+              TabOrder = 2
+            end
+          end
+        end
+      end
     end
   end
 end
