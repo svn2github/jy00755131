@@ -254,6 +254,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath=".\res\bitmap1.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\DrawInstrumentGraph.ico"
 				>
 			</File>
@@ -263,6 +267,18 @@
 			</File>
 			<File
 				RelativePath=".\res\DrawInstrumentGraph.rc2"
+				>
+			</File>
+			<File
+				RelativePath=".\res\FDU10x10.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\FDU16x16.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\FDU32x32.bmp"
 				>
 			</File>
 		</Filter>

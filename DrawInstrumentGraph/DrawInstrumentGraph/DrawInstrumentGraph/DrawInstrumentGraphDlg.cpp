@@ -157,7 +157,7 @@ void CDrawInstrumentGraphDlg::OnDrawInstrumentGraph(void)
 	GetDlgItem(IDC_STATIC_GRAPH)->GetWindowRect(oRect);
 	ScreenToClient(oRect);
 	static CString className = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW) ;
-	m_oInstrumentGraph.CreateEx(WS_EX_CLIENTEDGE | WS_EX_STATICEDGE, 
+	m_oInstrumentGraph.CreateEx(WS_EX_STATICEDGE, 
 		className, NULL, WS_CHILD | WS_VISIBLE, 
 		oRect.left, oRect.top, oRect.Width(), oRect.Height(),
 		this->GetSafeHwnd(), NULL);
