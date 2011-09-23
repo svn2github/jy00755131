@@ -125,6 +125,8 @@ using namespace std;
 #define TailTimeFrameCount					8
 // 仪器类型-采集站
 #define InstrumentTypeFDU					3
+// 仪器类型-电源站
+#define InstrumentTypeLAUL				2 
 // 仪器类型-交叉站
 #define InstrumentTypeLAUX				1
 // ADC数据文件文件头行数
