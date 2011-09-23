@@ -55,7 +55,7 @@ using namespace std;
 #define ADCGraphShowPort				0x7800
 // ADC数据图形化显示设置发送目标端口
 #define ADCGraphSetRecPort			0x9401
-// IP广播地址
+// 本地IP地址
 #define IPHostAddr							_T("127.0.0.1")
 // 接收ADC数据一帧的缓冲区大小
 #define ADCRecFrameBufSize			256
