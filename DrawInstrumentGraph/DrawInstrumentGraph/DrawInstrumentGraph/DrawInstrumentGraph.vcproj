@@ -258,6 +258,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\bitmap2.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\bmp00001.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\bmp00002.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\DrawInstrumentGraph.ico"
 				>
 			</File>

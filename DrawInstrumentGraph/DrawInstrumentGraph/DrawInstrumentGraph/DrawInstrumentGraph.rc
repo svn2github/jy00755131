@@ -170,6 +170,9 @@ END
 //
 
 IDB_BITMAP_FDU1         BITMAP                  "res\\bitmap1.bmp"
+IDB_BITMAP_LAUX1        BITMAP                  "res\\bmp00001.bmp"
+IDB_BITMAP_FDU2         BITMAP                  "res\\bmp00002.bmp"
+IDB_BITMAP_LAUX2        BITMAP                  "res\\bitmap2.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

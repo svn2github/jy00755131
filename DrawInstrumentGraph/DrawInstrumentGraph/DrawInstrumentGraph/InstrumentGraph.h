@@ -36,6 +36,22 @@ private:
 	int m_iPosX;
 	// 开始绘制仪器时Y轴坐标
 	int m_iPosY;
+	// 仪器图元结构体
+	typedef struct InstrumentGraph
+	{
+		// 仪器绘图区域
+		CRect oRect;
+		// 点号
+		int iUnitIndex;
+		// 测线号
+		int iLineNum;
+	}m_oInstrumentGraph;
+	// 存储仪器图元绘图区
+	CList <m_oInstrumentGraph, m_oInstrumentGraph> m_oInstrumentGraphRectList;
+	// 鼠标移动记录显示区坐标
+	CRect m_oRectMove;
+public:
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 

@@ -10,13 +10,13 @@
 // 绘图连线颜色
 #define GraphLineColor		RGB(	0,	0,	255	)
 // 仪器绘图单元X轴尺寸
-#define GraphGridInstrumentSizeX		32
+#define GraphGridInstrumentSizeX		16
 // 仪器绘图单元Y轴尺寸
-#define GraphGridInstrumentSizeY		32
+#define GraphGridInstrumentSizeY		16
 // 连接线绘图单元X轴尺寸
-#define GraphGridLineSizeX					16
+#define GraphGridLineSizeX					10
 // 连接线绘图单元Y轴尺寸
-#define GraphGridLineSizeY					16
+#define GraphGridLineSizeY					10
 // 开始绘制仪器时X轴坐标
 #define GraphPosX				100
 // 开始绘制仪器时Y轴坐标
@@ -34,26 +34,28 @@
 IMPLEMENT_DYNAMIC(CInstrumentGraph, CWnd)
 
 CInstrumentGraph::CInstrumentGraph()
-: m_iPosX(0)
-, m_iPosY(0)
 {
 	m_brushBack.CreateSolidBrush(GraphBkColor) ;
 	m_iPosX = GraphPosX;
 	m_iPosY = GraphPosY;
 	// protected bitmaps to restore the memory DC's
 	m_pbitmapOldGrid = NULL ;
+	m_oInstrumentGraphRectList.RemoveAll();
+	m_oRectMove = 0;
 }
 
 CInstrumentGraph::~CInstrumentGraph()
 {
 	if (m_pbitmapOldGrid != NULL)
 		m_dcGraph.SelectObject(m_pbitmapOldGrid) ; 
+	m_oInstrumentGraphRectList.RemoveAll();
 }
 
 
 BEGIN_MESSAGE_MAP(CInstrumentGraph, CWnd)
 	ON_WM_CREATE()
 	ON_WM_PAINT()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -134,8 +136,9 @@ void CInstrumentGraph::DrawUnitAll(CDC* pDC, unsigned int uiGridX, unsigned int 
 	int iUnitIndex = 0;
 	int iLineNum = 0;
 	unsigned int uiLineDirection = 0;
-	unsigned int uiType = InstrumentTypeFDU;
+	unsigned int uiType = InstrumentTypeLAUX;
 	DrawUnit(pDC, uiGridX, uiGridY, uiGridLineX, uiGridLineY, iUnitIndex, iLineNum, uiLineDirection, uiType);
+	uiType = InstrumentTypeFDU;
 	iUnitIndex = 1;
 	uiLineDirection = 4;
 	DrawUnit(pDC, uiGridX, uiGridY, uiGridLineX, uiGridLineY, iUnitIndex, iLineNum, uiLineDirection, uiType);
@@ -158,9 +161,6 @@ void CInstrumentGraph::DrawUnitAll(CDC* pDC, unsigned int uiGridX, unsigned int 
 	DrawUnit(pDC, uiGridX, uiGridY, uiGridLineX, uiGridLineY, iUnitIndex, iLineNum, uiLineDirection, uiType);
 	iUnitIndex = 2;
 	uiLineDirection = 4;
-	DrawUnit(pDC, uiGridX, uiGridY, uiGridLineX, uiGridLineY, iUnitIndex, iLineNum, uiLineDirection, uiType);
-	iUnitIndex = 6;
-	uiLineDirection = 3;
 	DrawUnit(pDC, uiGridX, uiGridY, uiGridLineX, uiGridLineY, iUnitIndex, iLineNum, uiLineDirection, uiType);
 	iUnitIndex = -3;
 	uiLineDirection = 4;
@@ -209,54 +209,40 @@ void CInstrumentGraph::DrawUnit(CDC* pDC, unsigned int uiGridX, unsigned int uiG
 
 	oPenUnit.CreatePen(PS_SOLID, 2, GraphLineColor);
 	pOldPen = pDC->SelectObject(&oPenUnit);
-	if (uiLineDirection == 1)
+	if ((uiLineDirection == 1) || (uiLineDirection == 2))
 	{
 		oRectLine.left = m_iPosX + iUnitIndex * (uiGridX + uiGridLineX);
 		oRectLine.right = oRectLine.left + uiGridX;
 		oRectInstrument.left = oRectLine.left;
 		oRectInstrument.right = oRectLine.right;
-		oRectLine.top = m_iPosY + iLineNum * (uiGridY + uiGridLineY) + uiGridY;
+		if (uiLineDirection == 1)
+		{
+			oRectLine.top = m_iPosY + iLineNum * (uiGridY + uiGridLineY) + uiGridY;
+		}
+		else
+		{
+			oRectLine.top = m_iPosY + iLineNum * (uiGridY + uiGridLineY) - uiGridLineY;
+		}
 		oRectLine.bottom = oRectLine.top + uiGridLineY;
 		oRectInstrument.top = m_iPosY + iLineNum * (uiGridY + uiGridLineY);
 		oRectInstrument.bottom = oRectInstrument.top + uiGridY;
 		pDC->MoveTo(CPoint((oRectLine.left + oRectLine.right) / 2, oRectLine.top));
 		pDC->LineTo(CPoint((oRectLine.left + oRectLine.right) / 2, oRectLine.bottom));
 	}
-	else if (uiLineDirection == 2)
-	{
-		oRectLine.left = m_iPosX + iUnitIndex * (uiGridX + uiGridLineX);
-		oRectLine.right = oRectLine.left + uiGridX;
-		oRectInstrument.left = oRectLine.left;
-		oRectInstrument.right = oRectLine.right;
-		oRectLine.top = m_iPosY + iLineNum * (uiGridY + uiGridLineY) - uiGridLineY;
-		oRectLine.bottom = oRectLine.top + uiGridLineY;
-		oRectInstrument.top = m_iPosY + iLineNum * (uiGridY + uiGridLineY);
-		oRectInstrument.bottom = oRectInstrument.top + uiGridY;
-		pDC->MoveTo(CPoint((oRectLine.left + oRectLine.right) / 2, oRectLine.top));
-		pDC->LineTo(CPoint((oRectLine.left + oRectLine.right) / 2, oRectLine.bottom));
-	}
-	else if (uiLineDirection == 3)
+	else if ((uiLineDirection == 3) || (uiLineDirection == 4))
 	{
 		// 连接线绘制区域
-		oRectLine.left = m_iPosX + iUnitIndex * (uiGridX + uiGridLineX) + uiGridX;
+		if (uiLineDirection == 3)
+		{
+			oRectLine.left = m_iPosX + iUnitIndex * (uiGridX + uiGridLineX) + uiGridX;
+		}
+		else
+		{
+			oRectLine.left = m_iPosX + iUnitIndex * (uiGridX + uiGridLineX) - uiGridLineX;
+		}
 		oRectLine.right = oRectLine.left + uiGridLineX;
 		oRectInstrument.left = m_iPosX + iUnitIndex * (uiGridX + uiGridLineX);
 		oRectInstrument.right = oRectInstrument.left + uiGridX;
-		oRectLine.top = m_iPosY + iLineNum * (uiGridY + uiGridLineY);
-		oRectLine.bottom = oRectLine.top + uiGridY;
-		oRectInstrument.top = oRectLine.top;
-		oRectInstrument.bottom = oRectLine.bottom;
-		pDC->MoveTo(CPoint(oRectLine.left, (oRectLine.top + oRectLine.bottom) / 2));
-		pDC->LineTo(CPoint(oRectLine.right, (oRectLine.top + oRectLine.bottom) / 2));
-	}
-	else if (uiLineDirection == 4)
-	{
-		// 连接线绘制区域
-		oRectLine.left = m_iPosX + iUnitIndex * (uiGridX + uiGridLineX) - uiGridLineX;
-		oRectLine.right = oRectLine.left + uiGridLineX;
-		oRectInstrument.left = m_iPosX + iUnitIndex * (uiGridX + uiGridLineX);
-		oRectInstrument.right = oRectInstrument.left + uiGridX;
-
 		oRectLine.top = m_iPosY + iLineNum * (uiGridY + uiGridLineY);
 		oRectLine.bottom = oRectLine.top + uiGridY;
 		oRectInstrument.top = oRectLine.top;
@@ -274,7 +260,11 @@ void CInstrumentGraph::DrawUnit(CDC* pDC, unsigned int uiGridX, unsigned int uiG
 	}
 	if (uiType == InstrumentTypeFDU)
 	{
-		m_BkBmp.LoadBitmap(IDB_BITMAP_FDU1);	// 此处为刚刚添加进来的位图资源ID
+		m_BkBmp.LoadBitmap(IDB_BITMAP_FDU2);	// 此处为刚刚添加进来的位图资源ID
+	}
+	else if (uiType == InstrumentTypeLAUX)
+	{
+		m_BkBmp.LoadBitmap(IDB_BITMAP_LAUX2);
 	}
 	m_BkBmp.GetBitmap(&m_BmpInfo);				// 获取位图高宽等信息，保存在位图结构体中
 	m_MemDc.CreateCompatibleDC(pDC);			// 创建一个兼容屏幕DC的内存DC：m_MemDc。
@@ -283,4 +273,42 @@ void CInstrumentGraph::DrawUnit(CDC* pDC, unsigned int uiGridX, unsigned int uiG
 	/*将内存DC里的东西贴到屏幕DC上去*/
 	pDC->BitBlt(oRectInstrument.left,oRectInstrument.top,m_BmpInfo.bmWidth,m_BmpInfo.bmHeight,&m_MemDc,0,0,SRCCOPY);
 	pDC->SelectObject(pOldPen);
+	m_oInstrumentGraph oInstrumentGraph;
+	oInstrumentGraph.oRect = oRectInstrument;
+	oInstrumentGraph.iUnitIndex = iUnitIndex;
+	oInstrumentGraph.iLineNum = iLineNum;
+	m_oInstrumentGraphRectList.AddTail(oInstrumentGraph);
+}
+
+void CInstrumentGraph::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	CString str;
+	CRect oRect;
+	POSITION pos = m_oInstrumentGraphRectList.GetHeadPosition();
+	m_oInstrumentGraph oInstrumentGraph;
+	if ((m_oRectMove.left <= point.x) && (m_oRectMove.right >= point.x)
+		&&(m_oRectMove.top <= point.y) && (m_oRectMove.bottom >= point.y))
+	{
+	}
+	else
+	{
+		for (int i=0; i<m_oInstrumentGraphRectList.GetCount(); i++)
+		{
+			oInstrumentGraph = m_oInstrumentGraphRectList.GetNext(pos);
+			oRect = oInstrumentGraph.oRect;
+			if ((oRect.left <= point.x) && (oRect.right >= point.x)
+				&&(oRect.top <= point.y) && (oRect.bottom >= point.y))
+			{
+				m_dcGraph.SetTextAlign (TA_LEFT|TA_TOP) ;
+				str.Format(_T("线号 = %d 点号 = %d"), oInstrumentGraph.iLineNum, oInstrumentGraph.iUnitIndex);
+				m_dcGraph.TextOut (point.x, point.y, str) ;
+				InvalidateRect( m_rectClient, FALSE );
+				m_oRectMove = oInstrumentGraph.oRect;
+				break;
+			}
+		}
+	}
+
+	CWnd::OnMouseMove(nFlags, point);
 }
