@@ -27,10 +27,9 @@ public:
 	afx_msg void OnPaint();
 
 	// 绘制所有仪器
-	void DrawUnitAll(CDC* pDC, unsigned int uiGridX, unsigned int uiGridY, unsigned int uiGridLineX, unsigned int uiGridLineY);
+	void DrawUnitAll(CDC* pDC);
 	// 绘制仪器单元（包含连接线）
-	void DrawUnit(CDC* pDC, unsigned int uiGridX, unsigned int uiGridY, unsigned int uiGridLineX, unsigned int uiGridLineY, 
-		int iUnitIndex, int iLineNum, unsigned int uiLineDirection, unsigned int uiType);
+	void DrawUnit(CDC* pDC, int iUnitIndex, int iLineNum, unsigned int uiLineDirection, unsigned int uiType);
 private:
 	// 开始绘制仪器时X轴坐标
 	int m_iPosX;
@@ -52,6 +51,19 @@ private:
 	CRect m_oRectMove;
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+private:
+	// 设备绘图单元X方向尺寸
+	unsigned int m_uiGridX;
+	// 设备Y方向绘图尺寸
+	unsigned int m_uiGridY;
+	// 连线X方向绘图尺寸
+	unsigned int m_uiGridLineX;
+	// 连线Y方向绘图尺寸
+	unsigned int m_uiGridLineY;
+	// 显示仪器的线号和点号
+	BOOL m_bShowInstrumentLabel;
+	// 显示仪器坐标（包含测线号和点号）
+	void OnShowInstrumentAxisPoint(CPoint point);
 };
 
 
