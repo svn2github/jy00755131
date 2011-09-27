@@ -2,11 +2,16 @@
 #include "FraseSPSToXML.h"
 
 CFraseSPSToXML::CFraseSPSToXML(void)
+: m_uiIntervalLAUL(25)
+, m_uiLAUXNum(1)
+, m_uiBlastMachineNum(4)
+, m_uiAuxNum(4)
 {
 }
 
 CFraseSPSToXML::~CFraseSPSToXML(void)
 {
+	m_vecLine.clear();
 }
 BOOL CFraseSPSToXML::read_file_rec(CString strPath)
 {
@@ -19,6 +24,7 @@ BOOL CFraseSPSToXML::read_file_rec(CString strPath)
 	int flag = 0;
 	m_icnt_rec = 0;
 	double intvl = 0;
+ 	m_vecLine.clear();
 	CStdioFile file;
 	memset(&rec_file[0], 0, ARRAY_SIZE*sizeof(rec_file_struct));
 	if (FALSE == file.Open(strPath, CFile::modeRead))
@@ -38,6 +44,7 @@ BOOL CFraseSPSToXML::read_file_rec(CString strPath)
 			str_line = readbyte(1, 17, str1);
 			if (_tstoi(str_line) != rec_file[m_icnt_rec].lineName)     //如果测线号有变，则数组位置递增（起始位置为1），测点号为下限
 			{
+				m_vecLine.push_back(0);
 				m_icnt_rec++;
 				rec_file[m_icnt_rec].lineName = _tstoi(str_line);
 				rec_file[m_icnt_rec].type = _tstoi(readbyte(27, 28, str1));
@@ -66,6 +73,7 @@ BOOL CFraseSPSToXML::read_file_rec(CString strPath)
 				}				
 			}
 			rec_file[m_icnt_rec].count++;
+			m_vecLine[m_icnt_rec - 1] = rec_file[m_icnt_rec].count;
 		}
 		else if (str2 == _T('H'))
 		{
@@ -571,4 +579,134 @@ void CFraseSPSToXML::SaveOperationXML(CString strPath)
 	SaveMatrixIniXMLFile_operation(strPath);
 	// 关闭配置文件
 	CloseMatrixIniXMLFile_operation();
+}
+
+// 生成测线仪器排列文件
+void CFraseSPSToXML::GenLineInitTXT(CString strPath)
+{
+	CFile file;
+	unsigned int uiMax = OnCalMax();
+	unsigned int uiLAULNum = 0;		// 电源站个数
+	unsigned int uiLineNum = m_vecLine.size();
+	unsigned int uiCharSize = 0;
+	unsigned int uiPosition = 0;
+	if (uiMax == 0)
+	{
+		return;
+	}
+	if (uiLineNum == 0)
+	{
+		return;
+	}
+	if (uiMax < (m_uiLAUXNum + m_uiBlastMachineNum + m_uiLAUXNum))
+	{
+		uiMax = m_uiLAUXNum + m_uiBlastMachineNum + m_uiLAUXNum;
+	}
+	uiLAULNum = (uiMax / 2) / (m_uiIntervalLAUL + 1) + (uiMax - uiMax / 2) / (m_uiIntervalLAUL + 1);
+	unsigned int uiLineCount = (uiLineNum + 1) * 2 - 1;
+	unsigned int uiColumnCount = (m_uiLAUXNum + uiLAULNum + uiMax) * 2 - 1 + 2;
+	uiCharSize = uiLineCount * uiColumnCount;
+	unsigned char * pWriteChar = new unsigned char [uiCharSize];
+	unsigned char ucInit = ' ';
+	memset(pWriteChar, ucInit, uiCharSize);
+	// 回车换行赋值
+	for (unsigned int i=0; i<uiLineCount; i++)
+	{
+		uiPosition = (i + 1) * uiColumnCount - 2;
+		pWriteChar[uiPosition] = '\r';
+		uiPosition = (i + 1) * uiColumnCount - 1;
+		pWriteChar[uiPosition] = '\n';
+	}
+	// 交叉站及交叉线赋值
+	for (unsigned int i=0; i<uiLineCount; i++)
+	{
+		uiPosition = (uiMax - uiMax / 2 + (uiMax - uiMax / 2) / (m_uiIntervalLAUL + 1)) * 2 + i * uiColumnCount;
+		if (i == 0)
+		{
+			pWriteChar[uiPosition] = 'X';
+		}
+		else if (i % 2 == 1)
+		{
+			pWriteChar[uiPosition] = '|';
+		}
+		else
+		{
+			pWriteChar[uiPosition] = 'A';
+		}
+	}
+	// 左侧爆炸机赋值
+	uiPosition = (uiMax - uiMax / 2 + (uiMax - uiMax / 2) / (m_uiIntervalLAUL + 1)) * 2;
+	for (unsigned int i=0; i<m_uiBlastMachineNum; i++)
+	{
+		pWriteChar[uiPosition - i * 2 - 1] = '-';
+		pWriteChar[uiPosition - i * 2 - 2] = 'C';
+	}
+	// 右侧辅助道赋值
+	uiPosition = (uiMax - uiMax / 2 + (uiMax - uiMax / 2) / (m_uiIntervalLAUL + 1)) * 2;
+	for (unsigned int i=0; i<m_uiAuxNum; i++)
+	{
+		pWriteChar[uiPosition + i * 2 + 1] = '-';
+		pWriteChar[uiPosition + i * 2 + 2] = 'C';
+	}
+	unsigned int uiFDUNumLeft = 0;		// 左侧采集站个数
+	unsigned int uiFDUNumRight = 0;		// 右侧采集站个数
+	// 采集站及电源站赋值
+	for (unsigned int i=2; i<uiLineCount; i++)
+	{
+		if (i % 2 == 0)
+		{
+			uiPosition = (uiMax - uiMax / 2 + (uiMax - uiMax / 2) / (m_uiIntervalLAUL + 1)) * 2 + i * uiColumnCount;
+			uiFDUNumRight = m_vecLine[(i - 2) / 2] / 2;
+			uiFDUNumLeft = m_vecLine[(i - 2) / 2] - uiFDUNumRight;
+			// 左侧采集站及电源站赋值
+			for (unsigned int j=0; j<(uiFDUNumLeft + uiFDUNumLeft / (m_uiIntervalLAUL + 1)); j++)
+			{
+				pWriteChar[uiPosition - j * 2 - 1] = '-';
+				if (((j + 1) % (m_uiIntervalLAUL + 1) == 0) && (j != 0))
+				{
+					pWriteChar[uiPosition - j * 2 - 2] = 'B';
+				}
+				else
+				{
+					pWriteChar[uiPosition - j * 2 - 2] = 'C';
+				}
+			}
+			// 右侧采集站及电源站赋值
+			for (unsigned int j=0; j<(uiFDUNumRight + uiFDUNumRight / (m_uiIntervalLAUL + 1)); j++)
+			{
+				pWriteChar[uiPosition + j * 2 + 1] = '-';
+				if (((j + 1) % (m_uiIntervalLAUL + 1) == 0) && (j != 0))
+				{
+					pWriteChar[uiPosition + j * 2 + 2] = 'B';
+				}
+				else
+				{
+					pWriteChar[uiPosition + j * 2 + 2] = 'C';
+				}
+			}
+		}	
+	}
+	if (FALSE == file.Open(strPath, CFile::modeCreate|CFile::modeWrite))
+	{
+		AfxMessageBox(_T("Create LineInit file error, Please check it again!"));
+		return;
+	}
+	// 写文件内容
+	file.Write(pWriteChar, uiCharSize);
+	file.Close();
+	delete[] pWriteChar;
+}
+
+// 计算最大值并返回
+unsigned int CFraseSPSToXML::OnCalMax(void)
+{
+	unsigned int uiMax = 0;
+	for (vector <unsigned int>::size_type i=0; i<m_vecLine.size(); i++)
+	{
+		if (m_vecLine[i] >= uiMax)
+		{
+			uiMax = m_vecLine[i];
+		}
+	}
+	return uiMax;
 }

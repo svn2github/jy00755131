@@ -16,7 +16,8 @@
 #define    OPERATION_XMLFILE		(_T("MatrixOperation.xml"))
 // OperationServer程序配置参数
 #define    OPERATIONSERVER_XMLFILE	(_T("MatrixOperationServer.xml"))
-
+// LineInit文件名
+#define		LINEINIT_TXTFILE		(_T("LineInit.txt"))
 
 
 ////////////////////////////客户端及服务器程序子目录定义/////////////////////////////////////////////

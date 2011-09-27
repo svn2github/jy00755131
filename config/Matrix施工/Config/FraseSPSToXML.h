@@ -1,5 +1,6 @@
 #pragma once
-
+#include <vector>
+using namespace std;
 #define FLAG_X											_T("X")
 #define FLAG_R											_T("R")
 #define ARRAY_SIZE									2048
@@ -58,6 +59,7 @@ private:
 	struct comm_file_struct comm_file[ARRAY_SIZE];
 	int m_icnt_rec;  //解析sps文件中的第几行，结构
 	int m_icnt_comm;
+	vector <unsigned int> m_vecLine;
 
 	BOOL read_file_rec(CString strPath);
 	BOOL read_file_comm(CString strPath);
@@ -84,4 +86,17 @@ public:
 	void SaveLineXML(CString strPath);
 	// 保存修改到施工XML
 	void SaveOperationXML(CString strPath);
+	// 生成测线仪器排列文件
+	void GenLineInitTXT(CString strPath);
+	// 计算最大值并返回
+	unsigned int OnCalMax(void);
+private:
+	// 电源站间隔的采集站个数
+	unsigned int m_uiIntervalLAUL;
+	// 一条测线上交叉站个数
+	unsigned int m_uiLAUXNum;
+	// 爆炸机个数
+	unsigned int m_uiBlastMachineNum;
+	// 辅助道个数
+	unsigned int m_uiAuxNum;
 };

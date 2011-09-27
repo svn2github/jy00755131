@@ -63,8 +63,6 @@
 #define IDC_EDITUSERINFO                1087
 #define IDC_BTNLOADSPS                  1089
 #define IDC_BTNGENOPTXML                1090
-#define IDC_BUTTON3                     1091
-#define IDC_BTNGENLINEXML               1091
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_USER_TOOLBAR1           32793
 #define ID_VIEW_USER_TOOLBAR2           32794
@@ -108,7 +106,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        184
 #define _APS_NEXT_COMMAND_VALUE         32861
-#define _APS_NEXT_CONTROL_VALUE         1091
+#define _APS_NEXT_CONTROL_VALUE         1093
 #define _APS_NEXT_SYMED_VALUE           108
 #endif
 #endif

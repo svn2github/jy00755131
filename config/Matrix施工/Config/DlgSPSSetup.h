@@ -21,8 +21,6 @@ public:
 	CFraseSPSToXML m_oFraseSPSToXML;
 public:
 	afx_msg void OnBnClickedBtnloadsps();
-	afx_msg void OnBnClickedBtngenoptxml();
-	afx_msg void OnBnClickedBtngenlinexml();
 private:
 	// SPS_R文件路径
 	CString m_csSPSRFilePath;
@@ -36,6 +34,14 @@ private:
 	CString m_csLocalOptXMLFile;
 	// 本地默认Line XML路径
 	CString m_csLocalLineXMLFile;
+	// 本地默认LineInit TXT路径
+	CString m_csLocalLineInitTXTFile;
 	// 程序当前路径
 	wchar_t m_wcExeCurrentPath[MAX_PATH];
+	// 生成施工XML
+	void OnGenOptXML();
+	// 生成测线XML
+	void OnGenLineXML();
+	// 生成测线仿真排列文件
+	void OnGenLineInitTXT();
 };

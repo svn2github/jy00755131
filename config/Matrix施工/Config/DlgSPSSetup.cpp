@@ -20,6 +20,8 @@ CDlgSPSSetup::CDlgSPSSetup(CWnd* pParent /*=NULL*/)
 	m_csLocalOptXMLFile += OPERATION_XMLFILE;
 	m_csLocalLineXMLFile = CLIENTDIR_XMLFILE;
 	m_csLocalLineXMLFile += MATRIX_XMLFILE;
+	m_csLocalLineInitTXTFile = CLIENTDIR_XMLFILE;
+	m_csLocalLineInitTXTFile += LINEINIT_TXTFILE;
 	GetCurrentDirectory(MAX_PATH, m_wcExeCurrentPath);
 }
 
@@ -35,8 +37,6 @@ void CDlgSPSSetup::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CDlgSPSSetup, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BTNLOADSPS, &CDlgSPSSetup::OnBnClickedBtnloadsps)
-	ON_BN_CLICKED(IDC_BTNGENOPTXML, &CDlgSPSSetup::OnBnClickedBtngenoptxml)
-	ON_BN_CLICKED(IDC_BTNGENLINEXML, &CDlgSPSSetup::OnBnClickedBtngenlinexml)
 END_MESSAGE_MAP()
 
 // DlgSPSSetup 消息处理程序
@@ -66,16 +66,20 @@ void CDlgSPSSetup::OnBnClickedBtnloadsps()
 	}
 	else
 	{
+		OnGenLineInitTXT();
 		// 将SPS文件路径保存到config配置文件中
 		ParseXML.WriteSPSFile(theApp.m_strLocalXMLFile, m_csSPSRFilePath, m_csSPSXFilePath);
 		// 将配置文件上传到FTP
 		PutMatrixXMLToFTPServer(theApp.m_strFTPServerIP,CONFIG_XMLFILE,theApp.m_strLocalXMLFile);
 		// 发送消息通知本地的其他程序
 		::SendMessage(HWND_BROADCAST,WM_NEWXMLFILE,MATRIX_CONFIG,MATRIX_CONFIG_SPSSETUP);
+		OnGenOptXML();
+		OnGenLineXML();
 	}
+	// 施工XML
 }
-
-void CDlgSPSSetup::OnBnClickedBtngenoptxml()
+// 生成施工XML
+void CDlgSPSSetup::OnGenOptXML()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_oFraseSPSToXML.SaveOperationXML(m_csLocalOptXMLFile);
@@ -84,8 +88,8 @@ void CDlgSPSSetup::OnBnClickedBtngenoptxml()
 	// 发送消息通知本地的其他程序
 	::SendMessage(HWND_BROADCAST,WM_NEWXMLFILE,MATRIX_OPERATION,MATRIX_OPERATION_ALL);
 }
-
-void CDlgSPSSetup::OnBnClickedBtngenlinexml()
+// 生成测线XML
+void CDlgSPSSetup::OnGenLineXML()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_oFraseSPSToXML.SaveLineXML(m_csLocalLineXMLFile);
@@ -120,4 +124,10 @@ void CDlgSPSSetup::OnSelectSPSXFilePath(void)
 		return;
 	}
 	m_csSPSXFilePath = dlg.GetPathName();
+}
+// 生成测线仿真排列文件
+void CDlgSPSSetup::OnGenLineInitTXT()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_oFraseSPSToXML.GenLineInitTXT(m_csLocalLineInitTXTFile);
 }
