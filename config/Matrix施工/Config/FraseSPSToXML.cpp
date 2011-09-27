@@ -1,6 +1,21 @@
 #include "StdAfx.h"
 #include "FraseSPSToXML.h"
-
+// 主交叉站标识
+#define LAUX_LOGO				'X'
+// 交叉站标识
+#define LAU_LOGO				'A'
+// 采集站标识
+#define FDU_LOGO				'C'
+// 电源站标识
+#define LAUL_LOGO				'B'
+// 爆炸机标识
+#define BLAST_LOGO			'C'
+// 辅助道标识
+#define AUX_LOGO				'C'
+// 交叉站连接线标识
+#define LAUXLINE_LOGO		'|'
+// 大线方向连接线标识
+#define LINE_LOGO				'-'
 CFraseSPSToXML::CFraseSPSToXML(void)
 : m_uiIntervalLAUL(25)
 , m_uiLAUXNum(1)
@@ -623,30 +638,30 @@ void CFraseSPSToXML::GenLineInitTXT(CString strPath)
 		uiPosition = (uiMax - uiMax / 2 + (uiMax - uiMax / 2) / (m_uiIntervalLAUL + 1)) * 2 + i * uiColumnCount;
 		if (i == 0)
 		{
-			pWriteChar[uiPosition] = 'X';
+			pWriteChar[uiPosition] = LAUX_LOGO;
 		}
 		else if (i % 2 == 1)
 		{
-			pWriteChar[uiPosition] = '|';
+			pWriteChar[uiPosition] = LAUXLINE_LOGO;
 		}
 		else
 		{
-			pWriteChar[uiPosition] = 'A';
+			pWriteChar[uiPosition] = LAU_LOGO;
 		}
 	}
 	// 左侧爆炸机赋值
 	uiPosition = (uiMax - uiMax / 2 + (uiMax - uiMax / 2) / (m_uiIntervalLAUL + 1)) * 2;
 	for (unsigned int i=0; i<m_uiBlastMachineNum; i++)
 	{
-		pWriteChar[uiPosition - i * 2 - 1] = '-';
-		pWriteChar[uiPosition - i * 2 - 2] = 'C';
+		pWriteChar[uiPosition - i * 2 - 1] = LINE_LOGO;
+		pWriteChar[uiPosition - i * 2 - 2] = BLAST_LOGO;
 	}
 	// 右侧辅助道赋值
 	uiPosition = (uiMax - uiMax / 2 + (uiMax - uiMax / 2) / (m_uiIntervalLAUL + 1)) * 2;
 	for (unsigned int i=0; i<m_uiAuxNum; i++)
 	{
-		pWriteChar[uiPosition + i * 2 + 1] = '-';
-		pWriteChar[uiPosition + i * 2 + 2] = 'C';
+		pWriteChar[uiPosition + i * 2 + 1] = LINE_LOGO;
+		pWriteChar[uiPosition + i * 2 + 2] = AUX_LOGO;
 	}
 	unsigned int uiFDUNumLeft = 0;		// 左侧采集站个数
 	unsigned int uiFDUNumRight = 0;		// 右侧采集站个数
@@ -661,27 +676,27 @@ void CFraseSPSToXML::GenLineInitTXT(CString strPath)
 			// 左侧采集站及电源站赋值
 			for (unsigned int j=0; j<(uiFDUNumLeft + uiFDUNumLeft / (m_uiIntervalLAUL + 1)); j++)
 			{
-				pWriteChar[uiPosition - j * 2 - 1] = '-';
+				pWriteChar[uiPosition - j * 2 - 1] = LINE_LOGO;
 				if (((j + 1) % (m_uiIntervalLAUL + 1) == 0) && (j != 0))
 				{
-					pWriteChar[uiPosition - j * 2 - 2] = 'B';
+					pWriteChar[uiPosition - j * 2 - 2] = LAUL_LOGO;
 				}
 				else
 				{
-					pWriteChar[uiPosition - j * 2 - 2] = 'C';
+					pWriteChar[uiPosition - j * 2 - 2] = FDU_LOGO;
 				}
 			}
 			// 右侧采集站及电源站赋值
 			for (unsigned int j=0; j<(uiFDUNumRight + uiFDUNumRight / (m_uiIntervalLAUL + 1)); j++)
 			{
-				pWriteChar[uiPosition + j * 2 + 1] = '-';
+				pWriteChar[uiPosition + j * 2 + 1] = LINE_LOGO;
 				if (((j + 1) % (m_uiIntervalLAUL + 1) == 0) && (j != 0))
 				{
-					pWriteChar[uiPosition + j * 2 + 2] = 'B';
+					pWriteChar[uiPosition + j * 2 + 2] = LAUL_LOGO;
 				}
 				else
 				{
-					pWriteChar[uiPosition + j * 2 + 2] = 'C';
+					pWriteChar[uiPosition + j * 2 + 2] = FDU_LOGO;
 				}
 			}
 		}	
