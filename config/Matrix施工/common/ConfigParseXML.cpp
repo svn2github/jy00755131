@@ -497,7 +497,7 @@ bool  CConfigParseXML::WriteDiskRecord(LPCTSTR pstrXMLFilePath,CDiskRecordConfig
 	}
 }
 // 解析配置程序中SPS文件设置参数
-bool CConfigParseXML::ParseSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSRFilePath, CString& strSPSXFilePath)
+bool CConfigParseXML::ParseSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSFilePath)
 {
 	try
 	{	
@@ -525,12 +525,8 @@ bool CConfigParseXML::ParseSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSRFile
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 		// 得到索引值
-		strKey =_T("SPS_R_Path");
-		strSPSRFilePath= CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
-
-		// 得到索引值
-		strKey =_T("SPS_X_Path");
-		strSPSXFilePath= CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
+		strKey =_T("SPS_Path");
+		strSPSFilePath= CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
 
 		oXMLDOMDocument.DetachDispatch();
 		return true;
@@ -540,7 +536,7 @@ bool CConfigParseXML::ParseSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSRFile
 		return false;
 	}
 }
-bool  CConfigParseXML::WriteSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSRFilePath, CString& strSPSXFilePath)
+bool  CConfigParseXML::WriteSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSFilePath)
 {
 	CString strKey;
 	COleException oError;
@@ -567,10 +563,8 @@ bool  CConfigParseXML::WriteSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSRFil
 		oNodeList.AttachDispatch(lpDispatch);
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);		
-		oVariant = strSPSRFilePath;
-		oElement.setAttribute(_T("SPS_R_Path"), oVariant);
-		oVariant = strSPSXFilePath;
-		oElement.setAttribute(_T("SPS_X_Path"), oVariant);
+		oVariant = strSPSFilePath;
+		oElement.setAttribute(_T("SPS_Path"), oVariant);
 		oVariant = pstrXMLFilePath;
 		oXMLDOMDocument.save(oVariant);
 		oXMLDOMDocument.DetachDispatch();

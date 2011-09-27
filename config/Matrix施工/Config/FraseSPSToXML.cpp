@@ -44,7 +44,6 @@ BOOL CFraseSPSToXML::read_file_rec(CString strPath)
 	memset(&rec_file[0], 0, ARRAY_SIZE*sizeof(rec_file_struct));
 	if (FALSE == file.Open(strPath, CFile::modeRead))
 	{
-		AfxMessageBox(_T("Open Sps_R file error, Please check it again!"));
 		return FALSE;
 	}
 	while (file.GetPosition()<file.GetLength())
@@ -125,7 +124,6 @@ BOOL CFraseSPSToXML::read_file_comm(CString strPath)
 	memset(&comm_file[0], 0, ARRAY_SIZE*sizeof(comm_file_struct));
 	if (FALSE == file.Open(strPath, CFile::modeRead))
 	{
-		AfxMessageBox(_T("Open Sps_X file error, Please check it again!"));
 		return FALSE;
 	}
 

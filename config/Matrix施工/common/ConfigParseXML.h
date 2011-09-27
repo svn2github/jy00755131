@@ -25,7 +25,7 @@ public:
 	bool  ParseDiskRecord(LPCTSTR pstrXMLFilePath,CDiskRecordConfig* pDiskRecord);
 	bool  WriteDiskRecord(LPCTSTR pstrXMLFilePath,CDiskRecordConfig* pDiskRecord);
 	// 解析配置程序中SPS文件设置参数
-	bool ParseSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSRFilePath, CString& strSPSXFilePath);
+	bool ParseSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSFilePath);
 	// 向配置文件中写入SPS文件设置参数
-	bool WriteSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSRFilePath, CString& strSPSXFilePath);
+	bool WriteSPSFile(LPCTSTR pstrXMLFilePath, CString& strSPSFilePath);
 };

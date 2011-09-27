@@ -23,13 +23,9 @@ public:
 	afx_msg void OnBnClickedBtnloadsps();
 private:
 	// SPS_R文件路径
-	CString m_csSPSRFilePath;
-	// SPS_X文件路径
-	CString m_csSPSXFilePath;
-	// 查找SPS_R文件路径
-	void OnSelectSPSRFilePath(void);
-	// 查找SPS_X文件路径
-	void OnSelectSPSXFilePath(void);
+	CString m_csSPSFilePath;
+	// 查找SPS文件路径
+	void OnSelectSPSFilePath(void);
 	// 本地默认Operation XML路径
 	CString m_csLocalOptXMLFile;
 	// 本地默认Line XML路径

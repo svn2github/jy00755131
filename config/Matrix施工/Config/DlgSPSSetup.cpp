@@ -12,8 +12,7 @@ IMPLEMENT_DYNAMIC(CDlgSPSSetup, CBCGPDialog)
 
 CDlgSPSSetup::CDlgSPSSetup(CWnd* pParent /*=NULL*/)
 : CBCGPDialog(CDlgSPSSetup::IDD, pParent)
-, m_csSPSRFilePath(_T(""))
-, m_csSPSXFilePath(_T(""))
+, m_csSPSFilePath(_T(""))
 {
 	EnableVisualManagerStyle();
 	m_csLocalOptXMLFile = CLIENTDIR_XMLFILE;
@@ -46,16 +45,15 @@ void CDlgSPSSetup::OnBnClickedBtnloadsps()
 	// TODO: 在此添加控件通知处理程序代码
 	CConfigParseXML  ParseXML;
 	// 查找SPS文件路径
-	OnSelectSPSRFilePath();
-	OnSelectSPSXFilePath();
+	OnSelectSPSFilePath();
 	// 返回到程序当前路径
 	SetCurrentDirectory(m_wcExeCurrentPath);
 	// 手动查找SPS文件不能正确读取文件则改为默认路径下查找
-	if (FALSE == m_oFraseSPSToXML.LoadSPSFile(m_csSPSRFilePath, m_csSPSXFilePath))
+	if (FALSE == m_oFraseSPSToXML.LoadSPSFile(m_csSPSFilePath + _T(".R"), m_csSPSFilePath + _T(".X")))
 	{
 		// 在配置文件中找到SPS文件默认路径
-		ParseXML.ParseSPSFile(theApp.m_strLocalXMLFile, m_csSPSRFilePath, m_csSPSXFilePath);
-		if (FALSE == m_oFraseSPSToXML.LoadSPSFile(m_csSPSRFilePath, m_csSPSXFilePath))
+		ParseXML.ParseSPSFile(theApp.m_strLocalXMLFile, m_csSPSFilePath);
+		if (FALSE == m_oFraseSPSToXML.LoadSPSFile(m_csSPSFilePath + _T(".R"), m_csSPSFilePath + _T(".X")))
 		{
 			AfxMessageBox(_T("Please push this button again to find the correct sps file Path!"));
 		}
@@ -66,17 +64,16 @@ void CDlgSPSSetup::OnBnClickedBtnloadsps()
 	}
 	else
 	{
-		OnGenLineInitTXT();
 		// 将SPS文件路径保存到config配置文件中
-		ParseXML.WriteSPSFile(theApp.m_strLocalXMLFile, m_csSPSRFilePath, m_csSPSXFilePath);
+		ParseXML.WriteSPSFile(theApp.m_strLocalXMLFile, m_csSPSFilePath);
 		// 将配置文件上传到FTP
 		PutMatrixXMLToFTPServer(theApp.m_strFTPServerIP,CONFIG_XMLFILE,theApp.m_strLocalXMLFile);
 		// 发送消息通知本地的其他程序
 		::SendMessage(HWND_BROADCAST,WM_NEWXMLFILE,MATRIX_CONFIG,MATRIX_CONFIG_SPSSETUP);
-		OnGenOptXML();
-		OnGenLineXML();
 	}
-	// 施工XML
+	OnGenLineInitTXT();
+	OnGenOptXML();
+	OnGenLineXML();
 }
 // 生成施工XML
 void CDlgSPSSetup::OnGenOptXML()
@@ -99,31 +96,21 @@ void CDlgSPSSetup::OnGenLineXML()
 	::SendMessage(HWND_BROADCAST,WM_NEWXMLFILE,MATRIX_LINE,MATRIX_LINE_ALL);
 }
 
-// 查找SPS_R文件路径
-void CDlgSPSSetup::OnSelectSPSRFilePath(void)
+// 查找SPS文件路径
+void CDlgSPSSetup::OnSelectSPSFilePath(void)
 {
 	// 打开文件
-	const wchar_t pszFilter[] = _T("SPS_R文件(*.R)|*.R|All Files (*.*)|*.*||");
-	CFileDialog dlg(TRUE, _T(".R"), _T("JO.R"), OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT, pszFilter, this);
+	CString str = _T("");
+	const wchar_t pszFilter[] = _T("SPS文件(*.R)|*.R|SPS文件(*.X)|*.X|SPS文件(*.S)|*.S|All Files (*.*)|*.*||");
+	CFileDialog dlg(TRUE, _T(".R"), _T(""), OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT, pszFilter, this);
+	m_csSPSFilePath = _T("");
 	if ( dlg.DoModal()!=IDOK )
 	{
 		return;
 	}
-	m_csSPSRFilePath = dlg.GetPathName();
-}
-
-// 查找SPS_X文件路径
-void CDlgSPSSetup::OnSelectSPSXFilePath(void)
-{
-	// 打开文件
-	const wchar_t pszFilter[] = _T("SPS_X文件(*.X)|*.X|All Files (*.*)|*.*||");
-	CFileDialog dlg(TRUE, _T(".X"), _T("JO.X"), OFN_HIDEREADONLY| OFN_OVERWRITEPROMPT, pszFilter, this);
-
-	if ( dlg.DoModal()!=IDOK )
-	{
-		return;
-	}
-	m_csSPSXFilePath = dlg.GetPathName();
+	str = dlg.GetPathName();
+	int iFind = str.ReverseFind(_T('.'));
+	m_csSPSFilePath = str.Left(iFind);
 }
 // 生成测线仿真排列文件
 void CDlgSPSSetup::OnGenLineInitTXT()

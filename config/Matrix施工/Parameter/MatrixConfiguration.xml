@@ -12,5 +12,5 @@
 	<UserInfo Text="放炮信息，SEGD特殊示例AAAACCCCbbbbbbbbbbbbbb"/>
 	<SEGDSetup Mode="Standard" SEGDLevel="REV2.1" NumberOfRecordChannelSets="16" ExternalHeaderSize="1K"/>
 	<DiskRecord Mode="Standard" BackupSettings="1" FileDirectory="E:\Temp\temp"/>
-  	<SPSSetup SPS_R_Path="C:\Documents and Settings\Administrator\桌面\工作\config\Matrix施工\Parameter\JO.R" SPS_X_Path="C:\Documents and Settings\Administrator\桌面\工作\config\Matrix施工\Parameter\JO.X"/>
+  	<SPSSetup SPS_Path="C:\Documents and Settings\Administrator\桌面\工作\config\Matrix施工\Parameter\JO"/>
 </Matrix>
