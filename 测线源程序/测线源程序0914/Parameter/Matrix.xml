@@ -51,7 +51,7 @@
 				<Record Nb="4" Label="pilot" BoxType="1" SN="4004483" ChannelNb="1" Gain="1600" DPGNb="3" Comments="Comments1"/>
 			</BlastMachineSetup>
 			<AuxSetup Count="4" TabCount="4">
-				<Record Nb="1" Label="pilot" BoxType="1" SN="4004883" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>
+				<Record Nb="1" Label="pilot" BoxType="1" SN="4010443" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>
 				<Record Nb="2" Label="pilot" BoxType="1" SN="4004963" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>
 				<Record Nb="3" Label="pilot" BoxType="1" SN="4005043" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>
 				<Record Nb="4" Label="pilot" BoxType="1" SN="4005123" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Comments1"/>

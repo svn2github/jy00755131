@@ -6,7 +6,7 @@
 #include "InstrumentGraphView.h"
 #include "InstrumentGraphChildFrame.h"
 #include "MainFrm.h"
-
+#include "DlgSetInstrument.h"
 // CInstrumentGraphView
 
 IMPLEMENT_DYNCREATE(CInstrumentGraphView, CScrollView)
@@ -68,6 +68,7 @@ BEGIN_MESSAGE_MAP(CInstrumentGraphView, CScrollView)
 	ON_COMMAND(IDR_POPUP_GRAPHVIEW_INSTRUMENT_SETLOWBOXOFDETOUR, OnGraphViewInstrumentSetLowBoxDetour)
 	ON_COMMAND(IDR_POPUP_GRAPHVIEW_INSTRUMENT_SETHIGHBOXOFDETOUR, OnGraphViewInstrumentSetHighBoxDetour)
 	ON_COMMAND(IDR_POPUP_GRAPHVIEW_INSTRUMENT_FORMLINE, OnGraphViewInstrumentFormLine)
+	ON_COMMAND(IDR_POPUP_GRAPHVIEW_INSTRUMENT_SETINSTRUMENT, OnPopupGraphviewInstrumentSetinstrument)
 END_MESSAGE_MAP()
 
 // CInstrumentGraphView 绘图
@@ -1307,4 +1308,23 @@ void CInstrumentGraphView::OnClearCheckInstrumentTestResult(unsigned int uiTestT
 		}
 	}
 	RedrawWindow();
+}
+void CInstrumentGraphView::OnPopupGraphviewInstrumentSetinstrument()
+{
+	// TODO: 在此添加命令处理程序代码
+	CDlgSetInstrument dlg;
+	CGraphInstrumentData* pGraphInstrumentData = NULL;
+	dlg.m_iSelectUnitColumnIndex = m_iSelectUnitColumnIndex;			// 从0开始计数
+	dlg.m_iSelectUnitRowIndex = m_iSelectUnitRowIndex;						// 从0开始计数
+	pGraphInstrumentData = m_pSiteData->m_oGraphInstrumentList.GetGraphInstrumentDataByPosIndex(m_iSelectUnitColumnIndex, m_iSelectUnitRowIndex);
+	dlg.m_uiColumnCount =  m_pSiteData->m_oGraphInstrumentList.m_uiColumnCount;
+	dlg.m_uiRowCount=  m_pSiteData->m_oGraphInstrumentList.m_uiRowCount;
+	if(NULL != pGraphInstrumentData)
+	{
+		if (NULL != pGraphInstrumentData->m_pInstrument)
+		{
+			dlg.m_uiInstrumentType = pGraphInstrumentData->m_pInstrument->m_uiInstrumentType;
+		}
+	}
+	dlg.DoModal();
 }

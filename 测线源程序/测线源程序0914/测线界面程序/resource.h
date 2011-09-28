@@ -128,6 +128,7 @@
 #define IDR_POPUP_GRAPHVIEW_SENSOR      262
 #define IDR_TOOLBAR2                    264
 #define IDD_DIALOG_SELECTSHOTPOINT      267
+#define IDD_DIALOG_SETINSTRUMENT        268
 #define IDC_MAIL                        1000
 #define IDC_URL                         1001
 #define IDC_VERSION                     1002
@@ -159,6 +160,7 @@
 #define IDC_BUTTON_CLEAR                1034
 #define IDC_BUTTON2                     1035
 #define IDC_CANCEL                      1035
+#define IDC_BUTTON_ADD_NEXT             1035
 #define IDC_CHECK_LOOKAUTO              1036
 #define IDC_CHECK_RESISTANCE            1037
 #define IDC_CHECK_TILT                  1038
@@ -167,6 +169,9 @@
 #define IDC_BUTTON_SELECTSHOTPOINT      1042
 #define IDC_BUTTON1                     1043
 #define IDC_OK                          1043
+#define IDC_BUTTON_ADD_PREVIOUS         1043
+#define IDC_COMBO_INSTRUMENT_TYPE       1044
+#define IDC_BUTTON4                     1046
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_USER_TOOLBAR1           32771
 #define ID_VIEW_USER_TOOLBAR2           32772
@@ -401,6 +406,7 @@
 #define IDR_POPUP_GRAPHVIEW_SENSOR_SETHIGHBOXOFDETOUR 33065
 #define IDR_POPUP_GRAPHVIEW_SENSOR_MUTE 33066
 #define ID_BUTTON_MATRIX_SEISMONITOR_GRAPH_SEISMONITORLABEL 33067
+#define IDR_POPUP_GRAPHVIEW_INSTRUMENT_SETINSTRUMENT 33068
 #define ID_BUTTON_MATRIX_SENSOR_GRAPH_NBSTART 40000
 #define IDR_BCGDEVTYPE_SENSORLIST       56789
 #define ID_VIEW_SETUP_TOOLBAR           61446
@@ -411,9 +417,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        268
-#define _APS_NEXT_COMMAND_VALUE         33068
-#define _APS_NEXT_CONTROL_VALUE         1044
+#define _APS_NEXT_RESOURCE_VALUE        270
+#define _APS_NEXT_COMMAND_VALUE         33069
+#define _APS_NEXT_CONTROL_VALUE         1047
 #define _APS_NEXT_SYMED_VALUE           123
 #endif
 #endif

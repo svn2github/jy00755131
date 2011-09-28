@@ -482,6 +482,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgSetInstrument.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgSpreadSetup.cpp"
 				>
 			</File>
@@ -1071,6 +1075,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgSelectShotPoint.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgSetInstrument.h"
 				>
 			</File>
 			<File

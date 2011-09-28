@@ -49,6 +49,7 @@ public:
 	afx_msg void OnGraphViewInstrumentSetLowBoxDetour();
 	afx_msg void OnGraphViewInstrumentSetHighBoxDetour();
 	afx_msg void OnGraphViewInstrumentFormLine();
+	afx_msg void OnPopupGraphviewInstrumentSetinstrument();
 
 	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
 
