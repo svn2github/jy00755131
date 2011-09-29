@@ -50,4 +50,12 @@ public:
 	void OnAddInstrumentPrevious(unsigned int uiInstrumentType);
 	// 在此仪器之后加入仪器
 	void OnAddInstrumentNext(unsigned int uiInstrumentType);
+	// 在每行的左侧增加仪器位置
+	void OnAddInstrumentPosLeft(CFile* pFile);
+	// 在每行的右侧增加仪器位置
+	void OnAddInstrumentPosRight(CFile* pFile);
+	// 在交叉站左侧添加仪器
+	void AddInstrumentOnLAUXLeft(CFile * pfile, unsigned char* pInstrumentAdd);
+	// 在交叉站右侧添加仪器
+	void AddInstrumentOnLAUXRight(CFile * pfile, unsigned char* pInstrumentAdd);
 };
