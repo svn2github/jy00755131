@@ -374,6 +374,10 @@ void CDlgSetInstrument::OnDeleteInstrument(void)
 		{
 			file.Write(ucInstrumentDelete, 2);
 		}
+		if (TRUE == OnCheckInstrumentPosLeft(&file))
+		{
+			OnDeleteInstrumentPosLeft(&file);
+		}
 	}
 	// ÒªÉ¾³ýµÄÒÇÆ÷ÔÚ½»²æÕ¾ÓÒ²à
 	else
@@ -395,6 +399,10 @@ void CDlgSetInstrument::OnDeleteInstrument(void)
 			file.Write(upInstrumentSave, (m_uiColumnCount - m_iSelectUnitColumnIndex - 1) * 2);
 			file.Write(ucInstrumentDelete, 2);
 			delete[] upInstrumentSave;
+		}
+		if (TRUE == OnCheckInstrumentPosRight(&file))
+		{
+			OnDeleteInstrumentPosRight(&file);
 		}
 	}
 	file.Close();
@@ -484,4 +492,81 @@ void CDlgSetInstrument::AddInstrumentOnLAUXRight(CFile * pfile, unsigned char* p
 	pfile->Write(pInstrumentAdd, 2);
 	pfile->Write(upInstrumentSave, (m_uiColumnCount - m_iSelectUnitColumnIndex - 1) * 2);
 	delete [] upInstrumentSave;
+}
+// É¾³ýÃ¿ÐÐ×ó²à¿ÕÓàµÄÒÇÆ÷Î»ÖÃ£¨Õ¼2¸öÎ»ÖÃ£©
+void CDlgSetInstrument::OnDeleteInstrumentPosLeft(CFile* pFile)
+{
+	unsigned char* upInstrumentSave = NULL;
+	upInstrumentSave = new unsigned char[(m_uiRowCount * 2 - 1) * (m_uiColumnCount * 2 - 1 + 2 - 2)];
+	pFile->SeekToBegin();
+	for (int i=0; i<(m_uiRowCount * 2 - 1); i++)
+	{
+		pFile->Seek(2, CFile::current);
+		pFile->Read(&upInstrumentSave[i * (m_uiColumnCount * 2 - 1)], m_uiColumnCount * 2 - 1);
+	}
+	pFile->SeekToBegin();
+	pFile->Write(upInstrumentSave, (m_uiRowCount * 2 - 1) * (m_uiColumnCount * 2 - 1 + 2 - 2));
+	ULONGLONG ullSize = pFile->GetLength();
+	pFile->SetLength(ullSize - 2 * (m_uiRowCount * 2 - 1));
+	delete [] upInstrumentSave;
+}
+
+// É¾³ýÃ¿ÐÐÓÒ²à¿ÕÓàµÄÒÇÆ÷Î»ÖÃ
+void CDlgSetInstrument::OnDeleteInstrumentPosRight(CFile* pFile)
+{
+	unsigned char* upInstrumentSave = NULL;
+	upInstrumentSave = new unsigned char[(m_uiRowCount * 2 - 1) * (m_uiColumnCount * 2 - 1 + 2 - 2)];
+	pFile->SeekToBegin();
+	for (int i=0; i<(m_uiRowCount * 2 - 1); i++)
+	{
+		pFile->Read(&upInstrumentSave[i * (m_uiColumnCount * 2 - 1)], m_uiColumnCount * 2 - 1 - 2);
+		pFile->Seek(2, CFile::current);
+		pFile->Read(&upInstrumentSave[(i + 1) * (m_uiColumnCount * 2 - 1) - 2], 2);
+	}
+	pFile->SeekToBegin();
+	pFile->Write(upInstrumentSave, (m_uiRowCount * 2 - 1) * (m_uiColumnCount * 2 - 1 + 2 - 2));
+	ULONGLONG ullSize = pFile->GetLength();
+	pFile->SetLength(ullSize - 2 * (m_uiRowCount * 2 - 1));
+	delete [] upInstrumentSave;
+}
+
+// ¼ì²éÒÇÆ÷×ó²à¿ÕÓàÎ»ÖÃ
+BOOL CDlgSetInstrument::OnCheckInstrumentPosLeft(CFile* pFile)
+{
+	unsigned char ucInstrument = ' ';
+	pFile->SeekToBegin();
+	for (int i=0; i<(m_uiRowCount * 2 - 1); i++)
+	{
+		pFile->Read(&ucInstrument, 1);
+		pFile->Seek(m_uiColumnCount * 2 - 1 + 2 - 1, CFile::current);
+		if (ucInstrument != ' ')
+		{
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+// ¼ì²éÒÇÆ÷ÓÒ²à¿ÕÓàÎ»ÖÃ
+BOOL CDlgSetInstrument::OnCheckInstrumentPosRight(CFile* pFile)
+{
+	unsigned char ucInstrument = ' ';
+	pFile->SeekToBegin();
+	for (int i=0; i<(m_uiRowCount * 2 - 1); i++)
+	{
+		if (i == 0)
+		{
+			pFile->Seek(m_uiColumnCount * 2 - 1 - 1, CFile::current);
+		}
+		else
+		{
+			pFile->Seek(m_uiColumnCount * 2 - 1 + 2 - 1, CFile::current);
+		}
+		pFile->Read(&ucInstrument, 1);
+		if (ucInstrument != ' ')
+		{
+			return FALSE;
+		}
+	}
+	return TRUE;
 }

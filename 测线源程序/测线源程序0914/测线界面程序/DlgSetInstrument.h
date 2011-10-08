@@ -58,4 +58,12 @@ public:
 	void AddInstrumentOnLAUXLeft(CFile * pfile, unsigned char* pInstrumentAdd);
 	// 在交叉站右侧添加仪器
 	void AddInstrumentOnLAUXRight(CFile * pfile, unsigned char* pInstrumentAdd);
+	// 删除每行左侧空余的仪器位置
+	void OnDeleteInstrumentPosLeft(CFile* pFile);
+	// 删除每行右侧空余的仪器位置
+	void OnDeleteInstrumentPosRight(CFile* pFile);
+	// 检查仪器左侧空余位置
+	BOOL OnCheckInstrumentPosLeft(CFile* pFile);
+	// 检查仪器右侧空余位置
+	BOOL OnCheckInstrumentPosRight(CFile* pFile);
 };
