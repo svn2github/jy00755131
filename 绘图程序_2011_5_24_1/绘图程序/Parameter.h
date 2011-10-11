@@ -1,5 +1,5 @@
 #include <vector>
-using namespace std;
+using std::vector;
 // ____________界面设置___________
 // 设置纵向滚动条宽度
 #define SetVScrollWidth							25

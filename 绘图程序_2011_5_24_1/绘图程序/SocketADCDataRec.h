@@ -1,7 +1,5 @@
 #pragma once
 #include "Parameter.h"
-#include <vector>
-using namespace std;
 // CSocketADCDataRec ÃüÁîÄ¿±ê
 
 class CSocketADCDataRec : public CSocket
