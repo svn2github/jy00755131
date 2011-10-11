@@ -7,7 +7,7 @@
 #include "InstrumentList.h"
 #include <hash_map>
 
-using namespace stdext;
+using stdext::hash_map;
 // CADCDataRecThread
 
 class CADCDataRecThread : public CWinThread

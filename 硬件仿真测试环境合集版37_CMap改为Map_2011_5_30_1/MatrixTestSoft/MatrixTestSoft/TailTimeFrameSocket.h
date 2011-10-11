@@ -2,7 +2,8 @@
 #include "InstrumentList.h"
 #include <hash_map>
 #include "LogFile.h"
-using namespace stdext;
+
+using stdext::hash_map;
 // CTailTimeFrameSocket
 class CTailTimeFrame
 {

@@ -222,7 +222,7 @@ SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast
 	addrName.sin_family = AF_INET;											// 填充套接字地址结构
 	addrName.sin_port = htons(iSocketPort);
 	addrName.sin_addr.S_un.S_addr = INADDR_ANY;
-	int iReturn = bind(socketName, (sockaddr*)&addrName, sizeof(addrName));	// 绑定本地地址
+	int iReturn = bind(socketName, reinterpret_cast<sockaddr*>(&addrName), sizeof(addrName));	// 绑定本地地址
 	listen(socketName, 2);
 	if (iReturn == SOCKET_ERROR)
 	{
@@ -240,7 +240,7 @@ SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast
 			//设置广播模式
 			int iOptlen = sizeof(int);
 			int iOptval = 1;
-			iReturn = setsockopt(socketName, SOL_SOCKET, SO_BROADCAST, ( const char* )&iOptval, iOptlen);
+			iReturn = setsockopt(socketName, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char *>(&iOptval), iOptlen);
 			if (iReturn == SOCKET_ERROR)
 			{
 				strTemp = str + _T("设置为广播端口失败！");
@@ -249,14 +249,14 @@ SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast
 			}
 		}
 
-		iReturn = setsockopt(socketName, SOL_SOCKET, SO_SNDBUF,  ( const char* )&iSendBuf, sizeof(int));
+		iReturn = setsockopt(socketName, SOL_SOCKET, SO_SNDBUF,  reinterpret_cast<const char *>(&iSendBuf), sizeof(int));
 		if (iReturn == SOCKET_ERROR)
 		{
 			strTemp = str + _T("发送缓冲区设置失败！");
 			AfxMessageBox(strTemp);
 			m_pLogFile->OnWriteLogFile(_T("CThreadManage::OnCreateAndSetSocket"), strTemp, ErrorStatus);
 		}
-		iReturn = setsockopt(socketName, SOL_SOCKET, SO_RCVBUF,  ( const char* )&iRecBuf, sizeof(int));
+		iReturn = setsockopt(socketName, SOL_SOCKET, SO_RCVBUF,  reinterpret_cast<const char *>(&iRecBuf), sizeof(int));
 		if (iReturn == SOCKET_ERROR)
 		{
 			strTemp = str + _T("接收缓冲区设置失败！");

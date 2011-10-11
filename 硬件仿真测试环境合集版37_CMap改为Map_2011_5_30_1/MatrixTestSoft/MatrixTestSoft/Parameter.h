@@ -1,5 +1,6 @@
 #include <string>
-using namespace std;
+using std::string;
+using std::wstring;
 //______________选项卡控件位置设置______________
 // 采样选项卡位置
 #define TabSampleCtl									0

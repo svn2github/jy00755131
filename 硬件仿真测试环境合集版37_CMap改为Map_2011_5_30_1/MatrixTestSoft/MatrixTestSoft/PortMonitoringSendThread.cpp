@@ -84,7 +84,7 @@ int CPortMonitoringSendThread::Run()
 		{
 			if(dwFrameCount > 0) 
 			{
-				icount = recvfrom(m_SendSocket, (char*)&m_ucUdpBuf, sizeof(m_ucUdpBuf), 0, (sockaddr*)&SenderAddr, &n);
+				icount = recvfrom(m_SendSocket, reinterpret_cast<char*>(&m_ucUdpBuf), sizeof(m_ucUdpBuf), 0, reinterpret_cast<sockaddr*>(&SenderAddr), &n);
 				if (icount != SOCKET_ERROR)
 				{
 					OnProcess(icount);
@@ -256,7 +256,7 @@ void CPortMonitoringSendThread::OnOpen(void)
 	m_RecvAddr.sin_family = AF_INET;											// 填充套接字地址结构
 	m_RecvAddr.sin_port = htons(m_iRecPort);
 	m_RecvAddr.sin_addr.S_un.S_addr = INADDR_ANY;
-	int iReturn = bind(m_SendSocket, (sockaddr*)&m_RecvAddr, sizeof(m_RecvAddr));	// 绑定本地地址
+	int iReturn = bind(m_SendSocket, reinterpret_cast<sockaddr*>(&m_RecvAddr), sizeof(m_RecvAddr));	// 绑定本地地址
 	listen(m_SendSocket, 2);
 	if (iReturn == SOCKET_ERROR)
 	{
@@ -267,7 +267,7 @@ void CPortMonitoringSendThread::OnOpen(void)
 	else
 	{
 		int nSendBuf = PortMonitoringBufSize;
-		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_SNDBUF,  ( const char* )&nSendBuf, sizeof(int));
+		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_SNDBUF,  reinterpret_cast<const char *>(&nSendBuf), sizeof(int));
 		if (iReturn == SOCKET_ERROR)
 		{
 			str = _T("端口监视程序的接收端口发送缓冲区设置失败！");
@@ -275,7 +275,7 @@ void CPortMonitoringSendThread::OnOpen(void)
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnOpen"), str, ErrorStatus);
 		}
 		int nRecvBuf = PortMonitoringBufSize;
-		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_RCVBUF,  ( const char* )&nRecvBuf, sizeof(int));
+		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_RCVBUF,  reinterpret_cast<const char *>(&nRecvBuf), sizeof(int));
 		if (iReturn == SOCKET_ERROR)
 		{
 			str = _T("端口监视程序的发送端口接收缓冲区设置失败！");
@@ -285,7 +285,7 @@ void CPortMonitoringSendThread::OnOpen(void)
 		//设置广播模式
 		int iOptlen = sizeof(int);
 		int iOptval = 1;
-		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_BROADCAST, ( const char* )&iOptval, iOptlen);
+		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char *>(&iOptval), iOptlen);
 		if (iReturn == SOCKET_ERROR)
 		{
 			str = _T("端口监视程序的发送端口设置为广播端口失败！");
@@ -727,7 +727,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		m_SendToAddr.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(m_csIP));
 
 		// 开启端口分发功能
-		int icount = sendto(m_SendSocket, (const char*)&m_ucudp_buf[m_usudp_count], RcvFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
+		int icount = sendto(m_SendSocket, reinterpret_cast<const char*>(&m_ucudp_buf[m_usudp_count]), RcvFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 		if (icount == SOCKET_ERROR)
 		{
 			CString str = _T("");
@@ -742,7 +742,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		m_SendToAddr.sin_port = htons(m_iSendPort);
 		m_SendToAddr.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(m_csIP));
 
-		int icount = sendto(m_SendSocket, (const char*)&m_ucudp_buf[m_usudp_count], RcvFrameSize, 0, (sockaddr*)&m_SendToAddr, sizeof(m_SendToAddr));
+		int icount = sendto(m_SendSocket, reinterpret_cast<const char*>(&m_ucudp_buf[m_usudp_count]), RcvFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 		if (icount == SOCKET_ERROR)
 		{
 			CString str = _T("");

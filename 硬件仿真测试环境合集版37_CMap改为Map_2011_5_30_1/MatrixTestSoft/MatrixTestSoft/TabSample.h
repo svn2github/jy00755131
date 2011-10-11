@@ -6,7 +6,6 @@
 #include "LogFile.h"
 #include <afxmt.h>
 
-using namespace std;
 // CGraphView ¶Ô»°¿ò
 
 class CTabSample : public CDialog
