@@ -16,9 +16,9 @@ using std::vector;
 // 设置绘图区底部间隔
 #define SetPlotAreaBottomInterval		30
 // 设置标签宽度
-#define SetLegendWidth						80	
+#define SetLegendWidth						15	
 // 设置标签X方向间隔
-#define SetLegendXInterval					5
+#define SetLegendXInterval					10
 // 设置标签Y方向间隔
 #define SetLegendYInterval					45
 // 设置绘图控件背景颜色
@@ -47,9 +47,11 @@ using std::vector;
 // 红色RGB
 #define RedColor								0xFF0000
 // 绿色RGB
-#define GreenColor								0x00FF00
+#define GreenColor							0x00FF00
 // 蓝色RGB
 #define BlueColor								0x0000FF
+// 粉红RGB
+#define PinkColor								0xFF8888
 // _________ADC数据接受___________
 // ADC数据图形化显示接收端口
 #define ADCGraphShowPort				0x7800
