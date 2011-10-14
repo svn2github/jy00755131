@@ -201,4 +201,6 @@ public:
 	afx_msg void OnLbnDblclkListFile();
 	// 载入绘图软件License
 	bool LoadChartDirLicense(void);
+	// 图形显示的方向
+	unsigned int m_uiShowDirection;
 };
