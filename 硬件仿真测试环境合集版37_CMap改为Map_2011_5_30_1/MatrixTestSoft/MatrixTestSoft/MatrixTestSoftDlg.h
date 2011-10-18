@@ -9,6 +9,7 @@
 #include "TabSample.h"
 #include "TabADCSettings.h"
 #include "TabADCDataShow.h"
+#include "TabEepromUpdata.h"
 #include "LogFile.h"
 #include <WinSock2.h>
 
@@ -49,6 +50,8 @@ protected:
 	CTabADCSettings m_oTabADCSettings;
 	// CTabADCDataShow类的变量
 	CTabADCDataShow m_oTabADCDataShow;
+	// CTabEepromUpdata类的变量
+	CTabEepromUpdata m_oTabEepromUpdata;
 	// CLogFile类的变量
 	CLogFile m_oLogFile;
 protected: 

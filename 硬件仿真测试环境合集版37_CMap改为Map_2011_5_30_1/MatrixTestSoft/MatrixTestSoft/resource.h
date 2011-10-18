@@ -20,6 +20,7 @@
 #define IDD_DIALOG_GRAPHSHOW            139
 #define IDD_DIALOG_ADCSETTINGS          140
 #define IDD_DIALOG_ADCDATASHOW          141
+#define IDD_DIALOG_EEPROM               142
 #define IDC_TAB_ITEMS                   1000
 #define IDC_BUTTON_SAVEFILEPATH         1000
 #define IDC_EDIT_SAMPLETIME             1000
@@ -245,23 +246,47 @@
 #define IDC_STATIC_ADCREC               1189
 #define IDC_STATIC_ADCRECNUM            1189
 #define IDC_EDIT_ADCDATA                1190
-#define IDC_BUTTON1                     1190
 #define IDC_BUTTON_GRAPHEXE             1190
 #define IDC_COMBO_SPS                   1191
+#define IDC_LIST_INSTRUMENT             1191
 #define IDC_COMBO_PHS                   1192
+#define IDC_LIST_UPDATA                 1192
 #define IDC_COMBO_FILTER                1193
+#define IDC_BUTTON_MOVELEFT_ALL         1193
 #define IDC_COMBO_MUX                   1194
+#define IDC_BUTTON_MOVELEFT_ONE         1194
 #define IDC_COMBO_CHOP                  1195
+#define IDC_BUTTON_MOVERIGHT_ALL        1195
 #define IDC_COMBO_SPS6                  1196
+#define IDC_BUTTON_MOVERIGHT_ONE        1196
 #define IDC_COMBO_PGA                   1197
+#define IDC_STATIC_INSTRUMENT_NUM       1197
+#define IDC_STATIC_UPDATA_NUM           1198
+#define IDC_EDIT_READ_MAX               1199
+#define IDC_EDIT_READ_TOTAL             1200
+#define IDC_EDIT_READ_ADDR              1201
+#define IDC_EDIT_WRITE_MAX              1202
+#define IDC_EDIT_WRITE_TOTAL            1203
+#define IDC_EDIT_WRITE_ADDR             1204
+#define IDC_LIST_FAIL                   1205
+#define IDC_STATIC_FAIL_NUM             1206
+#define IDC_BUTTON_LOADFILE             1207
+#define IDC_CHECK_BROADCAST_WRITE       1208
+#define IDC_BUTTON_START_WRITE          1209
+#define IDC_BUTTON_START_CHECK          1210
+#define IDC_LIST_MESSAGE                1211
+#define IDC_LIST_SUCCESS                1212
+#define IDC_STATIC_SUCCESS_NUM          1213
+#define IDC_BUTTON1                     1214
+#define IDC_BUTTON_UPDATA_INSTRUMENTLIST 1214
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        142
+#define _APS_NEXT_RESOURCE_VALUE        143
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1191
+#define _APS_NEXT_CONTROL_VALUE         1215
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

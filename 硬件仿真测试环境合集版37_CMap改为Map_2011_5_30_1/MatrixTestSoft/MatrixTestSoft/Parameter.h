@@ -12,6 +12,8 @@ using std::wstring;
 #define TabUartToUdpCtl							3
 // 端口监视选项卡位置
 #define TabPortMonitoringCtl					4
+// 仪器设备EEPROM选项卡位置
+#define TabEepromCtl								5
 // 端口监视接收帧选项卡位置
 #define TabPortMonitoringRecCtl				0
 // 端口监视接收帧选项卡位置

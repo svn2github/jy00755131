@@ -318,6 +318,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TabEepromUpdata.h"
+				>
+			</File>
+			<File
 				RelativePath=".\TabPortMonitoring.h"
 				>
 			</File>
@@ -503,6 +507,10 @@
 			</File>
 			<File
 				RelativePath=".\TabADCSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TabEepromUpdata.cpp"
 				>
 			</File>
 			<File
