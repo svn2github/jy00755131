@@ -1,5 +1,6 @@
 #pragma once
 #include "Parameter.h"
+#include "ParameterSet.h"
 // CSocketADCDataRec 命令目标
 
 class CSocketADCDataRec : public CSocket
@@ -30,6 +31,8 @@ public:
 	unsigned int m_uiSamplingRate;
 	// 单个采集站接收帧数
 	unsigned int m_uiInstrumentRecFrameNum;
+	// 参数设置界面
+	CParameterSet* m_pParameterSet;
 private:
 	// 单个帧处理
 	void ProcFrameOne(void);

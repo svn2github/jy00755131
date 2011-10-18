@@ -6,7 +6,7 @@
 #include "afxwin.h"
 #include "Parameter.h"
 #include "SocketADCDataRec.h"
-
+#include "ParameterSet.h"
 // C绘图程序Dlg 对话框
 class C绘图程序Dlg : public CDialog
 {
@@ -113,6 +113,8 @@ private:
 	wchar_t* m_pLinebufRead;
 	// 绘图过程事件
 	HANDLE m_hDrawGraph;
+	// 参数设置界面
+	CParameterSet m_oParameterSet;
 
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
@@ -199,8 +201,7 @@ public:
 	afx_msg void OnBnClickedCheckYaxisfixed();
 	afx_msg void OnBnClickedButtonOpenadcfolder();
 	afx_msg void OnLbnDblclkListFile();
+	afx_msg void OnBnClickedButtonParameterset();
 	// 载入绘图软件License
 	bool LoadChartDirLicense(void);
-	// 图形显示的方向
-	unsigned int m_uiShowDirection;
 };

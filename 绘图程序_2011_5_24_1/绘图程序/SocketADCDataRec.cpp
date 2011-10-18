@@ -16,6 +16,7 @@ CSocketADCDataRec::CSocketADCDataRec()
 , m_bRecADCSetInfoFrame(FALSE)
 , m_uiSamplingRate(1)
 , m_uiInstrumentRecFrameNum(0)
+, m_pParameterSet(NULL)
 {
 }
 
@@ -283,5 +284,7 @@ void CSocketADCDataRec::OnMakeAndSendSetFrame(unsigned short usSetOperation)
 		iPos += FramePacketSize4B;
 	}
 	m_oADCGraphSetFrameBuf[iPos] = SndFrameBufInit;
-	int icount = SendTo(&m_oADCGraphSetFrameBuf, ADCSendFrameBufSize, ADCGraphSetRecPort, IPHostAddr);
+	unsigned int uiSendPort = 0;
+	_stscanf_s(m_pParameterSet->m_csSendPort,_T("%x"), &uiSendPort);
+	int icount = SendTo(&m_oADCGraphSetFrameBuf, ADCSendFrameBufSize, uiSendPort, m_pParameterSet->m_csIPAddrAim);
 }

@@ -53,12 +53,6 @@ using std::vector;
 // 粉红RGB
 #define PinkColor								0xFF8888
 // _________ADC数据接受___________
-// ADC数据图形化显示接收端口
-#define ADCGraphShowPort				0x7800
-// ADC数据图形化显示设置发送目标端口
-#define ADCGraphSetRecPort			0x9401
-// 本地IP地址
-#define IPHostAddr							_T("127.0.0.1")
 // 接收ADC数据一帧的缓冲区大小
 #define ADCRecFrameBufSize			256
 // 发送ADC数据图形显示设置帧的缓冲区大小

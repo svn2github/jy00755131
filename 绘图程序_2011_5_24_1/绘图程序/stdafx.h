@@ -36,11 +36,11 @@
 #include <afxsock.h>
 
 
-
-
-
-
-
+#include "CXMLDOMDocument.h"
+#include "CXMLDOMNodeList.h"
+#include "CXMLDOMNode.h"
+#include "CXMLDOMElement.h"
+#include "XMLDOMTool.h"
 
 
 #ifdef _UNICODE
