@@ -272,13 +272,15 @@
 #define IDC_STATIC_FAIL_NUM             1206
 #define IDC_BUTTON_LOADFILE             1207
 #define IDC_CHECK_BROADCAST_WRITE       1208
-#define IDC_BUTTON_START_WRITE          1209
+#define IDC_BUTTON_WRITE_EEPROM         1209
 #define IDC_BUTTON_START_CHECK          1210
 #define IDC_LIST_MESSAGE                1211
 #define IDC_LIST_SUCCESS                1212
 #define IDC_STATIC_SUCCESS_NUM          1213
-#define IDC_BUTTON1                     1214
 #define IDC_BUTTON_UPDATA_INSTRUMENTLIST 1214
+#define IDC_BUTTON_READ_EEPROM          1215
+#define IDC_CHECK1                      1216
+#define IDC_CHECK_CONTINUEWORK          1216
 
 // Next default values for new objects
 // 
@@ -286,7 +288,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        143
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1215
+#define _APS_NEXT_CONTROL_VALUE         1217
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
