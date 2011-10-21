@@ -10,7 +10,7 @@
 		<UDPPortMonitoringSetup AutoSaveLength="1024"/>
 	</UDPPortMonitoring>
 	<Sample>
-		<SampleSetup SaveADCFrameNum="406" SendPort="33282"/>
+		<SampleSetup SaveADCFrameNum="406" SendPort="36866"/>
 	</Sample>
 	<ADCSettings>
 		<ADCControl ADC_SYNC="0" ADC_MODE="1" ADC_SPS="0" ADC_PHS="0" ADC_FILTER="2" ADC_MUX="0" ADC_CHOP="1" ADC_PGA="0"/>

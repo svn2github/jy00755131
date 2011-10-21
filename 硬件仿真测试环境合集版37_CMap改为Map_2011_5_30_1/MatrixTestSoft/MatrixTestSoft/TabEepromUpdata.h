@@ -1,7 +1,8 @@
 #pragma once
 #include "afxwin.h"
 #include "InstrumentList.h"
-
+#include "EepromSocket.h"
+using std::vector;
 // CTabEepromUpdata 对话框
 
 class CTabEepromUpdata : public CDialog
@@ -74,8 +75,13 @@ private:
 	CButton m_ctrlBtnStartCheck;
 	// 重置按钮控制变量
 	CButton m_ctrlBtnReset;
+	// 从文件中读入程序缓冲区
+	vector <unsigned char> m_ovecProgram;
 public:
+	// CInstrumentList类指针
 	CInstrumentList* m_pInstrumentList;
+	// EepromSocket类成员对象
+	CEepromSocket m_oEepromSocket;
 private:
 	// 重置
 	void OnReset(void);
@@ -90,4 +96,16 @@ public:
 	afx_msg void OnBnClickedButtonWriteEeprom();
 	afx_msg void OnBnClickedButtonReadEeprom();
 	afx_msg void OnBnClickedButtonStartCheck();
+	// 载入程序文件
+	BOOL LoadFile(CString strPath);
+	// 创建EEPROM的Socket
+	void OnCreateEepromSocket(void);
+	// 关闭
+	void OnClose(void);
+	// 写EEPROM
+	void OnWriteEeprom(unsigned int uiIPAim, int iBroadCast);
+	afx_msg void OnBnClickedCheckBroadcastWrite();
+	afx_msg void OnBnClickedCheckContinuework();
+	// 读EEPROM
+	void OnReadEeprom(unsigned int uiIPAim);
 };

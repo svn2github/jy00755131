@@ -374,7 +374,7 @@ void CPortMonitoringRecThread::OnPortMonitoringProc(void)
 	// 通过端口识别功能
 	iPos = 24;
 	memcpy(&uiPort, &m_ucudp_buf[m_usudp_count][iPos], FramePacketSize2B);
-	if (uiPort == HeartBeatRec)
+	if (uiPort == HeartBeatPort)
 	{
 		m_uiHeartBeatNum ++;
 	}

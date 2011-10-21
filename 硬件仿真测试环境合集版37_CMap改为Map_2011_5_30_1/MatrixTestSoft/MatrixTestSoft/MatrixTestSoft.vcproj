@@ -226,6 +226,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EepromSocket.h"
+				>
+			</File>
+			<File
 				RelativePath=".\GraphShowDlg.h"
 				>
 			</File>
@@ -407,6 +411,10 @@
 			</File>
 			<File
 				RelativePath=".\ADCSet.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EepromSocket.cpp"
 				>
 			</File>
 			<File

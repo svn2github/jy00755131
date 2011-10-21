@@ -384,7 +384,7 @@ void CThreadManage::OnCreateHeartBeatSocket(void)
 	CString str = _T("");
 	str = _T("心跳端口");
 	m_oHeartBeatThread.m_HeartBeatSocket = OnCreateAndSetSocket(m_oHeartBeatThread.m_RecvAddr, true, 
-		HeartBeatRec, str, HeartBeatSndBufSize, HeartBeatSndBufSize);
+		HeartBeatPort, str, HeartBeatSndBufSize, HeartBeatSndBufSize);
 }
 
 // 创建ADC数据接收Socket

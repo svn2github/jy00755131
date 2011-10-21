@@ -37,7 +37,7 @@ using std::wstring;
 #define WM_ADCGRAPHSOCKET			WM_USER + 1008
 //__________________通讯端口设置__________________
 // 心跳帧发送创建端口
-#define HeartBeatRec					0x7000
+#define HeartBeatPort					0x7000
 // 首包接收端口
 #define HeadFramePort				0x8000
 // 用于接收IP地址设置应答端口
