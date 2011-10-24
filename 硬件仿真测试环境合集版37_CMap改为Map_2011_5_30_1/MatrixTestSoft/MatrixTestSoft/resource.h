@@ -279,8 +279,10 @@
 #define IDC_STATIC_SUCCESS_NUM          1213
 #define IDC_BUTTON_UPDATA_INSTRUMENTLIST 1214
 #define IDC_BUTTON_READ_EEPROM          1215
-#define IDC_CHECK1                      1216
 #define IDC_CHECK_CONTINUEWORK          1216
+#define IDC_EDIT1                       1217
+#define IDC_EDIT_AIMPORT                1217
+#define IDC_IPADDRESS_AIM               1218
 
 // Next default values for new objects
 // 
@@ -288,7 +290,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        143
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1217
+#define _APS_NEXT_CONTROL_VALUE         1219
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

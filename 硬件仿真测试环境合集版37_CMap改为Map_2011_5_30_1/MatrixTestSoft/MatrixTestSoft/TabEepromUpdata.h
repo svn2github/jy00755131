@@ -2,6 +2,8 @@
 #include "afxwin.h"
 #include "InstrumentList.h"
 #include "EepromSocket.h"
+#include "Parameter.h"
+#include "afxcmn.h"
 using std::vector;
 // CTabEepromUpdata 对话框
 
@@ -75,8 +77,20 @@ private:
 	CButton m_ctrlBtnStartCheck;
 	// 重置按钮控制变量
 	CButton m_ctrlBtnReset;
+	// 目标IP地址
+	CIPAddressCtrl m_ctrlAimIP;
+	// 目标端口控制变量
+	CEdit m_ctrlAimPort;
 	// 从文件中读入程序缓冲区
 	vector <unsigned char> m_ovecProgram;
+	// 发送缓冲区
+	unsigned char m_ucSendBuf[SndFrameSize];
+	// 本机地址
+	unsigned int m_uiIPSource;
+	// 目标端口
+	unsigned int m_uiAimPort;
+	// 目标IP地址
+	CString m_csAimIP;
 public:
 	// CInstrumentList类指针
 	CInstrumentList* m_pInstrumentList;
@@ -85,6 +99,21 @@ public:
 private:
 	// 重置
 	void OnReset(void);
+	// 载入程序文件
+	BOOL LoadFile(CString strPath);
+	// 创建EEPROM的Socket
+	void OnCreateEepromSocket(void);
+	// 写EEPROM
+	void OnWriteEeprom(unsigned int uiInstrumentIP);
+	// 读EEPROM
+	void OnReadEeprom(unsigned int uiInstrumentIP);
+	// 生成发送帧帧格式
+	void OnMakeSendFrame(unsigned int uiInstrumentIP, unsigned int uiStartAddr, unsigned char * ucBuf, unsigned int uiLength, unsigned int uiOptCmd);
+	// 发送0x18命令
+	int ADCCommand_18(int iPos, byte * cADCSet, unsigned int uiLength);
+public:
+	// 关闭
+	void OnClose(void);
 public:
 	afx_msg void OnBnClickedButtonUpdataInstrumentlist();
 	afx_msg void OnBnClickedButtonMoverightOne();
@@ -96,16 +125,6 @@ public:
 	afx_msg void OnBnClickedButtonWriteEeprom();
 	afx_msg void OnBnClickedButtonReadEeprom();
 	afx_msg void OnBnClickedButtonStartCheck();
-	// 载入程序文件
-	BOOL LoadFile(CString strPath);
-	// 创建EEPROM的Socket
-	void OnCreateEepromSocket(void);
-	// 关闭
-	void OnClose(void);
-	// 写EEPROM
-	void OnWriteEeprom(unsigned int uiIPAim, int iBroadCast);
 	afx_msg void OnBnClickedCheckBroadcastWrite();
 	afx_msg void OnBnClickedCheckContinuework();
-	// 读EEPROM
-	void OnReadEeprom(unsigned int uiIPAim);
 };

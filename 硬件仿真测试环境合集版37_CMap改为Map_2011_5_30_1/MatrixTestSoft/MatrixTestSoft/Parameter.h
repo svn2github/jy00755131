@@ -60,6 +60,8 @@ using std::wstring;
 #define ADCGraphShowPort		0x7800
 // ADC数据图形化显示设置接收端口
 #define ADCGraphSetRecPort	0x9401
+// EEPROM读写应答端口
+#define EepromRecPort			0x8700
 // ADC设置广播端口
 #define ADCSetBroadcastPort	0x66666666
 // 广播端口
@@ -267,6 +269,10 @@ using std::wstring;
 #define StartGraphShow							3
 // ADC数据停止图形化显示标志位
 #define StopGraphShow							4
+// 读EEPROM命令
+#define ReadEEPROMCmd						1
+// 写EEPROM命令
+#define WriteEEPROMCmd						2
 //__________________ADC设置命令__________________
 // ADC设置正弦波命令
 #define SetADCSetSine							{0xb2, 0x00, 0x80, 0x00}
