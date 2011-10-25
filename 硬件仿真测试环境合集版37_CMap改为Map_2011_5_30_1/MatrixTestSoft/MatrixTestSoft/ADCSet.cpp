@@ -953,7 +953,12 @@ void CADCSet::OnProcADCSetReturn(unsigned int uiIP)
 				if (m_uiADCSetOperationNb == 12)
 				{
 					m_uiADCSetOperationNb = 0;
-					SetTimer(m_pwnd->m_hWnd, TabSampleADCZeroDriftTimerNb, TabSampleADCZeroDriftTimerSet, NULL);
+					//************************暂不做零漂校正********************************
+	//				SetTimer(m_pwnd->m_hWnd, TabSampleADCZeroDriftTimerNb, TabSampleADCZeroDriftTimerSet, NULL);
+					m_pwnd->GetDlgItem(IDC_BUTTOT_STARTSAMPLE)->EnableWindow(TRUE);
+					m_pwnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(FALSE);
+					m_pwnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(TRUE);
+					//************************暂不做零漂校正********************************
 					return;
 				}
 				// 完成ADC零漂校正

@@ -96,6 +96,12 @@ using std::wstring;
 #define ADCDataTempFrameNum	60
 // ADC处理过程中预设的缓冲区大小
 #define ADCDataTempDataSize	(ADCDataTempFrameNum * ReceiveDataSize)
+// EEPROM缓冲区大小
+#define EEPROMCapacity				8192
+// 每帧读取EEPROM数据的最大值
+#define EEPROMPerFrameReadMax	64
+// 每帧写入EEPROM数据的最大值
+#define EEPROMPerFrameWriteMax	64
 //__________________串口端口定义__________________
 #define COMNum	10
 
@@ -210,6 +216,10 @@ using std::wstring;
 #define CheckEquleReturn									-1
 // 比较值后不相等的返回值
 #define CheckNotEquleReturn							-2
+// EEPROM列表加入操作
+#define EEPROMListAdd									1
+// EEPROM列表删除操作
+#define EEPROMListDelete								2
 //____________________命令字设置__________________
 // 发送设置命令
 #define SendSetCmd								0x0001

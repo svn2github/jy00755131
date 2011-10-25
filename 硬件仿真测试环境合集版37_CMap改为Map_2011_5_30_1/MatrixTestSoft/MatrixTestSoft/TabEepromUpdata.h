@@ -4,7 +4,7 @@
 #include "EepromSocket.h"
 #include "Parameter.h"
 #include "afxcmn.h"
-using std::vector;
+
 // CTabEepromUpdata 对话框
 
 class CTabEepromUpdata : public CDialog
@@ -81,8 +81,10 @@ private:
 	CIPAddressCtrl m_ctrlAimIP;
 	// 目标端口控制变量
 	CEdit m_ctrlAimPort;
-	// 从文件中读入程序缓冲区
-	vector <unsigned char> m_ovecProgram;
+	// 写入EEPROM的数据个数
+	unsigned int m_uiWriteEepromNum;
+	// 写入EEPROM的缓冲区
+	unsigned char m_ucWriteEepromBuf[EEPROMCapacity];
 	// 发送缓冲区
 	unsigned char m_ucSendBuf[SndFrameSize];
 	// 本机地址
@@ -111,6 +113,12 @@ private:
 	void OnMakeSendFrame(unsigned int uiInstrumentIP, unsigned int uiStartAddr, unsigned char * ucBuf, unsigned int uiLength, unsigned int uiOptCmd);
 	// 发送0x18命令
 	int ADCCommand_18(int iPos, byte * cADCSet, unsigned int uiLength);
+	// 生成0x18命令查询帧
+	void OnMakeCmd_18(unsigned int uiInstrumentIP);
+	// 校验一个仪器的EEPROM
+	void OnCheckEepromOne(unsigned int uiInstrumentSN, unsigned int uiInstrumentIP);
+	// 在列表控件中寻找是否有该仪器
+	void OnFindInListBox(CListBox * pListBox, unsigned int uiInstrumentSN, unsigned int uiInstrumentIP, unsigned int uiOpt);
 public:
 	// 关闭
 	void OnClose(void);

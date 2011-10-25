@@ -35,6 +35,7 @@ CTabEepromUpdata::CTabEepromUpdata(CWnd* pParent /*=NULL*/)
 	, m_uiIPSource(0)
 	, m_uiAimPort(0)
 	, m_csAimIP(_T(""))
+	, m_uiWriteEepromNum(0)
 {
 
 }
@@ -292,8 +293,8 @@ void CTabEepromUpdata::OnBnClickedButtonLoadfile()
 	{
 		str.Format(_T("载入文件 %s 成功！"), dlg.GetFileName());
 		m_ctrlListMessage.AddString(str);
-		m_uiEditWriteTotal = m_ovecProgram.size();
-		m_uiEditReadTotal = m_ovecProgram.size();
+		m_uiEditWriteTotal = m_uiWriteEepromNum;
+		m_uiEditReadTotal = m_uiWriteEepromNum;
 		UpdateData(FALSE);
 	}
 	m_ctrlBtnReadEeprom.EnableWindow(TRUE);
@@ -338,9 +339,9 @@ void CTabEepromUpdata::OnBnClickedButtonWriteEeprom()
 			int n = m_ctrlListUpdata.GetTextLen(nIndex);
 			m_ctrlListUpdata.GetText(nIndex, str.GetBuffer(n));
 			str.ReleaseBuffer();
-			_stscanf_s(str, _T("SN = %04x,	IP = %d"), uiSN, uiIP);
+			_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
 			OnWriteEeprom(uiIP);
-			strOut.Format(_T("向%s的仪器写入EEPROM！"), str);
+			strOut.Format(_T("向 %s 的仪器写入EEPROM！"), str);
 			m_ctrlListMessage.AddString(strOut);
 		}
 	} 
@@ -353,8 +354,10 @@ void CTabEepromUpdata::OnBnClickedButtonWriteEeprom()
 			int n = m_ctrlListUpdata.GetTextLen(i);
 			m_ctrlListUpdata.GetText(i, str.GetBuffer(n));
 			str.ReleaseBuffer();
-			_stscanf_s(str, _T("SN = %04x,	IP = %d"), uiSN, uiIP);
+			_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
 			OnWriteEeprom(uiIP);
+			strOut.Format(_T("向 %s 的仪器写入EEPROM！"), str);
+			m_ctrlListMessage.AddString(strOut);
 		}
 		strOut = _T("完成连续写入仪器的EEPROM！");
 		m_ctrlListMessage.AddString(strOut);
@@ -376,15 +379,66 @@ void CTabEepromUpdata::OnBnClickedButtonReadEeprom()
 	int n = m_ctrlListUpdata.GetTextLen(nIndex);
 	m_ctrlListUpdata.GetText(nIndex, str.GetBuffer(n));
 	str.ReleaseBuffer();
-	_stscanf_s(str, _T("SN = %04x,	IP = %d"), uiSN, uiIP);
+	_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
 	OnReadEeprom(uiIP);
-	strOut.Format(_T("读取%s仪器的EEPROM"), str);
+	strOut.Format(_T("读取 %s 仪器的EEPROM"), str);
 	m_ctrlListMessage.AddString(strOut);
 }
 
 void CTabEepromUpdata::OnBnClickedButtonStartCheck()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	unsigned int uiSN = 0, uiIP = 0;
+	CString str = _T("");
+	CString strOut = _T("");
+	UpdateData(TRUE);
+	if (0 == m_ctrlListUpdata.GetCount())
+	{
+		strOut = _T("警告：更新EEPROM设备列表为空！");
+		m_ctrlListMessage.AddString(strOut);
+		return;
+	}
+	int iCheckContinueWork = m_ctrlCheckContinueWork.GetCheck();
+	m_ctrlAimPort.GetWindowText(str);
+	_stscanf_s(str,_T("%x"), &m_uiAimPort);
+	m_ctrlAimIP.GetWindowText(m_csAimIP);
+	if (iCheckContinueWork == 0)
+	{
+		int nIndex = m_ctrlListUpdata.GetCurSel();
+		if (nIndex == CB_ERR)
+		{
+			return;
+		}
+
+		int n = m_ctrlListUpdata.GetTextLen(nIndex);
+		m_ctrlListUpdata.GetText(nIndex, str.GetBuffer(n));
+		str.ReleaseBuffer();
+		_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
+		OnCheckEepromOne(uiSN, uiIP);
+		strOut.Format(_T("校验 %s 仪器的EEPROM！"), str);
+		m_ctrlListMessage.AddString(strOut);
+		m_ctrlListUpdata.DeleteString(nIndex);
+	} 
+	else
+	{
+		strOut = _T("开始连续校验仪器的EEPROM！");
+		m_ctrlListMessage.AddString(strOut);
+		int icount = m_ctrlListUpdata.GetCount();
+		for (int i = icount - 1; i >= 0; i--)
+		{
+			int n = m_ctrlListUpdata.GetTextLen(i);
+			m_ctrlListUpdata.GetText(i, str.GetBuffer(n));
+			str.ReleaseBuffer();
+			_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
+			OnReadEeprom(uiIP);
+			OnCheckEepromOne(uiSN, uiIP);
+			strOut.Format(_T("校验 %s 仪器的EEPROM！"), str);
+			m_ctrlListMessage.AddString(strOut);
+			m_ctrlListUpdata.DeleteString(i);
+		}
+		strOut = _T("完成连续校验仪器的EEPROM！");
+		m_ctrlListMessage.AddString(strOut);
+	}
 }
 
 // 重置
@@ -393,8 +447,8 @@ void CTabEepromUpdata::OnReset(void)
 	CString str = _T("");
 	int icount = 0;
 	
-	m_ovecProgram.clear();
-	m_ovecProgram.reserve(8192);
+	m_uiWriteEepromNum = 0;
+	memset(m_ucWriteEepromBuf, SndFrameBufInit, EEPROMCapacity);
 
 	m_uiEditReadAddr = 0x100;
 	m_uiEditReadMax = 4;
@@ -478,7 +532,10 @@ BOOL CTabEepromUpdata::LoadFile(CString strPath)
 			wchar_t* wchTemp;
 			ULONGLONG ullEnd = 0;
 			ULONGLONG lActual = 0;
-			m_ovecProgram.clear();
+
+			m_uiWriteEepromNum = 0;
+			memset(m_ucWriteEepromBuf, SndFrameBufInit, EEPROMCapacity);
+
 			file.SeekToBegin();
 			ullEnd = file.SeekToEnd();
 			file.SeekToBegin();
@@ -488,11 +545,13 @@ BOOL CTabEepromUpdata::LoadFile(CString strPath)
 				file.Read(ucTemp, 2);
 				wchTemp = AnsiToUnicode(ucTemp);
 				_stscanf_s(wchTemp, _T("%x"), &uiTemp);
-				m_ovecProgram.push_back(uiTemp);
+				m_ucWriteEepromBuf[m_uiWriteEepromNum] = static_cast<unsigned char>(uiTemp);
+				m_uiWriteEepromNum++;
 				file.Read(ucTemp, 2);
 				wchTemp = AnsiToUnicode(ucTemp);
 				_stscanf_s(wchTemp, _T("%x"), &uiTemp);
-				m_ovecProgram.push_back(uiTemp);
+				m_ucWriteEepromBuf[m_uiWriteEepromNum] = static_cast<unsigned char>(uiTemp);
+				m_uiWriteEepromNum++;
 				lActual = file.Seek(2, CFile::current);
 			}
 			file.Close();
@@ -527,18 +586,26 @@ void CTabEepromUpdata::OnWriteEeprom(unsigned int uiInstrumentIP)
 	unsigned int uiFrameNum = 0;
 	unsigned int uiLength = 0;
 	CString str = _T("");
-	uiSize = m_ovecProgram.size();
+	uiSize = m_uiWriteEepromNum;
 	if (m_uiEditWriteTotal > uiSize)
 	{
 		str = _T("警告：写入EEPROM的数据总数不能超过文件内数据个数！");
 		m_ctrlListMessage.AddString(str);
 		m_uiEditWriteTotal = uiSize;
 	}
-	if (m_uiEditWriteMax > 64)
+	if ((m_uiEditWriteTotal + m_uiEditWriteAddr) > EEPROMCapacity)
 	{
-		m_uiEditWriteMax = 64;
-		str = _T("警告：一帧所能写入EEPROM的数据个数不能超过64个！");
+		str = _T("警告：写入EEPROM的数据总数不能超过EEPROM容量！");
+		m_ctrlListMessage.AddString(str);
+		m_uiEditWriteTotal = EEPROMCapacity - m_uiEditWriteAddr;
 	}
+	if (m_uiEditWriteMax > EEPROMPerFrameWriteMax)
+	{
+		m_uiEditWriteMax = EEPROMPerFrameWriteMax;
+		str.Format(_T("警告：一帧所能写入EEPROM的数据个数不能超过%d个！"), EEPROMPerFrameWriteMax);
+		m_ctrlListMessage.AddString(str);
+	}
+
 	if (m_uiEditWriteTotal % m_uiEditWriteMax == 0)
 	{
 		uiFrameNum = m_uiEditWriteTotal / m_uiEditWriteMax;
@@ -557,7 +624,8 @@ void CTabEepromUpdata::OnWriteEeprom(unsigned int uiInstrumentIP)
 		{
 			uiLength = m_uiEditWriteTotal - m_uiEditWriteMax * i;
 		}
-		OnMakeSendFrame(uiInstrumentIP, m_uiEditWriteAddr + m_uiEditWriteMax * i, &m_ovecProgram[m_uiEditWriteMax * i], uiLength, WriteEEPROMCmd);
+		OnMakeSendFrame(uiInstrumentIP, m_uiEditWriteAddr + m_uiEditWriteMax * i, &m_ucWriteEepromBuf[m_uiEditWriteMax * i], uiLength, WriteEEPROMCmd);
+		Sleep(100);
 	}
 }
 
@@ -580,12 +648,21 @@ void CTabEepromUpdata::OnBnClickedCheckContinuework()
 		m_ctrlCheckBroadCastWrite.SetCheck(0);
 	}
 }
+// 自动生成0x18命令并自动补零
 int CTabEepromUpdata::ADCCommand_18(int iPos, byte * cADCSet, unsigned int uiLength)
 {
 	for(unsigned int i=0; i<uiLength; i+=FramePacketSize4B)
 	{
 		m_ucSendBuf[iPos] = CmdADCSet;
 		iPos += FrameCmdSize1B;
+		if (uiLength < (i + FramePacketSize4B))
+		{
+			memcpy(&m_ucSendBuf[iPos], cADCSet+i, uiLength - i);
+			iPos += uiLength - i;
+			memset(&m_ucSendBuf[iPos], SndFrameBufInit, i + FramePacketSize4B - uiLength);
+			iPos += i + FramePacketSize4B - uiLength;
+			return iPos;
+		}
 		memcpy(&m_ucSendBuf[iPos], cADCSet+i, FramePacketSize4B);
 		iPos += FramePacketSize4B;
 	}
@@ -600,19 +677,25 @@ void CTabEepromUpdata::OnReadEeprom(unsigned int uiInstrumentIP)
 	unsigned int uiLength = 0;
 	CString str = _T("");
 	unsigned char * pCharBuf = NULL;
-	uiSize = m_ovecProgram.size();
+	uiSize = m_uiWriteEepromNum;
 	if (m_uiEditReadTotal == 0)
 	{
 		str = _T("警告：读取的EEPROM数据个数不能为0！");
 		m_ctrlListMessage.AddString(str);
 		return;
 	}
+	if ((m_uiEditReadTotal + m_uiEditReadAddr) > EEPROMCapacity)
+	{
+		str = _T("警告：读取EEPROM的数据总数不能超过EEPROM容量！");
+		m_ctrlListMessage.AddString(str);
+		m_uiEditReadTotal = EEPROMCapacity - m_uiEditReadAddr;
+	}
 	pCharBuf = new unsigned char[m_uiEditReadTotal];
 	memset(&pCharBuf[0], SndFrameBufInit, m_uiEditReadTotal);
-	if (m_uiEditReadMax > 64)
+	if (m_uiEditReadMax > EEPROMPerFrameReadMax)
 	{
-		m_uiEditReadMax = 64;
-		str = _T("警告：一帧所能读取的EEPROM数据个数不能超过64个！");
+		m_uiEditReadMax = EEPROMPerFrameReadMax;
+		str.Format(_T("警告：一帧所能读取的EEPROM数据个数不能超过%d个！"), EEPROMPerFrameReadMax);
 		m_ctrlListMessage.AddString(str);
 	}
 	if (m_uiEditReadTotal % m_uiEditReadMax == 0)
@@ -623,6 +706,8 @@ void CTabEepromUpdata::OnReadEeprom(unsigned int uiInstrumentIP)
 	{
 		uiFrameNum = m_uiEditReadTotal / m_uiEditReadMax + 1;
 	}
+	m_oEepromSocket.m_uiReadEepromNum = 0;
+	memset(m_oEepromSocket.m_ucReadEepromBuf, SndFrameBufInit, EEPROMCapacity);
 	for (unsigned int i=0; i < uiFrameNum; i++)
 	{
 		if (m_uiEditReadTotal > (m_uiEditReadMax * (i + 1)))
@@ -633,7 +718,12 @@ void CTabEepromUpdata::OnReadEeprom(unsigned int uiInstrumentIP)
 		{
 			uiLength = m_uiEditReadTotal - m_uiEditReadMax * i;
 		}
+		// 发送读EEPROM命令
 		OnMakeSendFrame(uiInstrumentIP, m_uiEditReadAddr + m_uiEditReadMax * i, &pCharBuf[m_uiEditReadMax * i], uiLength, ReadEEPROMCmd);
+		Sleep(100);
+		// 发送0x18命令查询帧读取缓冲区中数据
+		OnMakeCmd_18(uiInstrumentIP);
+		Sleep(100);
 	}
 	delete [] pCharBuf;
 }
@@ -685,11 +775,13 @@ void CTabEepromUpdata::OnMakeSendFrame(unsigned int uiInstrumentIP, unsigned int
 	if (uiOptCmd == WriteEEPROMCmd)
 	{
 		pBuf = new unsigned char[4 + uiLength];
+		memset(pBuf, SndFrameBufInit, 4 + uiLength);
 		pBuf[0] = (0xc0 + 2 + uiLength) & 0xff;
 	} 
 	else if (uiOptCmd == ReadEEPROMCmd)
 	{
 		pBuf = new unsigned char[5 + uiLength];
+		memset(pBuf, SndFrameBufInit, 5 + uiLength);
 		pBuf[0] = (0x40 + 3 + uiLength) & 0xff;
 		pBuf[4] = 0xa1;
 	}
@@ -714,4 +806,123 @@ void CTabEepromUpdata::OnMakeSendFrame(unsigned int uiInstrumentIP, unsigned int
 	memcpy(&m_ucSendBuf[SndFrameSize - CRCSize], &usCRC16, CRCSize);
 
 	int icount = m_oEepromSocket.SendTo(&m_ucSendBuf, SndFrameSize, m_uiAimPort, m_csAimIP);
+}
+
+// 生成0x18命令查询帧
+void CTabEepromUpdata::OnMakeCmd_18(unsigned int uiInstrumentIP)
+{
+	unsigned short	usPortAim = 0;
+	unsigned short	usCommand = 0;
+	unsigned short usCRC16 = 0;
+	unsigned int	itmp	=	0;
+	unsigned char	ucCommand = 0;
+	unsigned int	uiADCBroadcastPort = 0;
+	unsigned char * pBuf = NULL;
+	int iPos = 0;
+	memset(m_ucSendBuf, SndFrameBufInit, SndFrameSize);
+	m_ucSendBuf[0] = FrameHeadCheck0;
+	m_ucSendBuf[1] = FrameHeadCheck1;
+	m_ucSendBuf[2] = FrameHeadCheck2;
+	m_ucSendBuf[3] = FrameHeadCheck3;
+	usPortAim = EepromRecPort;
+	usCommand = SendQueryCmd;
+	// 源IP地址
+	iPos = FrameHeadSize;
+	memcpy(&m_ucSendBuf[iPos], &m_uiIPSource, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+	// 目标IP地址
+	memcpy(&m_ucSendBuf[iPos], &uiInstrumentIP, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+	// 目标端口号
+	memcpy(&m_ucSendBuf[iPos], &usPortAim, FramePacketSize2B);
+	iPos += FramePacketSize2B;
+	// 命令号 1-设置命令应答；2-查询命令应答；3-AD采样数据重发
+	memcpy(&m_ucSendBuf[iPos], &usCommand, FramePacketSize2B);
+	iPos += FramePacketSize2B;
+	memcpy(&m_ucSendBuf[iPos], &itmp, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+	m_ucSendBuf[iPos] = CmdADCSet;
+	iPos += FrameCmdSize1B;
+	memcpy(&m_ucSendBuf[iPos], &itmp, FramePacketSize4B);
+	iPos += FramePacketSize4B;
+
+	// 设置命令字结束
+	m_ucSendBuf[iPos] = SndFrameBufInit;
+	usCRC16 = get_crc_16(&m_ucSendBuf[FrameHeadSize], SndFrameSize - FrameHeadSize - CRCCheckSize);
+	memcpy(&m_ucSendBuf[SndFrameSize - CRCSize], &usCRC16, CRCSize);
+
+	int icount = m_oEepromSocket.SendTo(&m_ucSendBuf, SndFrameSize, m_uiAimPort, m_csAimIP);
+}
+
+// 校验一个仪器的EEPROM
+void CTabEepromUpdata::OnCheckEepromOne(unsigned int uiInstrumentSN, unsigned int uiInstrumentIP)
+{
+	CString str = _T("");
+	unsigned int uiCheckErrorNum = 0;
+	if (m_oEepromSocket.m_uiReadEepromNum == 0)
+	{
+		str = _T("警告：接收数据个数为0！");
+		m_ctrlListMessage.AddString(str);
+		return;
+	}
+	for (unsigned int i=0; i<m_uiWriteEepromNum; i++)
+	{
+		if (m_oEepromSocket.m_ucReadEepromBuf[i] != m_ucWriteEepromBuf[i])
+		{
+			uiCheckErrorNum++;
+		}
+	}
+	str.Format(_T("校验数据个数为%d，其中错误数据个数为%d！"), m_oEepromSocket.m_uiReadEepromNum, uiCheckErrorNum);
+	m_ctrlListMessage.AddString(str);
+	if (uiCheckErrorNum == 0)
+	{
+		// 更新成功列表中没有该仪器则加入
+		OnFindInListBox(&m_ctrlListSuccess, uiInstrumentSN, uiInstrumentIP, EEPROMListAdd);
+		// 更新失败列表中有该仪器则删除
+		OnFindInListBox(&m_ctrlListFail, uiInstrumentSN, uiInstrumentIP, EEPROMListDelete);
+	} 
+	else
+	{
+		// 更新成功列表中没有该仪器则删除
+		OnFindInListBox(&m_ctrlListSuccess, uiInstrumentSN, uiInstrumentIP, EEPROMListDelete);
+		// 更新失败列表中有该仪器则加入
+		OnFindInListBox(&m_ctrlListFail, uiInstrumentSN, uiInstrumentIP, EEPROMListAdd);
+	}
+}
+
+// 在列表控件中寻找是否有该仪器
+void CTabEepromUpdata::OnFindInListBox(CListBox * pListBox, unsigned int uiInstrumentSN, unsigned int uiInstrumentIP, unsigned int uiOpt)
+{
+	unsigned int uiSN = 0;
+	unsigned int uiIP = 0;
+	CString str = _T("");
+	for (int i=0; i<pListBox->GetCount(); i++)
+	{
+		int n = pListBox->GetTextLen(i);
+		pListBox->GetText(i, str.GetBuffer(n));
+		str.ReleaseBuffer();
+		_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
+		if ((uiSN == uiInstrumentSN) && (uiIP == uiInstrumentIP))
+		{
+			if (uiOpt == EEPROMListDelete)
+			{
+				pListBox->DeleteString(i);
+				return;
+			}
+			else if (uiOpt == EEPROMListAdd)
+			{
+				return;
+			}
+		}
+	}
+	if (uiOpt == EEPROMListDelete)
+	{
+		str = _T("警告：要删除仪器不在列表中！");
+		m_ctrlListMessage.AddString(str);
+	} 
+	else if (uiOpt == EEPROMListAdd)
+	{
+		str.Format(_T("SN = %04x,	IP = %d"), uiSN, uiIP);
+		pListBox->AddString(str);
+	}
 }
