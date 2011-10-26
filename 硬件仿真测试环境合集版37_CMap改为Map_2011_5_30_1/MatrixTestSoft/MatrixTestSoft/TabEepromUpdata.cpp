@@ -92,6 +92,7 @@ BEGIN_MESSAGE_MAP(CTabEepromUpdata, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_START_CHECK, &CTabEepromUpdata::OnBnClickedButtonStartCheck)
 	ON_BN_CLICKED(IDC_CHECK_BROADCAST_WRITE, &CTabEepromUpdata::OnBnClickedCheckBroadcastWrite)
 	ON_BN_CLICKED(IDC_CHECK_CONTINUEWORK, &CTabEepromUpdata::OnBnClickedCheckContinuework)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -508,6 +509,8 @@ void CTabEepromUpdata::OnReset(void)
 	m_ctrlBtnReadEeprom.EnableWindow(FALSE);
 	m_ctrlBtnStartCheck.EnableWindow(FALSE);
 	m_ctrlBtnReset.EnableWindow(TRUE);
+
+	m_oEepromSocket.OnInit();
 	UpdateData(FALSE);
 	
 	OnCreateEepromSocket();
@@ -672,12 +675,13 @@ int CTabEepromUpdata::ADCCommand_18(int iPos, byte * cADCSet, unsigned int uiLen
 void CTabEepromUpdata::OnReadEeprom(unsigned int uiInstrumentIP)
 {
 	UpdateData(TRUE);
-	unsigned int uiSize = 0;
 	unsigned int uiFrameNum = 0;
 	unsigned int uiLength = 0;
 	CString str = _T("");
 	unsigned char * pCharBuf = NULL;
-	uiSize = m_uiWriteEepromNum;
+	m_oEepromSocket.m_uiNeedToReadNum = m_uiEditReadTotal;
+	m_oEepromSocket.m_uiOneFrameReadMax = m_uiEditReadMax;
+	m_oEepromSocket.m_uiReadEepromNum = 0;
 	if (m_uiEditReadTotal == 0)
 	{
 		str = _T("警告：读取的EEPROM数据个数不能为0！");
@@ -706,7 +710,6 @@ void CTabEepromUpdata::OnReadEeprom(unsigned int uiInstrumentIP)
 	{
 		uiFrameNum = m_uiEditReadTotal / m_uiEditReadMax + 1;
 	}
-	m_oEepromSocket.m_uiReadEepromNum = 0;
 	memset(m_oEepromSocket.m_ucReadEepromBuf, SndFrameBufInit, EEPROMCapacity);
 	for (unsigned int i=0; i < uiFrameNum; i++)
 	{
@@ -865,7 +868,7 @@ void CTabEepromUpdata::OnCheckEepromOne(unsigned int uiInstrumentSN, unsigned in
 		m_ctrlListMessage.AddString(str);
 		return;
 	}
-	for (unsigned int i=0; i<m_uiWriteEepromNum; i++)
+	for (unsigned int i=0; i<m_oEepromSocket.m_uiReadEepromNum; i++)
 	{
 		if (m_oEepromSocket.m_ucReadEepromBuf[i] != m_ucWriteEepromBuf[i])
 		{
@@ -925,4 +928,11 @@ void CTabEepromUpdata::OnFindInListBox(CListBox * pListBox, unsigned int uiInstr
 		str.Format(_T("SN = %04x,	IP = %d"), uiSN, uiIP);
 		pListBox->AddString(str);
 	}
+}
+
+void CTabEepromUpdata::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	CDialog::OnTimer(nIDEvent);
 }

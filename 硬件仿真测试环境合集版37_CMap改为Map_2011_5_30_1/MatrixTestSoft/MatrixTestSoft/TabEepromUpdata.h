@@ -135,4 +135,5 @@ public:
 	afx_msg void OnBnClickedButtonStartCheck();
 	afx_msg void OnBnClickedCheckBroadcastWrite();
 	afx_msg void OnBnClickedCheckContinuework();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

@@ -19,6 +19,13 @@ public:
 private:
 	// 单个帧处理
 	void ProcFrameOne(void);
+public:
+	// 需要读取EEPROM的数据个数
+	unsigned int m_uiNeedToReadNum;
+	// 一帧数据可读取的最大个数
+	unsigned int m_uiOneFrameReadMax;
+	// 初始化
+	void OnInit(void);
 };
 
 

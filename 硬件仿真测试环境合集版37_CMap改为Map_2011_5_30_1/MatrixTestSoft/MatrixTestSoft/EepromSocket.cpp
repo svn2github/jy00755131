@@ -9,8 +9,10 @@
 // CEepromSocket
 
 CEepromSocket::CEepromSocket()
+: m_uiNeedToReadNum(0)
+, m_uiOneFrameReadMax(0)
+, m_uiReadEepromNum(0)
 {
-	m_uiReadEepromNum = 0;
 }
 
 CEepromSocket::~CEepromSocket()
@@ -39,6 +41,8 @@ void CEepromSocket::ProcFrameOne(void)
 	unsigned short usCommand = 0;
 	unsigned char ucCommand = 0;
 	unsigned int uiInstrumentIP = 0;
+	unsigned int uiMaxNum = 0;
+	unsigned int ui18Count = 0;
 	int iPos = FrameHeadSize;
 	// [16]到[19]为源地址
 	memcpy(&uiInstrumentIP, &m_ucRecBuf[iPos], FramePacketSize4B);
@@ -50,16 +54,41 @@ void CEepromSocket::ProcFrameOne(void)
 	iPos += FramePacketSize2B;
 	if (usCommand == SendQueryCmd)
 	{
+		iPos += FrameCmdSize1B;
+		iPos += FramePacketSize4B;
+		if (m_uiNeedToReadNum < m_uiReadEepromNum + m_uiOneFrameReadMax)
+		{
+			uiMaxNum = m_uiNeedToReadNum - m_uiReadEepromNum;
+		} 
+		else
+		{
+			uiMaxNum = m_uiOneFrameReadMax;
+		}
 		do 
 		{
 			memcpy(&ucCommand, &m_ucRecBuf[iPos], FrameCmdSize1B);
 			iPos += FrameCmdSize1B;
 			if (ucCommand == CmdADCSet)
 			{
+				if (uiMaxNum <= (ui18Count + FramePacketSize4B))
+				{
+					memcpy(&m_ucReadEepromBuf[m_uiReadEepromNum], &m_ucRecBuf[iPos], uiMaxNum - ui18Count);
+					iPos += uiMaxNum - ui18Count;
+					m_uiReadEepromNum += uiMaxNum - ui18Count;
+					break;
+				}
 				memcpy(&m_ucReadEepromBuf[m_uiReadEepromNum], &m_ucRecBuf[iPos], FramePacketSize4B);
 				iPos += FramePacketSize4B;
 				m_uiReadEepromNum += FramePacketSize4B;
+				ui18Count += FramePacketSize4B;
 			}
 		} while (ucCommand != SndFrameBufInit);
 	}
+}
+// 初始化
+void CEepromSocket::OnInit(void)
+{
+	m_uiNeedToReadNum = 0;
+	m_uiOneFrameReadMax = 0;
+	m_uiReadEepromNum = 0;
 }
