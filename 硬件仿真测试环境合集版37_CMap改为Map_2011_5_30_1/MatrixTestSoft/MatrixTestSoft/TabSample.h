@@ -52,12 +52,13 @@ public:
 	HICON m_iconLAUXConnected;
 	// 是否开启心跳的BOOL型变量
 	BOOL m_bHeartBeat;
-	// 采集站设备Button控件ID
-	int m_iButtonIDFDU[InstrumentNum];
-	// 采集站设备仪器选择Check控件ID
-	int m_iCheckIDInstrumentFDU[InstrumentNum];
-	// 采集站设备噪声选择Check控件ID
-	int m_iCheckIDNoiseFDU[InstrumentNum];
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 采集站设备Button控件ID
+// 	int m_iButtonIDFDU[InstrumentNum];
+// 	// 采集站设备仪器选择Check控件ID
+// 	int m_iCheckIDInstrumentFDU[InstrumentNum];
+// 	// 采集站设备噪声选择Check控件ID
+// 	int m_iCheckIDNoiseFDU[InstrumentNum];
 	// ADC数据自动存储文件数据点个数
 	unsigned int m_uiADCFileLength;
 	// 图形化显示ADC数据Dlg
@@ -91,10 +92,12 @@ public:
 	void OnShowADCGraph(unsigned int uiADCGraphNb);
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);
-	// 重置设备的Check控件
-	void OnResetCheckButton(void);
-	// 重置设备按键的图标
-	void OnResetButtonIcon(void);
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 重置设备的Check控件
+// 	void OnResetCheckButton(void);
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 重置设备按键的图标
+// 	void OnResetButtonIcon(void);
 	// 填充套接字地址结构
 	void OnSetSocketAddr(sockaddr_in* addr, u_short hostshort, ULONG Saddr);
 	// 计算绘图序号

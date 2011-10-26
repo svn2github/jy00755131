@@ -25,10 +25,11 @@ public:
 	HICON m_iconLAUXConnected;
 	// 界面指针
 	CWnd* m_pwnd;
-	// 采集站设备Button控件ID
-	int m_iButtonIDFDU[InstrumentNum];
-	// 采集站设备仪器选择Check控件ID
-	int m_iCheckIDInstrumentFDU[InstrumentNum];
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 采集站设备Button控件ID
+// 	int m_iButtonIDFDU[InstrumentNum];
+// 	// 采集站设备仪器选择Check控件ID
+// 	int m_iCheckIDInstrumentFDU[InstrumentNum];
 	// 日志类指针
 	CLogFile* m_pLogFile;
 	// Socket套接字
@@ -39,8 +40,9 @@ protected:
 	void ProcIPSetReturnFrameOne(void);
 	// 解析IP地址设置应答帧
 	BOOL ParseIPSetReturnFrame(void);
-	// 显示设备连接图标
-	void OnShowConnectedIcon(unsigned int uiIPAddress);
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 显示设备连接图标
+// 	void OnShowConnectedIcon(unsigned int uiIPAddress);
 	// 防止程序在循环过程中无法响应消息
 	void PorcessMessages(void);
 public:

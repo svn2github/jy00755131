@@ -69,9 +69,9 @@ using std::wstring;
 
 //___________________缓冲区设置____________________
 // 最多连接的设备数
-#define InstrumentMaxCount			49	
+#define InstrumentMaxCount			300
 // 绘图控件个数
-#define InstrumentNum					48
+#define InstrumentNum					300
 // 接收数据包的大小
 #define ReceiveDataSize				72
 // 缓冲区个数

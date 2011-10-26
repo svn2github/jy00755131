@@ -32,13 +32,15 @@ public:
 	HICON m_iconLAUXDisconnected;
 	// 界面指针
 	CWnd* m_pwnd;
-	// 采集站设备Button控件ID
-	int m_iButtonIDFDU[InstrumentNum];
-	// 采集站设备仪器选择Check控件ID
-	int m_iCheckIDInstrumentFDU[InstrumentNum];
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 采集站设备Button控件ID
+// 	int m_iButtonIDFDU[InstrumentNum];
+// 	// 采集站设备仪器选择Check控件ID
+// 	int m_iCheckIDInstrumentFDU[InstrumentNum];
 protected:
-	// 根据IP地址显示设备断开连接的图标
-	void OnShowDisconnectedIcon(unsigned int uiIPAddress);
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 根据IP地址显示设备断开连接的图标
+// 	void OnShowDisconnectedIcon(unsigned int uiIPAddress);
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);
 public:

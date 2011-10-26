@@ -283,8 +283,9 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 		{
 			if (pInstrumentDelete->m_uiLocation < iter->second->m_uiLocation)
 			{
-				// 显示设备断开连接的图标
-				OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
+				//@@@@@@@ 暂时不加入界面显示设备
+// 				// 显示设备断开连接的图标
+// 				OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
 				// 将仪器从IP索引表中删除
 				m_oInstrumentIPMap.erase(iter++);
 			}
@@ -433,8 +434,9 @@ void CInstrumentList::DeleteAllInstrument(void)
 		//		ProcessMessages();
 		if (NULL != iter->second)
 		{
-			// 显示设备断开连接的图标
-			OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
+			//@@@@@@@ 暂时不加入界面显示设备
+// 			// 显示设备断开连接的图标
+// 			OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
 			// 将仪器从IP索引表中删除
 			m_oInstrumentIPMap.erase(iter++);
 		}
@@ -464,7 +466,7 @@ void CInstrumentList::DeleteAllInstrument(void)
 	}
 	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::DeleteAllInstrument"), _T("未收到尾包，删除所有在线仪器！"), WarningStatus);
 }
-
+//@@@@@@@ 暂时不加入界面显示设备
 // 根据IP地址显示设备断开连接的图标
 //************************************
 // Method:    OnShowDisconnectedIcon
@@ -474,32 +476,32 @@ void CInstrumentList::DeleteAllInstrument(void)
 // Qualifier:
 // Parameter: unsigned int uiIPAddress
 //************************************
-void CInstrumentList::OnShowDisconnectedIcon(unsigned int uiIPAddress)
-{
-	CButton* iconbutton = NULL;
-	CStatic* iconstatic = NULL;
-	CButton* pButton = NULL;
-
-	// hash_map迭代器
-	hash_map<unsigned int, CInstrument*>::iterator  iter;
-	CInstrument* pInstrument = NULL;
-	if (GetInstrumentFromIPMap(uiIPAddress, pInstrument))
-	{
-		if (pInstrument->m_uiInstrumentType == InstrumentTypeLAUX)
-		{
-			iconstatic =(CStatic*)m_pwnd->GetDlgItem(IDC_STATIC_LAUX);
-			iconstatic->SetIcon(m_iconLAUXDisconnected);
-		}
-		else if (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
-		{
-
-			iconbutton = (CButton*)m_pwnd->GetDlgItem(m_iButtonIDFDU[pInstrument->m_uiLocation - 1]);
-			iconbutton->SetIcon(m_iconFDUDisconnected);
-			pButton = (CButton*)m_pwnd->GetDlgItem(m_iCheckIDInstrumentFDU[pInstrument->m_uiLocation - 1]);
-			pButton->SetCheck(0);
-		}
-	}
-}
+// void CInstrumentList::OnShowDisconnectedIcon(unsigned int uiIPAddress)
+// {
+// 	CButton* iconbutton = NULL;
+// 	CStatic* iconstatic = NULL;
+// 	CButton* pButton = NULL;
+// 
+// 	// hash_map迭代器
+// 	hash_map<unsigned int, CInstrument*>::iterator  iter;
+// 	CInstrument* pInstrument = NULL;
+// 	if (GetInstrumentFromIPMap(uiIPAddress, pInstrument))
+// 	{
+// 		if (pInstrument->m_uiInstrumentType == InstrumentTypeLAUX)
+// 		{
+// 			iconstatic =(CStatic*)m_pwnd->GetDlgItem(IDC_STATIC_LAUX);
+// 			iconstatic->SetIcon(m_iconLAUXDisconnected);
+// 		}
+// 		else if (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
+// 		{
+// 
+// 			iconbutton = (CButton*)m_pwnd->GetDlgItem(m_iButtonIDFDU[pInstrument->m_uiLocation - 1]);
+// 			iconbutton->SetIcon(m_iconFDUDisconnected);
+// 			pButton = (CButton*)m_pwnd->GetDlgItem(m_iCheckIDInstrumentFDU[pInstrument->m_uiLocation - 1]);
+// 			pButton->SetCheck(0);
+// 		}
+// 	}
+// }
 
 // 防止程序在循环中运行无法响应消息
 //************************************
