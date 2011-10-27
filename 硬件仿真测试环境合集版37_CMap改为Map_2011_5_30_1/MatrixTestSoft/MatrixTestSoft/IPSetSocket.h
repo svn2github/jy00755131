@@ -19,10 +19,11 @@ protected:
 public:
 	// 仪器列表指针
 	CInstrumentList* m_pInstrumentList;
-	// 采集站设备连接上的图标指针
-	HICON m_iconFDUConnected;
-	// 交叉站设备连接上的图标指针
-	HICON m_iconLAUXConnected;
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 采集站设备连接上的图标指针
+// 	HICON m_iconFDUConnected;
+// 	// 交叉站设备连接上的图标指针
+// 	HICON m_iconLAUXConnected;
 	// 界面指针
 	CWnd* m_pwnd;
 	//@@@@@@@ 暂时不加入界面显示设备

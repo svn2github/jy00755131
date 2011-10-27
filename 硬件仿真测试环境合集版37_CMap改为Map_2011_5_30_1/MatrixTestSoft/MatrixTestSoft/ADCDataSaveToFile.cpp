@@ -157,7 +157,7 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 				&& (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
 				&& (pInstrument->m_iSelectObject == BST_CHECKED))
 			{
-				strTemp.Format(_T("ÒÇÆ÷%d \t"), pInstrument->m_uiLocation);
+				strTemp.Format(_T("ÒÇÆ÷%d \t"), pInstrument->m_uiFDULocation + 1);
 				int iLength = strTemp.GetLength();
 				if (iLength < DecimalPlaces + ADCDataPlaces)
 				{

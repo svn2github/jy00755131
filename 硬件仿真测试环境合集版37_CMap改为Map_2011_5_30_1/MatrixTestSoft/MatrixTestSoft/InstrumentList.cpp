@@ -231,6 +231,7 @@ BOOL CInstrumentList::GetInstrumentFromIPMap(unsigned int uiIndex, CInstrument* 
 void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrumentAdd)
 {
 	unsigned int uiLocation = 0;
+	unsigned int uiFDULocation = 0;
 	CString str = _T("");
 	// hash_map迭代器，效率比map高
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
@@ -245,9 +246,20 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrumentAdd)
 				{
 					uiLocation++;
 				}
+ 			}
+			if (pInstrumentAdd->m_uiInstrumentType == InstrumentTypeFDU)
+			{
+				if (iter->second->m_uiInstrumentType == InstrumentTypeFDU)
+				{
+					if (pInstrumentAdd->m_uiHeadFrameTime > iter->second->m_uiHeadFrameTime)
+					{
+						uiFDULocation++;
+					}
+				}
 			}
 		}
 	}
+
 	if (uiLocation == pInstrumentAdd->m_uiLocation)
 	{
 		// 首包计数器加一
@@ -257,9 +269,11 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrumentAdd)
 	{
 		pInstrumentAdd->m_iHeadFrameCount = 0;
 		pInstrumentAdd->m_uiLocation = uiLocation;
+		pInstrumentAdd->m_uiFDULocation = uiFDULocation;
+//		pInstrumentAdd->m_uiFDULocation = uiLocation - 1;
 	}
-	str.Format(_T("仪器SN%x，仪器首包时刻%d，仪器位置%d！"), pInstrumentAdd->m_uiSN, 
-		pInstrumentAdd->m_uiHeadFrameTime, pInstrumentAdd->m_uiLocation);
+	str.Format(_T("仪器SN%x，仪器首包时刻%d，仪器位置%d，采集站位置%d！"), pInstrumentAdd->m_uiSN, 
+		pInstrumentAdd->m_uiHeadFrameTime, pInstrumentAdd->m_uiLocation, pInstrumentAdd->m_uiFDULocation);
 	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::SetInstrumentLocation"), str, SuccessStatus);
 }
 

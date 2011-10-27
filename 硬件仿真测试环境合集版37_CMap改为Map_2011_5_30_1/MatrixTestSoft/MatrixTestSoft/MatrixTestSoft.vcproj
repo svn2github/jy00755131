@@ -246,6 +246,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InstrumentGraph.h"
+				>
+			</File>
+			<File
 				RelativePath=".\InstrumentList.h"
 				>
 			</File>
@@ -364,6 +368,30 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath=".\res\bitmap1.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\bitmap2.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\bmp00001.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\bmp00002.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\bmp00003.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\bmp00004.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\icon1.ico"
 				>
 			</File>
@@ -431,6 +459,10 @@
 			</File>
 			<File
 				RelativePath=".\Instrument.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\InstrumentGraph.cpp"
 				>
 			</File>
 			<File

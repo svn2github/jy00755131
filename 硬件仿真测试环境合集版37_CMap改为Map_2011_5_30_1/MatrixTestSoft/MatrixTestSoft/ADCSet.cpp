@@ -95,41 +95,44 @@ void CADCSet::OnProcADCZeroDriftReturn(unsigned int uiIPAim)
 	CInstrument* pInstrument = NULL;
 	if (m_pInstrumentList->GetInstrumentFromIPMap(uiIPAim, pInstrument))
 	{
-		unsigned int uiLocation = 0;
-		uiLocation = pInstrument->m_uiLocation - 1;
-		iPos = 33;
-		memcpy(&ucCommand, &udp_buf[iPos], FrameCmdSize1B);
-		iPos += FrameCmdSize1B;
-		if (ucCommand == CmdADCSet)
+		if (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
 		{
-			iPos = 41;
-			memcpy(&m_ucZeroDrift[uiLocation][0], &udp_buf[iPos], FramePacketSize2B);
-			iPos += FramePacketSize2B;
+			unsigned int uiLocation = 0;
+			uiLocation = pInstrument->m_uiFDULocation;
+			iPos = 33;
+			memcpy(&ucCommand, &udp_buf[iPos], FrameCmdSize1B);
 			iPos += FrameCmdSize1B;
-			memcpy(&m_ucZeroDrift[uiLocation][2], &udp_buf[iPos], FramePacketSize2B);
-			iPos += FramePacketSize2B;
-			memcpy(&m_ucZeroDrift[uiLocation][4], &udp_buf[iPos], FramePacketSize2B);
-			str.Format(_T("接收零漂矫正查询-仪器IP地址：%d！"), uiIPAim);
-			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
-		}
-		else if (ucCommand == CmdTBHigh)
-		{
-			unsigned int uiTBHigh = 0;
-			unsigned int uiTBLow = 0;
-			unsigned int uiSysTime = 0;
-			memcpy(&uiTBHigh, &udp_buf[iPos], FramePacketSize4B);
-			iPos += FramePacketSize4B;
+			if (ucCommand == CmdADCSet)
+			{
+				iPos = 41;
+				memcpy(&m_ucZeroDrift[uiLocation][0], &udp_buf[iPos], FramePacketSize2B);
+				iPos += FramePacketSize2B;
+				iPos += FrameCmdSize1B;
+				memcpy(&m_ucZeroDrift[uiLocation][2], &udp_buf[iPos], FramePacketSize2B);
+				iPos += FramePacketSize2B;
+				memcpy(&m_ucZeroDrift[uiLocation][4], &udp_buf[iPos], FramePacketSize2B);
+				str.Format(_T("接收零漂矫正查询-仪器IP地址：%d！"), uiIPAim);
+				m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
+			}
+			else if (ucCommand == CmdTBHigh)
+			{
+				unsigned int uiTBHigh = 0;
+				unsigned int uiTBLow = 0;
+				unsigned int uiSysTime = 0;
+				memcpy(&uiTBHigh, &udp_buf[iPos], FramePacketSize4B);
+				iPos += FramePacketSize4B;
 
-			iPos += FrameCmdSize1B;
-			memcpy(&uiTBLow, &udp_buf[iPos], FramePacketSize4B);
-			iPos += FramePacketSize4B;
+				iPos += FrameCmdSize1B;
+				memcpy(&uiTBLow, &udp_buf[iPos], FramePacketSize4B);
+				iPos += FramePacketSize4B;
 
-			iPos += FrameCmdSize1B;
-			memcpy(&uiSysTime, &udp_buf[iPos], FramePacketSize4B);
-			iPos += FramePacketSize4B;
+				iPos += FrameCmdSize1B;
+				memcpy(&uiSysTime, &udp_buf[iPos], FramePacketSize4B);
+				iPos += FramePacketSize4B;
 
-			str.Format(_T("接收TB时刻查询帧-仪器IP地址：%d，TB高位为0x%04x，TB低位为0x%04x, 本地时间为0x%04x！"), uiIPAim, uiTBHigh, uiTBLow, uiSysTime);
-			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
+				str.Format(_T("接收TB时刻查询帧-仪器IP地址：%d，TB高位为0x%04x，TB低位为0x%04x, 本地时间为0x%04x！"), uiIPAim, uiTBHigh, uiTBLow, uiSysTime);
+				m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCZeroDriftReturn"), str, SuccessStatus);
+			}
 		}
 	}
 }
@@ -1236,7 +1239,7 @@ void CADCSet::OnSendADCSetCmd(void)
 				if ((iter->second->m_bIPSetOK == true)&&(iter->second->m_uiInstrumentType == InstrumentTypeFDU))
 				{
 						iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, ADSetReturnPort);
-						OnADCZeroDriftSetFromIP(iPos, m_ucZeroDrift[iter->second->m_uiLocation - 1]);
+						OnADCZeroDriftSetFromIP(iPos, m_ucZeroDrift[iter->second->m_uiFDULocation]);
 						sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 				}
 			}

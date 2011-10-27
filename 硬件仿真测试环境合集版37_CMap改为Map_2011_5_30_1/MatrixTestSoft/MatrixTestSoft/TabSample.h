@@ -4,6 +4,7 @@
 #include "Parameter.h"
 #include "GraphShowDlg.h"
 #include "LogFile.h"
+#include "InstrumentGraph.h"
 #include <afxmt.h>
 
 // CGraphView 对话框
@@ -42,14 +43,15 @@ public:
 	CString m_csSaveFilePath;
 	// 线程控制类的对象
 	CThreadManage m_oThreadManage;
-	// 采集站设备断开连接图标
-	HICON m_iconFDUDisconnected;
-	// 采集站设备连接图标
-	HICON m_iconFDUConnected;
-	// 交叉站设备断开连接图标
-	HICON m_iconLAUXDisconnected;
-	// 交叉站设备连接图标
-	HICON m_iconLAUXConnected;
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 采集站设备断开连接图标
+// 	HICON m_iconFDUDisconnected;
+// 	// 采集站设备连接图标
+// 	HICON m_iconFDUConnected;
+// 	// 交叉站设备断开连接图标
+// 	HICON m_iconLAUXDisconnected;
+// 	// 交叉站设备连接图标
+// 	HICON m_iconLAUXConnected;
 	// 是否开启心跳的BOOL型变量
 	BOOL m_bHeartBeat;
 	//@@@@@@@ 暂时不加入界面显示设备
@@ -69,6 +71,8 @@ public:
 	unsigned int m_uiSendPort;
 	// 日志类指针
 	CLogFile* m_pLogFile;
+	// 绘图类变量
+	CInstrumentGraph m_oInstrumentGraph;
 public:
 	// 初始化
 	void OnInit(void);
@@ -102,6 +106,8 @@ public:
 	void OnSetSocketAddr(sockaddr_in* addr, u_short hostshort, ULONG Saddr);
 	// 计算绘图序号
 	unsigned int CalLocationGraph(unsigned int uiLocation);
+	// 绘制设备连接图
+	void OnDrawInstrumentGraph(void);
 public:
 	afx_msg void OnBnClickedCheckMatrixnetwork();
 	afx_msg void OnBnClickedButtotStartsample();

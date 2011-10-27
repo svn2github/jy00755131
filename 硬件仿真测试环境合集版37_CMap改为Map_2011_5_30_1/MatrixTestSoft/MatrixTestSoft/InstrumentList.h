@@ -26,10 +26,11 @@ public:
 	hash_map<unsigned int, CInstrument*> m_oInstrumentSNMap;
 	// 仪器IP地址索引表
 	hash_map<unsigned int, CInstrument*> m_oInstrumentIPMap;
-	// 采集站设备未连接显示的图标指针
-	HICON m_iconFDUDisconnected;
-	// 交叉站设备未连接显示的图标指针
-	HICON m_iconLAUXDisconnected;
+	//@@@@@@@ 暂时不加入界面显示设备
+// 	// 采集站设备未连接显示的图标指针
+// 	HICON m_iconFDUDisconnected;
+// 	// 交叉站设备未连接显示的图标指针
+// 	HICON m_iconLAUXDisconnected;
 	// 界面指针
 	CWnd* m_pwnd;
 	//@@@@@@@ 暂时不加入界面显示设备

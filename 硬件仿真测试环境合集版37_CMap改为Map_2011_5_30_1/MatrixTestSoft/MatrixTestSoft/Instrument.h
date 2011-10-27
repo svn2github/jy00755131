@@ -54,6 +54,8 @@ public:
 	int m_iSelectObjectNoise;
 	// 在该设备之前未被选择绘图的设备个数
 	unsigned int m_uiUnCheckedNum;
+	// 采集站位置
+	unsigned int m_uiFDULocation;
 public:
 	// 重置成员变量
 	void OnReset(void);
