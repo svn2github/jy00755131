@@ -95,7 +95,7 @@ void CADCSet::OnProcADCZeroDriftReturn(unsigned int uiIPAim)
 	CInstrument* pInstrument = NULL;
 	if (m_pInstrumentList->GetInstrumentFromIPMap(uiIPAim, pInstrument))
 	{
-		if (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
+ 		if (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
 		{
 			unsigned int uiLocation = 0;
 			uiLocation = pInstrument->m_uiFDULocation;

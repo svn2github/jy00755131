@@ -56,8 +56,8 @@ int CInstrumentMonitorThread::Run()
 		{
 			break;
 		}
- 			OnMonitorLAUX();
-	  		OnMonitorFDU();
+	  	OnMonitorLAUX();
+  	  	OnMonitorFDU();
 		if (m_bclose == true)
 		{
 			break;
