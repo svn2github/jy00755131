@@ -214,13 +214,13 @@ void CThreadManage::OnAvoidIOBlock(SOCKET socket)
 // Parameter: int iSendBuf
 //************************************
 SOCKET CThreadManage::OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast, 
-										 int iSocketPort, CString str, int iRecBuf, int iSendBuf)
+										 unsigned short usSocketPort, CString str, int iRecBuf, int iSendBuf)
 {
 	CString strTemp = _T("");
 	SOCKET socketName = INVALID_SOCKET;
 	socketName = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	addrName.sin_family = AF_INET;											// 填充套接字地址结构
-	addrName.sin_port = htons(iSocketPort);
+	addrName.sin_port = htons(usSocketPort);
 	addrName.sin_addr.S_un.S_addr = INADDR_ANY;
 	int iReturn = bind(socketName, reinterpret_cast<sockaddr*>(&addrName), sizeof(addrName));	// 绑定本地地址
 	listen(socketName, 2);

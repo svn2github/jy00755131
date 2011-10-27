@@ -439,5 +439,4 @@ extern string WideCharToMultiChar(wstring str);
 extern void WriteCHToCFile(CArchive *ar, CString str);
 // CString×ª»»Îªconst char*
 extern const char* ConvertCStringToConstCharPointer(CString str);
-// 
-extern char* Convert(char* ch,int dec,int sign);
+

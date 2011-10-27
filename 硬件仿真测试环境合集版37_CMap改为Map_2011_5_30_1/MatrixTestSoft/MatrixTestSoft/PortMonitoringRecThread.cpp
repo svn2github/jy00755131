@@ -239,7 +239,7 @@ void CPortMonitoringRecThread::OnOpen(void)
 	CString str = _T("");
 	m_RecSocket = socket(AF_INET, SOCK_DGRAM, 0);
 	m_RecvAddr.sin_family = AF_INET;											// 填充套接字地址结构
-	m_RecvAddr.sin_port = htons(m_iRecPort);
+	m_RecvAddr.sin_port = htons(static_cast<unsigned short>(m_iRecPort));
 	m_RecvAddr.sin_addr.S_un.S_addr = INADDR_ANY;
 	int iReturn = bind(m_RecSocket, reinterpret_cast<sockaddr*>(&m_RecvAddr), sizeof(m_RecvAddr));	// 绑定本地地址
 	listen(m_RecSocket, 2);
@@ -366,7 +366,6 @@ void CPortMonitoringRecThread::ProcessMessages(void)
 void CPortMonitoringRecThread::OnPortMonitoringProc(void)
 {
 	CString strTemp = _T("");
-	unsigned int uiCommand = 0;
 	int iPos = 0;
 	unsigned short uiPort = 0;
 

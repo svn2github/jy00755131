@@ -254,7 +254,7 @@ void CPortMonitoringSendThread::OnOpen(void)
 	CString str = _T("");
 	m_SendSocket = socket(AF_INET, SOCK_DGRAM, 0);
 	m_RecvAddr.sin_family = AF_INET;											// 填充套接字地址结构
-	m_RecvAddr.sin_port = htons(m_iRecPort);
+	m_RecvAddr.sin_port = htons(static_cast<unsigned short>(m_iRecPort));
 	m_RecvAddr.sin_addr.S_un.S_addr = INADDR_ANY;
 	int iReturn = bind(m_SendSocket, reinterpret_cast<sockaddr*>(&m_RecvAddr), sizeof(m_RecvAddr));	// 绑定本地地址
 	listen(m_SendSocket, 2);
@@ -614,7 +614,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		// 显示设备序号
 		iPos = 16;
 		memcpy(&uiIP, &m_ucudp_buf[m_usudp_count][iPos], FramePacketSize4B);
-		for (int k=0; k<InstrumentMaxCount; k++)
+		for (unsigned int k=0; k<InstrumentMaxCount; k++)
 		{
 			if (uiIP == (IPSetAddrStart + k * IPSetAddrInterval))
 			{
@@ -739,7 +739,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 	else
 	{
 		m_SendToAddr.sin_family = AF_INET;											// 填充套接字地址结构
-		m_SendToAddr.sin_port = htons(m_iSendPort);
+		m_SendToAddr.sin_port = htons(static_cast<unsigned short>(m_iSendPort));
 		m_SendToAddr.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(m_csIP));
 
 		int icount = sendto(m_SendSocket, reinterpret_cast<const char*>(&m_ucudp_buf[m_usudp_count]), RcvFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));

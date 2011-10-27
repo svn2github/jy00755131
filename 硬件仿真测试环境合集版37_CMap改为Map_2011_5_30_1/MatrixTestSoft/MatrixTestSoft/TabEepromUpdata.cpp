@@ -103,7 +103,7 @@ BOOL CTabEepromUpdata::OnInitDialog()
 	OnReset();
 	// 得到本机IP地址
 	char		name[256]; 
-	char* localIP;
+	char* localIP = "127.0.0.1";
 	PHOSTENT	hostinfo; 
 	if(   gethostname(name, sizeof(name)) == 0) 
 	{ 
@@ -286,13 +286,13 @@ void CTabEepromUpdata::OnBnClickedButtonLoadfile()
 	}
 	if (FALSE == LoadFile(dlg.GetPathName()))
 	{
-		str.Format(_T("警告：载入文件 %s 失败！"), dlg.GetFileName());
+		str = _T("警告：载入文件 ") + dlg.GetFileName() + _T(" 失败！");
 		m_ctrlListMessage.AddString(str);
 		return;
 	}
 	else
 	{
-		str.Format(_T("载入文件 %s 成功！"), dlg.GetFileName());
+		str = _T("警告：载入文件 ") + dlg.GetFileName() + _T(" 成功！");
 		m_ctrlListMessage.AddString(str);
 		m_uiEditWriteTotal = m_uiWriteEepromNum;
 		m_uiEditReadTotal = m_uiWriteEepromNum;
@@ -342,7 +342,7 @@ void CTabEepromUpdata::OnBnClickedButtonWriteEeprom()
 			str.ReleaseBuffer();
 			_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
 			OnWriteEeprom(uiIP);
-			strOut.Format(_T("向 %s 的仪器写入EEPROM！"), str);
+			strOut = _T("向 ") + str + _T(" 的仪器写入EEPROM！");
 			m_ctrlListMessage.AddString(strOut);
 		}
 	} 
@@ -357,7 +357,7 @@ void CTabEepromUpdata::OnBnClickedButtonWriteEeprom()
 			str.ReleaseBuffer();
 			_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
 			OnWriteEeprom(uiIP);
-			strOut.Format(_T("向 %s 的仪器写入EEPROM！"), str);
+			strOut = _T("向 ") + str + _T(" 的仪器写入EEPROM！");
 			m_ctrlListMessage.AddString(strOut);
 		}
 		strOut = _T("完成连续写入仪器的EEPROM！");
@@ -382,7 +382,7 @@ void CTabEepromUpdata::OnBnClickedButtonReadEeprom()
 	str.ReleaseBuffer();
 	_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
 	OnReadEeprom(uiIP);
-	strOut.Format(_T("读取 %s 仪器的EEPROM"), str);
+	strOut = _T("读取 ") + str + _T(" 仪器的EEPROM！");
 	m_ctrlListMessage.AddString(strOut);
 }
 
@@ -416,7 +416,7 @@ void CTabEepromUpdata::OnBnClickedButtonStartCheck()
 		str.ReleaseBuffer();
 		_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
 		OnCheckEepromOne(uiSN, uiIP);
-		strOut.Format(_T("校验 %s 仪器的EEPROM！"), str);
+		strOut = _T("校验 ") + str + _T(" 仪器的EEPROM！");
 		m_ctrlListMessage.AddString(strOut);
 		m_ctrlListUpdata.DeleteString(nIndex);
 	} 
@@ -433,7 +433,7 @@ void CTabEepromUpdata::OnBnClickedButtonStartCheck()
 			_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
 			OnReadEeprom(uiIP);
 			OnCheckEepromOne(uiSN, uiIP);
-			strOut.Format(_T("校验 %s 仪器的EEPROM！"), str);
+			strOut = _T("校验 ") + str + _T(" 仪器的EEPROM！");
 			m_ctrlListMessage.AddString(strOut);
 			m_ctrlListUpdata.DeleteString(i);
 		}
@@ -572,7 +572,7 @@ void CTabEepromUpdata::OnCreateEepromSocket(void)
 {
 	m_oEepromSocket.Close();
 	unsigned int uiRcvPort = EepromRecPort;
-	BOOL bReturn = m_oEepromSocket.Create(uiRcvPort, SOCK_DGRAM, NULL);
+	m_oEepromSocket.Create(uiRcvPort, SOCK_DGRAM, NULL);
 }
 
 // 关闭
@@ -780,35 +780,32 @@ void CTabEepromUpdata::OnMakeSendFrame(unsigned int uiInstrumentIP, unsigned int
 		pBuf = new unsigned char[4 + uiLength];
 		memset(pBuf, SndFrameBufInit, 4 + uiLength);
 		pBuf[0] = (0xc0 + 2 + uiLength) & 0xff;
+		pBuf[1] = 0xa0;
+		pBuf[2] = static_cast<unsigned char>(uiStartAddr >> 8);
+		pBuf[3] = uiStartAddr & 0xff;
+		memcpy(&pBuf[4], &ucBuf[0], uiLength);
+		iPos = ADCCommand_18(iPos, pBuf, 4 + uiLength);
+		delete [] pBuf;
 	} 
 	else if (uiOptCmd == ReadEEPROMCmd)
 	{
 		pBuf = new unsigned char[5 + uiLength];
 		memset(pBuf, SndFrameBufInit, 5 + uiLength);
 		pBuf[0] = (0x40 + 3 + uiLength) & 0xff;
+		pBuf[1] = 0xa0;
+		pBuf[2] = static_cast<unsigned char>(uiStartAddr >> 8);
+		pBuf[3] = uiStartAddr & 0xff;
 		pBuf[4] = 0xa1;
-	}
-
-	pBuf[1] = 0xa0;
-	pBuf[2] = uiStartAddr >> 8;
-	pBuf[3] = uiStartAddr & 0xff;
-	if (uiOptCmd == WriteEEPROMCmd)
-	{
-		memcpy(&pBuf[4], &ucBuf[0], uiLength);
-		iPos = ADCCommand_18(iPos, pBuf, 4 + uiLength);
-	} 
-	else if (uiOptCmd == ReadEEPROMCmd)
-	{
 		memcpy(&pBuf[5], &ucBuf[0], uiLength);
 		iPos = ADCCommand_18(iPos, pBuf, 5 + uiLength);
+		delete [] pBuf;
 	}
-	delete [] pBuf;
 	// 设置命令字结束
 	m_ucSendBuf[iPos] = SndFrameBufInit;
 	usCRC16 = get_crc_16(&m_ucSendBuf[FrameHeadSize], SndFrameSize - FrameHeadSize - CRCCheckSize);
 	memcpy(&m_ucSendBuf[SndFrameSize - CRCSize], &usCRC16, CRCSize);
 
-	int icount = m_oEepromSocket.SendTo(&m_ucSendBuf, SndFrameSize, m_uiAimPort, m_csAimIP);
+	m_oEepromSocket.SendTo(&m_ucSendBuf, SndFrameSize, m_uiAimPort, m_csAimIP);
 }
 
 // 生成0x18命令查询帧
@@ -818,9 +815,6 @@ void CTabEepromUpdata::OnMakeCmd_18(unsigned int uiInstrumentIP)
 	unsigned short	usCommand = 0;
 	unsigned short usCRC16 = 0;
 	unsigned int	itmp	=	0;
-	unsigned char	ucCommand = 0;
-	unsigned int	uiADCBroadcastPort = 0;
-	unsigned char * pBuf = NULL;
 	int iPos = 0;
 	memset(m_ucSendBuf, SndFrameBufInit, SndFrameSize);
 	m_ucSendBuf[0] = FrameHeadCheck0;
@@ -854,7 +848,7 @@ void CTabEepromUpdata::OnMakeCmd_18(unsigned int uiInstrumentIP)
 	usCRC16 = get_crc_16(&m_ucSendBuf[FrameHeadSize], SndFrameSize - FrameHeadSize - CRCCheckSize);
 	memcpy(&m_ucSendBuf[SndFrameSize - CRCSize], &usCRC16, CRCSize);
 
-	int icount = m_oEepromSocket.SendTo(&m_ucSendBuf, SndFrameSize, m_uiAimPort, m_csAimIP);
+	m_oEepromSocket.SendTo(&m_ucSendBuf, SndFrameSize, m_uiAimPort, m_csAimIP);
 }
 
 // 校验一个仪器的EEPROM

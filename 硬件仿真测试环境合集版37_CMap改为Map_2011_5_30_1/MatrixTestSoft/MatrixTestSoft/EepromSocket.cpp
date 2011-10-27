@@ -26,7 +26,6 @@ void CEepromSocket::OnReceive(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	int ret=0;
-	unsigned short uiPort = 0;
 	ret = Receive(m_ucRecBuf, RcvFrameSize);
 	if(ret == RcvFrameSize) 
 	{

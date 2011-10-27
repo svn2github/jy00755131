@@ -62,7 +62,7 @@ private:
 	// 创建ADC数据接收Socket
 	void OnCreateADCDataSocket(void);
 	// 创建和设置Socket套接字
-	SOCKET OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast, int iSocketPort, CString str, int iRecBuf, int iSendBuf);
+	SOCKET OnCreateAndSetSocket(sockaddr_in addrName, bool bBroadCast, unsigned short usSocketPort, CString str, int iRecBuf, int iSendBuf);
 	// 避免端口阻塞
 	void OnAvoidIOBlock(SOCKET socket);
 	// 关闭UDP套接字

@@ -39,7 +39,7 @@ void CADCDataSaveToFile::OnSaveADCToFile(int(* iADCDataBuf)[ADCDataTempDataSize]
 	for (unsigned int i=0; i<uiADCDataToSaveNum; i++)
 	{
 		//		ProcessMessages();
-		for (int j=0; j<InstrumentNum; j++)
+		for (unsigned int j=0; j<m_pInstrumentList->m_oInstrumentIPMap.size(); j++)
 		{
 			//			ProcessMessages();
 			uiDataLength = upADCDataNum[j];
@@ -119,6 +119,8 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 	unsigned int uiADCStartNum = 0;
 	unsigned int uiADCDataCovNb = ADCDataConvert;
 	SYSTEMTIME  sysTime;
+	// hash_map迭代器
+	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	// 选中的仪器对象名称
 //	wchar_t cSelectObjectName[InstrumentNum][RcvFrameSize];
 //	char cSelectObjectName[InstrumentNum][RcvFrameSize];
@@ -147,17 +149,17 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 	uiADCStartNum = (m_uiADCSaveFileNum - 1) * m_uiADCFileLength;
 	str.Format(_T("采集站设备总数%d，从第%d个数据开始存储ADC数据，数据转换方式采用方式%d！\r\n"), m_uiSampleInstrumentNum, uiADCStartNum, uiADCDataCovNb);
 	strOutput += str;
-	CInstrument* pInstrument = NULL;
+
 	// 输出仪器标签
-	for (unsigned int i=0; i<InstrumentNum; i++)
+	for(iter=m_pInstrumentList->m_oInstrumentIPMap.begin(); iter!=m_pInstrumentList->m_oInstrumentIPMap.end(); iter++)
 	{
-		if (m_pInstrumentList->GetInstrumentFromIPMap(IPSetAddrStart + IPSetAddrInterval * (i + 1), pInstrument))
+		if (NULL != iter->second)
 		{
-			if ((pInstrument->m_bIPSetOK == true) 
-				&& (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
-				&& (pInstrument->m_iSelectObject == BST_CHECKED))
+			if ((iter->second->m_uiInstrumentType == InstrumentTypeFDU)
+				&&(iter->second->m_uiInstrumentType == BST_CHECKED)
+				&&(iter->second->m_bIPSetOK == true))
 			{
-				strTemp.Format(_T("仪器%d \t"), pInstrument->m_uiFDULocation + 1);
+				strTemp.Format(_T("仪器%d \t"), iter->second->m_uiFDULocation + 1);
 				int iLength = strTemp.GetLength();
 				if (iLength < DecimalPlaces + ADCDataPlaces)
 				{

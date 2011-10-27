@@ -135,11 +135,11 @@ private:
 	// 检查接收帧是否为重发帧
 	DWORD OnCheckFrameIsRetransmission(unsigned int uiInstrumentNb, unsigned int uiIPAim, unsigned short usDataPointNow);
 	// 该帧为最后一个数据重发帧
-	void OnRecOkIsRetransimissionFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, int* piReceiveData);
+	void OnRecOkIsRetransimissionFrame(unsigned int uiInstrumentNb, int* piReceiveData);
 	// 该帧为普通帧且之前没有重发帧
-	void OnRecOkIsNormalFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, int* piReceiveData);
+	void OnRecOkIsNormalFrame(unsigned int uiInstrumentNb, int* piReceiveData);
 	// 该帧为重发帧但不是最后一个重发帧
-	void OnRecNotOkIsRetransimissionFrame(unsigned int uiInstrumentNb, unsigned int uiIPAim, int* piReceiveData);
+	void OnRecNotOkIsRetransimissionFrame(unsigned int uiInstrumentNb, int* piReceiveData);
 	// 该帧为普通帧且之前有重发帧
 	void OnRecNotOkIsNormalFrame(unsigned int uiInstrumentNb, int* piReceiveData);
 	// 数据处理

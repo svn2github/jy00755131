@@ -380,7 +380,7 @@ void CADCSet::OnADCSetReturn(int iPos)
 	iPos += FramePacketSize4B;
 
 	//端口递增上下限命令
-	uiReturnPortMove = (ADRecPort << 16) + ADRecPort;
+	uiReturnPortMove = static_cast<unsigned int>((ADRecPort << 16) + ADRecPort);
 	m_ucFrameData[iPos] = CmdADCDataReturnPortLimit;
 	iPos += FrameCmdSize1B;
 	memcpy(&m_ucFrameData[iPos], &uiReturnPortMove, FramePacketSize4B);
@@ -697,14 +697,14 @@ void CADCSet::OnADCZeroDriftSetFromIP(int iPos, unsigned char* ucZeroDrift)
 		break;
 	}
 	m_pTabADCSettings->GetDlgItem(IDC_EDIT_HPFLOW)->GetWindowText(str);
-	m_pTabADCSettings->m_ucHpfLow = _tstoi(str);
+	m_pTabADCSettings->m_ucHpfLow = static_cast<unsigned char>(_tstoi(str));
 	m_pTabADCSettings->GetDlgItem(IDC_EDIT_HPFHIGH)->GetWindowText(str);
-	m_pTabADCSettings->m_ucHpfHigh = _tstoi(str);
+	m_pTabADCSettings->m_ucHpfHigh = static_cast<unsigned char>(_tstoi(str));
 	cOnADCZeroDriftSetFromIP[4] = (8*sync+4*mode+2*sps2+1*sps1)*16 + (8*sps0+4*phs+2*filtr1+1*filtr0);
 	cOnADCZeroDriftSetFromIP[5] = (4*mux2+2*mux1+1*mux0)*16 + (8*chop+4*pga2+2*pga1+1*pga0);
 	cOnADCZeroDriftSetFromIP[6] = m_pTabADCSettings->m_ucHpfLow;
 	cOnADCZeroDriftSetFromIP[7] = m_pTabADCSettings->m_ucHpfHigh;
-// 	
+	
 // 	cOnADCZeroDriftSetFromIP[8] = ucZeroDrift[0];
 // 	cOnADCZeroDriftSetFromIP[9] = ucZeroDrift[1];
 // 	cOnADCZeroDriftSetFromIP[10] = ucZeroDrift[2];

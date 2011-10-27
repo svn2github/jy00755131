@@ -110,7 +110,6 @@ void CInstrumentList::AddInstrumentToSNMap(unsigned int uiIndex, CInstrument* pI
 BOOL CInstrumentList::IfIndexExistInSNMap(unsigned int uiIndex)
 {
 	BOOL bResult = FALSE;
-	CInstrument* pInstrument = NULL;
 	hash_map<unsigned int, CInstrument*>::iterator iter;
 	iter = m_oInstrumentSNMap.find(uiIndex);
 	if (iter != m_oInstrumentSNMap.end())
@@ -179,7 +178,6 @@ void CInstrumentList::AddInstrumentToIPMap(unsigned int uiIndex, CInstrument* pI
 BOOL CInstrumentList::IfIndexExistInIPMap(unsigned int uiIndex)
 {
 	BOOL bResult = FALSE;
-	CInstrument* pInstrument = NULL;
 	hash_map<unsigned int, CInstrument*>::iterator iter;
 	iter = m_oInstrumentIPMap.find(uiIndex);
 	if (iter != m_oInstrumentIPMap.end())

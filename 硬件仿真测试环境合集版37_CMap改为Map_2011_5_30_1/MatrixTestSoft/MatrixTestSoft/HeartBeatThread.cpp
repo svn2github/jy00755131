@@ -147,7 +147,7 @@ void CHeartBeatThread::MakeHeartBeatFrame(void)
 void CHeartBeatThread::SendHeartBeatFrame(void)
 {
 	// 发送广播命令帧
-	int icount = sendto(m_HeartBeatSocket, reinterpret_cast<const char*>(&m_pFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+	sendto(m_HeartBeatSocket, reinterpret_cast<const char*>(&m_pFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 }
 
 // 关闭并结束线程

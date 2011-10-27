@@ -161,7 +161,7 @@ void CSysTime::MakeCollectSysTimeFrameData(void)
 void CSysTime::SendCollectSysTimeFrameToSocket(void)
 {
 	// 发送帧
-	int iCount = sendto(m_SysTimeSocket, reinterpret_cast<const char*>(&m_cCollectSysTimeSendData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+	sendto(m_SysTimeSocket, reinterpret_cast<const char*>(&m_cCollectSysTimeSendData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 }
 
 // 防止程序在循环中运行无法响应消息
