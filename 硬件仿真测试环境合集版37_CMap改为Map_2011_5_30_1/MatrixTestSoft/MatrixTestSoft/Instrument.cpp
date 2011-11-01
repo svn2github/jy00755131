@@ -14,6 +14,8 @@ CInstrument::CInstrument(void)
 , m_uiInstrumentType(0)
 , m_bIPSetOK(false)
 , m_uiLocation(0)
+, m_iLineIndex(0)
+, m_uiLineDirection(0)
 , m_uiNetTime(0)
 , m_usTailRecTime(0)
 , m_usTailSendTime(0)
@@ -49,6 +51,8 @@ void CInstrument::OnReset(void)
 	m_uiInstrumentType = 0;
 	m_bIPSetOK = false;
 	m_uiLocation = 0;
+	m_iLineIndex = 0;
+	m_uiLineDirection = 0;
 	m_uiNetTime = 0;
 	m_usTailRecTime = 0;
 	m_usTailSendTime = 0;

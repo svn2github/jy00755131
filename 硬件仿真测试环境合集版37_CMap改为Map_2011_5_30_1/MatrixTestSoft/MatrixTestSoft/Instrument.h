@@ -30,6 +30,10 @@ public:
 	bool m_bIPSetOK;
 	// 设备位置序号
 	unsigned int m_uiLocation;
+	// 设备线号
+	int m_iLineIndex;
+	// 连接线方向：1上2下3左4右
+	unsigned int m_uiLineDirection;
 	// 设备的网络时间
 	DWORD m_uiNetTime;
 	// 设备尾包接收时刻

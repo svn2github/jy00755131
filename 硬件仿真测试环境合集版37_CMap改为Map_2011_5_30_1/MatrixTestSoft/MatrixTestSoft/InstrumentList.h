@@ -4,6 +4,7 @@
 #include <hash_map>
 #include <list>
 #include "LogFile.h"
+#include "InstrumentGraph.h"
 
 using stdext::hash_map;
 using std::list;
@@ -33,6 +34,8 @@ public:
 // 	HICON m_iconLAUXDisconnected;
 	// 界面指针
 	CWnd* m_pwnd;
+	// 类CInstrumentGraph的指针
+	CInstrumentGraph* m_pInstrumentGraph;
 	//@@@@@@@ 暂时不加入界面显示设备
 // 	// 采集站设备Button控件ID
 // 	int m_iButtonIDFDU[InstrumentNum];

@@ -89,7 +89,7 @@
 #define IDC_EDIT_DELAYTIMESETSHOW       1035
 #define IDC_CHECK_HEARTBEAT             1035
 #define IDC_STATIC_ADCSETNUM            1036
-#define IDC_SCROLLBAR1                  1036
+#define IDC_VSCROLLBAR                  1036
 #define IDC_EDIT_ADCSETSHOW             1037
 #define IDC_STATIC_LAUX                 1038
 #define IDC_SCROLLBAR_GRAPHVIEW         1039
@@ -141,6 +141,7 @@
 #define IDC_EDIT_AIMPORT                1217
 #define IDC_IPADDRESS_AIM               1218
 #define IDC_STATIC_GRAPH                1219
+#define IDC_HSCROLLBAR                  1220
 
 // Next default values for new objects
 // 
@@ -148,7 +149,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        149
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1220
+#define _APS_NEXT_CONTROL_VALUE         1221
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

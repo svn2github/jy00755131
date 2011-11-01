@@ -220,6 +220,12 @@ using std::wstring;
 #define EEPROMListAdd									1
 // EEPROM列表删除操作
 #define EEPROMListDelete								2
+// 绘图操作：仪器上线
+#define GraphInstrumentOnLine						1
+// 绘图操作：仪器IP地址设置成功
+#define GraphInstrumentIPSet							2
+// 绘图操作：仪器下线
+#define GraphInstrumentOffLine						3
 //____________________命令字设置__________________
 // 发送设置命令
 #define SendSetCmd								0x0001

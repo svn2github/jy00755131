@@ -7,6 +7,7 @@ CInstrumentList::CInstrumentList(void)
 , m_uiCountFree(0)
 , m_pwnd(NULL)
 , m_pLogFile(NULL)
+, m_pInstrumentGraph(NULL)
 {
 }
 
@@ -298,6 +299,9 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
 				//@@@@@@@ 暂时不加入界面显示设备
 // 				// 显示设备断开连接的图标
 // 				OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
+				m_pInstrumentGraph->DrawUnit(iter->second->m_uiLocation, iter->second->m_iLineIndex, 
+					iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN,
+					GraphInstrumentOffLine, true);
 				// 将仪器从IP索引表中删除
 				m_oInstrumentIPMap.erase(iter++);
 			}
@@ -457,7 +461,8 @@ void CInstrumentList::DeleteAllInstrument(void)
 			iter++;
 		}
 	}
-
+	// 清除界面仪器和连接线显示
+	m_pInstrumentGraph->OnClearAllInstrumentGraph();
 	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end();)
 	{
 		//		ProcessMessages();
