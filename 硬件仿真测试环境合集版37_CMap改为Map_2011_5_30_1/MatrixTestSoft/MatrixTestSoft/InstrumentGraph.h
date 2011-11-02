@@ -18,7 +18,6 @@ public:
 	// 背景刷子
 	CBrush m_brushBack;
 	CBitmap *m_pbitmapOldGrid;
-	CBitmap m_bitmapGrid;
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnPaint();
@@ -29,11 +28,8 @@ public:
 	void DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiLineDirection, unsigned int uiType, unsigned int uiSN, unsigned int uiOpt, bool bSet);
 private:
 	CDC m_dcGraph;
-	CDC m_dcSave;
 	// 绘图区尺寸
 	CRect m_rectGraph;
-	// 保存的绘图区尺寸
-	CRect m_rectSave;
 	// 仪器图元结构体
 	typedef struct InstrumentGraph
 	{
@@ -77,12 +73,12 @@ private:
 	// 连线Y方向绘图尺寸
 	unsigned int m_uiGridLineY;
 	// 显示仪器坐标（包含测线号和点号）
-	void OnShowInstrumentAxisPoint(CPoint point);
+	void OnShowInstrumentAxisPoint(CPoint oGraphPoint);
 	// 滚动条拖动
 	int moveScrollBar(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 public:
 	// 填充背景颜色
-	void OnFillBkColor(void);
+	void OnFillBkColor(CDC * pDC, CRect oRect);
 	// 清除所有仪器图形
 	void OnClearAllInstrumentGraph(void);
 private:
@@ -96,6 +92,19 @@ private:
 	int m_iLauxPosX;
 	// 主交叉站仪器起始位置Y轴坐标
 	int m_iLauxPosY;
+public:
+	// 右侧增加仪器移动图形DC的大小
+	int m_iRightMovePos;
+	// 处理绘图区域
+	void OnOptGraphRect(unsigned int uiOpt);
+	// 在图形界面上输出文字信息
+	void OnShowTextOut(CDC* pDC, CPoint point, CString str);
+private:
+	// 横向滚动条坐标
+	int m_iHScrPos;
+public:
+	// 重置
+	void OnReset(void);
 };
 
 
