@@ -133,7 +133,7 @@ private:
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);
 	// 检查接收帧是否为重发帧
-	DWORD OnCheckFrameIsRetransmission(unsigned int uiInstrumentNb, unsigned int uiIPAim, unsigned short usDataPointNow);
+	DWORD OnCheckFrameIsRetransmission(unsigned int uiInstrumentNb, unsigned int uiIP, unsigned short usDataPointNow);
 	// 该帧为最后一个数据重发帧
 	void OnRecOkIsRetransimissionFrame(unsigned int uiInstrumentNb, int* piReceiveData);
 	// 该帧为普通帧且之前没有重发帧

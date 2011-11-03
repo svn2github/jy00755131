@@ -13,7 +13,7 @@ IMPLEMENT_DYNCREATE(CInstrumentMonitorThread, CWinThread)
 CInstrumentMonitorThread::CInstrumentMonitorThread()
 : m_bclose(false)
 , m_pLogFile(NULL)
-, m_pwnd(NULL)
+, m_pWnd(NULL)
 , m_pADCSet(NULL)
 , m_pInstrumentList(NULL)
 , m_pTailFrame(NULL)
@@ -56,8 +56,9 @@ int CInstrumentMonitorThread::Run()
 		{
 			break;
 		}
-	  	OnMonitorLAUX();
-  	  	OnMonitorFDU();
+		//@@@@@@@@@@@暂不删除仪器
+// 	  	OnMonitorLAUX();
+//   	  	OnMonitorFDU();
 		if (m_bclose == true)
 		{
 			break;
@@ -192,12 +193,12 @@ void CInstrumentMonitorThread::OnMonitorFDU(void)
 void CInstrumentMonitorThread::OnStopOperation(void)
 {
 	// 发送采样结束操作命令帧
-	m_pADCSet->OnADCSampleStop();
-	m_pwnd->SetTimer(TabSampleStopSampleTimerNb, TabSampleStopSampleTimerSet, NULL);
-	m_pwnd->KillTimer(TabSampleQueryErrorCountTimerNb);
-	m_pwnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(FALSE);
-	m_pwnd->GetDlgItem(IDC_BUTTON_TIMECAL)->EnableWindow(FALSE);
-	m_pwnd->GetDlgItem(IDC_BUTTON_SETADC)->EnableWindow(FALSE);
+//	m_pADCSet->OnADCSampleStop();
+	m_pWnd->SetTimer(TabSampleStopSampleTimerNb, TabSampleStopSampleTimerSet, NULL);
+	m_pWnd->KillTimer(TabSampleQueryErrorCountTimerNb);
+	m_pWnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(FALSE);
+	m_pWnd->GetDlgItem(IDC_BUTTON_TIMECAL)->EnableWindow(FALSE);
+	m_pWnd->GetDlgItem(IDC_BUTTON_SETADC)->EnableWindow(FALSE);
 }
 // 重置交叉站尾包计数器
 void CInstrumentMonitorThread::OnResetLAUXCounter(void)

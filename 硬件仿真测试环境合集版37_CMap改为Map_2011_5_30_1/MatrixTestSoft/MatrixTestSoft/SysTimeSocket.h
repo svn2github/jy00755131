@@ -24,7 +24,7 @@ public:
 	// ADC设置类指针
 	CADCSet* m_pADCSet;
 	// 界面指针
-	CWnd* m_pwnd;
+	CWnd* m_pWnd;
 	// 本地时间查询应答计数
 	unsigned int m_uiSysTimeCount;
 	// 类CADCFrameInfo成员变量指针

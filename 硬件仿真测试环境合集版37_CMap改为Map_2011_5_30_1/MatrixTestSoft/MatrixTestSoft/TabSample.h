@@ -92,8 +92,6 @@ public:
 	void OnEnableButtons(void);
 	// 禁用Button控件
 	void OnDisableButtons(void);
-	// 创建图形化显示ADC数据Dlg
-	void OnShowADCGraph(unsigned int uiADCGraphNb);
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);
 	//@@@@@@@ 暂时不加入界面显示设备
@@ -127,5 +125,7 @@ public:
 	afx_msg LRESULT OnIPSetSocket(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnHeadFrameSocket(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnADCGraphSocket(WPARAM wParam, LPARAM lParam);
+	// 创建图形化显示ADC数据Dlg
+	afx_msg LRESULT OnShowADCGraph(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedButtonGraphexe();
 };

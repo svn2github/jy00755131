@@ -50,7 +50,7 @@ public:
 	// 日志类指针
 	CLogFile* m_pLogFile;
 	// 界面指针
-	CWnd* m_pwnd;
+	CWnd* m_pWnd;
 	// Socket套接字
 	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_TailTimeSocket;

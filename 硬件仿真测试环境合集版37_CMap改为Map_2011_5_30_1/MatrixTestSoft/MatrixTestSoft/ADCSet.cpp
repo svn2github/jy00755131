@@ -2,6 +2,8 @@
 #include "ADCSet.h"
 #include "Parameter.h"
 #include "resource.h"
+#include <math.h>
+#define PI	3.1415926
 CADCSet::CADCSet(void)
 : m_pTabADCSettings(NULL)
 , m_pInstrumentList(NULL)
@@ -9,7 +11,7 @@ CADCSet::CADCSet(void)
 , m_pLogFile(NULL)
 , m_ADCSetSocket(INVALID_SOCKET)
 , m_uiADCSetOperationNb(0)
-, m_pwnd(NULL)
+, m_pWnd(NULL)
 , m_uiTnow(0)
 , m_pADCDataRecThread(NULL)
 {
@@ -519,6 +521,12 @@ void CADCSet::OnADCZeroDriftSetFromIP(int iPos, unsigned char* ucZeroDrift)
 //	byte cOnADCZeroDriftSetFromIP[16] = {0x8d, 0x40, 0x0a, 0x00, 0x52, 0x08, 0x32, 0x03, 0x6f, 0x0c, 0xff, 0x7d, 0x52, 0x40, 0x00, 0x00};
 	// 不设置零漂校正值
 	byte cOnADCZeroDriftSetFromIP[8] = SetADCZeroDriftSetFromIP;
+	unsigned int hpf = 0;
+	double fhp = 0;
+	double sps = 0;
+	double wn = 0;
+
+
 	m_pTabADCSettings->m_uiADCSync = ((CComboBox*)m_pTabADCSettings->GetDlgItem(IDC_COMBO_SYNC))->GetCurSel();
 	switch(m_pTabADCSettings->m_uiADCSync)
 	{
@@ -550,26 +558,31 @@ void CADCSet::OnADCZeroDriftSetFromIP(int iPos, unsigned char* ucZeroDrift)
 		sps0 = 0;
 		sps1 = 0;
 		sps2 = 1;
+		sps = 4000;
 		break;
 	case 1:
 		sps0 = 1;
 		sps1 = 1;
 		sps2 = 0;
+		sps = 2000;
 		break;
 	case 2:
 		sps0 = 0;
 		sps1 = 1;
 		sps2 = 0;
+		sps = 1000;
 		break;
 	case 3:
 		sps0 = 1;
 		sps1 = 0;
 		sps2 = 0;
+		sps = 500;
 		break;
 	case 4:
 		sps0 = 0;
 		sps1 = 0;
 		sps2 = 0;
+		sps = 250;
 		break;
 	default:
 		break;
@@ -696,10 +709,16 @@ void CADCSet::OnADCZeroDriftSetFromIP(int iPos, unsigned char* ucZeroDrift)
 	default:
 		break;
 	}
-	m_pTabADCSettings->GetDlgItem(IDC_EDIT_HPFLOW)->GetWindowText(str);
-	m_pTabADCSettings->m_ucHpfLow = static_cast<unsigned char>(_tstoi(str));
-	m_pTabADCSettings->GetDlgItem(IDC_EDIT_HPFHIGH)->GetWindowText(str);
-	m_pTabADCSettings->m_ucHpfHigh = static_cast<unsigned char>(_tstoi(str));
+	m_pTabADCSettings->GetDlgItem(IDC_EDIT_HP)->GetWindowText(str);
+	fhp = _tstof(str);
+	wn = 2 * PI * fhp/sps;
+	hpf = static_cast<unsigned int>(65536 * (1 - sqrt(1 - 2* (cos(wn) + sin(wn) - 1)/cos(wn))));
+	m_pTabADCSettings->m_ucHpfLow = static_cast<unsigned char>(hpf & 0xff);
+	str.Format(_T("%d"), m_pTabADCSettings->m_ucHpfLow);
+	m_pTabADCSettings->GetDlgItem(IDC_EDIT_HPFLOW)->SetWindowText(str);
+	m_pTabADCSettings->m_ucHpfHigh = static_cast<unsigned char>(hpf >> 8);
+	str.Format(_T("%d"), m_pTabADCSettings->m_ucHpfHigh);
+	m_pTabADCSettings->GetDlgItem(IDC_EDIT_HPFHIGH)->SetWindowText(str);
 	cOnADCZeroDriftSetFromIP[4] = (8*sync+4*mode+2*sps2+1*sps1)*16 + (8*sps0+4*phs+2*filtr1+1*filtr0);
 	cOnADCZeroDriftSetFromIP[5] = (4*mux2+2*mux1+1*mux0)*16 + (8*chop+4*pga2+2*pga1+1*pga0);
 	cOnADCZeroDriftSetFromIP[6] = m_pTabADCSettings->m_ucHpfLow;
@@ -830,7 +849,7 @@ void CADCSet::OnADCSet(void)
 {
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCSet"), _T("广播发送ADC参数设置命令！"), SuccessStatus);
 	m_uiADCSetOperationNb = 1;
-	SetTimer(m_pwnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
+	SetTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
 	OnSendADCSetCmd();
 }
 
@@ -847,7 +866,7 @@ void CADCSet::OnADCSampleStop(void)
 {
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCSampleStop"), _T("广播发送ADC数据采集停止命令！"), SuccessStatus);
 	m_uiADCSetOperationNb = 35;
-	SetTimer(m_pwnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
+	SetTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
 	OnSendADCSetCmd();
 }
 
@@ -864,7 +883,7 @@ void CADCSet::OnADCZeroDrift(void)
 {
 	m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCZeroDrift"), _T("广播发送ADC零漂校正命令！"), SuccessStatus);
 	m_uiADCSetOperationNb = 12;
-	SetTimer(m_pwnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
+	SetTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
 	OnSendADCSetCmd();
 }
 
@@ -882,7 +901,7 @@ void CADCSet::OnADCStartSample(unsigned int tnow)
 {
 	m_uiADCSetOperationNb = 28;
 	m_uiTnow = tnow;
-	SetTimer(m_pwnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
+	SetTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
 	OnSendADCSetCmd();
 }
 // 防止程序在循环中运行无法响应消息
@@ -949,7 +968,7 @@ void CADCSet::OnProcADCSetReturn(unsigned int uiIP)
 			if(TRUE == OnCheckADCSetReturn())
 			{
 				// 关闭应答监视定时器
-				KillTimer(m_pwnd->m_hWnd, TabSampleADCSetReturnTimerNb);
+				KillTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb);
 				// 执行下一步ADC命令发送并开启应答监视定时器
 				m_uiADCSetOperationNb++;
 				// 完成ADC参数设置
@@ -958,18 +977,18 @@ void CADCSet::OnProcADCSetReturn(unsigned int uiIP)
 					m_uiADCSetOperationNb = 0;
 					//************************暂不做零漂校正********************************
 	//				SetTimer(m_pwnd->m_hWnd, TabSampleADCZeroDriftTimerNb, TabSampleADCZeroDriftTimerSet, NULL);
-					m_pwnd->GetDlgItem(IDC_BUTTOT_STARTSAMPLE)->EnableWindow(TRUE);
-					m_pwnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(FALSE);
-					m_pwnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(TRUE);
+					m_pWnd->GetDlgItem(IDC_BUTTOT_STARTSAMPLE)->EnableWindow(TRUE);
+					m_pWnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(FALSE);
+					m_pWnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(TRUE);
 					//************************暂不做零漂校正********************************
 					return;
 				}
 				// 完成ADC零漂校正
 				else if (m_uiADCSetOperationNb == 28)
 				{
-					m_pwnd->GetDlgItem(IDC_BUTTOT_STARTSAMPLE)->EnableWindow(TRUE);
-					m_pwnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(FALSE);
-					m_pwnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(TRUE);
+					m_pWnd->GetDlgItem(IDC_BUTTOT_STARTSAMPLE)->EnableWindow(TRUE);
+					m_pWnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(FALSE);
+					m_pWnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(TRUE);
 					m_uiADCSetOperationNb = 0;
 					return;
 				}
@@ -977,19 +996,19 @@ void CADCSet::OnProcADCSetReturn(unsigned int uiIP)
 				else if (m_uiADCSetOperationNb == 35)
 				{
 					m_uiADCSetOperationNb = 0;
-					SetTimer(m_pwnd->m_hWnd, TabSampleStartSampleTimerNb, TabSampleStartSampleTimerSet, NULL);
-					m_pwnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(TRUE);
+					SetTimer(m_pWnd->m_hWnd, TabSampleStartSampleTimerNb, TabSampleStartSampleTimerSet, NULL);
+					m_pWnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(TRUE);
 					return;
 				}
 				// 完成ADC停止数据采集
 				else if (m_uiADCSetOperationNb == 39)
 				{
 					m_uiADCSetOperationNb = 0;
-					SetTimer(m_pwnd->m_hWnd, TabSampleStopSampleTimerNb, TabSampleStopSampleTimerSet, NULL);
-					KillTimer(m_pwnd->m_hWnd, TabSampleQueryErrorCountTimerNb);
+					SetTimer(m_pWnd->m_hWnd, TabSampleStopSampleTimerNb, TabSampleStopSampleTimerSet, NULL);
+					KillTimer(m_pWnd->m_hWnd, TabSampleQueryErrorCountTimerNb);
 					return;
 				}
-				SetTimer(m_pwnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
+				SetTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
 				OnSendADCSetCmd();
 			}
 		} 

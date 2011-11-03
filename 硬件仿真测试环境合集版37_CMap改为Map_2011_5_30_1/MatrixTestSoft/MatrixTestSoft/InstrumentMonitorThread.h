@@ -24,7 +24,7 @@ public:
 	// 日志类指针
 	CLogFile* m_pLogFile;
 	// 界面指针
-	CWnd* m_pwnd;
+	CWnd* m_pWnd;
 	// ADC设置类指针
 	CADCSet* m_pADCSet;
 	// 仪器列表指针

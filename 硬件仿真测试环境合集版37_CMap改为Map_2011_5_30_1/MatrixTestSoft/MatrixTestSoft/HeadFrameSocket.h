@@ -25,7 +25,7 @@ public:
 	// 源IP地址
 	unsigned int m_uiIPSource;
 	// 界面指针
-	CWnd* m_pwnd;
+	CWnd* m_pWnd;
 	// 日志类指针
 	CLogFile* m_pLogFile;
 	// Socket套接字

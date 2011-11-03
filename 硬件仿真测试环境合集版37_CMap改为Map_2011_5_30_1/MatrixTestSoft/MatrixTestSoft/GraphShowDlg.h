@@ -3,6 +3,7 @@
 #include "ADCDataRecThread.h"
 #include "afxwin.h"
 #include <afxmt.h>
+
 // CGraphShowDlg 对话框
 
 class CGraphShowDlg : public CDialog
@@ -35,6 +36,8 @@ public:
 	COScopeCtrl m_OScopeCtrl;
 	// 显示ADC数据设备的序号
 	unsigned int m_uiADCGraphNb;
+	// 显示ADC数据设备的IP地址
+	unsigned int m_uiADCGraphIP;
 	// ADC数据接收Socket
 	CADCDataRecThread* m_pADCDataRecThread;
 	// ADC数据自动存储文件数据点个数

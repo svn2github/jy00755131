@@ -1,5 +1,4 @@
 #pragma once
-
 // CInstrumentGraph
 
 class CInstrumentGraph : public CWnd
@@ -18,6 +17,8 @@ public:
 	// 背景刷子
 	CBrush m_brushBack;
 	CBitmap *m_pbitmapOldGrid;
+	// 界面指针
+	CWnd * m_pWnd;
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnPaint();
@@ -25,7 +26,8 @@ public:
 	// 绘制所有仪器
 	void DrawUnitAll(void);
 	// 绘制仪器单元（包含连接线）
-	void DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiLineDirection, unsigned int uiType, unsigned int uiSN, unsigned int uiOpt, bool bSet);
+	void DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiLineDirection, unsigned int uiType, 
+		unsigned int uiSN, unsigned int uiFDULocation, unsigned int uiOpt, bool bSet);
 private:
 	CDC m_dcGraph;
 	// 绘图区尺寸
@@ -39,6 +41,8 @@ private:
 		int iUnitIndex;
 		// 测线号
 		int iLineIndex;
+		// 采集站序号
+		unsigned int uiFDULocation;
 		// SN号
 		unsigned int uiSN;
 		// 连接线方向
@@ -72,10 +76,12 @@ private:
 	unsigned int m_uiGridLineX;
 	// 连线Y方向绘图尺寸
 	unsigned int m_uiGridLineY;
-	// 显示仪器坐标（包含测线号和点号）
-	void OnShowInstrumentAxisPoint(CPoint oGraphPoint);
+	// 判断界面仪器是否被选中
+	BOOL OnSelectInstrument(CPoint oGraphPoint, m_oInstrumentGraph &oInstrumentGraph);
 	// 滚动条拖动
 	int moveScrollBar(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	// 将信息显示区域填充为背景色
+	void OnFillMsgAreaBkColor(void);
 public:
 	// 填充背景颜色
 	void OnFillBkColor(CDC * pDC, CRect oRect);
@@ -105,6 +111,5 @@ private:
 public:
 	// 重置
 	void OnReset(void);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
-
-

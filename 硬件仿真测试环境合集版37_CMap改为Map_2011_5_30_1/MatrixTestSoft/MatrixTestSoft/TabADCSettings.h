@@ -61,4 +61,6 @@ public:
 	byte m_ucHpfLow;
 	// HPF高位控制量
 	byte m_ucHpfHigh;
+	// 高通滤波截止频率Edit控件控制变量
+	CEdit m_editHp;
 };

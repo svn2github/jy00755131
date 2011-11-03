@@ -25,7 +25,7 @@ public:
 // 	// 交叉站设备连接上的图标指针
 // 	HICON m_iconLAUXConnected;
 	// 界面指针
-	CWnd* m_pwnd;
+	CWnd* m_pWnd;
 	//@@@@@@@ 暂时不加入界面显示设备
 // 	// 采集站设备Button控件ID
 // 	int m_iButtonIDFDU[InstrumentNum];

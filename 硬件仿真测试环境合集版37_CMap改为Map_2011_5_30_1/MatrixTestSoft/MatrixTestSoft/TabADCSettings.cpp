@@ -43,6 +43,7 @@ void CTabADCSettings::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_PGA, m_comboPga);
 	DDX_Control(pDX, IDC_EDIT_HPFLOW, m_editHpfLow);
 	DDX_Control(pDX, IDC_EDIT_HPFHIGH, m_editHpfHigh);
+	DDX_Control(pDX, IDC_EDIT_HP, m_editHp);
 }
 
 
@@ -118,5 +119,6 @@ BOOL CTabADCSettings::OnInitDialog()
 	m_editHpfLow.SetWindowText(str);
 	str.Format(_T("%d"), m_ucHpfHigh);
 	m_editHpfHigh.SetWindowText(str);
+	m_editHp.SetWindowText(_T("3"));
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

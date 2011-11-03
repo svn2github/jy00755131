@@ -24,7 +24,7 @@ public:
 	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_ADCSetSocket;
 	// 界面指针
-	CWnd* m_pwnd;
+	CWnd* m_pWnd;
 	// 采集站本地时间
 	unsigned int m_uiTnow;
 	// ADC数据接收类指针

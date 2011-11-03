@@ -69,6 +69,7 @@ BEGIN_MESSAGE_MAP(CInstrumentGraph, CWnd)
 	ON_WM_MOUSEMOVE()
 	ON_WM_HSCROLL()
 	ON_WM_VSCROLL()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -140,7 +141,7 @@ void CInstrumentGraph::DrawUnitAll(void)
 	{
 		oInstrumentGraph = m_oInstrumentGraphRectList.GetNext(pos);
 		DrawUnit(oInstrumentGraph.iUnitIndex, oInstrumentGraph.iLineIndex, oInstrumentGraph.uiLineDirection, 
-			oInstrumentGraph.uiType, oInstrumentGraph.uiSN, oInstrumentGraph.uiOpt, false);
+			oInstrumentGraph.uiType, oInstrumentGraph.uiSN, oInstrumentGraph.uiFDULocation, oInstrumentGraph.uiOpt, false);
 	}
 }
 // 绘制仪器单元（包含连接线）
@@ -151,7 +152,8 @@ void CInstrumentGraph::DrawUnitAll(void)
 // uiLineNum					测线号
 // uiLineDirection			连接线方向：1为上，2为下，3为左，4为右，无连接线为0
 // uiType							仪器类型
-void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiLineDirection, unsigned int uiType, unsigned int uiSN, unsigned int uiOpt, bool bSet)
+void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiLineDirection, unsigned int uiType, 
+								unsigned int uiSN, unsigned int uiFDULocation, unsigned int uiOpt, bool bSet)
 {
 	CPen oPenUnit;
 	CPen* pOldPen;
@@ -297,7 +299,7 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 
 		/*将内存DC里的东西贴到屏幕DC上去*/
 		m_dcGraph.BitBlt(oRectInstrument.left,oRectInstrument.top,BmpInfo.bmWidth,BmpInfo.bmHeight,&memDC,0,0,SRCCOPY);
-		memDC.SelectObject(oldBkBmp);
+//		memDC.SelectObject(oldBkBmp);
 	}
 	m_dcGraph.SelectObject(pOldPen);
 	if (bSet == true)
@@ -309,6 +311,7 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 		oInstrumentGraph.uiType = uiType;
 		oInstrumentGraph.uiLineDirection = uiLineDirection;
 		oInstrumentGraph.uiSN = uiSN;
+		oInstrumentGraph.uiFDULocation = uiFDULocation;
 		oInstrumentGraph.uiOpt = uiOpt;
 		if (uiOpt == GraphInstrumentOnLine)
 		{
@@ -329,31 +332,41 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 			m_oInstrumentGraphRectList.RemoveAt(m_oInstrumentGraphRectList.Find(oInstrumentGraph));
 		}
 	}
-	InvalidateRect(m_rectClient);
+	InvalidateRect(m_rectClient, FALSE);
 }
 
 void CInstrumentGraph::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	CPoint oGraphPoint;
+	CString str = _T("");
+	m_oInstrumentGraph oInstrumentGraph;
+	CPoint oTextOutPoint;
+	m_dcGraph.SetTextAlign (TA_LEFT|TA_TOP) ;
+	oTextOutPoint.x = m_rectGraph.left + m_iHScrPos;
+	oTextOutPoint.y = m_rectGraph.bottom - m_iPosShowInterval;
+
 	oGraphPoint.x = point.x + m_iHScrPos;
 	oGraphPoint.y = point.y;
-	OnShowInstrumentAxisPoint(oGraphPoint);
+	if (TRUE == OnSelectInstrument(oGraphPoint, oInstrumentGraph))
+	{
+		str.Format(_T("线号 = %d    点号 = %d    SN = 0x%04x    "), oInstrumentGraph.iLineIndex, 
+			oInstrumentGraph.iUnitIndex, oInstrumentGraph.uiSN);
+		OnShowTextOut(&m_dcGraph, oTextOutPoint,  str);
+	} 
+	else
+	{
+		OnFillMsgAreaBkColor();
+	}
 	CWnd::OnMouseMove(nFlags, point);
 }
 
-// 显示仪器坐标（包含测线号和点号）
-void CInstrumentGraph::OnShowInstrumentAxisPoint(CPoint oGraphPoint)
+// 判断界面仪器是否被选中
+BOOL CInstrumentGraph::OnSelectInstrument(CPoint oGraphPoint, m_oInstrumentGraph &oInstrumentGraph)
 {
 	CString str = _T("");
 	CRect oRect = 0;
 	POSITION pos = m_oInstrumentGraphRectList.GetHeadPosition();
-	m_oInstrumentGraph oInstrumentGraph;
-	CPoint oTextOutPoint;
-	CRect oShowRect;
-	m_dcGraph.SetTextAlign (TA_LEFT|TA_TOP) ;
-	oTextOutPoint.x = m_rectGraph.left + m_iHScrPos;
-	oTextOutPoint.y = m_rectGraph.bottom - m_iPosShowInterval;
 	// 显示仪器的线号和点号
 	for (int i=0; i<m_oInstrumentGraphRectList.GetCount(); i++)
 	{
@@ -362,17 +375,11 @@ void CInstrumentGraph::OnShowInstrumentAxisPoint(CPoint oGraphPoint)
 		if ((oRect.left <= oGraphPoint.x) && (oRect.right >= oGraphPoint.x)
 			&&(oRect.top <= oGraphPoint.y) && (oRect.bottom >= oGraphPoint.y))
 		{
-			str.Format(_T("线号 = %d    点号 = %d    SN = 0x%04x    "), oInstrumentGraph.iLineIndex, 
-				oInstrumentGraph.iUnitIndex, oInstrumentGraph.uiSN);
-			OnShowTextOut(&m_dcGraph, oTextOutPoint,  str);
-			return;
+			
+			return TRUE;
 		}
 	}
-	oShowRect.left = 0;
-	oShowRect.right = m_rectGraph.right;
-	oShowRect.top = m_rectGraph.bottom - m_iPosShowInterval;
-	oShowRect.bottom = m_rectGraph.bottom;
-	OnFillBkColor(&m_dcGraph, oShowRect);
+	return FALSE;
 }
 
 // 填充背景颜色
@@ -382,7 +389,7 @@ void CInstrumentGraph::OnFillBkColor(CDC * pDC, CRect oRect)
 	// 填充背景颜色
 	pDC->FillRect(oRect, &m_brushBack) ;
 	// 刷新客户区界面
-	InvalidateRect(oRect) ;
+	InvalidateRect(oRect, TRUE) ;
 }
 
 // 清除所有仪器图形
@@ -394,13 +401,15 @@ void CInstrumentGraph::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	int newPos = moveScrollBar(nSBCode, nPos, pScrollBar);
+	CWnd::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 void CInstrumentGraph::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	m_iHScrPos = moveScrollBar(nSBCode, nPos, pScrollBar);
-	InvalidateRect(m_rectClient);
-}
+	InvalidateRect(m_rectClient, FALSE);
+	CWnd::OnHScroll(nSBCode, nPos, pScrollBar);
+} 
 int CInstrumentGraph::moveScrollBar(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	//
@@ -503,11 +512,6 @@ void CInstrumentGraph::OnOptGraphRect(unsigned int uiOpt)
 			&TempDC, 0, 0, SRCCOPY) ;
 	}
 	TempDC.SelectObject(oldBitmap) ;
-	oShowRect.left = 0;
-	oShowRect.right = m_rectGraph.right;
-	oShowRect.top = m_rectGraph.bottom - m_iPosShowInterval;
-	oShowRect.bottom = m_rectGraph.bottom;
-	OnFillBkColor(&m_dcGraph, oShowRect);
 }
 
 // 在图形界面上输出文字信息
@@ -548,4 +552,33 @@ void CInstrumentGraph::OnReset(void)
 	m_oInstrumentGraphRectList.RemoveAll();
 	m_pWndVScr->EnableWindow(FALSE);
 	m_pWndHScr->EnableWindow(FALSE);
+}
+
+void CInstrumentGraph::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	CPoint oGraphPoint;
+	m_oInstrumentGraph oInstrumentGraph;
+	unsigned int uiIP = 0;
+	oGraphPoint.x = point.x + m_iHScrPos;
+	oGraphPoint.y = point.y;
+	if (TRUE == OnSelectInstrument(oGraphPoint, oInstrumentGraph))
+	{
+		if (oInstrumentGraph.uiType == InstrumentTypeFDU)
+		{
+			uiIP = IPSetAddrStart + oInstrumentGraph.iUnitIndex * IPSetAddrInterval;
+			::SendMessage(m_pWnd->m_hWnd, WM_DLGADCGRAPHSHOW, uiIP, oInstrumentGraph.uiFDULocation);
+		}
+	}
+	CWnd::OnLButtonDown(nFlags, point);
+}
+// 将信息显示区域填充为背景色
+void CInstrumentGraph::OnFillMsgAreaBkColor(void)
+{
+	CRect oShowRect;
+	oShowRect.left = 0;
+	oShowRect.right = m_rectGraph.right;
+	oShowRect.top = m_rectGraph.bottom - m_iPosShowInterval;
+	oShowRect.bottom = m_rectGraph.bottom;
+	OnFillBkColor(&m_dcGraph, oShowRect);
 }

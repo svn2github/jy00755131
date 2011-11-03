@@ -35,6 +35,8 @@ using std::wstring;
 #define WM_ADCSETSOCKET				WM_USER + 1007
 // ADC数据图形化显示UDP套接字事件
 #define WM_ADCGRAPHSOCKET			WM_USER + 1008
+// 图形化显示ADC数据Dlg消息
+#define WM_DLGADCGRAPHSHOW		WM_USER + 1009
 //__________________通讯端口设置__________________
 // 心跳帧发送创建端口
 #define HeartBeatPort					0x7000
@@ -234,7 +236,7 @@ using std::wstring;
 // 发送ADC采样数据重发命令
 #define SendADCCmd							0x0003
 // TB开始采集开关控制命令(TB_L高8位)
-#define CmdTBCtrl									0x010000
+#define CmdTBCtrl									0x050000
 // 串号
 #define CmdSn										0x01
 // 首包时间

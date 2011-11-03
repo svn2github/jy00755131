@@ -33,7 +33,7 @@ public:
 // 	// 交叉站设备未连接显示的图标指针
 // 	HICON m_iconLAUXDisconnected;
 	// 界面指针
-	CWnd* m_pwnd;
+	CWnd* m_pWnd;
 	// 类CInstrumentGraph的指针
 	CInstrumentGraph* m_pInstrumentGraph;
 	//@@@@@@@ 暂时不加入界面显示设备
