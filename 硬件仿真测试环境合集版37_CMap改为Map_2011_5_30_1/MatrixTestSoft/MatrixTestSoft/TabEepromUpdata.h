@@ -35,6 +35,10 @@ private:
 	UINT m_uiEditWriteTotal;
 	// 写入EEPROM的首地址
 	UINT m_uiEditWriteAddr;
+	// 读取EEPROM时间间隔
+	UINT m_uiEditReadTimer;
+	// 写EEPROM时间间隔
+	UINT m_uiEditWriteTimer;
 	// 未参与更新的设备列表控制变量
 	CListBox m_ctrlListInstrument;
 	// 参与更新的设备列表控制变量
@@ -93,6 +97,8 @@ private:
 	unsigned int m_uiAimPort;
 	// 目标IP地址
 	CString m_csAimIP;
+	// 向单个仪器写入EEPROM数据的帧数
+	unsigned int m_uiWriteFrameNum;
 public:
 	// CInstrumentList类指针
 	CInstrumentList* m_pInstrumentList;
@@ -106,9 +112,9 @@ private:
 	// 创建EEPROM的Socket
 	void OnCreateEepromSocket(void);
 	// 写EEPROM
-	void OnWriteEeprom(unsigned int uiInstrumentIP);
+	void OnWriteEeprom(void);
 	// 读EEPROM
-	void OnReadEeprom(unsigned int uiInstrumentIP);
+	void OnReadEeprom(void);
 	// 生成发送帧帧格式
 	void OnMakeSendFrame(unsigned int uiInstrumentIP, unsigned int uiStartAddr, unsigned char * ucBuf, unsigned int uiLength, unsigned int uiOptCmd);
 	// 发送0x18命令
@@ -136,4 +142,19 @@ public:
 	afx_msg void OnBnClickedCheckBroadcastWrite();
 	afx_msg void OnBnClickedCheckContinuework();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+private:
+	// 写入EEPROM的帧计数
+	unsigned int m_uiWriteFrameCount;
+	// 设备IP地址
+	unsigned int m_uiInstrumentIP;
+	// 连续工作控件选择
+	int m_iCheckContinueWork;
+	// 已更新设备的个数
+	int m_iUpdataInstrumentCount;
+	// 读取EEPROM的帧计数
+	unsigned int m_uiReadFrameCount;
+	// 向单个仪器读取EEPROM数据的帧数
+	unsigned int m_uiReadFrameNum;
+	// 设备SN
+	unsigned int m_uiSN;
 };

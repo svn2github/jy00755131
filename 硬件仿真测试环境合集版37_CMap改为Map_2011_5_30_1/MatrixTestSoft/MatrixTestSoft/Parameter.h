@@ -409,7 +409,6 @@ using std::wstring;
 #define TabSampleADCSetReturnTimerNb			10
 // TabSample界面做ADC命令设置应答监视的定时器延时设置
 #define TabSampleADCSetReturnTimerSet			1000
-
 // TabPortMonitoring界面刷新接收发送帧数的定时器序号
 #define TabPortMonitoringFrameNumTimerNb	1
 // TabPortMonitoring界面刷新接收发送帧数的定时器延时设置
@@ -426,6 +425,10 @@ using std::wstring;
 #define PortMonitoringSendTimerNb						1
 // PortMonitoringSend界面刷新接收帧的定时器延时设置
 #define PortMonitoringSendTimerSet					1000
+// TabEepromUpdata界面写EEPROM帧的定时器序号
+#define TabEepromUpdataWriteTimerNb				1
+// TabEepromUpdata界面读EEPROM帧的定时器序号
+#define TabEepromUpdataReadTimerNb				2
 //__________________日志记录状态__________________
 // 正常工作状态
 #define SuccessStatus												1
