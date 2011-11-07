@@ -93,6 +93,12 @@ int CInstrumentGraph::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		this->m_hWnd,(HMENU)1,(HINSTANCE)GetWindowLong(this->m_hWnd,GWL_HINSTANCE),NULL);
 	m_pWndVScr = FromHandle(childhwnd1);
 	m_pWndHScr = FromHandle(childhwnd2);
+	m_oBmpFDU1.LoadBitmap(IDB_BITMAP_FDU1);
+	m_oBmpFDU2.LoadBitmap(IDB_BITMAP_FDU2);
+	m_oBmpLAUL1.LoadBitmap(IDB_BITMAP_LAUL1);
+	m_oBmpLAUL2.LoadBitmap(IDB_BITMAP_LAUL2);
+	m_oBmpLAUX1.LoadBitmap(IDB_BITMAP_LAUX1);
+	m_oBmpLAUX2.LoadBitmap(IDB_BITMAP_LAUX2);
 	OnReset();
 	return 0;
 }
@@ -158,7 +164,7 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	CPen oPenUnit;
 	CPen* pOldPen;
 	CDC memDC;			//定义一个DC
-	CBitmap BkBmp;		//定义一个位图对象
+	CBitmap* pBkBmp = NULL;		//定义一个位图对象指针
 	CBitmap* oldBkBmp = NULL;
 	BITMAP BmpInfo;	//定义一个位图信息结构体
 	CRect oRectLine;
@@ -258,29 +264,29 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	case GraphInstrumentOnLine:
 		if (uiType == InstrumentTypeFDU)
 		{
-			BkBmp.LoadBitmap(IDB_BITMAP_FDU1);
+			pBkBmp = &m_oBmpFDU1;
 		} 
 		else if (uiType == InstrumentTypeLAUL)
 		{
-			BkBmp.LoadBitmap(IDB_BITMAP_LAUL1);
+			pBkBmp = &m_oBmpLAUL1;
 		}
 		else if (uiType == InstrumentTypeLAUX)
 		{
-			BkBmp.LoadBitmap(IDB_BITMAP_LAUX1);
+			pBkBmp = &m_oBmpLAUX1;
 		}
 		break;
 	case GraphInstrumentIPSet:
 		if (uiType == InstrumentTypeFDU)
 		{
-			BkBmp.LoadBitmap(IDB_BITMAP_FDU2);
+			pBkBmp = &m_oBmpFDU2;
 		} 
 		else if (uiType == InstrumentTypeLAUL)
 		{
-			BkBmp.LoadBitmap(IDB_BITMAP_LAUL2);
+			pBkBmp = &m_oBmpLAUL2;
 		}
 		else if (uiType == InstrumentTypeLAUX)
 		{
-			BkBmp.LoadBitmap(IDB_BITMAP_LAUX2);
+			pBkBmp = &m_oBmpLAUX2;
 		}
 		break;
 	case GraphInstrumentOffLine:
@@ -293,13 +299,13 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	}
 	if ((uiOpt == GraphInstrumentOnLine) || (uiOpt == GraphInstrumentIPSet))
 	{
-		BkBmp.GetBitmap(&BmpInfo);				// 获取位图高宽等信息，保存在位图结构体中
+		pBkBmp->GetBitmap(&BmpInfo);				// 获取位图高宽等信息，保存在位图结构体中
 		memDC.CreateCompatibleDC(&m_dcGraph);			// 创建一个兼容屏幕DC的内存DC：m_MemDc。
-		oldBkBmp = memDC.SelectObject(&BkBmp);				// 将该位图选择到刚创建的内存DC中。
+		oldBkBmp = memDC.SelectObject(pBkBmp);				// 将该位图选择到刚创建的内存DC中。
 
 		/*将内存DC里的东西贴到屏幕DC上去*/
 		m_dcGraph.BitBlt(oRectInstrument.left,oRectInstrument.top,BmpInfo.bmWidth,BmpInfo.bmHeight,&memDC,0,0,SRCCOPY);
-//		memDC.SelectObject(oldBkBmp);
+		memDC.SelectObject(oldBkBmp);
 	}
 	m_dcGraph.SelectObject(pOldPen);
 	if (bSet == true)

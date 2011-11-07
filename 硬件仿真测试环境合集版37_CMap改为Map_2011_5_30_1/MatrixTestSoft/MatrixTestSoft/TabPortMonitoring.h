@@ -78,7 +78,7 @@ public:
 	// ¹Ø±Õ
 	void OnClose();
 public:
-	afx_msg void OnTcnSelchangeTabPortmonitoring(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnTcnSelchangeTabPortmonitoring(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnBnClickedButtonPortmonitoringOpen();
 	afx_msg void OnBnClickedButtonPortmonitoringClose();
 	afx_msg void OnBnClickedButtonStartsave();

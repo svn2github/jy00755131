@@ -43,7 +43,7 @@ public:
 	// ADC设置帧头
 	int ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, unsigned short usPortAim);
 	// 发送ADC设置的18指令
-	int ADCCommand_18(int iPos, byte * cADCSet, unsigned int uiLength);
+	int ADCCommand_18(int iPos, byte* cADCSet, unsigned int uiLength);
 	// 设置正弦输出
 	void OnSetSine(int iPos);
 	// 设置停止采集

@@ -98,8 +98,8 @@ protected:
 
 	CDC     m_dcGrid;
 	CDC     m_dcPlot;
-	CBitmap *m_pbitmapOldGrid;
-	CBitmap *m_pbitmapOldPlot;
+	CBitmap* m_pbitmapOldGrid;
+	CBitmap* m_pbitmapOldPlot;
 	CBitmap m_bitmapGrid;
 	CBitmap m_bitmapPlot;
 

@@ -16,9 +16,9 @@ public:
 	CRect  m_rectClient;
 	// 背景刷子
 	CBrush m_brushBack;
-	CBitmap *m_pbitmapOldGrid;
+	CBitmap* m_pbitmapOldGrid;
 	// 界面指针
-	CWnd * m_pWnd;
+	CWnd* m_pWnd;
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnPaint();
@@ -60,9 +60,21 @@ private:
 	// 存储仪器图元绘图区
 	CList <m_oInstrumentGraph, m_oInstrumentGraph> m_oInstrumentGraphRectList;
 	// 纵向滚动条CWnd指针
-	CWnd * m_pWndVScr;
+	CWnd* m_pWndVScr;
 	// 横向滚动条CWnd指针
-	CWnd * m_pWndHScr;
+	CWnd* m_pWndHScr;
+	//定义一个位图对象
+	CBitmap m_oBmpFDU1;
+	//定义一个位图对象
+	CBitmap m_oBmpFDU2;
+	//定义一个位图对象
+	CBitmap m_oBmpLAUL1;
+	//定义一个位图对象
+	CBitmap m_oBmpLAUL2;
+	//定义一个位图对象
+	CBitmap m_oBmpLAUX1;
+	//定义一个位图对象
+	CBitmap m_oBmpLAUX2;
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
@@ -84,7 +96,7 @@ private:
 	void OnFillMsgAreaBkColor(void);
 public:
 	// 填充背景颜色
-	void OnFillBkColor(CDC * pDC, CRect oRect);
+	void OnFillBkColor(CDC* pDC, CRect oRect);
 	// 清除所有仪器图形
 	void OnClearAllInstrumentGraph(void);
 private:

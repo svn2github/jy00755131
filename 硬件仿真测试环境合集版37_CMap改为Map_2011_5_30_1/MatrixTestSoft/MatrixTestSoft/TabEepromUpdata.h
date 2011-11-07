@@ -116,15 +116,15 @@ private:
 	// 读EEPROM
 	void OnReadEeprom(void);
 	// 生成发送帧帧格式
-	void OnMakeSendFrame(unsigned int uiInstrumentIP, unsigned int uiStartAddr, unsigned char * ucBuf, unsigned int uiLength, unsigned int uiOptCmd);
+	void OnMakeSendFrame(unsigned int uiInstrumentIP, unsigned int uiStartAddr, unsigned char* ucBuf, unsigned int uiLength, unsigned int uiOptCmd);
 	// 发送0x18命令
-	int ADCCommand_18(int iPos, byte * cADCSet, unsigned int uiLength);
+	int ADCCommand_18(int iPos, byte* cADCSet, unsigned int uiLength);
 	// 生成0x18命令查询帧
 	void OnMakeCmd_18(unsigned int uiInstrumentIP);
 	// 校验一个仪器的EEPROM
 	void OnCheckEepromOne(unsigned int uiInstrumentSN, unsigned int uiInstrumentIP);
 	// 在列表控件中寻找是否有该仪器
-	void OnFindInListBox(CListBox * pListBox, unsigned int uiInstrumentSN, unsigned int uiInstrumentIP, unsigned int uiOpt);
+	void OnFindInListBox(CListBox* pListBox, unsigned int uiInstrumentSN, unsigned int uiInstrumentIP, unsigned int uiOpt);
 public:
 	// 关闭
 	void OnClose(void);

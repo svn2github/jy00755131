@@ -203,10 +203,10 @@ int CADCSet::ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, uns
 // Returns:   int
 // Qualifier:
 // Parameter: int iPos
-// Parameter: byte * cADCSet
+// Parameter: byte* cADCSet
 // Parameter: unsigned int uiLength
 //************************************
-int CADCSet::ADCCommand_18(int iPos, byte * cADCSet, unsigned int uiLength)
+int CADCSet::ADCCommand_18(int iPos, byte* cADCSet, unsigned int uiLength)
 {
 	for(unsigned int i=0; i<uiLength; i+=FramePacketSize4B)
 	{

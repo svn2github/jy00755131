@@ -206,7 +206,7 @@ void CThreadManage::OnAvoidIOBlock(SOCKET socket)
 // Access:    private 
 // Returns:   void
 // Qualifier:
-// Parameter: CSocket * socket
+// Parameter: CSocket* socket
 // Parameter: bool bBroadCast
 // Parameter: int iSocketPort
 // Parameter: CString str

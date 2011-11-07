@@ -84,6 +84,6 @@ protected:
 	// ±£¥Ê≈‰÷√Œƒº˛
 	BOOL SaveXmlFile(void);
 public:
-	afx_msg void OnTcnSelchangeTabItems(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnTcnSelchangeTabItems(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClose();
 };

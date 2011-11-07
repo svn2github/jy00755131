@@ -10,7 +10,7 @@ protected:
 	// 文件打开标志位
 	BOOL m_bOpenADCSaveFile;
 	// 保存文件的文件指针
-//	FILE * m_pFileSave;
+//	FILE* m_pFileSave;
 	CFile m_FileSave;
 	// 保存文件
 	CArchive* m_arFileSave;

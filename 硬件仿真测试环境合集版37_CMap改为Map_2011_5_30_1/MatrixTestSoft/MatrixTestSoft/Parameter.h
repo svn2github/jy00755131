@@ -446,8 +446,8 @@ extern unsigned short get_crc_16(unsigned char* buf, int buf_size);
 // 宽字节字符串转换为多字节字符串
 extern string WideCharToMultiChar(wstring str);
 // 将含有中文的字符串写入文件
-// extern void WriteCHToCFile(CFile *file, CString str);
-extern void WriteCHToCFile(CArchive *ar, CString str);
+// extern void WriteCHToCFile(CFile* file, CString str);
+extern void WriteCHToCFile(CArchive* ar, CString str);
 // CString转换为const char*
 extern const char* ConvertCStringToConstCharPointer(CString str);
 

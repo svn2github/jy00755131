@@ -9,7 +9,7 @@ public:
 	// 文件保存路径
 	CString m_csSaveFilePath;
 	// 保存文件的文件指针
-//	FILE * m_pFileSave;
+//	FILE* m_pFileSave;
 	CFile m_FileSave;
 	// 保存文件
 	CArchive* m_arFileSave;

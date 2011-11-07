@@ -98,7 +98,7 @@ void CSysTime::OnADCStartSample(unsigned int tnow)
 // Access:    public 
 // Returns:   void
 // Qualifier:
-// Parameter: int * pSelectObject
+// Parameter: int* pSelectObject
 //************************************
 void CSysTime::MakeCollectSysTimeFrameData(void)
 {

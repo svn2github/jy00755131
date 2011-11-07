@@ -279,7 +279,7 @@ void CSaveFile::OnSaveToFile(void)
 // Access:    public 
 // Returns:   void
 // Qualifier:
-// Parameter: unsigned char * buf
+// Parameter: unsigned char* buf
 // Parameter: int iRecLength
 //************************************
 void CSaveFile::OnSaveReceiveData(unsigned char* buf, int iRecLength)
@@ -331,7 +331,7 @@ void CSaveFile::OnSaveReceiveData(unsigned char* buf, int iRecLength)
 // Access:    public 
 // Returns:   void
 // Qualifier:
-// Parameter: unsigned char * buf
+// Parameter: unsigned char* buf
 // Parameter: int iSendLength
 //************************************
 void CSaveFile::OnSaveSendData(unsigned char* buf, int iSendLength)
