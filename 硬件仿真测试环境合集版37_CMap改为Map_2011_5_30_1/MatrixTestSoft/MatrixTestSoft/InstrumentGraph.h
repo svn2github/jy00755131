@@ -75,6 +75,10 @@ private:
 	CBitmap m_oBmpLAUX1;
 	//定义一个位图对象
 	CBitmap m_oBmpLAUX2;
+	//定义一个位图对象
+	CBitmap m_oBmpLCI1;
+	//定义一个位图对象
+	CBitmap m_oBmpLCI2;
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);

@@ -99,6 +99,8 @@ int CInstrumentGraph::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_oBmpLAUL2.LoadBitmap(IDB_BITMAP_LAUL2);
 	m_oBmpLAUX1.LoadBitmap(IDB_BITMAP_LAUX1);
 	m_oBmpLAUX2.LoadBitmap(IDB_BITMAP_LAUX2);
+	m_oBmpLCI1.LoadBitmap(IDB_BITMAP_LCI1);
+	m_oBmpLCI2.LoadBitmap(IDB_BITMAP_LCI2);
 	OnReset();
 	return 0;
 }
@@ -274,6 +276,10 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 		{
 			pBkBmp = &m_oBmpLAUX1;
 		}
+		else if (uiType == InstrumentTypeLCI)
+		{
+			pBkBmp = &m_oBmpLCI1;
+		}
 		break;
 	case GraphInstrumentIPSet:
 		if (uiType == InstrumentTypeFDU)
@@ -287,6 +293,10 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 		else if (uiType == InstrumentTypeLAUX)
 		{
 			pBkBmp = &m_oBmpLAUX2;
+		}
+		else if (uiType == InstrumentTypeLCI)
+		{
+			pBkBmp = &m_oBmpLCI2;
 		}
 		break;
 	case GraphInstrumentOffLine:

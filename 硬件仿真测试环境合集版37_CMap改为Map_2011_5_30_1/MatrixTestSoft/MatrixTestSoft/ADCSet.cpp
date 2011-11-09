@@ -1012,18 +1012,6 @@ void CADCSet::OnProcADCSetReturn(unsigned int uiIP)
 				OnSendADCSetCmd();
 			}
 		} 
-		else if(pInstrument->m_uiInstrumentType == InstrumentTypeLAUX)
-		{
-			CString str = _T("");
-			CString strtemp = _T("");
-			str = _T("ADC命令应答的IP地址为交叉站的IP地址！\r\n");
-			for (int i=0; i<RcvFrameSize; i++)
-			{
-				strtemp.Format(_T("%02x "), udp_buf[i]);
-				str += strtemp;
-			}
-			m_pLogFile->OnWriteLogFile(_T("CADCSet::OnProcADCSetReturn"), str, ErrorStatus);
-		}
 	}
 	else
 	{

@@ -71,11 +71,17 @@ public:
 	// 根据输入IP地址索引号，由IP地址索引表得到仪器指针
 	BOOL GetInstrumentFromIPMap(unsigned int uiIndex, CInstrument* &pInstrument);
 	// 设备根据首包时刻排序
-	void SetInstrumentLocation(CInstrument* pInstrumentAdd);
+	void SetInstrumentLocation(CInstrument* pInstrument);
 	// 删除采集站尾包之后的仪器
 	void TailFrameDeleteInstrument(CInstrument* pInstrumentDelete);
 	// 清理过期的尾包时刻查询结果
 	void ClearExperiedTailTimeResult(void);
 	// 删除所有仪器
 	void DeleteAllInstrument(void);
+	// 判断仪器连接线号
+	void OnSetInstrumentLineIndex(CInstrument* pInstrument);
+	// 建立仪器的连接关系
+	void OnInstrumentConnect(CInstrument* pInstrument);
+	// 清除相同路由仪器的尾包计数
+	void OnClearSameRoutTailCount(CInstrument* pInstrument);
 };

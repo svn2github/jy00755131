@@ -24,6 +24,9 @@
 #define IDB_BITMAP_LAUL1                147
 #define IDB_BITMAP2                     148
 #define IDB_BITMAP_LAUL2                148
+#define IDB_BITMAP_LCI1                 149
+#define IDB_BITMAP3                     150
+#define IDB_BITMAP_LCI2                 150
 #define IDC_TAB_ITEMS                   1000
 #define IDC_BUTTON_SAVEFILEPATH         1000
 #define IDC_EDIT_SAMPLETIME             1000
@@ -144,14 +147,13 @@
 #define IDC_HSCROLLBAR                  1220
 #define IDC_EDIT_HP                     1221
 #define IDC_EDIT_READ_TIMER             1222
-#define IDC_EDIT2                       1223
 #define IDC_EDIT_WRITE_TIMER            1223
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        149
+#define _APS_NEXT_RESOURCE_VALUE        151
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1223
 #define _APS_NEXT_SYMED_VALUE           101

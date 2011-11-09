@@ -374,6 +374,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\bitmap3.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\bmp00001.bmp"
 				>
 			</File>
@@ -387,6 +391,10 @@
 			</File>
 			<File
 				RelativePath=".\res\bmp00004.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\bmp00005.bmp"
 				>
 			</File>
 			<File

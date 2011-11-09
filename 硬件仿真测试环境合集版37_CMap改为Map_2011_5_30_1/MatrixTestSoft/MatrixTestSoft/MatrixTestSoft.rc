@@ -466,6 +466,8 @@ IDB_BITMAP_LAUX1        BITMAP                  "res\\bmp00001.bmp"
 IDB_BITMAP_FDU2         BITMAP                  "res\\bmp00002.bmp"
 IDB_BITMAP_LAUL1        BITMAP                  "res\\bmp00003.bmp"
 IDB_BITMAP_LAUL2        BITMAP                  "res\\bmp00004.bmp"
+IDB_BITMAP_LCI1         BITMAP                  "res\\bmp00005.bmp"
+IDB_BITMAP_LCI2         BITMAP                  "res\\bitmap3.bmp"
 #endif    // 中文(中华人民共和国) resources
 /////////////////////////////////////////////////////////////////////////////
 
