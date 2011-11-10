@@ -1,8 +1,9 @@
 #pragma once
 #include "InstrumentList.h"
 #include "LogFile.h"
+#include <list>
 // CTailFrameSocket 命令目标
-
+using std::list;
 class CTailFrame
 {
 public:
@@ -33,6 +34,8 @@ public:
 	// Socket套接字
 	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_TailFrameSocket;
+	// 尾包时刻查询路由队列
+	list<unsigned int> m_olsTailTimeJobRoutQueue;
 private:
 	// 处理单个尾包
 	void ProcTailFrameOne(void);
@@ -51,6 +54,12 @@ public:
 	void OnReceive(void);
 	// 关闭UDP套接字
 	void OnCloseUDP(void);
+	// 尾包的路由地址
+	unsigned int m_uiRoutAddress;
+	// 生成尾包时刻工作队列
+	void OnMakeTailTimeJobRoutQueue(void);
+	// 生成一条测线的路由工作队列
+	void OnMakeOneLineJobQueue(CInstrument* pInstrument);
 };
 
 

@@ -27,6 +27,8 @@ public:
 	hash_map<unsigned int, CInstrument*> m_oInstrumentSNMap;
 	// 仪器IP地址索引表
 	hash_map<unsigned int, CInstrument*> m_oInstrumentIPMap;
+	// 路由地址索引表
+//	hash_map<unsigned int, CInstrument*> m_oInstrumentRoutMap;
 	//@@@@@@@ 暂时不加入界面显示设备
 // 	// 采集站设备未连接显示的图标指针
 // 	HICON m_iconFDUDisconnected;
@@ -72,7 +74,7 @@ public:
 	BOOL GetInstrumentFromIPMap(unsigned int uiIndex, CInstrument* &pInstrument);
 	// 设备根据首包时刻排序
 	void SetInstrumentLocation(CInstrument* pInstrument);
-	// 删除采集站尾包之后的仪器
+	// 删除尾包之后的仪器
 	void TailFrameDeleteInstrument(CInstrument* pInstrumentDelete);
 	// 清理过期的尾包时刻查询结果
 	void ClearExperiedTailTimeResult(void);
@@ -84,4 +86,6 @@ public:
 	void OnInstrumentConnect(CInstrument* pInstrument);
 	// 清除相同路由仪器的尾包计数
 	void OnClearSameRoutTailCount(CInstrument* pInstrument);
+	// 删除大线方向尾包之后的仪器
+	void TailFrameDeleteInstrumentLine(CInstrument* pInstrumentDelete);
 };

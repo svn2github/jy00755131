@@ -154,7 +154,7 @@ void CInstrumentMonitorThread::OnMonitorFDU(void)
 		m_uiTailFrameTimerFDUCount++;
 		if (m_uiTailFrameTimerFDUCount > uiTailRecFDUCount)
 		{
-			if ((m_uiTailFrameTimerFDUCount - uiTailRecFDUCount) > TailFrameFDUCount)
+			if ((m_uiTailFrameTimerFDUCount - uiTailRecFDUCount) > TailFrameCount)
 			{
 				CInstrument* pInstrument = NULL;
 				str.Format(_T("无采集站尾包，此时定时器计数%d，尾包计数%d，删除所有仪器，停止采集！")
