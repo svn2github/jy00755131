@@ -150,10 +150,6 @@ void CThreadManage::OnOpen(void)
 	OnCreateADCSetSocket();
 	OnCreateHeartBeatSocket();
 	OnCreateADCDataSocket();
-	// 发送尾包时刻查询帧计数
-	m_uiSendTailTimeFrameCount = 0;
-	// 接收到的尾包时刻查询帧计数
-	m_uiRecTailTimeFrameCount = 0;	 
 
 	m_oHeartBeatThread.ResumeThread();
 	m_oADCDataRecThread.OnReset();

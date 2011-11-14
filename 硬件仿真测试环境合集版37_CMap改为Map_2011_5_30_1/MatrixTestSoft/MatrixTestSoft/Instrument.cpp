@@ -24,8 +24,6 @@ CInstrument::CInstrument(void)
 , m_usTailRecTime(0)
 , m_usTailSendTime(0)
 , m_bTailTimeReturnOK(false)
-, m_bTailTimeExpired(false)
-, m_bSendTailTimeFrame(false)
 , m_bADCSet(false)
 , m_uiIPResetTimes(0)
 , m_uiADCSetOperationNb(0)
@@ -69,8 +67,6 @@ void CInstrument::OnReset(void)
 	m_usTailRecTime = 0;
 	m_usTailSendTime = 0;
 	m_bTailTimeReturnOK = false;
-	m_bTailTimeExpired = false;
-	m_bSendTailTimeFrame = false;
 	m_bADCSet = false;
 	m_uiIPResetTimes = 0;
 	m_uiADCSetOperationNb = 0;

@@ -361,72 +361,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="资源文件"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-			<File
-				RelativePath=".\res\bitmap1.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\bitmap2.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\bitmap3.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\bmp00001.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\bmp00002.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\bmp00003.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\bmp00004.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\bmp00005.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\icon1.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\res\icon2.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\res\icon3.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\res\icon4.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\res\MatrixTestSoft.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\MatrixTestSoft.rc"
-				>
-			</File>
-			<File
-				RelativePath=".\res\MatrixTestSoft.rc2"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="源文件"
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
@@ -587,6 +521,72 @@
 				RelativePath=".\XMLDOMTool.cpp"
 				>
 			</File>
+			<Filter
+				Name="资源文件"
+				Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+				UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+				>
+				<File
+					RelativePath=".\res\bitmap1.bmp"
+					>
+				</File>
+				<File
+					RelativePath=".\res\bitmap2.bmp"
+					>
+				</File>
+				<File
+					RelativePath=".\res\bitmap3.bmp"
+					>
+				</File>
+				<File
+					RelativePath=".\res\bmp00001.bmp"
+					>
+				</File>
+				<File
+					RelativePath=".\res\bmp00002.bmp"
+					>
+				</File>
+				<File
+					RelativePath=".\res\bmp00003.bmp"
+					>
+				</File>
+				<File
+					RelativePath=".\res\bmp00004.bmp"
+					>
+				</File>
+				<File
+					RelativePath=".\res\bmp00005.bmp"
+					>
+				</File>
+				<File
+					RelativePath=".\res\icon1.ico"
+					>
+				</File>
+				<File
+					RelativePath=".\res\icon2.ico"
+					>
+				</File>
+				<File
+					RelativePath=".\res\icon3.ico"
+					>
+				</File>
+				<File
+					RelativePath=".\res\icon4.ico"
+					>
+				</File>
+				<File
+					RelativePath=".\res\MatrixTestSoft.ico"
+					>
+				</File>
+				<File
+					RelativePath=".\MatrixTestSoft.rc"
+					>
+				</File>
+				<File
+					RelativePath=".\res\MatrixTestSoft.rc2"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

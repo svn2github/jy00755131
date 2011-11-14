@@ -50,10 +50,6 @@ public:
 	unsigned short m_usTailSendTime;
 	// 尾包时刻查询成功标志位
 	bool m_bTailTimeReturnOK;
-	// 尾包时刻查询过期标志位
-	bool m_bTailTimeExpired;
-	// 发送了尾包时刻查询帧
-	bool m_bSendTailTimeFrame;
 	// ADC参数设置标志位
 	bool m_bADCSet;
 	// IP地址重设次数

@@ -8,6 +8,7 @@ CInstrumentList::CInstrumentList(void)
 , m_pWnd(NULL)
 , m_pLogFile(NULL)
 , m_pInstrumentGraph(NULL)
+, m_uiLCISn(0)
 {
 }
 
@@ -230,44 +231,102 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrument)
 {
 	int iLocation = 0;
 	unsigned int uiFDULocation = 0;
+	int iLXLocation = 0;
 	CString str = _T("");
 	// hash_map迭代器，效率比map高
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
-	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end(); iter++)
+	if (pInstrument->m_uiLineDirection == DirectionCenter)
 	{
-//		ProcessMessages();
-		if (NULL != iter->second)
+		pInstrument->m_iLocation = 0;
+	} 
+	else if ((pInstrument->m_uiLineDirection == DirectionTop)
+		|| (pInstrument->m_uiLineDirection == DirectionDown))
+	{
+		for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end(); iter++)
 		{
-			// 线号相同
-			if (iter->second->m_iLineIndex == pInstrument->m_iLineIndex)
+			//		ProcessMessages();
+			if (NULL != iter->second)
 			{
-				// 方向相同并包含交叉线上的交叉站或LCI
-				if ((iter->second->m_uiLineDirection == pInstrument->m_uiLineDirection)
-					|| (iter->second->m_uiLineDirection == DirectionCenter)
-					|| (iter->second->m_uiLineDirection == DirectionTop)
-					|| (iter->second->m_uiLineDirection == DirectionDown))
+				if (iter->second->m_uiRoutAddressTop == pInstrument->m_uiRoutAddress)
 				{
-					if (pInstrument->m_uiHeadFrameTime > iter->second->m_uiHeadFrameTime)
+					iLocation = iter->second->m_iLocation;
+					break;
+				}
+				else if (iter->second->m_uiRoutAddressDown == pInstrument->m_uiRoutAddress)
+				{
+					iLocation = iter->second->m_iLocation;
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		// 仪器设备左连
+		if (pInstrument->m_uiLineDirection == DirectionLeft)
+		{
+			for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end(); iter++)
+			{
+				//		ProcessMessages();
+				if (NULL != iter->second)
+				{
+					// 路由相同
+					if ((iter->second->m_uiRoutAddressLeft == pInstrument->m_uiRoutAddress)
+						|| (iter->second->m_uiRoutAddress == pInstrument->m_uiRoutAddress))
 					{
-						if (pInstrument->m_uiLineDirection == DirectionLeft)
+						// 计算该仪器的相对位置
+						if (pInstrument->m_uiHeadFrameTime > iter->second->m_uiHeadFrameTime)
 						{
 							iLocation--;
+							if ((pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
+								&& (iter->second->m_uiInstrumentType == InstrumentTypeFDU))
+							{
+								uiFDULocation++;
+							}
 						}
-						else if (pInstrument->m_uiLineDirection == DirectionRight)
+						// 记录连接到的交叉站的位置
+						if (iter->second->m_uiRoutAddressLeft == pInstrument->m_uiRoutAddress)
 						{
-							iLocation++;
-						}
-						if ((pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
-							&& (iter->second->m_uiInstrumentType == InstrumentTypeFDU))
-						{
-							uiFDULocation++;
+							iLXLocation = iter->second->m_iLocation;
 						}
 					}
 				}
- 			}
+			}
+			iLocation += iLXLocation;
+		} 
+		// 仪器设备右连
+		else
+		{
+			for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end(); iter++)
+			{
+				//		ProcessMessages();
+				if (NULL != iter->second)
+				{
+					// 路由相同
+					if ((iter->second->m_uiRoutAddressRight == pInstrument->m_uiRoutAddress)
+						|| (iter->second->m_uiRoutAddress == pInstrument->m_uiRoutAddress))
+					{
+						// 计算该仪器的相对位置
+						if (pInstrument->m_uiHeadFrameTime > iter->second->m_uiHeadFrameTime)
+						{
+							iLocation++;
+							if ((pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
+								&& (iter->second->m_uiInstrumentType == InstrumentTypeFDU))
+							{
+								uiFDULocation++;
+							}
+						}
+						// 记录连接到的交叉站的位置
+						if (iter->second->m_uiRoutAddressRight == pInstrument->m_uiRoutAddress)
+						{
+							iLXLocation = iter->second->m_iLocation;
+						}
+					}
+				}
+			}
+			iLocation += iLXLocation;
 		}
 	}
-
 	if (iLocation == pInstrument->m_iLocation)
 	{
 		// 首包计数器加一
@@ -278,7 +337,7 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrument)
 		pInstrument->m_iHeadFrameCount = 0;
 		pInstrument->m_iLocation = iLocation;
 		pInstrument->m_uiFDULocation = uiFDULocation;
-//		pInstrumentAdd->m_uiFDULocation = uiLocation - 1;
+		//		pInstrumentAdd->m_uiFDULocation = uiLocation - 1;
 	}
 	str.Format(_T("仪器SN%x，仪器首包时刻%d，仪器位置%d，采集站位置%d，仪器类型%d！"), pInstrument->m_uiSN, 
 		pInstrument->m_uiHeadFrameTime, pInstrument->m_iLocation, pInstrument->m_uiFDULocation, pInstrument->m_uiInstrumentType);
@@ -294,17 +353,19 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrument)
 // Qualifier:
 // Parameter: CInstrument * pInstrumentDelete
 //************************************
-void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrumentDelete)
+void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrument)
 {
-	// 删除交叉线尾包之后的仪器
-	if (pInstrumentDelete->m_iLocation == 0)
+	// 删除交叉线上交叉站交叉线尾包之后的仪器
+	if ((pInstrument->m_uiLineDirection == DirectionCenter)
+		|| (pInstrument->m_uiLineDirection == DirectionTop)
+		|| (pInstrument->m_uiLineDirection == DirectionDown))
 	{
-	// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		TailFrameDeleteInstrumentLXLine(pInstrument);
 	}
 	// 删除大线方向尾包之后的仪器
 	else
 	{
-		TailFrameDeleteInstrumentLine(pInstrumentDelete);
+		TailFrameDeleteInstrumentLine(pInstrument);
 	}
 }	
 
@@ -327,18 +388,9 @@ void CInstrumentList::ClearExperiedTailTimeResult(void)
 		if (NULL != iter->second)
 		{
 			// 发送尾包时刻查询但是在下一个尾包接收之前未回复的设置过期标志
-			if (iter->second->m_bSendTailTimeFrame == true)
-			{
-				if (iter->second->m_bTailTimeReturnOK == false)
-				{
-					iter->second->m_bTailTimeExpired = true;
-				}
-			}
-			iter->second->m_bSendTailTimeFrame = false;
 			iter->second->m_bTailTimeReturnOK = false;
 		}
 	}
-	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::ClearExperiedTailTimeResult"), _T("清理过期的尾包时刻查询帧！"), WarningStatus);
 }
 
 // 开始
@@ -514,24 +566,19 @@ void CInstrumentList::OnSetInstrumentLineIndex(CInstrument* pInstrument)
 			if ((iter->second->m_uiInstrumentType == InstrumentTypeLCI)
 				|| (iter->second->m_uiInstrumentType == InstrumentTypeLAUX))
 			{
+				// 仪器在交叉站的上方也为交叉站
 				if (iter->second->m_uiRoutAddressTop == pInstrument->m_uiRoutAddress)
 				{
 					pInstrument->m_iLineIndex = iter->second->m_iLineIndex - 1;
-					if (pInstrument->m_uiInstrumentType == InstrumentTypeLAUX)
-					{
-						iter->second->m_pInstrumentTop = pInstrument;
-						pInstrument->m_pInstrumentDown = iter->second;
-					}
+					iter->second->m_pInstrumentTop = pInstrument;
+					pInstrument->m_pInstrumentDown = iter->second;
 					break;
 				}
 				else if (iter->second->m_uiRoutAddressDown == pInstrument->m_uiRoutAddress)
 				{
 					pInstrument->m_iLineIndex = iter->second->m_iLineIndex + 1;
-					if (pInstrument->m_uiInstrumentType == InstrumentTypeLAUX)
-					{
-						iter->second->m_pInstrumentDown = pInstrument;
-						pInstrument->m_pInstrumentTop = iter->second;
-					}
+					iter->second->m_pInstrumentDown = pInstrument;
+					pInstrument->m_pInstrumentTop = iter->second;
 					break;
 				}
 				else if ((iter->second->m_uiRoutAddressLeft == pInstrument->m_uiRoutAddress)
@@ -549,12 +596,13 @@ void CInstrumentList::OnSetInstrumentLineIndex(CInstrument* pInstrument)
 void CInstrumentList::OnInstrumentConnect(CInstrument* pInstrument)
 {
 	int iLocation = pInstrument->m_iLocation;
-	// 找到前一个仪器
+	// 仪器左连找到前一个仪器
 	if (pInstrument->m_uiLineDirection == DirectionLeft)
 	{
 		iLocation++;
 	}
-	else if (pInstrument->m_uiLineDirection == DirectionRight)
+	// 仪器右连找到前一个仪器
+	else
 	{
 		iLocation--;
 	}
@@ -614,7 +662,7 @@ void CInstrumentList::OnClearSameRoutTailCount(CInstrument* pInstrument)
 }
 
 // 删除大线方向尾包之后的仪器
-void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrumentDelete)
+void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 {
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
@@ -625,10 +673,10 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrumentDele
 	{
 		if (NULL != iter->second)
 		{
-			if (iter->second->m_iLineIndex == pInstrumentDelete->m_iLineIndex)
+			if (iter->second->m_iLineIndex == pInstrument->m_iLineIndex)
 			{
-				if ((pInstrumentDelete->m_uiLineDirection == DirectionLeft)
-					&& (pInstrumentDelete->m_iLocation > iter->second->m_iLocation))
+				if ((pInstrument->m_uiLineDirection == DirectionLeft)
+					&& (pInstrument->m_iLocation > iter->second->m_iLocation))
 				{
 					m_pInstrumentGraph->DrawUnit(iter->second->m_iLocation, iter->second->m_iLineIndex, 
 						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN, iter->second->m_uiFDULocation,
@@ -646,10 +694,10 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrumentDele
 					m_uiCountFree++;
 					// 将仪器从IP索引表中删除
 					m_oInstrumentIPMap.erase(iter++);
-					pInstrumentDelete->m_pInstrumentLeft = NULL;
+					pInstrument->m_pInstrumentLeft = NULL;
 				}
-				else if ((pInstrumentDelete->m_uiLineDirection == DirectionRight)
-					&& (pInstrumentDelete->m_iLocation < iter->second->m_iLocation))
+				else if ((pInstrument->m_uiLineDirection == DirectionRight)
+					&& (pInstrument->m_iLocation < iter->second->m_iLocation))
 				{
 					m_pInstrumentGraph->DrawUnit(iter->second->m_iLocation, iter->second->m_iLineIndex, 
 						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN, iter->second->m_uiFDULocation,
@@ -667,7 +715,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrumentDele
 					m_uiCountFree++;
 					// 将仪器从IP索引表中删除
 					m_oInstrumentIPMap.erase(iter++);
-					pInstrumentDelete->m_pInstrumentRight = NULL;
+					pInstrument->m_pInstrumentRight = NULL;
 				}
 				else
 				{
@@ -684,4 +732,108 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrumentDele
 			iter++;
 		}
 	}
+}
+
+// 删除交叉线上交叉站交叉线尾包之后的仪器
+void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
+{
+	hash_map<unsigned int, CInstrument*>::iterator  iter;
+	hash_map<unsigned int, CInstrument*>::iterator  iter2;
+	CString str = _T("");
+	if (pInstrument->m_pInstrumentTop != NULL)
+	{
+		// 删除大线方向尾包之后的仪器
+		for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
+		{
+			if (NULL != iter->second)
+			{
+				if (iter->second->m_iLineIndex < pInstrument->m_iLineIndex)
+				{
+					m_pInstrumentGraph->DrawUnit(iter->second->m_iLocation, iter->second->m_iLineIndex, 
+						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN, iter->second->m_uiFDULocation,
+						GraphInstrumentOffLine, true);
+
+					iter2 = m_oInstrumentSNMap.find(iter->second->m_uiSN);
+					// 将仪器从SN索引表中删除
+					m_oInstrumentSNMap.erase(iter2);
+					str.Format(_T("清理尾包之后的仪器IP为%d"), iter->first);
+					m_pLogFile->OnWriteLogFile(_T("CInstrumentList::TailFrameDeletRoutInstrument"), str, WarningStatus);
+					// 重置仪器
+					iter->second->OnReset();
+					// 仪器加在空闲仪器队列尾部
+					m_olsInstrumentFree.push_back(iter->second);
+					m_uiCountFree++;
+					// 将仪器从IP索引表中删除
+					m_oInstrumentIPMap.erase(iter++);
+				}
+				else
+				{
+					iter++;
+				}
+			}
+			else
+			{
+				iter++;
+			}
+		}
+		pInstrument->m_pInstrumentTop = NULL;
+	}
+	else if (pInstrument->m_pInstrumentDown != NULL)
+	{
+		// 删除大线方向尾包之后的仪器
+		for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
+		{
+			if (NULL != iter->second)
+			{
+				if (iter->second->m_iLineIndex > pInstrument->m_iLineIndex)
+				{
+					m_pInstrumentGraph->DrawUnit(iter->second->m_iLocation, iter->second->m_iLineIndex, 
+						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN, iter->second->m_uiFDULocation,
+						GraphInstrumentOffLine, true);
+
+					iter2 = m_oInstrumentSNMap.find(iter->second->m_uiSN);
+					// 将仪器从SN索引表中删除
+					m_oInstrumentSNMap.erase(iter2);
+					str.Format(_T("清理尾包之后的仪器IP为%d"), iter->first);
+					m_pLogFile->OnWriteLogFile(_T("CInstrumentList::TailFrameDeletRoutInstrument"), str, WarningStatus);
+					// 重置仪器
+					iter->second->OnReset();
+					// 仪器加在空闲仪器队列尾部
+					m_olsInstrumentFree.push_back(iter->second);
+					m_uiCountFree++;
+					// 将仪器从IP索引表中删除
+					m_oInstrumentIPMap.erase(iter++);
+				}
+				else
+				{
+					iter++;
+				}
+			}
+			else
+			{
+				iter++;
+			}
+		}
+		pInstrument->m_pInstrumentDown = NULL;
+	}
+}
+
+// 检查尾包时刻查询应答是否全部接收
+bool CInstrumentList::OnCheckTailTimeReturn(void)
+{
+	// hash_map迭代器
+	hash_map<unsigned int, CInstrument*>::iterator  iter;
+	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end(); iter++)
+	{
+		//		ProcessMessages();
+		if (NULL != iter->second)
+		{
+			if (iter->second->m_bTailTimeReturnOK == false)
+			{
+				return false;
+			}
+		}
+	}
+	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::OnCheckTailTimeReturn"), _T("尾包时刻查询帧接收完成！"), SuccessStatus);
+	return true;
 }

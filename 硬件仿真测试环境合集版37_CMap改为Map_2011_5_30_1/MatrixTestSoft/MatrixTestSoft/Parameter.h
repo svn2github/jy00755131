@@ -416,7 +416,7 @@ using std::wstring;
 // TabSample界面做时统设置的定时器序号
 #define TabSampleTimeCalTimerNb						7
 // TabSample界面做时统设置的定时器延时设置
-#define TabSampleTimeCalTimerSet						2300
+#define TabSampleTimeCalTimerSet						3000
 // TabSample界面做ADC参数设置的定时器序号
 #define TabSampleADCSetTimerNb						8
 // TabSample界面做ADC参数设置的定时器延时设置
@@ -428,7 +428,7 @@ using std::wstring;
 // TabSample界面做ADC命令设置应答监视的定时器序号
 #define TabSampleADCSetReturnTimerNb			10
 // TabSample界面做ADC命令设置应答监视的定时器延时设置
-#define TabSampleADCSetReturnTimerSet			1000
+#define TabSampleADCSetReturnTimerSet			1500
 // TabPortMonitoring界面刷新接收发送帧数的定时器序号
 #define TabPortMonitoringFrameNumTimerNb		1
 // TabPortMonitoring界面刷新接收发送帧数的定时器延时设置
@@ -457,10 +457,6 @@ using std::wstring;
 // 出错状态
 #define ErrorStatus													3
 //__________________全局变量设置___________________
-// 发送尾包时刻查询帧计数
-extern unsigned int m_uiSendTailTimeFrameCount;
-// 接收到的尾包时刻查询帧计数
-extern unsigned int m_uiRecTailTimeFrameCount;
 // CRC16校验
 extern unsigned short get_crc_16(unsigned char* buf, int buf_size);
 // 宽字节字符串转换为多字节字符串

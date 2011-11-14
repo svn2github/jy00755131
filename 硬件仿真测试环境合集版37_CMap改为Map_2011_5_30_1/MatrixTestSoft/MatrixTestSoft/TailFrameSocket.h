@@ -42,7 +42,7 @@ private:
 	// 解析尾包
 	BOOL ParseTailFrame(void);
 	// 生成尾包时刻查询帧
-	void MakeTailTimeFrameData(CInstrument* pInstrument);
+	void MakeTailTimeFrameData(unsigned int uiIPAim, unsigned int uiBroadcastPort);
 	// 发送尾包时刻查询帧
 	void SendTailTimeFrameToSocket(void);
 	// 防止程序在循环中运行无法响应消息

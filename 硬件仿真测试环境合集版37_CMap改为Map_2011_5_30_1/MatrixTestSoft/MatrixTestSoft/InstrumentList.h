@@ -75,7 +75,7 @@ public:
 	// 设备根据首包时刻排序
 	void SetInstrumentLocation(CInstrument* pInstrument);
 	// 删除尾包之后的仪器
-	void TailFrameDeleteInstrument(CInstrument* pInstrumentDelete);
+	void TailFrameDeleteInstrument(CInstrument* pInstrument);
 	// 清理过期的尾包时刻查询结果
 	void ClearExperiedTailTimeResult(void);
 	// 删除所有仪器
@@ -87,5 +87,11 @@ public:
 	// 清除相同路由仪器的尾包计数
 	void OnClearSameRoutTailCount(CInstrument* pInstrument);
 	// 删除大线方向尾包之后的仪器
-	void TailFrameDeleteInstrumentLine(CInstrument* pInstrumentDelete);
+	void TailFrameDeleteInstrumentLine(CInstrument* pInstrument);
+	// 删除交叉线上交叉站交叉线尾包之后的仪器
+	void TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument);
+	// LCI设备的SN号
+	unsigned int m_uiLCISn;
+	// 检查尾包时刻查询应答是否全部接收
+	bool OnCheckTailTimeReturn(void);
 };
