@@ -100,7 +100,7 @@ void CADCSet::OnProcADCZeroDriftReturn(unsigned int uiIPAim)
  		if (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
 		{
 			unsigned int uiLocation = 0;
-			uiLocation = pInstrument->m_uiFDULocation;
+			uiLocation = pInstrument->m_uiFDUIndex;
 			iPos = 33;
 			memcpy(&ucCommand, &udp_buf[iPos], FrameCmdSize1B);
 			iPos += FrameCmdSize1B;
@@ -151,12 +151,12 @@ void CADCSet::OnProcADCZeroDriftReturn(unsigned int uiIPAim)
 // Parameter: unsigned short usCommand
 // Parameter: unsigned short usPortAim
 //************************************
-int CADCSet::ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, unsigned short usPortAim)
+int CADCSet::ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, unsigned int uiBroadCastPort)
 {
 	unsigned int	uiIPSource	=	0;
 	unsigned int	itmp		=	0;
 	unsigned char	ucCommand = 0;
-	unsigned int	uiADCBroadcastPort = 0;
+	unsigned short usPortAim = ADSetReturnPort;
 	int iPos = 0;
 	memset(m_ucFrameData, SndFrameBufInit, SndFrameSize);
 	m_ucFrameData[0] = FrameHeadCheck0;
@@ -181,15 +181,25 @@ int CADCSet::ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, uns
 	iPos += FramePacketSize2B;
 	memcpy(&m_ucFrameData[iPos], &itmp, FramePacketSize4B);
 	iPos += FramePacketSize4B;
-	if ((uiIPAim == BroadCastPort) || (uiIPAim == IPSetAddrStart))
+// 	if ((uiIPAim == BroadCastPort) || (uiIPAim == IPSetAddrStart))
+// 	{
+// 		//广播命令
+// 		ucCommand = CmdBroadCastPortSet;
+// 		memcpy(&m_ucFrameData[iPos], &ucCommand, FrameCmdSize1B);
+// 		iPos += FrameCmdSize1B;
+// 		//广播命令端口
+// 		uiADCBroadcastPort = ADCSetBroadcastPort;
+// 		memcpy(&m_ucFrameData[iPos], &uiADCBroadcastPort, FramePacketSize4B);
+// 		iPos += FramePacketSize4B;
+// 	}
+	if (uiIPAim == IPBroadcastAddr)
 	{
 		//广播命令
 		ucCommand = CmdBroadCastPortSet;
 		memcpy(&m_ucFrameData[iPos], &ucCommand, FrameCmdSize1B);
 		iPos += FrameCmdSize1B;
 		//广播命令端口
-		uiADCBroadcastPort = ADCSetBroadcastPort;
-		memcpy(&m_ucFrameData[iPos], &uiADCBroadcastPort, FramePacketSize4B);
+		memcpy(&m_ucFrameData[iPos], &uiBroadCastPort, FramePacketSize4B);
 		iPos += FramePacketSize4B;
 	}
 	return iPos;
@@ -827,11 +837,11 @@ void CADCSet::OnQueryErrorCode(void)
 	int iPos = 0;
 
 	// 广播查询采集站
-	iPos = ADCSetFrameHead(BroadCastPort, SendQueryCmd, QueryErrorCodePort);
+//	iPos = ADCSetFrameHead(BroadCastPort, SendQueryCmd, QueryErrorCodePort);
 	OnQueryErrorCodeFdu(iPos);
 	sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 	// 按IP地址查询交叉站
-	iPos = ADCSetFrameHead(IPSetAddrStart, SendQueryCmd, QueryErrorCodePort);
+//	iPos = ADCSetFrameHead(IPSetAddrStart, SendQueryCmd, QueryErrorCodePort);
 	OnQueryErrorCodeLAUX(iPos);
 	sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 }
@@ -1060,181 +1070,274 @@ void CADCSet::OnSendADCSetCmd(void)
 	CString str = _T("");
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
+	// 记录已经发送的路由方向
+	hash_map<unsigned int, unsigned int> ::iterator  iter2;
 	// 1~11为ADC参数设置命令
 	// 12~27为ADC零漂校正指令
 	switch (m_uiADCSetOperationNb)
 	{
 	case 1:
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnSetTB(iPos, 0, 0, true);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			// 广播发送
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnSetTB(iPos, 0, 0, true);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 2:
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnSetSine(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnSetSine(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 3:
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 4:
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnOpenPowerTBLow(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnOpenPowerTBLow(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 5:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnOpenPowerTBHigh(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnOpenPowerTBHigh(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 6:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnOpenSwitchTBLow(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnOpenSwitchTBLow(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 7:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnOpenSwitchTBHigh(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnOpenSwitchTBHigh(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 8:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 9:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCRegisterWrite(iPos, false);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCRegisterWrite(iPos, false);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 10:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCRegisterRead(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCRegisterRead(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 11:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCSetReturn(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCSetReturn(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 12:
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnOpenPowerZeroDrift(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnOpenPowerZeroDrift(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 13:
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 14:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 15:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCRegisterWrite(iPos, true);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCRegisterWrite(iPos, true);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 16:
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCRegisterRead(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCRegisterRead(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 17:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendQueryCmd, ADSetReturnPort);
-		OnADCRegisterQuery(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendQueryCmd, iter2->second);
+			OnADCRegisterQuery(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 18:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 19:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCSampleSynchronization(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCSampleSynchronization(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 20:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCReadContinuous(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCReadContinuous(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 21:
 		Sleep(ADCReadContinuousSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 22:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 23:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCZeroDriftCorrection(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCZeroDriftCorrection(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 24:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCReadContinuous(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCReadContinuous(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 25:
 		Sleep(ADCReadContinuousSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 26:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 27:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnADCRegisterRead(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnADCRegisterRead(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 28:
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnSetTBSwitchOpen(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnSetTBSwitchOpen(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 29:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 30:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnSetTB(iPos, 0, 0, true);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnSetTB(iPos, 0, 0, true);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 31:
 		Sleep(ADCOperationSleepTime);
@@ -1245,9 +1348,9 @@ void CADCSet::OnSendADCSetCmd(void)
 			{
 				if ((iter->second->m_bIPSetOK == true)&&(iter->second->m_uiInstrumentType == InstrumentTypeFDU))
 				{
-						iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, ADSetReturnPort);
-						OnADCZeroDriftSetFromIP(iPos, m_ucZeroDrift[iter->second->m_uiFDULocation]);
-						sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+					iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, 0);
+					OnADCZeroDriftSetFromIP(iPos, m_ucZeroDrift[iter->second->m_uiFDUIndex]);
+					sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 				}
 			}
 		}
@@ -1263,7 +1366,7 @@ void CADCSet::OnSendADCSetCmd(void)
 				if ((iter->second->m_uiInstrumentType == InstrumentTypeFDU) && (iter->second->m_iSelectObject == BST_CHECKED)
 					&&(iter->second->m_bIPSetOK == true))
 				{
-					iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, ADSetReturnPort);
+					iPos = ADCSetFrameHead(iter->second->m_uiIPAddress, SendSetCmd, 0);
 					OnADCReadContinuous(iPos);
 					str.Format(_T("向IP地址为%d的仪器发送连续ADC数据采样的命令！"), iter->second->m_uiIPAddress);
 					m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
@@ -1274,41 +1377,59 @@ void CADCSet::OnSendADCSetCmd(void)
 		break;
 	case 33:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnSetTB(iPos, m_uiTnow + TBSleepTimeHigh, TBSleepTimeLow + CmdTBCtrl, false);
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnSetTB(iPos, m_uiTnow + TBSleepTimeHigh, TBSleepTimeLow + CmdTBCtrl, false);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		str.Format(_T("设置ADC数据采样TB开始时间为0x%x！"), m_uiTnow + TBSleepTimeHigh);
 		m_pLogFile->OnWriteLogFile(_T("CADCSet::OnADCStartSample"), str, SuccessStatus);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 		break;
 	case 34:
 		Sleep(ADCOperationSleepTime);
-		// 广播查询采集站TB时刻
-		iPos = ADCSetFrameHead(BroadCastPort, SendQueryCmd, ADSetReturnPort);
-		OnQueryTBTime(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			// 广播查询采集站TB时刻
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendQueryCmd, iter2->second);
+			OnQueryTBTime(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 35:
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 36:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 37:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnStopSample(iPos);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnStopSample(iPos);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	case 38:
 		Sleep(ADCOperationSleepTime);
-		iPos = ADCSetFrameHead(BroadCastPort, SendSetCmd, ADSetReturnPort);
-		OnSetTB(iPos, 0, 0, true);
-		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		for(iter2=m_pInstrumentList->m_oRoutAddrMap.begin(); iter2!=m_pInstrumentList->m_oRoutAddrMap.end(); iter2++)
+		{
+			iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+			OnSetTB(iPos, 0, 0, true);
+			sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		}
 		break;
 	default:
 		break;

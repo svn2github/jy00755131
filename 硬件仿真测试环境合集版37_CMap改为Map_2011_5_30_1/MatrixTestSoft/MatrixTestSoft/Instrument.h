@@ -74,6 +74,10 @@ public:
 	CInstrument* m_pInstrumentRight;
 	// 仪器的广播端口
 	unsigned int m_uiBroadCastPort;
+	// 在该大线路由方向上仪器的位置
+	unsigned int m_uiLineRoutLocation;
+	// 采集站序号
+	unsigned int m_uiFDUIndex;
 public:
 	// 重置成员变量
 	void OnReset(void);

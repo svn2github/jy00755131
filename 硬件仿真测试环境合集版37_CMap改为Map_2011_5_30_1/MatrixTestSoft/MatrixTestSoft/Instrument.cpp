@@ -36,6 +36,8 @@ CInstrument::CInstrument(void)
 , m_pInstrumentLeft(NULL)
 , m_pInstrumentRight(NULL)
 , m_uiBroadCastPort(0)
+, m_uiLineRoutLocation(0)
+, m_uiFDUIndex(0)
 {
 }
 
@@ -79,4 +81,6 @@ void CInstrument::OnReset(void)
 	m_pInstrumentLeft = NULL;
 	m_pInstrumentRight = NULL;
 	m_uiBroadCastPort = 0;
+	m_uiLineRoutLocation = 0;
+	m_uiFDUIndex = 0;
 }

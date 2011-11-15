@@ -19,19 +19,6 @@ public:
 	CBitmap* m_pbitmapOldGrid;
 	// 界面指针
 	CWnd* m_pWnd;
-public:
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnPaint();
-
-	// 绘制所有仪器
-	void DrawUnitAll(void);
-	// 绘制仪器单元（包含连接线）
-	void DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiLineDirection, unsigned int uiType, 
-		unsigned int uiSN, unsigned int uiFDULocation, unsigned int uiOpt, bool bSet);
-private:
-	CDC m_dcGraph;
-	// 绘图区尺寸
-	CRect m_rectGraph;
 	// 仪器图元结构体
 	typedef struct InstrumentGraph
 	{
@@ -42,7 +29,7 @@ private:
 		// 测线号
 		int iLineIndex;
 		// 采集站序号
-		unsigned int uiFDULocation;
+		unsigned int uiFDUIndex;
 		// SN号
 		unsigned int uiSN;
 		// 连接线方向
@@ -56,9 +43,22 @@ private:
 			return ((iUnitIndex == v2.iUnitIndex)
 				&& (iLineIndex == v2.iLineIndex));
 		}
-	}m_oInstrumentGraph;
+	}m_oGraph;
 	// 存储仪器图元绘图区
-	CList <m_oInstrumentGraph, m_oInstrumentGraph> m_oInstrumentGraphRectList;
+	CList <m_oGraph, m_oGraph> m_oInstrumentGraphRectList;
+public:
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnPaint();
+
+	// 绘制所有仪器
+	void DrawUnitAll(void);
+	// 绘制仪器单元（包含连接线）
+	void DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiLineDirection, unsigned int uiType, 
+		unsigned int uiSN, unsigned int uiOpt, bool bSet);
+private:
+	CDC m_dcGraph;
+	// 绘图区尺寸
+	CRect m_rectGraph;
 	// 纵向滚动条CWnd指针
 	CWnd* m_pWndVScr;
 	// 横向滚动条CWnd指针
@@ -93,7 +93,7 @@ private:
 	// 连线Y方向绘图尺寸
 	unsigned int m_uiGridLineY;
 	// 判断界面仪器是否被选中
-	BOOL OnSelectInstrument(CPoint oGraphPoint, m_oInstrumentGraph &oInstrumentGraph);
+	BOOL OnSelectInstrument(CPoint oGraphPoint, m_oGraph &oInstrumentGraph);
 	// 滚动条拖动
 	int moveScrollBar(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	// 将信息显示区域填充为背景色

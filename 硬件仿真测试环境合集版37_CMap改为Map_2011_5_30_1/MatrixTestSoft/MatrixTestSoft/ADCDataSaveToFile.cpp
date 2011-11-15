@@ -159,7 +159,7 @@ void CADCDataSaveToFile::OnOpenADCSaveFile(void)
 				&&(iter->second->m_uiInstrumentType == BST_CHECKED)
 				&&(iter->second->m_bIPSetOK == true))
 			{
-				strTemp.Format(_T("ÒÇÆ÷%d \t"), iter->second->m_uiFDULocation + 1);
+				strTemp.Format(_T("ÒÇÆ÷%d \t"), iter->second->m_uiFDUIndex + 1);
 				int iLength = strTemp.GetLength();
 				if (iLength < DecimalPlaces + ADCDataPlaces)
 				{

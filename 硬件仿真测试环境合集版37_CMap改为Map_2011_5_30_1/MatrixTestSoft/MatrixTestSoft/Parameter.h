@@ -66,8 +66,6 @@ using std::wstring;
 #define EepromRecPort				0x8700
 // ADC设置广播端口
 #define ADCSetBroadcastPort		0x10
-// 广播端口
-#define BroadCastPort					0xffffffff
 
 //___________________缓冲区设置____________________
 // 最多连接的设备数

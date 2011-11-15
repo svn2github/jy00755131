@@ -143,13 +143,13 @@ void CInstrumentGraph::OnPaint()
 void CInstrumentGraph::DrawUnitAll(void)
 {
 	POSITION pos = m_oInstrumentGraphRectList.GetHeadPosition();
-	m_oInstrumentGraph oInstrumentGraph;
+	m_oGraph oInstrumentGraph;
 	// 显示仪器的线号和点号
 	for (int i=0; i<m_oInstrumentGraphRectList.GetCount(); i++)
 	{
 		oInstrumentGraph = m_oInstrumentGraphRectList.GetNext(pos);
 		DrawUnit(oInstrumentGraph.iUnitIndex, oInstrumentGraph.iLineIndex, oInstrumentGraph.uiLineDirection, 
-			oInstrumentGraph.uiType, oInstrumentGraph.uiSN, oInstrumentGraph.uiFDULocation, oInstrumentGraph.uiOpt, false);
+			oInstrumentGraph.uiType, oInstrumentGraph.uiSN, oInstrumentGraph.uiOpt, false);
 	}
 }
 // 绘制仪器单元（包含连接线）
@@ -161,7 +161,7 @@ void CInstrumentGraph::DrawUnitAll(void)
 // uiLineDirection			连接线方向：1为上，2为下，3为左，4为右，无连接线为0
 // uiType							仪器类型
 void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiLineDirection, unsigned int uiType, 
-								unsigned int uiSN, unsigned int uiFDULocation, unsigned int uiOpt, bool bSet)
+								unsigned int uiSN, unsigned int uiOpt, bool bSet)
 {
 	CPen oPenUnit;
 	CPen* pOldPen;
@@ -190,16 +190,7 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 		oRectLine.bottom = oRectLine.top + m_uiGridLineY;
 		oRectInstrument.top = m_iLauxPosY + iLineIndex * (m_uiGridY + m_uiGridLineY);
 		oRectInstrument.bottom = oRectInstrument.top + m_uiGridY;
-		// 向上增加仪器
-		if (uiLineDirection == 1)
-		{
 
-		}
-		// 向下增加仪器
-		else
-		{
-
-		}
 		m_dcGraph.MoveTo(CPoint((oRectLine.left + oRectLine.right) / 2, oRectLine.top));
 		m_dcGraph.LineTo(CPoint((oRectLine.left + oRectLine.right) / 2, oRectLine.bottom));
 	}
@@ -221,13 +212,33 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 		oRectLine.bottom = oRectLine.top + m_uiGridY;
 		oRectInstrument.top = oRectLine.top;
 		oRectInstrument.bottom = oRectLine.bottom;
-		// 向左增加仪器
-		if (uiLineDirection == 3)
+		m_dcGraph.MoveTo(CPoint(oRectLine.left, (oRectLine.top + oRectLine.bottom) / 2));
+		m_dcGraph.LineTo(CPoint(oRectLine.right, (oRectLine.top + oRectLine.bottom) / 2));
+	}
+	else
+	{
+		// 主交叉站不需要画连接线iUnitIndex = 0
+		oRectInstrument.left = m_iLauxPosX;
+		oRectInstrument.right = oRectInstrument.left + m_uiGridX;
+		oRectInstrument.top = m_iLauxPosY;
+		oRectInstrument.bottom = oRectInstrument.top + m_uiGridY;
+	}
+	if (bSet == true)
+	{
+		// 向上增加仪器
+		if (uiLineDirection == 1)
 		{
-
+		}
+		// 向下增加仪器
+		else if (uiLineDirection == 2)
+		{
+		}
+		// 向左增加仪器
+		else if (uiLineDirection == 3)
+		{
 		}
 		// 向右增加仪器
-		else
+		else if (uiLineDirection == 4)
 		{
 			if (GraphInstrumentOnLine == uiOpt)
 			{
@@ -250,16 +261,6 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 				}
 			}
 		}
-		m_dcGraph.MoveTo(CPoint(oRectLine.left, (oRectLine.top + oRectLine.bottom) / 2));
-		m_dcGraph.LineTo(CPoint(oRectLine.right, (oRectLine.top + oRectLine.bottom) / 2));
-	}
-	else
-	{
-		// 主交叉站不需要画连接线iUnitIndex = 0
-		oRectInstrument.left = m_iLauxPosX;
-		oRectInstrument.right = oRectInstrument.left + m_uiGridX;
-		oRectInstrument.top = m_iLauxPosY;
-		oRectInstrument.bottom = oRectInstrument.top + m_uiGridY;
 	}
 	switch (uiOpt)
 	{
@@ -320,14 +321,14 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	m_dcGraph.SelectObject(pOldPen);
 	if (bSet == true)
 	{
-		m_oInstrumentGraph oInstrumentGraph;
+		m_oGraph oInstrumentGraph;
 		oInstrumentGraph.oRect = oRectInstrument;
 		oInstrumentGraph.iUnitIndex = iUnitIndex;
 		oInstrumentGraph.iLineIndex = iLineIndex;
 		oInstrumentGraph.uiType = uiType;
 		oInstrumentGraph.uiLineDirection = uiLineDirection;
 		oInstrumentGraph.uiSN = uiSN;
-		oInstrumentGraph.uiFDULocation = uiFDULocation;
+//		oInstrumentGraph.uiFDUIndex = uiFDUIndex;
 		oInstrumentGraph.uiOpt = uiOpt;
 		if (uiOpt == GraphInstrumentOnLine)
 		{
@@ -356,7 +357,7 @@ void CInstrumentGraph::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	CPoint oGraphPoint;
 	CString str = _T("");
-	m_oInstrumentGraph oInstrumentGraph;
+	m_oGraph oInstrumentGraph;
 	CPoint oTextOutPoint;
 	m_dcGraph.SetTextAlign (TA_LEFT|TA_TOP) ;
 	oTextOutPoint.x = m_rectGraph.left + m_iHScrPos;
@@ -378,7 +379,7 @@ void CInstrumentGraph::OnMouseMove(UINT nFlags, CPoint point)
 }
 
 // 判断界面仪器是否被选中
-BOOL CInstrumentGraph::OnSelectInstrument(CPoint oGraphPoint, m_oInstrumentGraph &oInstrumentGraph)
+BOOL CInstrumentGraph::OnSelectInstrument(CPoint oGraphPoint, m_oGraph &oInstrumentGraph)
 {
 	CString str = _T("");
 	CRect oRect = 0;
@@ -574,7 +575,7 @@ void CInstrumentGraph::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	CPoint oGraphPoint;
-	m_oInstrumentGraph oInstrumentGraph;
+	m_oGraph oInstrumentGraph;
 	unsigned int uiIP = 0;
 	oGraphPoint.x = point.x + m_iHScrPos;
 	oGraphPoint.y = point.y;
@@ -583,7 +584,7 @@ void CInstrumentGraph::OnLButtonDown(UINT nFlags, CPoint point)
 		if (oInstrumentGraph.uiType == InstrumentTypeFDU)
 		{
 			uiIP = IPSetAddrStart + oInstrumentGraph.iUnitIndex * IPSetAddrInterval;
-			::SendMessage(m_pWnd->m_hWnd, WM_DLGADCGRAPHSHOW, uiIP, oInstrumentGraph.uiFDULocation);
+			::SendMessage(m_pWnd->m_hWnd, WM_DLGADCGRAPHSHOW, uiIP, oInstrumentGraph.uiFDUIndex);
 		}
 	}
 	CWnd::OnLButtonDown(nFlags, point);

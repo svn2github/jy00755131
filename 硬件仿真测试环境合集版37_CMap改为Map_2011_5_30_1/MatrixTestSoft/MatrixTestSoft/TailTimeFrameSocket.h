@@ -29,8 +29,6 @@ private:
 	unsigned int m_uiTimeHigh;
 	// 时间修正低位
 	unsigned int m_uiTimeLow;
-	// 时延设置修正次数
-	unsigned int m_uiDelayTimeCount;
 private:
 	// 单个尾包时刻查询处理
 	void ProcTailTimeFrameOne(void);
@@ -65,6 +63,8 @@ public:
 	void OnReceive(void);
 	// 关闭UDP套接字
 	void OnCloseUDP(void);
+	// 处理该大线路由方向的时统
+	void TimeDelayCalculationLineRout(void);
 };
 
 

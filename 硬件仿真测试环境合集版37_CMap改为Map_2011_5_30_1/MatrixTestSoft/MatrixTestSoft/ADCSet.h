@@ -41,7 +41,7 @@ protected:
 	void OnProcADCZeroDriftReturn(unsigned int uiIPAim);
 public:
 	// ADC设置帧头
-	int ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, unsigned short usPortAim);
+	int ADCSetFrameHead(unsigned int uiIPAim, unsigned short	usCommand, unsigned int uiBroadCastPort);
 	// 发送ADC设置的18指令
 	int ADCCommand_18(int iPos, byte* cADCSet, unsigned int uiLength);
 	// 设置正弦输出

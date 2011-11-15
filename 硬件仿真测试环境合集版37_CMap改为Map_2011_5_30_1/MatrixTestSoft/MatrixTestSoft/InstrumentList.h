@@ -27,26 +27,13 @@ public:
 	hash_map<unsigned int, CInstrument*> m_oInstrumentSNMap;
 	// 仪器IP地址索引表
 	hash_map<unsigned int, CInstrument*> m_oInstrumentIPMap;
-	// 路由地址索引表
-//	hash_map<unsigned int, CInstrument*> m_oInstrumentRoutMap;
-	//@@@@@@@ 暂时不加入界面显示设备
-// 	// 采集站设备未连接显示的图标指针
-// 	HICON m_iconFDUDisconnected;
-// 	// 交叉站设备未连接显示的图标指针
-// 	HICON m_iconLAUXDisconnected;
+	// 关键字为路由，对应的内容为广播端口
+	hash_map<unsigned int, unsigned int> m_oRoutAddrMap;
 	// 界面指针
 	CWnd* m_pWnd;
 	// 类CInstrumentGraph的指针
 	CInstrumentGraph* m_pInstrumentGraph;
-	//@@@@@@@ 暂时不加入界面显示设备
-// 	// 采集站设备Button控件ID
-// 	int m_iButtonIDFDU[InstrumentNum];
-// 	// 采集站设备仪器选择Check控件ID
-// 	int m_iCheckIDInstrumentFDU[InstrumentNum];
 protected:
-	//@@@@@@@ 暂时不加入界面显示设备
-// 	// 根据IP地址显示设备断开连接的图标
-// 	void OnShowDisconnectedIcon(unsigned int uiIPAddress);
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);
 public:
@@ -72,6 +59,12 @@ public:
 	BOOL IfIndexExistInIPMap(unsigned int uiIndex);
 	// 根据输入IP地址索引号，由IP地址索引表得到仪器指针
 	BOOL GetInstrumentFromIPMap(unsigned int uiIndex, CInstrument* &pInstrument);
+	// 将一个路由加入路由地址索引表
+	void AddRoutToRoutMap(unsigned int uiRoutAddr, unsigned int uiBroadCastPort);
+	// 判断路由是否已加入路由地址索引表
+	BOOL IfRoutExistInRoutMap(unsigned int uiRoutAddr);
+	// 根据输入路由地址索引号，由路由地址索引表得到广播端口
+	BOOL GetBroadCastPortFromRoutMap(unsigned int uiRoutAddr, unsigned int &uiBroadCastPort);
 	// 设备根据首包时刻排序
 	void SetInstrumentLocation(CInstrument* pInstrument);
 	// 删除尾包之后的仪器
@@ -94,4 +87,6 @@ public:
 	unsigned int m_uiLCISn;
 	// 检查尾包时刻查询应答是否全部接收
 	bool OnCheckTailTimeReturn(void);
+	// 得到采集站设备序号
+	void OnGetFduIndex(void);
 };

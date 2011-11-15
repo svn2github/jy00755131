@@ -107,7 +107,7 @@ void CHeartBeatThread::MakeHeartBeatFrame(void)
 	// 源IP地址
 	uiIPSource = m_uiIPSource;
 	// 目标IP地址
-	uiIPAim = BroadCastPort;
+	uiIPAim = IPBroadcastAddr;
 	// 目标端口号
 	usPortAim = HeartBeatPort;
 	// 命令号 1-设置命令应答；2-查询命令应答；3-AD采样数据重发

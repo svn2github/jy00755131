@@ -52,6 +52,8 @@ void CInstrumentList::OnClose(void)
 	}
 	// 删除索引表中所有仪器
 	m_oInstrumentSNMap.clear();
+	m_oInstrumentIPMap.clear();
+	m_oRoutAddrMap.clear();
 }
 
 // 得到一个空闲仪器
@@ -218,6 +220,44 @@ BOOL CInstrumentList::GetInstrumentFromIPMap(unsigned int uiIndex, CInstrument* 
 	}
 	return bResult;
 }
+// 将一个路由加入路由地址索引表
+void CInstrumentList::AddRoutToRoutMap(unsigned int uiRoutAddr, unsigned int uiBroadCastPort)
+{
+	m_oRoutAddrMap.insert(hash_map<unsigned int, unsigned int>::value_type (uiRoutAddr, uiBroadCastPort));
+}
+// 判断路由是否已加入路由地址索引表
+BOOL CInstrumentList::IfRoutExistInRoutMap(unsigned int uiRoutAddr)
+{
+	BOOL bResult = FALSE;
+	hash_map<unsigned int, unsigned int>::iterator iter;
+	iter = m_oRoutAddrMap.find(uiRoutAddr);
+	if (iter != m_oRoutAddrMap.end())
+	{
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
+// 根据输入路由地址索引号，由路由地址索引表得到广播端口
+BOOL CInstrumentList::GetBroadCastPortFromRoutMap(unsigned int uiRoutAddr, unsigned int &uiBroadCastPort)
+{
+	BOOL bResult = FALSE;
+	hash_map<unsigned int, unsigned int>::iterator iter;
+	iter = m_oRoutAddrMap.find(uiRoutAddr);
+	if (iter != m_oRoutAddrMap.end())
+	{
+		uiBroadCastPort = iter->second;
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
 // 设备根据首包时刻排序
 //************************************
 // Method:    SetInstrumentLocation
@@ -230,6 +270,7 @@ BOOL CInstrumentList::GetInstrumentFromIPMap(unsigned int uiIndex, CInstrument* 
 void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrument)
 {
 	int iLocation = 0;
+	unsigned int uiLineRoutLocation = 0;
 	unsigned int uiFDULocation = 0;
 	int iLXLocation = 0;
 	CString str = _T("");
@@ -278,6 +319,7 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrument)
 						if (pInstrument->m_uiHeadFrameTime > iter->second->m_uiHeadFrameTime)
 						{
 							iLocation--;
+							uiLineRoutLocation++;
 							if ((pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
 								&& (iter->second->m_uiInstrumentType == InstrumentTypeFDU))
 							{
@@ -310,6 +352,7 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrument)
 						if (pInstrument->m_uiHeadFrameTime > iter->second->m_uiHeadFrameTime)
 						{
 							iLocation++;
+							uiLineRoutLocation++;
 							if ((pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
 								&& (iter->second->m_uiInstrumentType == InstrumentTypeFDU))
 							{
@@ -336,6 +379,7 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrument)
 	{
 		pInstrument->m_iHeadFrameCount = 0;
 		pInstrument->m_iLocation = iLocation;
+		pInstrument->m_uiLineRoutLocation = uiLineRoutLocation;
 		pInstrument->m_uiFDULocation = uiFDULocation;
 		//		pInstrumentAdd->m_uiFDULocation = uiLocation - 1;
 	}
@@ -360,7 +404,9 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrument)
 		|| (pInstrument->m_uiLineDirection == DirectionTop)
 		|| (pInstrument->m_uiLineDirection == DirectionDown))
 	{
-		TailFrameDeleteInstrumentLXLine(pInstrument);
+		// @@@@@@@暂不考虑交叉线上尾包删除情况
+		// @@@@@@@因为LCI在交叉线上有仪器的情况下会发尾包
+//		TailFrameDeleteInstrumentLXLine(pInstrument);
 	}
 	// 删除大线方向尾包之后的仪器
 	else
@@ -409,6 +455,7 @@ void CInstrumentList::OnOpen(void)
 	// 删除索引表中所有仪器
 	m_oInstrumentSNMap.clear();
 	m_oInstrumentIPMap.clear();
+	m_oRoutAddrMap.clear();
 	if (m_pInstrumentArray != NULL)
 	{
 		delete []m_pInstrumentArray;
@@ -443,6 +490,7 @@ void CInstrumentList::OnStop(void)
 	// 删除索引表中所有仪器
 	m_oInstrumentSNMap.clear();
 	m_oInstrumentIPMap.clear();
+	m_oRoutAddrMap.clear();
 }
 
 // 删除所有仪器
@@ -463,22 +511,8 @@ void CInstrumentList::DeleteAllInstrument(void)
 	}
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
-	for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
-	{
-		//		ProcessMessages();
-		if (NULL != iter->second)
-		{
-			//@@@@@@@ 暂时不加入界面显示设备
-// 			// 显示设备断开连接的图标
-// 			OnShowDisconnectedIcon(iter->second->m_uiIPAddress);
-			// 将仪器从IP索引表中删除
-			m_oInstrumentIPMap.erase(iter++);
-		}
-		else
-		{
-			iter++;
-		}
-	}
+	m_oInstrumentIPMap.clear();
+	m_oRoutAddrMap.clear();
 	// 清除界面仪器和连接线显示
 	m_pInstrumentGraph->OnClearAllInstrumentGraph();
 	for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end();)
@@ -501,42 +535,6 @@ void CInstrumentList::DeleteAllInstrument(void)
 	}
 	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::DeleteAllInstrument"), _T("未收到尾包，删除所有在线仪器！"), WarningStatus);
 }
-//@@@@@@@ 暂时不加入界面显示设备
-// 根据IP地址显示设备断开连接的图标
-//************************************
-// Method:    OnShowDisconnectedIcon
-// FullName:  CInstrumentList::OnShowDisconnectedIcon
-// Access:    protected 
-// Returns:   void
-// Qualifier:
-// Parameter: unsigned int uiIPAddress
-//************************************
-// void CInstrumentList::OnShowDisconnectedIcon(unsigned int uiIPAddress)
-// {
-// 	CButton* iconbutton = NULL;
-// 	CStatic* iconstatic = NULL;
-// 	CButton* pButton = NULL;
-// 
-// 	// hash_map迭代器
-// 	hash_map<unsigned int, CInstrument*>::iterator  iter;
-// 	CInstrument* pInstrument = NULL;
-// 	if (GetInstrumentFromIPMap(uiIPAddress, pInstrument))
-// 	{
-// 		if (pInstrument->m_uiInstrumentType == InstrumentTypeLAUX)
-// 		{
-// 			iconstatic =(CStatic*)m_pwnd->GetDlgItem(IDC_STATIC_LAUX);
-// 			iconstatic->SetIcon(m_iconLAUXDisconnected);
-// 		}
-// 		else if (pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
-// 		{
-// 
-// 			iconbutton = (CButton*)m_pwnd->GetDlgItem(m_iButtonIDFDU[pInstrument->m_uiLocation - 1]);
-// 			iconbutton->SetIcon(m_iconFDUDisconnected);
-// 			pButton = (CButton*)m_pwnd->GetDlgItem(m_iCheckIDInstrumentFDU[pInstrument->m_uiLocation - 1]);
-// 			pButton->SetCheck(0);
-// 		}
-// 	}
-// }
 
 // 防止程序在循环中运行无法响应消息
 //************************************
@@ -642,19 +640,9 @@ void CInstrumentList::OnClearSameRoutTailCount(CInstrument* pInstrument)
 		{
 			if (iter->second->m_uiRoutAddress == pInstrument->m_uiRoutAddress)
 			{
-				if (pInstrument->m_uiLineDirection == DirectionLeft)
+				if (iter->second->m_uiLineRoutLocation < pInstrument->m_uiLineRoutLocation)
 				{
-					if (iter->second->m_iLocation > pInstrument->m_iLocation)
-					{
-						iter->second->m_iTailFrameCount = 0;
-					}
-				}
-				else if (pInstrument->m_uiLineDirection == DirectionRight)
-				{
-					if (iter->second->m_iLocation < pInstrument->m_iLocation)
-					{
-						iter->second->m_iTailFrameCount = 0;
-					}
+					iter->second->m_iTailFrameCount = 0;
 				}
 			}
 		}
@@ -679,7 +667,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 					&& (pInstrument->m_iLocation > iter->second->m_iLocation))
 				{
 					m_pInstrumentGraph->DrawUnit(iter->second->m_iLocation, iter->second->m_iLineIndex, 
-						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN, iter->second->m_uiFDULocation,
+						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN, 
 						GraphInstrumentOffLine, true);
 
 					iter2 = m_oInstrumentSNMap.find(iter->second->m_uiSN);
@@ -700,7 +688,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 					&& (pInstrument->m_iLocation < iter->second->m_iLocation))
 				{
 					m_pInstrumentGraph->DrawUnit(iter->second->m_iLocation, iter->second->m_iLineIndex, 
-						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN, iter->second->m_uiFDULocation,
+						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN,
 						GraphInstrumentOffLine, true);
 
 					iter2 = m_oInstrumentSNMap.find(iter->second->m_uiSN);
@@ -750,7 +738,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 				if (iter->second->m_iLineIndex < pInstrument->m_iLineIndex)
 				{
 					m_pInstrumentGraph->DrawUnit(iter->second->m_iLocation, iter->second->m_iLineIndex, 
-						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN, iter->second->m_uiFDULocation,
+						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN,
 						GraphInstrumentOffLine, true);
 
 					iter2 = m_oInstrumentSNMap.find(iter->second->m_uiSN);
@@ -788,7 +776,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 				if (iter->second->m_iLineIndex > pInstrument->m_iLineIndex)
 				{
 					m_pInstrumentGraph->DrawUnit(iter->second->m_iLocation, iter->second->m_iLineIndex, 
-						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN, iter->second->m_uiFDULocation,
+						iter->second->m_uiLineDirection, iter->second->m_uiInstrumentType, iter->second->m_uiSN,
 						GraphInstrumentOffLine, true);
 
 					iter2 = m_oInstrumentSNMap.find(iter->second->m_uiSN);
@@ -836,4 +824,54 @@ bool CInstrumentList::OnCheckTailTimeReturn(void)
 	}
 	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::OnCheckTailTimeReturn"), _T("尾包时刻查询帧接收完成！"), SuccessStatus);
 	return true;
+}
+
+// 得到采集站设备序号
+void CInstrumentList::OnGetFduIndex(void)
+{
+	hash_map<unsigned int, CInstrument*>::iterator  iter;
+	hash_map<unsigned int, unsigned int>::iterator  iter2;
+	CInstrumentGraph::m_oGraph oGraph;
+	POSITION pos = NULL;
+	list<unsigned int> oRoutList;
+	unsigned int uiRout = 0;
+	unsigned int uiSize = 0;
+	unsigned int uiCount = 0;
+	unsigned int uiFDUNum = 0;
+	oRoutList.clear();
+	for(iter2=m_oRoutAddrMap.begin(); iter2!=m_oRoutAddrMap.end(); iter2++)
+	{
+		oRoutList.push_back(iter2->first);
+	}
+	oRoutList.sort();
+	uiSize = oRoutList.size();
+	for (unsigned int i=0; i<uiSize; i++)
+	{
+		uiRout = oRoutList.front();
+		oRoutList.pop_front();
+		for(iter=m_oInstrumentSNMap.begin(); iter!=m_oInstrumentSNMap.end(); iter++)
+		{
+			if (NULL != iter->second)
+			{
+				if ((iter->second->m_uiInstrumentType == InstrumentTypeFDU)
+					&& (iter->second->m_uiRoutAddress == uiRout))
+				{
+					uiCount++;
+					iter->second->m_uiFDUIndex = iter->second->m_uiFDULocation + uiFDUNum;
+					oGraph.iUnitIndex = iter->second->m_iLocation;
+					oGraph.iLineIndex = iter->second->m_iLineIndex;
+					pos = m_pInstrumentGraph->m_oInstrumentGraphRectList.Find(oGraph);
+					if (NULL != pos)
+					{
+						oGraph = m_pInstrumentGraph->m_oInstrumentGraphRectList.GetAt(pos);
+						oGraph.uiFDUIndex = iter->second->m_uiFDUIndex;
+						m_pInstrumentGraph->m_oInstrumentGraphRectList.SetAt(pos, oGraph);
+					}
+				}
+			}
+		}
+		uiFDUNum += uiCount;
+		uiCount = 0;
+	}
+	oRoutList.clear();
 }
