@@ -60,6 +60,8 @@ public:
 	void OnMakeTailTimeJobRoutQueue(void);
 	// 生成一条测线的路由工作队列
 	void OnMakeOneLineJobQueue(CInstrument* pInstrument);
+	// 仪器的本地时间
+	unsigned int m_uiSysTime;
 };
 
 

@@ -14,6 +14,8 @@ CADCSet::CADCSet(void)
 , m_pWnd(NULL)
 , m_uiTnow(0)
 , m_pADCDataRecThread(NULL)
+, m_uiADCSetOptPreviousNb(0)
+, m_uiADCSetOptCount(0)
 {
 }
 
@@ -977,49 +979,8 @@ void CADCSet::OnProcADCSetReturn(unsigned int uiIP)
 			// 检查是否收到所有采集站的ADC命令应答
 			if(TRUE == OnCheckADCSetReturn())
 			{
-				// 关闭应答监视定时器
-				KillTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb);
-				// 执行下一步ADC命令发送并开启应答监视定时器
-				m_uiADCSetOperationNb++;
-				// 完成ADC参数设置
-				if (m_uiADCSetOperationNb == 12)
-				{
-					m_uiADCSetOperationNb = 0;
-					//************************暂不做零漂校正********************************
-	//				SetTimer(m_pwnd->m_hWnd, TabSampleADCZeroDriftTimerNb, TabSampleADCZeroDriftTimerSet, NULL);
-					m_pWnd->GetDlgItem(IDC_BUTTOT_STARTSAMPLE)->EnableWindow(TRUE);
-					m_pWnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(FALSE);
-					m_pWnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(TRUE);
-					//************************暂不做零漂校正********************************
-					return;
-				}
-				// 完成ADC零漂校正
-				else if (m_uiADCSetOperationNb == 28)
-				{
-					m_pWnd->GetDlgItem(IDC_BUTTOT_STARTSAMPLE)->EnableWindow(TRUE);
-					m_pWnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(FALSE);
-					m_pWnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(TRUE);
-					m_uiADCSetOperationNb = 0;
-					return;
-				}
-				// 完成ADC开始数据采集
-				else if (m_uiADCSetOperationNb == 35)
-				{
-					m_uiADCSetOperationNb = 0;
-					SetTimer(m_pWnd->m_hWnd, TabSampleStartSampleTimerNb, TabSampleStartSampleTimerSet, NULL);
-					m_pWnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(TRUE);
-					return;
-				}
-				// 完成ADC停止数据采集
-				else if (m_uiADCSetOperationNb == 39)
-				{
-					m_uiADCSetOperationNb = 0;
-					SetTimer(m_pWnd->m_hWnd, TabSampleStopSampleTimerNb, TabSampleStopSampleTimerSet, NULL);
-					KillTimer(m_pWnd->m_hWnd, TabSampleQueryErrorCountTimerNb);
-					return;
-				}
-				SetTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
-				OnSendADCSetCmd();
+				// 命令应答接收完全后的操作
+				OnADCSetNextOpt();
 			}
 		} 
 	}
@@ -1072,6 +1033,15 @@ void CADCSet::OnSendADCSetCmd(void)
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	// 记录已经发送的路由方向
 	hash_map<unsigned int, unsigned int> ::iterator  iter2;
+	if (m_uiADCSetOptPreviousNb == m_uiADCSetOperationNb)
+	{
+		m_uiADCSetOptCount++;
+	}
+	else
+	{
+		m_uiADCSetOptPreviousNb = m_uiADCSetOperationNb;
+		m_uiADCSetOptCount = 0;
+	}
 	// 1~11为ADC参数设置命令
 	// 12~27为ADC零漂校正指令
 	switch (m_uiADCSetOperationNb)
@@ -1453,4 +1423,51 @@ void CADCSet::OnResetADCOperationNb(void)
 			}
 		}
 	}
+}
+// ADC参数设置下一步操作
+void CADCSet::OnADCSetNextOpt(void)
+{
+	// 关闭应答监视定时器
+	KillTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb);
+	// 执行下一步ADC命令发送并开启应答监视定时器
+	m_uiADCSetOperationNb++;
+	// 完成ADC参数设置
+	if (m_uiADCSetOperationNb == 12)
+	{
+		m_uiADCSetOperationNb = 0;
+		//************************暂不做零漂校正********************************
+		//				SetTimer(m_pwnd->m_hWnd, TabSampleADCZeroDriftTimerNb, TabSampleADCZeroDriftTimerSet, NULL);
+		m_pWnd->GetDlgItem(IDC_BUTTOT_STARTSAMPLE)->EnableWindow(TRUE);
+		m_pWnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(FALSE);
+		m_pWnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(TRUE);
+		//************************暂不做零漂校正********************************
+		return;
+	}
+	// 完成ADC零漂校正
+	else if (m_uiADCSetOperationNb == 28)
+	{
+		m_pWnd->GetDlgItem(IDC_BUTTOT_STARTSAMPLE)->EnableWindow(TRUE);
+		m_pWnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(FALSE);
+		m_pWnd->GetDlgItem(IDC_BUTTON_SETBYHAND)->EnableWindow(TRUE);
+		m_uiADCSetOperationNb = 0;
+		return;
+	}
+	// 完成ADC开始数据采集
+	else if (m_uiADCSetOperationNb == 35)
+	{
+		m_uiADCSetOperationNb = 0;
+		SetTimer(m_pWnd->m_hWnd, TabSampleStartSampleTimerNb, TabSampleStartSampleTimerSet, NULL);
+		m_pWnd->GetDlgItem(IDC_BUTTON_STOPSAMPLE)->EnableWindow(TRUE);
+		return;
+	}
+	// 完成ADC停止数据采集
+	else if (m_uiADCSetOperationNb == 39)
+	{
+		m_uiADCSetOperationNb = 0;
+		SetTimer(m_pWnd->m_hWnd, TabSampleStopSampleTimerNb, TabSampleStopSampleTimerSet, NULL);
+		KillTimer(m_pWnd->m_hWnd, TabSampleQueryErrorCountTimerNb);
+		return;
+	}
+	SetTimer(m_pWnd->m_hWnd, TabSampleADCSetReturnTimerNb, TabSampleADCSetReturnTimerSet, NULL);
+	OnSendADCSetCmd();
 }

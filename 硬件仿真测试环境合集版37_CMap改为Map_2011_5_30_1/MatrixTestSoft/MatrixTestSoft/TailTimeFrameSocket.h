@@ -15,20 +15,6 @@ private:
 	byte m_pTailTimeRecData[RcvFrameSize];
 	// 时延设置帧
 	byte m_pTimeDelayData[SndFrameSize];
-	// 仪器SN号
-	DWORD m_uiSN;
-	// 设备的网络时间
-	DWORD m_uiNetTime;
-	// 设备的本地时间
-	DWORD m_uiSystemTime;
-	// 设备尾包接收时刻
-	unsigned short m_usTailRecTime;
-	// 设备尾包发送时刻
-	unsigned short m_usTailSendTime;
-	// 时间修正高位
-	unsigned int m_uiTimeHigh;
-	// 时间修正低位
-	unsigned int m_uiTimeLow;
 private:
 	// 单个尾包时刻查询处理
 	void ProcTailTimeFrameOne(void);

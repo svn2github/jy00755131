@@ -78,6 +78,18 @@ public:
 	unsigned int m_uiLineRoutLocation;
 	// 采集站序号
 	unsigned int m_uiFDUIndex;
+	// 交叉站大线左侧尾包接收时刻
+	unsigned short m_usTailRecTimeLeft;
+	// 交叉站大线右侧尾包接收时刻
+	unsigned short m_usTailRecTimeRight;
+	// 交叉站交叉线上方尾包接收时刻
+	unsigned short m_usTailRecTimeTop;
+	// 交叉站交叉线下方尾包接收时刻
+	unsigned short m_usTailRecTimeDown;
+	// 仪器时统修正高位
+	unsigned int m_uiTimeHigh;
+	// 时统修正低位
+	unsigned int m_uiTimeLow;
 public:
 	// 重置成员变量
 	void OnReset(void);

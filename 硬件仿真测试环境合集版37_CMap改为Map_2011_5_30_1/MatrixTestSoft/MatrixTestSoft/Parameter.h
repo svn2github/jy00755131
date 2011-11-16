@@ -240,6 +240,8 @@ using std::wstring;
 #define GraphInstrumentIPSet								2
 // 绘图操作：仪器下线
 #define GraphInstrumentOffLine							3
+// ADC设置命令重设次数
+#define ADCSetCmdReSendNum						2
 //____________________命令字设置__________________
 // 发送设置命令
 #define SendSetCmd									0x0001

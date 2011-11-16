@@ -29,6 +29,12 @@ public:
 	unsigned int m_uiTnow;
 	// ADC数据接收类指针
 	CADCDataRecThread* m_pADCDataRecThread;
+	// ADC命令设置序号
+	unsigned int m_uiADCSetOperationNb;
+	// 前一次ADC命令设置序号
+	unsigned int m_uiADCSetOptPreviousNb;
+	// 重发ADC命令设置计数
+	unsigned int m_uiADCSetOptCount;
 protected:
 	// 数据接收缓冲区
 	unsigned char udp_buf[RcvFrameSize];
@@ -100,8 +106,6 @@ public:
 	void OnQueryTBTime(int iPos);
 	// 关闭UDP套接字
 	void OnCloseUDP(void);
-	// ADC命令设置序号
-	unsigned int m_uiADCSetOperationNb;
 	// 处理ADC设置应答帧
 	void OnProcADCSetReturn(unsigned int uiIP);
 	// 检查是否收到所有采集站的ADC命令应答
@@ -110,4 +114,6 @@ public:
 	void OnSendADCSetCmd(void);
 	// 重置ADC参数设置操作序号
 	void OnResetADCOperationNb(void);
+	// ADC参数设置下一步操作
+	void OnADCSetNextOpt(void);
 };

@@ -168,7 +168,6 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	CDC memDC;			//定义一个DC
 	CBitmap* pBkBmp = NULL;		//定义一个位图对象指针
 	CBitmap* oldBkBmp = NULL;
-	BITMAP BmpInfo;	//定义一个位图信息结构体
 	CRect oRectLine;
 	CRect oRectInstrument;
 	oPenUnit.CreatePen(PS_SOLID, 2, GraphLineColor);
@@ -310,12 +309,13 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	}
 	if ((uiOpt == GraphInstrumentOnLine) || (uiOpt == GraphInstrumentIPSet))
 	{
-		pBkBmp->GetBitmap(&BmpInfo);				// 获取位图高宽等信息，保存在位图结构体中
 		memDC.CreateCompatibleDC(&m_dcGraph);			// 创建一个兼容屏幕DC的内存DC：m_MemDc。
 		oldBkBmp = memDC.SelectObject(pBkBmp);				// 将该位图选择到刚创建的内存DC中。
 
 		/*将内存DC里的东西贴到屏幕DC上去*/
-		m_dcGraph.BitBlt(oRectInstrument.left,oRectInstrument.top,BmpInfo.bmWidth,BmpInfo.bmHeight,&memDC,0,0,SRCCOPY);
+//		pBkBmp->GetBitmap(&BmpInfo);				// 获取位图高宽等信息，保存在位图结构体中
+//		m_dcGraph.BitBlt(oRectInstrument.left,oRectInstrument.top,BmpInfo.bmWidth,BmpInfo.bmHeight,&memDC,0,0,SRCCOPY);
+		m_dcGraph.BitBlt(oRectInstrument.left,oRectInstrument.top,m_uiGridX,m_uiGridY,&memDC,0,0,SRCCOPY);
 		memDC.SelectObject(oldBkBmp);
 	}
 	m_dcGraph.SelectObject(pOldPen);

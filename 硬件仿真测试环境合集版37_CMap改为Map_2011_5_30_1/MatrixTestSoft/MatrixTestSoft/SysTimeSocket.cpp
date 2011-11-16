@@ -115,8 +115,8 @@ void CSysTime::MakeCollectSysTimeFrameData(void)
 	memset(&m_cCollectSysTimeSendData[FrameHeadCheckSize], SndFrameBufInit, (FrameHeadSize - FrameHeadCheckSize));
 
 	uiIPSource	=	m_uiIPSource;
-	// 查询第一个采集站的本地时间
-	uiIPAim = IPSetAddrStart + IPSetAddrInterval;
+	// 查询第二个采集站的本地时间
+	uiIPAim = IPSetAddrStart + IPSetAddrInterval * 2;
 	usPortAim	=	CollectSysTimePort;
 	usCommand	=	SendQueryCmd;
 	int iPos = 16;

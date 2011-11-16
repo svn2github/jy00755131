@@ -38,6 +38,12 @@ CInstrument::CInstrument(void)
 , m_uiBroadCastPort(0)
 , m_uiLineRoutLocation(0)
 , m_uiFDUIndex(0)
+, m_usTailRecTimeLeft(0)
+, m_usTailRecTimeRight(0)
+, m_usTailRecTimeTop(0)
+, m_usTailRecTimeDown(0)
+, m_uiTimeHigh(0)
+, m_uiTimeLow(0)
 {
 }
 
@@ -83,4 +89,10 @@ void CInstrument::OnReset(void)
 	m_uiBroadCastPort = 0;
 	m_uiLineRoutLocation = 0;
 	m_uiFDUIndex = 0;
+	m_usTailRecTimeLeft = 0;
+	m_usTailRecTimeRight = 0;
+	m_usTailRecTimeTop = 0;
+	m_usTailRecTimeDown = 0;
+	m_uiTimeHigh = 0;
+	m_uiTimeLow = 0;
 }
