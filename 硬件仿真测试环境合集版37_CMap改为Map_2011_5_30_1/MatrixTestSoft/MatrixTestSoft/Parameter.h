@@ -416,7 +416,7 @@ using std::wstring;
 // TabSample界面做时统设置的定时器序号
 #define TabSampleTimeCalTimerNb						7
 // TabSample界面做时统设置的定时器延时设置
-#define TabSampleTimeCalTimerSet						3000
+#define TabSampleTimeCalTimerSet						2000
 // TabSample界面做ADC参数设置的定时器序号
 #define TabSampleADCSetTimerNb						8
 // TabSample界面做ADC参数设置的定时器延时设置

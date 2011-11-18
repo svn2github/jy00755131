@@ -117,6 +117,8 @@ private:
 public:
 	// 右侧增加仪器移动图形DC的大小
 	int m_iRightMovePos;
+	// 左侧增加仪器移动图形DC的大小
+	int m_iLeftMovePos;
 	// 处理绘图区域
 	void OnOptGraphRect(unsigned int uiOpt);
 	// 在图形界面上输出文字信息
@@ -128,4 +130,8 @@ public:
 	// 重置
 	void OnReset(void);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	// 计算完采集站序号后才能在界面左键选择仪器
+	bool m_bLButtonSelect;
+	// 载入仪器图像
+	void OnLoadInstrumentBmp(CBitmap* pBmp, int iBmpX, int iBmpY);
 };

@@ -411,7 +411,7 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrument)
 	// 删除大线方向尾包之后的仪器
 	else
 	{
-		TailFrameDeleteInstrumentLine(pInstrument);
+//		TailFrameDeleteInstrumentLine(pInstrument);
 	}
 }	
 

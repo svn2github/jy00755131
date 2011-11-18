@@ -10,13 +10,13 @@
 // 绘图连线颜色
 #define GraphLineColor		RGB(	0,	0,	255	)
 // 仪器绘图单元X轴尺寸
-#define GraphGridInstrumentSizeX		16
+#define GraphGridInstrumentSizeX		32
 // 仪器绘图单元Y轴尺寸
-#define GraphGridInstrumentSizeY		16
+#define GraphGridInstrumentSizeY		32
 // 连接线绘图单元X轴尺寸
-#define GraphGridLineSizeX					10
+#define GraphGridLineSizeX					15
 // 连接线绘图单元Y轴尺寸
-#define GraphGridLineSizeY					10
+#define GraphGridLineSizeY					15
 // 在视图上侧增加仪器超出绘图区域操作
 #define OptGraphRectAddTop						1
 // 在视图下侧增加仪器超出绘图区域操作
@@ -38,6 +38,7 @@
 IMPLEMENT_DYNAMIC(CInstrumentGraph, CWnd)
 
 CInstrumentGraph::CInstrumentGraph()
+: m_bLButtonSelect(false)
 {
 	m_brushBack.CreateSolidBrush(GraphBkColor) ;
 	// protected bitmaps to restore the memory DC's
@@ -50,7 +51,7 @@ CInstrumentGraph::CInstrumentGraph()
 	m_iVScrBarInterval = 20;
 	m_iHScrBarInterval = 20;
 	m_iLauxPosX = 200;
-	m_iLauxPosY = 100;
+	m_iLauxPosY = 200;
 	m_pWndVScr = NULL;
 	m_pWndHScr = NULL;
 }
@@ -121,16 +122,16 @@ void CInstrumentGraph::OnPaint()
 	// to avoid flicker, establish a memory dc, draw to it 
 	// and then BitBlt it to the client
 	memDC.CreateCompatibleDC(&dc) ;
-	memBitmap.CreateCompatibleBitmap(&dc, m_rectGraph.Width() - m_iHScrPos, m_rectGraph.Height()) ;
+	memBitmap.CreateCompatibleBitmap(&dc, m_rectClient.Width() - m_iVScrBarInterval, m_rectClient.Height() - m_iHScrBarInterval) ;
 	oldBitmap = (CBitmap *)memDC.SelectObject(&memBitmap) ;
 
 	if (memDC.GetSafeHdc() != NULL)
 	{
 		// first drop the grid on the memory dc
-		memDC.BitBlt(0, 0, m_rectGraph.Width() - m_iHScrPos, m_rectGraph.Height(), 
-			&m_dcGraph, m_iHScrPos, 0, SRCCOPY) ;
+		memDC.BitBlt(0, 0, m_rectClient.Width() - m_iVScrBarInterval, m_rectClient.Height() - m_iHScrBarInterval, 
+			&m_dcGraph, m_iHScrPos - m_iLeftMovePos, 0, SRCCOPY) ;
 		// finally send the result to the display
-		dc.BitBlt(0, 0, m_rectGraph.Width() - m_iHScrPos, m_rectGraph.Height(), 
+		dc.BitBlt(0, 0, m_rectClient.Width() - m_iVScrBarInterval, m_rectClient.Height() - m_iHScrBarInterval, 
 			&memDC, 0, 0, SRCCOPY) ;
 	}
 	memDC.SelectObject(oldBitmap) ;
@@ -165,20 +166,20 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 {
 	CPen oPenUnit;
 	CPen* pOldPen;
-	CDC memDC;			//定义一个DC
-	CBitmap* pBkBmp = NULL;		//定义一个位图对象指针
-	CBitmap* oldBkBmp = NULL;
+// 	CDC memDC;			//定义一个DC
+// 	CBitmap* pBkBmp = NULL;		//定义一个位图对象指针
+// 	CBitmap* oldBkBmp = NULL;
 	CRect oRectLine;
 	CRect oRectInstrument;
 	oPenUnit.CreatePen(PS_SOLID, 2, GraphLineColor);
 	pOldPen = m_dcGraph.SelectObject(&oPenUnit);
-	if ((uiLineDirection == 1) || (uiLineDirection == 2))
+	if ((uiLineDirection == DirectionTop) || (uiLineDirection == DirectionDown))
 	{
 		oRectLine.left = m_iLauxPosX + iUnitIndex * (m_uiGridX + m_uiGridLineX);
 		oRectLine.right = oRectLine.left + m_uiGridX;
 		oRectInstrument.left = oRectLine.left;
 		oRectInstrument.right = oRectLine.right;
-		if (uiLineDirection == 1)
+		if (uiLineDirection == DirectionTop)
 		{
 			oRectLine.top = m_iLauxPosY + iLineIndex * (m_uiGridY + m_uiGridLineY) + m_uiGridY;
 		}
@@ -190,13 +191,13 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 		oRectInstrument.top = m_iLauxPosY + iLineIndex * (m_uiGridY + m_uiGridLineY);
 		oRectInstrument.bottom = oRectInstrument.top + m_uiGridY;
 
-		m_dcGraph.MoveTo(CPoint((oRectLine.left + oRectLine.right) / 2, oRectLine.top));
-		m_dcGraph.LineTo(CPoint((oRectLine.left + oRectLine.right) / 2, oRectLine.bottom));
+		m_dcGraph.MoveTo(CPoint((oRectLine.left + oRectLine.right) / 2 - m_iLeftMovePos, oRectLine.top));
+		m_dcGraph.LineTo(CPoint((oRectLine.left + oRectLine.right) / 2 - m_iLeftMovePos, oRectLine.bottom));
 	}
-	else if ((uiLineDirection == 3) || (uiLineDirection == 4))
+	else if ((uiLineDirection == DirectionLeft) || (uiLineDirection == DirectionRight))
 	{
 		// 连接线绘制区域
-		if (uiLineDirection == 3)
+		if (uiLineDirection == DirectionLeft)
 		{
 			oRectLine.left = m_iLauxPosX + iUnitIndex * (m_uiGridX + m_uiGridLineX) + m_uiGridX;
 		}
@@ -211,8 +212,8 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 		oRectLine.bottom = oRectLine.top + m_uiGridY;
 		oRectInstrument.top = oRectLine.top;
 		oRectInstrument.bottom = oRectLine.bottom;
-		m_dcGraph.MoveTo(CPoint(oRectLine.left, (oRectLine.top + oRectLine.bottom) / 2));
-		m_dcGraph.LineTo(CPoint(oRectLine.right, (oRectLine.top + oRectLine.bottom) / 2));
+		m_dcGraph.MoveTo(CPoint(oRectLine.left - m_iLeftMovePos, (oRectLine.top + oRectLine.bottom) / 2));
+		m_dcGraph.LineTo(CPoint(oRectLine.right - m_iLeftMovePos, (oRectLine.top + oRectLine.bottom) / 2));
 	}
 	else
 	{
@@ -225,19 +226,35 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	if (bSet == true)
 	{
 		// 向上增加仪器
-		if (uiLineDirection == 1)
+		if (uiLineDirection == DirectionTop)
 		{
 		}
 		// 向下增加仪器
-		else if (uiLineDirection == 2)
+		else if (uiLineDirection == DirectionDown)
 		{
 		}
 		// 向左增加仪器
-		else if (uiLineDirection == 3)
+		else if (uiLineDirection == DirectionLeft)
 		{
+			if (GraphInstrumentOnLine == uiOpt)
+			{
+				 if (oRectInstrument.left < m_rectClient.left)
+				{
+					m_pWndHScr->EnableWindow(TRUE);
+					OnOptGraphRect(OptGraphRectAddLeft);
+				}
+			}
+			else if (GraphInstrumentOffLine == uiOpt)
+			{
+				// 部分删除仪器对图形DC的操作
+				if (oRectInstrument.left < m_rectClient.left)
+				{
+					OnOptGraphRect(OptGraphRectDelLeft);
+				}
+			}
 		}
 		// 向右增加仪器
-		else if (uiLineDirection == 4)
+		else if (uiLineDirection == DirectionRight)
 		{
 			if (GraphInstrumentOnLine == uiOpt)
 			{
@@ -247,16 +264,12 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 					OnOptGraphRect(OptGraphRectAddRight);
 				}
 			}
-			if (GraphInstrumentOffLine == uiOpt)
+			else if (GraphInstrumentOffLine == uiOpt)
 			{
 				// 部分删除仪器对图形DC的操作
 				if (oRectInstrument.right + m_iVScrBarInterval > m_rectClient.right)
 				{
 					OnOptGraphRect(OptGraphRectDelRight);
-				}
-				else
-				{
-					m_pWndHScr->EnableWindow(FALSE);
 				}
 			}
 		}
@@ -266,37 +279,37 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	case GraphInstrumentOnLine:
 		if (uiType == InstrumentTypeFDU)
 		{
-			pBkBmp = &m_oBmpFDU1;
+			OnLoadInstrumentBmp(&m_oBmpFDU1, oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top);
 		} 
 		else if (uiType == InstrumentTypeLAUL)
 		{
-			pBkBmp = &m_oBmpLAUL1;
+			OnLoadInstrumentBmp(&m_oBmpLAUL1, oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top);
 		}
 		else if (uiType == InstrumentTypeLAUX)
 		{
-			pBkBmp = &m_oBmpLAUX1;
+			OnLoadInstrumentBmp(&m_oBmpLAUX1, oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top);
 		}
 		else if (uiType == InstrumentTypeLCI)
 		{
-			pBkBmp = &m_oBmpLCI1;
+			OnLoadInstrumentBmp(&m_oBmpLCI1, oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top);
 		}
 		break;
 	case GraphInstrumentIPSet:
 		if (uiType == InstrumentTypeFDU)
 		{
-			pBkBmp = &m_oBmpFDU2;
+			OnLoadInstrumentBmp(&m_oBmpFDU2, oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top);
 		} 
 		else if (uiType == InstrumentTypeLAUL)
 		{
-			pBkBmp = &m_oBmpLAUL2;
+			OnLoadInstrumentBmp(&m_oBmpLAUL2, oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top);
 		}
 		else if (uiType == InstrumentTypeLAUX)
 		{
-			pBkBmp = &m_oBmpLAUX2;
+			OnLoadInstrumentBmp(&m_oBmpLAUX2, oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top);
 		}
 		else if (uiType == InstrumentTypeLCI)
 		{
-			pBkBmp = &m_oBmpLCI2;
+			OnLoadInstrumentBmp(&m_oBmpLCI2, oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top);
 		}
 		break;
 	case GraphInstrumentOffLine:
@@ -307,17 +320,19 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	default:
 		break;
 	}
-	if ((uiOpt == GraphInstrumentOnLine) || (uiOpt == GraphInstrumentIPSet))
-	{
-		memDC.CreateCompatibleDC(&m_dcGraph);			// 创建一个兼容屏幕DC的内存DC：m_MemDc。
-		oldBkBmp = memDC.SelectObject(pBkBmp);				// 将该位图选择到刚创建的内存DC中。
-
-		/*将内存DC里的东西贴到屏幕DC上去*/
-//		pBkBmp->GetBitmap(&BmpInfo);				// 获取位图高宽等信息，保存在位图结构体中
-//		m_dcGraph.BitBlt(oRectInstrument.left,oRectInstrument.top,BmpInfo.bmWidth,BmpInfo.bmHeight,&memDC,0,0,SRCCOPY);
-		m_dcGraph.BitBlt(oRectInstrument.left,oRectInstrument.top,m_uiGridX,m_uiGridY,&memDC,0,0,SRCCOPY);
-		memDC.SelectObject(oldBkBmp);
-	}
+// 	if ((uiOpt == GraphInstrumentOnLine) || (uiOpt == GraphInstrumentIPSet))
+// 	{
+// 		memDC.CreateCompatibleDC(&m_dcGraph);			// 创建一个兼容屏幕DC的内存DC：m_MemDc。
+// 		oldBkBmp = memDC.SelectObject(pBkBmp);				// 将该位图选择到刚创建的内存DC中。
+// 
+// 		/*将内存DC里的东西贴到屏幕DC上去*/
+// //		pBkBmp->GetBitmap(&BmpInfo);				// 获取位图高宽等信息，保存在位图结构体中
+// //		m_dcGraph.BitBlt(oRectInstrument.left,oRectInstrument.top,BmpInfo.bmWidth,BmpInfo.bmHeight,&memDC,0,0,SRCCOPY);
+// 		m_dcGraph.BitBlt(oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top,m_uiGridX,m_uiGridY,&memDC,0,0,SRCCOPY);
+// 		memDC.SelectObject(oldBkBmp);
+// 
+// 		OnLoadInstrumentBmp(, oRectInstrument.left - m_iLeftMovePos,oRectInstrument.top);
+// 	}
 	m_dcGraph.SelectObject(pOldPen);
 	if (bSet == true)
 	{
@@ -360,7 +375,7 @@ void CInstrumentGraph::OnMouseMove(UINT nFlags, CPoint point)
 	m_oGraph oInstrumentGraph;
 	CPoint oTextOutPoint;
 	m_dcGraph.SetTextAlign (TA_LEFT|TA_TOP) ;
-	oTextOutPoint.x = m_rectGraph.left + m_iHScrPos;
+	oTextOutPoint.x = m_rectGraph.left - m_iLeftMovePos + m_iHScrPos - m_iLeftMovePos;
 	oTextOutPoint.y = m_rectGraph.bottom - m_iPosShowInterval;
 
 	oGraphPoint.x = point.x + m_iHScrPos;
@@ -486,18 +501,26 @@ void CInstrumentGraph::OnOptGraphRect(unsigned int uiOpt)
 	{
 		m_rectGraph.right += m_uiGridX + m_uiGridLineX;
 		m_iRightMovePos += m_uiGridX + m_uiGridLineX;
-		m_pWndHScr->SetScrollRange(SB_CTL, 0,m_iRightMovePos,FALSE);
-		m_pWndHScr->SetScrollPos(SB_CTL,m_iRightMovePos,TRUE);
-		m_iHScrPos = m_iRightMovePos;
 	}
 	else if (uiOpt == OptGraphRectDelRight)
 	{
 		m_rectGraph.right -= m_uiGridX + m_uiGridLineX;
 		m_iRightMovePos -= m_uiGridX + m_uiGridLineX;
-		m_pWndHScr->SetScrollRange(SB_CTL, 0,m_iRightMovePos,FALSE);
-		m_pWndHScr->SetScrollPos(SB_CTL,m_iRightMovePos,TRUE);
-		m_iHScrPos = m_iRightMovePos;
 	}
+	else if (uiOpt == OptGraphRectAddLeft)
+	{
+		m_rectGraph.left -= m_uiGridX + m_uiGridLineX;
+		m_iLeftMovePos -= m_uiGridX + m_uiGridLineX;
+	}
+	else if (uiOpt == OptGraphRectDelLeft)
+	{
+		m_rectGraph.left += m_uiGridX + m_uiGridLineX;
+		m_iLeftMovePos += m_uiGridX + m_uiGridLineX;
+	}
+	m_pWndHScr->SetScrollRange(SB_CTL, m_iLeftMovePos,m_iRightMovePos,FALSE);
+//	m_pWndHScr->SetScrollPos(SB_CTL,m_iRightMovePos + m_iLeftMovePos,TRUE);
+//	m_iHScrPos = m_iRightMovePos + m_iLeftMovePos;
+
 	TempDC.CreateCompatibleDC(&m_dcGraph) ;
 	TempBitmap.CreateCompatibleBitmap(&m_dcGraph, m_rectGraph.Width(), m_rectGraph.Height()) ;
 	oldBitmap = (CBitmap *)TempDC.SelectObject(&TempBitmap) ;
@@ -514,6 +537,16 @@ void CInstrumentGraph::OnOptGraphRect(unsigned int uiOpt)
 		else if (uiOpt == OptGraphRectDelRight)
 		{
 			TempDC.BitBlt(0, 0, m_rectGraph.Width(), m_rectGraph.Height(), 
+				&m_dcGraph, 0, 0, SRCCOPY) ;
+		}
+		else if (uiOpt == OptGraphRectAddLeft)
+		{
+			TempDC.BitBlt(m_uiGridX + m_uiGridLineX, 0, m_rectGraph.Width() - m_uiGridX - m_uiGridLineX, m_rectGraph.Height(), 
+				&m_dcGraph, 0, 0, SRCCOPY) ;
+		}
+		else if (uiOpt == OptGraphRectDelLeft)
+		{
+			TempDC.BitBlt(m_uiGridX + m_uiGridLineX, 0, m_rectGraph.Width(), m_rectGraph.Height(), 
 				&m_dcGraph, 0, 0, SRCCOPY) ;
 		}
 		if (m_pbitmapOldGrid != NULL)
@@ -547,10 +580,15 @@ void CInstrumentGraph::OnShowTextOut(CDC* pDC, CPoint point, CString str)
 void CInstrumentGraph::OnReset(void)
 {
 	m_iRightMovePos = 0;
+	m_iLeftMovePos = 0;
 	m_iHScrPos = 0;
+	m_bLButtonSelect = false;
 	m_rectGraph = m_rectClient;
 	m_rectGraph.right -= m_iVScrBarInterval;
 	m_rectGraph.bottom -= m_iHScrBarInterval;
+
+	m_iLauxPosX = m_rectGraph.right / 2;
+	m_iLauxPosY = m_rectGraph.bottom / 2;
 	CClientDC dc(this) ;  
 	CBitmap bitmapGrid;
 	// 如果还没有绘图DC，则为其设置一个内存DC
@@ -579,12 +617,15 @@ void CInstrumentGraph::OnLButtonDown(UINT nFlags, CPoint point)
 	unsigned int uiIP = 0;
 	oGraphPoint.x = point.x + m_iHScrPos;
 	oGraphPoint.y = point.y;
-	if (TRUE == OnSelectInstrument(oGraphPoint, oInstrumentGraph))
+	if (m_bLButtonSelect == true)
 	{
-		if (oInstrumentGraph.uiType == InstrumentTypeFDU)
+		if (TRUE == OnSelectInstrument(oGraphPoint, oInstrumentGraph))
 		{
-			uiIP = IPSetAddrStart + oInstrumentGraph.iUnitIndex * IPSetAddrInterval;
-			::SendMessage(m_pWnd->m_hWnd, WM_DLGADCGRAPHSHOW, uiIP, oInstrumentGraph.uiFDUIndex);
+			if (oInstrumentGraph.uiType == InstrumentTypeFDU)
+			{
+				uiIP = IPSetAddrStart + oInstrumentGraph.iUnitIndex * IPSetAddrInterval;
+				::SendMessage(m_pWnd->m_hWnd, WM_DLGADCGRAPHSHOW, uiIP, oInstrumentGraph.uiFDUIndex);
+			}
 		}
 	}
 	CWnd::OnLButtonDown(nFlags, point);
@@ -598,4 +639,18 @@ void CInstrumentGraph::OnFillMsgAreaBkColor(void)
 	oShowRect.top = m_rectGraph.bottom - m_iPosShowInterval;
 	oShowRect.bottom = m_rectGraph.bottom;
 	OnFillBkColor(&m_dcGraph, oShowRect);
+}
+// 载入仪器图像
+void CInstrumentGraph::OnLoadInstrumentBmp(CBitmap* pBmp, int iBmpX, int iBmpY)
+{
+	CDC memDC;
+	CBitmap* oldBkBmp;
+	memDC.CreateCompatibleDC(&m_dcGraph);			// 创建一个兼容屏幕DC的内存DC：m_MemDc。
+	oldBkBmp = memDC.SelectObject(pBmp);				// 将该位图选择到刚创建的内存DC中。
+
+	/*将内存DC里的东西贴到屏幕DC上去*/
+	//		pBkBmp->GetBitmap(&BmpInfo);				// 获取位图高宽等信息，保存在位图结构体中
+	//		m_dcGraph.BitBlt(oRectInstrument.left,oRectInstrument.top,BmpInfo.bmWidth,BmpInfo.bmHeight,&memDC,0,0,SRCCOPY);
+	m_dcGraph.BitBlt(iBmpX, iBmpY, m_uiGridX, m_uiGridY, &memDC, 0, 0, SRCCOPY);
+	memDC.SelectObject(oldBkBmp);
 }
