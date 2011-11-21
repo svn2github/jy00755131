@@ -6,17 +6,17 @@
 	</UartToUDP>
 	<UDPPortMonitoring>
 		<UDPPortMonitoringHost HostIP="127.0.0.1" HostRecPort="36865" HostSendPort="33281"/>
-		<UDPPortMonitoringServer ServerIP="192.168.0.77" ServerRecPort="33282" ServerSendPort="36866"/>
+		<UDPPortMonitoringServer ServerIP="192.168.1.11" ServerRecPort="33282" ServerSendPort="34952"/>
 		<UDPPortMonitoringSetup AutoSaveLength="1024"/>
 	</UDPPortMonitoring>
 	<Sample>
 		<SampleSetup SaveADCFrameNum="406" SendPort="33282"/>
 	</Sample>
 	<ADCSettings>
-		<ADCControl ADC_SYNC="0" ADC_MODE="1" ADC_SPS="0" ADC_PHS="0" ADC_FILTER="2" ADC_MUX="0" ADC_CHOP="1" ADC_PGA="0"/>
-		<HPFSettings HPFLow="50" HPFHigh="3"/>
+		<ADCControl ADC_SYNC="0" ADC_MODE="1" ADC_SPS="4" ADC_PHS="0" ADC_FILTER="3" ADC_MUX="0" ADC_CHOP="1" ADC_PGA="0"/>
+		<HPFSettings HPFLow="86" HPFHigh="19"/>
 	</ADCSettings>
 	<GraphShow>
-		<GraphShowSetup IPAddrAim="192.168.0.11" SendPort="0x9401" RcvPort="0x7800" GraphShowType="纵向显示" XMLFilePath="C:\Documents and Settings\Administrator\桌面\工作\Matrix428\绘图程序_2011_5_24_1\绘图程序\MatrixTestSoft.xml"/>
+		<GraphShowSetup IPAddrAim="127.0.0.1" SendPort="0x9401" RcvPort="0x7800" GraphShowType="横向显示" XMLFilePath="MatrixTestSoft.xml"/>
 	</GraphShow>
 </MatrixTestSoft>

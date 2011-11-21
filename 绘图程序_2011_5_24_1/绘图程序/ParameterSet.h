@@ -1,6 +1,6 @@
 #pragma once
 #include "afxcmn.h"
-
+#include "chartdir.h"
 
 // CParameterSet 对话框
 
@@ -53,4 +53,16 @@ public:
 	bool SaveGraphShowSetup(void);
 	// 保存XML文件路径
 	bool SaveXmlFilePath(void);
+	afx_msg void OnCbnSelchangeComboMarkhigh();
+	afx_msg void OnCbnSelchangeComboMarklow();
+	// 选择颜色
+	int OnSelectColor(void);
+	// 高于Mark线填充的颜色
+	int m_iMarkHighColor;
+	// 低于Mark线的填充颜色
+	int m_iMarkLowColor;
+	// Combo控件的数值变量
+	int m_iComboMarkHigh;
+	// Combo控件的数值变量
+	int m_iComboMarkLow;
 };

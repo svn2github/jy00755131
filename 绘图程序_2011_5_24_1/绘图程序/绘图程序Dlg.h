@@ -204,4 +204,10 @@ public:
 	afx_msg void OnBnClickedButtonParameterset();
 	// 载入绘图软件License
 	bool LoadChartDirLicense(void);
+	// 抽样率数值
+	UINT m_uiEditSampleRate;
+	// 线间隔数值
+	double m_dbEditLineInterval;
+	// 线缩放数值
+	double m_dbEditLineZoom;
 };

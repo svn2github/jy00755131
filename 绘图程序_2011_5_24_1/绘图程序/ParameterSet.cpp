@@ -18,6 +18,10 @@ CParameterSet::CParameterSet(CWnd* pParent /*=NULL*/)
 	, m_csShowGraphType(_T("纵向显示"))
 	, m_csXMLPath(_T("MatrixTestSoft.xml"))
 	, m_uiShowDirection(1)
+	, m_iMarkHighColor(Chart::Transparent)
+	, m_iMarkLowColor(Chart::Transparent)
+	, m_iComboMarkHigh(0)
+	, m_iComboMarkLow(0)
 {
 }
 
@@ -31,12 +35,16 @@ void CParameterSet::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_SENDPORT, m_csSendPort);
 	DDX_Text(pDX, IDC_EDIT_RECVPORT, m_csRcvPort);
 	DDX_CBString(pDX, IDC_COMBO_SHOWGRAPHTYPE, m_csShowGraphType);
+	DDX_CBIndex(pDX, IDC_COMBO_MARKHIGH, m_iComboMarkHigh);
+	DDX_CBIndex(pDX, IDC_COMBO_MARKLOW, m_iComboMarkLow);
 }
 
 
 BEGIN_MESSAGE_MAP(CParameterSet, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_APPLY, &CParameterSet::OnBnClickedButtonApply)
 	ON_BN_CLICKED(IDC_BUTTON_SELECTXMLPATH, &CParameterSet::OnBnClickedButtonSelectxmlpath)
+	ON_CBN_SELCHANGE(IDC_COMBO_MARKHIGH, &CParameterSet::OnCbnSelchangeComboMarkhigh)
+	ON_CBN_SELCHANGE(IDC_COMBO_MARKLOW, &CParameterSet::OnCbnSelchangeComboMarklow)
 END_MESSAGE_MAP()
 
 
@@ -309,4 +317,58 @@ bool CParameterSet::SaveXmlFilePath(void)
 	{
 		return false;
 	}
+}
+
+void CParameterSet::OnCbnSelchangeComboMarkhigh()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	if (m_iComboMarkHigh == 0)
+	{
+		m_iMarkHighColor = Chart::Transparent;
+	}
+	else if (m_iComboMarkHigh == 1)
+	{
+		m_iMarkHighColor = OnSelectColor();
+	}
+}
+
+void CParameterSet::OnCbnSelchangeComboMarklow()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	if (m_iComboMarkLow == 0)
+	{
+		m_iMarkLowColor = Chart::Transparent;
+	}
+	else if (m_iComboMarkLow == 1)
+	{
+		m_iMarkLowColor = OnSelectColor();
+	}
+}
+
+// 选择颜色
+int CParameterSet::OnSelectColor(void)
+{
+	CColorDialog colorDialog;
+	int reasult = colorDialog.DoModal();
+	int iColor = 0;
+	int rr = 0;
+	int gg = 0;
+	int bb = 0;
+	//用这两行代码可以得到那个框框。这时候就可以在上面选择自己
+	//要用的颜色了。
+	//如果按下颜色对话框的OK键
+	if (reasult == IDOK)
+	{
+		iColor = colorDialog.GetColor();//把对话框选中的颜色给变量iColor 0x00bbggrr
+
+		Invalidate();//销毁当前页面，刷新到颜色修改后的页面
+	}
+	// 将0x00bbggrr转换为0x00rrggbb
+	rr = iColor & 0xff;
+	gg = (iColor >> 8) & 0xff;
+	bb = (iColor >> 16) & 0xff;
+	iColor = (rr << 16) + (gg << 8) + bb;
+	return iColor;
 }

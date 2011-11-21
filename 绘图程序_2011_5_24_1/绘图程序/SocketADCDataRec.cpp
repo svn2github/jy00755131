@@ -41,7 +41,6 @@ void CSocketADCDataRec::OnReceive(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	int ret=0;
-	unsigned short uiPort = 0;
 	ret = Receive(m_oADCRecFrameBuf, ADCRecFrameBufSize);
 	if(ret == ADCRecFrameBufSize) 
 	{
@@ -286,5 +285,5 @@ void CSocketADCDataRec::OnMakeAndSendSetFrame(unsigned short usSetOperation)
 	m_oADCGraphSetFrameBuf[iPos] = SndFrameBufInit;
 	unsigned int uiSendPort = 0;
 	_stscanf_s(m_pParameterSet->m_csSendPort,_T("%x"), &uiSendPort);
-	int icount = SendTo(&m_oADCGraphSetFrameBuf, ADCSendFrameBufSize, uiSendPort, m_pParameterSet->m_csIPAddrAim);
+	SendTo(&m_oADCGraphSetFrameBuf, ADCSendFrameBufSize, uiSendPort, m_pParameterSet->m_csIPAddrAim);
 }

@@ -50,8 +50,6 @@ using std::vector;
 #define GreenColor							0x00FF00
 // 蓝色RGB
 #define BlueColor								0x0000FF
-// 粉红RGB
-#define PinkColor								0xFF8888
 // _________ADC数据接受___________
 // 接收ADC数据一帧的缓冲区大小
 #define ADCRecFrameBufSize			256
