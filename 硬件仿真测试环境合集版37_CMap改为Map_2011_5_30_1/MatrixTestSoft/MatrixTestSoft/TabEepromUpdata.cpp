@@ -171,7 +171,7 @@ void CTabEepromUpdata::OnBnClickedButtonUpdataInstrumentlist()
 		{
 			if (iter->second->m_bIPSetOK == true)
 			{
-				str.Format(_T("SN = %04x,	IP = %d"), iter->second->m_uiSN, iter->second->m_uiIPAddress);
+				str.Format(_T("SN = 0x%04x,	IP = %d"), iter->second->m_uiSN, iter->second->m_uiIPAddress);
 				m_ctrlListInstrument.AddString(str);
 			}
 		}
@@ -380,7 +380,7 @@ void CTabEepromUpdata::OnBnClickedButtonWriteEeprom()
 			int n = m_ctrlListUpdata.GetTextLen(nIndex);
 			m_ctrlListUpdata.GetText(nIndex, str.GetBuffer(n));
 			str.ReleaseBuffer();
-			_stscanf_s(str, _T("SN = %04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
+			_stscanf_s(str, _T("SN = 0x%04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
 			strOut = _T("向 ") + str + _T(" 的仪器写入EEPROM！");
 			m_ctrlListMessage.AddString(strOut);
 			OnWriteEeprom();
@@ -445,7 +445,7 @@ void CTabEepromUpdata::OnBnClickedButtonReadEeprom()
 	int n = m_ctrlListUpdata.GetTextLen(nIndex);
 	m_ctrlListUpdata.GetText(nIndex, str.GetBuffer(n));
 	str.ReleaseBuffer();
-	_stscanf_s(str, _T("SN = %04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
+	_stscanf_s(str, _T("SN = 0x%04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
 	OnReadEeprom();
 	strOut = _T("读取 ") + str + _T(" 仪器的EEPROM！");
 	m_ctrlListMessage.AddString(strOut);
@@ -479,7 +479,7 @@ void CTabEepromUpdata::OnBnClickedButtonStartCheck()
 		int n = m_ctrlListUpdata.GetTextLen(nIndex);
 		m_ctrlListUpdata.GetText(nIndex, str.GetBuffer(n));
 		str.ReleaseBuffer();
-		_stscanf_s(str, _T("SN = %04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
+		_stscanf_s(str, _T("SN = 0x%04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
 		OnCheckEepromOne(m_uiSN, m_uiInstrumentIP);
 		strOut = _T("校验 ") + str + _T(" 仪器的EEPROM！");
 		m_ctrlListMessage.AddString(strOut);
@@ -681,7 +681,7 @@ void CTabEepromUpdata::OnWriteEeprom(void)
 		int n = m_ctrlListUpdata.GetTextLen(m_iUpdataInstrumentCount);
 		m_ctrlListUpdata.GetText(m_iUpdataInstrumentCount, str.GetBuffer(n));
 		str.ReleaseBuffer();
-		_stscanf_s(str, _T("SN = %04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
+		_stscanf_s(str, _T("SN = 0x%04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
 		strOut = _T("向 ") + str + _T(" 的仪器写入EEPROM！");
 		m_ctrlListMessage.AddString(strOut);
 	}
@@ -737,7 +737,7 @@ void CTabEepromUpdata::OnReadEeprom(void)
 		int n = m_ctrlListUpdata.GetTextLen(m_iUpdataInstrumentCount);
 		m_ctrlListUpdata.GetText(m_iUpdataInstrumentCount, str.GetBuffer(n));
 		str.ReleaseBuffer();
-		_stscanf_s(str, _T("SN = %04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
+		_stscanf_s(str, _T("SN = 0x%04x,	IP = %d"), &m_uiSN, &m_uiInstrumentIP);
 		strOut = _T("校验 ") + str + _T(" 仪器的EEPROM！");
 		m_ctrlListMessage.AddString(strOut);
 //		m_ctrlListUpdata.DeleteString(m_iUpdataInstrumentCount);
@@ -920,7 +920,7 @@ void CTabEepromUpdata::OnFindInListBox(CListBox* pListBox, unsigned int uiInstru
 		int n = pListBox->GetTextLen(i);
 		pListBox->GetText(i, str.GetBuffer(n));
 		str.ReleaseBuffer();
-		_stscanf_s(str, _T("SN = %04x,	IP = %d"), &uiSN, &uiIP);
+		_stscanf_s(str, _T("SN = 0x%04x,	IP = %d"), &uiSN, &uiIP);
 		if ((uiSN == uiInstrumentSN) && (uiIP == uiInstrumentIP))
 		{
 			if (uiOpt == EEPROMListDelete)
@@ -936,7 +936,7 @@ void CTabEepromUpdata::OnFindInListBox(CListBox* pListBox, unsigned int uiInstru
 	}
 	if (uiOpt == EEPROMListAdd)
 	{
-		str.Format(_T("SN = %04x,	IP = %d"), uiInstrumentSN, uiInstrumentIP);
+		str.Format(_T("SN = 0x0x%04x,	IP = %d"), uiInstrumentSN, uiInstrumentIP);
 		pListBox->AddString(str);
 	}
 }

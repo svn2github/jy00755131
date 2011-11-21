@@ -383,7 +383,7 @@ void CInstrumentList::SetInstrumentLocation(CInstrument* pInstrument)
 		pInstrument->m_uiFDULocation = uiFDULocation;
 		//		pInstrumentAdd->m_uiFDULocation = uiLocation - 1;
 	}
-	str.Format(_T("仪器SN%x，仪器首包时刻%d，仪器位置%d，采集站位置%d，仪器类型%d！"), pInstrument->m_uiSN, 
+	str.Format(_T("仪器SN为0x%x，仪器首包时刻%d，仪器位置%d，采集站位置%d，仪器类型%d！"), pInstrument->m_uiSN, 
 		pInstrument->m_uiHeadFrameTime, pInstrument->m_iLocation, pInstrument->m_uiFDULocation, pInstrument->m_uiInstrumentType);
 	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::SetInstrumentLocation"), str, SuccessStatus);
 }
