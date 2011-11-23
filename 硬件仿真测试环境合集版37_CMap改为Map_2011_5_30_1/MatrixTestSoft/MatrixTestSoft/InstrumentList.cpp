@@ -411,7 +411,8 @@ void CInstrumentList::TailFrameDeleteInstrument(CInstrument* pInstrument)
 	// 删除大线方向尾包之后的仪器
 	else
 	{
-//		TailFrameDeleteInstrumentLine(pInstrument);
+		// 删除该站之后IP地址设置成功的站
+		TailFrameDeleteInstrumentLine(pInstrument);
 	}
 }	
 
@@ -660,6 +661,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 	for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
 	{
 		if ((NULL != iter->second)
+			&& (iter->second->m_bIPSetOK == true)
 			&& (iter->second->m_iLineIndex == pInstrument->m_iLineIndex))
 		{
 			if (((pInstrument->m_uiLineDirection == DirectionLeft)
@@ -686,6 +688,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 	for(iter2=m_oInstrumentSNMap.begin(); iter2!=m_oInstrumentSNMap.end();)
 	{
 		if ((NULL != iter2->second)
+			&& (iter2->second->m_bIPSetOK == true)
 			&& (iter2->second->m_iLineIndex == pInstrument->m_iLineIndex))
 		{
 			if (((pInstrument->m_uiLineDirection == DirectionLeft)
@@ -703,6 +706,14 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 				m_uiCountFree++;
 				// 将仪器从SN索引表中删除
 				m_oInstrumentSNMap.erase(iter2++);
+				if (pInstrument->m_uiLineDirection == DirectionLeft)
+				{
+					pInstrument->m_pInstrumentLeft = NULL;
+				}
+				else if (pInstrument->m_uiLineDirection == DirectionRight)
+				{
+					pInstrument->m_pInstrumentRight = NULL;
+				}
 			}
 			else
 			{
@@ -713,14 +724,6 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 		{
 			iter2++;
 		}
-	}
-	if (pInstrument->m_uiLineDirection == DirectionLeft)
-	{
-		pInstrument->m_pInstrumentLeft = NULL;
-	}
-	else if (pInstrument->m_uiLineDirection == DirectionRight)
-	{
-		pInstrument->m_pInstrumentRight = NULL;
 	}
 }
 
@@ -736,6 +739,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 		for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
 		{
 			if ((NULL != iter->second)
+				&& (iter->second->m_bIPSetOK == true)
 				&& (iter->second->m_iLineIndex < pInstrument->m_iLineIndex))
 			{
 				str.Format(_T("清理尾包之后的仪器IP为%d"), iter->first);
@@ -752,6 +756,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 		for(iter2=m_oInstrumentSNMap.begin(); iter2!=m_oInstrumentSNMap.end();)
 		{
 			if ((NULL != iter2->second)
+				&& (iter2->second->m_bIPSetOK == true)
 				&& (iter2->second->m_iLineIndex < pInstrument->m_iLineIndex))
 			{
 				m_pInstrumentGraph->DrawUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex, 
@@ -765,13 +770,13 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 				m_uiCountFree++;
 				// 将仪器从SN索引表中删除
 				m_oInstrumentSNMap.erase(iter2++);
+				pInstrument->m_pInstrumentTop = NULL;
 			}
 			else
 			{
 				iter2++;
 			}
 		}
-		pInstrument->m_pInstrumentTop = NULL;
 	}
 	else if (pInstrument->m_pInstrumentDown != NULL)
 	{
@@ -779,6 +784,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 		for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
 		{
 			if ((NULL != iter->second)
+				&& (iter->second->m_bIPSetOK == true)
 				&& (iter->second->m_iLineIndex > pInstrument->m_iLineIndex))
 			{
 				str.Format(_T("清理尾包之后的仪器IP为%d"), iter->first);
@@ -795,6 +801,7 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 		for(iter2=m_oInstrumentSNMap.begin(); iter2!=m_oInstrumentSNMap.end();)
 		{
 			if ((NULL != iter2->second)
+				&& (iter2->second->m_bIPSetOK == true)
 				&& (iter2->second->m_iLineIndex > pInstrument->m_iLineIndex))
 			{
 				m_pInstrumentGraph->DrawUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex, 
@@ -808,13 +815,13 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 				m_uiCountFree++;
 				// 将仪器从SN索引表中删除
 				m_oInstrumentSNMap.erase(iter2++);
+				pInstrument->m_pInstrumentDown = NULL;
 			}
 			else
 			{
 				iter2++;
 			}
 		}
-		pInstrument->m_pInstrumentDown = NULL;
 	}
 }
 
@@ -886,4 +893,50 @@ void CInstrumentList::OnGetFduIndex(void)
 		uiCount = 0;
 	}
 	oRoutList.clear();
+}
+// 按照仪器路由删除该路由方向上的仪器
+void CInstrumentList::TailFrameDeleteInstrumentRout(unsigned int uiRoutAddr)
+{
+	// hash_map迭代器
+	hash_map<unsigned int, CInstrument*>::iterator  iter;
+	hash_map<unsigned int, CInstrument*>::iterator  iter2;
+	CString str = _T("");
+	// 删除大线方向尾包之后的仪器
+	for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
+	{
+		if ((NULL != iter->second)
+			&& (iter->second->m_uiRoutAddress == uiRoutAddr))
+		{
+			str.Format(_T("清理尾包之后的仪器IP为%d"), iter->first);
+			m_pLogFile->OnWriteLogFile(_T("CInstrumentList::TailFrameDeletRoutInstrument"), str, WarningStatus);
+			// 将仪器从IP索引表中删除
+			m_oInstrumentIPMap.erase(iter++);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+	// 删除大线方向尾包之后的仪器
+	for(iter2=m_oInstrumentSNMap.begin(); iter2!=m_oInstrumentSNMap.end();)
+	{
+		if ((NULL != iter2->second)
+			&& (iter2->second->m_uiRoutAddress == uiRoutAddr))
+		{
+			m_pInstrumentGraph->DrawUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex, 
+				iter2->second->m_uiLineDirection, iter2->second->m_uiInstrumentType, iter2->second->m_uiSN, 
+				GraphInstrumentOffLine, true);
+			// 重置仪器
+			iter2->second->OnReset();
+			// 仪器加在空闲仪器队列尾部
+			m_olsInstrumentFree.push_back(iter2->second);
+			m_uiCountFree++;
+			// 将仪器从SN索引表中删除
+			m_oInstrumentSNMap.erase(iter2++);
+		}
+		else
+		{
+			iter2++;
+		}
+	}
 }

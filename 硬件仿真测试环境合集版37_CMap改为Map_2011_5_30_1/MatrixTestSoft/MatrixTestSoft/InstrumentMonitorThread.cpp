@@ -57,8 +57,8 @@ int CInstrumentMonitorThread::Run()
 			break;
 		}
 		//@@@@@@@@@@@暂不删除仪器
-// 	  	OnMonitorLAUX();
-//   	  	OnMonitorFDU();
+ 	  	OnMonitorLAUX();
+  	  	OnMonitorFDU();
 		if (m_bclose == true)
 		{
 			break;
@@ -163,10 +163,17 @@ void CInstrumentMonitorThread::OnMonitorFDU(void)
 				m_Sec_InstrumentMonitor.Lock();
 				m_pTailFrame->m_bTailRecFDU = FALSE;
 				m_Sec_InstrumentMonitor.Unlock();
-				// 连续5秒未收到采集站尾包则删除交叉站后所有仪器
+				// 连续5秒未收到采集站尾包则删除该路由方向的所有仪器
 				if(TRUE == m_pInstrumentList->GetInstrumentFromSNMap(m_pTailFrame->m_uiSN, pInstrument))
 				{
-					m_pInstrumentList->TailFrameDeleteInstrument(pInstrument);
+					if (pInstrument->m_pInstrumentRight != NULL)
+					{
+						m_pInstrumentList->TailFrameDeleteInstrumentRout(pInstrument->m_uiRoutAddressRight);
+					}
+					else if (pInstrument->m_pInstrumentLeft != NULL)
+					{
+						m_pInstrumentList->TailFrameDeleteInstrumentRout(pInstrument->m_uiRoutAddressLeft);
+					}
 				}
 				OnResetFDUCounter();
 				OnStopOperation();

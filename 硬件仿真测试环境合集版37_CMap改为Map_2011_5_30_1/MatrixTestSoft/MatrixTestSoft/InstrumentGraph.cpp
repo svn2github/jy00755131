@@ -54,6 +54,7 @@ CInstrumentGraph::CInstrumentGraph()
 	m_iLauxPosY = 200;
 	m_pWndVScr = NULL;
 	m_pWndHScr = NULL;
+	m_pWndStatic = NULL;
 }
 
 CInstrumentGraph::~CInstrumentGraph()
@@ -86,14 +87,22 @@ int CInstrumentGraph::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_rectClient.right = lpCreateStruct->cx;
 	m_rectClient.top = 0;
 	m_rectClient.bottom = lpCreateStruct->cy;
+	// 创建纵向滚动条
 	static HWND childhwnd1=CreateWindow(TEXT("scrollbar"),NULL,WS_CHILD|WS_VISIBLE|SBS_VERT,
 		m_rectClient.right - m_iVScrBarInterval,m_rectClient.top,m_iVScrBarInterval,m_rectClient.bottom,
 		this->m_hWnd,(HMENU)1,(HINSTANCE)GetWindowLong(this->m_hWnd,GWL_HINSTANCE),NULL);
+	// 创建横向滚动条
 	static HWND childhwnd2=CreateWindow(TEXT("scrollbar"),NULL,WS_CHILD|WS_VISIBLE|SBS_HORZ,
 		m_rectClient.left,m_rectClient.bottom - m_iHScrBarInterval,m_rectClient.right - m_iVScrBarInterval,m_iHScrBarInterval,
 		this->m_hWnd,(HMENU)1,(HINSTANCE)GetWindowLong(this->m_hWnd,GWL_HINSTANCE),NULL);
+	// 创建STATIC控件
+	static HWND childhwnd3=CreateWindow(TEXT("static"),NULL,WS_CHILD|WS_VISIBLE,
+		m_rectClient.left,m_rectClient.bottom - m_iHScrBarInterval - m_iPosShowInterval,m_rectClient.right - m_iVScrBarInterval,m_iPosShowInterval,
+		this->m_hWnd,(HMENU)1,(HINSTANCE)GetWindowLong(this->m_hWnd,GWL_HINSTANCE),NULL);
+
 	m_pWndVScr = FromHandle(childhwnd1);
 	m_pWndHScr = FromHandle(childhwnd2);
+	m_pWndStatic = FromHandle(childhwnd3);
 	m_oBmpFDU1.LoadBitmap(IDB_BITMAP_FDU1);
 	m_oBmpFDU2.LoadBitmap(IDB_BITMAP_FDU2);
 	m_oBmpLAUL1.LoadBitmap(IDB_BITMAP_LAUL1);
@@ -373,10 +382,10 @@ void CInstrumentGraph::OnMouseMove(UINT nFlags, CPoint point)
 	CPoint oGraphPoint;
 	CString str = _T("");
 	m_oGraph oInstrumentGraph;
-	CPoint oTextOutPoint;
-	m_dcGraph.SetTextAlign (TA_LEFT|TA_TOP) ;
-	oTextOutPoint.x = m_rectGraph.left - m_iLeftMovePos + m_iHScrPos - m_iLeftMovePos;
-	oTextOutPoint.y = m_rectGraph.bottom - m_iPosShowInterval;
+//	CPoint oTextOutPoint;
+//	m_dcGraph.SetTextAlign (TA_LEFT|TA_TOP) ;
+// 	oTextOutPoint.x = m_rectGraph.left - m_iLeftMovePos + m_iHScrPos - m_iLeftMovePos;
+// 	oTextOutPoint.y = m_rectGraph.bottom - m_iPosShowInterval;
 
 	oGraphPoint.x = point.x + m_iHScrPos;
 	oGraphPoint.y = point.y;
@@ -384,7 +393,8 @@ void CInstrumentGraph::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		str.Format(_T("线号 = %d    点号 = %d    SN = 0x%04x    "), oInstrumentGraph.iLineIndex, 
 			oInstrumentGraph.iUnitIndex, oInstrumentGraph.uiSN);
-		OnShowTextOut(&m_dcGraph, oTextOutPoint,  str);
+//		OnShowTextOut(&m_dcGraph, oTextOutPoint,  str);
+		m_pWndStatic->SetWindowText(str);
 	} 
 	else
 	{
@@ -546,8 +556,8 @@ void CInstrumentGraph::OnOptGraphRect(unsigned int uiOpt)
 		}
 		else if (uiOpt == OptGraphRectDelLeft)
 		{
-			TempDC.BitBlt(m_uiGridX + m_uiGridLineX, 0, m_rectGraph.Width(), m_rectGraph.Height(), 
-				&m_dcGraph, 0, 0, SRCCOPY) ;
+			TempDC.BitBlt(0, 0, m_rectGraph.Width(), m_rectGraph.Height(), 
+				&m_dcGraph, m_uiGridX + m_uiGridLineX, 0, SRCCOPY) ;
 		}
 		if (m_pbitmapOldGrid != NULL)
 		{
@@ -633,12 +643,13 @@ void CInstrumentGraph::OnLButtonDown(UINT nFlags, CPoint point)
 // 将信息显示区域填充为背景色
 void CInstrumentGraph::OnFillMsgAreaBkColor(void)
 {
-	CRect oShowRect;
-	oShowRect.left = 0;
-	oShowRect.right = m_rectGraph.right;
-	oShowRect.top = m_rectGraph.bottom - m_iPosShowInterval;
-	oShowRect.bottom = m_rectGraph.bottom;
-	OnFillBkColor(&m_dcGraph, oShowRect);
+// 	CRect oShowRect;
+// 	oShowRect.left = 0;
+// 	oShowRect.right = m_rectGraph.right;
+// 	oShowRect.top = m_rectGraph.bottom - m_iPosShowInterval;
+// 	oShowRect.bottom = m_rectGraph.bottom;
+// 	OnFillBkColor(&m_dcGraph, oShowRect);
+	m_pWndStatic->SetWindowText(_T(""));
 }
 // 载入仪器图像
 void CInstrumentGraph::OnLoadInstrumentBmp(CBitmap* pBmp, int iBmpX, int iBmpY)

@@ -460,14 +460,14 @@ END
 // Bitmap
 //
 
-IDB_BITMAP_FDU1         BITMAP                  "res\\bitmap1.bmp"
-IDB_BITMAP_LAUX2        BITMAP                  "res\\bitmap2.bmp"
-IDB_BITMAP_LAUX1        BITMAP                  "res\\bmp00001.bmp"
-IDB_BITMAP_FDU2         BITMAP                  "res\\bmp00002.bmp"
-IDB_BITMAP_LAUL1        BITMAP                  "res\\bmp00003.bmp"
-IDB_BITMAP_LAUL2        BITMAP                  "res\\bmp00004.bmp"
-IDB_BITMAP_LCI1         BITMAP                  "res\\bmp00005.bmp"
-IDB_BITMAP_LCI2         BITMAP                  "res\\bitmap3.bmp"
+IDB_BITMAP_FDU1         BITMAP                  "res\\采集站.bmp"
+IDB_BITMAP_LAUX2        BITMAP                  "res\\LAUX(上线).bmp"
+IDB_BITMAP_LAUX1        BITMAP                  "res\\LAUX.bmp"
+IDB_BITMAP_FDU2         BITMAP                  "res\\采集站（上线）.bmp"
+IDB_BITMAP_LAUL1        BITMAP                  "res\\LAUL.bmp"
+IDB_BITMAP_LAUL2        BITMAP                  "res\\LAUL(上线).bmp"
+IDB_BITMAP_LCI1         BITMAP                  "res\\LCI.bmp"
+IDB_BITMAP_LCI2         BITMAP                  "res\\LCI(上线).bmp"
 #endif    // 中文(中华人民共和国) resources
 /////////////////////////////////////////////////////////////////////////////
 

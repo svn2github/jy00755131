@@ -89,4 +89,6 @@ public:
 	bool OnCheckTailTimeReturn(void);
 	// 得到采集站设备序号
 	void OnGetFduIndex(void);
+	// 按照仪器路由删除该路由方向上的仪器
+	void TailFrameDeleteInstrumentRout(unsigned int uiRoutAddr);
 };

@@ -62,8 +62,6 @@ public:
 	CString m_csIPSend;
 	// 自动保存文件大小
 	int m_iSaveSize;
-	// 显示监测信息变量
-	BOOL m_bShowMessage;
 	// 日志类指针
 	CLogFile* m_pLogFile;
 
@@ -87,4 +85,6 @@ public:
 	afx_msg void OnBnClickedButtonReset();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedCheckShowmessage();
+	// 显示接收发送帧信息
+	void OnShowMessage(BOOL bShow);
 };

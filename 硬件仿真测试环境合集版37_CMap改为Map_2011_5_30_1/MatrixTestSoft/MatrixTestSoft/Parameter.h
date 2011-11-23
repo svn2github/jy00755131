@@ -129,7 +129,7 @@ using std::wstring;
 // 交叉站尾包稳定计数
 #define TailFrameStableLAUXCount		8
 // 采集站尾包计数
-#define TailFrameCount							6
+#define TailFrameCount							5
 // 采集站尾包稳定计数
 #define TailFrameStableFDUCount			10
 // 尾包查询计数

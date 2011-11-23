@@ -63,6 +63,8 @@ private:
 	CWnd* m_pWndVScr;
 	// 横向滚动条CWnd指针
 	CWnd* m_pWndHScr;
+	// 静态控件CWnd指针
+	CWnd* m_pWndStatic;
 	//定义一个位图对象
 	CBitmap m_oBmpFDU1;
 	//定义一个位图对象

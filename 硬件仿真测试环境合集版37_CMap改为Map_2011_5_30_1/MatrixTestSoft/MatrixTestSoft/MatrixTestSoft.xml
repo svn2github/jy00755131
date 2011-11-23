@@ -10,10 +10,10 @@
 		<UDPPortMonitoringSetup AutoSaveLength="1024"/>
 	</UDPPortMonitoring>
 	<Sample>
-		<SampleSetup SaveADCFrameNum="406" SendPort="33282"/>
+		<SampleSetup SaveADCFrameNum="406" SendPort="34952"/>
 	</Sample>
 	<ADCSettings>
-		<ADCControl ADC_SYNC="0" ADC_MODE="1" ADC_SPS="4" ADC_PHS="0" ADC_FILTER="3" ADC_MUX="0" ADC_CHOP="1" ADC_PGA="0"/>
-		<HPFSettings HPFLow="86" HPFHigh="19"/>
+		<ADCControl ADC_SYNC="0" ADC_MODE="1" ADC_SPS="0" ADC_PHS="0" ADC_FILTER="3" ADC_MUX="0" ADC_CHOP="1" ADC_PGA="0"/>
+		<HPFSettings HPFLow="52" HPFHigh="1"/>
 	</ADCSettings>
 </MatrixTestSoft>
