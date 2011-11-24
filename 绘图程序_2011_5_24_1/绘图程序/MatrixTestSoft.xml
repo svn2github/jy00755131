@@ -17,6 +17,6 @@
 		<HPFSettings HPFLow="86" HPFHigh="19"/>
 	</ADCSettings>
 	<GraphShow>
-		<GraphShowSetup IPAddrAim="127.0.0.1" SendPort="0x9401" RcvPort="0x7800" GraphShowType="横向显示" XMLFilePath="MatrixTestSoft.xml"/>
+		<GraphShowSetup IPAddrAim="127.0.0.1" SendPort="0x9401" RcvPort="0x7800" GraphShowType="纵向显示" XMLFilePath="MatrixTestSoft.xml"/>
 	</GraphShow>
 </MatrixTestSoft>

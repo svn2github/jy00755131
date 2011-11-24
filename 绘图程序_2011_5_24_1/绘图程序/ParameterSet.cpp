@@ -12,16 +12,16 @@ IMPLEMENT_DYNAMIC(CParameterSet, CDialog)
 
 CParameterSet::CParameterSet(CWnd* pParent /*=NULL*/)
 	: CDialog(CParameterSet::IDD, pParent)
-	, m_csIPAddrAim(_T("192.168.0.12"))
-	, m_csSendPort(_T("0x9402"))
-	, m_csRcvPort(_T("0x7801"))
+	, m_csIPAddrAim(_T("192.168.0.19"))
+	, m_csSendPort(_T("0x9401"))
+	, m_csRcvPort(_T("0x7800"))
 	, m_csShowGraphType(_T("纵向显示"))
 	, m_csXMLPath(_T("MatrixTestSoft.xml"))
 	, m_uiShowDirection(1)
 	, m_iMarkHighColor(Chart::Transparent)
-	, m_iMarkLowColor(Chart::Transparent)
+	, m_iMarkLowColor(0)
 	, m_iComboMarkHigh(0)
-	, m_iComboMarkLow(0)
+	, m_iComboMarkLow(1)
 {
 }
 
@@ -90,7 +90,8 @@ void CParameterSet::LoadXmlFile(void)
 {
 	if (FALSE == OpenXmlFile())
 	{
-		AfxMessageBox(_T("请选择按钮参数设置->点击选择配置文件路径按钮重新选择路径！"));
+		// @@@@提交用户时修改
+//		AfxMessageBox(_T("请选择按钮参数设置->点击选择配置文件路径按钮重新选择路径！"));
 		CloseXmlFile();
 		return;
 	}
@@ -106,7 +107,8 @@ void CParameterSet::SaveXmlFile(void)
 {
 	if (FALSE == OpenXmlFile())
 	{
-		AfxMessageBox(_T("请选择按钮参数设置->点击选择配置文件路径按钮重新选择路径！"));
+		// @@@@提交用户时修改
+//		AfxMessageBox(_T("请选择按钮参数设置->点击选择配置文件路径按钮重新选择路径！"));
 		CloseXmlFile();
 		return;
 	}
@@ -161,7 +163,8 @@ void CParameterSet::OnSelectXMLPath(void)
 	m_csXMLPath = dlg.GetPathName();
 	if (FALSE == OpenXmlFile())
 	{
-		AfxMessageBox(_T("请选择按钮参数设置->点击选择配置文件路径按钮重新选择路径！"));
+		// @@@@提交用户时修改
+//		AfxMessageBox(_T("请选择按钮参数设置->点击选择配置文件路径按钮重新选择路径！"));
 		CloseXmlFile();
 		return;
 	}
