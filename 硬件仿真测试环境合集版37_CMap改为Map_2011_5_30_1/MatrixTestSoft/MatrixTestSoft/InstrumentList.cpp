@@ -512,6 +512,8 @@ void CInstrumentList::DeleteAllInstrument(void)
 	}
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
+	unsigned int uiDelUnitLeftNum = 0;
+	unsigned int uiDelUnitRightNum = 0;
 	m_oInstrumentIPMap.clear();
 	m_oRoutAddrMap.clear();
 	// 清除界面仪器和连接线显示
@@ -521,6 +523,14 @@ void CInstrumentList::DeleteAllInstrument(void)
 		//		ProcessMessages();
 		if (NULL != iter->second)
 		{
+			if (iter->second->m_uiLineDirection == DirectionLeft)
+			{
+				uiDelUnitLeftNum++;
+			}
+			else if (iter->second->m_uiLineDirection == DirectionRight)
+			{
+				uiDelUnitRightNum++;
+			}
 			// 重置仪器
 			iter->second->OnReset();
 			// 仪器加在空闲仪器队列尾部
@@ -533,6 +543,14 @@ void CInstrumentList::DeleteAllInstrument(void)
 		{
 			iter++;
 		}
+	}
+	if (uiDelUnitLeftNum > 0)
+	{
+		m_pInstrumentGraph->DelGraphView(uiDelUnitLeftNum, DirectionLeft);
+	}
+	if (uiDelUnitRightNum > 0)
+	{
+		m_pInstrumentGraph->DelGraphView(uiDelUnitRightNum, DirectionRight);
 	}
 	m_pLogFile->OnWriteLogFile(_T("CInstrumentList::DeleteAllInstrument"), _T("未收到尾包，删除所有在线仪器！"), WarningStatus);
 }
@@ -656,6 +674,8 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	hash_map<unsigned int, CInstrument*>::iterator  iter2;
+	unsigned int uiDelUnitLeftNum = 0;
+	unsigned int uiDelUnitRightNum = 0;
 	CString str = _T("");
 	// 删除大线方向尾包之后的仪器
 	for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
@@ -696,9 +716,15 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 				|| ((pInstrument->m_uiLineDirection == DirectionRight)
 				&& (pInstrument->m_iLocation < iter2->second->m_iLocation)))
 			{
-				m_pInstrumentGraph->DrawUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex, 
-					iter2->second->m_uiLineDirection, iter2->second->m_uiInstrumentType, iter2->second->m_uiSN, 
-					GraphInstrumentOffLine, true);
+				m_pInstrumentGraph->DelUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex);
+				if (iter2->second->m_uiLineDirection == DirectionLeft)
+				{
+					uiDelUnitLeftNum++;
+				}
+				else if (iter2->second->m_uiLineDirection == DirectionRight)
+				{
+					uiDelUnitRightNum++;
+				}
 				// 重置仪器
 				iter2->second->OnReset();
 				// 仪器加在空闲仪器队列尾部
@@ -725,6 +751,14 @@ void CInstrumentList::TailFrameDeleteInstrumentLine(CInstrument* pInstrument)
 			iter2++;
 		}
 	}
+	if (uiDelUnitLeftNum > 0)
+	{
+		m_pInstrumentGraph->DelGraphView(uiDelUnitLeftNum, DirectionLeft);
+	}
+	if (uiDelUnitRightNum > 0)
+	{
+		m_pInstrumentGraph->DelGraphView(uiDelUnitRightNum, DirectionRight);
+	}
 }
 
 // 删除交叉线上交叉站交叉线尾包之后的仪器
@@ -732,6 +766,8 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 {
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	hash_map<unsigned int, CInstrument*>::iterator  iter2;
+	unsigned int uiDelUnitLeftNum = 0;
+	unsigned int uiDelUnitRightNum = 0;
 	CString str = _T("");
 	if (pInstrument->m_pInstrumentTop != NULL)
 	{
@@ -759,10 +795,15 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 				&& (iter2->second->m_bIPSetOK == true)
 				&& (iter2->second->m_iLineIndex < pInstrument->m_iLineIndex))
 			{
-				m_pInstrumentGraph->DrawUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex, 
-					iter2->second->m_uiLineDirection, iter2->second->m_uiInstrumentType, iter2->second->m_uiSN,
-					GraphInstrumentOffLine, true);
-
+				m_pInstrumentGraph->DelUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex);
+				if (iter2->second->m_uiLineDirection == DirectionLeft)
+				{
+					uiDelUnitLeftNum++;
+				}
+				else if (iter2->second->m_uiLineDirection == DirectionRight)
+				{
+					uiDelUnitRightNum++;
+				}
 				// 重置仪器
 				iter2->second->OnReset();
 				// 仪器加在空闲仪器队列尾部
@@ -804,10 +845,15 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 				&& (iter2->second->m_bIPSetOK == true)
 				&& (iter2->second->m_iLineIndex > pInstrument->m_iLineIndex))
 			{
-				m_pInstrumentGraph->DrawUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex, 
-					iter2->second->m_uiLineDirection, iter2->second->m_uiInstrumentType, iter2->second->m_uiSN,
-					GraphInstrumentOffLine, true);
-
+				m_pInstrumentGraph->DelUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex);
+				if (iter2->second->m_uiLineDirection == DirectionLeft)
+				{
+					uiDelUnitLeftNum++;
+				}
+				else if (iter2->second->m_uiLineDirection == DirectionRight)
+				{
+					uiDelUnitRightNum++;
+				}
 				// 重置仪器
 				iter2->second->OnReset();
 				// 仪器加在空闲仪器队列尾部
@@ -822,6 +868,14 @@ void CInstrumentList::TailFrameDeleteInstrumentLXLine(CInstrument* pInstrument)
 				iter2++;
 			}
 		}
+	}
+	if (uiDelUnitLeftNum > 0)
+	{
+		m_pInstrumentGraph->DelGraphView(uiDelUnitLeftNum, DirectionLeft);
+	}
+	if (uiDelUnitRightNum > 0)
+	{
+		m_pInstrumentGraph->DelGraphView(uiDelUnitRightNum, DirectionRight);
 	}
 }
 
@@ -900,6 +954,8 @@ void CInstrumentList::TailFrameDeleteInstrumentRout(unsigned int uiRoutAddr)
 	// hash_map迭代器
 	hash_map<unsigned int, CInstrument*>::iterator  iter;
 	hash_map<unsigned int, CInstrument*>::iterator  iter2;
+	unsigned int uiDelUnitLeftNum = 0;
+	unsigned int uiDelUnitRightNum = 0;
 	CString str = _T("");
 	// 删除大线方向尾包之后的仪器
 	for(iter=m_oInstrumentIPMap.begin(); iter!=m_oInstrumentIPMap.end();)
@@ -923,9 +979,15 @@ void CInstrumentList::TailFrameDeleteInstrumentRout(unsigned int uiRoutAddr)
 		if ((NULL != iter2->second)
 			&& (iter2->second->m_uiRoutAddress == uiRoutAddr))
 		{
-			m_pInstrumentGraph->DrawUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex, 
-				iter2->second->m_uiLineDirection, iter2->second->m_uiInstrumentType, iter2->second->m_uiSN, 
-				GraphInstrumentOffLine, true);
+			m_pInstrumentGraph->DelUnit(iter2->second->m_iLocation, iter2->second->m_iLineIndex);
+			if (iter2->second->m_uiLineDirection == DirectionLeft)
+			{
+				uiDelUnitLeftNum++;
+			}
+			else if (iter2->second->m_uiLineDirection == DirectionRight)
+			{
+				uiDelUnitRightNum++;
+			}
 			// 重置仪器
 			iter2->second->OnReset();
 			// 仪器加在空闲仪器队列尾部
@@ -938,5 +1000,13 @@ void CInstrumentList::TailFrameDeleteInstrumentRout(unsigned int uiRoutAddr)
 		{
 			iter2++;
 		}
+	}
+	if (uiDelUnitLeftNum > 0)
+	{
+		m_pInstrumentGraph->DelGraphView(uiDelUnitLeftNum, DirectionLeft);
+	}
+	if (uiDelUnitRightNum > 0)
+	{
+		m_pInstrumentGraph->DelGraphView(uiDelUnitRightNum, DirectionRight);
 	}
 }

@@ -23,7 +23,9 @@ public:
 	typedef struct InstrumentGraph
 	{
 		// 仪器绘图区域
-		CRect oRect;
+		CRect oRectInstrument;
+		// 连接线绘图区域
+		CRect oRectLine;
 		// 点号
 		int iUnitIndex;
 		// 测线号
@@ -50,11 +52,11 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnPaint();
 
-	// 绘制所有仪器
-	void DrawUnitAll(void);
 	// 绘制仪器单元（包含连接线）
 	void DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiLineDirection, unsigned int uiType, 
-		unsigned int uiSN, unsigned int uiOpt, bool bSet);
+		unsigned int uiSN, unsigned int uiOpt);
+	// 删除仪器单元（包含连接线）
+	void CInstrumentGraph::DelUnit(int iUnitIndex, int iLineIndex);
 private:
 	CDC m_dcGraph;
 	// 绘图区尺寸
@@ -136,4 +138,10 @@ public:
 	bool m_bLButtonSelect;
 	// 载入仪器图像
 	void OnLoadInstrumentBmp(CBitmap* pBmp, int iBmpX, int iBmpY);
+private:
+	// 绘制设备图标志位
+	bool m_bDrawUnit;
+public:
+	// 回收绘图区域资源
+	void DelGraphView(unsigned int uiUnitNum, unsigned int uiLineDirection);
 };
