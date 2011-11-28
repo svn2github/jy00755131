@@ -124,7 +124,7 @@ public:
 	// 左侧增加仪器移动图形DC的大小
 	int m_iLeftMovePos;
 	// 处理绘图区域
-	void OnOptGraphRect(unsigned int uiOpt);
+	void AddGraphView(unsigned int uiUnitNum, unsigned int uiLineDirection);
 	// 在图形界面上输出文字信息
 	void OnShowTextOut(CDC* pDC, CPoint point, CString str);
 private:

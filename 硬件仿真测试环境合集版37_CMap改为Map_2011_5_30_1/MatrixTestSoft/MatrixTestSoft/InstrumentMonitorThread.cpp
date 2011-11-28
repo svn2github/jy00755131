@@ -56,7 +56,6 @@ int CInstrumentMonitorThread::Run()
 		{
 			break;
 		}
-		//@@@@@@@@@@@ÔÝ²»É¾³ýÒÇÆ÷
  	  	OnMonitorLAUX();
   	  	OnMonitorFDU();
 		if (m_bclose == true)

@@ -214,6 +214,8 @@ using std::wstring;
 #define ADCDataShowPerLineNum					6
 // IP广播地址
 #define IPBroadcastAddr										0xFFFFFFFF
+// 本机IP地址设定
+#define IPSourceAddr										"192.168.0.19"
 // XML配置文件名
 #define XMLFileName											_T("MatrixTestSoft.xml")
 // ADC数据转换

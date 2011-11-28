@@ -114,16 +114,17 @@ BOOL CTabEepromUpdata::OnInitDialog()
 	CDialog::OnInitDialog();
 	OnReset();
 	// 得到本机IP地址
-	char		name[256]; 
-	char* localIP = "127.0.0.1";
-	PHOSTENT	hostinfo; 
-	if(   gethostname(name, sizeof(name)) == 0) 
-	{ 
-		if((hostinfo = gethostbyname(name)) != NULL) 
-		{ 
-			localIP = inet_ntoa(*(struct in_addr*)*hostinfo-> h_addr_list); 
-		} 
-	} 
+	// @@@@@@@@ cxm 2011.11.25 提供给用户设定死本机IP
+	char* localIP = IPSourceAddr;
+//	char		name[256];
+// 	PHOSTENT	hostinfo; 
+// 	if(   gethostname(name, sizeof(name)) == 0) 
+// 	{ 
+// 		if((hostinfo = gethostbyname(name)) != NULL) 
+// 		{ 
+// 			localIP = inet_ntoa(*(struct in_addr*)*hostinfo-> h_addr_list); 
+// 		} 
+// 	} 
 	// CString转换为const char*
 	m_uiIPSource = inet_addr(localIP);
 	return TRUE;

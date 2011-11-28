@@ -17,22 +17,7 @@
 #define GraphGridLineSizeX					15
 // 连接线绘图单元Y轴尺寸
 #define GraphGridLineSizeY					15
-// 在视图上侧增加仪器超出绘图区域操作
-#define OptGraphRectAddTop						1
-// 在视图下侧增加仪器超出绘图区域操作
-#define OptGraphRectAddBottom					2
-// 在视图左侧增加仪器超出绘图区域操作
-#define OptGraphRectAddLeft						3
-// 在视图右侧增加仪器超出绘图区域操作
-#define OptGraphRectAddRight						4
-// 在视图上侧删除仪器超出绘图区域操作
-#define OptGraphRectDelTop							5
-// 在视图下侧删除仪器超出绘图区域操作
-#define OptGraphRectDelBottom					6
-// 在视图左侧删除仪器超出绘图区域操作
-#define OptGraphRectDelLeft							7
-// 在视图右侧删除仪器超出绘图区域操作
-#define OptGraphRectDelRight						8
+
 // CInstrumentGraph
 
 IMPLEMENT_DYNAMIC(CInstrumentGraph, CWnd)
@@ -168,6 +153,7 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	// 	CBitmap* oldBkBmp = NULL;
 	CRect oRectLine;
 	CRect oRectInstrument;
+	unsigned int uiAddGraphViewNum = 0;
 	CString str = _T("");
 	str.Format(_T("%d\r\n"),iUnitIndex); 
 	TRACE(str);
@@ -237,10 +223,15 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	{
 		if (GraphInstrumentOnLine == uiOpt)
 		{
-			if (oRectInstrument.left < m_rectClient.left)
+			if (oRectInstrument.left < m_rectGraph.left)
 			{
+				uiAddGraphViewNum = (m_rectGraph.left - oRectInstrument.left) / (m_uiGridX + m_uiGridLineX);
+				if ((m_rectGraph.left - oRectInstrument.left) % (m_uiGridX + m_uiGridLineX) != 0)
+				{
+					uiAddGraphViewNum++;
+				}
 				m_pWndHScr->EnableWindow(TRUE);
-				OnOptGraphRect(OptGraphRectAddLeft);
+				AddGraphView(uiAddGraphViewNum, DirectionLeft);
 			}
 		}
 	}
@@ -249,10 +240,15 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 	{
 		if (GraphInstrumentOnLine == uiOpt)
 		{
-			if (oRectInstrument.right + m_iVScrBarInterval > m_rectClient.right)
+			if (oRectInstrument.right > m_rectGraph.right)
 			{
+				uiAddGraphViewNum = (oRectInstrument.right - m_rectGraph.right) / (m_uiGridX + m_uiGridLineX);
+				if ((oRectInstrument.right - m_rectGraph.right) % (m_uiGridX + m_uiGridLineX) != 0)
+				{
+					uiAddGraphViewNum++;
+				}
 				m_pWndHScr->EnableWindow(TRUE);
-				OnOptGraphRect(OptGraphRectAddRight);
+				AddGraphView(uiAddGraphViewNum, DirectionRight);
 			}
 		}
 	}
@@ -585,20 +581,20 @@ int CInstrumentGraph::moveScrollBar(UINT nSBCode, UINT nPos, CScrollBar* pScroll
 	return newPos;
 }
 // 处理绘图区域
-void CInstrumentGraph::OnOptGraphRect(unsigned int uiOpt)
+void CInstrumentGraph::AddGraphView(unsigned int uiUnitNum, unsigned int uiLineDirection)
 {
 	CDC TempDC ;
 	CBitmap TempBitmap ;
 	CBitmap* oldBitmap = NULL; 
 	CBitmap bitmapGrid;
 	CRect oShowRect;
-	if (uiOpt == OptGraphRectAddRight)
+	if (uiLineDirection == DirectionRight)
 	{
-		m_rectGraph.right += m_uiGridX + m_uiGridLineX;
+		m_rectGraph.right += (m_uiGridX + m_uiGridLineX) * uiUnitNum;
 	}
-	else if (uiOpt == OptGraphRectAddLeft)
+	else if (uiLineDirection == DirectionLeft)
 	{
-		m_rectGraph.left -= m_uiGridX + m_uiGridLineX;
+		m_rectGraph.left -= (m_uiGridX + m_uiGridLineX) * uiUnitNum;
 	}
 	m_bDrawUnit = true;
 	TempDC.CreateCompatibleDC(&m_dcGraph) ;
@@ -609,15 +605,15 @@ void CInstrumentGraph::OnOptGraphRect(unsigned int uiOpt)
 	OnFillBkColor(&TempDC, m_rectGraph);
 	if (TempDC.GetSafeHdc() != NULL)
 	{
-		if (uiOpt == OptGraphRectAddRight)
+		if (uiLineDirection == DirectionRight)
 		{
-			TempDC.BitBlt(0, 0, m_rectGraph.Width() - m_uiGridX - m_uiGridLineX, m_rectGraph.Height(), 
-				&m_dcGraph, 0, 0, SRCCOPY) ;
+			TempDC.BitBlt(0, 0, m_rectGraph.Width() - (m_uiGridX + m_uiGridLineX) * uiUnitNum,
+				m_rectGraph.Height(), &m_dcGraph, 0, 0, SRCCOPY) ;
 		}
-		else if (uiOpt == OptGraphRectAddLeft)
+		else if (uiLineDirection == DirectionLeft)
 		{
-			TempDC.BitBlt(m_uiGridX + m_uiGridLineX, 0, m_rectGraph.Width() - m_uiGridX - m_uiGridLineX, m_rectGraph.Height(), 
-				&m_dcGraph, 0, 0, SRCCOPY) ;
+			TempDC.BitBlt((m_uiGridX + m_uiGridLineX) * uiUnitNum, 0, m_rectGraph.Width() - (m_uiGridX + m_uiGridLineX) * uiUnitNum,
+				m_rectGraph.Height(), &m_dcGraph, 0, 0, SRCCOPY) ;
 		}
 		if (m_pbitmapOldGrid != NULL)
 		{
@@ -633,14 +629,14 @@ void CInstrumentGraph::OnOptGraphRect(unsigned int uiOpt)
 	}
 	TempDC.SelectObject(oldBitmap) ;
 
-	if (uiOpt == OptGraphRectAddRight)
+	if (uiLineDirection == DirectionRight)
 	{
-		m_iRightMovePos += m_uiGridX + m_uiGridLineX;
+		m_iRightMovePos += (m_uiGridX + m_uiGridLineX) * uiUnitNum;
 		m_iHScrPos = m_iRightMovePos;
 	}
-	else if (uiOpt == OptGraphRectAddLeft)
+	else if (uiLineDirection == DirectionLeft)
 	{
-		m_iLeftMovePos -= m_uiGridX + m_uiGridLineX;
+		m_iLeftMovePos -= (m_uiGridX + m_uiGridLineX) * uiUnitNum;
 		m_iHScrPos = m_iLeftMovePos;
 	}
 	m_bDrawUnit = false;

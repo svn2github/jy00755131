@@ -1,6 +1,7 @@
 #pragma once
 #include "afxwin.h"
-#include "mscomm1.h"
+// @@@@@@@@ cxm 2011.11.25 提供给用户暂不提供mscomm控件的串口功能
+//#include "mscomm1.h"
 #include "Parameter.h"
 #include "LogFile.h"
 
@@ -41,8 +42,10 @@ private:
 public:
 	// 	// 串口接收线程函数结束标志位
 	// 	BOOL m_bUartThreadclose;
+
+	// @@@@@@@@ cxm 2011.11.25 提供给用户暂不提供mscomm控件的串口功能
 	// 串口通讯控件的控制变量
-	CMscomm1 m_ctrlMSComm1;
+//	CMscomm1 m_ctrlMSComm1;
 	// 选择串口端口的复选框序号
 	unsigned int m_uiSerialPortComCurSel;
 	// 选择串口波特率的复选框序号
