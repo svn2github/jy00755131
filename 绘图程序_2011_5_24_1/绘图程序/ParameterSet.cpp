@@ -32,9 +32,6 @@ CParameterSet::~CParameterSet()
 void CParameterSet::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_SENDPORT, m_csSendPort);
-	DDX_Text(pDX, IDC_EDIT_RECVPORT, m_csRcvPort);
-	DDX_CBString(pDX, IDC_COMBO_SHOWGRAPHTYPE, m_csShowGraphType);
 	DDX_CBIndex(pDX, IDC_COMBO_MARKHIGH, m_iComboMarkHigh);
 	DDX_CBIndex(pDX, IDC_COMBO_MARKLOW, m_iComboMarkLow);
 }
