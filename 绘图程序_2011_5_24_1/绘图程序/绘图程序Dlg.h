@@ -61,6 +61,8 @@ private:
 	vector <double>	m_DrawPoint_X;
 	// Y轴坐标固定标志
 	BOOL m_bCheckYAxisFixed;
+	// 波动范围固定标志
+	BOOL m_bCheckWaveRangeFixed;
 	// 开始界面刷新标志位
 	BOOL m_bStartShow;
 private:
@@ -94,7 +96,7 @@ private:
 	// 存储ADC数据信息
 	vector<CString> m_ADCDataInfo;
 	// 设备标记点序号数组指针
-	unsigned int* m_uiInstrumentNb;
+	unsigned int m_uiInstrumentNb[InstrumentMaxCount];
 	// 读取文件
 	CFile m_file;
 	// 开始绘制ADC数据点的起始位置
@@ -214,4 +216,7 @@ public:
 	double m_dbEditLineInterval;
 	// 线缩放数值
 	double m_dbEditLineZoom;
+	afx_msg void OnBnClickedCheckWaverangefixed();
+	// 得到绘图所需数据
+	void GetShowData(unsigned int uiDataNum);
 };

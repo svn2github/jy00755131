@@ -74,6 +74,8 @@ using std::vector;
 // _________常量设置____________
 // 可视化仪器设备容量设置
 #define InstrumentMaxCount				300
+// 缓冲ADC数据帧的个数
+#define ADCFrameNum						100
 // 设置读取文件头的缓冲区大小
 #define SetReadFileHeadBufSize			1000
 // 一个ADC数据占用缓冲区大小

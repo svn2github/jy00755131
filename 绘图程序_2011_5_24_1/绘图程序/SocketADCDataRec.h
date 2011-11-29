@@ -20,9 +20,12 @@ private:
 // 	unsigned int m_uiDrawPointXNb;
 public:
 	// 设备标记点序号数组指针
-	unsigned int* m_uiInstrumentNb;
+	unsigned int m_uiInstrumentNb[InstrumentMaxCount];
 	// 接收到的帧序号记录
-	vector<unsigned int>* m_uipRecFrameNb;
+//	vector<unsigned int>* m_uipRecFrameNb;
+	unsigned int m_uiRecFrameNb[InstrumentMaxCount][ADCFrameNum];
+	// 接收到得帧数记录
+	unsigned int m_uiRecFrameNum[InstrumentMaxCount];
 	// 参与ADC数据采集的采集站设备数
 	unsigned int m_uiInstrumentADCNum;
 	// 抽样率
