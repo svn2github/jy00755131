@@ -233,7 +233,7 @@ void CPortMonitoringSendThread::OnInit(void)
 	{
 		::ResetEvent(m_hPortMonitoringSendThreadClose);	// 设置事件对象为无信号状态
 	}
-	for (int i=0; i<InstrumentNum; i++)
+	for (int i=0; i<InstrumentMaxCount; i++)
 	{
 		m_uiErrorCodeReturnCount[i] = 0;
 		memset(&m_ucErrorCodeReturn[i], SndFrameBufInit, QueryErrorCodeNum);
@@ -329,7 +329,7 @@ void CPortMonitoringSendThread::OnStop(void)
 	OnCloseUDP();
 	// 硬件设备错误查询应答帧个数
 	m_uiErrorCodeReturnNum = 0;
-	for (int i=0; i<InstrumentNum; i++)
+	for (int i=0; i<InstrumentMaxCount; i++)
 	{
 		m_uiErrorCodeReturnCount[i] = 0;
 		memset(&m_ucErrorCodeReturn[i], SndFrameBufInit, QueryErrorCodeNum);

@@ -39,7 +39,7 @@ protected:
 	// 数据接收缓冲区
 	unsigned char udp_buf[RcvFrameSize];
 	// 零漂偏移量
-	unsigned char m_ucZeroDrift[InstrumentNum][ADCZeroDriftWritebytesNum];
+	unsigned char m_ucZeroDrift[InstrumentMaxCount][ADCZeroDriftWritebytesNum];
 protected:
 	// 防止程序在循环中运行无法响应消息
 	void ProcessMessages(void);

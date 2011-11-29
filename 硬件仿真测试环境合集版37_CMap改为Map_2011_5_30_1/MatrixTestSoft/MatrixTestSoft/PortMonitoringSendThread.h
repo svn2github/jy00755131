@@ -48,9 +48,9 @@ public:
 	// 接收得到的ADC数据帧数
 	unsigned int m_uiADCRecNum;
 	// 硬件设备错误查询应答帧计数
-	unsigned int m_uiErrorCodeReturnCount[InstrumentNum];
+	unsigned int m_uiErrorCodeReturnCount[InstrumentMaxCount];
 	// 记录硬件设备错误查询首个应答帧
-	unsigned char m_ucErrorCodeReturn[InstrumentNum][QueryErrorCodeNum];
+	unsigned char m_ucErrorCodeReturn[InstrumentMaxCount][QueryErrorCodeNum];
 	// 显示首包帧，包含SN和首包时刻
 	CString m_csHeadFrameShow;
 	// 显示IP地址设置应答帧，包含SN和设置的IP地址

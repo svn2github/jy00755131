@@ -48,7 +48,7 @@ public:
 	// ADC数据自动存储文件数据点个数
 	unsigned int m_uiADCFileLength;
 	// 图形化显示ADC数据Dlg
-	CGraphShowDlg m_dlgADCGraphShow[InstrumentNum];
+	CGraphShowDlg m_dlgADCGraphShow[InstrumentMaxCount];
 	// 定义临界区变量
 	CCriticalSection m_Sec_Sample;
 	// 测网数据发送端口

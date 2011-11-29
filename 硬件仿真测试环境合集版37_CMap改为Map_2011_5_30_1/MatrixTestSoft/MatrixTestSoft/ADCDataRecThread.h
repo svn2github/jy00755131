@@ -40,17 +40,17 @@ public:
 	// ADC数据图形化显示Socket套接字
 	SOCKET m_ADCGraphShowSocket;
 	// 图形模板指针
-	COScopeCtrl* m_pOScopeCtrl[InstrumentNum];
+	COScopeCtrl* m_pOScopeCtrl[InstrumentMaxCount];
 	// 记录应接收ADC数据包个数
-	unsigned int m_uiADCDataFrameCount[InstrumentNum];
+	unsigned int m_uiADCDataFrameCount[InstrumentMaxCount];
 	// 判断ADC采样开始标志位，用于丢弃TB之前的无效数据
 	BOOL m_bStartSample;
 	// 源IP地址
 	unsigned int m_uiIPSource;
 	// ADC图形显示设备IP
-	unsigned int m_uiADCGraphIP[InstrumentNum];
+	unsigned int m_uiADCGraphIP[InstrumentMaxCount];
 	// ADC数据界面显示缓冲区
-	unsigned int m_uiADCDataShow[InstrumentNum];
+	unsigned int m_uiADCDataShow[InstrumentMaxCount];
 	// 类CADCDataSaveToFile成员变量指针
 	CADCDataSaveToFile* m_pADCDataSaveToFile;
 	// 类CADCFrameInfo成员变量指针
@@ -66,9 +66,9 @@ private:
 	// 线程关闭标志
 	bool m_bclose;
 	// 记录前一个接收到的ADC数据的指针偏移量                  
-	unsigned short m_usDataPointPrevious[InstrumentNum];
+	unsigned short m_usDataPointPrevious[InstrumentMaxCount];
 	// 记录实际接收ADC数据包个数
-	unsigned int m_uiADCDataFrameRecCount[InstrumentNum];
+	unsigned int m_uiADCDataFrameRecCount[InstrumentMaxCount];
 	// ADC数据重发帧
 	unsigned char m_ucADCRetransmission[SndFrameSize];
 	// 需要重发的ADC数据信息结构
@@ -78,15 +78,15 @@ private:
 		unsigned short uiRetransmissionNum;	// 重发计数
 	};
 	// 需要重发的ADC索引表
-	hash_map<unsigned int, m_structADC> m_oADCLostMap[InstrumentNum];
+	hash_map<unsigned int, m_structADC> m_oADCLostMap[InstrumentMaxCount];
 	// 有ADC数据重发故先保留不连续的数据
-	int m_iSampleTemp[InstrumentNum][ADCDataTempDataSize];
+	int m_iSampleTemp[InstrumentMaxCount][ADCDataTempDataSize];
 	// 有ADC数据重发故先保留不连续的数据个数
-	unsigned int m_uiSampleTempNum[InstrumentNum];
+	unsigned int m_uiSampleTempNum[InstrumentMaxCount];
 	// ADC数据保存成文件的数据缓冲区
-	int m_iADCSave[InstrumentNum][ADCDataTempDataSize];
+	int m_iADCSave[InstrumentMaxCount][ADCDataTempDataSize];
 	// ADC数据保存成文件的数据缓冲区中数据个数
-	unsigned int m_uiADCSaveNum[InstrumentNum];
+	unsigned int m_uiADCSaveNum[InstrumentMaxCount];
 	// ADC数据处理过程缓冲区
 	int m_iTemp[ADCDataTempDataSize];
 	// 测试丢帧情况
@@ -112,11 +112,11 @@ private:
 	// ADC数据图形化显示设置缓冲区
 	unsigned char m_ucADCGraphShowSetFrame[RcvFrameSize];
 	// ADC数据图形化显示数据缓冲区
-	unsigned char m_ucADCGraphShowDataFrame[InstrumentNum][RcvFrameSize];
+	unsigned char m_ucADCGraphShowDataFrame[InstrumentMaxCount][RcvFrameSize];
 	// ADC数据图形化显示抽样点数
-	unsigned int m_uiADCGraphShowSamplingNum[InstrumentNum];
+	unsigned int m_uiADCGraphShowSamplingNum[InstrumentMaxCount];
 	// ADC数据图形化显示数据源指针坐标
-	unsigned int m_uiADCGraphShowSourcePoint[InstrumentNum];
+	unsigned int m_uiADCGraphShowSourcePoint[InstrumentMaxCount];
 private:
 	// 接收采样数据
 	void ReceiveSampleData(byte* pSampleData);
