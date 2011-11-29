@@ -9,13 +9,13 @@
 // CSocketADCDataRec
 
 CSocketADCDataRec::CSocketADCDataRec()
-: m_uipRecFrameNum(NULL)
+: m_uipRecFrameNb(NULL)
 , m_uiInstrumentNb(NULL)
-, m_uiDrawPointXNb(0)
+//, m_uiDrawPointXNb(0)
 , m_uiInstrumentADCNum(0)
 , m_bRecADCSetInfoFrame(FALSE)
 , m_uiSamplingRate(1)
-, m_uiInstrumentRecFrameNum(0)
+//, m_uiInstrumentRecFrameNum(0)
 , m_pParameterSet(NULL)
 {
 }
@@ -23,11 +23,7 @@ CSocketADCDataRec::CSocketADCDataRec()
 CSocketADCDataRec::~CSocketADCDataRec()
 {
 	// 记录X轴坐标点信息
-	m_DrawPoint_X.clear();
-	if (m_uipRecFrameNum != NULL)
-	{
-		delete[] m_uipRecFrameNum;
-	}
+/*	m_DrawPoint_X.clear();*/
 	if (m_uiInstrumentNb != NULL)
 	{
 		delete[] m_uiInstrumentNb;
@@ -101,10 +97,11 @@ void CSocketADCDataRec::ProcFrameOne(void)
 		iPos += FramePacketSize4B;
 		iPos += FramePacketSize2B;
 		m_uiInstrumentNb[uiNb] = uiLocation;
-		if (uiNb == m_uiDrawPointXNb)
-		{
-			m_uiInstrumentRecFrameNum++;
-		}
+		m_uipRecFrameNb[uiNb].push_back(uiFrameNb);
+// 		if (uiNb == m_uiDrawPointXNb)
+// 		{
+// 			m_uiInstrumentRecFrameNum++;
+// 		}
 		// 之后为数据区
 		for (int j=0; j<ReceiveDataNum; j++)
 		{
@@ -123,47 +120,47 @@ void CSocketADCDataRec::ProcFrameOne(void)
 			dbReceiveData[j] = dSampleDataToV;
 		}
 		// 将数据复制到图形显示缓冲区
-		if (m_uipRecFrameNum[uiNb] < ADCRecFrameShowNum)
-		{
+// 		if (m_uipRecFrameNum[uiNb] < ADCRecFrameShowNum)
+// 		{
 			for (int j=0; j<ReceiveDataNum; j++)
 			{
 				m_dbFduData[uiNb].push_back(dbReceiveData[j]);
-				if (uiNb == m_uiDrawPointXNb)
-				{
-					if (m_uiInstrumentRecFrameNum == 1)
-					{
-						m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
-					}
-					else
-					{
-						int iSize = m_DrawPoint_X.size();
-						double dbPointX = m_DrawPoint_X[iSize - 1];
-						m_DrawPoint_X.push_back(dbPointX + m_uiSamplingRate);
-					}
-				}
+// 				if (uiNb == m_uiDrawPointXNb)
+// 				{
+// 					if (m_uiInstrumentRecFrameNum == 1)
+// 					{
+// 						m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
+// 					}
+// 					else
+// 					{
+// 						int iSize = m_DrawPoint_X.size();
+// 						double dbPointX = m_DrawPoint_X[iSize - 1];
+// 						m_DrawPoint_X.push_back(dbPointX + m_uiSamplingRate);
+// 					}
+// 				}
 			}
-		}
-		else
-		{
-			// 删除vector中部分元素可以用erase
-			m_dbFduData[uiNb].erase(m_dbFduData[uiNb].begin(), m_dbFduData[uiNb].begin() + ReceiveDataNum);
-			for (int i=0; i<ReceiveDataNum; i++)
-			{
-				m_dbFduData[uiNb].push_back(dbReceiveData[i]);
-			}
-			if (uiNb == m_uiDrawPointXNb)
-			{
-				m_DrawPoint_X.erase(m_DrawPoint_X.begin(), m_DrawPoint_X.begin() + ReceiveDataNum);
-				for (int j=0; j<ReceiveDataNum; j++)
-				{
-//					m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
-					int iSize = m_DrawPoint_X.size();
-					double dbPointX = m_DrawPoint_X[iSize - 1];
-					m_DrawPoint_X.push_back(dbPointX + m_uiSamplingRate);
-				}
-			}
-		}
-		m_uipRecFrameNum[uiNb]++;
+//		}
+// 		else
+// 		{
+// 			// 删除vector中部分元素可以用erase
+// 			m_dbFduData[uiNb].erase(m_dbFduData[uiNb].begin(), m_dbFduData[uiNb].begin() + ReceiveDataNum);
+// 			for (int i=0; i<ReceiveDataNum; i++)
+// 			{
+// 				m_dbFduData[uiNb].push_back(dbReceiveData[i]);
+// 			}
+// 			if (uiNb == m_uiDrawPointXNb)
+// 			{
+// 				m_DrawPoint_X.erase(m_DrawPoint_X.begin(), m_DrawPoint_X.begin() + ReceiveDataNum);
+// 				for (int j=0; j<ReceiveDataNum; j++)
+// 				{
+// //					m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
+// 					int iSize = m_DrawPoint_X.size();
+// 					double dbPointX = m_DrawPoint_X[iSize - 1];
+// 					m_DrawPoint_X.push_back(dbPointX + m_uiSamplingRate);
+// 				}
+// 			}
+// 		}
+// 		m_uipRecFrameNum[uiNb]++;
 	}
 }
 
@@ -171,7 +168,7 @@ void CSocketADCDataRec::ProcFrameOne(void)
 void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
 {
 	// 初始化变量
-	m_DrawPoint_X.clear();
+/*	m_DrawPoint_X.clear();*/
 	if (m_dbFduData != NULL)
 	{
 		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
@@ -190,10 +187,14 @@ void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
 		delete[] m_dbFduShow;
 		m_dbFduShow = NULL;
 	}
-	if (m_uipRecFrameNum != NULL)
+	if (m_uipRecFrameNb != NULL)
 	{
-		delete[] m_uipRecFrameNum;
-		m_uipRecFrameNum = NULL;
+		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+		{
+			m_uipRecFrameNb[i].clear();
+		}
+		delete[] m_uipRecFrameNb;
+		m_uipRecFrameNb = NULL;
 	}
 	if (m_uiInstrumentNb != NULL)
 	{
@@ -208,47 +209,62 @@ void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
 	m_uiInstrumentADCNum = usInstrumentNum;
 	m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
 	m_dbFduShow = new vector<double>[m_uiInstrumentADCNum];
-	m_uipRecFrameNum = new unsigned int[m_uiInstrumentADCNum];
+	m_uipRecFrameNb = new vector<unsigned int>[m_uiInstrumentADCNum];
 	m_uiInstrumentNb = new unsigned int[m_uiInstrumentADCNum];
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
-		m_uipRecFrameNum[i] = 0;
 		m_uiInstrumentNb[i] = 0;
 	}
 }
 
-// 得到当前ADC数据接收帧最小帧数，并返回仪器序号
-unsigned int CSocketADCDataRec::GetRecFrameNumMin(void)
+// 得到当前ADC数据接收帧起始序号中的最大值，并返回
+unsigned int CSocketADCDataRec::GetRecFrameBeginMaxNb(void)
 {
-	unsigned int uiMin = m_uipRecFrameNum[0];
-	unsigned int uiMinNb = 0;
+	if (m_uipRecFrameNb[0].size() == 0)
+	{
+		return 0;
+	}
+	unsigned int uiMax = m_uipRecFrameNb[0][0];
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
-		if (uiMin >= m_uipRecFrameNum[i])
+		if (m_uipRecFrameNb[i].size() == 0)
 		{
-			uiMin = m_uipRecFrameNum[i];
-			uiMinNb = i;
+			return 0;
+		}
+		if (uiMax < m_uipRecFrameNb[i][0])
+		{
+			uiMax = m_uipRecFrameNb[i][0];
 		}
 	}
-	return uiMinNb;
+	return uiMax;
 }
 
-// 得到当前ADC数据接收帧最大帧数，并返回仪器序号
-unsigned int CSocketADCDataRec::GetRecFrameNumMax(void)
+// 得到当前ADC数据接收帧最后一个序号中的最小值，并返回
+unsigned int CSocketADCDataRec::GetRecFrameEndMinNb(void)
 {
-	unsigned int uiMax = m_uipRecFrameNum[0];
-	unsigned int uiMaxNb = 0;
+	if (m_uipRecFrameNb[0].size() == 0)
+	{
+		return 0;
+	}
+	unsigned int uiMin = m_uipRecFrameNb[0][m_uipRecFrameNb[0].size() - 1];
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
-		if (uiMax <= m_uipRecFrameNum[i])
+		if (m_uipRecFrameNb[i].size() == 0)
 		{
-			uiMax = m_uipRecFrameNum[i];
-			uiMaxNb = i;
+			return 0;
+		}
+		if (uiMin > m_uipRecFrameNb[i][m_uipRecFrameNb[i].size() - 1])
+		{
+			uiMin = m_uipRecFrameNb[i][m_uipRecFrameNb[i].size() - 1];
 		}
 	}
-	return uiMaxNb;
+	return uiMin;
 }
-
+// 得到要清除的仪器个数并返回
+unsigned int CSocketADCDataRec::GetRecFrameBeginToEndNum(unsigned int uiInstrumentNb, unsigned int uiRecFrameEndMinNb)
+{
+	return ((uiRecFrameEndMinNb - m_uipRecFrameNb[uiInstrumentNb][0]) / m_uiSamplingRate + 1);
+}
 // 发送采样参数设置命令
 void CSocketADCDataRec::OnMakeAndSendSetFrame(unsigned short usSetOperation)
 {

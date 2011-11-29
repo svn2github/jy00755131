@@ -115,6 +115,10 @@ private:
 	HANDLE m_hDrawGraph;
 	// 参数设置界面
 	CParameterSet m_oParameterSet;
+	// 得到当前ADC数据接收帧起始序号中的最大值
+	unsigned int m_uiRecFrameBeginMaxNb;
+	// 得到当前ADC数据接收帧最后一个序号中的最小值
+	unsigned int m_uiRecFrameEndMinNb;
 
 public:	
 	CChartViewer	m_ChartViewer;	// 添加绘图控件的控制变量
