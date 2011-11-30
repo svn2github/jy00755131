@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="gb2312"?>
+<MatrixTestSoft>
+	<UartToUDP>
+		<UartToUDPHost Com="8" Baud="11" HostPort="36866"/>
+		<UartToUDPServer ServerIP="192.168.0.19" ServerPort="36865"/>
+	</UartToUDP>
+	<UDPPortMonitoring>
+		<UDPPortMonitoringHost HostIP="192.168.0.19" HostRecPort="36865" HostSendPort="33281"/>
+		<UDPPortMonitoringServer ServerIP="192.168.0.19" ServerRecPort="33282" ServerSendPort="34952"/>
+		<UDPPortMonitoringSetup AutoSaveLength="1024"/>
+	</UDPPortMonitoring>
+	<Sample>
+		<SampleSetup SaveADCFrameNum="406" SendPort="36869"/>
+	</Sample>
+	<ADCSettings>
+		<ADCControl ADC_SYNC="0" ADC_MODE="1" ADC_SPS="2" ADC_PHS="0" ADC_FILTER="3" ADC_MUX="0" ADC_CHOP="1" ADC_PGA="0"/>
+		<HPFSettings HPFLow="211" HPFHigh="4"/>
+	</ADCSettings>
+	<GraphShow>
+		<GraphShowSetup IPAddrAim="192.168.0.19" SendPort="0x9401" RcvPort="0x7800" GraphShowType="纵向显示" XMLFilePath="MatrixTestSoft.xml"/>
+	</GraphShow>
+</MatrixTestSoft>

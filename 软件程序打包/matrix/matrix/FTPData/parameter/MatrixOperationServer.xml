@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Matrix>
+	<OperationServer HostIP="192.168.0.19"/>
+	<MainCross MainCrossIP="255.255.255.255" MainCrossPort="30583"/>
+	<DiskRecord LastusedSEGDFileNumber="815"/>
+</Matrix>
