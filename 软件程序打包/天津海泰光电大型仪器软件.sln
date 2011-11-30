@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "天津海泰光电大型仪器软件", "天津海泰光电大型仪器软件\天津海泰光电大型仪器软件.vdproj", "{53E57F51-3B8B-48F3-A63B-C129ED36921D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53E57F51-3B8B-48F3-A63B-C129ED36921D}.Debug|Default.ActiveCfg = Debug
+		{53E57F51-3B8B-48F3-A63B-C129ED36921D}.Debug|Default.Build.0 = Debug
+		{53E57F51-3B8B-48F3-A63B-C129ED36921D}.Release|Default.ActiveCfg = Release
+		{53E57F51-3B8B-48F3-A63B-C129ED36921D}.Release|Default.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
