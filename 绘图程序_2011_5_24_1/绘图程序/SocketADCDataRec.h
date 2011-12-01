@@ -16,16 +16,19 @@ private:
 	unsigned char m_oADCGraphSetFrameBuf[ADCSendFrameBufSize];
 	// 接收到ADC设置信息帧标志位
 	BOOL m_bRecADCSetInfoFrame;
-// 	// 绘X轴坐标参考点的仪器序号
-// 	unsigned int m_uiDrawPointXNb;
 public:
 	// 设备标记点序号数组指针
 	unsigned int m_uiInstrumentNb[InstrumentMaxCount];
 	// 接收到的帧序号记录
-//	vector<unsigned int>* m_uipRecFrameNb;
 	unsigned int m_uiRecFrameNb[InstrumentMaxCount][ADCFrameNum];
 	// 接收到得帧数记录
 	unsigned int m_uiRecFrameNum[InstrumentMaxCount];
+	// 接收到的ADC数据的值
+	double m_dbFduData[InstrumentMaxCount][ADCRecBufSize];
+	// 图形显示的ADC数据的值
+	double m_dbFduShow[InstrumentMaxCount][ShowLinePointsNumNow];
+	// x轴显示的坐标值
+	double m_DrawPoint_X[ShowLinePointsNumNow];
 	// 参与ADC数据采集的采集站设备数
 	unsigned int m_uiInstrumentADCNum;
 	// 抽样率

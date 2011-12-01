@@ -55,10 +55,12 @@ private:
 	double m_maxValue;					// 纵坐标的最大值
 	double m_minValue;					// 纵坐标的最小值
 	unsigned int m_uiIntervalNum;	// 绘图区域左侧间隔个数
-	// 记录各条图线点的信息
-	vector <vector <double>> m_DrawLine_Y;
 	// 记录X轴坐标点信息指针
 	vector <double>	m_DrawPoint_X;
+	// 采集站ADC数据存储
+	vector<double>* m_dbFduData;
+	// 采集站ADC数据绘图
+	vector<double>* m_dbFduShow;
 	// Y轴坐标固定标志
 	BOOL m_bCheckYAxisFixed;
 	// 波动范围固定标志
@@ -219,4 +221,7 @@ public:
 	afx_msg void OnBnClickedCheckWaverangefixed();
 	// 得到绘图所需数据
 	void GetShowData(unsigned int uiDataNum);
+private:
+	// 每个设备已绘制的帧数
+	unsigned int m_uiDrawFrameNum;
 };

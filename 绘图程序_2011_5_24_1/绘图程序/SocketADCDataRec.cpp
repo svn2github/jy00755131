@@ -36,7 +36,6 @@ void CSocketADCDataRec::OnReceive(int nErrorCode)
 
 	CSocket::OnReceive(nErrorCode);
 }
-
 // 单个帧处理
 void CSocketADCDataRec::ProcFrameOne(void)
 {
@@ -88,7 +87,6 @@ void CSocketADCDataRec::ProcFrameOne(void)
 		iPos += FramePacketSize2B;
 		m_uiInstrumentNb[uiNb] = uiLocation;
 		m_uiRecFrameNb[uiNb][m_uiRecFrameNum[uiNb]] = uiFrameNb;
-		m_uiRecFrameNum[uiNb]++;
 		// 之后为数据区
 		for (int j=0; j<ReceiveDataNum; j++)
 		{
@@ -107,47 +105,9 @@ void CSocketADCDataRec::ProcFrameOne(void)
 			dbReceiveData[j] = dSampleDataToV;
 		}
 		// 将数据复制到图形显示缓冲区
-// 		if (m_uipRecFrameNum[uiNb] < ADCRecFrameShowNum)
-// 		{
-			for (int j=0; j<ReceiveDataNum; j++)
-			{
-				m_dbFduData[uiNb].push_back(dbReceiveData[j]);
-// 				if (uiNb == m_uiDrawPointXNb)
-// 				{
-// 					if (m_uiInstrumentRecFrameNum == 1)
-// 					{
-// 						m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
-// 					}
-// 					else
-// 					{
-// 						int iSize = m_DrawPoint_X.size();
-// 						double dbPointX = m_DrawPoint_X[iSize - 1];
-// 						m_DrawPoint_X.push_back(dbPointX + m_uiSamplingRate);
-// 					}
-// 				}
-			}
-//		}
-// 		else
-// 		{
-// 			// 删除vector中部分元素可以用erase
-// 			m_dbFduData[uiNb].erase(m_dbFduData[uiNb].begin(), m_dbFduData[uiNb].begin() + ReceiveDataNum);
-// 			for (int i=0; i<ReceiveDataNum; i++)
-// 			{
-// 				m_dbFduData[uiNb].push_back(dbReceiveData[i]);
-// 			}
-// 			if (uiNb == m_uiDrawPointXNb)
-// 			{
-// 				m_DrawPoint_X.erase(m_DrawPoint_X.begin(), m_DrawPoint_X.begin() + ReceiveDataNum);
-// 				for (int j=0; j<ReceiveDataNum; j++)
-// 				{
-// //					m_DrawPoint_X.push_back((uiFrameNb * ReceiveDataNum + j) * m_uiSamplingRate);
-// 					int iSize = m_DrawPoint_X.size();
-// 					double dbPointX = m_DrawPoint_X[iSize - 1];
-// 					m_DrawPoint_X.push_back(dbPointX + m_uiSamplingRate);
-// 				}
-// 			}
-// 		}
-// 		m_uipRecFrameNum[uiNb]++;
+		memcpy_s(&m_dbFduData[uiNb][m_uiRecFrameNum[uiNb] * ReceiveDataNum], ADCRecBufSize * sizeof(double), 
+			&dbReceiveData, sizeof(double) * ReceiveDataNum);
+		m_uiRecFrameNum[uiNb]++;
 	}
 }
 
@@ -155,33 +115,7 @@ void CSocketADCDataRec::ProcFrameOne(void)
 void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
 {
 	// 初始化变量
-/*	m_DrawPoint_X.clear();*/
-	if (m_dbFduData != NULL)
-	{
-		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-		{
-			m_dbFduData[i].clear();
-		}
-		delete[] m_dbFduData;
-		m_dbFduData = NULL;
-	}
-	if (m_dbFduShow != NULL)
-	{
-		for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
-		{
-			m_dbFduShow[i].clear();
-		}
-		delete[] m_dbFduShow;
-		m_dbFduShow = NULL;
-	}
-
-	if (usInstrumentNum == 0)
-	{
-		return;
-	}
 	m_uiInstrumentADCNum = usInstrumentNum;
-	m_dbFduData = new vector<double>[m_uiInstrumentADCNum];
-	m_dbFduShow = new vector<double>[m_uiInstrumentADCNum];
 	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
 	{
 		m_uiRecFrameNum[i] = 0;
@@ -190,6 +124,14 @@ void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
 		{
 			m_uiRecFrameNb[i][j] = 0;
 		}
+		for (unsigned int k=0; k<ShowLinePointsNumNow; k++)
+		{
+			m_dbFduData[i][k] = m_dbFduShow[i][k] = Chart::NoValue;
+		}
+	}
+	for (unsigned int i=0; i<ShowLinePointsNumNow; i++)
+	{
+		m_DrawPoint_X[i] = Chart::NoValue;
 	}
 }
 

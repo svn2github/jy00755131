@@ -73,7 +73,7 @@ using std::vector;
 #define OptMaxValue							2
 // _________常量设置____________
 // 可视化仪器设备容量设置
-#define InstrumentMaxCount				300
+#define InstrumentMaxCount				2000
 // 缓冲ADC数据帧的个数
 #define ADCFrameNum						100
 // 设置读取文件头的缓冲区大小
@@ -84,8 +84,12 @@ using std::vector;
 #define ADCDataInterval						2
 // 网络传输显示帧数
 #define ADCRecFrameShowNum			7
+// 网络传输缓冲区帧数
+#define ADCRecFrameSaveNum			20
 // 初始状态每条线显示的点数
-#define ShowLinePointsNumNow			ADCRecFrameShowNum * ReceiveDataNum
+#define ShowLinePointsNumNow			(ADCRecFrameShowNum * ReceiveDataNum)
+// 每个仪器网络传输缓冲区大小
+#define	ADCRecBufSize					(ADCRecFrameSaveNum * ReceiveDataNum)
 // 每条线最少显示的点数
 #define ShowLinePointsNumMin			10
 // X轴坐标标签最小显示间隔数
@@ -129,16 +133,16 @@ using std::vector;
 // 发送ADC采样数据命令
 #define SendADCCmd							0x0003
 //___________________定时器设置____________________
+// 数据更新定时器序号
+#define DataRefreshTimerNb								1
+// 数据更新定时器延时设置
+#define DataRefreshTimerSet								50
 // 界面刷新定时器序号
-#define GraphRefreshTimerNb								1
+#define GraphRefreshTimerNb								2
 // 界面刷新定时器延时设置
-#define GraphRefreshTimerSet								500
+#define GraphRefreshTimerSet								1000
 
 // 设置Y轴下限
 #define DrawGraphYAxisLower							-2.5
 // 设置Y轴上限
 #define DrawGraphYAxisUpper								2.5
-// 采集站ADC数据存储
-extern vector<double>* m_dbFduData;
-// 采集站ADC数据绘图
-extern vector<double>* m_dbFduShow;
