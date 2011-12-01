@@ -28,17 +28,14 @@ private:
 	// 控件IDC_COMBO_SERIALPORT_BAUD的控制变量
 	CComboBox m_comboSerialPortBaud;
 	// 串口数据接收数组
-	unsigned char m_ucUartBuf[RcvBufNum][RcvFrameSize];
-	// 串口接收缓冲区计数
-	unsigned short m_usUartBufCount;
+	unsigned char m_ucUartBuf[RcvFrameSize];
 	// 串口成功接收数据计数
 	unsigned int m_uiUartCount;
 	// Socket套接字
 	sockaddr_in m_RecvAddr, m_SendToAddr;
 	SOCKET m_UdpSocket;
 	// UDP接收缓冲区计数
-	unsigned char m_ucUdpBuf[RcvBufNum][UartToUdpRcvSize];
-	unsigned short m_usUdpBufCount;
+	unsigned char m_ucUdpBuf[UartToUdpRcvSize];
 public:
 	// 	// 串口接收线程函数结束标志位
 	// 	BOOL m_bUartThreadclose;

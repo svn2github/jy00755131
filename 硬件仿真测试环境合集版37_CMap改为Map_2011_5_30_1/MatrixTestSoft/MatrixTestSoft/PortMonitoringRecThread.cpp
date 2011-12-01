@@ -10,8 +10,7 @@
 IMPLEMENT_DYNCREATE(CPortMonitoringRecThread, CWinThread)
 
 CPortMonitoringRecThread::CPortMonitoringRecThread()
-: m_usudp_count(0)
-, m_iRecPort(0)
+: m_iRecPort(0)
 , m_pSaveFile(NULL)
 , m_uiHeartBeatNum(0)
 , m_uiIPSetNum(0)
@@ -78,9 +77,9 @@ int CPortMonitoringRecThread::Run()
 				{
 					OnProcess(icount);
 				}
-				else if(icount == PortMonitoringBufSize)
+				else if(icount == PortMonitoringRcvBufSize)
 				{
-					str.Format(_T("端口监视接收线程数据接收超过缓冲区大小，缓冲区大小为%d！"), PortMonitoringBufSize);
+					str.Format(_T("端口监视接收线程数据接收超过缓冲区大小，缓冲区大小为%d！"), PortMonitoringRcvBufSize);
 					m_pLogFile->OnWriteLogFile(_T("CPortMonitoringRecThread::Run"), str, ErrorStatus);
 				}
 				else
@@ -126,7 +125,7 @@ void CPortMonitoringRecThread::OnProcess(int iCount)
 		case 0:
 			if (m_ucUdpBuf[i] == FrameHeadCheck0)
 			{
-				m_ucudp_buf[m_usudp_count][0] = m_ucUdpBuf[i];
+				m_ucudp_buf[0] = m_ucUdpBuf[i];
 				m_uiUdpCount++;
 				break;
 			}
@@ -140,7 +139,7 @@ void CPortMonitoringRecThread::OnProcess(int iCount)
 		case 1:
 			if (m_ucUdpBuf[i] == FrameHeadCheck1)
 			{
-				m_ucudp_buf[m_usudp_count][1] = m_ucUdpBuf[i];
+				m_ucudp_buf[1] = m_ucUdpBuf[i];
 				m_uiUdpCount++;
 				break;
 			}
@@ -153,7 +152,7 @@ void CPortMonitoringRecThread::OnProcess(int iCount)
 		case 2:
 			if (m_ucUdpBuf[i] == FrameHeadCheck2)
 			{
-				m_ucudp_buf[m_usudp_count][2] = m_ucUdpBuf[i];
+				m_ucudp_buf[2] = m_ucUdpBuf[i];
 				m_uiUdpCount++;
 				break;
 			}
@@ -166,7 +165,7 @@ void CPortMonitoringRecThread::OnProcess(int iCount)
 		case 3:
 			if (m_ucUdpBuf[i] == FrameHeadCheck3)
 			{
-				m_ucudp_buf[m_usudp_count][3] = m_ucUdpBuf[i];
+				m_ucudp_buf[3] = m_ucUdpBuf[i];
 				m_uiUdpCount++;
 				break;
 			}
@@ -180,24 +179,20 @@ void CPortMonitoringRecThread::OnProcess(int iCount)
 			if (m_uiUdpCount >=  SndFrameSize)
 			{
 				m_uiUdpCount = 0;
-				m_usudp_count += 1;
-				m_usudp_count = m_usudp_count % RcvBufNum;
 				break;
 			}
-			m_ucudp_buf[m_usudp_count][m_uiUdpCount] = m_ucUdpBuf[i];
+			m_ucudp_buf[m_uiUdpCount] = m_ucUdpBuf[i];
 			m_uiUdpCount++;
 			if (m_uiUdpCount == SndFrameSize)
 			{
 				m_uiUdpCount = 0;
 
-				memcpy(&usCRC16, &m_ucudp_buf[m_usudp_count][SndFrameSize - CRCSize], CRCSize);
-				if (usCRC16 != get_crc_16(&m_ucudp_buf[m_usudp_count][FrameHeadSize], SndFrameSize - FrameHeadSize - CRCCheckSize))
+				memcpy(&usCRC16, &m_ucudp_buf[SndFrameSize - CRCSize], CRCSize);
+				if (usCRC16 != get_crc_16(&m_ucudp_buf[FrameHeadSize], SndFrameSize - FrameHeadSize - CRCCheckSize))
 				{
 					//	continue;
 				}
 				OnPortMonitoringProc();
-				m_usudp_count += 1;
-				m_usudp_count = m_usudp_count % RcvBufNum;
 			}
 			break;
 		}
@@ -251,7 +246,7 @@ void CPortMonitoringRecThread::OnOpen(void)
 	}
 	else
 	{
-		int nSendBuf = PortMonitoringBufSize;
+		int nSendBuf = PortMonitoringRcvBufSize;
 		iReturn = setsockopt(m_RecSocket, SOL_SOCKET, SO_SNDBUF,  reinterpret_cast<const char *>(&nSendBuf), sizeof(int));
 		if (iReturn == SOCKET_ERROR)
 		{
@@ -259,7 +254,7 @@ void CPortMonitoringRecThread::OnOpen(void)
 			AfxMessageBox(str);
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringRecThread::OnOpen"), str, ErrorStatus);
 		}
-		int nRecvBuf = PortMonitoringBufSize;
+		int nRecvBuf = PortMonitoringRcvBufSize;
 		iReturn = setsockopt(m_RecSocket, SOL_SOCKET, SO_RCVBUF,  reinterpret_cast<const char *>(&nRecvBuf), sizeof(int));
 		if (iReturn == SOCKET_ERROR)
 		{
@@ -372,7 +367,7 @@ void CPortMonitoringRecThread::OnPortMonitoringProc(void)
 	// 注释掉下面的输出信息后在ADC参数设置和零漂过程中心跳就不会出现停顿现象
 	// 通过端口识别功能
 	iPos = 24;
-	memcpy(&uiPort, &m_ucudp_buf[m_usudp_count][iPos], FramePacketSize2B);
+	memcpy(&uiPort, &m_ucudp_buf[iPos], FramePacketSize2B);
 	if (uiPort == HeartBeatPort)
 	{
 		m_uiHeartBeatNum ++;
@@ -395,7 +390,7 @@ void CPortMonitoringRecThread::OnPortMonitoringProc(void)
 	}
 	m_uiSendFrameNum ++;
 
-	int icount = sendto(m_RecSocket, reinterpret_cast<const char*>(&m_ucudp_buf[m_usudp_count]), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+	int icount = sendto(m_RecSocket, reinterpret_cast<const char*>(&m_ucudp_buf), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 	if (icount == SOCKET_ERROR)
 	{
 		CString str = _T("");
@@ -403,7 +398,7 @@ void CPortMonitoringRecThread::OnPortMonitoringProc(void)
 		str.Format(_T("端口监视接收线程sendto出错, 错误代码为%d"), iError);
 		m_pLogFile->OnWriteLogFile(_T("CPortMonitoringRecThread::OnPortMonitoringProc"), str, ErrorStatus);
 	}
-	m_pSaveFile->OnSaveReceiveData(m_ucudp_buf[m_usudp_count],SndFrameSize);
+	m_pSaveFile->OnSaveReceiveData(m_ucudp_buf,SndFrameSize);
 }
 // 关闭UDP套接字
 void CPortMonitoringRecThread::OnCloseUDP(void)

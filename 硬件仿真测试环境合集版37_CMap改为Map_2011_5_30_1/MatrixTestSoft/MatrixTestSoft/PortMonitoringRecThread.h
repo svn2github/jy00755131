@@ -22,13 +22,11 @@ protected:
 
 protected:
 	// 数据接收缓冲
-	unsigned char m_ucudp_buf[RcvBufNum][SndFrameSize];
-	// 数据接收缓冲区计数
-	unsigned short m_usudp_count;
+	unsigned char m_ucudp_buf[SndFrameSize];
 	// UDP接收帧指针偏移量
 	unsigned int m_uiUdpCount;
 	// UDP接收缓冲区
-	unsigned char m_ucUdpBuf[PortMonitoringBufSize];
+	unsigned char m_ucUdpBuf[PortMonitoringRcvBufSize];
 public:
 	// 心跳计数
 	unsigned int m_uiHeartBeatNum;

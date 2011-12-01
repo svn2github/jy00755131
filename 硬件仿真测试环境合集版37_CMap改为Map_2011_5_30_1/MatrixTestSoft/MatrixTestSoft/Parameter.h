@@ -69,11 +69,9 @@ using std::wstring;
 
 //___________________缓冲区设置____________________
 // 最多连接的设备数
-#define InstrumentMaxCount			300
+#define InstrumentMaxCount			2000
 // 接收数据包的大小
 #define ReceiveDataSize					72
-// 缓冲区个数
-#define RcvBufNum							4
 // 心跳发送缓冲区大小
 #define HeartBeatSndBufSize			1280
 // 接收的网络数据包大小
@@ -82,10 +80,16 @@ using std::wstring;
 #define SndFrameSize						128
 // 串口转端口中端口缓冲区大小
 #define UartToUdpRcvSize				1024
-// ADC数据缓冲区大小，4K采样率单个设备一秒钟最多上传56帧数据
-#define ADCDataBufSize					10000000
-// 端口监视缓冲区大小，ADC数据缓冲区大小的2倍
-#define PortMonitoringBufSize		10000000
+// ADC数据缓冲区缓冲帧数
+#define ADCDataBufFrameNum				6
+// ADC数据缓冲区大小
+#define ADCDataBufSize					(InstrumentMaxCount * RcvFrameSize * ADCDataBufFrameNum)
+// 端口监视发送缓冲区大小
+#define PortMonitoringSendBufSize		ADCDataBufSize
+// 端口监视接收缓冲区缓冲帧数
+#define PortMonitoringRcvBufFrameNum	3
+// 端口监视接收缓冲区大小
+#define PortMonitoringRcvBufSize		(InstrumentMaxCount * SndFrameSize * PortMonitoringRcvBufFrameNum)
 // 串口转UDP端口缓冲区大小
 #define UartToUDPBufSize				65536
 // 发送帧缓冲区初值设定

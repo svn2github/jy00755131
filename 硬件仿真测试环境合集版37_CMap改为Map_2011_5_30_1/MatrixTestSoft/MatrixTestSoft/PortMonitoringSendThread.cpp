@@ -10,8 +10,7 @@
 IMPLEMENT_DYNCREATE(CPortMonitoringSendThread, CWinThread)
 
 CPortMonitoringSendThread::CPortMonitoringSendThread()
-: m_usudp_count(0)
-, m_iRecPort(0)
+: m_iRecPort(0)
 , m_iSendPort(0)
 , m_csIP(_T(""))
 , m_uiHeadFrameNum(0)
@@ -89,9 +88,9 @@ int CPortMonitoringSendThread::Run()
 				{
 					OnProcess(icount);
 				}
-				else if(icount == PortMonitoringBufSize)
+				else if(icount == PortMonitoringSendBufSize)
 				{
-					str.Format(_T("端口监视发送线程数据接收超过缓冲区大小，缓冲区大小为%d！"), PortMonitoringBufSize);
+					str.Format(_T("端口监视发送线程数据接收超过缓冲区大小，缓冲区大小为%d！"), PortMonitoringSendBufSize);
 					m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::Run"), str, ErrorStatus);
 				}
 				else
@@ -136,7 +135,7 @@ void CPortMonitoringSendThread::OnProcess(int iCount)
 		case 0:
 			if (m_ucUdpBuf[i] == FrameHeadCheck0)
 			{
-				m_ucudp_buf[m_usudp_count][0] = m_ucUdpBuf[i];
+				m_ucudp_buf[0] = m_ucUdpBuf[i];
 				m_uiUdpCount++;
 				break;
 			}
@@ -150,7 +149,7 @@ void CPortMonitoringSendThread::OnProcess(int iCount)
 		case 1:
 			if (m_ucUdpBuf[i] == FrameHeadCheck1)
 			{
-				m_ucudp_buf[m_usudp_count][1] = m_ucUdpBuf[i];
+				m_ucudp_buf[1] = m_ucUdpBuf[i];
 				m_uiUdpCount++;
 				break;
 			}
@@ -163,7 +162,7 @@ void CPortMonitoringSendThread::OnProcess(int iCount)
 		case 2:
 			if (m_ucUdpBuf[i] == FrameHeadCheck2)
 			{
-				m_ucudp_buf[m_usudp_count][2] = m_ucUdpBuf[i];
+				m_ucudp_buf[2] = m_ucUdpBuf[i];
 				m_uiUdpCount++;
 				break;
 			}
@@ -176,7 +175,7 @@ void CPortMonitoringSendThread::OnProcess(int iCount)
 		case 3:
 			if (m_ucUdpBuf[i] == FrameHeadCheck3)
 			{
-				m_ucudp_buf[m_usudp_count][3] = m_ucUdpBuf[i];
+				m_ucudp_buf[3] = m_ucUdpBuf[i];
 				m_uiUdpCount++;
 				break;
 			}
@@ -190,24 +189,20 @@ void CPortMonitoringSendThread::OnProcess(int iCount)
 			if (m_uiUdpCount >=  RcvFrameSize)
 			{
 				m_uiUdpCount = 0;
-				m_usudp_count += 1;
-				m_usudp_count = m_usudp_count % RcvBufNum;
 				break;
 			}
-			m_ucudp_buf[m_usudp_count][m_uiUdpCount] = m_ucUdpBuf[i];
+			m_ucudp_buf[m_uiUdpCount] = m_ucUdpBuf[i];
 			m_uiUdpCount++;
 			if (m_uiUdpCount == RcvFrameSize)
 			{
 				m_uiUdpCount = 0;
 
-				memcpy(&usCRC16, &m_ucudp_buf[m_usudp_count][RcvFrameSize - CRCSize], CRCSize);
-				if (usCRC16 != get_crc_16(&m_ucudp_buf[m_usudp_count][FrameHeadSize], RcvFrameSize - FrameHeadSize - CRCCheckSize))
+				memcpy(&usCRC16, &m_ucudp_buf[RcvFrameSize - CRCSize], CRCSize);
+				if (usCRC16 != get_crc_16(&m_ucudp_buf[FrameHeadSize], RcvFrameSize - FrameHeadSize - CRCCheckSize))
 				{
 					//	continue;
 				}
 				OnPortMonitoringProc();
-				m_usudp_count += 1;
-				m_usudp_count = m_usudp_count % RcvBufNum;
 			}
 			break;
 		}
@@ -266,7 +261,7 @@ void CPortMonitoringSendThread::OnOpen(void)
 	}
 	else
 	{
-		int nSendBuf = PortMonitoringBufSize;
+		int nSendBuf = PortMonitoringSendBufSize;
 		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_SNDBUF,  reinterpret_cast<const char *>(&nSendBuf), sizeof(int));
 		if (iReturn == SOCKET_ERROR)
 		{
@@ -274,7 +269,7 @@ void CPortMonitoringSendThread::OnOpen(void)
 			AfxMessageBox(str);
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnOpen"), str, ErrorStatus);
 		}
-		int nRecvBuf = PortMonitoringBufSize;
+		int nRecvBuf = PortMonitoringSendBufSize;
 		iReturn = setsockopt(m_SendSocket, SOL_SOCKET, SO_RCVBUF,  reinterpret_cast<const char *>(&nRecvBuf), sizeof(int));
 		if (iReturn == SOCKET_ERROR)
 		{
@@ -433,18 +428,18 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 	int iPos = 0;
 	// 加入端口分发功能
 	iPos = 24;
-	memcpy(&uiPort, &m_ucudp_buf[m_usudp_count][iPos], FramePacketSize2B);
+	memcpy(&uiPort, &m_ucudp_buf[iPos], FramePacketSize2B);
 	if (uiPort == HeadFramePort)
 	{
 		iPos = 28;
-		memcpy(&uiCommand, &m_ucudp_buf[m_usudp_count][iPos], FrameCmdSize1B);
+		memcpy(&uiCommand, &m_ucudp_buf[iPos], FrameCmdSize1B);
 		if (uiCommand == CmdSn)
 		{
 			iPos += FrameCmdSize1B;
 			// 显示SN
 			for (int j=0; j<FramePacketSize4B; j++)
 			{
-				strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "), m_ucudp_buf[iPos]);
 				iPos++;
 				m_csHeadFrameShow += strTemp;
 			}
@@ -453,7 +448,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			iPos = 34;
 			for (int k=0; k<FramePacketSize4B; k++)
 			{
-				strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "), m_ucudp_buf[iPos]);
 				iPos++;
 				m_csHeadFrameShow += strTemp;
 			}
@@ -464,14 +459,14 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 	else if (uiPort == IPSetPort)
 	{
 		iPos = 28;
-		memcpy(&uiCommand, &m_ucudp_buf[m_usudp_count][iPos], FrameCmdSize1B);
+		memcpy(&uiCommand, &m_ucudp_buf[iPos], FrameCmdSize1B);
 		if (uiCommand == CmdSn)
 		{
 			iPos += FrameCmdSize1B;
 			// 显示SN
 			for (int j=0; j<FramePacketSize4B; j++)
 			{
-				strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "), m_ucudp_buf[iPos]);
 				iPos++;
 				m_csIPSetReturnShow += strTemp;
 			}
@@ -480,7 +475,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			iPos = 34;
 			for (int k=0; k<FramePacketSize4B; k++)
 			{
-				strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "), m_ucudp_buf[iPos]);
 				iPos++;
 				m_csIPSetReturnShow += strTemp;
 			}
@@ -491,14 +486,14 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 	else if (uiPort == TailFramePort)
 	{
 		iPos = 33;
-		memcpy(&uiCommand, &m_ucudp_buf[m_usudp_count][iPos], FrameCmdSize1B);
+		memcpy(&uiCommand, &m_ucudp_buf[iPos], FrameCmdSize1B);
 		if (uiCommand == CmdSn)
 		{
 			iPos += FrameCmdSize1B;
 			// 显示SN
 			for (int j=0; j<FramePacketSize4B; j++)
 			{
-				strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "), m_ucudp_buf[iPos]);
 				iPos++;
 				m_csTailFrameShow += strTemp;
 			}
@@ -508,7 +503,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			iPos = 29;
 			for (int k=0; k<FramePacketSize4B; k++)
 			{
-				strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "),m_ucudp_buf[iPos]);
 				iPos++;
 				m_csTailFrameShow += strTemp;
 			}
@@ -519,14 +514,14 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 	else if (uiPort == TailTimeFramePort)
 	{
 		iPos = 28;
-		memcpy(&uiCommand, &m_ucudp_buf[m_usudp_count][iPos], FrameCmdSize1B);
+		memcpy(&uiCommand, &m_ucudp_buf[iPos], FrameCmdSize1B);
 		if (uiCommand == CmdSn)
 		{
 			iPos += FrameCmdSize1B;
 			// 显示SN
 			for (int j=0; j<FramePacketSize4B; j++)
 			{
-				strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "),m_ucudp_buf[iPos]);
 				iPos++;
 				m_csTailTimeReturnShow += strTemp;
 			}
@@ -535,7 +530,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			iPos = 34;
 			for (int k=0; k<FramePacketSize4B; k++)
 			{
-				strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "),m_ucudp_buf[iPos]);
 				iPos++;
 				m_csTailTimeReturnShow += strTemp;
 			}
@@ -544,7 +539,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			iPos = 39;
 			for (int p=0; p<FramePacketSize4B; p++)
 			{
-				strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "),m_ucudp_buf[iPos]);
 				iPos++;
 				m_csTailTimeReturnShow += strTemp;
 			}
@@ -555,14 +550,14 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 	else if (uiPort == TimeSetPort)
 	{
 		iPos = 28;
-		memcpy(&uiCommand, &m_ucudp_buf[m_usudp_count][iPos], FrameCmdSize1B);
+		memcpy(&uiCommand, &m_ucudp_buf[iPos], FrameCmdSize1B);
 		if (uiCommand == CmdLocalFixedTimeHigh)
 		{
 			// 显示IP
 			iPos = 16;
 			for (int j=0; j<FramePacketSize4B; j++)
 			{
-				strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "),m_ucudp_buf[iPos]);
 				iPos++;
 				m_csDelayTimeReturnShow += strTemp;
 			}
@@ -572,7 +567,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			iPos = 29;
 			for (int k=0; k<FramePacketSize4B; k++)
 			{
-				strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "),m_ucudp_buf[iPos]);
 				iPos++;
 				m_csDelayTimeReturnShow += strTemp;
 			}
@@ -582,7 +577,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			iPos = 34;
 			for (int p=0; p<FramePacketSize4B; p++)
 			{
-				strTemp.Format(_T("%02x "),m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "),m_ucudp_buf[iPos]);
 				iPos++;
 				m_csDelayTimeReturnShow += strTemp;
 			}
@@ -595,7 +590,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			strTemp.Format(_T("解析时统设置应答帧出错！\r\n"));
 			for (int i=0; i<RcvFrameSize; i++)
 			{
-				strtemp2.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][i]);
+				strtemp2.Format(_T("%02x "), m_ucudp_buf[i]);
 				strTemp += strtemp2;
 			}
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
@@ -613,7 +608,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		CString str = _T("");
 		// 显示设备序号
 		iPos = 16;
-		memcpy(&uiIP, &m_ucudp_buf[m_usudp_count][iPos], FramePacketSize4B);
+		memcpy(&uiIP, &m_ucudp_buf[iPos], FramePacketSize4B);
 		for (unsigned int k=0; k<InstrumentMaxCount; k++)
 		{
 			if (uiIP == (IPSetAddrStart + k * IPSetAddrInterval))
@@ -626,13 +621,13 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		strTemp.Format(_T("%d"), uiInstrumentNb);
 		str += strTemp;
 		iPos = 33;
-		memcpy(&uiCommand, &m_ucudp_buf[m_usudp_count][iPos], FrameCmdSize1B);
+		memcpy(&uiCommand, &m_ucudp_buf[iPos], FrameCmdSize1B);
 
 		iPos += FrameCmdSize1B;
 		str += _T("\t");
 		for (int j=0; j<FramePacketSize4B; j++)
 		{
-			strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
+			strTemp.Format(_T("%02x "), m_ucudp_buf[iPos]);
 			iPos++;
 			if (uiCommand == CmdLAUXErrorCode1)
 			{
@@ -649,17 +644,17 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		{
 			if (m_uiErrorCodeReturnCount[uiInstrumentNb] == 1)
 			{
-				strTemp.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][iPos]);
+				strTemp.Format(_T("%02x "), m_ucudp_buf[iPos]);
 			}
 			else
 			{
-				if (m_ucudp_buf[m_usudp_count][iPos] < m_ucErrorCodeReturn[uiInstrumentNb][j])
+				if (m_ucudp_buf[iPos] < m_ucErrorCodeReturn[uiInstrumentNb][j])
 				{
-					uiTemp = 256 + m_ucudp_buf[m_usudp_count][iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j];
+					uiTemp = 256 + m_ucudp_buf[iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j];
 				}
 				else
 				{
-					uiTemp = m_ucudp_buf[m_usudp_count][iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j] ;
+					uiTemp = m_ucudp_buf[iPos] - m_ucErrorCodeReturn[uiInstrumentNb][j] ;
 				}
 				if (j == 0)
 				{
@@ -671,7 +666,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 				}
 				strTemp.Format(_T("%02x "), uiTemp);
 			}
-			m_ucErrorCodeReturn[uiInstrumentNb][j] = m_ucudp_buf[m_usudp_count][iPos];
+			m_ucErrorCodeReturn[uiInstrumentNb][j] = m_ucudp_buf[iPos];
 			iPos++;
 			if (uiCommand == CmdLAUXErrorCode1)
 			{
@@ -688,7 +683,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			strTemp.Format(_T("解析误码查询应答帧出错！\r\n"));
 			for (int i=0; i<RcvFrameSize; i++)
 			{
-				strtemp2.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][i]);
+				strtemp2.Format(_T("%02x "), m_ucudp_buf[i]);
 				strTemp += strtemp2;
 			}
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
@@ -714,7 +709,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		strTemp.Format(_T("解析端口监视接收帧端口出错！\r\n"));
 		for (int i=0; i<RcvFrameSize; i++)
 		{
-			strtemp2.Format(_T("%02x "), m_ucudp_buf[m_usudp_count][i]);
+			strtemp2.Format(_T("%02x "), m_ucudp_buf[i]);
 			strTemp += strtemp2;
 		}
 		m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), strTemp, ErrorStatus);
@@ -727,7 +722,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		m_SendToAddr.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(m_csIP));
 
 		// 开启端口分发功能
-		int icount = sendto(m_SendSocket, reinterpret_cast<const char*>(&m_ucudp_buf[m_usudp_count]), RcvFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		int icount = sendto(m_SendSocket, reinterpret_cast<const char*>(&m_ucudp_buf), RcvFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 		if (icount == SOCKET_ERROR)
 		{
 			CString str = _T("");
@@ -742,7 +737,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 		m_SendToAddr.sin_port = htons(static_cast<unsigned short>(m_iSendPort));
 		m_SendToAddr.sin_addr.S_un.S_addr = inet_addr(ConvertCStringToConstCharPointer(m_csIP));
 
-		int icount = sendto(m_SendSocket, reinterpret_cast<const char*>(&m_ucudp_buf[m_usudp_count]), RcvFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+		int icount = sendto(m_SendSocket, reinterpret_cast<const char*>(&m_ucudp_buf), RcvFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
 		if (icount == SOCKET_ERROR)
 		{
 			CString str = _T("");
@@ -751,7 +746,7 @@ void CPortMonitoringSendThread::OnPortMonitoringProc(void)
 			m_pLogFile->OnWriteLogFile(_T("CPortMonitoringSendThread::OnPortMonitoringProc"), str, ErrorStatus);
 		}
 	}
-	m_pSaveFile->OnSaveSendData(m_ucudp_buf[m_usudp_count],RcvFrameSize);
+	m_pSaveFile->OnSaveSendData(m_ucudp_buf,RcvFrameSize);
 }
 // 关闭UDP套接字
 void CPortMonitoringSendThread::OnCloseUDP(void)

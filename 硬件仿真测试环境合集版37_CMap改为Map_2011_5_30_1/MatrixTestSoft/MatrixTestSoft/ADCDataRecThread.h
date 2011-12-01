@@ -94,9 +94,7 @@ private:
 	// ADC接收到的数据重发帧的序号
 	unsigned int m_uiADCRetransmissionNb;
 	// 数据帧接收缓冲
-	unsigned char m_ucudp_buf[RcvBufNum][RcvFrameSize];
-	// 缓冲区序号
-	unsigned short m_usudp_count;
+	unsigned char m_ucudp_buf[RcvFrameSize];
 	// UDP接收帧指针偏移量
 	unsigned int m_uiUdpCount;
 	// UDP接收缓冲区
