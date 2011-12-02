@@ -1,5 +1,4 @@
-#include <vector>
-using std::vector;
+
 // ____________界面设置___________
 // 设置纵向滚动条宽度
 #define SetVScrollWidth							25
@@ -83,7 +82,7 @@ using std::vector;
 // ADC数据间的间隔大小（空格+\t）
 #define ADCDataInterval						2
 // 网络传输显示帧数
-#define ADCRecFrameShowNum			7
+#define ADCRecFrameShowNum			14
 // 网络传输缓冲区帧数
 #define ADCRecFrameSaveNum			20
 // 初始状态每条线显示的点数
@@ -140,7 +139,7 @@ using std::vector;
 // 界面刷新定时器序号
 #define GraphRefreshTimerNb								2
 // 界面刷新定时器延时设置
-#define GraphRefreshTimerSet								1000
+#define GraphRefreshTimerSet								100
 
 // 设置Y轴下限
 #define DrawGraphYAxisLower							-2.5

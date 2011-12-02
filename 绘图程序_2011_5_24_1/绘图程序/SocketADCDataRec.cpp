@@ -13,6 +13,7 @@ CSocketADCDataRec::CSocketADCDataRec()
 , m_bRecADCSetInfoFrame(FALSE)
 , m_uiSamplingRate(1)
 , m_pParameterSet(NULL)
+, m_bPrepareToShow(false)
 {
 }
 
@@ -73,6 +74,7 @@ void CSocketADCDataRec::ProcFrameOne(void)
 		m_bRecADCSetInfoFrame = TRUE;
 		// 创建图形显示数据缓冲区
 		OnPrepareToShow(usInstrumentNum);
+		m_bPrepareToShow = true;
 	}
 	else if (usCommand == SendADCCmd)
 	{
@@ -120,6 +122,7 @@ void CSocketADCDataRec::OnPrepareToShow(unsigned short usInstrumentNum)
 	{
 		m_uiRecFrameNum[i] = 0;
 		m_uiInstrumentNb[i] = 0;
+		m_uiDrawFrameBeginNum[i] = 0;
 		for (unsigned int j=0; j<ADCFrameNum; j++)
 		{
 			m_uiRecFrameNb[i][j] = 0;
@@ -220,4 +223,20 @@ void CSocketADCDataRec::OnMakeAndSendSetFrame(unsigned short usSetOperation)
 	unsigned int uiSendPort = 0;
 	_stscanf_s(m_pParameterSet->m_csSendPort,_T("%x"), &uiSendPort);
 	SendTo(&m_oADCGraphSetFrameBuf, ADCSendFrameBufSize, uiSendPort, m_pParameterSet->m_csIPAddrAim);
+}
+
+// 得到每个设备数据接收缓冲区开始绘图的帧数
+void CSocketADCDataRec::GetDrawFrameBeginNum(unsigned int uiRecFrameBeginMaxNb)
+{
+	for (unsigned int i=0; i<m_uiInstrumentADCNum; i++)
+	{
+		for (unsigned int j=0; j<m_uiRecFrameNum[i]; j++)
+		{
+			if (uiRecFrameBeginMaxNb == m_uiRecFrameNb[i][j])
+			{
+				m_uiDrawFrameBeginNum[i] = j;
+				break;
+			}
+		}
+	}
 }

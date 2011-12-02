@@ -23,6 +23,8 @@ public:
 	unsigned int m_uiRecFrameNb[InstrumentMaxCount][ADCFrameNum];
 	// 接收到得帧数记录
 	unsigned int m_uiRecFrameNum[InstrumentMaxCount];
+	// 参与绘图的数据的起始帧数
+	unsigned int m_uiDrawFrameBeginNum[InstrumentMaxCount];
 	// 接收到的ADC数据的值
 	double m_dbFduData[InstrumentMaxCount][ADCRecBufSize];
 	// 图形显示的ADC数据的值
@@ -49,6 +51,10 @@ public:
 	unsigned int GetRecFrameBeginToEndNum(unsigned int uiInstrumentNb, unsigned int uiRecFrameEndMinNb);
 	// 发送采样参数设置命令
 	void OnMakeAndSendSetFrame(unsigned short usSetOperation);
+	// 准备开始图形显示标志位
+	bool m_bPrepareToShow;
+	// 得到每个设备数据接收缓冲区开始绘图的帧数
+	void GetDrawFrameBeginNum(unsigned int uiRecFrameBeginMaxNb);
 };
 
 

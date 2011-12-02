@@ -7,6 +7,8 @@
 #include "Parameter.h"
 #include "SocketADCDataRec.h"
 #include "ParameterSet.h"
+#include <vector>
+using std::vector;
 // C绘图程序Dlg 对话框
 class C绘图程序Dlg : public CDialog
 {
