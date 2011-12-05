@@ -334,6 +334,9 @@ void CInstrumentGraph::DrawUnit(int iUnitIndex, int iLineIndex, unsigned int uiL
 		{
 			m_oInstrumentGraphRectList.AddTail(oInstrumentGraph);
 		}
+		str.Format(_T("ÏßºÅ = %d    µãºÅ = %d    SN = 0x%04x    "), oInstrumentGraph.iLineIndex, 
+			oInstrumentGraph.iUnitIndex, oInstrumentGraph.uiSN);
+		m_pWndStatic->SetWindowText(str);
 	}
 	else if (uiOpt == GraphInstrumentIPSet)
 	{
