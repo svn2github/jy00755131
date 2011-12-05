@@ -69,6 +69,16 @@ private:
 	BOOL m_bCheckWaveRangeFixed;
 	// 开始界面刷新标志位
 	BOOL m_bStartShow;
+	// 网络传输绘图的X轴数据缓冲区
+	double m_viewPortXStamps[ShowLinePointsNumNow];
+	// 网络传输绘图的Y轴数据缓冲区
+	double m_viewPortYStamps[InstrumentMaxCount][ShowLinePointsNumNow];
+	// 绘图区尺寸尺寸
+	CRect m_oRectWindowGraph;
+	// 客户区尺寸
+	CRect m_oRectWindowClient;
+	// 左侧控制区尺寸
+	CRect m_oRectWindowCtrl;
 private:
 	int m_iClientWidth;				// 对话框client区域的宽度
 	int m_iClientHeight;			// 对话框client区域的高度
@@ -117,8 +127,6 @@ private:
 	unsigned int m_uiADCLineBufNum;
 	// ADC数据文件一行读取缓冲区
 	wchar_t* m_pLinebufRead;
-	// 绘图过程事件
-	HANDLE m_hDrawGraph;
 	// 参数设置界面
 	CParameterSet m_oParameterSet;
 	// 得到当前ADC数据接收帧起始序号中的最大值
@@ -145,6 +153,8 @@ private:
 	double moveScrollBar(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	// 绘制图形
 	void drawChart(CChartViewer *viewer);
+	// 网络传输绘图
+	void drawChartNetwork(CChartViewer *viewer);
 	// 重绘图片
 	void updateImageMap(CChartViewer *viewer);
 	// 验证用户输入的显示点数

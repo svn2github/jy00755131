@@ -82,7 +82,7 @@
 // ADC数据间的间隔大小（空格+\t）
 #define ADCDataInterval						2
 // 网络传输显示帧数
-#define ADCRecFrameShowNum			14
+#define ADCRecFrameShowNum			10
 // 网络传输缓冲区帧数
 #define ADCRecFrameSaveNum			20
 // 初始状态每条线显示的点数
@@ -139,7 +139,7 @@
 // 界面刷新定时器序号
 #define GraphRefreshTimerNb								2
 // 界面刷新定时器延时设置
-#define GraphRefreshTimerSet								100
+#define GraphRefreshTimerSet							250
 
 // 设置Y轴下限
 #define DrawGraphYAxisLower							-2.5
