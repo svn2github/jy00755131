@@ -139,7 +139,7 @@
 // 界面刷新定时器序号
 #define GraphRefreshTimerNb								2
 // 界面刷新定时器延时设置
-#define GraphRefreshTimerSet							250
+#define GraphRefreshTimerSet							200
 
 // 设置Y轴下限
 #define DrawGraphYAxisLower							-2.5
