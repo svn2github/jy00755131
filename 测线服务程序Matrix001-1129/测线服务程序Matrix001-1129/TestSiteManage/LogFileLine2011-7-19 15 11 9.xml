@@ -1,0 +1,576 @@
+<Log Date="2011-7-19" Time="15:11:9.871" Type="Log" Object="CThreadProcSiteDataOutput" Position="OutputToFileForReset" strDesc=""/>
+<Log Date="2011-7-19" Time="15:11:9.871" Type="Log" Object="CSiteManage" Position="OnInit" strDesc="Click Init Button"/>
+<Log Date="2011-7-19" Time="15:11:13.542" Type="Log" Object="CNetProcInterface" Position="ProcInterFaceCommandForField" strDesc="FieldOn"/>
+<Log Date="2011-7-19" Time="15:11:17.580" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=67112961 IP=0 TimeHead=0 RoutIP=0"/>
+<Log Date="2011-7-19" Time="15:11:17.580" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add First Main Cross SN=67112961£»IP=2000000200"/>
+<Log Date="2011-7-19" Time="15:11:17.622" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:17.622" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=67112961 IP=2000000200"/>
+<Log Date="2011-7-19" Time="15:11:17.724" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=4001001 IP=2000000200"/>
+<Log Date="2011-7-19" Time="15:11:19.382" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3331 IP=1145324612 TimeHead=c1162 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:19.433" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3331 IP=1145324612 TimeHead=c1162 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:19.433" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3331 IP=0 TimeHead=c1162"/>
+<Log Date="2011-7-19" Time="15:11:19.484" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7939 IP=1145324612 TimeHead=c12b8 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:19.534" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7939 IP=1145324612 TimeHead=c12b8 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:19.534" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=7939 IP=0 TimeHead=c12b8"/>
+<Log Date="2011-7-19" Time="15:11:19.575" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:19.575" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=7939 IP=1000311"/>
+<Log Date="2011-7-19" Time="15:11:19.577" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3331 IP=1000301"/>
+<Log Date="2011-7-19" Time="15:11:19.678" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1f03 IP=1000311"/>
+<Log Date="2011-7-19" Time="15:11:19.679" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=d03 IP=1000301"/>
+<Log Date="2011-7-19" Time="15:11:19.835" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12547 IP=1145324612 TimeHead=c180d RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:19.886" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12547 IP=1145324612 TimeHead=c180d RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:19.887" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=12547 IP=0 TimeHead=c180d"/>
+<Log Date="2011-7-19" Time="15:11:19.887" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2819 IP=1145324612 TimeHead=c1961 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:19.938" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2819 IP=1145324612 TimeHead=c1961 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:19.938" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2819 IP=0 TimeHead=c1961"/>
+<Log Date="2011-7-19" Time="15:11:20.89" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8451 IP=1145324612 TimeHead=c1c09 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.140" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8451 IP=1145324612 TimeHead=c1c09 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.140" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=8451 IP=0 TimeHead=c1c09"/>
+<Log Date="2011-7-19" Time="15:11:20.241" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8963 IP=1145324612 TimeHead=c1eb5 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.292" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8963 IP=1145324612 TimeHead=c1eb5 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.292" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=8963 IP=0 TimeHead=c1eb5"/>
+<Log Date="2011-7-19" Time="15:11:20.443" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7683 IP=1145324612 TimeHead=c215e RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.494" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7683 IP=1145324612 TimeHead=c215e RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.495" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=7683 IP=0 TimeHead=c215e"/>
+<Log Date="2011-7-19" Time="15:11:20.495" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1795 IP=1145324612 TimeHead=c22b2 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.546" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1795 IP=1145324612 TimeHead=c22b2 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.546" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=1795 IP=0 TimeHead=c22b2"/>
+<Log Date="2011-7-19" Time="15:11:20.629" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:20.629" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8451 IP=1000341"/>
+<Log Date="2011-7-19" Time="15:11:20.631" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=12547 IP=1000321"/>
+<Log Date="2011-7-19" Time="15:11:20.632" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=7683 IP=1000361"/>
+<Log Date="2011-7-19" Time="15:11:20.633" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2819 IP=1000331"/>
+<Log Date="2011-7-19" Time="15:11:20.634" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8963 IP=1000351"/>
+<Log Date="2011-7-19" Time="15:11:20.697" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8195 IP=1145324612 TimeHead=c255e RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.735" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2103 IP=1000341"/>
+<Log Date="2011-7-19" Time="15:11:20.737" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=3103 IP=1000321"/>
+<Log Date="2011-7-19" Time="15:11:20.737" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1e03 IP=1000361"/>
+<Log Date="2011-7-19" Time="15:11:20.738" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=b03 IP=1000331"/>
+<Log Date="2011-7-19" Time="15:11:20.738" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2303 IP=1000351"/>
+<Log Date="2011-7-19" Time="15:11:20.747" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8195 IP=1145324612 TimeHead=c255e RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.747" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=8195 IP=0 TimeHead=c255e"/>
+<Log Date="2011-7-19" Time="15:11:20.848" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5891 IP=1145324612 TimeHead=c2808 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.899" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5891 IP=1145324612 TimeHead=c2808 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:20.899" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=5891 IP=0 TimeHead=c2808"/>
+<Log Date="2011-7-19" Time="15:11:20.950" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1283 IP=1145324612 TimeHead=c295d RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.1" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1283 IP=1145324612 TimeHead=c295d RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.2" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=1283 IP=0 TimeHead=c295d"/>
+<Log Date="2011-7-19" Time="15:11:21.2" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5123 IP=1145324612 TimeHead=c2ab1 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.53" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5123 IP=1145324612 TimeHead=c2ab1 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.54" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=5123 IP=0 TimeHead=c2ab1"/>
+<Log Date="2011-7-19" Time="15:11:21.104" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6403 IP=1145324612 TimeHead=c2c08 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.154" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6403 IP=1145324612 TimeHead=c2c08 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.154" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=6403 IP=0 TimeHead=c2c08"/>
+<Log Date="2011-7-19" Time="15:11:21.205" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2051 IP=1145324612 TimeHead=c2d5e RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.255" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2051 IP=1145324612 TimeHead=c2d5e RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.255" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2051 IP=0 TimeHead=c2d5e"/>
+<Log Date="2011-7-19" Time="15:11:21.256" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2563 IP=1145324612 TimeHead=c2eaf RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.307" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2563 IP=1145324612 TimeHead=c2eaf RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.307" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2563 IP=0 TimeHead=c2eaf"/>
+<Log Date="2011-7-19" Time="15:11:21.458" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4867 IP=1145324612 TimeHead=c315b RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.508" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4867 IP=1145324612 TimeHead=c315b RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.508" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=4867 IP=0 TimeHead=c315b"/>
+<Log Date="2011-7-19" Time="15:11:21.509" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7171 IP=1145324612 TimeHead=c32b1 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.559" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7171 IP=1145324612 TimeHead=c32b1 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.559" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=7171 IP=0 TimeHead=c32b1"/>
+<Log Date="2011-7-19" Time="15:11:21.610" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=771 IP=1145324612 TimeHead=c3404 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.660" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=771 IP=1145324612 TimeHead=c3404 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.660" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=771 IP=0 TimeHead=c3404"/>
+<Log Date="2011-7-19" Time="15:11:21.688" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:21.688" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8195 IP=1000381"/>
+<Log Date="2011-7-19" Time="15:11:21.690" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2563 IP=1000441"/>
+<Log Date="2011-7-19" Time="15:11:21.692" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2051 IP=1000431"/>
+<Log Date="2011-7-19" Time="15:11:21.693" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=6403 IP=1000421"/>
+<Log Date="2011-7-19" Time="15:11:21.694" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=1795 IP=1000371"/>
+<Log Date="2011-7-19" Time="15:11:21.695" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5891 IP=1000391"/>
+<Log Date="2011-7-19" Time="15:11:21.696" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=1283 IP=1000401"/>
+<Log Date="2011-7-19" Time="15:11:21.697" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5123 IP=1000411"/>
+<Log Date="2011-7-19" Time="15:11:21.698" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=4867 IP=1000451"/>
+<Log Date="2011-7-19" Time="15:11:21.711" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12291 IP=1145324612 TimeHead=c3558 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.762" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12291 IP=1145324612 TimeHead=c3558 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.763" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=12291 IP=0 TimeHead=c3558"/>
+<Log Date="2011-7-19" Time="15:11:21.763" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11011 IP=1145324612 TimeHead=c36ae RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.800" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2003 IP=1000381"/>
+<Log Date="2011-7-19" Time="15:11:21.800" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=a03 IP=1000441"/>
+<Log Date="2011-7-19" Time="15:11:21.801" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=803 IP=1000431"/>
+<Log Date="2011-7-19" Time="15:11:21.802" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1903 IP=1000421"/>
+<Log Date="2011-7-19" Time="15:11:21.803" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=703 IP=1000371"/>
+<Log Date="2011-7-19" Time="15:11:21.803" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1703 IP=1000391"/>
+<Log Date="2011-7-19" Time="15:11:21.804" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=503 IP=1000401"/>
+<Log Date="2011-7-19" Time="15:11:21.804" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1303 IP=1000451"/>
+<Log Date="2011-7-19" Time="15:11:21.814" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11011 IP=1145324612 TimeHead=c36ae RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:21.814" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=11011 IP=0 TimeHead=c36ae"/>
+<Log Date="2011-7-19" Time="15:11:21.854" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:21.854" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame3" strDesc="m_bIPSetOK Sn=8195 IP=1000381"/>
+<Log Date="2011-7-19" Time="15:11:21.854" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5123 IP=1000411"/>
+<Log Date="2011-7-19" Time="15:11:21.956" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1403 IP=1000411"/>
+<Log Date="2011-7-19" Time="15:11:21.965" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3075 IP=1145324612 TimeHead=c3958 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.16" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3075 IP=1145324612 TimeHead=c3958 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.16" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3075 IP=0 TimeHead=c3958"/>
+<Log Date="2011-7-19" Time="15:11:22.17" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2307 IP=1145324612 TimeHead=c3aac RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.68" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2307 IP=1145324612 TimeHead=c3aac RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.68" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2307 IP=0 TimeHead=c3aac"/>
+<Log Date="2011-7-19" Time="15:11:22.219" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10243 IP=1145324612 TimeHead=c3d58 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.269" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10243 IP=1145324612 TimeHead=c3d58 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.270" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=10243 IP=0 TimeHead=c3d58"/>
+<Log Date="2011-7-19" Time="15:11:22.271" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5635 IP=1145324612 TimeHead=c3eac RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.321" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5635 IP=1145324612 TimeHead=c3eac RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.321" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=5635 IP=0 TimeHead=c3eac"/>
+<Log Date="2011-7-19" Time="15:11:22.572" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9219 IP=1145324612 TimeHead=c42ab RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.606" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:22.606" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=12291 IP=1000481"/>
+<Log Date="2011-7-19" Time="15:11:22.608" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3075 IP=1000501"/>
+<Log Date="2011-7-19" Time="15:11:22.609" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=7171 IP=1000461"/>
+<Log Date="2011-7-19" Time="15:11:22.610" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2307 IP=1000511"/>
+<Log Date="2011-7-19" Time="15:11:22.611" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=11011 IP=1000491"/>
+<Log Date="2011-7-19" Time="15:11:22.612" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=10243 IP=1000521"/>
+<Log Date="2011-7-19" Time="15:11:22.613" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5635 IP=1000531"/>
+<Log Date="2011-7-19" Time="15:11:22.614" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=771 IP=1000471"/>
+<Log Date="2011-7-19" Time="15:11:22.623" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9219 IP=1145324612 TimeHead=c42ab RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.623" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=9219 IP=0 TimeHead=c42ab"/>
+<Log Date="2011-7-19" Time="15:11:22.624" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9475 IP=1145324612 TimeHead=c43ff RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.674" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9475 IP=1145324612 TimeHead=c43ff RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.675" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=9475 IP=0 TimeHead=c43ff"/>
+<Log Date="2011-7-19" Time="15:11:22.715" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=3003 IP=1000481"/>
+<Log Date="2011-7-19" Time="15:11:22.716" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=c03 IP=1000501"/>
+<Log Date="2011-7-19" Time="15:11:22.716" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1c03 IP=1000461"/>
+<Log Date="2011-7-19" Time="15:11:22.716" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=903 IP=1000511"/>
+<Log Date="2011-7-19" Time="15:11:22.717" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2b03 IP=1000491"/>
+<Log Date="2011-7-19" Time="15:11:22.718" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2803 IP=1000521"/>
+<Log Date="2011-7-19" Time="15:11:22.718" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1603 IP=1000531"/>
+<Log Date="2011-7-19" Time="15:11:22.719" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=303 IP=1000471"/>
+<Log Date="2011-7-19" Time="15:11:22.725" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6147 IP=1145324612 TimeHead=c4555 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.769" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:22.769" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame3" strDesc="m_bIPSetOK Sn=771 IP=1000471"/>
+<Log Date="2011-7-19" Time="15:11:22.775" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6147 IP=1145324612 TimeHead=c4555 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.776" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=6147 IP=0 TimeHead=c4555"/>
+<Log Date="2011-7-19" Time="15:11:22.826" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6915 IP=1145324612 TimeHead=c46aa RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.876" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6915 IP=1145324612 TimeHead=c46aa RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:22.877" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=6915 IP=0 TimeHead=c46aa"/>
+<Log Date="2011-7-19" Time="15:11:23.79" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12035 IP=1145324612 TimeHead=c4aa9 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.129" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12035 IP=1145324612 TimeHead=c4aa9 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.129" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=12035 IP=0 TimeHead=c4aa9"/>
+<Log Date="2011-7-19" Time="15:11:23.180" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4099 IP=1145324612 TimeHead=c4bfd RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.230" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4099 IP=1145324612 TimeHead=c4bfd RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.230" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=4099 IP=0 TimeHead=c4bfd"/>
+<Log Date="2011-7-19" Time="15:11:23.431" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3 IP=1145324612 TimeHead=c4ffb RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.482" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3 IP=1145324612 TimeHead=c4ffb RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.482" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3 IP=0 TimeHead=c4ffb"/>
+<Log Date="2011-7-19" Time="15:11:23.583" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10499 IP=1145324612 TimeHead=c52a7 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.634" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10499 IP=1145324612 TimeHead=c52a7 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.634" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=10499 IP=0 TimeHead=c52a7"/>
+<Log Date="2011-7-19" Time="15:11:23.669" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:23.669" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3 IP=1000601"/>
+<Log Date="2011-7-19" Time="15:11:23.671" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=4099 IP=1000591"/>
+<Log Date="2011-7-19" Time="15:11:23.672" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=12035 IP=1000581"/>
+<Log Date="2011-7-19" Time="15:11:23.673" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=6915 IP=1000571"/>
+<Log Date="2011-7-19" Time="15:11:23.674" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=6147 IP=1000561"/>
+<Log Date="2011-7-19" Time="15:11:23.676" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=9475 IP=1000551"/>
+<Log Date="2011-7-19" Time="15:11:23.677" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=9219 IP=1000541"/>
+<Log Date="2011-7-19" Time="15:11:23.779" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=3 IP=1000601"/>
+<Log Date="2011-7-19" Time="15:11:23.780" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1003 IP=1000591"/>
+<Log Date="2011-7-19" Time="15:11:23.781" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2f03 IP=1000581"/>
+<Log Date="2011-7-19" Time="15:11:23.782" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1b03 IP=1000571"/>
+<Log Date="2011-7-19" Time="15:11:23.782" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1803 IP=1000561"/>
+<Log Date="2011-7-19" Time="15:11:23.783" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2503 IP=1000551"/>
+<Log Date="2011-7-19" Time="15:11:23.783" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2403 IP=1000541"/>
+<Log Date="2011-7-19" Time="15:11:23.833" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:23.833" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame3" strDesc="m_bIPSetOK Sn=6147 IP=1000561"/>
+<Log Date="2011-7-19" Time="15:11:23.834" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame3" strDesc="m_bIPSetOK Sn=9475 IP=1000551"/>
+<Log Date="2011-7-19" Time="15:11:23.835" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10755 IP=1145324612 TimeHead=c56a9 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.885" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10755 IP=1145324612 TimeHead=c56a9 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:23.886" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=10755 IP=0 TimeHead=c56a9"/>
+<Log Date="2011-7-19" Time="15:11:24.86" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3587 IP=1145324612 TimeHead=c5aa2 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.137" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3587 IP=1145324612 TimeHead=c5aa2 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.137" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3587 IP=0 TimeHead=c5aa2"/>
+<Log Date="2011-7-19" Time="15:11:24.188" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3843 IP=1145324612 TimeHead=c5bf9 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.239" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3843 IP=1145324612 TimeHead=c5bf9 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.239" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3843 IP=0 TimeHead=c5bf9"/>
+<Log Date="2011-7-19" Time="15:11:24.240" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11267 IP=1145324612 TimeHead=c5d4e RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.290" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11267 IP=1145324612 TimeHead=c5d4e RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.290" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=11267 IP=0 TimeHead=c5d4e"/>
+<Log Date="2011-7-19" Time="15:11:24.441" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9731 IP=1145324612 TimeHead=c5ff9 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.492" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9731 IP=1145324612 TimeHead=c5ff9 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.492" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=9731 IP=0 TimeHead=c5ff9"/>
+<Log Date="2011-7-19" Time="15:11:24.543" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=515 IP=1145324612 TimeHead=c614d RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.585" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:24.585" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3843 IP=1000641"/>
+<Log Date="2011-7-19" Time="15:11:24.587" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3587 IP=1000631"/>
+<Log Date="2011-7-19" Time="15:11:24.588" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=11267 IP=1000651"/>
+<Log Date="2011-7-19" Time="15:11:24.589" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=10755 IP=1000621"/>
+<Log Date="2011-7-19" Time="15:11:24.590" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=10499 IP=1000611"/>
+<Log Date="2011-7-19" Time="15:11:24.591" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=9731 IP=1000661"/>
+<Log Date="2011-7-19" Time="15:11:24.594" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=515 IP=1145324612 TimeHead=c614d RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.594" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=515 IP=0 TimeHead=c614d"/>
+<Log Date="2011-7-19" Time="15:11:24.692" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=f03 IP=1000641"/>
+<Log Date="2011-7-19" Time="15:11:24.693" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=e03 IP=1000631"/>
+<Log Date="2011-7-19" Time="15:11:24.693" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2c03 IP=1000651"/>
+<Log Date="2011-7-19" Time="15:11:24.694" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2a03 IP=1000621"/>
+<Log Date="2011-7-19" Time="15:11:24.694" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2903 IP=1000611"/>
+<Log Date="2011-7-19" Time="15:11:24.695" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2603 IP=1000661"/>
+<Log Date="2011-7-19" Time="15:11:24.695" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1539 IP=1145324612 TimeHead=c63f7 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.745" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1539 IP=1145324612 TimeHead=c63f7 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.745" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=1539 IP=0 TimeHead=c63f7"/>
+<Log Date="2011-7-19" Time="15:11:24.745" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:24.746" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame3" strDesc="m_bIPSetOK Sn=10499 IP=1000611"/>
+<Log Date="2011-7-19" Time="15:11:24.846" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4355 IP=1145324612 TimeHead=c66a1 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.897" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4355 IP=1145324612 TimeHead=c66a1 RoutIP=44444444"/>
+<Log Date="2011-7-19" Time="15:11:24.898" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=4355 IP=0 TimeHead=c66a1"/>
+<Log Date="2011-7-19" Time="15:11:25.647" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-19" Time="15:11:25.647" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=4355 IP=1000691"/>
+<Log Date="2011-7-19" Time="15:11:25.648" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=1539 IP=1000681"/>
+<Log Date="2011-7-19" Time="15:11:25.649" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=515 IP=1000671"/>
+<Log Date="2011-7-19" Time="15:11:25.750" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1103 IP=1000691"/>
+<Log Date="2011-7-19" Time="15:11:25.751" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=603 IP=1000681"/>
+<Log Date="2011-7-19" Time="15:11:25.751" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=203 IP=1000671"/>
+<Log Date="2011-7-19" Time="15:11:28.26" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 829089 m_uiTimeSystem= 829254 m_uiNetTime=829255 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:28.71" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:29.75" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 833185 m_uiTimeSystem= 833416 m_uiNetTime=833417 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:11:29.116" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:30.75" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 837281 m_uiTimeSystem= 837413 m_uiNetTime=837414 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:30.116" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:31.125" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 841377 m_uiTimeSystem= 841659 m_uiNetTime=841660 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:31.166" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:31.905" Type="Log" Object="CThreadProcSiteDataOutput" Position="ProcSiteDataOutput" strDesc=""/>
+<Log Date="2011-7-19" Time="15:11:32.126" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 845473 m_uiTimeSystem= 845702 m_uiNetTime=845703 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:32.170" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:33.179" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 849569 m_uiTimeSystem= 849926 m_uiNetTime=849927 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:33.221" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:34.175" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 853665 m_uiTimeSystem= 853901 m_uiNetTime=853902 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:11:34.217" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:35.226" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 857761 m_uiTimeSystem= 858019 m_uiNetTime=858020 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:35.267" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:35.819" Type="Log" Object="CThreadProcTest" Position="OnTestTaskBaseFromTestView" strDesc="Start Instrument/Sensor Test.From Instrument/SensorView Go Button"/>
+<Log Date="2011-7-19" Time="15:11:35.819" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Project Start.Method:1;Type:1;Nb:1000"/>
+<Log Date="2011-7-19" Time="15:11:36.80" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Request Start.Nb=1000 msLength=0,Aim:1;Type:4,m_uiADTimeBegin=0 m_uiTimeCollectEnd=-842150451"/>
+<Log Date="2011-7-19" Time="15:11:36.81" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Request Start1.Aim:1;Type:4,m_uiADTimeBegin=0 m_uiTimeCollectEnd=-842150451"/>
+<Log Date="2011-7-19" Time="15:11:36.327" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 861857 m_uiTimeSystem= 862389 m_uiNetTime=862390 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:36.372" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:37.277" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 865953 m_uiTimeSystem= 866245 m_uiNetTime=866247 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:37.339" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:38.278" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 870049 m_uiTimeSystem= 870194 m_uiNetTime=870195 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:38.320" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:39.328" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 874145 m_uiTimeSystem= 874439 m_uiNetTime=874441 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:11:39.380" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:40.250" Type="Log" Object="CThreadProcTest" Position="ProcSendTestADStart" strDesc="Test AD Start tnow=878241,m_uiADTimeBegin=886433 m_uiTimeCollectEnd=903125"/>
+<Log Date="2011-7-19" Time="15:11:40.251" Type="Log" Object="CThreadProcTest" Position="ProcSendTestADStart" strDesc="Test AD Start IP=f44f3 TBnow=886432"/>
+<Log Date="2011-7-19" Time="15:11:40.356" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 878241 m_uiTimeSystem= 878537 m_uiNetTime=878538 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:40.397" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:41.454" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 882337 m_uiTimeSystem= 882495 m_uiNetTime=882496 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:41.496" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:42.452" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000351 m_uiFrameIndex=0 0 Index=0 d1=d89b2 d2=0 1 0 -1"/>
+<Log Date="2011-7-19" Time="15:11:42.503" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 886433 m_uiTimeSystem= 886678 m_uiNetTime=886679 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4427"/>
+<Log Date="2011-7-19" Time="15:11:42.545" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:42.882" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=432 72 Index=6 d1=d905a d2=0 241 0 -1"/>
+<Log Date="2011-7-19" Time="15:11:43.318" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=864 72 Index=12 d1=d9702 d2=0 481 0 -1"/>
+<Log Date="2011-7-19" Time="15:11:43.408" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 890529 m_uiTimeSystem= 890758 m_uiNetTime=890759 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:11:43.450" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:43.750" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=1296 72 Index=18 d1=d9daa d2=0 721 0 -1"/>
+<Log Date="2011-7-19" Time="15:11:44.179" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=1728 72 Index=24 d1=da452 d2=0 961 0 -1"/>
+<Log Date="2011-7-19" Time="15:11:44.412" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 894625 m_uiTimeSystem= 894733 m_uiNetTime=894734 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:11:44.455" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:44.615" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=112 72 Index=30 d1=daafa d2=0 1201 2048 -1"/>
+<Log Date="2011-7-19" Time="15:11:45.45" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=544 72 Index=36 d1=db1a2 d2=0 1441 2048 -1"/>
+<Log Date="2011-7-19" Time="15:11:45.467" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 898721 m_uiTimeSystem= 898917 m_uiNetTime=898918 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:45.481" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=976 72 Index=41 d1=db84a d2=0 1681 2048 -1"/>
+<Log Date="2011-7-19" Time="15:11:45.511" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:45.916" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=1408 72 Index=47 d1=dbef2 d2=0 1921 2048 -1"/>
+<Log Date="2011-7-19" Time="15:11:46.341" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=1840 72 Index=53 d1=dc59a d2=0 2161 2048 -1"/>
+<Log Date="2011-7-19" Time="15:11:46.477" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 902817 m_uiTimeSystem= 902975 m_uiNetTime=902976 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:46.518" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:46.778" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=224 72 Index=59 d1=dcc42 d2=0 2401 4096 -1"/>
+<Log Date="2011-7-19" Time="15:11:47.208" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=656 72 Index=65 d1=dd2ea d2=0 2641 4096 -1"/>
+<Log Date="2011-7-19" Time="15:11:47.473" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Request End"/>
+<Log Date="2011-7-19" Time="15:11:47.530" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 906913 m_uiTimeSystem= 907158 m_uiNetTime=907160 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:47.574" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:47.778" Type="Debug" Object="CThreadProcTest" Position="SetTestData STOP" strDesc="End uiFrameCount=40 1567691031 "/>
+<Log Date="2011-7-19" Time="15:11:47.978" Type="Debug" Object="CThreadProcTest" Position="total" strDesc="totalcount=2794 recevicecount=2794 saveecount=40,lossframecount=0"/>
+<Log Date="2011-7-19" Time="15:11:47.979" Type="Debug" Object="CThreadProcTest" Position="totalrecv" strDesc="AD adsetcount=78 adgetcount=1521 gettestcout=1521"/>
+<Log Date="2011-7-19" Time="15:11:47.980" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Project End"/>
+<Log Date="2011-7-19" Time="15:11:48.530" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 911009 m_uiTimeSystem= 911174 m_uiNetTime=911175 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:48.572" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:49.533" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 915105 m_uiTimeSystem= 915212 m_uiNetTime=915214 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:49.576" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:50.585" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 919201 m_uiTimeSystem= 919412 m_uiNetTime=919413 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:50.628" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:51.585" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 923297 m_uiTimeSystem= 923393 m_uiNetTime=923394 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:51.626" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:52.635" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 927393 m_uiTimeSystem= 927577 m_uiNetTime=927578 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:52.677" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:54.9" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 931489 m_uiTimeSystem= 933118 m_uiNetTime=933120 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:11:54.59" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:54.234" Type="Log" Object="CThreadProcSiteDataOutput" Position="ProcSiteDataOutput" strDesc=""/>
+<Log Date="2011-7-19" Time="15:11:54.658" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 935585 m_uiTimeSystem= 935727 m_uiNetTime=935728 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:54.703" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:55.709" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 939681 m_uiTimeSystem= 939877 m_uiNetTime=939878 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:55.752" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:56.714" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 943777 m_uiTimeSystem= 943874 m_uiNetTime=943875 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:56.755" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:57.764" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 947873 m_uiTimeSystem= 948120 m_uiNetTime=948121 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:57.807" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:58.765" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 951969 m_uiTimeSystem= 952053 m_uiNetTime=952054 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:58.807" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:11:59.814" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 956065 m_uiTimeSystem= 956299 m_uiNetTime=956300 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:11:59.855" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:0.815" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 960161 m_uiTimeSystem= 960296 m_uiNetTime=960297 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:0.857" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:1.866" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 964257 m_uiTimeSystem= 964486 m_uiNetTime=964487 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4427"/>
+<Log Date="2011-7-19" Time="15:12:1.908" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:2.965" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 968353 m_uiTimeSystem= 968902 m_uiNetTime=968903 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4427"/>
+<Log Date="2011-7-19" Time="15:12:3.7" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:3.918" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 972449 m_uiTimeSystem= 972678 m_uiNetTime=972679 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:3.959" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:4.918" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 976545 m_uiTimeSystem= 976710 m_uiNetTime=976711 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:4.960" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:5.971" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 980641 m_uiTimeSystem= 980901 m_uiNetTime=980902 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:6.15" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:6.972" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 984737 m_uiTimeSystem= 984897 m_uiNetTime=984898 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:7.26" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:8.26" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 988833 m_uiTimeSystem= 989143 m_uiNetTime=989144 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:8.73" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:9.129" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 992929 m_uiTimeSystem= 993514 m_uiNetTime=993515 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:9.171" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:10.78" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 997025 m_uiTimeSystem= 997382 m_uiNetTime=997383 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:10.119" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:11.80" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1001121 m_uiTimeSystem= 1001319 m_uiNetTime=1001320 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:11.122" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:12.85" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1005217 m_uiTimeSystem= 1005315 m_uiNetTime=1005316 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:12.126" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:13.139" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1009313 m_uiTimeSystem= 1009541 m_uiNetTime=1009542 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:13.180" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:14.143" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1013409 m_uiTimeSystem= 1013508 m_uiNetTime=1013509 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:14.184" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:15.189" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1017505 m_uiTimeSystem= 1017751 m_uiNetTime=1017752 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:15.230" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:16.190" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1021601 m_uiTimeSystem= 1021737 m_uiNetTime=1021738 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:16.231" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:17.240" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1025697 m_uiTimeSystem= 1025921 m_uiNetTime=1025922 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:17.282" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:18.240" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1029793 m_uiTimeSystem= 1029917 m_uiNetTime=1029918 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:18.282" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:19.293" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1033889 m_uiTimeSystem= 1034118 m_uiNetTime=1034119 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:19.334" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:20.231" Type="Log" Object="CThreadProcTest" Position="OnTestTaskBaseFromTestView" strDesc="Start Instrument/Sensor Test.From Instrument/SensorView Go Button"/>
+<Log Date="2011-7-19" Time="15:12:20.232" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Project Start.Method:1;Type:1;Nb:1000"/>
+<Log Date="2011-7-19" Time="15:12:20.299" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1037985 m_uiTimeSystem= 1038159 m_uiNetTime=1038160 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:20.341" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:20.488" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Request Start.Nb=1000 msLength=0,Aim:1;Type:4,m_uiADTimeBegin=3630829 m_uiTimeCollectEnd=-842150451"/>
+<Log Date="2011-7-19" Time="15:12:20.489" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Request Start1.Aim:1;Type:4,m_uiADTimeBegin=3630829 m_uiTimeCollectEnd=-842150451"/>
+<Log Date="2011-7-19" Time="15:12:21.448" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1042081 m_uiTimeSystem= 1042374 m_uiNetTime=1042375 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:21.493" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:22.449" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1046177 m_uiTimeSystem= 1046713 m_uiNetTime=1046714 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:22.500" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:23.402" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1050273 m_uiTimeSystem= 1050521 m_uiNetTime=1050523 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:23.443" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:24.663" Type="Log" Object="CThreadProcTest" Position="ProcSendTestADStart" strDesc="Test AD Start tnow=1050273,m_uiADTimeBegin=1062561 m_uiTimeCollectEnd=1079253"/>
+<Log Date="2011-7-19" Time="15:12:24.664" Type="Log" Object="CThreadProcTest" Position="ProcSendTestADStart" strDesc="Test AD Start IP=f44f3 TBnow=1062560"/>
+<Log Date="2011-7-19" Time="15:12:24.766" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1054369 m_uiTimeSystem= 1056017 m_uiNetTime=1056018 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:24.810" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:25.425" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1058465 m_uiTimeSystem= 1058639 m_uiNetTime=1058640 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:25.466" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:26.434" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1062561 m_uiTimeSystem= 1062662 m_uiNetTime=1062663 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:26.499" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:26.520" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000321 m_uiFrameIndex=0 0 Index=0 d1=1039b3 d2=0 1 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:26.959" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000471 m_uiFrameIndex=432 72 Index=6 d1=10405c d2=0 241 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:27.406" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000591 m_uiFrameIndex=864 72 Index=11 d1=104702 d2=0 481 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:27.454" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1066657 m_uiTimeSystem= 1066758 m_uiNetTime=1066759 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:27.505" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:27.843" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000651 m_uiFrameIndex=1296 72 Index=18 d1=104dbc d2=0 721 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:28.278" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000511 m_uiFrameIndex=1728 72 Index=24 d1=10548b d2=0 961 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:28.512" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1070753 m_uiTimeSystem= 1070940 m_uiNetTime=1070941 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:28.554" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:28.720" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000601 m_uiFrameIndex=112 72 Index=30 d1=105b3c d2=0 1201 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:29.179" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000301 m_uiFrameIndex=544 72 Index=36 d1=106293 d2=0 1441 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:29.516" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1074849 m_uiTimeSystem= 1074939 m_uiNetTime=1074940 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:29.573" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:29.631" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000411 m_uiFrameIndex=1048 72 Index=42 d1=106966 d2=0 1681 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:30.68" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000541 m_uiFrameIndex=1480 72 Index=48 d1=10700e d2=0 1921 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:30.510" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000451 m_uiFrameIndex=1912 72 Index=54 d1=1076c2 d2=0 2161 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:30.676" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1078945 m_uiTimeSystem= 1079182 m_uiNetTime=1079183 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:30.751" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:30.945" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000481 m_uiFrameIndex=296 72 Index=60 d1=107d97 d2=0 2401 4096 -1"/>
+<Log Date="2011-7-19" Time="15:12:31.384" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000671 m_uiFrameIndex=728 72 Index=66 d1=10843d d2=0 2641 4096 -1"/>
+<Log Date="2011-7-19" Time="15:12:31.488" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Request End"/>
+<Log Date="2011-7-19" Time="15:12:31.579" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1083041 m_uiTimeSystem= 1083241 m_uiNetTime=1083242 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:31.622" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:31.798" Type="Debug" Object="CThreadProcTest" Position="SetTestData STOP" strDesc="End uiFrameCount=40 1567691031 "/>
+<Log Date="2011-7-19" Time="15:12:31.998" Type="Debug" Object="CThreadProcTest" Position="total" strDesc="totalcount=2688 recevicecount=2688 saveecount=39,lossframecount=0"/>
+<Log Date="2011-7-19" Time="15:12:31.999" Type="Debug" Object="CThreadProcTest" Position="totalrecv" strDesc="AD adsetcount=78 adgetcount=1440 gettestcout=1440"/>
+<Log Date="2011-7-19" Time="15:12:31.999" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Project End"/>
+<Log Date="2011-7-19" Time="15:12:32.586" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1087137 m_uiTimeSystem= 1087237 m_uiNetTime=1087238 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:32.628" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:33.638" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1091233 m_uiTimeSystem= 1091421 m_uiNetTime=1091422 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:33.679" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:34.639" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1095329 m_uiTimeSystem= 1095416 m_uiNetTime=1095418 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:34.681" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:35.791" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1099425 m_uiTimeSystem= 1100044 m_uiNetTime=1100045 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:35.841" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:36.706" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1103521 m_uiTimeSystem= 1103722 m_uiNetTime=1103723 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:36.749" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:37.707" Type="Log" Object="CThreadProcSiteDataOutput" Position="ProcSiteDataOutput" strDesc=""/>
+<Log Date="2011-7-19" Time="15:12:37.742" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1107617 m_uiTimeSystem= 1107842 m_uiNetTime=1107844 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:37.783" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:38.750" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1111713 m_uiTimeSystem= 1111839 m_uiNetTime=1111840 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:38.808" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:39.756" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1115809 m_uiTimeSystem= 1115897 m_uiNetTime=1115898 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4427"/>
+<Log Date="2011-7-19" Time="15:12:39.797" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:39.835" Type="Log" Object="CThreadProcTest" Position="OnTestTaskBaseFromTestView" strDesc="Start Instrument/Sensor Test.From Instrument/SensorView Go Button"/>
+<Log Date="2011-7-19" Time="15:12:39.835" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Project Start.Method:1;Type:1;Nb:1000"/>
+<Log Date="2011-7-19" Time="15:12:40.91" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Request Start.Nb=1000 msLength=0,Aim:1;Type:4,m_uiADTimeBegin=4352249 m_uiTimeCollectEnd=-842150451"/>
+<Log Date="2011-7-19" Time="15:12:40.91" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Request Start1.Aim:1;Type:4,m_uiADTimeBegin=4352249 m_uiTimeCollectEnd=-842150451"/>
+<Log Date="2011-7-19" Time="15:12:40.806" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1119905 m_uiTimeSystem= 1120136 m_uiNetTime=1120137 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:40.860" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:41.819" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1124001 m_uiTimeSystem= 1124147 m_uiNetTime=1124149 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:41.861" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:42.872" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1128097 m_uiTimeSystem= 1128387 m_uiNetTime=1128388 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:42.913" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:43.876" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1132193 m_uiTimeSystem= 1132381 m_uiNetTime=1132383 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:43.917" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:44.311" Type="Log" Object="CThreadProcTest" Position="ProcSendTestADStart" strDesc="Test AD Start tnow=1132193,m_uiADTimeBegin=1144481 m_uiTimeCollectEnd=1161173"/>
+<Log Date="2011-7-19" Time="15:12:44.312" Type="Log" Object="CThreadProcTest" Position="ProcSendTestADStart" strDesc="Test AD Start IP=f44f3 TBnow=1144480"/>
+<Log Date="2011-7-19" Time="15:12:44.878" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1136289 m_uiTimeSystem= 1136378 m_uiNetTime=1136379 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:44.919" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:46.31" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1140385 m_uiTimeSystem= 1140997 m_uiNetTime=1140999 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:46.75" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:46.934" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1144481 m_uiTimeSystem= 1144581 m_uiNetTime=1144583 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:46.976" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:47.21" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000351 m_uiFrameIndex=0 0 Index=0 d1=1179b2 d2=0 1 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:47.458" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000501 m_uiFrameIndex=432 72 Index=6 d1=11805a d2=0 241 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:47.902" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000661 m_uiFrameIndex=864 72 Index=12 d1=118702 d2=0 481 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:47.997" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1148577 m_uiTimeSystem= 1148806 m_uiNetTime=1148807 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:48.53" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:48.339" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000571 m_uiFrameIndex=1296 72 Index=18 d1=118db1 d2=0 721 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:48.777" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000441 m_uiFrameIndex=1728 72 Index=24 d1=119486 d2=0 961 0 -1"/>
+<Log Date="2011-7-19" Time="15:12:49.8" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1152673 m_uiTimeSystem= 1152902 m_uiNetTime=1152903 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:49.50" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:49.221" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000481 m_uiFrameIndex=112 72 Index=30 d1=119b4a d2=0 1201 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:49.678" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000301 m_uiFrameIndex=544 72 Index=36 d1=11a282 d2=0 1441 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:50.23" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1156769 m_uiTimeSystem= 1156934 m_uiNetTime=1156935 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:12:50.64" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:50.130" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000371 m_uiFrameIndex=1048 72 Index=42 d1=11a96a d2=0 1681 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:50.568" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000601 m_uiFrameIndex=1480 72 Index=48 d1=11b00e d2=0 1921 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:51.1" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000631 m_uiFrameIndex=1912 72 Index=54 d1=11b6b9 d2=0 2161 2048 -1"/>
+<Log Date="2011-7-19" Time="15:12:51.28" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1160865 m_uiTimeSystem= 1160917 m_uiNetTime=1160918 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:51.78" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:51.442" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000451 m_uiFrameIndex=296 72 Index=60 d1=11bd75 d2=0 2401 4096 -1"/>
+<Log Date="2011-7-19" Time="15:12:51.878" Type="Debug" Object="CThreadProcTest" Position="SetTestData 1" strDesc="dIP=1000541 m_uiFrameIndex=728 72 Index=66 d1=11c448 d2=0 2641 4096 -1"/>
+<Log Date="2011-7-19" Time="15:12:51.993" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Request End"/>
+<Log Date="2011-7-19" Time="15:12:52.87" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1164961 m_uiTimeSystem= 1165171 m_uiNetTime=1165172 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:52.128" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:52.298" Type="Debug" Object="CThreadProcTest" Position="SetTestData STOP" strDesc="End uiFrameCount=39 1567691031 "/>
+<Log Date="2011-7-19" Time="15:12:52.498" Type="Debug" Object="CThreadProcTest" Position="total" strDesc="totalcount=2691 recevicecount=2691 saveecount=39,lossframecount=0"/>
+<Log Date="2011-7-19" Time="15:12:52.499" Type="Debug" Object="CThreadProcTest" Position="totalrecv" strDesc="AD adsetcount=78 adgetcount=1480 gettestcout=1480"/>
+<Log Date="2011-7-19" Time="15:12:52.500" Type="Log" Object="CThreadProcTest" Position="ProcTest" strDesc="Test Project End"/>
+<Log Date="2011-7-19" Time="15:12:53.87" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1169057 m_uiTimeSystem= 1169159 m_uiNetTime=1169160 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:53.128" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:54.149" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1173153 m_uiTimeSystem= 1173405 m_uiNetTime=1173406 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4427"/>
+<Log Date="2011-7-19" Time="15:12:54.190" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:55.150" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1177249 m_uiTimeSystem= 1177401 m_uiNetTime=1177402 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:55.195" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:56.153" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1181345 m_uiTimeSystem= 1181446 m_uiNetTime=1181447 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:56.199" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:57.203" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1185441 m_uiTimeSystem= 1185650 m_uiNetTime=1185651 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:57.249" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:58.204" Type="Log" Object="CThreadProcSiteDataOutput" Position="ProcSiteDataOutput" strDesc=""/>
+<Log Date="2011-7-19" Time="15:12:58.217" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1189537 m_uiTimeSystem= 1189731 m_uiNetTime=1189732 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:58.258" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:12:59.275" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1193633 m_uiTimeSystem= 1193926 m_uiNetTime=1193927 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:12:59.317" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:0.273" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1197729 m_uiTimeSystem= 1197888 m_uiNetTime=1197889 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:0.314" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:1.279" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1201825 m_uiTimeSystem= 1201967 m_uiNetTime=1201968 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:1.322" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:2.328" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1205921 m_uiTimeSystem= 1206123 m_uiNetTime=1206125 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:2.369" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:3.330" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1210017 m_uiTimeSystem= 1210120 m_uiNetTime=1210121 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:3.371" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:4.379" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1214113 m_uiTimeSystem= 1214342 m_uiNetTime=1214343 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:4.420" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:5.379" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1218209 m_uiTimeSystem= 1218300 m_uiNetTime=1218301 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:5.420" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:6.431" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1222305 m_uiTimeSystem= 1222534 m_uiNetTime=1222535 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:6.474" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:7.430" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1226401 m_uiTimeSystem= 1226480 m_uiNetTime=1226481 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:7.472" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:8.482" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1230497 m_uiTimeSystem= 1230726 m_uiNetTime=1230727 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:8.525" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:9.486" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1234593 m_uiTimeSystem= 1234759 m_uiNetTime=1234761 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:9.527" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:10.538" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1238689 m_uiTimeSystem= 1238967 m_uiNetTime=1238969 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:10.581" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:11.538" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1242785 m_uiTimeSystem= 1242901 m_uiNetTime=1242902 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4427"/>
+<Log Date="2011-7-19" Time="15:13:11.579" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:12.600" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1246881 m_uiTimeSystem= 1247147 m_uiNetTime=1247148 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:12.644" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:13.701" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1250977 m_uiTimeSystem= 1251144 m_uiNetTime=1251145 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:13.743" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:14.649" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1255073 m_uiTimeSystem= 1255327 m_uiNetTime=1255328 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:14.692" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:15.651" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1259169 m_uiTimeSystem= 1259322 m_uiNetTime=1259324 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:15.693" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:16.650" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1263265 m_uiTimeSystem= 1263345 m_uiNetTime=1263347 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:16.693" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:17.701" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1267361 m_uiTimeSystem= 1267565 m_uiNetTime=1267566 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:17.746" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:18.700" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1271457 m_uiTimeSystem= 1271568 m_uiNetTime=1271570 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:18.742" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:19.759" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1275553 m_uiTimeSystem= 1275782 m_uiNetTime=1275783 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:19.800" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:20.762" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1279649 m_uiTimeSystem= 1279815 m_uiNetTime=1279816 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:20.804" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:21.813" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1283745 m_uiTimeSystem= 1284038 m_uiNetTime=1284039 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:21.855" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:22.815" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1287841 m_uiTimeSystem= 1288006 m_uiNetTime=1288007 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4427"/>
+<Log Date="2011-7-19" Time="15:13:22.856" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:23.865" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1291937 m_uiTimeSystem= 1292167 m_uiNetTime=1292168 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:23.906" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:24.865" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1296033 m_uiTimeSystem= 1296163 m_uiNetTime=1296164 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:24.907" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:25.914" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1300129 m_uiTimeSystem= 1300347 m_uiNetTime=1300348 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:25.958" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:26.916" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1304225 m_uiTimeSystem= 1304343 m_uiNetTime=1304344 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:26.959" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:27.966" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1308321 m_uiTimeSystem= 1308610 m_uiNetTime=1308611 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:28.8" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:28.965" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1312417 m_uiTimeSystem= 1312585 m_uiNetTime=1312586 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:29.12" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:30.20" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1316513 m_uiTimeSystem= 1316812 m_uiNetTime=1316813 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:30.73" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:31.52" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1320609 m_uiTimeSystem= 1320902 m_uiNetTime=1320903 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:31.98" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:32.53" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1324705 m_uiTimeSystem= 1324998 m_uiNetTime=1324999 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:32.95" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:33.51" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1328801 m_uiTimeSystem= 1328904 m_uiNetTime=1328905 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:33.94" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:34.102" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1332897 m_uiTimeSystem= 1333081 m_uiNetTime=1333082 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:34.144" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:35.103" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1336993 m_uiTimeSystem= 1337158 m_uiNetTime=1337159 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:35.146" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:36.157" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1341089 m_uiTimeSystem= 1341318 m_uiNetTime=1341319 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:36.198" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:37.155" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1345185 m_uiTimeSystem= 1345349 m_uiNetTime=1345351 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:37.197" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:38.208" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1349281 m_uiTimeSystem= 1349510 m_uiNetTime=1349511 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:38.249" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:39.208" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1353377 m_uiTimeSystem= 1353483 m_uiNetTime=1353485 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:39.249" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:40.257" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1357473 m_uiTimeSystem= 1357702 m_uiNetTime=1357703 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:40.299" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:41.258" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1361569 m_uiTimeSystem= 1361670 m_uiNetTime=1361671 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:41.299" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:42.309" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1365665 m_uiTimeSystem= 1365857 m_uiNetTime=1365858 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:42.351" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:43.310" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1369761 m_uiTimeSystem= 1369922 m_uiNetTime=1369923 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:43.352" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:44.360" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1373857 m_uiTimeSystem= 1374089 m_uiNetTime=1374090 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4427"/>
+<Log Date="2011-7-19" Time="15:13:44.402" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:45.362" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1377953 m_uiTimeSystem= 1378084 m_uiNetTime=1378086 m_uiTimeDelay= 2 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:45.403" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:46.412" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1382049 m_uiTimeSystem= 1382278 m_uiNetTime=1382279 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4427"/>
+<Log Date="2011-7-19" Time="15:13:46.454" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:47.412" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1386145 m_uiTimeSystem= 1386265 m_uiNetTime=1386266 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:47.453" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:48.463" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1390241 m_uiTimeSystem= 1390510 m_uiNetTime=1390512 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-19" Time="15:13:48.504" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-19" Time="15:13:49.664" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 1394337 m_uiTimeSystem= 1395269 m_uiNetTime=1395271 m_uiTimeDelay= 1 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-19" Time="15:13:49.705" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>

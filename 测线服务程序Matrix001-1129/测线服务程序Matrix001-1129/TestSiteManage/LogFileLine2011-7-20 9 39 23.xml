@@ -1,0 +1,386 @@
+<Log Date="2011-7-20" Time="9:39:23.860" Type="Log" Object="CThreadProcSiteDataOutput" Position="OutputToFileForReset" strDesc=""/>
+<Log Date="2011-7-20" Time="9:39:23.860" Type="Log" Object="CSiteManage" Position="OnInit" strDesc="Click Init Button"/>
+<Log Date="2011-7-20" Time="9:46:2.375" Type="Log" Object="CNetProcInterface" Position="ProcInterFaceCommandForField" strDesc="FieldOn"/>
+<Log Date="2011-7-20" Time="9:46:40.177" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=67112961 IP=0 TimeHead=0 RoutIP=0"/>
+<Log Date="2011-7-20" Time="9:46:40.177" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add First Main Cross SN=67112961£»IP=2000000200"/>
+<Log Date="2011-7-20" Time="9:46:40.210" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:40.210" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=67112961 IP=2000000200"/>
+<Log Date="2011-7-20" Time="9:46:40.311" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=4001001 IP=2000000200"/>
+<Log Date="2011-7-20" Time="9:46:41.377" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3331 IP=1145324612 TimeHead=b5b1 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.427" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3331 IP=1145324612 TimeHead=b5b1 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.427" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3331 IP=0 TimeHead=b5b1"/>
+<Log Date="2011-7-20" Time="9:46:41.627" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7939 IP=1145324612 TimeHead=b9ad RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.677" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7939 IP=1145324612 TimeHead=b9ad RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.677" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=7939 IP=0 TimeHead=b9ad"/>
+<Log Date="2011-7-20" Time="9:46:41.677" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12547 IP=1145324612 TimeHead=baff RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.727" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12547 IP=1145324612 TimeHead=baff RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.727" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=12547 IP=0 TimeHead=baff"/>
+<Log Date="2011-7-20" Time="9:46:41.777" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2819 IP=1145324612 TimeHead=bc58 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.827" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2819 IP=1145324612 TimeHead=bc58 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.827" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2819 IP=0 TimeHead=bc58"/>
+<Log Date="2011-7-20" Time="9:46:41.877" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8451 IP=1145324612 TimeHead=bd99 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.927" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8451 IP=1145324612 TimeHead=bd99 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.927" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=8451 IP=0 TimeHead=bd99"/>
+<Log Date="2011-7-20" Time="9:46:41.927" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8963 IP=1145324612 TimeHead=beff RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.977" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8963 IP=1145324612 TimeHead=beff RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:41.977" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=8963 IP=0 TimeHead=beff"/>
+<Log Date="2011-7-20" Time="9:46:42.27" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7683 IP=1145324612 TimeHead=c045 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:42.77" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7683 IP=1145324612 TimeHead=c045 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:42.77" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=7683 IP=0 TimeHead=c045"/>
+<Log Date="2011-7-20" Time="9:46:42.127" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1795 IP=1145324612 TimeHead=c1a4 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:42.177" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1795 IP=1145324612 TimeHead=c1a4 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:42.177" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=1795 IP=0 TimeHead=c1a4"/>
+<Log Date="2011-7-20" Time="9:46:42.461" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:42.461" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8451 IP=1000341"/>
+<Log Date="2011-7-20" Time="9:46:42.462" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=12547 IP=1000321"/>
+<Log Date="2011-7-20" Time="9:46:42.463" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=7939 IP=1000311"/>
+<Log Date="2011-7-20" Time="9:46:42.464" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=7683 IP=1000361"/>
+<Log Date="2011-7-20" Time="9:46:42.465" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3331 IP=1000301"/>
+<Log Date="2011-7-20" Time="9:46:42.466" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2819 IP=1000331"/>
+<Log Date="2011-7-20" Time="9:46:42.467" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=1795 IP=1000371"/>
+<Log Date="2011-7-20" Time="9:46:42.468" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8963 IP=1000351"/>
+<Log Date="2011-7-20" Time="9:46:42.477" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8195 IP=1145324612 TimeHead=c6f9 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:42.527" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8195 IP=1145324612 TimeHead=c6f9 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:42.527" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=8195 IP=0 TimeHead=c6f9"/>
+<Log Date="2011-7-20" Time="9:46:42.569" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2103 IP=1000341"/>
+<Log Date="2011-7-20" Time="9:46:42.569" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=3103 IP=1000321"/>
+<Log Date="2011-7-20" Time="9:46:42.569" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1f03 IP=1000311"/>
+<Log Date="2011-7-20" Time="9:46:42.569" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1e03 IP=1000361"/>
+<Log Date="2011-7-20" Time="9:46:42.569" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=d03 IP=1000301"/>
+<Log Date="2011-7-20" Time="9:46:42.569" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=b03 IP=1000331"/>
+<Log Date="2011-7-20" Time="9:46:42.569" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=703 IP=1000371"/>
+<Log Date="2011-7-20" Time="9:46:42.619" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8963 IP=1000351"/>
+<Log Date="2011-7-20" Time="9:46:42.720" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2303 IP=1000351"/>
+<Log Date="2011-7-20" Time="9:46:42.727" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5891 IP=1145324612 TimeHead=caff RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:42.777" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5891 IP=1145324612 TimeHead=caff RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:42.777" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=5891 IP=0 TimeHead=caff"/>
+<Log Date="2011-7-20" Time="9:46:42.977" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1283 IP=1145324612 TimeHead=cefb RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:43.27" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1283 IP=1145324612 TimeHead=cefb RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:43.27" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=1283 IP=0 TimeHead=cefb"/>
+<Log Date="2011-7-20" Time="9:46:43.227" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5123 IP=1145324612 TimeHead=d305 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:43.277" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5123 IP=1145324612 TimeHead=d305 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:43.277" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=5123 IP=0 TimeHead=d305"/>
+<Log Date="2011-7-20" Time="9:46:43.327" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6403 IP=1145324612 TimeHead=d44c RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:43.377" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6403 IP=1145324612 TimeHead=d44c RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:43.377" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=6403 IP=0 TimeHead=d44c"/>
+<Log Date="2011-7-20" Time="9:46:43.520" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:43.520" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8195 IP=1000381"/>
+<Log Date="2011-7-20" Time="9:46:43.521" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5891 IP=1000391"/>
+<Log Date="2011-7-20" Time="9:46:43.522" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=1283 IP=1000401"/>
+<Log Date="2011-7-20" Time="9:46:43.523" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5123 IP=1000411"/>
+<Log Date="2011-7-20" Time="9:46:43.624" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2003 IP=1000381"/>
+<Log Date="2011-7-20" Time="9:46:43.624" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1703 IP=1000391"/>
+<Log Date="2011-7-20" Time="9:46:43.624" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=503 IP=1000401"/>
+<Log Date="2011-7-20" Time="9:46:43.624" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1403 IP=1000411"/>
+<Log Date="2011-7-20" Time="9:46:43.927" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2051 IP=1145324612 TimeHead=dda4 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:43.977" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2051 IP=1145324612 TimeHead=dda4 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:43.977" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2051 IP=0 TimeHead=dda4"/>
+<Log Date="2011-7-20" Time="9:46:44.77" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2563 IP=1145324612 TimeHead=e04c RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.127" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2563 IP=1145324612 TimeHead=e04c RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.127" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2563 IP=0 TimeHead=e04c"/>
+<Log Date="2011-7-20" Time="9:46:44.277" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4867 IP=1145324612 TimeHead=e2fb RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.327" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4867 IP=1145324612 TimeHead=e2fb RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.327" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=4867 IP=0 TimeHead=e2fb"/>
+<Log Date="2011-7-20" Time="9:46:44.327" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7171 IP=1145324612 TimeHead=e45b RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.377" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7171 IP=1145324612 TimeHead=e45b RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.377" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=7171 IP=0 TimeHead=e45b"/>
+<Log Date="2011-7-20" Time="9:46:44.424" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:44.424" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2563 IP=1000441"/>
+<Log Date="2011-7-20" Time="9:46:44.425" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2051 IP=1000431"/>
+<Log Date="2011-7-20" Time="9:46:44.426" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=6403 IP=1000421"/>
+<Log Date="2011-7-20" Time="9:46:44.427" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=4867 IP=1000451"/>
+<Log Date="2011-7-20" Time="9:46:44.528" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=a03 IP=1000441"/>
+<Log Date="2011-7-20" Time="9:46:44.528" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=803 IP=1000431"/>
+<Log Date="2011-7-20" Time="9:46:44.528" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1903 IP=1000421"/>
+<Log Date="2011-7-20" Time="9:46:44.528" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1303 IP=1000451"/>
+<Log Date="2011-7-20" Time="9:46:44.677" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=771 IP=1145324612 TimeHead=e98a RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.727" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=771 IP=1145324612 TimeHead=e98a RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.727" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=771 IP=0 TimeHead=e98a"/>
+<Log Date="2011-7-20" Time="9:46:44.727" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12291 IP=1145324612 TimeHead=eadd RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.777" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12291 IP=1145324612 TimeHead=eadd RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:44.777" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=12291 IP=0 TimeHead=eadd"/>
+<Log Date="2011-7-20" Time="9:46:45.127" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11011 IP=1145324612 TimeHead=f035 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.177" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11011 IP=1145324612 TimeHead=f035 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.177" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=11011 IP=0 TimeHead=f035"/>
+<Log Date="2011-7-20" Time="9:46:45.277" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3075 IP=1145324612 TimeHead=f2e9 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.327" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3075 IP=1145324612 TimeHead=f2e9 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.327" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3075 IP=0 TimeHead=f2e9"/>
+<Log Date="2011-7-20" Time="9:46:45.377" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2307 IP=1145324612 TimeHead=f447 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.427" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2307 IP=1145324612 TimeHead=f447 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.427" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2307 IP=0 TimeHead=f447"/>
+<Log Date="2011-7-20" Time="9:46:45.478" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:45.478" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=12291 IP=1000481"/>
+<Log Date="2011-7-20" Time="9:46:45.479" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3075 IP=1000501"/>
+<Log Date="2011-7-20" Time="9:46:45.480" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=7171 IP=1000461"/>
+<Log Date="2011-7-20" Time="9:46:45.481" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=11011 IP=1000491"/>
+<Log Date="2011-7-20" Time="9:46:45.482" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=771 IP=1000471"/>
+<Log Date="2011-7-20" Time="9:46:45.527" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10243 IP=1145324612 TimeHead=f6f9 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.577" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10243 IP=1145324612 TimeHead=f6f9 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.577" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=10243 IP=0 TimeHead=f6f9"/>
+<Log Date="2011-7-20" Time="9:46:45.583" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=3003 IP=1000481"/>
+<Log Date="2011-7-20" Time="9:46:45.583" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=c03 IP=1000501"/>
+<Log Date="2011-7-20" Time="9:46:45.583" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1c03 IP=1000461"/>
+<Log Date="2011-7-20" Time="9:46:45.583" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2b03 IP=1000491"/>
+<Log Date="2011-7-20" Time="9:46:45.583" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=303 IP=1000471"/>
+<Log Date="2011-7-20" Time="9:46:45.677" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5635 IP=1145324612 TimeHead=f988 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.727" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5635 IP=1145324612 TimeHead=f988 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.727" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=5635 IP=0 TimeHead=f988"/>
+<Log Date="2011-7-20" Time="9:46:45.777" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9219 IP=1145324612 TimeHead=fad6 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.827" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9219 IP=1145324612 TimeHead=fad6 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:45.827" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=9219 IP=0 TimeHead=fad6"/>
+<Log Date="2011-7-20" Time="9:46:46.27" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9475 IP=1145324612 TimeHead=fee1 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.77" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9475 IP=1145324612 TimeHead=fee1 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.77" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=9475 IP=0 TimeHead=fee1"/>
+<Log Date="2011-7-20" Time="9:46:46.227" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6147 IP=1145324612 TimeHead=10180 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.277" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6147 IP=1145324612 TimeHead=10180 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.277" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=6147 IP=0 TimeHead=10180"/>
+<Log Date="2011-7-20" Time="9:46:46.327" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6915 IP=1145324612 TimeHead=102ed RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.377" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6915 IP=1145324612 TimeHead=102ed RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.377" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=6915 IP=0 TimeHead=102ed"/>
+<Log Date="2011-7-20" Time="9:46:46.377" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12035 IP=1145324612 TimeHead=1042c RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.383" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:46.383" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=6915 IP=1000571"/>
+<Log Date="2011-7-20" Time="9:46:46.384" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2307 IP=1000511"/>
+<Log Date="2011-7-20" Time="9:46:46.385" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=6147 IP=1000561"/>
+<Log Date="2011-7-20" Time="9:46:46.386" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=10243 IP=1000521"/>
+<Log Date="2011-7-20" Time="9:46:46.387" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5635 IP=1000531"/>
+<Log Date="2011-7-20" Time="9:46:46.388" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=9475 IP=1000551"/>
+<Log Date="2011-7-20" Time="9:46:46.389" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=9219 IP=1000541"/>
+<Log Date="2011-7-20" Time="9:46:46.427" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12035 IP=1145324612 TimeHead=1042c RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.427" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=12035 IP=0 TimeHead=1042c"/>
+<Log Date="2011-7-20" Time="9:46:46.477" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4099 IP=1145324612 TimeHead=10585 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.490" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1b03 IP=1000571"/>
+<Log Date="2011-7-20" Time="9:46:46.490" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=903 IP=1000511"/>
+<Log Date="2011-7-20" Time="9:46:46.490" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1803 IP=1000561"/>
+<Log Date="2011-7-20" Time="9:46:46.490" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2803 IP=1000521"/>
+<Log Date="2011-7-20" Time="9:46:46.490" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1603 IP=1000531"/>
+<Log Date="2011-7-20" Time="9:46:46.490" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2503 IP=1000551"/>
+<Log Date="2011-7-20" Time="9:46:46.490" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2403 IP=1000541"/>
+<Log Date="2011-7-20" Time="9:46:46.527" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4099 IP=1145324612 TimeHead=10585 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.527" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=4099 IP=0 TimeHead=10585"/>
+<Log Date="2011-7-20" Time="9:46:46.877" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3 IP=1145324612 TimeHead=10c2d RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.927" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3 IP=1145324612 TimeHead=10c2d RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:46.927" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3 IP=0 TimeHead=10c2d"/>
+<Log Date="2011-7-20" Time="9:46:47.441" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:47.441" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3 IP=1000601"/>
+<Log Date="2011-7-20" Time="9:46:47.442" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=4099 IP=1000591"/>
+<Log Date="2011-7-20" Time="9:46:47.443" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=12035 IP=1000581"/>
+<Log Date="2011-7-20" Time="9:46:47.478" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10499 IP=1145324612 TimeHead=11594 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.528" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10499 IP=1145324612 TimeHead=11594 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.528" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=10499 IP=0 TimeHead=11594"/>
+<Log Date="2011-7-20" Time="9:46:47.544" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=3 IP=1000601"/>
+<Log Date="2011-7-20" Time="9:46:47.544" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1003 IP=1000591"/>
+<Log Date="2011-7-20" Time="9:46:47.544" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2f03 IP=1000581"/>
+<Log Date="2011-7-20" Time="9:46:47.578" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10755 IP=1145324612 TimeHead=116da RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.594" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:47.594" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame3" strDesc="m_bIPSetOK Sn=4099 IP=1000591"/>
+<Log Date="2011-7-20" Time="9:46:47.628" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10755 IP=1145324612 TimeHead=116da RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.628" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=10755 IP=0 TimeHead=116da"/>
+<Log Date="2011-7-20" Time="9:46:47.678" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3587 IP=1145324612 TimeHead=11833 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.728" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3587 IP=1145324612 TimeHead=11833 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.728" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3587 IP=0 TimeHead=11833"/>
+<Log Date="2011-7-20" Time="9:46:47.828" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3843 IP=1145324612 TimeHead=11ade RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.878" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3843 IP=1145324612 TimeHead=11ade RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.878" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3843 IP=0 TimeHead=11ade"/>
+<Log Date="2011-7-20" Time="9:46:47.928" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11267 IP=1145324612 TimeHead=11c29 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.978" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11267 IP=1145324612 TimeHead=11c29 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:47.978" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=11267 IP=0 TimeHead=11c29"/>
+<Log Date="2011-7-20" Time="9:46:48.78" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9731 IP=1145324612 TimeHead=11ed2 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:48.128" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9731 IP=1145324612 TimeHead=11ed2 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:48.128" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=9731 IP=0 TimeHead=11ed2"/>
+<Log Date="2011-7-20" Time="9:46:48.178" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=515 IP=1145324612 TimeHead=12028 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:48.228" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=515 IP=1145324612 TimeHead=12028 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:48.228" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=515 IP=0 TimeHead=12028"/>
+<Log Date="2011-7-20" Time="9:46:48.278" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1539 IP=1145324612 TimeHead=12180 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:48.328" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1539 IP=1145324612 TimeHead=12180 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:48.328" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=1539 IP=0 TimeHead=12180"/>
+<Log Date="2011-7-20" Time="9:46:48.328" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4355 IP=1145324612 TimeHead=122d4 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:48.378" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4355 IP=1145324612 TimeHead=122d4 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:46:48.378" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=4355 IP=0 TimeHead=122d4"/>
+<Log Date="2011-7-20" Time="9:46:48.494" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:48.494" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3843 IP=1000641"/>
+<Log Date="2011-7-20" Time="9:46:48.495" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3587 IP=1000631"/>
+<Log Date="2011-7-20" Time="9:46:48.496" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=11267 IP=1000651"/>
+<Log Date="2011-7-20" Time="9:46:48.497" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=10755 IP=1000621"/>
+<Log Date="2011-7-20" Time="9:46:48.498" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=10499 IP=1000611"/>
+<Log Date="2011-7-20" Time="9:46:48.499" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=1539 IP=1000681"/>
+<Log Date="2011-7-20" Time="9:46:48.500" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=9731 IP=1000661"/>
+<Log Date="2011-7-20" Time="9:46:48.501" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=515 IP=1000671"/>
+<Log Date="2011-7-20" Time="9:46:48.602" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=f03 IP=1000641"/>
+<Log Date="2011-7-20" Time="9:46:48.602" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=e03 IP=1000631"/>
+<Log Date="2011-7-20" Time="9:46:48.602" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2c03 IP=1000651"/>
+<Log Date="2011-7-20" Time="9:46:48.602" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2a03 IP=1000621"/>
+<Log Date="2011-7-20" Time="9:46:48.602" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2903 IP=1000611"/>
+<Log Date="2011-7-20" Time="9:46:48.602" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2603 IP=1000661"/>
+<Log Date="2011-7-20" Time="9:46:48.602" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=203 IP=1000671"/>
+<Log Date="2011-7-20" Time="9:46:48.652" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:48.652" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame3" strDesc="m_bIPSetOK Sn=10499 IP=1000611"/>
+<Log Date="2011-7-20" Time="9:46:48.652" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=1539 IP=1000681"/>
+<Log Date="2011-7-20" Time="9:46:48.753" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=603 IP=1000681"/>
+<Log Date="2011-7-20" Time="9:46:49.403" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:46:49.403" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=4355 IP=1000691"/>
+<Log Date="2011-7-20" Time="9:46:49.504" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1103 IP=1000691"/>
+<Log Date="2011-7-20" Time="9:46:51.527" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 90836 m_uiTimeSystem= 91077 m_uiNetTime=91077 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-20" Time="9:46:51.568" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:46:52.527" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 94932 m_uiTimeSystem= 95088 m_uiNetTime=95088 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-20" Time="9:46:52.568" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:46:53.577" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 99028 m_uiTimeSystem= 99269 m_uiNetTime=99269 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-20" Time="9:46:53.618" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:46:54.577" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 103124 m_uiTimeSystem= 103280 m_uiNetTime=103280 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-20" Time="9:46:54.618" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:46:55.630" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 107220 m_uiTimeSystem= 107440 m_uiNetTime=107440 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-20" Time="9:46:55.677" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:46:55.773" Type="Log" Object="CThreadProcSiteDataOutput" Position="ProcSiteDataOutput" strDesc=""/>
+<Log Date="2011-7-20" Time="9:46:56.629" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 111316 m_uiTimeSystem= 111432 m_uiNetTime=111433 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4429"/>
+<Log Date="2011-7-20" Time="9:46:56.675" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:46:57.677" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 115412 m_uiTimeSystem= 115632 m_uiNetTime=115632 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-20" Time="9:46:57.719" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:46:58.677" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 119508 m_uiTimeSystem= 119661 m_uiNetTime=119661 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-20" Time="9:46:58.719" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:46:59.728" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 123604 m_uiTimeSystem= 123873 m_uiNetTime=123873 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-20" Time="9:46:59.770" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:47:0.727" Type="Debug" Object="CThreadProcTimeDelay" Position="Calculate1" strDesc="Get2 Sn=1103,m_uiSystemTimeSite= 127700 m_uiTimeSystem= 127819 m_uiNetTime=127819 m_uiTimeDelay= 0 m_uiTimeHigh= 0 m_uiTimeLow= 854 rev= 0 4428"/>
+<Log Date="2011-7-20" Time="9:47:0.770" Type="Log" Object="CThreadProcTimeDelay" Position="ProcTimeDelay" strDesc="RoutIP=4"/>
+<Log Date="2011-7-20" Time="9:47:2.440" Type="Log" Object="CThreadProcSiteDataOutput" Position="OutputToFileForReset" strDesc=""/>
+<Log Date="2011-7-20" Time="9:47:2.440" Type="Log" Object="CNetProcInterface" Position="ProcInterFaceCommandForField" strDesc="FieldOff"/>
+<Log Date="2011-7-20" Time="9:47:6.378" Type="Log" Object="CNetProcInterface" Position="ProcInterFaceCommandForField" strDesc="FieldOn"/>
+<Log Date="2011-7-20" Time="9:47:10.701" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=67112961 IP=0 TimeHead=0 RoutIP=0"/>
+<Log Date="2011-7-20" Time="9:47:10.701" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add First Main Cross SN=67112961£»IP=2000000200"/>
+<Log Date="2011-7-20" Time="9:47:10.776" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:47:10.776" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=67112961 IP=2000000200"/>
+<Log Date="2011-7-20" Time="9:47:10.877" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=4001001 IP=2000000200"/>
+<Log Date="2011-7-20" Time="9:47:11.901" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3331 IP=1145324612 TimeHead=76f5 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:11.951" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3331 IP=1145324612 TimeHead=76f5 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:11.951" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3331 IP=0 TimeHead=76f5"/>
+<Log Date="2011-7-20" Time="9:47:12.101" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7939 IP=1145324612 TimeHead=799f RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.151" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7939 IP=1145324612 TimeHead=799f RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.151" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=7939 IP=0 TimeHead=799f"/>
+<Log Date="2011-7-20" Time="9:47:12.151" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12547 IP=1145324612 TimeHead=7af5 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.201" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12547 IP=1145324612 TimeHead=7af5 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.201" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=12547 IP=0 TimeHead=7af5"/>
+<Log Date="2011-7-20" Time="9:47:12.251" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2819 IP=1145324612 TimeHead=7c47 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.301" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2819 IP=1145324612 TimeHead=7c47 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.301" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2819 IP=0 TimeHead=7c47"/>
+<Log Date="2011-7-20" Time="9:47:12.351" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8451 IP=1145324612 TimeHead=7d9d RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.401" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8451 IP=1145324612 TimeHead=7d9d RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.401" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=8451 IP=0 TimeHead=7d9d"/>
+<Log Date="2011-7-20" Time="9:47:12.401" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8963 IP=1145324612 TimeHead=7ef3 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.427" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:47:12.427" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=12547 IP=1000321"/>
+<Log Date="2011-7-20" Time="9:47:12.428" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=7939 IP=1000311"/>
+<Log Date="2011-7-20" Time="9:47:12.429" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3331 IP=1000301"/>
+<Log Date="2011-7-20" Time="9:47:12.430" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2819 IP=1000331"/>
+<Log Date="2011-7-20" Time="9:47:12.451" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8963 IP=1145324612 TimeHead=7ef3 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.451" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=8963 IP=0 TimeHead=7ef3"/>
+<Log Date="2011-7-20" Time="9:47:12.531" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=3103 IP=1000321"/>
+<Log Date="2011-7-20" Time="9:47:12.531" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1f03 IP=1000311"/>
+<Log Date="2011-7-20" Time="9:47:12.531" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=d03 IP=1000301"/>
+<Log Date="2011-7-20" Time="9:47:12.531" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=b03 IP=1000331"/>
+<Log Date="2011-7-20" Time="9:47:12.601" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7683 IP=1145324612 TimeHead=819d RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.651" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7683 IP=1145324612 TimeHead=819d RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.651" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=7683 IP=0 TimeHead=819d"/>
+<Log Date="2011-7-20" Time="9:47:12.701" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1795 IP=1145324612 TimeHead=82f3 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.751" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1795 IP=1145324612 TimeHead=82f3 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.751" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=1795 IP=0 TimeHead=82f3"/>
+<Log Date="2011-7-20" Time="9:47:12.751" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8195 IP=1145324612 TimeHead=8444 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.801" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=8195 IP=1145324612 TimeHead=8444 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.801" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=8195 IP=0 TimeHead=8444"/>
+<Log Date="2011-7-20" Time="9:47:12.851" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5891 IP=1145324612 TimeHead=859b RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.901" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5891 IP=1145324612 TimeHead=859b RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:12.901" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=5891 IP=0 TimeHead=859b"/>
+<Log Date="2011-7-20" Time="9:47:13.104" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1283 IP=1145324612 TimeHead=899b RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.154" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=1283 IP=1145324612 TimeHead=899b RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.154" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=1283 IP=0 TimeHead=899b"/>
+<Log Date="2011-7-20" Time="9:47:13.204" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5123 IP=1145324612 TimeHead=8aef RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.254" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5123 IP=1145324612 TimeHead=8aef RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.254" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=5123 IP=0 TimeHead=8aef"/>
+<Log Date="2011-7-20" Time="9:47:13.454" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6403 IP=1145324612 TimeHead=8eef RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.481" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:47:13.481" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8451 IP=1000341"/>
+<Log Date="2011-7-20" Time="9:47:13.482" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8195 IP=1000381"/>
+<Log Date="2011-7-20" Time="9:47:13.483" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=7683 IP=1000361"/>
+<Log Date="2011-7-20" Time="9:47:13.484" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=1795 IP=1000371"/>
+<Log Date="2011-7-20" Time="9:47:13.485" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5891 IP=1000391"/>
+<Log Date="2011-7-20" Time="9:47:13.486" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=1283 IP=1000401"/>
+<Log Date="2011-7-20" Time="9:47:13.487" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5123 IP=1000411"/>
+<Log Date="2011-7-20" Time="9:47:13.488" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8963 IP=1000351"/>
+<Log Date="2011-7-20" Time="9:47:13.504" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6403 IP=1145324612 TimeHead=8eef RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.504" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=6403 IP=0 TimeHead=8eef"/>
+<Log Date="2011-7-20" Time="9:47:13.554" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2051 IP=1145324612 TimeHead=9044 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.589" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2103 IP=1000341"/>
+<Log Date="2011-7-20" Time="9:47:13.589" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1e03 IP=1000361"/>
+<Log Date="2011-7-20" Time="9:47:13.589" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=703 IP=1000371"/>
+<Log Date="2011-7-20" Time="9:47:13.589" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1703 IP=1000391"/>
+<Log Date="2011-7-20" Time="9:47:13.589" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=503 IP=1000401"/>
+<Log Date="2011-7-20" Time="9:47:13.589" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1403 IP=1000411"/>
+<Log Date="2011-7-20" Time="9:47:13.604" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2051 IP=1145324612 TimeHead=9044 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.604" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2051 IP=0 TimeHead=9044"/>
+<Log Date="2011-7-20" Time="9:47:13.604" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2563 IP=1145324612 TimeHead=9199 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.639" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8195 IP=1000381"/>
+<Log Date="2011-7-20" Time="9:47:13.640" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=8963 IP=1000351"/>
+<Log Date="2011-7-20" Time="9:47:13.654" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2563 IP=1145324612 TimeHead=9199 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.654" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2563 IP=0 TimeHead=9199"/>
+<Log Date="2011-7-20" Time="9:47:13.704" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4867 IP=1145324612 TimeHead=92ed RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.741" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2303 IP=1000351"/>
+<Log Date="2011-7-20" Time="9:47:13.741" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2003 IP=1000381"/>
+<Log Date="2011-7-20" Time="9:47:13.754" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=4867 IP=1145324612 TimeHead=92ed RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.754" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=4867 IP=0 TimeHead=92ed"/>
+<Log Date="2011-7-20" Time="9:47:13.804" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7171 IP=1145324612 TimeHead=9443 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.854" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=7171 IP=1145324612 TimeHead=9443 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.854" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=7171 IP=0 TimeHead=9443"/>
+<Log Date="2011-7-20" Time="9:47:13.904" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=771 IP=1145324612 TimeHead=9597 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.954" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=771 IP=1145324612 TimeHead=9597 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:13.954" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=771 IP=0 TimeHead=9597"/>
+<Log Date="2011-7-20" Time="9:47:14.154" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12291 IP=1145324612 TimeHead=9998 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:14.204" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=12291 IP=1145324612 TimeHead=9998 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:14.204" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=12291 IP=0 TimeHead=9998"/>
+<Log Date="2011-7-20" Time="9:47:14.204" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11011 IP=1145324612 TimeHead=9aea RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:14.254" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=11011 IP=1145324612 TimeHead=9aea RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:14.254" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=11011 IP=0 TimeHead=9aea"/>
+<Log Date="2011-7-20" Time="9:47:14.391" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:47:14.391" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=12291 IP=1000481"/>
+<Log Date="2011-7-20" Time="9:47:14.392" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=7171 IP=1000461"/>
+<Log Date="2011-7-20" Time="9:47:14.393" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2563 IP=1000441"/>
+<Log Date="2011-7-20" Time="9:47:14.394" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=11011 IP=1000491"/>
+<Log Date="2011-7-20" Time="9:47:14.395" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2051 IP=1000431"/>
+<Log Date="2011-7-20" Time="9:47:14.396" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=6403 IP=1000421"/>
+<Log Date="2011-7-20" Time="9:47:14.397" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=771 IP=1000471"/>
+<Log Date="2011-7-20" Time="9:47:14.398" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=4867 IP=1000451"/>
+<Log Date="2011-7-20" Time="9:47:14.454" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3075 IP=1145324612 TimeHead=9ee9 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:14.499" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=3003 IP=1000481"/>
+<Log Date="2011-7-20" Time="9:47:14.499" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1c03 IP=1000461"/>
+<Log Date="2011-7-20" Time="9:47:14.499" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=a03 IP=1000441"/>
+<Log Date="2011-7-20" Time="9:47:14.499" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=2b03 IP=1000491"/>
+<Log Date="2011-7-20" Time="9:47:14.499" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=803 IP=1000431"/>
+<Log Date="2011-7-20" Time="9:47:14.499" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1903 IP=1000421"/>
+<Log Date="2011-7-20" Time="9:47:14.499" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=303 IP=1000471"/>
+<Log Date="2011-7-20" Time="9:47:14.499" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetReturnFrame" strDesc="GetIPSetReturnFrame. SN=1303 IP=1000451"/>
+<Log Date="2011-7-20" Time="9:47:14.504" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=3075 IP=1145324612 TimeHead=9ee9 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:14.504" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=3075 IP=0 TimeHead=9ee9"/>
+<Log Date="2011-7-20" Time="9:47:14.549" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:47:14.549" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame3" strDesc="m_bIPSetOK Sn=6403 IP=1000421"/>
+<Log Date="2011-7-20" Time="9:47:14.804" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2307 IP=1145324612 TimeHead=a43e RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:14.854" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=2307 IP=1145324612 TimeHead=a43e RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:14.854" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=2307 IP=0 TimeHead=a43e"/>
+<Log Date="2011-7-20" Time="9:47:15.4" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10243 IP=1145324612 TimeHead=a6e6 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.54" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=10243 IP=1145324612 TimeHead=a6e6 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.54" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=10243 IP=0 TimeHead=a6e6"/>
+<Log Date="2011-7-20" Time="9:47:15.154" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5635 IP=1145324612 TimeHead=a991 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.204" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=5635 IP=1145324612 TimeHead=a991 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.204" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=5635 IP=0 TimeHead=a991"/>
+<Log Date="2011-7-20" Time="9:47:15.254" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9219 IP=1145324612 TimeHead=aae8 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.304" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9219 IP=1145324612 TimeHead=aae8 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.304" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=9219 IP=0 TimeHead=aae8"/>
+<Log Date="2011-7-20" Time="9:47:15.354" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9475 IP=1145324612 TimeHead=ac3c RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.404" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=9475 IP=1145324612 TimeHead=ac3c RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.404" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=9475 IP=0 TimeHead=ac3c"/>
+<Log Date="2011-7-20" Time="9:47:15.404" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6147 IP=1145324612 TimeHead=ad91 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.449" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame" strDesc="Set Instrument IP"/>
+<Log Date="2011-7-20" Time="9:47:15.449" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=3075 IP=1000501"/>
+<Log Date="2011-7-20" Time="9:47:15.450" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=2307 IP=1000511"/>
+<Log Date="2011-7-20" Time="9:47:15.451" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=10243 IP=1000521"/>
+<Log Date="2011-7-20" Time="9:47:15.452" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=5635 IP=1000531"/>
+<Log Date="2011-7-20" Time="9:47:15.453" Type="Log" Object="CThreadProcIPSet" Position="SendIPSetFrame2" strDesc="Sn=9219 IP=1000541"/>
+<Log Date="2011-7-20" Time="9:47:15.454" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="ProcHeadFrameOne1 SN=6147 IP=1145324612 TimeHead=ad91 RoutIP=44444444"/>
+<Log Date="2011-7-20" Time="9:47:15.454" Type="Debug" Object="CThreadProcHeadFrame" Position="ProcHeadFrameOne" strDesc="Add Instrument SN=6147 IP=0 TimeHead=ad91"/>
+<Log Date="2011-7-20" Time="9:47:15.554" Type="Log" Object="CThreadProcIPSet" Position="GetIPSetRetu
