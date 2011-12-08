@@ -204,7 +204,7 @@ DWORD CSocketTestDataFrame::GetFrameCount()
 BOOL CSocketTestDataFrame::SetBufferSize(int iFrameCount)
 {
 	BOOL bReturn = false;
-	int iOptionValue = (iFrameCount+2) * m_iFrameSize;
+	int iOptionValue = iFrameCount * m_iFrameSize;
 	int iOptionLen = sizeof(int);
 	bReturn = SetSockOpt(SO_RCVBUF, (void*)&iOptionValue, iOptionLen, SOL_SOCKET);
 

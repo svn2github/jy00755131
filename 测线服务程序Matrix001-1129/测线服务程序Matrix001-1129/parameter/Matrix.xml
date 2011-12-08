@@ -36,7 +36,7 @@
 		</Survery>
 		<Layout>
 			<MarkerSetup Count="10" TabCount="4">
-				<Record BoxType="3" SN="26115" LineName="1" PointNb="1" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="35075" LineName="1" PointNb="1" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
 				<Record BoxType="3" SN="10002523" LineName="2" PointNb="1" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
 				<Record BoxType="3" SN="20002523" LineName="3" PointNb="1" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
 				<Record BoxType="3" SN="28002523" LineName="4" PointNb="1" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
@@ -71,12 +71,12 @@
 		<SpreadType>
 			<AbsoluteSetup Count="250" TabCount="4">
 				<AbsoluteSetup1 Count="5" TabCount="4" ShotPoint="22695">
-					<Record Nb="1" Label="Absolute1" Spread="1:1-48"/>
-					<Record Nb="2" Label="Absolute2" Spread="2:1-6"/>
-					<Record Nb="3" Label="Absolute3" Spread="3:1-126"/>
-					<Record Nb="4" Label="Absolute4" Spread="4:1-126"/>
-					<Record Nb="5" Label="Absolute5" Spread="5:1-126"/>
-				</AbsoluteSetup1>
+				<Record Nb="1" Label="Absolute1" Spread="1:1-100"/>
+				<Record Nb="2" Label="Absolute2" Spread="2:1-6"/>
+				<Record Nb="3" Label="Absolute3" Spread="3:1-126"/>
+				<Record Nb="4" Label="Absolute4" Spread="4:1-126"/>
+				<Record Nb="5" Label="Absolute5" Spread="5:1-126"/>
+			</AbsoluteSetup1>
 				<AbsoluteSetup2 Count="5" TabCount="4" ShotPoint="22697">
 					<Record Nb="1" Label="Absolute1" Spread="1:1-22"/>
 					<Record Nb="2" Label="Absolute2" Spread="2:1-127"/>

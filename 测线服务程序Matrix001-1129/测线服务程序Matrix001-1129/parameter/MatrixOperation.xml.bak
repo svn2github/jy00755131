@@ -273,7 +273,7 @@
 		</SourceType>
 		<!--处理类型定义-->
 		<ProcessType Count="3">
-			<ProcessRecord Nb="1" Type="0" Label="record1" ProcessSetup="0" SerialNb="12345" RecordLength="10000" RefractingDelay="1000" TBWindow="1000">
+			<ProcessRecord Nb="1" Type="0" Label="record1" ProcessSetup="1" SerialNb="12345" RecordLength="10000" RefractingDelay="1000" TBWindow="1000">
 				<Auxiliaries Count="3">
 					<Record AuxiNb="1" AuxiProcessing="Aux1*Aux2"/>
 					<Record AuxiNb="2" AuxiProcessing="Aux1"/>
@@ -285,7 +285,7 @@
 					<Record AuxiNb="1" AuxiProcessing="Aux1*Aux2"/>
 				</Auxiliaries>
 			</ProcessRecord>
-			<ProcessRecord Nb="3" Type="0" Label="record3" ProcessSetup="1" SerialNb="12346" RecordLength="20000" RefractingDelay="1500" TBWindow="1000">
+			<ProcessRecord Nb="3" Type="0" Label="record3" ProcessSetup="1" SerialNb="12345" RecordLength="20000" RefractingDelay="1500" TBWindow="1000">
 				<Auxiliaries Count="3">
 					<Record AuxiNb="1" AuxiProcessing="Aux1*Aux2"/>
 					<Record AuxiNb="2" AuxiProcessing="Aux1"/>

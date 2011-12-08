@@ -8,6 +8,8 @@ CSiteManage::CSiteManage()
 
 	/** 配置文件名，包含全部路径*/
 	m_strMatrixIniXMLFile = "..\\parameter\\Matrix.xml";
+	/** config配置文件名，包含全部路径*/
+	m_strMatrixConfigXMLFile = "..\\parameter\\MatrixConfiguration.xml";
 
 	/** FTP服务器IP地址*/
 	m_strIPFTPServer = "192.168.0.11";
@@ -136,32 +138,38 @@ bool CSiteManage::OnInit()
 	// 初始化网络端口接收缓冲区大小
 	m_oSocketTailTimeFrame.SetBufferSize(20000);
 
+	m_oSocketTestSetFrameBase.sample_rate=sample_rate;
+	m_oSocketTestSetFrameBase.filter_hex=filter_hex;
+	m_oSocketTestSetFrameBase.high_pass_freq=high_pass_freq;
 	// 建立仪器测试设置网络对象，基本测试 PortForTestSetBase 37888 0x9400
 	m_oSocketTestSetFrameBase.OnInit(m_strIPForInstrument, m_uiIPForInstrument, m_uiPortForTestSetBase, m_strIPLCI, m_uiPortLCI);
 	// 初始化网络端口接收缓冲区大小
-	//m_oSocketTestSetFrameBase.SetBufferSize(20000);
+	m_oSocketTestSetFrameBase.SetBufferSize(MaxFDUCount);
 	m_oSocketTestSetFrameBase.m_oRunTimeDataList=&m_oSiteData.m_oRunTimeDataList;
 
 	// 建立仪器测试数据接收网络对象，基本测试
 	m_oSocketTestDataFrameBase.OnInit(m_strIPForInstrument, m_uiPortForTestDataFrameBase);
 	// 初始化网络端口接收缓冲区大小
-	m_oSocketTestDataFrameBase.SetBufferSize(20000);
+	m_oSocketTestDataFrameBase.SetBufferSize(MaxFDUCount);
 	m_oSocketTestDataFrameBase.m_oProcTestThreadID=m_oSiteData.m_oProcTestThreadID;
 	m_oSocketTestDataFrameBase.OnReceive_buf=m_oSiteData.OnReceive_buf;
 
 	// 建立仪器测试设置网络对象，噪声监测 PortForTestSetNoise  0x9401 37889
+	m_oSocketTestSetFrameNoise.sample_rate=sample_rate;
+	m_oSocketTestSetFrameNoise.filter_hex=filter_hex;
+	m_oSocketTestSetFrameNoise.high_pass_freq=high_pass_freq;
 	m_oSocketTestSetFrameNoise.OnInit(m_strIPForInstrument, m_uiIPForInstrument, m_uiPortForTestSetNoise, m_strIPLCI, m_uiPortLCI);
 	// 初始化网络端口接收缓冲区大小
-	//m_oSocketTestSetFrameNoise.SetBufferSize(20000);
+	m_oSocketTestSetFrameNoise.SetBufferSize(MaxFDUCount);
 	m_oSocketTestSetFrameNoise.m_oRunTimeDataList=&m_oSiteData.m_oRunTimeDataList;
 
 	// 建立仪器测试数据接收网络对象，噪声监测
 	m_oSocketTestDataFrameNoise.OnInit(m_strIPForInstrument, m_uiPortForTestDataFrameNoise);
 	// 初始化网络端口接收缓冲区大小
-	m_oSocketTestDataFrameNoise.SetBufferSize(20000);
+	m_oSocketTestDataFrameNoise.SetBufferSize(MaxFDUCount);
 	m_oSocketTestDataFrameNoise.m_oProcTestThreadID=m_oSiteData.m_oProcTestThreadID;
 	m_oSocketTestDataFrameNoise.OnReceive_buf=m_oSiteData.OnReceive_buf;
-
+	
 	// 建立服务器内部网络命令发送处理网络对象
 	m_oSocketInterfaceCmdSend.OnInit(m_strIPForInterface, m_uiPortForCmdSend, m_uiPortForCmdSendToLine, m_uiPortForCmdSendToOperation);	
 	m_oSocketInterfaceCmdSend.SetBufferSize(65536 * 10);	// 初始化网络端口接收缓冲区大小	
@@ -198,7 +206,6 @@ bool CSiteManage::OnInit()
 	m_oThreadProcTimeDelay.m_pSiteData = &m_oSiteData;	// 现场数据对象
 	m_oThreadProcTimeDelay.m_pSocketTailTimeFrame = &m_oSocketTailTimeFrame;	// 仪器尾包时刻查询网络对象
 	m_oThreadProcTimeDelay.m_pSocketTimeSetFrame = &m_oSocketTimeSetFrame;	// 仪器尾包时刻查询网络对象
-	//m_oThreadProcTimeDelay.m_pThreadProcDelete = &m_oThreadProcDelete;	// 仪器删除对象
 	m_oThreadProcTimeDelay.OnInit();	// 初始化
 	m_oThreadProcTimeDelay.CreateThread(CREATE_SUSPENDED);	// 生成处理线程
 
@@ -341,7 +348,7 @@ bool CSiteManage::OnClose()
 		}
 		Sleep(50);	// 休眠，等待线程处理关闭
 		if(count == 4){
-			
+
 			if(m_oThreadProcDelete.m_hThread){	
 				::TerminateThread(m_oThreadProcDelete.m_hThread, 0x0); 
 				m_oThreadProcDelete.m_hThread = NULL;
@@ -485,6 +492,8 @@ void CSiteManage::LoadLineServerAppSetupData()
 
 	// 关闭程序配置文件
 	CloseAppIniXMLFile();
+	//加载CFG配置文件
+	OnLoadCFGXMLFile();
 }
 
 /**
@@ -616,3 +625,104 @@ void CSiteManage::LoadBufferSizeSetupData()
 	strKey = "TestElementCountAll";
 	m_uiTestElementCountAll = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 }
+
+//by heling
+void CSiteManage::OnLoadCFGXMLFile()
+{
+	OpenConfigXMLFile();
+
+	sample_rate = 0;
+	high_pass_freq = 0.0;
+
+	sample_rate_arr[0] = 250;
+	sample_rate_arr[1] = 500;
+	sample_rate_arr[2] = 1000;
+	sample_rate_arr[3] = 2000;
+	sample_rate_arr[4] = 4000;
+
+	filter_hex_arr[0] = 0x02;
+	filter_hex_arr[1] = 0x00;
+
+	high_pass_freq_arr[0] = 0.5;
+	high_pass_freq_arr[1] = 3.0;
+
+	ParseConfigXML();
+
+	sample_rate = sample_rate_arr[m_dwSampleRateIndex];
+	filter_hex = filter_hex_arr[m_dwFilterFIRIndex];
+	high_pass_freq = high_pass_freq_arr[m_dwHighpassFrequencyIndex];
+
+	CloseConfigXMLFile();
+
+}
+//by heling
+void CSiteManage::OpenConfigXMLFile()
+{
+	// 初始化COM库
+	CoInitialize(NULL);
+
+	CString strOLEObject;
+	COleException oError;
+	COleVariant oVariant;
+
+	strOLEObject = "msxml2.domdocument";
+	BOOL bData = m_oXMLDOMDocument.CreateDispatch(strOLEObject, &oError);
+
+	oVariant = m_strMatrixConfigXMLFile;
+	bData = m_oXMLDOMDocument.load(oVariant);
+}
+
+/**
+* 关闭程序配置文件
+* @param void
+* @return void
+*/
+//by heling
+void CSiteManage::CloseConfigXMLFile()
+{
+	m_oXMLDOMDocument.DetachDispatch();
+	// 释放COM库
+	CoUninitialize();
+}
+//by heling
+void CSiteManage::ParseConfigXML()
+{
+	CString strKey;
+	CXMLDOMNodeList oNodeList;
+	CXMLDOMElement oElement;
+	LPDISPATCH lpDispatch;
+
+	// 找到入口
+	strKey =_T("samplerate");
+	lpDispatch = m_oXMLDOMDocument.getElementsByTagName(strKey);
+	oNodeList.AttachDispatch(lpDispatch);
+	// 找到入口
+	lpDispatch = oNodeList.get_item(0);
+	oElement.AttachDispatch(lpDispatch);
+	// 得到索引值
+	strKey =_T("Index");
+	m_dwSampleRateIndex = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+
+	// 找到入口
+	strKey =_T("FilterFIR");
+	lpDispatch = m_oXMLDOMDocument.getElementsByTagName(strKey);
+	oNodeList.AttachDispatch(lpDispatch);
+	// 找到入口
+	lpDispatch = oNodeList.get_item(0);
+	oElement.AttachDispatch(lpDispatch);
+	// 得到索引值
+	strKey =_T("Index");
+	m_dwFilterFIRIndex = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+
+	// 找到入口
+	strKey = _T("High-passCornerFrequency");
+	lpDispatch = m_oXMLDOMDocument.getElementsByTagName(strKey);
+	oNodeList.AttachDispatch(lpDispatch);
+	// 找到入口
+	lpDispatch = oNodeList.get_item(0);
+	oElement.AttachDispatch(lpDispatch);
+	//得到索引值
+	strKey = _T("Index");
+	m_dwHighpassFrequencyIndex = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+}
+

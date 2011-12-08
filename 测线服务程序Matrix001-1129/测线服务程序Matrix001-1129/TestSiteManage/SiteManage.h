@@ -44,6 +44,8 @@ public: //属性
 
 	/** 配置文件名，包含全部路径*/
 	CString m_strMatrixIniXMLFile;
+	/** config配置文件名，包含全部路径*/
+	CString m_strMatrixConfigXMLFile;
 
 	/** XMLDOM文件对象*/
 	CXMLDOMDocument m_oXMLDOMDocument;
@@ -177,6 +179,26 @@ public: //属性
 	/** 内部网络命令帧接收和处理对象*/
 	CNetProcInterface m_oNetProcInterface;
 
+	/** 采样率索引值*/
+	unsigned int m_dwSampleRateIndex;
+	/** 滤波器参数索引值*/
+	unsigned int m_dwFilterFIRIndex;
+	/** 高通滤波器参数索引值*/
+	unsigned int m_dwHighpassFrequencyIndex;
+
+	//unsigned int sample_rate_hex_arr[5];
+	unsigned int sample_rate_arr[5];
+	unsigned int filter_hex_arr[2];
+	float high_pass_freq_arr[2];
+
+	//unsigned int sample_rate_hex;
+	/** 采样率*/
+	unsigned int sample_rate;
+	/** 滤波器参数*/
+	unsigned int filter_hex;
+	/** 高通滤波器参*/
+	float high_pass_freq;
+
 
 public: //方法
 	// 初始化
@@ -195,6 +217,12 @@ public: //方法
 
 	//加载测线服务器程序设置数据
 	void LoadLineServerAppSetupData();
+	//加载测线服务器程序设置数据
+	void CloseConfigXMLFile();
+	void OpenConfigXMLFile();
+	void ParseConfigXML();
+	void OnLoadCFGXMLFile();
+
 	//加载IP地址设置数据
 	void LoadIPSetupData();
 	//加载端口设置数据

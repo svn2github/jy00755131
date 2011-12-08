@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="E:\matrix\bin\TestSiteManage.exe"
+				OutputFile="E:\Test\bin\TestSiteManage.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -133,7 +133,7 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
-				WarningLevel="4"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -150,7 +150,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="E:\matrix\bin\TestSiteManage.exe"
+				OutputFile="E:\Test\bin\TestSiteManage.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"

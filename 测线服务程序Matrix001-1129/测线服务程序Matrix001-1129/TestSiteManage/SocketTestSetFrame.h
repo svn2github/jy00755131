@@ -61,6 +61,14 @@ public: // 属性
 	// UDP接收帧指针偏移量
 	unsigned int m_uiUdpCount;
 
+	/** 采样率*/
+	unsigned int sample_rate;
+	/** 滤波器参数*/
+	unsigned int filter_hex;
+	/** 高通滤波器参*/
+	float high_pass_freq;
+
+
 public: // 方法
 	// 初始化
 	BOOL OnInit(CString strIPForInstrument, UINT uiIPForInstrument, UINT uiPortForTestSet, CString strIPLCI, UINT uiPortLCI);
@@ -134,6 +142,7 @@ public: // 方法
 	void OnADCSetOperation(void);
 	// ADC设置TB时刻
 	void OnADCSetTBTime(unsigned int tnow);
+
 };
 
 

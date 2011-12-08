@@ -2,9 +2,9 @@
 #define FrameADCount72		72			//每帧AD数据长度
 #define ADoffset			2048		//偏移量循环
 #define NetSendStep			2000		//网络单步字节数
-#define MaxFDUCount			512		//最大采集个数
+#define MaxFDUCount			1024		//最大采集个数
 #define MaxSample			1000		//最大采样率
-#define UDPbufCount			3000			//UDP缓存帧个数
+#define UDPbufCount			3000		//UDP缓存帧个数
 #define UDPRcvBufSize		256000		// 定义接收缓冲区大小
 #define PortADListen		0x66666666	//AD采集广播端口
 #define PortTimeListen		0x66666666	//尾包时刻查询端口

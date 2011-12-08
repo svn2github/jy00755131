@@ -58,6 +58,10 @@ public: // 属性
 
 	/** 采样率 单位微秒*/
 	unsigned int m_uiSamplingRate;
+	/** 滤波器参数*/
+	unsigned int filter_hex;
+	/** 高通滤波器参*/
+	float high_pass_freq;
 
 public: // 方法
 	// 重置对象

@@ -103,17 +103,8 @@ bool CThreadProcTest::OnInit()
 	m_uiTestNoiseNetSendCount = 0;
 	// 初始化噪声监测数据网络发送步长
 	m_uiTestNoiseNetSendStep = 1;
-/*
-	//读空缓冲区
-	int uiFrameCount = m_pSocketTestDataFrame->GetFrameCount();	// by zl
-	for(unsigned int i = 0; i < uiFrameCount; i++)
-	{
-		// 得到帧数据，不解析
-		m_pSocketTestDataFrame->GetFrameDataNotParse();
-
-	}
-*/
-
+	
+	//为绘图转发初始化帧计数
 	FDUNum=0;
 	for(int i=0;i<MaxFDUCount;i++)
 		FrameNum[i]=0;
@@ -195,8 +186,6 @@ bool CThreadProcTest::JudgeProcCondition()
 		{
 			// 设置测试线程线程停止标志为真，噪声监测
 			m_pSiteData->m_bProcTestNoiseStop = true;
-		//	if(m_pTestRequest->m_uiType==22)
-		//		m_pSocketTestSetFrame->ViewSet(1);
 		}
 		return false;
 	}
@@ -213,9 +202,6 @@ bool CThreadProcTest::JudgeProcCondition()
 		{
 			// 设置测试线程线程停止标志为真，噪声监测
 			m_pSiteData->m_bProcTestNoiseStop = false;
-		//	if(m_pTestRequest->m_uiType==22)
-		//		m_pSocketTestSetFrame->ViewSet(1);
-
 		}
 	}
 	return true;
@@ -1073,33 +1059,6 @@ void CThreadProcTest::GetAndProcTestData()
 			uiTimeNow = m_pSiteData->m_uiSystemTimeSite;
 		m_pSiteData->m_oCriticalSectionSystemTimeSite.Unlock();
 
-		//清除TB开始第一秒的数据
-		if(m_pTestRequest->m_uiTimeADBegin-0x1000 > uiTimeNow){
-			//读空缓冲区
-			uiFrameCount = m_pSocketTestDataFrame->GetFrameCount1();	// by zl
-			CString strDesc;
-			int tmpidx=0;
-			memcpy(&tmpidx, m_pSocketTestDataFrame->OnReceive_buf+28, 2);
-			if(tmpidx!=0){
-				strDesc.Format("READ NULL tnow=%d",uiFrameCount);
-				// 设置运行状态数据
-				m_pSiteData->m_oRunTimeDataList.Set(1, "CThreadProcTest", "GetAndProcTestData", strDesc);
-				TRACE1("READ NULL=%d\r\n", uiFrameCount);
-				for(int i = 0; i < uiFrameCount; i++)
-				{
-					// 得到帧数据，不解析
-					m_pSocketTestDataFrame->GetFrameDataNotParse1();
-
-				}
-				m_pSocketTestDataFrame->m_irevFrameCount=0;
-				m_pSocketTestDataFrame->m_iFrameCount=0;
-				Wait(1);
-				continue;
-			}
-		}
-
-		//TRACE2("SetTestData uiFrameCount=%d idatacount=%d\r\n", uiFrameCount,idatacount);
-
 			// 依次得到测试数据帧
 			for(unsigned int i = 0; i < uiFrameCount; i++)
 			{
@@ -1123,6 +1082,9 @@ void CThreadProcTest::GetAndProcTestData()
 				//转发绘图帧
 				if(m_pTestRequest->m_uiType==22 && m_pSocketTestSetFrame->Viewtype==1)
 					TranferView(m_pSocketTestDataFrame->m_oFrameTestData.m_pFrameData);
+				else
+					for(int i=0;i<MaxFDUCount;i++)
+						FrameNum[i]=0;
 			}
 
 			if(false == JudgeProcCondition())	// 判断是否可以处理的条件
@@ -1189,18 +1151,13 @@ void CThreadProcTest::TranferView(byte* lpData)
 		}
 	}
 	if(FrameNum[FDUNum]==0){
-	//if(FrameNum[FDUNum]%FrameADCount72==0){
 		ViewOffset[FDUNum]=0;
 		ViewOffsetFrame[FDUNum]=0;
 		memcpy(ViewBuf+FDUNum*FrameLength, lpData, FrameLength);
 		memset(ViewBuf+FDUNum*FrameLength+36,0x55,FrameADCount72*3);
 	}
-	if(FDUNum==0)
-		FDUNum=0;
 	//取抽样点拼帧
-	//for(int i=0;i<(FrameADCount72/iViewGain);i++){
 	for(int i=0;ViewOffsetFrame[FDUNum]+i<(FrameADCount72);i+=iViewGain){
-		//memcpy(ViewBuf+FDUNum*FrameLength+36+ViewOffset[FDUNum]*3+i*3, lpData+36+ViewOffsetFrame[FDUNum]*3+i*iViewGain*3, 3);
 		memcpy(ViewBuf+FDUNum*FrameLength+36+ViewOffset[FDUNum]*3+j*3, lpData+36+ViewOffsetFrame[FDUNum]*3+i*3, 3);
 		FrameNum[FDUNum]++;
 		j++;
@@ -1228,7 +1185,6 @@ void CThreadProcTest::TranferView(byte* lpData)
 		ViewOffset[FDUNum]=0;
 		memset(ViewBuf+FDUNum*FrameLength+36,0x11,FrameADCount72*3);
 		//处理接收帧剩余数据
-		//for(int i=ViewOffsetFrame[FDUNum]/iViewGain;i<(FrameADCount72/iViewGain);i++){
 		j=0;
 		if(itail!=0){
 			for(int i=itail;ViewOffsetFrame[FDUNum]+i<(FrameADCount72);i+=iViewGain){
@@ -1363,8 +1319,6 @@ void CThreadProcTest::SetTestData(byte* lpData, unsigned int uiIP, unsigned shor
 
 	// 判断：野外设备发来新一组采集
 	if(pTestElementData->m_uiFrameIndex > m_pTestDataBuffer->m_uiFrameIndex)
-	//if(m_pTestBaseData->m_uiSamplingPointCount<m_pTestBaseData->m_uiSamplingLength)
-	//if((m_pTestDataBuffer->m_uiFrameIndex*FrameADCount*(m_pTestBaseData->m_uiSamplingRate/1000))<m_pTestBaseData->m_uiSamplingLength)
 	{
 		// 设置测试数据存储对象帧计数
 		m_pTestDataBuffer->m_uiFrameIndex = pTestElementData->m_uiFrameIndex;

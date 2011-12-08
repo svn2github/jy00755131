@@ -584,11 +584,6 @@ void CFrameTestSet::OnNULL(int iPos)
 //************************************
 void CFrameTestSet::OnSetTB(int iPos, unsigned int tbh, unsigned int tbl, bool bSwitch)
 {
-	TRACE3("OnSetTB tbh=%d tbl=%d bSwitch=%d\r\n",tbh,tbl,bSwitch);
-	if (tbh==0)
-	{
-		tbh=tbh;
-	}
 	if (bSwitch == false)
 	{
 		//дTBʱ�̸�λ
@@ -838,13 +833,15 @@ void CFrameTestSet::OnADCZeroDriftSetFromIP(int iPos, unsigned char* ucZeroDrift
 		sps2=1;
 		break;
 	}
-	cOnADCZeroDriftSetFromIP[4] = (8*sync+4*mode+2*sps2+1*sps1)*16 + (8*sps0+4*phs+2*filtr1+1*filtr0);
+	//cOnADCZeroDriftSetFromIP[4] = (8*sync+4*mode+2*sps2+1*sps1)*16 + (8*sps0+4*phs+2*filtr1+1*filtr0);
+	cOnADCZeroDriftSetFromIP[4] = (8*sync+4*mode+2*sps2+1*sps1)*16 + (8*sps0+4*phs+filter_hex);
 	cOnADCZeroDriftSetFromIP[5] = (4*mux2+2*mux1+1*mux0)*16 + (8*chop+4*pga2+2*pga1+1*pga0);
 	unsigned int hpf = 0;
 	double fhp = 0;
 	double wn = 0;
 	
-	fhp = 3.0;
+	//fhp = 3.0;
+	fhp = high_pass_freq;
 	wn = 2 * PI * fhp/m_uiSamplingRate;
 	hpf = static_cast<unsigned int>(65536 * (1 - sqrt(1 - 2* (cos(wn) + sin(wn) - 1)/cos(wn))));
 	hpf0 = static_cast<unsigned char>(hpf & 0xff);

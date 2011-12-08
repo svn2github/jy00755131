@@ -73,7 +73,8 @@ BOOL CSocketTestSetFrame::OnInit(CString strIPForInstrument, UINT uiIPForInstrum
 	DWORD   status; 
 	status   =   WSAIoctl(this->m_hSocket,SIO_UDP_CONNRESET,&bNewBehavior, sizeof   (bNewBehavior), 
                                                     NULL,   0,   &dwBytesReturned, NULL,   NULL); 
-
+	m_oFrameTestSet.high_pass_freq=high_pass_freq;
+	m_oFrameTestSet.filter_hex=filter_hex;
 	return bReturn;
 }
 
@@ -1327,7 +1328,8 @@ void CSocketTestSetFrame::OnSendADCSetCmd(void)
 			SendTestSetFrame();
 			Sleep(100);
 		}
-*/		iPos = m_oFrameTestSet.ADCSetFrameHead(BroadCastPort, SendSetCmd,(unsigned short) m_uiPortForTestSet);
+*/
+		iPos = m_oFrameTestSet.ADCSetFrameHead(BroadCastPort, SendSetCmd,(unsigned short) m_uiPortForTestSet);
 		m_oFrameTestSet.OnADCZeroDriftSetFromIP(iPos, &pTestElementData->ofccheck[0]);
 		SendTestSetFrame();
 		//Sleep(500);

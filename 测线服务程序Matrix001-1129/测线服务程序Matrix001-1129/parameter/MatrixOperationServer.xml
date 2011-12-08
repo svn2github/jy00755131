@@ -2,5 +2,5 @@
 <Matrix>
 	<OperationServer HostIP="192.168.0.19"/>
 	<MainCross MainCrossIP="255.255.255.255" MainCrossPort="30583"/>
-	<DiskRecord LastusedSEGDFileNumber="803"/>
+	<DiskRecord LastusedSEGDFileNumber="801"/>
 </Matrix>
