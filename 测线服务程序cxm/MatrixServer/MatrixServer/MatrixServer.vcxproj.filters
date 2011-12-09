@@ -72,6 +72,12 @@
     <ClInclude Include="Parameter.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="NetProcInterface.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameInterface.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MatrixServer.cpp">
@@ -99,6 +105,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SiteData.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetProcInterface.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameInterface.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

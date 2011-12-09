@@ -4,14 +4,12 @@
 #include "stdafx.h"
 #include "MatrixServer.h"
 #include "SocketHeartBeatFrame.h"
-
+#include "Parameter.h"
 
 // CSocketHeartBeatFrame
 
 CSocketHeartBeatFrame::CSocketHeartBeatFrame()
 {
-	// 帧字节数
-	m_iFrameSize = 128;
 }
 
 CSocketHeartBeatFrame::~CSocketHeartBeatFrame()
@@ -47,7 +45,8 @@ BOOL CSocketHeartBeatFrame::OnInit(CString strIPForInstrument, UINT uiPortForHea
 	iOptval = 1;
 	SetSockOpt(SO_BROADCAST, &iOptval, iOptlen, SOL_SOCKET);
 	Bind(m_uiPortForHeartBeat,m_strIPForInstrument);
-
+	// 生成心跳发送帧
+	m_oFrameHeartBeat.MakeHeartBeatFrame();
 	return bReturn;
 }
 
@@ -59,5 +58,5 @@ BOOL CSocketHeartBeatFrame::OnInit(CString strIPForInstrument, UINT uiPortForHea
 void CSocketHeartBeatFrame::SendIHeartBeatFrame()
 {
 	// 发送心跳帧
-	int iCount = SendTo(m_oFrameHeartBeat.m_pFrameData, 128, m_uiPortLCI, m_strIPLCI);
+	SendTo(m_oFrameHeartBeat.m_pFrameData, SndFrameSize, m_uiPortLCI, m_strIPLCI);
 }

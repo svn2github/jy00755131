@@ -104,8 +104,10 @@
     <ClInclude Include="CXMLDOMNode.h" />
     <ClInclude Include="CXMLDOMNodeList.h" />
     <ClInclude Include="FrameHeartBeat.h" />
+    <ClInclude Include="FrameInterface.h" />
     <ClInclude Include="MatrixServer.h" />
     <ClInclude Include="MatrixServerDlg.h" />
+    <ClInclude Include="NetProcInterface.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SiteData.h" />
@@ -118,8 +120,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FrameHeartBeat.cpp" />
+    <ClCompile Include="FrameInterface.cpp" />
     <ClCompile Include="MatrixServer.cpp" />
     <ClCompile Include="MatrixServerDlg.cpp" />
+    <ClCompile Include="NetProcInterface.cpp" />
     <ClCompile Include="SiteData.cpp" />
     <ClCompile Include="SiteManage.cpp" />
     <ClCompile Include="SocketHeartBeatFrame.cpp" />

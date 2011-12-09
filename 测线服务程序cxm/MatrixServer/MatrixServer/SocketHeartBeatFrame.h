@@ -22,8 +22,6 @@ public: // 属性
 	/** 用于心跳帧发送的端口号*/
 	UINT m_uiPortForHeartBeat;
 
-	/** 心跳帧字节数*/
-	int m_iFrameSize;
 	/** 心跳帧数据对象*/
 	CFrameHeartBeat m_oFrameHeartBeat;
 

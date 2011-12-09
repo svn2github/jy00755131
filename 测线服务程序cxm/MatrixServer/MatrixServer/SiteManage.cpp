@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "SiteManage.h"
+#include "Parameter.h"
 #include <string>
 using std::string;
 using std::wstring;
@@ -130,17 +131,17 @@ bool CSiteManage::OnInit()
 // 	m_oLogicData.m_uiTestElementCountAll = m_uiTestElementCountAll;	// 测试单元数组总数
 // 	m_oLogicData.m_strIPFTPServer = m_strIPFTPServer;	// FTP服务器IP地址
 // 	m_oLogicData.OnInit();
-// 
-// 	// 建立现场数据对象
-// 	m_oSiteData.m_uiInstrumentCountAll = m_uiInstrumentCountAll;	// 仪器队列仪器总数
+ 
+	// 建立现场数据对象
+	m_oSiteData.m_uiInstrumentCountAll = m_uiInstrumentCountAll;	// 仪器队列仪器总数
 // 	m_oSiteData.m_uiIPTempCountAll = m_uiIPTempCountAll;	// IP地址队列临时IP地址总数
 // 	m_oSiteData.m_pLogicData = &m_oLogicData;	// 测线设置数据对象
 // 	m_oSiteData.m_strIPFTPServer = m_strIPFTPServer;	// FTP服务器IP地址
-// 	m_oSiteData.OnInit();
-// 
-// 	// 建立心跳帧发送网络对象
-// 	m_oSocketHeartBeatFrame.OnInit(m_strIPForInstrument, m_uiPortForHeartBeat, m_strIPLCI, m_uiPortLCI);
-// 
+ 	m_oSiteData.OnInit();
+
+	// 建立心跳帧发送网络对象
+	m_oSocketHeartBeatFrame.OnInit(m_strIPForInstrument, m_uiPortForHeartBeat, m_strIPLCI, m_uiPortLCI);
+ 
 // 	// 建立首包接收网络对象
 // 	m_oSocketHeadFrame.OnInit(m_strIPForInstrument, m_uiPortForHeadFrame);
 // 	// 初始化网络端口接收缓冲区大小
@@ -204,11 +205,11 @@ bool CSiteManage::OnInit()
 // 	m_oSocketInterfaceDataSendMonitor.OnInit(m_strIPForInterface, m_uiPortForDataSendMonitor, m_uiPortForDataSendTo);	
 // 	m_oSocketInterfaceDataSendMonitor.SetBufferSize(65536 * 10);	// 初始化网络端口接收缓冲区大小	
 // 
-// 	// 建立心跳处理对象
-// 	m_oThreadProcHeartBeat.m_pSiteData = &m_oSiteData;	// 现场数据对象
-// 	m_oThreadProcHeartBeat.m_pSocketHeartBeatFrame = &m_oSocketHeartBeatFrame;	// 心跳帧发送网络对象
-// 	m_oThreadProcHeartBeat.OnInit();	// 初始化
-// 	m_oThreadProcHeartBeat.CreateThread();	// 生成处理线程
+	// 建立心跳处理对象
+	m_oThreadProcHeartBeat.m_pSiteData = &m_oSiteData;	// 现场数据对象
+	m_oThreadProcHeartBeat.m_pSocketHeartBeatFrame = &m_oSocketHeartBeatFrame;	// 心跳帧发送网络对象
+	m_oThreadProcHeartBeat.OnInit();	// 初始化
+	m_oThreadProcHeartBeat.CreateThread(CREATE_SUSPENDED, 0, 0);	// 生成处理线程
 // 
 // 	// 建立仪器IP地址设置对象
 // 	m_oThreadProcIPSet.m_pSiteData = &m_oSiteData;	// 现场数据对象
@@ -288,13 +289,13 @@ bool CSiteManage::OnInit()
 // 	m_oThreadProcTestNoise.OnInit();	// 初始化
 // 	m_oThreadProcTestNoise.CreateThread(CREATE_SUSPENDED);	// 生成处理线程
 // 
-// 	// 建立内部网络命令接收处理网络对象
+ 	// 建立内部网络命令接收处理网络对象
 // 	m_oNetProcInterface.m_pLogicData = &m_oLogicData;	// 测线设置数据对象
-// 	m_oNetProcInterface.m_pSiteData = &m_oSiteData;	// 现场数据对象
+ 	m_oNetProcInterface.m_pSiteData = &m_oSiteData;	// 现场数据对象
 // 	m_oNetProcInterface.m_pSocketInterfaceCmdRev = &m_oSocketInterfaceCmdRev;	// 内部网络命令接收处理网络对象
 // 	m_oNetProcInterface.m_pSocketInterfaceCmdSend = &m_oSocketInterfaceCmdSend;	// 服务器内部网络命令发送处理网络对象
-// 
-// 	m_oNetProcInterface.m_pThreadProcHeartBeat = &m_oThreadProcHeartBeat;	// 心跳处理对象指针	
+ 
+ 	m_oNetProcInterface.m_pThreadProcHeartBeat = &m_oThreadProcHeartBeat;	// 心跳处理对象指针	
 // 	m_oNetProcInterface.m_pThreadProcIPSet = &m_oThreadProcIPSet;	// 仪器IP地址设置对象指针	
 // 	m_oNetProcInterface.m_pThreadProcHeadFrame = &m_oThreadProcHeadFrame;	// 首包处理对象指针	
 // 	m_oNetProcInterface.m_pThreadProcTimeDelay = &m_oThreadProcTimeDelay;	// 时延处理线程对象指针指针	
@@ -328,10 +329,10 @@ bool CSiteManage::OnInit()
 */
 bool CSiteManage::OnClose()
 {
-// 	int count = 0x0;
-// 
-// 	// 关闭心跳处理对象
-// 	m_oThreadProcHeartBeat.OnClose();
+	int count = 0;
+
+	// 关闭心跳处理对象
+	m_oThreadProcHeartBeat.OnClose();
 // 	// 关闭仪器IP地址设置对象
 // 	m_oThreadProcIPSet.OnClose();
 // 	// 关闭首包处理对象	
@@ -353,9 +354,9 @@ bool CSiteManage::OnClose()
 // 	// 关闭测试对象，噪声监测
 // 	m_oThreadProcTestNoise.OnClose();
 // 
-// 	while(true)	// 等待线程关闭
-// 	{
-// 		if((true == m_oSiteData.m_bProcHeartBeatClose)	// 心跳处理线程关闭
+	while(true)	// 等待线程关闭
+	{
+		if((true == m_oSiteData.m_bProcHeartBeatClose)	// 心跳处理线程关闭
 // 			&& (true == m_oSiteData.m_bProcHeadFrameClose)	// 首包处理线程关闭
 // 			&& (true == m_oSiteData.m_bProcTailFrameClose)	// 尾包处理线程关闭
 // 			&& (true == m_oSiteData.m_bProcMonitorRoutClose)	// 路由监视线程关闭
@@ -365,13 +366,14 @@ bool CSiteManage::OnClose()
 // 			&& (true == m_oSiteData.m_bProcTimeDelayClose)	// 时延处理线程关闭
 // 			&& (true == m_oSiteData.m_bProcDeleteClose)	// 仪器删除线程关闭
 // 			&& (true == m_oSiteData.m_bProcTestBaseClose)	// 测试处理线程关闭，基本测试
-// 			&& (true == m_oSiteData.m_bProcTestNoiseClose))	// 测试处理线程关闭，噪声监测
-// 		{
-// 			break;
-// 		}
-// 		Sleep(50);	// 休眠，等待线程处理关闭
-// 		if(count == 4){
-// 
+// 			&& (true == m_oSiteData.m_bProcTestNoiseClose)	// 测试处理线程关闭，噪声监测
+			)
+		{
+			break;
+		}
+		Sleep(OneSleepTime);	// 休眠，等待线程处理关闭
+		if(count == CloseAllThreadSleepTimes){
+
 // 			if(m_oThreadProcDelete.m_hThread){	
 // 				::TerminateThread(m_oThreadProcDelete.m_hThread, 0x0); 
 // 				m_oThreadProcDelete.m_hThread = NULL;
@@ -420,19 +422,19 @@ bool CSiteManage::OnClose()
 // 				::TerminateThread(m_oThreadProcIPSet.m_hThread, 0x0); 
 // 				m_oThreadProcIPSet.m_hThread = NULL;
 // 			}
-// 
-// 			if(m_oThreadProcHeartBeat.m_hThread){	
-// 				::TerminateThread(m_oThreadProcHeartBeat.m_hThread, 0x0); 
-// 				m_oThreadProcHeartBeat.m_hThread = NULL;
-// 			}
-// 
-// 			break;
-// 		}
-// 		else{	++count; }
-// 	}
-// 
-// 	// 关闭现场数据对象
-// 	m_oSiteData.OnClose();
+
+			if(m_oThreadProcHeartBeat.m_hThread){	
+				::TerminateThread(m_oThreadProcHeartBeat.m_hThread, 0); 
+				m_oThreadProcHeartBeat.m_hThread = NULL;
+			}
+
+			break;
+		}
+		else{ ++count; }
+	}
+
+	// 关闭现场数据对象
+	m_oSiteData.OnClose();
 // 	// 关闭测线设置数据对象
 // 	m_oLogicData.OnClose();
 
@@ -446,8 +448,7 @@ bool CSiteManage::OnClose()
 */
 bool CSiteManage::OnWork()
 {
-//	byte byFieldOperation = 1; 
-//	m_oNetProcInterface.ProcInterFaceCommandForField(byFieldOperation);
+	m_oNetProcInterface.ProcInterFaceCommandForField(FieldOn);
 	return true;
 }
 
@@ -458,8 +459,7 @@ bool CSiteManage::OnWork()
 */
 bool CSiteManage::OnStop()
 {
-//	byte byFieldOperation = 0; 
-//	m_oNetProcInterface.ProcInterFaceCommandForField(byFieldOperation);
+	m_oNetProcInterface.ProcInterFaceCommandForField(FieldOff);
 	return true;
 }
 

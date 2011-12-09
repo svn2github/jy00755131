@@ -32,8 +32,8 @@ public: //属性
 // 	CRoutList m_oRoutList;
 // 	/** 路由地址路由索引表*/
 // 	CIndexRoutMap m_oRoutIPRoutMap;
-	/** IP地址队列临时IP地址总数*/
-	unsigned int m_uiIPTempCountAll;
+// 	/** IP地址队列临时IP地址总数*/
+// 	unsigned int m_uiIPTempCountAll;
 // 	/** IP地址队列*/
 // 	CIPList m_oIPList;
 // 	/** 运行日志*/

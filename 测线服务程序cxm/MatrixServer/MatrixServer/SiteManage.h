@@ -1,4 +1,8 @@
 #pragma once
+#include "SiteData.h"
+#include "NetProcInterface.h"
+#include "SocketHeartBeatFrame.h"
+#include "ThreadProcHeartBeat.h"
 class CSiteManage
 {
 public:
@@ -83,11 +87,11 @@ public: //属性
 
 // 	/** 测线设置数据对象*/
 // 	CLogicData m_oLogicData;
-// 	/** 现场数据对象*/
-// 	CSiteData m_oSiteData;
-// 
-// 	/** 心跳帧发送网络对象*/
-// 	CSocketHeartBeatFrame m_oSocketHeartBeatFrame;
+	/** 现场数据对象*/
+	CSiteData m_oSiteData;
+
+	/** 心跳帧发送网络对象*/
+	CSocketHeartBeatFrame m_oSocketHeartBeatFrame;
 // 	/** 首包接收网络对象*/
 // 	CSocketHeadFrame m_oSocketHeadFrame;
 // 	/** 尾包接收网络对象*/
@@ -116,9 +120,9 @@ public: //属性
 // 	CSocketInterfaceDataSend m_oSocketInterfaceDataSendTest;
 // 	/** 服务器内部网络数据发送处理网络对象，噪声监测*/
 // 	CSocketInterfaceDataSend m_oSocketInterfaceDataSendMonitor;
-// 
-// 	/** 心跳处理对象*/
-// 	CThreadProcHeartBeat m_oThreadProcHeartBeat;
+
+	/** 心跳处理对象*/
+	CThreadProcHeartBeat m_oThreadProcHeartBeat;
 // 	/** 仪器IP地址设置对象*/
 // 	CThreadProcIPSet m_oThreadProcIPSet;
 // 	/** 首包处理对象*/
@@ -139,9 +143,9 @@ public: //属性
 // 	CThreadProcTest m_oThreadProcTestBase;
 // 	/** 测试对象，噪声监测*/
 // 	CThreadProcTest m_oThreadProcTestNoise;
-// 
-// 	/** 内部网络命令帧接收和处理对象*/
-// 	CNetProcInterface m_oNetProcInterface;
+
+	/** 内部网络命令帧接收和处理对象*/
+	CNetProcInterface m_oNetProcInterface;
 
 
 public: //方法
