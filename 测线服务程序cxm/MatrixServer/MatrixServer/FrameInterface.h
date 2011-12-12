@@ -66,8 +66,6 @@ public: // 属性
 	unsigned short m_usCommandCount;
 	/** 数据区长度*/
 	unsigned short m_usDataSize;
-	/** 数据区*/
-	byte* m_pData;
 
 	// 命令	1-Field ON/OFF
 	// 命令 101-Server Field ON/OFF

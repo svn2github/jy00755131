@@ -2,7 +2,9 @@
 #include "SiteData.h"
 #include "NetProcInterface.h"
 #include "SocketHeartBeatFrame.h"
+#include "SocketHeadFrame.h"
 #include "ThreadProcHeartBeat.h"
+#include "ThreadProcHeadFrame.h"
 class CSiteManage
 {
 public:
@@ -92,8 +94,8 @@ public: //属性
 
 	/** 心跳帧发送网络对象*/
 	CSocketHeartBeatFrame m_oSocketHeartBeatFrame;
-// 	/** 首包接收网络对象*/
-// 	CSocketHeadFrame m_oSocketHeadFrame;
+	/** 首包接收网络对象*/
+	CSocketHeadFrame m_oSocketHeadFrame;
 // 	/** 尾包接收网络对象*/
 // 	CSocketTailFrame m_oSocketTailFrame;
 // 	/** 仪器IP地址设置网络对象*/
@@ -125,8 +127,8 @@ public: //属性
 	CThreadProcHeartBeat m_oThreadProcHeartBeat;
 // 	/** 仪器IP地址设置对象*/
 // 	CThreadProcIPSet m_oThreadProcIPSet;
-// 	/** 首包处理对象*/
-// 	CThreadProcHeadFrame m_oThreadProcHeadFrame;
+	/** 首包处理对象*/
+	CThreadProcHeadFrame m_oThreadProcHeadFrame;
 // 	/** 时延处理线程对象*/
 // 	CThreadProcTimeDelay m_oThreadProcTimeDelay;
 // 	/** 尾包处理对象*/

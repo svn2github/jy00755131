@@ -3,8 +3,6 @@
 
 CFrameInterface::CFrameInterface()
 {
-	// 数据区
-	m_pData = &m_pFrameData[13];
 }
 
 CFrameInterface::~CFrameInterface()
@@ -188,33 +186,41 @@ void CFrameInterface::MakeReplyFrame(CFrameInterface* m_pFrameInterface)
 */
 void CFrameInterface::MakeSiteDataOutputCmdFrame()
 {
-	// @@@@@@@@@@@@@@@@@@@@@@@@@@@@没改完
-	m_usFrameSize = 16;
+	int iPos = 0;
+	int iPosFrameSize = 0;
 	// 帧头{0xEB90}
-	m_pFrameData[0] = 0xEB;
-	m_pFrameData[1] = 0x90;
+	m_pFrameData[iPos] = FrameHeadHigh;
+	iPos += FrameCmdSize1B;
+	m_pFrameData[iPos] = FrameHeadLow;
+	iPos += FrameCmdSize1B;
 	// 帧长度
-	memcpy(&m_pFrameData[2], &m_usFrameSize, 2);
+	iPosFrameSize = iPos;
+	iPos += FramePacketSize2B;
 	// 帧计数
 	UINT iNow = GetTickCount();
-	memcpy(&m_pFrameData[4], &iNow, 4);
+	memcpy(&m_pFrameData[iPos], &iNow, FramePacketSize4B);
+	iPos += FramePacketSize4B;
 	// 帧类型 0x01-命令帧，不要求回令帧
-	m_pFrameData[8] = 0x01;
+	m_pFrameData[iPos] = FrameTypeNoReturnCmd;
+	iPos += FrameCmdSize1B;
 	// 命令
-	m_usCommand = 100;
-	memcpy(&m_pFrameData[9], &m_usCommand, 2);
+	m_usCommand = CmdGenerateOutputData;
+	memcpy(&m_pFrameData[iPos], &m_usCommand, FramePacketSize2B);
+	iPos += FramePacketSize2B;
 	// 命令字个数
 	m_usCommandCount = 0;
-	memcpy(&m_pFrameData[11], &m_usCommandCount, 2);
-
-	int iPos = 13;
+	memcpy(&m_pFrameData[iPos], &m_usCommandCount, FramePacketSize2B);
+	iPos += FramePacketSize2B;
 	// 校验位
-	m_pFrameData[iPos] = 0x00;
-	iPos = iPos + 1;
+	m_pFrameData[iPos] = SndFrameBufInit;
+	iPos += FrameCmdSize1B;
 	// 帧尾{0x146F}
-	m_pFrameData[iPos] = 0x14;
-	iPos = iPos + 1;
-	m_pFrameData[iPos] = 0x6F;
+	m_pFrameData[iPos] = FrameTailHigh;
+	iPos += FrameCmdSize1B;
+	m_pFrameData[iPos] = FrameTailLow;
+	iPos += FrameCmdSize1B;
+	m_usFrameSize = (unsigned short)iPos;
+	memcpy(&m_pFrameData[iPosFrameSize], &m_usFrameSize, FramePacketSize2B);
 }
 
 /**
@@ -224,34 +230,44 @@ void CFrameInterface::MakeSiteDataOutputCmdFrame()
 */
 void CFrameInterface::MakeServerFieldFrame()
 {
-	m_usFrameSize = 17;
+	int iPos = 0;
+	int iPosFrameSize = 0;
 	// 帧头{0xEB90}
-	m_pFrameData[0] = 0xEB;
-	m_pFrameData[1] = 0x90;
+	m_pFrameData[iPos] = FrameHeadHigh;
+	iPos += FrameCmdSize1B;
+	m_pFrameData[iPos] = FrameHeadLow;
+	iPos += FrameCmdSize1B;
 	// 帧长度
-	memcpy(&m_pFrameData[2], &m_usFrameSize, 2);
+	iPosFrameSize = iPos;
+	iPos += FramePacketSize2B;
 	// 帧计数
 	UINT iNow = GetTickCount();
-	memcpy(&m_pFrameData[4], &iNow, 4);
+	memcpy(&m_pFrameData[iPos], &iNow, FramePacketSize4B);
+	iPos += FramePacketSize4B;
 	// 帧类型 0x01-命令帧，不要求回令帧
-	m_pFrameData[8] = 0x01;
+	m_pFrameData[iPos] = FrameTypeNoReturnCmd;
+	iPos += FrameCmdSize1B;
 	// 命令 101-Server Field ON/OFF
-	m_usCommand = 101;
-	memcpy(&m_pFrameData[9], &m_usCommand, 2);
+	m_usCommand = CmdServerFieldStatus;
+	memcpy(&m_pFrameData[iPos], &m_usCommand, FramePacketSize2B);
+	iPos += FramePacketSize2B;
 	// 命令字个数
 	m_usCommandCount = 1;
-	memcpy(&m_pFrameData[11], &m_usCommandCount, 2);
+	memcpy(&m_pFrameData[iPos], &m_usCommandCount, FramePacketSize2B);
+	iPos += FramePacketSize2B;
 
-	int iPos = 13;
 	m_pFrameData[iPos] = m_byFieldOperation;
-	iPos = iPos + 1;
+	iPos += FrameCmdSize1B;
 	// 校验位
-	m_pFrameData[iPos] = 0x00;
-	iPos = iPos + 1;
+	m_pFrameData[iPos] = SndFrameBufInit;
+	iPos += FrameCmdSize1B;
 	// 帧尾{0x146F}
-	m_pFrameData[iPos] = 0x14;
-	iPos = iPos + 1;
-	m_pFrameData[iPos] = 0x6F;
+	m_pFrameData[iPos] = FrameTailHigh;
+	iPos += FrameCmdSize1B;
+	m_pFrameData[iPos] = FrameTailLow;
+	iPos += FrameCmdSize1B;
+	m_usFrameSize = (unsigned short)iPos;
+	memcpy(&m_pFrameData[iPosFrameSize], &m_usFrameSize, FramePacketSize2B);
 }
 
 // /**

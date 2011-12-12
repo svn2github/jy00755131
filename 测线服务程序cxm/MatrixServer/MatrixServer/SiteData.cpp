@@ -198,12 +198,8 @@ void CSiteData::OnClose()
 {
 // 	// 首个主交叉站指针
 // 	m_pFirstMainCross = NULL;
-// 	// 关闭仪器队列
-// 	m_oInstrumentList.OnClose();
-// 	// 关闭SN仪器索引表
-// 	m_oSNInstrumentMap.OnClose();
-// 	// 关闭IP地址仪器索引表
-// 	m_oIPInstrumentMap.OnClose();
+	// 关闭仪器队列
+	m_oInstrumentList.OnClose();
 // 	// 关闭路由队列
 // 	m_oRoutList.OnClose();
 // 	// 关闭路由地址路由索引表
@@ -217,43 +213,44 @@ void CSiteData::OnClose()
 * @param unsigned int uiSN 仪器SN
 * @return BOOL TRUE：是；FALSE：否
 */
-// BOOL CSiteData::IfSNExistInSNMap(unsigned int uiSN)
-// {
-// 	return m_oSNInstrumentMap.IfIndexExistInMap(uiSN);
-// }
-// 
-// /**
-// * 由仪器SN索引表得到一个仪器
-// * @param unsigned int uiIndex 仪器SN号
-// * @param CInstrument* &pInstrument 仪器指针，引用方式调用
-// * @return BOOL TRUE：成功；FALSE：失败
-// */
-// BOOL CSiteData::GetInstrumentFromSNMapBySN(unsigned int uiIndex, CInstrument* &pInstrument)
-// {
-// 	return m_oSNInstrumentMap.GetInstrument(uiIndex, pInstrument);
-// }
-// 
-// /**
-// * 仪器IP地址是否已加入IP地址索引表
-// * @param unsigned int uiSN 仪器SN号
-// * @return BOOL TRUE：是；FALSE：否
-// */
-// BOOL CSiteData::IfIPExistInIPMap(unsigned int uiSN)
-// {
-// 	return m_oIPInstrumentMap.IfIndexExistInMap(uiSN);
-// }
-// 
-// /**
-// * 由仪器IP地址索引表得到一个仪器
-// * @param unsigned int uiIndex 仪器SN号
-// * @param CInstrument* &pInstrument 仪器指针，引用方式调用
-// * @return BOOL TRUE：成功；FALSE：失败
-// */
-// BOOL CSiteData::GetInstrumentFromIPMapByIP(unsigned int uiIndex, CInstrument* &pInstrument)
-// {
-// 	return m_oIPInstrumentMap.GetInstrument(uiIndex, pInstrument);
-// }
-// 
+BOOL CSiteData::IfSNExistInSNMap(unsigned int uiSN)
+{
+	return m_oInstrumentList.IfIndexExistInSNMap(uiSN);
+
+}
+
+/**
+* 由仪器SN索引表得到一个仪器
+* @param unsigned int uiIndex 仪器SN号
+* @param CInstrument* &pInstrument 仪器指针，引用方式调用
+* @return BOOL TRUE：成功；FALSE：失败
+*/
+BOOL CSiteData::GetInstrumentFromSNMapBySN(unsigned int uiIndex, CInstrument* &pInstrument)
+{
+	return m_oInstrumentList.GetInstrumentFromSNMap(uiIndex, pInstrument);
+}
+
+/**
+* 仪器IP地址是否已加入IP地址索引表
+* @param unsigned int uiIP 仪器IP地址
+* @return BOOL TRUE：是；FALSE：否
+*/
+BOOL CSiteData::IfIPExistInIPMap(unsigned int uiIP)
+{
+	return m_oInstrumentList.IfIndexExistInIPMap(uiIP);
+}
+
+/**
+* 由仪器IP地址索引表得到一个仪器
+* @param unsigned int uiIndex 仪器IP地址
+* @param CInstrument* &pInstrument 仪器指针，引用方式调用
+* @return BOOL TRUE：成功；FALSE：失败
+*/
+BOOL CSiteData::GetInstrumentFromIPMapByIP(unsigned int uiIndex, CInstrument* &pInstrument)
+{
+	return m_oInstrumentList.GetInstrumentFromIPMap(uiIndex, pInstrument);
+}
+
 // /**
 // * 更新路由对象的路由时刻
 // * @param unsigned int uiRoutIP 路由IP地址
@@ -272,34 +269,34 @@ void CSiteData::OnClose()
 // 		pRout->UpdateRoutTime();
 // 	}
 // }
-// 
-// /**
-// * 得到一个空闲仪器
-// * @param void
-// * @return CInstrument* NULL：失败
-// */
-// CInstrument* CSiteData::GetFreeInstrument()
-// {
-// 	CInstrument* pInstrument = NULL;
-// 	pInstrument = m_oInstrumentList.GetFreeInstrument();
-// 	return pInstrument;
-// }
-// 
-// /**
-// * 得到仪器连接的下一个仪器
-// * @param CInstrument* pInstrument 仪器指针
-// * @param unsigned int uiRoutDirection 连接方向  1-上；2-下；3-左；4右
-// * @return CInstrument* NULL：失败
-// */
-// CInstrument* CSiteData::GetNextInstrument(CInstrument* pInstrument, unsigned int uiRoutDirection)
-// {
-// 	CInstrument* pInstrumentNext = NULL;
-// 
-// 	pInstrumentNext = pInstrument->GetNextInstrument(uiRoutDirection);
-// 
-// 	return pInstrumentNext;
-// }
-// 
+
+/**
+* 得到一个空闲仪器
+* @param void
+* @return CInstrument* NULL：失败
+*/
+CInstrument* CSiteData::GetFreeInstrument()
+{
+	CInstrument* pInstrument = NULL;
+	pInstrument = m_oInstrumentList.GetFreeInstrument();
+	return pInstrument;
+}
+
+/**
+* 得到仪器连接的下一个仪器
+* @param CInstrument* pInstrument 仪器指针
+* @param unsigned int uiRoutDirection 连接方向  1-上；2-下；3-左；4右
+* @return CInstrument* NULL：失败
+*/
+CInstrument* CSiteData::GetNextInstrument(CInstrument* pInstrument, unsigned int uiRoutDirection)
+{
+	CInstrument* pInstrumentNext = NULL;
+
+	pInstrumentNext = pInstrument->GetNextInstrument(uiRoutDirection);
+
+	return pInstrumentNext;
+}
+
 // /**
 // * 删除仪器串，包括仪器本身；删除前设置删除来源仪器的连接指针
 // * @param CInstrument* pInstrument 仪器指针
@@ -789,60 +786,60 @@ void CSiteData::OnClose()
 // 		m_oIPList.AddFreeInstrumentIP(uiIP);
 // 	}
 // }
-// 
-// /**
-// * 更新上次现场数据变化时刻
-// * @param void
-// * @return void
-// */
-// void CSiteData::UpdateSiteDataChangedTime()
-// {
-// 	// 为现场数据变化的线程同步对象
-// 	m_oCriticalSectionSiteDataChanged.Lock();
-// 		// 现场数据是否变化
-// 		m_bSiteDataChanged = true;
-// 		// 上次现场数据变化时刻
-// 		m_uiSiteDataChangedTime = GetTickCount();
-// 	// 为现场数据变化的线程同步对象
-// 	m_oCriticalSectionSiteDataChanged.Unlock();
-// }
-// 
-// /**
-// * 判断现场数据是否在规定时间内无新变化
-// * @param void
-// * @return bool true：是；false：否
-// */
-// bool CSiteData::JudgeSiteDataChangedTime()
-// {
-// 	bool bReturn = false;
-// 	// 为现场数据变化的线程同步对象
-// 	m_oCriticalSectionSiteDataChanged.Lock();
-// 		unsigned int uiTimeNow = GetTickCount();
-// 		// // 现场数据有变化，且5秒内无新变化
-// 		if((true == m_bSiteDataChanged) && (2000 < (uiTimeNow - m_uiSiteDataChangedTime)))
-// 		{
-// 			bReturn = true;
-// 		}	
-// 	// 为现场数据变化的线程同步对象
-// 	m_oCriticalSectionSiteDataChanged.Unlock();
-// 	return bReturn;
-// }
-// 
-// /**
-// * 重置上次现场数据变化时刻
-// * @param void
-// * @return void
-// */
-// void CSiteData::ResetSiteDataChangedTime()
-// {
-// 	// 为现场数据变化的线程同步对象
-// 	m_oCriticalSectionSiteDataChanged.Lock();
-// 		// 现场数据无变化
-// 		m_bSiteDataChanged = false;
-// 	// 为现场数据变化的线程同步对象
-// 	m_oCriticalSectionSiteDataChanged.Unlock();
-// }
-// 
+
+/**
+* 更新上次现场数据变化时刻
+* @param void
+* @return void
+*/
+void CSiteData::UpdateSiteDataChangedTime()
+{
+	// 为现场数据变化的线程同步对象
+	m_oCriticalSectionSiteDataChanged.Lock();
+		// 现场数据是否变化
+		m_bSiteDataChanged = true;
+		// 上次现场数据变化时刻
+		m_uiSiteDataChangedTime = GetTickCount();
+	// 为现场数据变化的线程同步对象
+	m_oCriticalSectionSiteDataChanged.Unlock();
+}
+
+/**
+* 判断现场数据是否在规定时间内无新变化
+* @param void
+* @return bool true：是；false：否
+*/
+bool CSiteData::JudgeSiteDataChangedTime()
+{
+	bool bReturn = false;
+	// 为现场数据变化的线程同步对象
+	m_oCriticalSectionSiteDataChanged.Lock();
+		unsigned int uiTimeNow = GetTickCount();
+		// // 现场数据有变化，且5秒内无新变化
+		if((true == m_bSiteDataChanged) && (2000 < (uiTimeNow - m_uiSiteDataChangedTime)))
+		{
+			bReturn = true;
+		}	
+	// 为现场数据变化的线程同步对象
+	m_oCriticalSectionSiteDataChanged.Unlock();
+	return bReturn;
+}
+
+/**
+* 重置上次现场数据变化时刻
+* @param void
+* @return void
+*/
+void CSiteData::ResetSiteDataChangedTime()
+{
+	// 为现场数据变化的线程同步对象
+	m_oCriticalSectionSiteDataChanged.Lock();
+		// 现场数据无变化
+		m_bSiteDataChanged = false;
+	// 为现场数据变化的线程同步对象
+	m_oCriticalSectionSiteDataChanged.Unlock();
+}
+
 // /**
 // * 得到仪器链接方向上对应的路由对象指针
 // * @param CInstrument* pInstrument 仪器指针

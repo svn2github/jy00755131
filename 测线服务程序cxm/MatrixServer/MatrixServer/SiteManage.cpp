@@ -142,10 +142,10 @@ bool CSiteManage::OnInit()
 	// 建立心跳帧发送网络对象
 	m_oSocketHeartBeatFrame.OnInit(m_strIPForInstrument, m_uiPortForHeartBeat, m_strIPLCI, m_uiPortLCI);
  
-// 	// 建立首包接收网络对象
-// 	m_oSocketHeadFrame.OnInit(m_strIPForInstrument, m_uiPortForHeadFrame);
-// 	// 初始化网络端口接收缓冲区大小
-// 	m_oSocketHeadFrame.SetBufferSize(20000);
+	// 建立首包接收网络对象
+	m_oSocketHeadFrame.OnInit(m_strIPForInstrument, m_uiPortForHeadFrame);
+	// 初始化网络端口接收缓冲区大小
+	m_oSocketHeadFrame.SetBufferSize(m_uiInstrumentCountAll);
 // 
 // 	// 建立尾包接收网络对象
 // 	m_oSocketTailFrame.OnInit(m_strIPForInstrument, m_uiPortForTailFrame, m_uiPortForTailFrameSend);
@@ -209,7 +209,7 @@ bool CSiteManage::OnInit()
 	m_oThreadProcHeartBeat.m_pSiteData = &m_oSiteData;	// 现场数据对象
 	m_oThreadProcHeartBeat.m_pSocketHeartBeatFrame = &m_oSocketHeartBeatFrame;	// 心跳帧发送网络对象
 	m_oThreadProcHeartBeat.OnInit();	// 初始化
-	m_oThreadProcHeartBeat.CreateThread(CREATE_SUSPENDED, 0, 0);	// 生成处理线程
+	m_oThreadProcHeartBeat.CreateThread();	// 生成处理线程
 // 
 // 	// 建立仪器IP地址设置对象
 // 	m_oThreadProcIPSet.m_pSiteData = &m_oSiteData;	// 现场数据对象
@@ -217,13 +217,13 @@ bool CSiteManage::OnInit()
 // 	m_oThreadProcIPSet.OnInit();	// 初始化
 // 	m_oThreadProcIPSet.CreateThread();	// 生成处理线程
 // 
-// 	// 建立首包处理对象
-// 	m_oThreadProcHeadFrame.m_pLogicData = &m_oLogicData;	// 测线设置数据对象
-// 	m_oThreadProcHeadFrame.m_pSiteData = &m_oSiteData;	// 现场数据对象
-// 	m_oThreadProcHeadFrame.m_pSocketHeadFrame = &m_oSocketHeadFrame;	// 首包接收网络对象
-// 	m_oThreadProcHeadFrame.m_pThreadProcIPSet = &m_oThreadProcIPSet;	// 仪器IP地址设置对象	
-// 	m_oThreadProcHeadFrame.OnInit();	// 初始化
-// 	m_oThreadProcHeadFrame.CreateThread();	// 生成处理线程
+	// 建立首包处理对象
+//	m_oThreadProcHeadFrame.m_pLogicData = &m_oLogicData;	// 测线设置数据对象
+	m_oThreadProcHeadFrame.m_pSiteData = &m_oSiteData;	// 现场数据对象
+	m_oThreadProcHeadFrame.m_pSocketHeadFrame = &m_oSocketHeadFrame;	// 首包接收网络对象
+//	m_oThreadProcHeadFrame.m_pThreadProcIPSet = &m_oThreadProcIPSet;	// 仪器IP地址设置对象	
+	m_oThreadProcHeadFrame.OnInit();	// 初始化
+	m_oThreadProcHeadFrame.CreateThread();	// 生成处理线程
 // 
 // 	// 建立时延处理线程对象
 // 	m_oThreadProcTimeDelay.m_pSiteData = &m_oSiteData;	// 现场数据对象
@@ -297,7 +297,7 @@ bool CSiteManage::OnInit()
  
  	m_oNetProcInterface.m_pThreadProcHeartBeat = &m_oThreadProcHeartBeat;	// 心跳处理对象指针	
 // 	m_oNetProcInterface.m_pThreadProcIPSet = &m_oThreadProcIPSet;	// 仪器IP地址设置对象指针	
-// 	m_oNetProcInterface.m_pThreadProcHeadFrame = &m_oThreadProcHeadFrame;	// 首包处理对象指针	
+ 	m_oNetProcInterface.m_pThreadProcHeadFrame = &m_oThreadProcHeadFrame;	// 首包处理对象指针	
 // 	m_oNetProcInterface.m_pThreadProcTimeDelay = &m_oThreadProcTimeDelay;	// 时延处理线程对象指针指针	
 // 	m_oNetProcInterface.m_pThreadProcTailFrame = &m_oThreadProcTailFrame;	// 尾包处理对象指针	
 // 	m_oNetProcInterface.m_pThreadProcIPDistribute = &m_oThreadProcIPDistribute;	// 仪器IP地址分配对象指针	
@@ -335,8 +335,8 @@ bool CSiteManage::OnClose()
 	m_oThreadProcHeartBeat.OnClose();
 // 	// 关闭仪器IP地址设置对象
 // 	m_oThreadProcIPSet.OnClose();
-// 	// 关闭首包处理对象	
-// 	m_oThreadProcHeadFrame.OnClose();
+	// 关闭首包处理对象	
+	m_oThreadProcHeadFrame.OnClose();
 // 	// 关闭时延处理线程对象
 // 	m_oThreadProcTimeDelay.OnClose();
 // 	// 关闭尾包处理对象
@@ -357,7 +357,7 @@ bool CSiteManage::OnClose()
 	while(true)	// 等待线程关闭
 	{
 		if((true == m_oSiteData.m_bProcHeartBeatClose)	// 心跳处理线程关闭
-// 			&& (true == m_oSiteData.m_bProcHeadFrameClose)	// 首包处理线程关闭
+ 			&& (true == m_oSiteData.m_bProcHeadFrameClose)	// 首包处理线程关闭
 // 			&& (true == m_oSiteData.m_bProcTailFrameClose)	// 尾包处理线程关闭
 // 			&& (true == m_oSiteData.m_bProcMonitorRoutClose)	// 路由监视线程关闭
 // 			&& (true == m_oSiteData.m_bProcIPDistributeClose)	// 仪器IP地址分配线程关闭
@@ -413,10 +413,10 @@ bool CSiteManage::OnClose()
 // 				::TerminateThread(m_oThreadProcTimeDelay.m_hThread, 0x0); 
 // 				m_oThreadProcTimeDelay.m_hThread = NULL;
 // 			}
-// 			if(m_oThreadProcHeadFrame.m_hThread){	
-// 				::TerminateThread(m_oThreadProcHeadFrame.m_hThread, 0x0); 
-// 				m_oThreadProcHeadFrame.m_hThread = NULL;
-// 			}
+			if(m_oThreadProcHeadFrame.m_hThread){	
+				::TerminateThread(m_oThreadProcHeadFrame.m_hThread, 0); 
+				m_oThreadProcHeadFrame.m_hThread = NULL;
+			}
 // 
 // 			if(m_oThreadProcIPSet.m_hThread){	
 // 				::TerminateThread(m_oThreadProcIPSet.m_hThread, 0x0); 

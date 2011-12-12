@@ -78,6 +78,24 @@
     <ClInclude Include="FrameInterface.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="FrameHead.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketHeadFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadProcHeadFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Instrument.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="InstrumentList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MatrixServer.cpp">
@@ -111,6 +129,24 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="FrameInterface.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameHead.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketHeadFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadProcHeadFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Instrument.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="InstrumentList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

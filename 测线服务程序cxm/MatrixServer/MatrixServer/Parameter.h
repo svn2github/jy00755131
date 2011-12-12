@@ -3,6 +3,8 @@
 #define OneSleepTime						50
 // 心跳线程发送心跳帧延时次数
 #define HertBeatSleepTimes					5
+// 首包线程接收首包延时次数
+#define HeadFrameSleepTimes					1
 
 // 等待所有线程关闭的延时次数
 #define CloseAllThreadSleepTimes			4
@@ -19,6 +21,24 @@
 // 服务器和客户端之间信息交互网络帧缓冲区大小
 #define NetInterfaceBufSize					65536
 
+// 仪器类型-交叉站
+#define InstrumentTypeLAUX					1
+// 仪器类型-电源站
+#define InstrumentTypeLAUL					2
+// 仪器类型-采集站
+#define InstrumentTypeFDU					3
+// 仪器类型-LCI
+#define InstrumentTypeLCI					4
+// 方向上方
+#define DirectionTop						1
+// 方向上方
+#define DirectionDown						2
+// 方向上方
+#define DirectionLeft						3
+// 方向上方
+#define DirectionRight						4
+// 方向正中
+#define DirectionCenter						0
 
 //________________服务器与客户端命令字设置_________________
 // 命令1-Field ON/OFF
@@ -51,7 +71,12 @@
 #define FrameTailLow						0x6F
 // 帧类型 0xFF-回令帧
 #define FrameTypeReturnCmd					0xFF
-
+// 帧类型 0x01-命令帧，不要求回令帧
+#define FrameTypeNoReturnCmd				0x01
+// 生成现场数据输出通知命令
+#define CmdGenerateOutputData				0x64
+// 命令 101-Server Field ON/OFF
+#define CmdServerFieldStatus				0x65
 
 //_________________服务器与设备命令字设置__________________
 // 发送设置命令

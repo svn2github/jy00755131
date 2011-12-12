@@ -7,7 +7,7 @@
 #include "FrameInterface.h"
 
 #include "ThreadProcHeartBeat.h"
-// #include "threadprocheadframe.h"
+#include "ThreadProcHeadFrame.h"
 // #include "threadproctailframe.h"
 // #include "threadprocipset.h"
 // #include "ThreadProcTimeDelay.h"
@@ -48,8 +48,8 @@ public: //属性
 	CThreadProcHeartBeat* m_pThreadProcHeartBeat;
 // 	/** 仪器IP地址设置对象指针*/
 // 	CThreadProcIPSet* m_pThreadProcIPSet;
-// 	/** 首包处理对象指针*/
-// 	CThreadProcHeadFrame* m_pThreadProcHeadFrame;
+	/** 首包处理对象指针*/
+	CThreadProcHeadFrame* m_pThreadProcHeadFrame;
 // 	/** 时延处理线程对象指针指针*/
 // 	CThreadProcTimeDelay* m_pThreadProcTimeDelay;
 // 	/** 尾包处理对象指针*/

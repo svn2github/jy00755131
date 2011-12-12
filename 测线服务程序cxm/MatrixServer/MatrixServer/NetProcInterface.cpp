@@ -140,7 +140,7 @@ void CNetProcInterface::ProcInterFaceCommandForField(byte byFieldOperation)
 			return;
 		}
 		m_pThreadProcHeartBeat->OnStop();	// 停止心跳处理对象
-// 		m_pThreadProcHeadFrame->OnStop();	// 停止首包处理对象
+ 		m_pThreadProcHeadFrame->OnStop();	// 停止首包处理对象
 // 		m_pThreadProcTailFrame->OnStop();	// 停止尾包处理对象
 // 		m_pThreadProcMonitorRout->OnStop();	// 停止路由监视对象
 // 		m_pThreadProcIPDistribute->OnStop();	// 停止仪器IP地址分配对象
@@ -154,7 +154,7 @@ void CNetProcInterface::ProcInterFaceCommandForField(byte byFieldOperation)
 		while(true)	// 等待线程停止
 		{
 			if((true == m_pSiteData->m_bProcHeartBeatStop)	// 心跳处理线程停止
-// 				&& (true == m_pSiteData->m_bProcHeadFrameStop)	// 首包处理线程停止
+ 				&& (true == m_pSiteData->m_bProcHeadFrameStop)	// 首包处理线程停止
 // 				&& (true == m_pSiteData->m_bProcTailFrameStop)	// 尾包处理线程停止
 // 				&& (true == m_pSiteData->m_bProcMonitorRoutStop)	// 路由监视线程停止
 // 				&& (true == m_pSiteData->m_bProcIPDistributeStop)	// 仪器IP地址分配线程停止
@@ -189,7 +189,7 @@ void CNetProcInterface::ProcInterFaceCommandForField(byte byFieldOperation)
 			return;
 		}		
 		m_pThreadProcHeartBeat->OnWork();	// 启动心跳处理对象
-// 		m_pThreadProcHeadFrame->OnWork();	// 启动首包处理对象
+ 		m_pThreadProcHeadFrame->OnWork();	// 启动首包处理对象
 // 		m_pThreadProcTailFrame->OnWork();	// 启动尾包处理对象
 // 		m_pThreadProcMonitorRout->OnWork();	// 启动路由监视对象
 // 		m_pThreadProcIPDistribute->OnWork();	// 启动仪器IP地址分配对象

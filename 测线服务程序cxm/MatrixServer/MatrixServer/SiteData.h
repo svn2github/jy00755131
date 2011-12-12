@@ -1,5 +1,8 @@
 #pragma once
-// #include "instrumentlist.h"
+ #include "InstrumentList.h"
+#include <hash_map>
+using stdext::hash_map;
+
 // #include "indexinstrumentmap.h"
 // #include "routlist.h"
 // #include "indexroutmap.h"
@@ -22,8 +25,8 @@ public: //属性
 // 	CInstrument* m_pFirstMainCross;
 	/** 仪器队列仪器总数*/
 	unsigned int m_uiInstrumentCountAll;
-// 	/** 仪器队列*/
-// 	CInstrumentList m_oInstrumentList;
+	/** 仪器队列*/
+	CInstrumentList m_oInstrumentList;
 // 	/** SN仪器索引表*/
 // 	CIndexInstrumentMap m_oSNInstrumentMap;
 // 	/** IP地址仪器索引表*/
@@ -168,20 +171,20 @@ public: //方法
 	// 关闭
 	void OnClose();
 
-// 	// 仪器SN号是否已加入SN索引表
-// 	BOOL IfSNExistInSNMap(unsigned int uiSN);
-// 	// 由仪器SN索引表得到一个仪器
-// 	BOOL GetInstrumentFromSNMapBySN(unsigned int uiIndex, CInstrument* &pInstrument);
-// 	// 仪器IP地址是否已加入IP地址索引表
-// 	BOOL IfIPExistInIPMap(unsigned int uiSN);
-// 	// 由仪器IP地址索引表得到一个仪器
-// 	BOOL GetInstrumentFromIPMapByIP(unsigned int uiIndex, CInstrument* &pInstrument);
+	// 仪器SN号是否已加入SN索引表
+	BOOL IfSNExistInSNMap(unsigned int uiSN);
+	// 由仪器SN索引表得到一个仪器
+	BOOL GetInstrumentFromSNMapBySN(unsigned int uiIndex, CInstrument* &pInstrument);
+	// 仪器IP地址是否已加入IP地址索引表
+	BOOL IfIPExistInIPMap(unsigned int uiIP);
+	// 由仪器IP地址索引表得到一个仪器
+	BOOL GetInstrumentFromIPMapByIP(unsigned int uiIndex, CInstrument* &pInstrument);
 // 	// 更新路由对象的路由时刻
 // 	void UpdateRoutTime(unsigned int uiRoutIP);
-// 	// 得到一个空闲仪器
-// 	CInstrument* GetFreeInstrument();
-// 	// 得到连接的下一个仪器
-// 	CInstrument* GetNextInstrument(CInstrument* pInstrument, unsigned int uiRoutDirection);
+	// 得到一个空闲仪器
+	CInstrument* GetFreeInstrument();
+	// 得到连接的下一个仪器
+	CInstrument* GetNextInstrument(CInstrument* pInstrument, unsigned int uiRoutDirection);
 // 	// 删除仪器串
 // 	void DeleteInstrumentLink(CInstrument* pInstrument, unsigned int uiDirection);
 // 	// 删除仪器，递归
@@ -204,13 +207,13 @@ public: //方法
 // 
 // 	// 得到采集站
 // 	CInstrument* GetInstrumentCollect(CInstrument* pInstrument, unsigned int uiRoutDirection);
-// 
-// 	// 更新上次现场数据变化时刻
-// 	void UpdateSiteDataChangedTime();
-// 	// 判断现场数据是否在规定时间内无变化
-// 	bool JudgeSiteDataChangedTime();
-// 	// 重置上次现场数据变化时刻
-// 	void ResetSiteDataChangedTime();
+
+	// 更新上次现场数据变化时刻
+	void UpdateSiteDataChangedTime();
+	// 判断现场数据是否在规定时间内无变化
+	bool JudgeSiteDataChangedTime();
+	// 重置上次现场数据变化时刻
+	void ResetSiteDataChangedTime();
 // 
 // 	// 得到路由对象
 // 	CRout* GetRout(CInstrument* pInstrument, unsigned int uiRoutDirection);
