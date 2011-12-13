@@ -110,6 +110,8 @@ public: //属性
 	/** 16bits 交叉线方下面尾包接收时刻*/
 	unsigned short m_usCrossDownReceiveTime;	
 
+	// 采集站或电源站的广播端口
+	unsigned int m_uiBroadCastPort;
 // 	/** 测线*/
 // 	unsigned int m_uiLineNb;
 // 	/** 测点*/
@@ -154,6 +156,8 @@ public: //属性
 // 	unsigned int m_uiMarkerLogoTime;
 // 	/** 标记点标记时间*/
 // 	unsigned int m_uiMarkerTime;
+	// 首包位置稳定次数
+	int m_iHeadFrameStableNum;
 
 	/** 第几次设置IP地址*/
 	int m_iIPSetCount;

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "SiteData.h"
-
+#include "Parameter.h"
 CSiteData::CSiteData()
 {
 
@@ -18,16 +18,18 @@ void CSiteData::OnInit()
 {
 // 	// 首个主交叉站指针
 // 	m_pFirstMainCross = NULL;
-// 	// 仪器队列仪器总数
-// 	m_oInstrumentList.m_uiCountAll = m_uiInstrumentCountAll;
-// 	// 初始化仪器队列
-// 	m_oInstrumentList.OnInit();
+ 	// 仪器队列仪器总数
+ 	m_oInstrumentList.m_uiCountAll = m_uiInstrumentCountAll;
+	// 初始化仪器队列
+	m_oInstrumentList.OnInit();
 // 	// 初始化SN仪器索引表
 // 	m_oSNInstrumentMap.OnInit();
 // 	// 初始化IP地址仪器索引表
 // 	m_oIPInstrumentMap.OnInit();
-// 	// 初始化路由队列
-// 	m_oRoutList.OnInit();
+	// 路由队列路由总数
+	m_oRoutList.m_uiCountAll = m_uiInstrumentCountAll;
+	// 初始化路由队列
+	m_oRoutList.OnInit();
 // 	// 初始化路由地址路由索引表
 // 	m_oRoutIPRoutMap.OnInit();
 // 	// IP地址队列临时IP地址总数
@@ -126,14 +128,14 @@ void CSiteData::OnReset()
 {
 // 	// 首个主交叉站指针
 // 	m_pFirstMainCross = NULL;
-// 	// 重置仪器队列
-// 	m_oInstrumentList.OnReset();
+	// 重置仪器队列
+	m_oInstrumentList.OnReset();
 // 	// 重置SN仪器索引表
 // 	m_oSNInstrumentMap.OnReset();
 // 	// 重置IP地址仪器索引表
 // 	m_oIPInstrumentMap.OnReset();
-// 	// 重置路由队列
-// 	m_oRoutList.OnReset();
+	// 重置路由队列
+	m_oRoutList.OnReset();
 // 	// 重置路由地址路由索引表
 // 	m_oRoutIPRoutMap.OnReset();
 // 	// 重置IP地址队列
@@ -200,75 +202,75 @@ void CSiteData::OnClose()
 // 	m_pFirstMainCross = NULL;
 	// 关闭仪器队列
 	m_oInstrumentList.OnClose();
-// 	// 关闭路由队列
-// 	m_oRoutList.OnClose();
+	// 关闭路由队列
+	m_oRoutList.OnClose();
 // 	// 关闭路由地址路由索引表
 // 	m_oRoutIPRoutMap.OnClose();
 // 	// 关闭IP地址队列
 // 	m_oIPList.OnClose();
 }
 
-/**
-* 仪器SN号是否已加入SN索引表
-* @param unsigned int uiSN 仪器SN
-* @return BOOL TRUE：是；FALSE：否
-*/
-BOOL CSiteData::IfSNExistInSNMap(unsigned int uiSN)
-{
-	return m_oInstrumentList.IfIndexExistInSNMap(uiSN);
-
-}
-
-/**
-* 由仪器SN索引表得到一个仪器
-* @param unsigned int uiIndex 仪器SN号
-* @param CInstrument* &pInstrument 仪器指针，引用方式调用
-* @return BOOL TRUE：成功；FALSE：失败
-*/
-BOOL CSiteData::GetInstrumentFromSNMapBySN(unsigned int uiIndex, CInstrument* &pInstrument)
-{
-	return m_oInstrumentList.GetInstrumentFromSNMap(uiIndex, pInstrument);
-}
-
-/**
-* 仪器IP地址是否已加入IP地址索引表
-* @param unsigned int uiIP 仪器IP地址
-* @return BOOL TRUE：是；FALSE：否
-*/
-BOOL CSiteData::IfIPExistInIPMap(unsigned int uiIP)
-{
-	return m_oInstrumentList.IfIndexExistInIPMap(uiIP);
-}
-
-/**
-* 由仪器IP地址索引表得到一个仪器
-* @param unsigned int uiIndex 仪器IP地址
-* @param CInstrument* &pInstrument 仪器指针，引用方式调用
-* @return BOOL TRUE：成功；FALSE：失败
-*/
-BOOL CSiteData::GetInstrumentFromIPMapByIP(unsigned int uiIndex, CInstrument* &pInstrument)
-{
-	return m_oInstrumentList.GetInstrumentFromIPMap(uiIndex, pInstrument);
-}
-
 // /**
-// * 更新路由对象的路由时刻
-// * @param unsigned int uiRoutIP 路由IP地址
-// * @return void
+// * 仪器SN号是否已加入SN索引表
+// * @param unsigned int uiSN 仪器SN
+// * @return BOOL TRUE：是；FALSE：否
 // */
-// void CSiteData::UpdateRoutTime(unsigned int uiRoutIP)
+// BOOL CSiteData::IfSNExistInSNMap(unsigned int uiSN)
 // {
+// 	return m_oInstrumentList.IfIndexExistInSNMap(uiSN);
+// 
+// }
+// 
+// /**
+// * 由仪器SN索引表得到一个仪器
+// * @param unsigned int uiIndex 仪器SN号
+// * @param CInstrument* &pInstrument 仪器指针，引用方式调用
+// * @return BOOL TRUE：成功；FALSE：失败
+// */
+// BOOL CSiteData::GetInstrumentFromSNMapBySN(unsigned int uiIndex, CInstrument* &pInstrument)
+// {
+// 	return m_oInstrumentList.GetInstrumentFromSNMap(uiIndex, pInstrument);
+// }
+// 
+// /**
+// * 仪器IP地址是否已加入IP地址索引表
+// * @param unsigned int uiIP 仪器IP地址
+// * @return BOOL TRUE：是；FALSE：否
+// */
+// BOOL CSiteData::IfIPExistInIPMap(unsigned int uiIP)
+// {
+// 	return m_oInstrumentList.IfIndexExistInIPMap(uiIP);
+// }
+// 
+// /**
+// * 由仪器IP地址索引表得到一个仪器
+// * @param unsigned int uiIndex 仪器IP地址
+// * @param CInstrument* &pInstrument 仪器指针，引用方式调用
+// * @return BOOL TRUE：成功；FALSE：失败
+// */
+// BOOL CSiteData::GetInstrumentFromIPMapByIP(unsigned int uiIndex, CInstrument* &pInstrument)
+// {
+// 	return m_oInstrumentList.GetInstrumentFromIPMap(uiIndex, pInstrument);
+// }
+
+/**
+* 更新路由对象的路由时刻
+* @param unsigned int uiRoutIP 路由IP地址
+* @return void
+*/
+void CSiteData::UpdateRoutTime(unsigned int uiRoutIP)
+{
 // 	if(0 == uiRoutIP)	// 没有路由地址
 // 	{	
 // 		return;
 // 	}
-// 
-// 	CRout* pRout = NULL;
-// 	if(TRUE == m_oRoutIPRoutMap.GetRout(uiRoutIP, pRout))
-// 	{
-// 		pRout->UpdateRoutTime();
-// 	}
-// }
+
+	CRout* pRout = NULL;
+	if(TRUE == m_oRoutList.GetRout(uiRoutIP, pRout))
+	{
+		pRout->UpdateRoutTime();
+	}
+}
 
 /**
 * 得到一个空闲仪器
@@ -296,7 +298,158 @@ CInstrument* CSiteData::GetNextInstrument(CInstrument* pInstrument, unsigned int
 
 	return pInstrumentNext;
 }
+// 仪器位置按照首包时刻排序
+void CSiteData::InstrumentLocationSort(CInstrument* pInstrument, CRout* pRout, unsigned int uiRoutDirection)
+{
+	bool bLocation = false;
+	bool bStable = true;
+	CInstrument* pInstrumentNext = NULL;
+	CInstrument* pInstrumentLeft = NULL;
+	CInstrument* pInstrumentRight = NULL;
 
+	// 该路由方向尾仪器为空
+	if (pRout->m_pTail == NULL)
+	{
+		pRout->m_pTail = pInstrument;
+		if (uiRoutDirection == DirectionLeft)
+		{
+			pRout->m_pHead->m_pInstrumentLeft = pInstrument;
+			pInstrument->m_pInstrumentRight = pRout->m_pHead;
+		}
+		else if (uiRoutDirection == DirectionRight)
+		{
+			pRout->m_pHead->m_pInstrumentRight = pInstrument;
+			pInstrument->m_pInstrumentLeft = pRout->m_pHead;
+		}
+		pInstrument->m_iHeadFrameStableNum++;
+	}
+	else
+	{
+		// 该路由方向尾仪器首包时刻小于该仪器的首包时刻
+		if (pRout->m_pTail->m_uiTimeHeadFrame < pInstrument->m_uiTimeHeadFrame)
+		{
+			if (uiRoutDirection == DirectionLeft)
+			{
+				pRout->m_pTail->m_pInstrumentLeft = pInstrument;
+				pInstrument->m_pInstrumentRight = pRout->m_pTail;
+			}
+			else if (uiRoutDirection == DirectionRight)
+			{
+				pRout->m_pTail->m_pInstrumentRight = pInstrument;
+				pInstrument->m_pInstrumentLeft = pRout->m_pTail;
+			}
+			pRout->m_pTail = pInstrument;
+			pInstrument->m_iHeadFrameStableNum++;
+		} 
+		// 仪器位于路由链中
+		else
+		{
+			pInstrumentNext = pRout->m_pHead;
+			while(pInstrumentNext != NULL)
+			{
+				if (pInstrumentNext->m_uiTimeHeadFrame < pInstrument->m_uiTimeHeadFrame)
+				{
+					if (uiRoutDirection == DirectionLeft)
+					{
+						pInstrumentRight = pInstrumentNext;
+					}
+					else if (uiRoutDirection == DirectionRight)
+					{
+						pInstrumentLeft = pInstrumentNext;
+					}
+				}
+				else
+				{
+					// 找到路由表第一个首包时刻大于等于仪器首包时刻的仪器
+					if (bLocation == false)
+					{
+						bLocation = true;
+						if (uiRoutDirection == DirectionLeft)
+						{
+							pInstrumentLeft = pInstrumentNext;
+							if (pInstrumentLeft == pInstrument)
+							{
+								pInstrument->m_iHeadFrameStableNum++;
+							}
+						}
+						else if (uiRoutDirection == DirectionRight)
+						{
+							pInstrumentRight = pInstrumentNext;
+							if (pInstrumentRight == pInstrument)
+							{
+								pInstrument->m_iHeadFrameStableNum++;
+							}
+						}
+						// 在路由表中两个仪器中间插入仪器
+						else
+						{
+							pInstrumentRight->m_pInstrumentLeft = pInstrument;
+							pInstrument->m_pInstrumentRight = pInstrumentRight;
+							pInstrumentLeft->m_pInstrumentRight = pInstrument;
+							pInstrument->m_pInstrumentLeft = pInstrumentLeft;
+							if (uiRoutDirection == DirectionLeft)
+							{
+								pInstrumentLeft->m_iHeadFrameStableNum = 0;
+							}
+							else if (uiRoutDirection == DirectionRight)
+							{
+								pInstrumentRight->m_iHeadFrameStableNum = 0;
+							}
+							bStable = false;	
+						}
+					}
+					else
+					{
+						if (bStable == false)
+						{
+							pInstrumentNext->m_iHeadFrameStableNum = 0;
+						}
+					}
+				}
+				pInstrumentNext = GetNextInstrument(pInstrumentNext, uiRoutDirection);
+			}
+		}
+	}
+}
+// 设置仪器的位置
+void CSiteData::SetInstrumentLocation(CInstrument* pInstrument)
+{
+	// 在路由索引表中找到路由头仪器
+	// 如果是LCI及交叉线方向的交叉站
+	if ((pInstrument->m_uiRoutDirection == DirectionCenter)
+		|| (pInstrument->m_uiRoutDirection == DirectionTop)
+		|| (pInstrument->m_uiRoutDirection == DirectionDown))
+	{
+		pInstrument->m_iHeadFrameStableNum++;
+	}
+	else
+	{
+		CRout* pRout = NULL;
+		if (TRUE == m_oRoutList.GetRout(pInstrument->m_uiRoutIP, pRout))
+		{
+			// 大线左方
+			if (pInstrument->m_uiRoutDirection == DirectionLeft)
+			{
+				InstrumentLocationSort(pInstrument, pRout, DirectionLeft);
+			}
+			// 大线右方
+			else
+			{
+				InstrumentLocationSort(pInstrument, pRout, DirectionRight);
+			}
+		}
+		else
+		{
+
+		}
+	}
+	// 如果仪器在其路由方向上位置稳定次数超过设定次数
+	// 则将该仪器加入IP地址设置队列
+	if (pInstrument->m_iHeadFrameStableNum >= HeadFrameStableNum)
+	{
+		m_oInstrumentList.AddInstrumentToIPSetMap(pInstrument->m_uiSN, pInstrument);
+	}
+}
 // /**
 // * 删除仪器串，包括仪器本身；删除前设置删除来源仪器的连接指针
 // * @param CInstrument* pInstrument 仪器指针

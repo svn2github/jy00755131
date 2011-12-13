@@ -90,8 +90,8 @@ public: //方法
 // 	void AddCollectLeft(CInstrument* pInstrument);
 // 	// 增加采集站测线方向，右边
 // 	void AddCollectRight(CInstrument* pInstrument);
-// 	// 设置交叉站某个方向的路由
-// 	void SetCrossRout(CInstrument* pInstrument, unsigned int uiRoutDirection);
+	// 设置交叉站某个方向的路由
+	void SetCrossRout(CInstrument* pInstrument, unsigned int uiRoutDirection);
 // 	// 增加一个需要设置IP地址的仪器
 // 	void AddInstrumentForIPSet(CInstrument* pInstrument);
 // 	// 增加一个需要设置IP地址的仪器

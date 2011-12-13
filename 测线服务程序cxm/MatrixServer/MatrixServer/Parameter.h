@@ -21,6 +21,10 @@
 // 服务器和客户端之间信息交互网络帧缓冲区大小
 #define NetInterfaceBufSize					65536
 
+// 首包计数
+#define HeadFrameStableNum					4
+// IP地址重设次数
+#define IPAddrResetTimes					3
 // 仪器类型-交叉站
 #define InstrumentTypeLAUX					1
 // 仪器类型-电源站

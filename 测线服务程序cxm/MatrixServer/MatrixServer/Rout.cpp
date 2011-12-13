@@ -17,8 +17,10 @@ CRout::~CRout()
 */
 void CRout::OnReset()
 {
-// 	// 仪器是否使用中
-// 	m_bInUsed = false;
+	// 在路由数组中的位置
+	m_uiIndex = 0;
+	// 仪器是否使用中
+	m_bInUsed = false;
 
 	// 路由方向 1-上；2-下；3-左；4右
 	m_uiRoutDirection = 0;

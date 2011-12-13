@@ -96,6 +96,9 @@
     <ClInclude Include="Rout.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="RoutList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MatrixServer.cpp">
@@ -147,6 +150,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RoutList.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

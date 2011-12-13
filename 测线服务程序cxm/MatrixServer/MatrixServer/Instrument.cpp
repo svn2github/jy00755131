@@ -98,6 +98,7 @@ void CInstrument::OnReset()
 	m_usCrossTopReceiveTime = 0;	// 16bits 交叉线方向上面尾包接收时刻
 	m_usCrossDownReceiveTime = 0;	// 16bits 交叉线方下面尾包接收时刻
 
+	m_uiBroadCastPort = 0;			// 采集站或电源站的广播端口
 // 	// 测线
 // 	m_uiLineNb = 0;
 // 	// 测点
@@ -143,6 +144,8 @@ void CInstrument::OnReset()
 // 	// 标记点标记时间
 // 	m_uiMarkerTime = 0;
 
+	// 首包位置稳定次数
+	m_iHeadFrameStableNum = 0;
 	// 第几次设置IP地址
 	m_iIPSetCount = 0;
 	// IP地址设置是否成功

@@ -1,5 +1,6 @@
 #pragma once
- #include "InstrumentList.h"
+#include "InstrumentList.h"
+#include "RoutList.h"
 #include <hash_map>
 using stdext::hash_map;
 
@@ -31,8 +32,8 @@ public: //属性
 // 	CIndexInstrumentMap m_oSNInstrumentMap;
 // 	/** IP地址仪器索引表*/
 // 	CIndexInstrumentMap m_oIPInstrumentMap;
-// 	/** 路由队列*/
-// 	CRoutList m_oRoutList;
+	/** 路由队列*/
+	CRoutList m_oRoutList;
 // 	/** 路由地址路由索引表*/
 // 	CIndexRoutMap m_oRoutIPRoutMap;
 // 	/** IP地址队列临时IP地址总数*/
@@ -171,20 +172,24 @@ public: //方法
 	// 关闭
 	void OnClose();
 
-	// 仪器SN号是否已加入SN索引表
-	BOOL IfSNExistInSNMap(unsigned int uiSN);
-	// 由仪器SN索引表得到一个仪器
-	BOOL GetInstrumentFromSNMapBySN(unsigned int uiIndex, CInstrument* &pInstrument);
-	// 仪器IP地址是否已加入IP地址索引表
-	BOOL IfIPExistInIPMap(unsigned int uiIP);
-	// 由仪器IP地址索引表得到一个仪器
-	BOOL GetInstrumentFromIPMapByIP(unsigned int uiIndex, CInstrument* &pInstrument);
-// 	// 更新路由对象的路由时刻
-// 	void UpdateRoutTime(unsigned int uiRoutIP);
+// 	// 仪器SN号是否已加入SN索引表
+// 	BOOL IfSNExistInSNMap(unsigned int uiSN);
+// 	// 由仪器SN索引表得到一个仪器
+// 	BOOL GetInstrumentFromSNMapBySN(unsigned int uiIndex, CInstrument* &pInstrument);
+// 	// 仪器IP地址是否已加入IP地址索引表
+// 	BOOL IfIPExistInIPMap(unsigned int uiIP);
+// 	// 由仪器IP地址索引表得到一个仪器
+// 	BOOL GetInstrumentFromIPMapByIP(unsigned int uiIndex, CInstrument* &pInstrument);
+	// 更新路由对象的路由时刻
+	void UpdateRoutTime(unsigned int uiRoutIP);
 	// 得到一个空闲仪器
 	CInstrument* GetFreeInstrument();
 	// 得到连接的下一个仪器
 	CInstrument* GetNextInstrument(CInstrument* pInstrument, unsigned int uiRoutDirection);
+	// 设置仪器的位置
+	void SetInstrumentLocation(CInstrument* pInstrument);
+	// 仪器位置按照首包时刻排序
+	void InstrumentLocationSort(CInstrument* pInstrument, CRout* pRout, unsigned int uiRoutDirection);
 // 	// 删除仪器串
 // 	void DeleteInstrumentLink(CInstrument* pInstrument, unsigned int uiDirection);
 // 	// 删除仪器，递归

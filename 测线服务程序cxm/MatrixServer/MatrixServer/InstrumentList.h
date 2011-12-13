@@ -21,7 +21,9 @@ public: //属性
 	/** 仪器数组指针，为现场数据输出准备*/
 	CInstrument* m_pArrayInstrumentOutput;
 	/** 空闲仪器队列*/
-	CList<CInstrument*, CInstrument*> m_olsInstrumentFree;
+	list<CInstrument*> m_olsInstrumentFree;
+	/** 设置IP地址的仪器队列*/
+	hash_map<unsigned int, CInstrument*> m_oIPSetMap;
 	// 仪器SN索引表
 	hash_map<unsigned int, CInstrument*> m_oSNInstrumentMap;
 	// 仪器IP地址索引表
@@ -42,6 +44,8 @@ public: //方法
 	CInstrument* GetFreeInstrument();
 	// 增加一个空闲仪器
 	void AddFreeInstrument(CInstrument* pInstrument);
+	// 增加一个IP地址设置仪器
+	void AddInstrumentToIPSetMap(unsigned int uiIndex, CInstrument* pInstrument);
 	// 复制仪器数组到输出数组
 	void CopyInstrumentArrayForOutput();
 	// 将一个仪器加入SN索引表

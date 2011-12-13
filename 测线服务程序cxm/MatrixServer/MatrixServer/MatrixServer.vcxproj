@@ -114,6 +114,7 @@
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Rout.h" />
+    <ClInclude Include="RoutList.h" />
     <ClInclude Include="SiteData.h" />
     <ClInclude Include="SiteManage.h" />
     <ClInclude Include="SocketHeadFrame.h" />
@@ -134,6 +135,7 @@
     <ClCompile Include="MatrixServerDlg.cpp" />
     <ClCompile Include="NetProcInterface.cpp" />
     <ClCompile Include="Rout.cpp" />
+    <ClCompile Include="RoutList.cpp" />
     <ClCompile Include="SiteData.cpp" />
     <ClCompile Include="SiteManage.cpp" />
     <ClCompile Include="SocketHeadFrame.cpp" />

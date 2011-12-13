@@ -12,11 +12,11 @@ public:
 	~CRout();
 
 public: //属性
-// 	/** 在路由数组中的位置*/
-// 	unsigned int m_uiIndex;
+	/** 在路由数组中的位置*/
+	unsigned int m_uiIndex;
 // 
-// 	/** 路由是否使用中*/
-// 	bool m_bInUsed;
+	/** 路由是否使用中*/
+	bool m_bInUsed;
 
 	/** 路由IP地址*/
 	unsigned int m_uiRoutIP;

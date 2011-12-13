@@ -22,6 +22,10 @@ void CInstrumentList::OnInit()
 	m_oSNInstrumentMap.clear();
 	// 清空IP地址仪器索引表
 	m_oIPInstrumentMap.clear();
+	// 清空空闲仪器队列
+	m_olsInstrumentFree.clear();
+	// 清空IP地址设置仪器索引表
+	m_oIPSetMap.clear();
 	// 生成仪器数组
 	m_pArrayInstrument = new CInstrument[m_uiCountAll];
 	// 生成仪器数组，为现场数据输出准备
@@ -35,7 +39,7 @@ void CInstrumentList::OnInit()
 		// 重置仪器
 		m_pArrayInstrument[i].OnReset();
 		// 仪器加在空闲仪器队列尾部
-		m_olsInstrumentFree.AddTail(&m_pArrayInstrument[i]);
+		m_olsInstrumentFree.push_back(&m_pArrayInstrument[i]);
 	}
 }
 
@@ -51,7 +55,9 @@ void CInstrumentList::OnClose()
 	// 清空IP地址仪器索引表
 	m_oIPInstrumentMap.clear();
 	// 清空空闲仪器队列
-	m_olsInstrumentFree.RemoveAll();
+	m_olsInstrumentFree.clear();
+	// 清空IP地址设置仪器索引表
+	m_oIPSetMap.clear();
 	// 删除仪器数组
 	delete[] m_pArrayInstrument;
 	// 删除仪器数组，为现场数据输出准备
@@ -70,7 +76,9 @@ void CInstrumentList::OnReset()
 	// 清空IP地址仪器索引表
 	m_oIPInstrumentMap.clear();
 	// 清空空闲仪器队列
-	m_olsInstrumentFree.RemoveAll();
+	m_olsInstrumentFree.clear();
+	// 清空IP地址设置仪器索引表
+	m_oIPSetMap.clear();
 	// 空闲仪器数量
 	m_uiCountFree = m_uiCountAll;
 	for(unsigned int i = 0; i < m_uiCountAll; i++)
@@ -78,9 +86,8 @@ void CInstrumentList::OnReset()
 		// 重置仪器
 		m_pArrayInstrument[i].OnReset();
 		// 仪器加在空闲仪器队列尾部
-		m_olsInstrumentFree.AddTail(&m_pArrayInstrument[i]);
+		m_olsInstrumentFree.push_back(&m_pArrayInstrument[i]);
 	}
-
 }
 
 /**
@@ -91,10 +98,13 @@ void CInstrumentList::OnReset()
 CInstrument* CInstrumentList::GetFreeInstrument()
 {
 	CInstrument* pInstrument = NULL;
-
+	list <CInstrument*>::iterator iter;
 	if(m_uiCountFree > 0)	//有空闲仪器
 	{
-		pInstrument = m_olsInstrumentFree.RemoveHead();	// 从空闲队列中得到一个仪器
+		// 从空闲队列中得到一个仪器
+		iter = m_olsInstrumentFree.begin();
+		pInstrument = *iter;
+		m_olsInstrumentFree.pop_front();	
 		pInstrument->m_bInUsed = true;	// 设置仪器为使用中
 		m_uiCountFree--;	// 空闲仪器总数减1
 	}
@@ -111,10 +121,19 @@ void CInstrumentList::AddFreeInstrument(CInstrument* pInstrument)
 	//初始化仪器
 	pInstrument->OnReset();
 	//加入空闲队列
-	m_olsInstrumentFree.AddTail(pInstrument);
+	m_olsInstrumentFree.push_back(pInstrument);
 	m_uiCountFree++;	// 空闲仪器总数加1
 }
 
+/**
+* 增加一个IP地址设置仪器
+* @param CInstrument* pInstrument 仪器指针
+* @return void
+*/
+void CInstrumentList::AddInstrumentToIPSetMap(unsigned int uiIndex, CInstrument* pInstrument)
+{
+	m_oIPSetMap.insert(hash_map<unsigned int, CInstrument*>::value_type (uiIndex, pInstrument));
+}
 /**
 * 复制仪器数组到输出数组
 * @param void
