@@ -11,8 +11,6 @@
 
 CSocketHeadFrame::CSocketHeadFrame()
 {
-	// 帧字节数
-	m_iFrameSize = 256;
 }
 
 CSocketHeadFrame::~CSocketHeadFrame()
@@ -56,15 +54,7 @@ DWORD CSocketHeadFrame::GetFrameCount()
 	// 得到网络接收缓冲区数据字节数
 	IOCtl(FIONREAD, &dwFrameCount);
 	// 得到帧数量
-	dwFrameCount = dwFrameCount / m_iFrameSize;
-/*	
-	m_oFrameCountHead++;
-	if(m_oFrameCountHead<1)
-		return dwFrameCount;
-	if(m_oFrameCountHead<10)
-		return 0;
-	else
-*/		
+	dwFrameCount = dwFrameCount / RcvFrameSize;	
 	return dwFrameCount;
 }
 
@@ -77,7 +67,7 @@ BOOL CSocketHeadFrame::SetBufferSize(int iFrameCount)
 {
 	BOOL bReturn = false;
 
-	int iOptionValue = iFrameCount * m_iFrameSize;
+	int iOptionValue = iFrameCount * RcvFrameSize;
 	int iOptionLen = sizeof(int);
 	bReturn = SetSockOpt(SO_RCVBUF, (void*)&iOptionValue, iOptionLen, SOL_SOCKET);
 
@@ -94,24 +84,11 @@ BOOL CSocketHeadFrame::GetFrameData()
 	BOOL bReturn = false;
 
 	// 得到帧数据
-	int iCount = Receive(m_oFrameHead.m_pFrameData, m_iFrameSize);
-	if(iCount == m_iFrameSize)	//帧大小正确
+	int iCount = Receive(m_oFrameHead.m_pFrameData, RcvFrameSize);
+	if(iCount == RcvFrameSize)	//帧大小正确
 	{
 		// 解析帧数据
 		bReturn = m_oFrameHead.ParseFrame();
 	}
-	return bReturn;
-}
-
-/**
-* 重发时间靠后的首包
-* @param void
-* @return BOOL TRUE：成功；FALSE：失败
-*/
-BOOL CSocketHeadFrame::SendFrameData()
-{
-	BOOL bReturn = false;
-
-	int iCount = SendTo(m_oFrameHead.m_pFrameData, 256, m_uiPortForHeadFrame, m_strIPForInstrument);
 	return bReturn;
 }

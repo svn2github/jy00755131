@@ -99,6 +99,15 @@
     <ClInclude Include="RoutList.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="FrameIPSet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketIPSetFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadProcIPSet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MatrixServer.cpp">
@@ -153,6 +162,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="RoutList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameIPSet.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketIPSetFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadProcIPSet.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

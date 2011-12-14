@@ -168,7 +168,7 @@ void CFrameInterface::MakeReplyFrame(CFrameInterface* m_pFrameInterface)
 	memcpy(&m_pFrameData[iPos], &m_pFrameInterface->m_usCommandCount, FramePacketSize2B);
 	iPos += FramePacketSize2B;
 	// 校验位
-	m_pFrameData[iPos] = SndFrameBufInit;
+	m_pFrameData[iPos] = FrameCheckSum;
 	iPos += FrameCmdSize1B;
 	// 帧尾{0x146F}
 	m_pFrameData[iPos] = FrameTailHigh;
@@ -212,7 +212,7 @@ void CFrameInterface::MakeSiteDataOutputCmdFrame()
 	memcpy(&m_pFrameData[iPos], &m_usCommandCount, FramePacketSize2B);
 	iPos += FramePacketSize2B;
 	// 校验位
-	m_pFrameData[iPos] = SndFrameBufInit;
+	m_pFrameData[iPos] = FrameCheckSum;
 	iPos += FrameCmdSize1B;
 	// 帧尾{0x146F}
 	m_pFrameData[iPos] = FrameTailHigh;
@@ -259,7 +259,7 @@ void CFrameInterface::MakeServerFieldFrame()
 	m_pFrameData[iPos] = m_byFieldOperation;
 	iPos += FrameCmdSize1B;
 	// 校验位
-	m_pFrameData[iPos] = SndFrameBufInit;
+	m_pFrameData[iPos] = FrameCheckSum;
 	iPos += FrameCmdSize1B;
 	// 帧尾{0x146F}
 	m_pFrameData[iPos] = FrameTailHigh;

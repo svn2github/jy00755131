@@ -371,6 +371,17 @@ void CSiteData::InstrumentLocationSort(CInstrument* pInstrument, CRout* pRout, u
 							{
 								pInstrument->m_iHeadFrameStableNum++;
 							}
+							// 在路由表中两个仪器中间插入仪器
+							else
+							{
+								pInstrumentRight->m_pInstrumentLeft = pInstrument;
+								pInstrument->m_pInstrumentRight = pInstrumentRight;
+								pInstrumentLeft->m_pInstrumentRight = pInstrument;
+								pInstrument->m_pInstrumentLeft = pInstrumentLeft;
+								pInstrumentLeft->m_iHeadFrameStableNum = 0;
+								pInstrument->m_iHeadFrameStableNum = 0;
+								bStable = false;	
+							}
 						}
 						else if (uiRoutDirection == DirectionRight)
 						{
@@ -379,23 +390,17 @@ void CSiteData::InstrumentLocationSort(CInstrument* pInstrument, CRout* pRout, u
 							{
 								pInstrument->m_iHeadFrameStableNum++;
 							}
-						}
-						// 在路由表中两个仪器中间插入仪器
-						else
-						{
-							pInstrumentRight->m_pInstrumentLeft = pInstrument;
-							pInstrument->m_pInstrumentRight = pInstrumentRight;
-							pInstrumentLeft->m_pInstrumentRight = pInstrument;
-							pInstrument->m_pInstrumentLeft = pInstrumentLeft;
-							if (uiRoutDirection == DirectionLeft)
+							// 在路由表中两个仪器中间插入仪器
+							else
 							{
-								pInstrumentLeft->m_iHeadFrameStableNum = 0;
-							}
-							else if (uiRoutDirection == DirectionRight)
-							{
+								pInstrumentRight->m_pInstrumentLeft = pInstrument;
+								pInstrument->m_pInstrumentRight = pInstrumentRight;
+								pInstrumentLeft->m_pInstrumentRight = pInstrument;
+								pInstrument->m_pInstrumentLeft = pInstrumentLeft;
 								pInstrumentRight->m_iHeadFrameStableNum = 0;
+								pInstrument->m_iHeadFrameStableNum = 0;
+								bStable = false;	
 							}
-							bStable = false;	
 						}
 					}
 					else
@@ -447,7 +452,10 @@ void CSiteData::SetInstrumentLocation(CInstrument* pInstrument)
 	// 则将该仪器加入IP地址设置队列
 	if (pInstrument->m_iHeadFrameStableNum >= HeadFrameStableNum)
 	{
-		m_oInstrumentList.AddInstrumentToIPSetMap(pInstrument->m_uiSN, pInstrument);
+		if (FALSE == m_oInstrumentList.IfIndexExistInIPSetMap(pInstrument->m_uiIP))
+		{
+			m_oInstrumentList.AddInstrumentToIPSetMap(pInstrument->m_uiIP, pInstrument);
+		}
 	}
 }
 // /**

@@ -5,6 +5,8 @@
 #define HertBeatSleepTimes					5
 // 首包线程接收首包延时次数
 #define HeadFrameSleepTimes					1
+// IP地址设置线程延时次数
+#define IPSetFrameSleepTimes				2
 
 // 等待所有线程关闭的延时次数
 #define CloseAllThreadSleepTimes			4
@@ -43,6 +45,12 @@
 #define DirectionRight						4
 // 方向正中
 #define DirectionCenter						0
+// IP地址设置的起始地址
+#define IPSetAddrStart								71
+// IP地址设置的间隔
+#define IPSetAddrInterval							10
+// 设置广播端口起始地址
+#define BroadcastPortStart					0x00000010
 
 //________________服务器与客户端命令字设置_________________
 // 命令1-Field ON/OFF
@@ -77,6 +85,8 @@
 #define FrameTypeReturnCmd					0xFF
 // 帧类型 0x01-命令帧，不要求回令帧
 #define FrameTypeNoReturnCmd				0x01
+// 帧校验位
+#define FrameCheckSum						0x00
 // 生成现场数据输出通知命令
 #define CmdGenerateOutputData				0x64
 // 命令 101-Server Field ON/OFF
@@ -143,6 +153,10 @@
 #define CmdADCDataSamplingRate		0x20
 // 返回路由
 #define CmdReturnRout							0x3f
+// 命令解析结束命令
+#define CmdEnd								0x00
+// IP广播地址
+#define IPBroadcastAddr						0xFFFFFFFF
 
 //___________________帧格式设置___________________
 // 帧头长度

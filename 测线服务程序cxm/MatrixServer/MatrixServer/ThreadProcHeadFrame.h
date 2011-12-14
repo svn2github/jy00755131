@@ -96,8 +96,6 @@ public: //方法
 // 	void AddInstrumentForIPSet(CInstrument* pInstrument);
 // 	// 增加一个需要设置IP地址的仪器
 // 	void AddInstrumentForIPSet(CFrameHead* pFrameHead);
-// 	//重发时间靠后的首包
-// 	void SendHeadFrame();
 };
 
 

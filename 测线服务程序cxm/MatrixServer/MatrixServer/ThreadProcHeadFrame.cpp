@@ -63,7 +63,7 @@ int CThreadProcHeadFrame::Run()
 			// 跳出循环
 			break;
 		}
-		// 休眠50毫秒
+		// 休眠50ms
 		Wait(HeadFrameSleepTimes);
 	}
 	// 首包处理线程关闭标志为真
@@ -220,17 +220,6 @@ void CThreadProcHeadFrame::ProcHeadFrame()
 	}
 }
 
-// /**
-// * 重发时间靠后的首包
-// * @note 处理流程：。
-// * @param CFrameHead* pFrameHead 首包帧指针
-// * @return void
-// */
-// void CThreadProcHeadFrame::SendHeadFrame()
-// {
-// 	m_pSocketHeadFrame->SendFrameData();
-// }
-
 /**
 * 处理单个首包帧
 * @note 处理流程：仪器SN是否在SN索引表中处理；仪器是否有路由地址处理。
@@ -263,15 +252,16 @@ void CThreadProcHeadFrame::ProcHeadFrameOne(CFrameHead* pFrameHead)
  		m_bInstrumentAdd = true;
 		// 设置新仪器的仪器类型
 		// 路由地址为0为LCI
-		if (pFrameHead->m_uiRoutIP == 0)
+		if (pInstrument->m_uiRoutIP == 0)
 		{
 			pInstrument->m_uiInstrumentType = InstrumentTypeLCI;
 			pInstrument->m_uiRoutDirection = DirectionCenter;
+			SetCrossRout(pInstrument, DirectionCenter);
 		}
 		else
 		{
 			CRout* pRout = NULL;
-			if (TRUE == m_pSiteData->m_oRoutList.GetRout(pFrameHead->m_uiRoutIP,pRout))
+			if (TRUE == m_pSiteData->m_oRoutList.GetRout(pInstrument->m_uiRoutIP,pRout))
 			{
 				pInstrument->m_uiRoutDirection = pRout->m_uiRoutDirection;
 				if (pRout->m_pHead->m_uiRoutIPTop == pInstrument->m_uiRoutIP)
@@ -289,14 +279,15 @@ void CThreadProcHeadFrame::ProcHeadFrameOne(CFrameHead* pFrameHead)
 			} 
 			else
 			{
+				// 不是LCI却又找不到路由则记录日志
 			}
-			pInstrument->m_uiInstrumentType = pFrameHead->m_uiSN & 0xff;
+			pInstrument->m_uiInstrumentType = pInstrument->m_uiSN & 0xff;
 		}
 
 		if ((pInstrument->m_uiInstrumentType == InstrumentTypeFDU)
 			|| (pInstrument->m_uiInstrumentType == InstrumentTypeLAUL))
 		{
-			pInstrument->m_uiBroadCastPort = pFrameHead->m_uiRoutIP;
+			pInstrument->m_uiBroadCastPort = BroadcastPortStart + pInstrument->m_uiRoutIP;
 		}
 		else
 		{
@@ -305,6 +296,7 @@ void CThreadProcHeadFrame::ProcHeadFrameOne(CFrameHead* pFrameHead)
 			SetCrossRout(pInstrument, DirectionLeft);
 			SetCrossRout(pInstrument, DirectionRight);
 		}
+		pInstrument->m_uiIP = IPSetAddrStart + pInstrument->m_uiIndex * IPSetAddrInterval;
 		// 新仪器加入SN索引表
 		m_pSiteData->m_oInstrumentList.AddInstrumentToSNMap(pInstrument->m_uiSN, pInstrument);
 	}
@@ -939,16 +931,26 @@ void CThreadProcHeadFrame::SetCrossRout(CInstrument* pInstrument, unsigned int u
 			pInstrument->m_uiRoutIPRight = pRout->m_uiRoutIP;
 			break;
 		}
+	case DirectionCenter:
+		{
+			break;
+		}
 	}
 
 	// 设置交叉站路由方向
 	pRout->m_uiRoutDirection = uiRoutDirection;
 	// 设置路由头
 	pRout->m_pHead = pInstrument;
-// 	pRout->m_uiSNHead = pInstrument->m_uiSN;
-// 	pRout->m_iIndexHead = pInstrument->m_uiIndex;
-	// 设置路由尾
-	pRout->m_pTail = NULL;
+	if (uiRoutDirection == DirectionCenter)
+	{
+		// 设置路由尾
+		pRout->m_pTail = pInstrument;
+	}
+	else
+	{
+		// 设置路由尾
+		pRout->m_pTail = NULL;
+	}
 	// 更新路由对象的路由时间
 	pRout->UpdateRoutTime();
 	// 路由对象加入路由索引表

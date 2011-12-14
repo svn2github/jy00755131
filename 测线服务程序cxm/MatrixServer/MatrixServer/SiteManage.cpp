@@ -152,10 +152,10 @@ bool CSiteManage::OnInit()
 // 	// 初始化网络端口接收缓冲区大小
 // 	m_oSocketTailFrame.SetBufferSize(20000);
 // 
-// 	// 建立仪器IP地址设置网络对象
-// 	m_oSocketIPSetFrame.OnInit(m_strIPForInstrument, m_uiIPForInstrument, m_uiPortForIPSet, m_strIPLCI, m_uiPortLCI);
-// 	// 初始化网络端口接收缓冲区大小
-// 	m_oSocketIPSetFrame.SetBufferSize(20000);
+	// 建立仪器IP地址设置网络对象
+	m_oSocketIPSetFrame.OnInit(m_strIPForInstrument, m_uiIPForInstrument, m_uiPortForIPSet, m_strIPLCI, m_uiPortLCI);
+	// 初始化网络端口接收缓冲区大小
+	m_oSocketIPSetFrame.SetBufferSize(m_uiInstrumentCountAll);
 // 
 // 	// 建立仪器时延设置网络对象
 // 	m_oSocketTimeSetFrame.OnInit(m_strIPForInstrument, m_uiIPForInstrument, m_uiPortForTimeSet, m_strIPLCI, m_uiPortLCI);
@@ -210,13 +210,13 @@ bool CSiteManage::OnInit()
 	m_oThreadProcHeartBeat.m_pSocketHeartBeatFrame = &m_oSocketHeartBeatFrame;	// 心跳帧发送网络对象
 	m_oThreadProcHeartBeat.OnInit();	// 初始化
 	m_oThreadProcHeartBeat.CreateThread();	// 生成处理线程
-// 
-// 	// 建立仪器IP地址设置对象
-// 	m_oThreadProcIPSet.m_pSiteData = &m_oSiteData;	// 现场数据对象
-// 	m_oThreadProcIPSet.m_pSocketIPSetFrame = &m_oSocketIPSetFrame;	// 仪器IP地址设置网络对象
-// 	m_oThreadProcIPSet.OnInit();	// 初始化
-// 	m_oThreadProcIPSet.CreateThread();	// 生成处理线程
-// 
+
+	// 建立仪器IP地址设置对象
+	m_oThreadProcIPSet.m_pSiteData = &m_oSiteData;	// 现场数据对象
+	m_oThreadProcIPSet.m_pSocketIPSetFrame = &m_oSocketIPSetFrame;	// 仪器IP地址设置网络对象
+	m_oThreadProcIPSet.OnInit();	// 初始化
+	m_oThreadProcIPSet.CreateThread();	// 生成处理线程
+
 	// 建立首包处理对象
 //	m_oThreadProcHeadFrame.m_pLogicData = &m_oLogicData;	// 测线设置数据对象
 	m_oThreadProcHeadFrame.m_pSiteData = &m_oSiteData;	// 现场数据对象
@@ -333,8 +333,8 @@ bool CSiteManage::OnClose()
 
 	// 关闭心跳处理对象
 	m_oThreadProcHeartBeat.OnClose();
-// 	// 关闭仪器IP地址设置对象
-// 	m_oThreadProcIPSet.OnClose();
+	// 关闭仪器IP地址设置对象
+	m_oThreadProcIPSet.OnClose();
 	// 关闭首包处理对象	
 	m_oThreadProcHeadFrame.OnClose();
 // 	// 关闭时延处理线程对象
@@ -361,7 +361,7 @@ bool CSiteManage::OnClose()
 // 			&& (true == m_oSiteData.m_bProcTailFrameClose)	// 尾包处理线程关闭
 // 			&& (true == m_oSiteData.m_bProcMonitorRoutClose)	// 路由监视线程关闭
 // 			&& (true == m_oSiteData.m_bProcIPDistributeClose)	// 仪器IP地址分配线程关闭
-// 			&& (true == m_oSiteData.m_bProcIPSetClose)	// 仪器IP地址设置线程关闭
+ 			&& (true == m_oSiteData.m_bProcIPSetClose)	// 仪器IP地址设置线程关闭
 // 			&& (true == m_oSiteData.m_bProcSiteDataOutputClose)	// 现场数据输出线程线程关闭
 // 			&& (true == m_oSiteData.m_bProcTimeDelayClose)	// 时延处理线程关闭
 // 			&& (true == m_oSiteData.m_bProcDeleteClose)	// 仪器删除线程关闭
@@ -417,11 +417,11 @@ bool CSiteManage::OnClose()
 				::TerminateThread(m_oThreadProcHeadFrame.m_hThread, 0); 
 				m_oThreadProcHeadFrame.m_hThread = NULL;
 			}
-// 
-// 			if(m_oThreadProcIPSet.m_hThread){	
-// 				::TerminateThread(m_oThreadProcIPSet.m_hThread, 0x0); 
-// 				m_oThreadProcIPSet.m_hThread = NULL;
-// 			}
+
+			if(m_oThreadProcIPSet.m_hThread){	
+				::TerminateThread(m_oThreadProcIPSet.m_hThread, 0x0); 
+				m_oThreadProcIPSet.m_hThread = NULL;
+			}
 
 			if(m_oThreadProcHeartBeat.m_hThread){	
 				::TerminateThread(m_oThreadProcHeartBeat.m_hThread, 0); 

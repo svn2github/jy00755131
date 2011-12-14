@@ -63,7 +63,7 @@ int CThreadProcHeartBeat::Run()
 			// 跳出循环
 			break;
 		}
-		// 休眠
+		// 休眠250ms
 		Wait(HertBeatSleepTimes);
 	}
 	// 心跳处理线程关闭标志为真

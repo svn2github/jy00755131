@@ -3,8 +3,10 @@
 #include "NetProcInterface.h"
 #include "SocketHeartBeatFrame.h"
 #include "SocketHeadFrame.h"
+#include "SocketIPSetFrame.h"
 #include "ThreadProcHeartBeat.h"
 #include "ThreadProcHeadFrame.h"
+#include "ThreadProcIPSet.h"
 class CSiteManage
 {
 public:
@@ -98,8 +100,8 @@ public: //属性
 	CSocketHeadFrame m_oSocketHeadFrame;
 // 	/** 尾包接收网络对象*/
 // 	CSocketTailFrame m_oSocketTailFrame;
-// 	/** 仪器IP地址设置网络对象*/
-// 	CSocketIPSetFrame m_oSocketIPSetFrame;
+	/** 仪器IP地址设置网络对象*/
+	CSocketIPSetFrame m_oSocketIPSetFrame;
 // 	/** 仪器尾包时刻查询网络对象*/
 // 	CSocketTailTimeFrame m_oSocketTailTimeFrame;
 // 	/** 仪器时延设置网络对象*/
@@ -125,8 +127,8 @@ public: //属性
 
 	/** 心跳处理对象*/
 	CThreadProcHeartBeat m_oThreadProcHeartBeat;
-// 	/** 仪器IP地址设置对象*/
-// 	CThreadProcIPSet m_oThreadProcIPSet;
+	/** 仪器IP地址设置对象*/
+	CThreadProcIPSet m_oThreadProcIPSet;
 	/** 首包处理对象*/
 	CThreadProcHeadFrame m_oThreadProcHeadFrame;
 // 	/** 时延处理线程对象*/

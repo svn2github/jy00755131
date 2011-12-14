@@ -1,7 +1,7 @@
 #pragma once
 
-#include "framehead.h"
-
+#include "FrameHead.h"
+#include "Parameter.h"
 /**
 *@brief 仪器首包帧接收网络接口类
 */
@@ -16,9 +16,6 @@ public: // 属性
 	CString m_strIPForInstrument;
 	/** 接收端口号*/
 	UINT m_uiPortForHeadFrame;
-
-	/** 首包帧字节数*/
-	int m_iFrameSize;
 	/** 首包数据对象*/
 	CFrameHead m_oFrameHead;
 
@@ -31,8 +28,6 @@ public: // 方法
 	BOOL SetBufferSize(int iFrameCount);
 	// 得到帧数据
 	BOOL GetFrameData();
-	//发送时间靠后的首包
-	BOOL SendFrameData();
 };
 
 

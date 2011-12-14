@@ -46,6 +46,12 @@ public: //方法
 	void AddFreeInstrument(CInstrument* pInstrument);
 	// 增加一个IP地址设置仪器
 	void AddInstrumentToIPSetMap(unsigned int uiIndex, CInstrument* pInstrument);
+	// 判断仪器IP地址索引号是否已加入IP地址设置索引表
+	BOOL IfIndexExistInIPSetMap(unsigned int uiIndex);
+	// 根据输入IP地址索引号，由IP地址设置索引表得到仪器指针
+	BOOL GetInstrumentFromIPSetMap(unsigned int uiIndex, CInstrument* &pInstrument);
+	// 从IP地址设置索引表删除索引号指向的仪器指针
+	BOOL DeleteInstrumentFromIPSetMap(unsigned int uiIndex);
 	// 复制仪器数组到输出数组
 	void CopyInstrumentArrayForOutput();
 	// 将一个仪器加入SN索引表
@@ -54,10 +60,14 @@ public: //方法
 	BOOL IfIndexExistInSNMap(unsigned int uiIndex);
 	// 根据输入SN索引号，由SN索引表得到仪器指针
 	BOOL GetInstrumentFromSNMap(unsigned int uiIndex, CInstrument* &pInstrument);
+	// 从SN索引表删除索引号指向的仪器指针
+	BOOL DeleteInstrumentFromSNMap(unsigned int uiIndex);
 	// 将一个仪器加入IP地址索引表
 	void AddInstrumentToIPMap(unsigned int uiIndex, CInstrument* pInstrument);
 	// 判断仪器索引号是否已加入IP地址索引表
 	BOOL IfIndexExistInIPMap(unsigned int uiIndex);
 	// 根据输入IP地址索引号，由IP地址索引表得到仪器指针
 	BOOL GetInstrumentFromIPMap(unsigned int uiIndex, CInstrument* &pInstrument);
+	// 从IP地址索引表删除索引号指向的仪器指针
+	BOOL DeleteInstrumentFromIPMap(unsigned int uiIndex);
 };
