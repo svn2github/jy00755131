@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Instrument.h"
-#include "Parameter.h"
+#include "..\\parameter\\Parameter.h"
 CInstrument::CInstrument()
 {
 }

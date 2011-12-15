@@ -55,6 +55,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <Profile>true</Profile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -99,6 +100,7 @@
     <None Include="res\MatrixServer.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\parameter\Parameter.h" />
     <ClInclude Include="CXMLDOMDocument.h" />
     <ClInclude Include="CXMLDOMElement.h" />
     <ClInclude Include="CXMLDOMNode.h" />
@@ -107,12 +109,12 @@
     <ClInclude Include="FrameHeartBeat.h" />
     <ClInclude Include="FrameInterface.h" />
     <ClInclude Include="FrameIPSet.h" />
+    <ClInclude Include="FrameTail.h" />
     <ClInclude Include="Instrument.h" />
     <ClInclude Include="InstrumentList.h" />
     <ClInclude Include="MatrixServer.h" />
     <ClInclude Include="MatrixServerDlg.h" />
     <ClInclude Include="NetProcInterface.h" />
-    <ClInclude Include="Parameter.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Rout.h" />
     <ClInclude Include="RoutList.h" />
@@ -121,11 +123,13 @@
     <ClInclude Include="SocketHeadFrame.h" />
     <ClInclude Include="SocketHeartBeatFrame.h" />
     <ClInclude Include="SocketIPSetFrame.h" />
+    <ClInclude Include="SocketTailFrame.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThreadProcHeadFrame.h" />
     <ClInclude Include="ThreadProcHeartBeat.h" />
     <ClInclude Include="ThreadProcIPSet.h" />
+    <ClInclude Include="ThreadProcTailFrame.h" />
     <ClInclude Include="XMLDOMTool.h" />
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +137,7 @@
     <ClCompile Include="FrameHeartBeat.cpp" />
     <ClCompile Include="FrameInterface.cpp" />
     <ClCompile Include="FrameIPSet.cpp" />
+    <ClCompile Include="FrameTail.cpp" />
     <ClCompile Include="Instrument.cpp" />
     <ClCompile Include="InstrumentList.cpp" />
     <ClCompile Include="MatrixServer.cpp" />
@@ -145,6 +150,7 @@
     <ClCompile Include="SocketHeadFrame.cpp" />
     <ClCompile Include="SocketHeartBeatFrame.cpp" />
     <ClCompile Include="SocketIPSetFrame.cpp" />
+    <ClCompile Include="SocketTailFrame.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -152,6 +158,7 @@
     <ClCompile Include="ThreadProcHeadFrame.cpp" />
     <ClCompile Include="ThreadProcHeartBeat.cpp" />
     <ClCompile Include="ThreadProcIPSet.cpp" />
+    <ClCompile Include="ThreadProcTailFrame.cpp" />
     <ClCompile Include="XMLDOMTool.cpp" />
   </ItemGroup>
   <ItemGroup>

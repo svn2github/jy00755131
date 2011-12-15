@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MatrixServer.h"
 #include "ThreadProcHeartBeat.h"
-#include "Parameter.h"
+#include "..\\parameter\\Parameter.h"
 
 // CThreadProcHeartBeat
 

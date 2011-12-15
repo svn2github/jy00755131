@@ -4,9 +4,11 @@
 #include "SocketHeartBeatFrame.h"
 #include "SocketHeadFrame.h"
 #include "SocketIPSetFrame.h"
+#include "SocketTailFrame.h"
 #include "ThreadProcHeartBeat.h"
 #include "ThreadProcHeadFrame.h"
 #include "ThreadProcIPSet.h"
+#include "ThreadProcTailFrame.h"
 class CSiteManage
 {
 public:
@@ -98,8 +100,8 @@ public: //属性
 	CSocketHeartBeatFrame m_oSocketHeartBeatFrame;
 	/** 首包接收网络对象*/
 	CSocketHeadFrame m_oSocketHeadFrame;
-// 	/** 尾包接收网络对象*/
-// 	CSocketTailFrame m_oSocketTailFrame;
+	/** 尾包接收网络对象*/
+	CSocketTailFrame m_oSocketTailFrame;
 	/** 仪器IP地址设置网络对象*/
 	CSocketIPSetFrame m_oSocketIPSetFrame;
 // 	/** 仪器尾包时刻查询网络对象*/
@@ -133,8 +135,8 @@ public: //属性
 	CThreadProcHeadFrame m_oThreadProcHeadFrame;
 // 	/** 时延处理线程对象*/
 // 	CThreadProcTimeDelay m_oThreadProcTimeDelay;
-// 	/** 尾包处理对象*/
-// 	CThreadProcTailFrame m_oThreadProcTailFrame;
+	/** 尾包处理对象*/
+	CThreadProcTailFrame m_oThreadProcTailFrame;
 // 	/** 仪器IP地址分配对象*/
 // 	CThreadProcIPDistribute m_oThreadProcIPDistribute;
 // 	/** 路由监视对象*/

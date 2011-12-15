@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "NetProcInterface.h"
-#include "Parameter.h"
+#include "..\\parameter\\Parameter.h"
 CNetProcInterface::CNetProcInterface()
 {
 }
@@ -141,11 +141,11 @@ void CNetProcInterface::ProcInterFaceCommandForField(byte byFieldOperation)
 		}
 		m_pThreadProcHeartBeat->OnStop();	// 停止心跳处理对象
  		m_pThreadProcHeadFrame->OnStop();	// 停止首包处理对象
-// 		m_pThreadProcTailFrame->OnStop();	// 停止尾包处理对象
+ 		m_pThreadProcTailFrame->OnStop();	// 停止尾包处理对象
 // 		m_pThreadProcMonitorRout->OnStop();	// 停止路由监视对象
 // 		m_pThreadProcIPDistribute->OnStop();	// 停止仪器IP地址分配对象
 // 		m_pThreadProcTimeDelay->OnStop();	// 停止时延处理线程对象
-// 		m_pThreadProcIPSet->OnStop();	// 停止仪器IP地址设置对象		
+ 		m_pThreadProcIPSet->OnStop();	// 停止仪器IP地址设置对象		
 // 		m_pThreadProcDelete->OnStop();	// 停止仪器删除对象
 // 		m_pThreadProcSiteDataOutput->OnStop();	// 停止现场数据输出对象		
 // 		m_pThreadProcTestBase->OnStop();	// 停止测试对象，基本测试		
@@ -155,10 +155,10 @@ void CNetProcInterface::ProcInterFaceCommandForField(byte byFieldOperation)
 		{
 			if((true == m_pSiteData->m_bProcHeartBeatStop)	// 心跳处理线程停止
  				&& (true == m_pSiteData->m_bProcHeadFrameStop)	// 首包处理线程停止
-// 				&& (true == m_pSiteData->m_bProcTailFrameStop)	// 尾包处理线程停止
+ 				&& (true == m_pSiteData->m_bProcTailFrameStop)	// 尾包处理线程停止
 // 				&& (true == m_pSiteData->m_bProcMonitorRoutStop)	// 路由监视线程停止
 // 				&& (true == m_pSiteData->m_bProcIPDistributeStop)	// 仪器IP地址分配线程停止
-// 				&& (true == m_pSiteData->m_bProcIPSetStop)	// 仪器IP地址设置线程停止
+ 				&& (true == m_pSiteData->m_bProcIPSetStop)	// 仪器IP地址设置线程停止
 // 				&& (true == m_pSiteData->m_bProcSiteDataOutputStop)	// 现场数据输出线程线程停止
 // 				&& (true == m_pThreadProcTimeDelay->IsThreadFree())	// 时延处理线程空闲
 // 				&& (true == m_pThreadProcDelete->IsThreadFree())	// 仪器删除线程空闲
@@ -190,10 +190,10 @@ void CNetProcInterface::ProcInterFaceCommandForField(byte byFieldOperation)
 		}		
 		m_pThreadProcHeartBeat->OnWork();	// 启动心跳处理对象
  		m_pThreadProcHeadFrame->OnWork();	// 启动首包处理对象
-// 		m_pThreadProcTailFrame->OnWork();	// 启动尾包处理对象
+ 		m_pThreadProcTailFrame->OnWork();	// 启动尾包处理对象
 // 		m_pThreadProcMonitorRout->OnWork();	// 启动路由监视对象
 // 		m_pThreadProcIPDistribute->OnWork();	// 启动仪器IP地址分配对象
-// 		m_pThreadProcIPSet->OnWork();	// 启动仪器IP地址设置对象	
+ 		m_pThreadProcIPSet->OnWork();	// 启动仪器IP地址设置对象	
 // 		m_pThreadProcSiteDataOutput->OnWork();	// 启动现场数据输出对象
 // 		m_pThreadProcTimeDelay->OnWork();	// 启动时延处理线程对象
 // 		m_pThreadProcDelete->OnWork();	// 启动仪器删除对象

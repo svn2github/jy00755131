@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FrameHead.h"
-#include "Parameter.h"
+#include "..\\parameter\\Parameter.h"
 /**
 *@brief 仪器首包帧接收网络接口类
 */

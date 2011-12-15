@@ -69,9 +69,6 @@
     <ClInclude Include="SiteData.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Parameter.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="NetProcInterface.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -106,6 +103,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ThreadProcIPSet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameTail.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketTailFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadProcTailFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\parameter\Parameter.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -171,6 +180,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ThreadProcIPSet.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameTail.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketTailFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadProcTailFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

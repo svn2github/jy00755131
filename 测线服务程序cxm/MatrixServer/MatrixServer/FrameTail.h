@@ -1,23 +1,25 @@
 #pragma once
 #include "..\\parameter\\Parameter.h"
 /**
-*@brief 仪器首包帧类
+*@brief 仪器尾包帧类
 */
-class CFrameHead
+class CFrameTail
 {
 public:
-	CFrameHead();
-	~CFrameHead();
+	CFrameTail();
+	~CFrameTail();
 
 public: // 属性
 	/** 帧数据*/
 	byte m_pFrameData[RcvFrameSize];
+	/** 仪器本地IP地址*/
+	unsigned int m_uiIPInstrument;
 	/** 仪器SN号*/
 	unsigned int m_uiSN;
-	/** 仪器首包时刻*/
-	unsigned int m_uiTimeHeadFrame;
-	// 仪器本地时间
-	unsigned int m_uiSysTime;
+	/** 仪器类型 1-交叉站；2-电源站；3-采集站*/
+	unsigned int m_uiInstrumentType;
+	/** 仪器系统时间*/
+	unsigned int m_uiTimeSystem;
 	/** 路由IP地址，路由方向 1-上；2-下；3-左；4-右*/
 	unsigned int m_uiRoutIP;
 

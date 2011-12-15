@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "SiteData.h"
-#include "Parameter.h"
+#include "..\\parameter\\Parameter.h"
 CSiteData::CSiteData()
 {
 

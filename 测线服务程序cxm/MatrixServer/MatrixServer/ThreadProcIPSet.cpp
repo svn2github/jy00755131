@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MatrixServer.h"
 #include "ThreadProcIPSet.h"
-#include "Parameter.h"
+#include "..\\parameter\\Parameter.h"
 #include <hash_map>
 using stdext::hash_map;
 // CThreadProcIPSet

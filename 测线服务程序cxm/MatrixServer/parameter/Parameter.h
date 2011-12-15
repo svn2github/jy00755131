@@ -7,6 +7,8 @@
 #define HeadFrameSleepTimes					1
 // IP地址设置线程延时次数
 #define IPSetFrameSleepTimes				2
+// 尾包线程延时次数
+#define TailFrameSleepTimes					1
 
 // 等待所有线程关闭的延时次数
 #define CloseAllThreadSleepTimes			4
@@ -110,9 +112,9 @@
 // 本地系统时间
 #define CmdLocalSysTime						0x04
 // 本地时间修正高位
-#define CmdLocalFixedTimeHigh			0x05
+#define CmdLocalTimeFixedHigh			0x05
 // 本地时间修正低位
-#define CmdLocalFixedTimeLow			0x06
+#define CmdLocalTimeFixedLow			0x06
 // 自动数据返回地址
 #define CmdADCDataReturnAddr			0x07
 // 自动数据返回端口和命令
@@ -161,6 +163,8 @@
 //___________________帧格式设置___________________
 // 帧头长度
 #define FrameHeadSize				16
+// 同步帧头
+#define FrameHeadCheck			{0x11, 0x22, 0x33, 0x44, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 // 帧头校验字长度
 #define FrameHeadCheckSize		4
 // 帧头第一个字节
@@ -173,6 +177,8 @@
 #define FrameHeadCheck3			0x44
 // 命令字长度1字节
 #define FrameCmdSize1B			1
+// 命令包长度1字节
+#define FramePacketSize1B			1
 // 命令包长度2字节
 #define FramePacketSize2B			2
 // 命令包长度4字节

@@ -8,6 +8,8 @@
 
 #include "ThreadProcHeartBeat.h"
 #include "ThreadProcHeadFrame.h"
+#include "ThreadProcIPSet.h"
+#include "ThreadProcTailFrame.h"
 // #include "threadproctailframe.h"
 // #include "threadprocipset.h"
 // #include "ThreadProcTimeDelay.h"
@@ -46,14 +48,14 @@ public: //属性
 
 	/** 心跳处理对象指针*/
 	CThreadProcHeartBeat* m_pThreadProcHeartBeat;
-// 	/** 仪器IP地址设置对象指针*/
-// 	CThreadProcIPSet* m_pThreadProcIPSet;
+	/** 仪器IP地址设置对象指针*/
+	CThreadProcIPSet* m_pThreadProcIPSet;
 	/** 首包处理对象指针*/
 	CThreadProcHeadFrame* m_pThreadProcHeadFrame;
 // 	/** 时延处理线程对象指针指针*/
 // 	CThreadProcTimeDelay* m_pThreadProcTimeDelay;
-// 	/** 尾包处理对象指针*/
-// 	CThreadProcTailFrame* m_pThreadProcTailFrame;
+	/** 尾包处理对象指针*/
+	CThreadProcTailFrame* m_pThreadProcTailFrame;
 // 	/** 仪器IP地址分配对象指针*/
 // 	CThreadProcIPDistribute* m_pThreadProcIPDistribute;
 // 	/** 路由监视对象指针*/
