@@ -185,6 +185,10 @@
 #define FramePacketSize4B			4
 // ADC数据所占字节数
 #define ADCDataSize3B				3
+// 命令字个数最大值
+#define CommandWordMaxNum			41
+// 0x18命令数组包含的最大字节数
+#define ADCSetCommandMaxByte		CommandWordMaxNum * FramePacketSize4B
 // 发送帧缓冲区初值设定
 #define SndFrameBufInit					0x00
 // CRC校验值字节数
