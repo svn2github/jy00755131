@@ -27,11 +27,7 @@ MATRIXSERVERDLL_API int fnMatrixServerDll(void);
 typedef struct XML_InfoStruct
 {
 	// 从XML中得到的信息的线程同步对象
-	CCriticalSection m_oSecXML;
-	// 源地址
-	CString m_csSrcIP;
-	// 目的地址,LCI的IP地址
-	CString m_csDstIP;
+	CRITICAL_SECTION m_oSecInstrumentCommInfo;
 	// 源地址
 	unsigned int m_uiSrcIP;
 	// 目的地址
@@ -44,13 +40,13 @@ typedef struct XML_InfoStruct
 	unsigned short m_usHeadFramePort;
 	// IP地址设置返回端口
 	unsigned short m_usIPSetReturnPort;
-}m_oXMLInfoStruct;
+}m_oInstrumentCommInfoStruct;
 
 // 线程处理标志位结构
 typedef struct ThreadProc_FlagStruct
 {
 	// 标志位的线程同步对象
-	CCriticalSection m_oSecFlag;
+	CRITICAL_SECTION m_oSecFlag;
 	// 心跳处理线程停止标志位
 	bool m_bProcHeartBeatStop;
 	// 首包处理线程停止标志位
@@ -62,10 +58,6 @@ typedef struct ThreadProc_FlagStruct
 // 与设备通讯命令字内容
 typedef struct Instrument_CommandStruct
 {
-	// 源地址
-	CString m_csSrcIP;
-	// 目的地址,LCI的IP地址
-	CString m_csDstIP;
 	// 源地址
 	unsigned int m_uiSrcIP;
 	// 目的地址
@@ -166,7 +158,7 @@ typedef struct Instrument_CommandStruct
 typedef struct HeartBeatFrameStruct
 {
 	// 心跳线程同步对象
-	CCriticalSection m_oSecHeartBeat;
+	CRITICAL_SECTION m_oSecHeartBeat;
 	// 发送帧缓冲区
 	byte m_bySndFrameData[SndFrameSize];
 	// 心跳命令字集合
@@ -180,7 +172,7 @@ typedef struct HeartBeatFrameStruct
 typedef struct HeadFrameStruct
 {
 	// 首包线程同步对象
-	CCriticalSection m_oSecHeadFrame;
+	CRITICAL_SECTION m_oSecHeadFrame;
 	// 接收帧缓冲区
 	byte m_byRcvFrameData[RcvFrameSize];
 	// 首包帧命令
@@ -190,7 +182,7 @@ typedef struct HeadFrameStruct
 typedef struct IPSetFrameStruct
 {
 	// IP地址设置线程同步对象
-	CCriticalSection m_oSecIPSetFrame;
+	CRITICAL_SECTION m_oSecIPSetFrame;
 	// 发送帧缓冲区
 	byte m_bySndFrameData[SndFrameSize];
 	// IP地址设置命令字集合
@@ -207,25 +199,26 @@ typedef struct IPSetFrameStruct
 // 环境结构体
 typedef struct EnvironmentStruct
 {
-	// XML信息结构
-	m_oXMLInfoStruct m_oXMLInfo;
+	// 与仪器通讯信息结构
+	m_oInstrumentCommInfoStruct* m_pInstrumentCommInfo;
 	// 心跳帧结构
-	m_oHeartBeatFrameStruct m_oHeartBeatFrame;
+	m_oHeartBeatFrameStruct* m_pHeartBeatFrame;
 	// 首包帧结构
-	m_oHeadFrameStruct m_oHeadFrame;
+	m_oHeadFrameStruct* m_pHeadFrame;
 	// IP地址设置帧结构
-	m_oIPSetFrameStruct m_oIPSetFrame;
+	m_oIPSetFrameStruct* m_pIPSetFrame;
 	// 线程处理标志位结构
-	m_oThreadProcFlagStruct m_oThreadProcFlag;
-
-
+	m_oThreadProcFlagStruct* m_pThreadProcFlag;
+	// 心跳Socket套接字
+	SOCKET m_oHeartBeatSocket;
+	// 
 }m_oEnvironmentStruct;
 
 
 // 创建实例，并返回实例指针
 typedef m_oEnvironmentStruct* (*Create_Instance)(void);
 // 释放实例资源
-typedef void (*Free_Instance)(m_oEnvironmentStruct* ptr);
+typedef void (*Free_Instance)(m_oEnvironmentStruct* pEnv);
 // 校验与设备通讯帧的同步码
 typedef bool (*Instrument_CheckFrameHead)(byte* pFrameData);
 // 生成帧的同步码
@@ -237,30 +230,58 @@ typedef bool (*Instrument_ParseFrame)(m_oInstrumentCommandStruct* pCommand, byte
 // 生成与设备通讯帧
 typedef void (*Instrument_MakeFrame)(m_oInstrumentCommandStruct* pCommand, byte* pFrameData);
 // 创建CSocket接收端口并绑定端口和IP地址,必须先执行初始化该模块后才能创建该模块端口
-typedef BOOL (*Instrument_CreateSocket)(m_oInstrumentCommandStruct* pCommand, CSocket* pCSocket);
+typedef SOCKET (*Instrument_CreateSocket)(m_oInstrumentCommandStruct* pCommand);
 // 设置广播模式
-typedef BOOL (*Instrument_SetSocketBroadCast)(CSocket* pCSocket);
+typedef void (*Instrument_SetSocketBroadCast)(SOCKET oSocket);
 // 设置端口接收缓冲区接收帧数量
-typedef BOOL (*Set_RcvBufferSize)(CSocket* pCSocket, int iFrameCount);
+typedef void (*Set_RcvBufferSize)(SOCKET oSocket, int iFrameCount);
 // 设置端口发送缓冲区发送帧数量
-typedef BOOL (*Set_SndBufferSize)(CSocket* pCSocket, int iFrameCount);
+typedef void (*Set_SndBufferSize)(SOCKET oSocket, int iFrameCount);
 // 得到网络接收缓冲区收到的帧数量
-typedef DWORD (*Get_FrameCount)(CSocket* pCSocket);
+typedef DWORD (*Get_FrameCount)(SOCKET oSocket);
 // 得到帧数据
-typedef BOOL (*Get_FrameData)(CSocket* pCSocket, byte* pFrameData);
+typedef bool (*Get_FrameData)(SOCKET oSocket, byte* pFrameData);
 // 发送帧
-typedef BOOL (*Send_Frame)(CSocket* pCSocket, byte* pFrameData, unsigned int uiPort, CString strIP);
+typedef void (*Send_Frame)(SOCKET oSocket, byte* pFrameData, unsigned short usPort, unsigned int uiIP);
 
+// 创建仪器通讯信息结构体
+typedef void (*Instrument_CreateCommInfo)(m_oEnvironmentStruct* pEnv);
+// 初始化仪器通讯信息结构体
+typedef void (*Instrument_InitCommInfo)(m_oEnvironmentStruct* pEnv, m_oInstrumentCommInfoStruct* pCommInfo);
+// 释放仪器通讯信息结构体
+typedef void (*Instrument_FreeCommInfo)(m_oEnvironmentStruct* pEnv);
+// 创建心跳帧信息结构体
+typedef void (*Instrument_CreateHeartBeat)(m_oEnvironmentStruct* pEnv);
 // 初始化心跳
 typedef void (*Instrument_InitHeartBeat)(m_oEnvironmentStruct* pEnv);
+// 释放心跳帧信息结构体
+typedef void (*Instrument_FreeHeartBeat)(m_oEnvironmentStruct* pEnv);
+// 创建首包帧信息结构体
+typedef void (*Instrument_CreateHeadFrame)(m_oEnvironmentStruct* pEnv);
 // 初始化首包
 typedef void (*Instrument_InitHeadFrame)(m_oEnvironmentStruct* pEnv);
+// 释放首包帧信息结构体
+typedef void (*Instrument_FreeHeadFrame)(m_oEnvironmentStruct* pEnv);
+// 创建IP地址设置帧信息结构体
+typedef void (*Instrument_CreateIPSetFrame)(m_oEnvironmentStruct* pEnv);
 // 初始化IP地址设置
 typedef void (*Instrument_InitIPSetFrame)(m_oEnvironmentStruct* pEnv);
+// 释放IP地址设置帧信息结构体
+typedef void (*Instrument_FreeIPSetFrame)(m_oEnvironmentStruct* pEnv);
+// 创建线程处理标志位信息结构体
+typedef void (*Create_ThreadProcFlag)(m_oEnvironmentStruct* pEnv);
 // 初始化线程处理标志位
 typedef void (*Init_ThreadProcFlag)(m_oEnvironmentStruct* pEnv);
+// 释放线程处理标志位信息结构体
+typedef void (*Free_ThreadProcFlag)(m_oEnvironmentStruct* pEnv);
 // 初始化实例
-typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv);
+// 包括：
+// 创建并初始化仪器通讯信息结构体
+// 创建并初始化心跳帧信息结构体
+// 创建并初始化首包帧信息结构体
+// 创建并初始化IP地址设置帧信息结构体
+// 创建并初始化线程处理标志位信息结构体
+typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv, m_oInstrumentCommInfoStruct* pCommInfo);
 
 // 解析首包帧
 typedef bool (*Instrument_ParseHeadFrame)(m_oEnvironmentStruct* pEnv);
@@ -270,3 +291,6 @@ typedef bool (*Instrument_ParseIPSetReturnFrame)(m_oEnvironmentStruct* pEnv);
 typedef void (*Instrument_MakeHeartBeatFrame)(m_oEnvironmentStruct* pEnv);
 // 生成IP地址设置帧
 typedef void (*Instrument_MakeIPSetFrame)(m_oEnvironmentStruct* pEnv);
+
+// 将日志信息加入到日志文件输出队列
+typedef void (*Add_LogFileOutPutList)(int iType, unsigned int uiErrorCodeNb, wchar_t* tcFuncName, wchar_t* tcLogInfo);

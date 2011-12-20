@@ -47,21 +47,21 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 // 创建实例，并返回实例指针
 MatrixServerDll_API m_oEnvironmentStruct* CreateInstance(void)
 {
-	m_oEnvironmentStruct* ptr = new m_oEnvironmentStruct;
-	return ptr;
-}
-// 释放实例资源
-MatrixServerDll_API void FreeInstance(m_oEnvironmentStruct* ptr)
-{
-	if (ptr != NULL)
-	{
-		delete ptr;
-		ptr = NULL;
-	}
+	m_oEnvironmentStruct* pEnv = new m_oEnvironmentStruct;
+	pEnv->m_pInstrumentCommInfo = NULL;
+	pEnv->m_pHeartBeatFrame = NULL;
+	pEnv->m_pHeadFrame = NULL;
+	pEnv->m_pIPSetFrame = NULL;
+	pEnv->m_pThreadProcFlag = NULL;
+	return pEnv;
 }
 // 校验帧的同步码
 MatrixServerDll_API bool CheckInstrumentFrameHead(byte* pFrameData)
 {
+	if (pFrameData == NULL)
+	{
+		return false;
+	}
 	byte byFrameHeadCheck[] = FrameHeadCheck;
 	for (int i=0; i<FrameHeadSize; i++)
 	{
@@ -75,6 +75,10 @@ MatrixServerDll_API bool CheckInstrumentFrameHead(byte* pFrameData)
 // 生成帧的同步码
 MatrixServerDll_API void MakeInstrumentFrameHead(byte* pFrameData)
 {
+	if (pFrameData == NULL)
+	{
+		return;
+	}
 	byte byFrameHeadCheck[] = FrameHeadCheck;
 	for (int i=0; i<FrameHeadSize; i++)
 	{
@@ -84,6 +88,10 @@ MatrixServerDll_API void MakeInstrumentFrameHead(byte* pFrameData)
 // 重置帧内容解析变量
 MatrixServerDll_API void ResetInstrumentFramePacket(m_oInstrumentCommandStruct* pCommand)
 {
+	if (pCommand == NULL)
+	{
+		return;
+	}
 	// SN，低8位为仪器类型，0x01为交叉站，0x02为电源站，0x03为采集站
 	pCommand->m_uiSN = 0;
 	// 首包时刻
@@ -173,6 +181,14 @@ MatrixServerDll_API void ResetInstrumentFramePacket(m_oInstrumentCommandStruct* 
 // 解析与设备通讯接收帧内容
 MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand, byte* pFrameData)
 {
+	if (pCommand == NULL)
+	{
+		return false;
+	}
+	if (pFrameData == NULL)
+	{
+		return false;
+	}
 	unsigned char	byCommandWord = 0;
 	int iPos = 0;
 	// 校验帧的同步码
@@ -358,6 +374,18 @@ MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pComma
 // 生成与设备通讯帧
 MatrixServerDll_API void MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, byte* pFrameData, byte* pCommandWord, unsigned short usCommandWordNum)
 {
+	if (pCommand == NULL)
+	{
+		return;
+	}
+	if (pFrameData == NULL)
+	{
+		return;
+	}
+	if (pCommand == NULL)
+	{
+		return;
+	}
 	int iPos = 0;
 	// 生成帧的同步码
 	MakeInstrumentFrameHead(pFrameData);
@@ -527,248 +555,352 @@ MatrixServerDll_API void MakeInstrumentFrame(m_oInstrumentCommandStruct* pComman
 			memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIP, FramePacketSize4B);
 			iPos += FramePacketSize4B;
 		}
-		else if (pCommandWord[i] == CmdEnd)
-		{
-			break;
-		}
 		else
 		{
 			memset(&pFrameData[iPos], SndFrameBufInit, FramePacketSize4B);
 			iPos += FramePacketSize4B;
 		}
 	}
+	pFrameData[iPos] = CmdEnd;
 }
 // 创建CSocket接收端口并绑定端口和IP地址
-MatrixServerDll_API BOOL CreateInstrumentSocket(m_oInstrumentCommandStruct* pCommand, CSocket* pCSocket)
+MatrixServerDll_API SOCKET CreateInstrumentSocket(m_oInstrumentCommandStruct* pCommand)
 {
-	BOOL bReturn = FALSE;
-	// 生成网络端口
-	bReturn = pCSocket->Create(pCommand->m_usReturnPort, SOCK_DGRAM, pCommand->m_csSrcIP);
-	pCSocket->Bind(pCommand->m_usReturnPort,pCommand->m_csSrcIP);
-	return bReturn;
+	SOCKET oSocket = INVALID_SOCKET;
+	sockaddr_in oAddr;
+	oSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	oAddr.sin_family = AF_INET;											// 填充套接字地址结构
+	oAddr.sin_port = htons(pCommand->m_usReturnPort);
+	oAddr.sin_addr.S_un.S_addr = pCommand->m_uiSrcIP;
+	int iReturn = bind(oSocket, reinterpret_cast<sockaddr*>(&oAddr), sizeof(oAddr));	// 绑定本地地址
+	listen(oSocket, 2);
+	if (iReturn == SOCKET_ERROR)
+	{
+
+	}
+	return oSocket;
 }
 // 设置广播模式
-MatrixServerDll_API BOOL SetInstrumentSocketBroadCast(CSocket* pCSocket)
+MatrixServerDll_API void SetInstrumentSocketBroadCast(SOCKET oSocket)
 {
 	//设置广播模式
 	int	iOptval, iOptlen;
 	iOptlen = sizeof(int);
 	iOptval = 1;
-	return pCSocket->SetSockOpt(SO_BROADCAST, &iOptval, iOptlen, SOL_SOCKET);
+	int iReturn = setsockopt(oSocket, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char *>(&iOptval), iOptlen);
+	if (iReturn == SOCKET_ERROR)
+	{
+
+	}
 }
 // 设置端口接收缓冲区接收帧数量
-MatrixServerDll_API BOOL SetRcvBufferSize(CSocket* pCSocket, int iFrameCount)
+MatrixServerDll_API void SetRcvBufferSize(SOCKET oSocket, int iFrameCount)
 {
 	int iOptionValue = iFrameCount * RcvFrameSize;
 	int iOptionLen = sizeof(int);
-	return pCSocket->SetSockOpt(SO_RCVBUF, (void*)&iOptionValue, iOptionLen, SOL_SOCKET);
+	int iReturn = setsockopt(oSocket, SOL_SOCKET, SO_RCVBUF,  reinterpret_cast<const char *>(&iOptionValue), iOptionLen);
+	if (iReturn == SOCKET_ERROR)
+	{
+	}
 }
 // 设置端口发送缓冲区发送帧数量
-MatrixServerDll_API BOOL SetSndBufferSize(CSocket* pCSocket, int iFrameCount)
+MatrixServerDll_API void SetSndBufferSize(SOCKET oSocket, int iFrameCount)
 {
 	int iOptionValue = iFrameCount * SndFrameSize;
 	int iOptionLen = sizeof(int);
-	return pCSocket->SetSockOpt(SO_SNDBUF, (void*)&iOptionValue, iOptionLen, SOL_SOCKET);
+	int iReturn = setsockopt(oSocket, SOL_SOCKET, SO_SNDBUF,  reinterpret_cast<const char *>(&iOptionValue), iOptionLen);
+	if (iReturn == SOCKET_ERROR)
+	{
+	}
 }
 // 得到网络接收缓冲区收到的帧数量
-MatrixServerDll_API DWORD GetFrameCount(CSocket* pCSocket)
+MatrixServerDll_API DWORD GetFrameCount(SOCKET oSocket)
 {
 	DWORD dwFrameCount = 0;
-
 	// 得到网络接收缓冲区数据字节数
-	pCSocket->IOCtl(FIONREAD, &dwFrameCount);
+	ioctlsocket(oSocket, FIONREAD, &dwFrameCount);
 	// 得到帧数量
 	dwFrameCount = dwFrameCount / RcvFrameSize;
 
 	return dwFrameCount;
 }
 // 得到帧数据
-MatrixServerDll_API BOOL GetFrameData(CSocket* pCSocket, byte* pFrameData)
+MatrixServerDll_API bool GetFrameData(SOCKET oSocket, byte* pFrameData)
 {
-	BOOL bReturn = FALSE;
-	// 得到帧数据
-	int iCount = pCSocket->Receive(pFrameData, RcvFrameSize);
+	bool bReturn = false;
+	sockaddr_in AddrFrom;
+	int iSize = sizeof(AddrFrom);
+	int iCount = recvfrom(oSocket, reinterpret_cast<char *>(pFrameData), RcvFrameSize, 0, reinterpret_cast<sockaddr*>(&AddrFrom), &iSize);
 	if(iCount == RcvFrameSize)	//帧大小正确
 	{
-		bReturn = TRUE;
+		bReturn = true;
+	}
+	else
+	{
+
 	}
 	return bReturn;
 }
 // 发送帧
-MatrixServerDll_API BOOL SendFrame(CSocket* pCSocket, byte* pFrameData, unsigned int uiPort, CString strIP)
+MatrixServerDll_API void SendFrame(SOCKET oSocket, byte* pFrameData, unsigned short usPort, unsigned int uiIP)
 {
-	BOOL bReturn = FALSE;
 	// 发送帧
-	int iCount = pCSocket->SendTo(pFrameData, SndFrameSize, uiPort, strIP);
-	if(iCount == SndFrameSize)	//帧大小正确
+	sockaddr_in addrSend;
+	addrSend.sin_family = AF_INET;											// 填充套接字地址结构
+	addrSend.sin_port = htons(usPort);
+	addrSend.sin_addr.S_un.S_addr = uiIP;
+	sendto(oSocket, reinterpret_cast<const char*>(&pFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&addrSend), sizeof(addrSend));
+}
+// 初始化仪器通讯信息结构体
+MatrixServerDll_API void InitInstrumentCommInfo(m_oEnvironmentStruct* pEnv, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	if (pEnv == NULL)
 	{
-		bReturn = TRUE;
+		return;
 	}
-	return bReturn;
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
+	pEnv->m_pInstrumentCommInfo->m_uiDstIP = pCommInfo->m_uiDstIP;
+	pEnv->m_pInstrumentCommInfo->m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	pEnv->m_pInstrumentCommInfo->m_uiAimPort = pCommInfo->m_uiAimPort;
+	pEnv->m_pInstrumentCommInfo->m_usHeartBeatReturnPort = pCommInfo->m_usHeartBeatReturnPort;
+	pEnv->m_pInstrumentCommInfo->m_usHeadFramePort = pCommInfo->m_usHeadFramePort;
+	pEnv->m_pInstrumentCommInfo->m_usIPSetReturnPort = pCommInfo->m_usIPSetReturnPort;
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
+}
+// 创建仪器通讯信息结构体
+MatrixServerDll_API void CreateInstrumentCommInfo(m_oEnvironmentStruct* pEnv)
+{
+	if (pEnv == NULL)
+	{
+		return;
+	}
+	pEnv->m_pInstrumentCommInfo = new m_oInstrumentCommInfoStruct;
+	InitializeCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
+}
+// 释放仪器通讯信息结构体
+MatrixServerDll_API void FreeInstrumentCommInfo(m_oEnvironmentStruct* pEnv)
+{
+	if (pEnv->m_pInstrumentCommInfo != NULL)
+	{
+		DeleteCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
+		delete pEnv->m_pInstrumentCommInfo;
+	}
 }
 
 // 初始化心跳
 MatrixServerDll_API void InitInstrumentHeartBeat(m_oEnvironmentStruct* pEnv)
 {
-	unsigned short usReturnPort = 0;
-	CString csSrcIP = _T("");
-	CString csDstIP = _T("");
-	unsigned int uiSrcIP = 0;
-	unsigned int uiDstIP = 0;
-	unsigned int uiAimPort = 0;
-	pEnv->m_oXMLInfo.m_oSecXML.Lock();
+	EnterCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
 	// 源地址
-	csSrcIP = pEnv->m_oXMLInfo.m_csSrcIP;
-	uiSrcIP = pEnv->m_oXMLInfo.m_uiSrcIP;
+	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_uiSrcIP = pEnv->m_pInstrumentCommInfo->m_uiSrcIP;
 	// 目的地址
-	csDstIP = pEnv->m_oXMLInfo.m_csDstIP;
-	uiDstIP = pEnv->m_oXMLInfo.m_uiDstIP;
+	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_uiDstIP = pEnv->m_pInstrumentCommInfo->m_uiDstIP;
 	// 目标IP地址端口号
-	uiAimPort = pEnv->m_oXMLInfo.m_uiAimPort;
-	usReturnPort = pEnv->m_oXMLInfo.m_usHeartBeatReturnPort;
-	pEnv->m_oXMLInfo.m_oSecXML.Unlock();
-	pEnv->m_oHeartBeatFrame.m_oSecHeartBeat.Lock();
+	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_uiAimPort = pEnv->m_pInstrumentCommInfo->m_uiAimPort;
+	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_usReturnPort = pEnv->m_pInstrumentCommInfo->m_usHeartBeatReturnPort;
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
 	// 重置帧内通讯信息
-	// 源地址
-	pEnv->m_oHeartBeatFrame.m_oCommandStruct.m_csSrcIP = csSrcIP;
-	pEnv->m_oHeartBeatFrame.m_oCommandStruct.m_uiSrcIP = uiSrcIP;
-	// 目的地址
-	pEnv->m_oHeartBeatFrame.m_oCommandStruct.m_csDstIP = csDstIP;
-	pEnv->m_oHeartBeatFrame.m_oCommandStruct.m_uiDstIP = uiDstIP;
-	// 目标IP地址端口号
-	pEnv->m_oHeartBeatFrame.m_oCommandStruct.m_uiAimPort = uiAimPort;
-	// 应答端口
-	pEnv->m_oHeartBeatFrame.m_oCommandStruct.m_usReturnPort = usReturnPort;
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
-	pEnv->m_oHeartBeatFrame.m_oCommandStruct.m_usCommand = SendQueryCmd;
+	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_usCommand = SendQueryCmd;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pEnv->m_oHeartBeatFrame.m_oCommandStruct);
+	ResetInstrumentFramePacket(&pEnv->m_pHeartBeatFrame->m_oCommandStruct);
 	// 清空发送帧缓冲区
-	memset(&pEnv->m_oHeartBeatFrame.m_bySndFrameData, SndFrameBufInit, SndFrameSize);
+	memset(&pEnv->m_pHeartBeatFrame->m_bySndFrameData, SndFrameBufInit, SndFrameSize);
 	// 清空心跳命令字集合
-	memset(&pEnv->m_oHeartBeatFrame.m_byCommandWord, SndFrameBufInit, CommandWordMaxNum);
+	memset(&pEnv->m_pHeartBeatFrame->m_byCommandWord, SndFrameBufInit, CommandWordMaxNum);
 	// 心跳命令字个数
-	pEnv->m_oHeartBeatFrame.m_usCommandWordNum = 0;
-	pEnv->m_oHeartBeatFrame.m_oSecHeartBeat.Unlock();
+	pEnv->m_pHeartBeatFrame->m_usCommandWordNum = 0;
+	LeaveCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
+}
+// 创建心跳帧信息结构体
+MatrixServerDll_API void CreateInstrumentHeartBeat(m_oEnvironmentStruct* pEnv)
+{
+	pEnv->m_pHeartBeatFrame = new m_oHeartBeatFrameStruct;
+	InitializeCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
+}
+// 释放心跳帧信息结构体
+MatrixServerDll_API void FreeInstrumentHeartBeat(m_oEnvironmentStruct* pEnv)
+{
+	if (pEnv->m_pHeartBeatFrame != NULL)
+	{
+		DeleteCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
+		delete pEnv->m_pHeartBeatFrame;
+	}
 }
 // 初始化首包
 MatrixServerDll_API void InitInstrumentHeadFrame(m_oEnvironmentStruct* pEnv)
 {
-	unsigned short usReturnPort = 0;
-	pEnv->m_oXMLInfo.m_oSecXML.Lock();
-	usReturnPort = pEnv->m_oXMLInfo.m_usHeadFramePort;
-	pEnv->m_oXMLInfo.m_oSecXML.Unlock();
-	pEnv->m_oHeadFrame.m_oSecHeadFrame.Lock();
+	EnterCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
 	// 接收端口
-	pEnv->m_oHeadFrame.m_oCommandStruct.m_usReturnPort = usReturnPort;
+	pEnv->m_pHeadFrame->m_oCommandStruct.m_usReturnPort = pEnv->m_pInstrumentCommInfo->m_usHeadFramePort;
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pEnv->m_oHeadFrame.m_oCommandStruct);
+	ResetInstrumentFramePacket(&pEnv->m_pHeadFrame->m_oCommandStruct);
 	// 清空接收帧缓冲区
-	memset(&pEnv->m_oHeadFrame.m_byRcvFrameData, SndFrameBufInit, RcvFrameSize);
-	pEnv->m_oHeadFrame.m_oSecHeadFrame.Unlock();
+	memset(&pEnv->m_pHeadFrame->m_byRcvFrameData, SndFrameBufInit, RcvFrameSize);
+	LeaveCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
+}
+// 创建首包帧信息结构体
+MatrixServerDll_API void CreateInstrumentHeadFrame(m_oEnvironmentStruct* pEnv)
+{
+	pEnv->m_pHeadFrame = new m_oHeadFrameStruct;
+	InitializeCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
+}
+// 释放首包帧信息结构体
+MatrixServerDll_API void FreeInstrumentHeadFrame(m_oEnvironmentStruct* pEnv)
+{
+	if (pEnv->m_pHeadFrame != NULL)
+	{
+		DeleteCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
+		delete pEnv->m_pHeadFrame;
+	}
 }
 // 初始化IP地址设置
 MatrixServerDll_API void InitInstrumentIPSetFrame(m_oEnvironmentStruct* pEnv)
 {
-	unsigned short usReturnPort = 0;
-	CString csSrcIP = _T("");
-	CString csDstIP = _T("");
-	unsigned int uiSrcIP = 0;
-	unsigned int uiDstIP = 0;
-	unsigned int uiAimPort = 0;
-	pEnv->m_oXMLInfo.m_oSecXML.Lock();
+	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
 	// 源地址
-	csSrcIP = pEnv->m_oXMLInfo.m_csSrcIP;
-	uiSrcIP = pEnv->m_oXMLInfo.m_uiSrcIP;
+	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_uiSrcIP = pEnv->m_pInstrumentCommInfo->m_uiSrcIP;
 	// 目的地址
-	csDstIP = pEnv->m_oXMLInfo.m_csDstIP;
-	uiDstIP = pEnv->m_oXMLInfo.m_uiDstIP;
+	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_uiDstIP = pEnv->m_pInstrumentCommInfo->m_uiDstIP;
 	// 目标IP地址端口号
-	uiAimPort = pEnv->m_oXMLInfo.m_uiAimPort;
-	usReturnPort = pEnv->m_oXMLInfo.m_usIPSetReturnPort;
-	pEnv->m_oXMLInfo.m_oSecXML.Unlock();
-	pEnv->m_oIPSetFrame.m_oSecIPSetFrame.Lock();
+	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_uiAimPort = pEnv->m_pInstrumentCommInfo->m_uiAimPort;
+	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_usReturnPort = pEnv->m_pInstrumentCommInfo->m_usIPSetReturnPort;
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecInstrumentCommInfo);
 	// 重置帧内通讯信息
-	// 源地址
-	pEnv->m_oIPSetFrame.m_oCommandStructSet.m_csSrcIP = csSrcIP;
-	pEnv->m_oIPSetFrame.m_oCommandStructSet.m_uiSrcIP = uiSrcIP;
-	// 目的地址
-	pEnv->m_oIPSetFrame.m_oCommandStructSet.m_csDstIP = csDstIP;
-	pEnv->m_oIPSetFrame.m_oCommandStructSet.m_uiDstIP = uiDstIP;
-	// 目标IP地址端口号
-	pEnv->m_oIPSetFrame.m_oCommandStructSet.m_uiAimPort = uiAimPort;
-	// 应答接收端口
-	pEnv->m_oIPSetFrame.m_oCommandStructSet.m_usReturnPort = usReturnPort;
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
-	pEnv->m_oIPSetFrame.m_oCommandStructSet.m_usCommand = SendSetCmd;
+	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_usCommand = SendSetCmd;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pEnv->m_oIPSetFrame.m_oCommandStructSet);
+	ResetInstrumentFramePacket(&pEnv->m_pIPSetFrame->m_oCommandStructSet);
 	// 清空发送帧缓冲区
-	memset(&pEnv->m_oIPSetFrame.m_bySndFrameData, SndFrameBufInit, SndFrameSize);
+	memset(&pEnv->m_pIPSetFrame->m_bySndFrameData, SndFrameBufInit, SndFrameSize);
 	// 清空IP地址设置命令字集合
-	memset(&pEnv->m_oIPSetFrame.m_byCommandWord, SndFrameBufInit, CommandWordMaxNum);
+	memset(&pEnv->m_pIPSetFrame->m_byCommandWord, SndFrameBufInit, CommandWordMaxNum);
 	// IP地址设置命令字个数
-	pEnv->m_oIPSetFrame.m_usCommandWordNum = 0;
+	pEnv->m_pIPSetFrame->m_usCommandWordNum = 0;
 
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pEnv->m_oIPSetFrame.m_oCommandStructReturn);
+	ResetInstrumentFramePacket(&pEnv->m_pIPSetFrame->m_oCommandStructReturn);
 	// 清空接收帧缓冲区
-	memset(&pEnv->m_oIPSetFrame.m_byRcvFrameData, SndFrameBufInit, RcvFrameSize);
-	pEnv->m_oIPSetFrame.m_oSecIPSetFrame.Unlock();
+	memset(&pEnv->m_pIPSetFrame->m_byRcvFrameData, SndFrameBufInit, RcvFrameSize);
+	DeleteCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+}
+// 创建IP地址设置帧信息结构体
+MatrixServerDll_API void CreateInstrumentIPSetFrame(m_oEnvironmentStruct* pEnv)
+{
+	pEnv->m_pIPSetFrame = new m_oIPSetFrameStruct;
+	InitializeCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+}
+// 释放IP地址设置帧信息结构体
+MatrixServerDll_API void FreeInstrumentIPSetFrame(m_oEnvironmentStruct* pEnv)
+{
+	if (pEnv->m_pIPSetFrame != NULL)
+	{
+		DeleteCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+		delete pEnv->m_pIPSetFrame;
+	}
 }
 // 初始化线程处理标志位
 MatrixServerDll_API void InitThreadProcFlag(m_oEnvironmentStruct* pEnv)
 {
-	pEnv->m_oThreadProcFlag.m_oSecFlag.Lock();
+	EnterCriticalSection(&pEnv->m_pThreadProcFlag->m_oSecFlag);
 	// 心跳处理线程停止标志位
-	pEnv->m_oThreadProcFlag.m_bProcHeartBeatStop = false;
+	pEnv->m_pThreadProcFlag->m_bProcHeartBeatStop = false;
 	// 首包处理线程停止标志位
-	pEnv->m_oThreadProcFlag.m_bProcHeadFrameStop = false;
+	pEnv->m_pThreadProcFlag->m_bProcHeadFrameStop = false;
 	// 仪器IP地址设置线程停止标志位
-	pEnv->m_oThreadProcFlag.m_bProcIPSetStop = false;
-	pEnv->m_oThreadProcFlag.m_oSecFlag.Unlock();
+	pEnv->m_pThreadProcFlag->m_bProcIPSetStop = false;
+	LeaveCriticalSection(&pEnv->m_pThreadProcFlag->m_oSecFlag);
+}
+// 创建线程处理标志位信息结构体
+MatrixServerDll_API void CreateThreadProcFlag(m_oEnvironmentStruct* pEnv)
+{
+	pEnv->m_pThreadProcFlag = new m_oThreadProcFlagStruct;
+	InitializeCriticalSection(&pEnv->m_pThreadProcFlag->m_oSecFlag);
+}
+// 释放线程处理标志位信息结构体
+MatrixServerDll_API void FreeThreadProcFlag(m_oEnvironmentStruct* pEnv)
+{
+	if (pEnv->m_pThreadProcFlag != NULL)
+	{
+		DeleteCriticalSection(&pEnv->m_pThreadProcFlag->m_oSecFlag);
+		delete pEnv->m_pThreadProcFlag;
+	}
 }
 // 初始化实例
-MatrixServerDll_API void InitInstance(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API void InitInstance(m_oEnvironmentStruct* pEnv, m_oInstrumentCommInfoStruct* pCommInfo)
 {
+	// 创建仪器通讯信息结构体
+	CreateInstrumentCommInfo(pEnv);
+	// 初始化仪器通讯信息结构体
+	InitInstrumentCommInfo(pEnv, pCommInfo);
+	// 创建心跳帧信息结构体
+	CreateInstrumentHeartBeat(pEnv);
 	// 初始化心跳
 	InitInstrumentHeartBeat(pEnv);
+	// 创建首包帧信息结构体
+	CreateInstrumentHeadFrame(pEnv);
 	// 初始化首包
 	InitInstrumentHeadFrame(pEnv);
+	// 创建IP地址设置帧信息结构体
+	CreateInstrumentIPSetFrame(pEnv);
 	// 初始化IP地址设置
 	InitInstrumentIPSetFrame(pEnv);
+	// 创建线程处理标志位信息结构体
+	CreateThreadProcFlag(pEnv);
 	// 初始化线程处理标志位
 	InitThreadProcFlag(pEnv);
+}
+// 释放实例资源
+MatrixServerDll_API void FreeInstance(m_oEnvironmentStruct* pEnv)
+{
+	if (pEnv != NULL)
+	{
+		FreeInstrumentCommInfo(pEnv);
+		FreeInstrumentHeartBeat(pEnv);
+		FreeInstrumentHeadFrame(pEnv);
+		FreeInstrumentIPSetFrame(pEnv);
+		FreeThreadProcFlag(pEnv);
+		delete pEnv;
+		pEnv = NULL;
+	}
 }
 // 解析首包帧
 MatrixServerDll_API bool ParseInstrumentHeadFrame(m_oEnvironmentStruct* pEnv)
 {
 	bool bReturn = false;
-	pEnv->m_oHeadFrame.m_oSecHeadFrame.Lock();
-	bReturn = ParseInstrumentFrame(&pEnv->m_oHeadFrame.m_oCommandStruct, pEnv->m_oHeadFrame.m_byRcvFrameData);
-	pEnv->m_oHeadFrame.m_oSecHeadFrame.Unlock();
+	EnterCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
+	bReturn = ParseInstrumentFrame(&pEnv->m_pHeadFrame->m_oCommandStruct, pEnv->m_pHeadFrame->m_byRcvFrameData);
+	LeaveCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
 	return bReturn;
 }
 // 解析IP地址设置应答帧
 MatrixServerDll_API bool ParseInstrumentIPSetReturnFrame(m_oEnvironmentStruct* pEnv)
 {
 	bool bReturn = false;
-	pEnv->m_oIPSetFrame.m_oSecIPSetFrame.Lock();
-	bReturn = ParseInstrumentFrame(&pEnv->m_oIPSetFrame.m_oCommandStructReturn, pEnv->m_oIPSetFrame.m_byRcvFrameData);
-	pEnv->m_oIPSetFrame.m_oSecIPSetFrame.Unlock();
+	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+	bReturn = ParseInstrumentFrame(&pEnv->m_pIPSetFrame->m_oCommandStructReturn, pEnv->m_pIPSetFrame->m_byRcvFrameData);
+	DeleteCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
 	return bReturn;
 }
 // 生成心跳帧
 MatrixServerDll_API void MakeInstrumentHeartBeatFrame(m_oEnvironmentStruct* pEnv)
 {
-	pEnv->m_oHeartBeatFrame.m_oSecHeartBeat.Lock();
-	MakeInstrumentFrame(&pEnv->m_oHeartBeatFrame.m_oCommandStruct, pEnv->m_oHeartBeatFrame.m_bySndFrameData, pEnv->m_oHeartBeatFrame.m_byCommandWord, pEnv->m_oHeartBeatFrame.m_usCommandWordNum);
-	pEnv->m_oHeartBeatFrame.m_oSecHeartBeat.Unlock();
+	EnterCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
+	MakeInstrumentFrame(&pEnv->m_pHeartBeatFrame->m_oCommandStruct, pEnv->m_pHeartBeatFrame->m_bySndFrameData, pEnv->m_pHeartBeatFrame->m_byCommandWord, pEnv->m_pHeartBeatFrame->m_usCommandWordNum);
+	LeaveCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
 }
 // 生成IP地址设置帧
 MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oEnvironmentStruct* pEnv)
 {
-	pEnv->m_oIPSetFrame.m_oSecIPSetFrame.Lock();
-	MakeInstrumentFrame(&pEnv->m_oIPSetFrame.m_oCommandStructSet, pEnv->m_oIPSetFrame.m_bySndFrameData, pEnv->m_oIPSetFrame.m_byCommandWord, pEnv->m_oIPSetFrame.m_usCommandWordNum);
-	pEnv->m_oIPSetFrame.m_oSecIPSetFrame.Unlock();
+	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+	MakeInstrumentFrame(&pEnv->m_pIPSetFrame->m_oCommandStructSet, pEnv->m_pIPSetFrame->m_bySndFrameData, pEnv->m_pIPSetFrame->m_byCommandWord, pEnv->m_pIPSetFrame->m_usCommandWordNum);
+	DeleteCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
 }

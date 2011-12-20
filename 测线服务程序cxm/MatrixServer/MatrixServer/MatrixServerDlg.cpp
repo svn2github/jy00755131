@@ -6,7 +6,7 @@
 #include "MatrixServer.h"
 #include "MatrixServerDlg.h"
 #include "afxdialogex.h"
-
+#include "..\\MatrixServerDll\\MatrixServerDll.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -104,6 +104,21 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	HMODULE hMod = LoadLibrary(_T("MatrixServerDll"));
+	Create_Instance a = NULL;
+	Free_Instance b = NULL;
+	Init_Instance c = NULL;
+	if (hMod)
+	{
+		m_oInstrumentCommInfoStruct pCommInfo;
+		a = (Create_Instance)GetProcAddress(hMod, "CreateInstance");
+		b = (Free_Instance)GetProcAddress(hMod, "FreeInstance");
+		c = (Init_Instance)GetProcAddress(hMod, "InitInstance");
+		m_oEnvironmentStruct* pEnv = (*a)();
+		(*c)(pEnv, &pCommInfo);
+		(*b)(pEnv);
+		FreeLibrary(hMod);
+	}
 	// 现场管理对象初始化
 	m_oSiteManage.OnInit();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
