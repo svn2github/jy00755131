@@ -37,3 +37,8 @@
 // TODO: 在此处引用程序需要的其他头文件
 #include <afxsock.h>
 #include <afxmt.h>
+#include "CXMLDOMDocument.h"
+#include "CXMLDOMNodeList.h"
+#include "CXMLDOMNode.h"
+#include "CXMLDOMElement.h"
+#include "XMLDOMTool.h"

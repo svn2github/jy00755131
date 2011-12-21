@@ -110,12 +110,11 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	Init_Instance c = NULL;
 	if (hMod)
 	{
-		m_oInstrumentCommInfoStruct pCommInfo;
 		a = (Create_Instance)GetProcAddress(hMod, "CreateInstance");
 		b = (Free_Instance)GetProcAddress(hMod, "FreeInstance");
 		c = (Init_Instance)GetProcAddress(hMod, "InitInstance");
 		m_oEnvironmentStruct* pEnv = (*a)();
-		(*c)(pEnv, &pCommInfo);
+		(*c)(pEnv);
 		(*b)(pEnv);
 		FreeLibrary(hMod);
 	}

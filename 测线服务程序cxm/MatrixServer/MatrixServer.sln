@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MatrixServer", "MatrixServe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MatrixServerDll", "MatrixServerDll\MatrixServerDll.vcxproj", "{F3A06E86-D065-466F-8451-CB0EAF41B0C4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WriteINI", "WriteINI\WriteINI.vcxproj", "{E7EC6100-F2AB-439B-85FD-AF4FE97B355E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{F3A06E86-D065-466F-8451-CB0EAF41B0C4}.Debug|Win32.Build.0 = Debug|Win32
 		{F3A06E86-D065-466F-8451-CB0EAF41B0C4}.Release|Win32.ActiveCfg = Release|Win32
 		{F3A06E86-D065-466F-8451-CB0EAF41B0C4}.Release|Win32.Build.0 = Release|Win32
+		{E7EC6100-F2AB-439B-85FD-AF4FE97B355E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E7EC6100-F2AB-439B-85FD-AF4FE97B355E}.Debug|Win32.Build.0 = Debug|Win32
+		{E7EC6100-F2AB-439B-85FD-AF4FE97B355E}.Release|Win32.ActiveCfg = Release|Win32
+		{E7EC6100-F2AB-439B-85FD-AF4FE97B355E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

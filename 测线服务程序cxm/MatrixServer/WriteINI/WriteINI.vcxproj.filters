@@ -16,8 +16,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="res\WriteINI.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\WriteINI.ico">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="WriteINI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WriteINIDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -27,38 +39,20 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MatrixServerDll.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CXMLDOMDocument.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CXMLDOMElement.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CXMLDOMNode.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CXMLDOMNodeList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="XMLDOMTool.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="WriteINI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteINIDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="MatrixServerDll.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="XMLDOMTool.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MatrixServerDll.rc">
+    <ResourceCompile Include="WriteINI.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
   </ItemGroup>

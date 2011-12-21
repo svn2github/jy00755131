@@ -24,6 +24,7 @@
 #include <afxext.h>         // MFC 扩展
 
 
+#include <afxdisp.h>        // MFC 自动化类
 
 
 
@@ -37,14 +38,11 @@
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
 
-#include <afxsock.h>            // MFC 套接字扩展
 
 
-#include "CXMLDOMDocument.h"
-#include "CXMLDOMNodeList.h"
-#include "CXMLDOMNode.h"
-#include "CXMLDOMElement.h"
-#include "XMLDOMTool.h"
+
+
+
 
 
 #ifdef _UNICODE
@@ -56,3 +54,5 @@
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #endif
 #endif
+
+

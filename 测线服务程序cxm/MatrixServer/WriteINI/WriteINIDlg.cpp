@@ -1,0 +1,337 @@
+
+// WriteINIDlg.cpp : 实现文件
+//
+
+#include "stdafx.h"
+#include "WriteINI.h"
+#include "WriteINIDlg.h"
+#include "afxdialogex.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
+// 用于应用程序“关于”菜单项的 CAboutDlg 对话框
+
+class CAboutDlg : public CDialogEx
+{
+public:
+	CAboutDlg();
+
+// 对话框数据
+	enum { IDD = IDD_ABOUTBOX };
+
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+
+// 实现
+protected:
+	DECLARE_MESSAGE_MAP()
+};
+
+CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
+{
+}
+
+void CAboutDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialogEx::DoDataExchange(pDX);
+}
+
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+END_MESSAGE_MAP()
+
+
+// CWriteINIDlg 对话框
+
+
+
+
+CWriteINIDlg::CWriteINIDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CWriteINIDlg::IDD, pParent)
+{
+	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
+
+void CWriteINIDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialogEx::DoDataExchange(pDX);
+}
+
+BEGIN_MESSAGE_MAP(CWriteINIDlg, CDialogEx)
+	ON_WM_SYSCOMMAND()
+	ON_WM_PAINT()
+	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BTN_GENINI, &CWriteINIDlg::OnBnClickedBtnGenini)
+END_MESSAGE_MAP()
+
+
+// CWriteINIDlg 消息处理程序
+
+BOOL CWriteINIDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// 将“关于...”菜单项添加到系统菜单中。
+
+	// IDM_ABOUTBOX 必须在系统命令范围内。
+	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
+	ASSERT(IDM_ABOUTBOX < 0xF000);
+
+	CMenu* pSysMenu = GetSystemMenu(FALSE);
+	if (pSysMenu != NULL)
+	{
+		BOOL bNameValid;
+		CString strAboutMenu;
+		bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
+		ASSERT(bNameValid);
+		if (!strAboutMenu.IsEmpty())
+		{
+			pSysMenu->AppendMenu(MF_SEPARATOR);
+			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
+		}
+	}
+
+	// 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动
+	//  执行此操作
+	SetIcon(m_hIcon, TRUE);			// 设置大图标
+	SetIcon(m_hIcon, FALSE);		// 设置小图标
+
+	// TODO: 在此添加额外的初始化代码
+
+	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+}
+
+void CWriteINIDlg::OnSysCommand(UINT nID, LPARAM lParam)
+{
+	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
+	{
+		CAboutDlg dlgAbout;
+		dlgAbout.DoModal();
+	}
+	else
+	{
+		CDialogEx::OnSysCommand(nID, lParam);
+	}
+}
+
+// 如果向对话框添加最小化按钮，则需要下面的代码
+//  来绘制该图标。对于使用文档/视图模型的 MFC 应用程序，
+//  这将由框架自动完成。
+
+void CWriteINIDlg::OnPaint()
+{
+	if (IsIconic())
+	{
+		CPaintDC dc(this); // 用于绘制的设备上下文
+
+		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
+
+		// 使图标在工作区矩形中居中
+		int cxIcon = GetSystemMetrics(SM_CXICON);
+		int cyIcon = GetSystemMetrics(SM_CYICON);
+		CRect rect;
+		GetClientRect(&rect);
+		int x = (rect.Width() - cxIcon + 1) / 2;
+		int y = (rect.Height() - cyIcon + 1) / 2;
+
+		// 绘制图标
+		dc.DrawIcon(x, y, m_hIcon);
+	}
+	else
+	{
+		CDialogEx::OnPaint();
+	}
+}
+
+//当用户拖动最小化窗口时系统调用此函数取得光标
+//显示。
+HCURSOR CWriteINIDlg::OnQueryDragIcon()
+{
+	return static_cast<HCURSOR>(m_hIcon);
+}
+
+
+
+void CWriteINIDlg::OnBnClickedBtnGenini()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString strSection = _T("");
+	CString strSectionKey = _T("");
+	CString strValue = _T("");
+	CString strFilePath = _T("");
+	wchar_t strBuff[256];
+
+	GetCurrentDirectory(256,strBuff);		// 获取当前路径
+	strFilePath.Format(_T("%s\\MatrixServerDLL.ini"),strBuff);
+
+	strSection = _T("帧格式设置");			// 获取当前区域
+
+	strSectionKey=_T("FrameHeadSize");		// 帧头长度
+	strValue = _T("16");
+	//写入ini文件中相应字段
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("FrameHeadCheck");		// 同步帧头
+	strValue = _T("{0x11,0x22,0x33,0x44,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}");    
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+	
+	strSectionKey=_T("FrameCmdSize1B");		// 命令字长度1字节
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("FramePacketSize1B");	// 命令包长度1字节
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("FramePacketSize2B");	// 命令包长度2字节
+	strValue = _T("2");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("FramePacketSize4B");	// 命令包长度4字节
+	strValue = _T("4");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCDataSize3B");		// ADC数据所占字节数
+	strValue = _T("3");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CommandWordMaxNum");	// 命令字个数最大值
+	strValue = _T("41");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SndFrameBufInit");	// 发送帧缓冲区初值设定
+	strValue = _T("0x00");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("RcvFrameSize");		// 接收的网络数据帧帧长度
+	strValue = _T("256");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SndFrameSize");		// 发送的网络数据帧帧长度
+	strValue = _T("128");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	/////////////////////////////////////////////////////////////////////////
+	strSection = _T("服务器与设备命令字设置");		// 获取当前区域
+	strSectionKey=_T("SendSetCmd");			// 发送设置命令
+	strValue = _T("0x0001");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SendQueryCmd");		// 发送查询命令
+	strValue = _T("0x0002");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SendADCCmd");			// 发送ADC采样数据重发命令
+	strValue = _T("0x0003");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdTBCtrl");			// TB开始采集开关控制命令(TB_L高8位)
+	strValue = _T("0x050000");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdSn");				// 串号
+	strValue = _T("0x01");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdHeadFrameTime");	// 首包时间
+	strValue = _T("0x02");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLocalIPAddr");		// 本地IP地址
+	strValue = _T("0x03");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLocalSysTime");	// 本地系统时间
+	strValue = _T("0x04");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLocalTimeFixedHigh");	// 本地时间修正高位
+	strValue = _T("0x05");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLocalTimeFixedLow");	// 本地时间修正低位
+	strValue = _T("0x06");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdADCDataReturnAddr");	// 自动数据返回地址
+	strValue = _T("0x07");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdADCDataReturnPort");	// 自动数据返回端口和命令
+	strValue = _T("0x08");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdADCDataReturnPortLimit");	// 端口递增下限和上限
+	strValue = _T("0x09");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdSetBroadCastPort");	// 设置网络等待端口和命令
+	strValue = _T("0x0a");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdFDUErrorCode");		// 系统硬件状态拷贝
+	strValue = _T("0x0b");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdTBHigh");				// TB时刻高位
+	strValue = _T("0x0c");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdTbLow");				// TB时刻低位
+	strValue = _T("0x0d");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLAUXRoutOpenQuery");	// work_ctrl 交叉站方向
+	strValue = _T("0x0e");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLAUXRoutOpenSet");		// 路由开关
+	strValue = _T("0x0f");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdTailRecSndTimeLow");	// 尾包接收\发送时刻低位
+	strValue = _T("0x16");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdBroadCastPortSet");	// 广播命令等待端口匹配
+	strValue = _T("0x17");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdADCSet");				// 设置ADC控制命令命令字
+	strValue = _T("0x18");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdNetTime");				// 网络时刻
+	strValue = _T("0x19");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLineTailRecTimeLAUX");	// 交叉站大线尾包接收时刻
+	strValue = _T("0x1b");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLAUTailRecTimeLAUX");	// 交叉站交叉线尾包接收时刻
+	strValue = _T("0x1c");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLAUXErrorCode1");		// 交叉站故障1
+	strValue = _T("0x1d");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLAUXErrorCode2");		// 交叉站故障2
+	strValue = _T("0x1e");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLAUXSetRout");			// 交叉站路由分配
+	strValue = _T("0x1f");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdReturnRout");			// 返回路由
+	strValue = _T("0x3f");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdEnd");					// 命令解析结束命令
+	strValue = _T("0x00");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+}
