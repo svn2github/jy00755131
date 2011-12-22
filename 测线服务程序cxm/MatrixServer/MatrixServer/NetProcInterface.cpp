@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "NetProcInterface.h"
-#include "..\\parameter\\Parameter.h"
+#include "Parameter.h"
 CNetProcInterface::CNetProcInterface()
 {
 }

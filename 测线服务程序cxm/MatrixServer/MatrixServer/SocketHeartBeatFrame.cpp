@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MatrixServer.h"
 #include "SocketHeartBeatFrame.h"
-#include "..\\parameter\\Parameter.h"
+#include "Parameter.h"
 
 // CSocketHeartBeatFrame
 

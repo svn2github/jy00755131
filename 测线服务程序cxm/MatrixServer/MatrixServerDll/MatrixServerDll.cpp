@@ -7,8 +7,12 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-
+// ini参数文件相对路径
+#define INIFilePath			_T("..\\parameter\\MatrixServerDLL.ini")
+// 测线网络配置XML文件相对路径
+#define CommXMLFilePath		_T("..\\parameter\\MatrixLineApp.XML")
+// 日志文件夹
+#define LogFolderPath		_T("..\\Log")
 // 唯一的应用程序对象
 
 CWinApp theApp;
@@ -44,35 +48,44 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 	return nRetCode;
 }
-// // 宽字节字符串转换为多字节字符串
-// string WideCharToMultiChar(wstring str)
-// {
-// 	string return_value;
-// 	//获取缓冲区的大小，并申请空间，缓冲区大小是按字节计算的
-// 	LPCWSTR lpWideCharStr = str.c_str();
-// 	int cchWideChar = (int)str.size();
-// 	int len = WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, cchWideChar, NULL, 0, NULL, NULL);
-// 	char *buffer = new char[len+1];
-// 	WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, cchWideChar, buffer, len, NULL, NULL);
-// 	buffer[len] = '\0';
-// 	//删除缓冲区并返回值
-// 	return_value.append(buffer);
-// 	delete []buffer;
-// 	return return_value;
-// }
-// const char* ConvertCStringToConstCharPointer(CString str)
-// {
-// 	const char* pChar = NULL;
-// 	char pach[2000];
-// 	CStringW strw;
-// 	wstring wstr;
-// 	strw = str;
-// 	wstr = strw;
-// 	string mstring = WideCharToMultiChar(wstr);
-// 	strcpy_s( pach, sizeof(pach), mstring.c_str());
-// 	pChar = pach;
-// 	return pChar;
-// }
+// 宽字节字符串转换为多字节字符串
+string WideCharToMultiChar(wstring str)
+{
+	string return_value;
+	//获取缓冲区的大小，并申请空间，缓冲区大小是按字节计算的
+	LPCWSTR lpWideCharStr = str.c_str();
+	int iWideCharSize = (int)str.size();
+	int len = WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, iWideCharSize, NULL, 0, NULL, NULL);
+	char *buffer = new char[len+1];
+	WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, iWideCharSize, buffer, len, NULL, NULL);
+	buffer[len] = '\0';
+	//删除缓冲区并返回值
+	return_value.append(buffer);
+	delete []buffer;
+	return return_value;
+}
+string ConvertCStrToStr(CString str)
+{
+	CStringW strw;
+	wstring wstr;
+	strw = str;
+	wstr = strw;
+	string mstring = WideCharToMultiChar(wstr);
+	return mstring;
+}
+MatrixServerDll_API const char* ConvertCStrToCCharptr(CString str)
+{
+// 	string mstring = ConvertCStrToStr(str);
+// 	return mstring.c_str();
+
+
+	const char* pChar = NULL;
+	char pach[2000];
+	string mstring = ConvertCStrToStr(str);
+	strcpy_s( pach, sizeof(pach), mstring.c_str());
+	pChar = pach;
+	return pChar;
+}
 // 创建实例，并返回实例指针
 MatrixServerDll_API m_oEnvironmentStruct* CreateInstance(void)
 {
@@ -83,12 +96,17 @@ MatrixServerDll_API m_oEnvironmentStruct* CreateInstance(void)
 	pEnv->m_pHeadFrame = NULL;
 	pEnv->m_pIPSetFrame = NULL;
 	pEnv->m_pThreadProcFlag = NULL;
+	pEnv->m_pLogOutPut = NULL;
 	return pEnv;
 }
 // 校验帧的同步码
 MatrixServerDll_API bool CheckInstrumentFrameHead(byte* pFrameData, m_oConstVarStruct* pConstVar)
 {
 	if (pFrameData == NULL)
+	{
+		return false;
+	}
+	if (pConstVar == NULL)
 	{
 		return false;
 	}
@@ -102,23 +120,25 @@ MatrixServerDll_API bool CheckInstrumentFrameHead(byte* pFrameData, m_oConstVarS
 	return true;
 }
 // 生成帧的同步码
-MatrixServerDll_API void MakeInstrumentFrameHead(byte* pFrameData, m_oConstVarStruct* pConstVar)
+MatrixServerDll_API bool MakeInstrumentFrameHead(byte* pFrameData, m_oConstVarStruct* pConstVar)
 {
 	if (pFrameData == NULL)
 	{
-		return;
+		return false;
 	}
-	for (int i=0; i<pConstVar->m_oFrameHeadSize; i++)
+	if (pConstVar == NULL)
 	{
-		pFrameData[i] = pConstVar->m_pFrameHeadCheck[i];
+		return false;
 	}
+	memcpy(pFrameData, pConstVar->m_pFrameHeadCheck, pConstVar->m_oFrameHeadSize);
+	return true;
 }
 // 重置帧内容解析变量
-MatrixServerDll_API void ResetInstrumentFramePacket(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pConstVar)
+MatrixServerDll_API bool ResetInstrumentFramePacket(m_oInstrumentCommandStruct* pCommand)
 {
 	if (pCommand == NULL)
 	{
-		return;
+		return false;
 	}
 	// SN，低8位为仪器类型，0x01为交叉站，0x02为电源站，0x03为采集站
 	pCommand->m_uiSN = 0;
@@ -201,18 +221,20 @@ MatrixServerDll_API void ResetInstrumentFramePacket(m_oInstrumentCommandStruct* 
 	pCommand->m_uiRoutIPRight = 0;
 	// 路由IP地址
 	pCommand->m_uiRoutIP = 0;
-	// 0x18命令数组
-// 	if (pCommand->m_pbyADCSet != NULL)
-// 	{
-// 		memset(pCommand->m_pbyADCSet, pConstVar->m_oSndFrameBufInit, pConstVar->m_oADCSetCommandMaxByte);
-// 	}
 	// 0x18命令数据个数
 	pCommand->m_usADCSetNum = 0;
+	
+	return true;
 }
 // 解析与设备通讯接收帧内容
-MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand, byte* pFrameData, m_oConstVarStruct* pConstVar)
+MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand, byte* pFrameData,
+												m_oConstVarStruct* pConstVar)
 {
 	if (pCommand == NULL)
+	{
+		return false;
+	}
+	if (pConstVar == NULL)
 	{
 		return false;
 	}
@@ -229,7 +251,7 @@ MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pComma
 	}
 	iPos += pConstVar->m_oFrameHeadSize;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(pCommand, pConstVar);
+	ResetInstrumentFramePacket(pCommand);
 	// 源IP地址
 	memcpy(&pCommand->m_uiSrcIP, &pFrameData[iPos], pConstVar->m_oFramePacketSize4B);
 	iPos += pConstVar->m_oFramePacketSize4B;
@@ -403,15 +425,24 @@ MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pComma
 	return true;
 }
 // 生成与设备通讯帧
-MatrixServerDll_API void MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, byte* pFrameData, byte* pCommandWord, unsigned short usCommandWordNum, m_oConstVarStruct* pConstVar)
+MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pConstVar,
+												byte* pFrameData, byte* pCommandWord, unsigned short usCommandWordNum)
 {
 	if (pCommand == NULL)
 	{
-		return;
+		return false;
+	}
+	if (pConstVar == NULL)
+	{
+		return false;
 	}
 	if (pFrameData == NULL)
 	{
-		return;
+		return false;
+	}
+	if (pCommandWord == NULL)
+	{
+		return false;
 	}
 	int iPos = 0;
 	// 生成帧的同步码
@@ -589,6 +620,7 @@ MatrixServerDll_API void MakeInstrumentFrame(m_oInstrumentCommandStruct* pComman
 		}
 	}
 	pFrameData[iPos] = pConstVar->m_oCmdEnd;
+	return true;
 }
 // 创建CSocket接收端口并绑定端口和IP地址
 MatrixServerDll_API SOCKET CreateInstrumentSocket(unsigned short usPort, unsigned int uiIP)
@@ -599,11 +631,14 @@ MatrixServerDll_API SOCKET CreateInstrumentSocket(unsigned short usPort, unsigne
 	oAddr.sin_family = AF_INET;											// 填充套接字地址结构
 	oAddr.sin_port = htons(usPort);
 	oAddr.sin_addr.S_un.S_addr = uiIP;
-	int iReturn = bind(oSocket, reinterpret_cast<sockaddr*>(&oAddr), sizeof(oAddr));	// 绑定本地地址
-	listen(oSocket, 2);
-	if (iReturn == SOCKET_ERROR)
+	// 绑定本地地址
+	if (SOCKET_ERROR == bind(oSocket, reinterpret_cast<sockaddr*>(&oAddr), sizeof(oAddr)))
 	{
-
+		WSAGetLastError();
+	}
+	else
+	{
+		listen(oSocket, 2);
 	}
 	return oSocket;
 }
@@ -614,28 +649,25 @@ MatrixServerDll_API void SetInstrumentSocketBroadCast(SOCKET oSocket)
 	int	iOptval, iOptlen;
 	iOptlen = sizeof(int);
 	iOptval = 1;
-	int iReturn = setsockopt(oSocket, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char *>(&iOptval), iOptlen);
-	if (iReturn == SOCKET_ERROR)
+	if (SOCKET_ERROR == setsockopt(oSocket, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char *>(&iOptval), iOptlen))
 	{
-
+		WSAGetLastError();
 	}
 }
 // 设置端口接收缓冲区接收帧数量
 MatrixServerDll_API void SetRcvBufferSize(SOCKET oSocket, int iRcvBufferSize)
 {
-	int iOptionLen = sizeof(int);
-	int iReturn = setsockopt(oSocket, SOL_SOCKET, SO_RCVBUF,  reinterpret_cast<const char *>(&iRcvBufferSize), iOptionLen);
-	if (iReturn == SOCKET_ERROR)
+	if (SOCKET_ERROR == setsockopt(oSocket, SOL_SOCKET, SO_RCVBUF,  reinterpret_cast<const char *>(&iRcvBufferSize), sizeof(int)))
 	{
+		WSAGetLastError();
 	}
 }
 // 设置端口发送缓冲区发送帧数量
 MatrixServerDll_API void SetSndBufferSize(SOCKET oSocket, int iSndBufferSize)
 {
-	int iOptionLen = sizeof(int);
-	int iReturn = setsockopt(oSocket, SOL_SOCKET, SO_SNDBUF,  reinterpret_cast<const char *>(&iSndBufferSize), iOptionLen);
-	if (iReturn == SOCKET_ERROR)
+	if (SOCKET_ERROR == setsockopt(oSocket, SOL_SOCKET, SO_SNDBUF,  reinterpret_cast<const char *>(&iSndBufferSize), sizeof(int)))
 	{
+		WSAGetLastError();
 	}
 }
 // 得到网络接收缓冲区收到的帧数量
@@ -643,10 +675,15 @@ MatrixServerDll_API DWORD GetFrameCount(SOCKET oSocket, int iRcvFrameSize)
 {
 	DWORD dwFrameCount = 0;
 	// 得到网络接收缓冲区数据字节数
-	ioctlsocket(oSocket, FIONREAD, &dwFrameCount);
-	// 得到帧数量
-	dwFrameCount = dwFrameCount / iRcvFrameSize;
-
+	if (SOCKET_ERROR == ioctlsocket(oSocket, FIONREAD, &dwFrameCount))
+	{
+		WSAGetLastError();
+	}
+	else
+	{
+		// 得到帧数量
+		dwFrameCount = dwFrameCount / iRcvFrameSize;
+	}
 	return dwFrameCount;
 }
 // 得到帧数据
@@ -660,6 +697,10 @@ MatrixServerDll_API bool GetFrameData(SOCKET oSocket, byte* pFrameData, int iRcv
 	{
 		bReturn = true;
 	}
+	else if (iCount == SOCKET_ERROR)
+	{
+		WSAGetLastError();
+	}
 	else
 	{
 
@@ -667,28 +708,43 @@ MatrixServerDll_API bool GetFrameData(SOCKET oSocket, byte* pFrameData, int iRcv
 	return bReturn;
 }
 // 发送帧
-MatrixServerDll_API void SendFrame(SOCKET oSocket, byte* pFrameData,int iSndFrameSize, unsigned short usPort, unsigned int uiIP)
+MatrixServerDll_API bool SendFrame(SOCKET oSocket, byte* pFrameData,int iSndFrameSize, unsigned short usPort, unsigned int uiIP)
 {
+	bool bReturn = false;
 	// 发送帧
 	sockaddr_in addrSend;
 	addrSend.sin_family = AF_INET;											// 填充套接字地址结构
 	addrSend.sin_port = htons(usPort);
 	addrSend.sin_addr.S_un.S_addr = uiIP;
-	sendto(oSocket, reinterpret_cast<const char*>(&pFrameData), iSndFrameSize, 0, reinterpret_cast<sockaddr*>(&addrSend), sizeof(addrSend));
+	int iCount = sendto(oSocket, reinterpret_cast<const char*>(&pFrameData), iSndFrameSize, 0, reinterpret_cast<sockaddr*>(&addrSend), sizeof(addrSend));
+	if (iCount == iSndFrameSize)
+	{
+		bReturn = true;
+	} 
+	else if (iCount == SOCKET_ERROR)
+	{
+		WSAGetLastError();
+	}
+	else
+	{
+	}
+	return bReturn;
 }
 // 创建常量信息结构体
-MatrixServerDll_API void CreateConstVar(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API m_oConstVarStruct* CreateConstVar()
 {
-	if (pEnv == NULL)
-	{
-		return;
-	}
-	pEnv->m_pConstVar = new m_oConstVarStruct;
-	pEnv->m_pConstVar->m_pFrameHeadCheck = NULL;
+	m_oConstVarStruct* pConstVar = NULL;
+	pConstVar = new m_oConstVarStruct;
+	pConstVar->m_pFrameHeadCheck = NULL;
+	return pConstVar;
 }
 // 载入INI文件
 MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 {
+	if (pConstVar == NULL)
+	{
+		return;
+	}
 	CString strSection	= _T("");
 	CString strSectionKey = _T("");
 	CString strValue = _T("");
@@ -698,286 +754,305 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 	int iDirectionNew = 0;
 	int iDirectionOld = 0;
 	int iTemp = 0;
-	strFilePath = _T("..\\parameter\\MatrixServerDLL.ini");
-
-	//读取ini文件中相应字段的内容
-	strSection = _T("帧格式设置");			// 获取当前区域
-	strSectionKey=_T("FrameHeadSize");		// 帧头长度
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_oFrameHeadSize = _ttoi(strValue);
-
-	strSectionKey=_T("FrameHeadCheck");		// 同步帧头
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_pFrameHeadCheck = new byte[pConstVar->m_oFrameHeadSize];
-	for (int i=0; i<pConstVar->m_oFrameHeadSize; i++)
+	strFilePath = INIFilePath;
+	if (_taccess(strFilePath, 0) == -1)
 	{
-		iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
-		iDirectionNew += 2;
-		csTemp = strValue.Mid(iDirectionNew, 2);
-		_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
-		pConstVar->m_pFrameHeadCheck[i] = iTemp;
-		iDirectionOld = iDirectionNew;
+		return;
 	}
-	strSectionKey=_T("FrameCmdSize1B");		// 命令字长度1字节
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_oFrameCmdSize1B = _ttoi(strValue);
+//	GetFileAttributes(strFilePath);
+	try
+	{
+		//读取ini文件中相应字段的内容
+		strSection = _T("帧格式设置");			// 获取当前区域
+		strSectionKey=_T("FrameHeadSize");		// 帧头长度
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_oFrameHeadSize = _ttoi(strValue);
 
-	strSectionKey=_T("FramePacketSize1B");	// 命令包长度1字节
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_oFramePacketSize1B = _ttoi(strValue);
+		strSectionKey=_T("FrameHeadCheck");		// 同步帧头
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_pFrameHeadCheck = new byte[pConstVar->m_oFrameHeadSize];
+		for (int i=0; i<pConstVar->m_oFrameHeadSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pFrameHeadCheck[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+		strSectionKey=_T("FrameCmdSize1B");		// 命令字长度1字节
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_oFrameCmdSize1B = _ttoi(strValue);
 
-	strSectionKey=_T("FramePacketSize2B");	// 命令包长度2字节
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_oFramePacketSize2B = _ttoi(strValue);
+		strSectionKey=_T("FramePacketSize1B");	// 命令包长度1字节
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_oFramePacketSize1B = _ttoi(strValue);
 
-	strSectionKey=_T("FramePacketSize4B");	// 命令包长度4字节
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_oFramePacketSize4B = _ttoi(strValue);
+		strSectionKey=_T("FramePacketSize2B");	// 命令包长度2字节
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_oFramePacketSize2B = _ttoi(strValue);
 
-	strSectionKey=_T("ADCDataSize3B");		// ADC数据所占字节数
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_oADCDataSize3B = _ttoi(strValue);
+		strSectionKey=_T("FramePacketSize4B");	// 命令包长度4字节
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_oFramePacketSize4B = _ttoi(strValue);
 
-	strSectionKey=_T("CommandWordMaxNum");	// 命令字个数最大值
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_oCommandWordMaxNum = _ttoi(strValue);
-	pConstVar->m_oADCSetCommandMaxByte = pConstVar->m_oCommandWordMaxNum * pConstVar->m_oFramePacketSize4B;
-	strSectionKey=_T("SndFrameBufInit");	// 发送帧缓冲区初值设定
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oSndFrameBufInit = iTemp;
+		strSectionKey=_T("ADCDataSize3B");		// ADC数据所占字节数
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_oADCDataSize3B = _ttoi(strValue);
 
-	strSectionKey=_T("RcvFrameSize");		// 接收的网络数据帧帧长度
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_oRcvFrameSize = _ttoi(strValue);
+		strSectionKey=_T("CommandWordMaxNum");	// 命令字个数最大值
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_oCommandWordMaxNum = _ttoi(strValue);
+		pConstVar->m_oADCSetCommandMaxByte = pConstVar->m_oCommandWordMaxNum * pConstVar->m_oFramePacketSize4B;
+		strSectionKey=_T("SndFrameBufInit");	// 发送帧缓冲区初值设定
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oSndFrameBufInit = iTemp;
 
-	strSectionKey=_T("SndFrameSize");		// 发送的网络数据帧帧长度
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	pConstVar->m_oSndFrameSize = _ttoi(strValue);
+		strSectionKey=_T("RcvFrameSize");		// 接收的网络数据帧帧长度
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_oRcvFrameSize = _ttoi(strValue);
 
-	/////////////////////////////////////////////////////////////////////////
-	strSection = _T("服务器与设备命令字设置");		// 获取当前区域
-	strSectionKey=_T("SendSetCmd");			// 发送设置命令
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oSendSetCmd = iTemp;
+		strSectionKey=_T("SndFrameSize");		// 发送的网络数据帧帧长度
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		pConstVar->m_oSndFrameSize = _ttoi(strValue);
 
-	strSectionKey=_T("SendQueryCmd");		// 发送查询命令
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oSendQueryCmd = iTemp;
+		/////////////////////////////////////////////////////////////////////////
+		strSection = _T("服务器与设备命令字设置");		// 获取当前区域
+		strSectionKey=_T("SendSetCmd");			// 发送设置命令
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oSendSetCmd = iTemp;
 
-	strSectionKey=_T("SendADCCmd");			// 发送ADC采样数据重发命令
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oSendADCCmd = iTemp;
+		strSectionKey=_T("SendQueryCmd");		// 发送查询命令
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oSendQueryCmd = iTemp;
 
-	strSectionKey=_T("CmdTBCtrl");			// TB开始采集开关控制命令(TB_L高8位)
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &pConstVar->m_oCmdTBCtrl, sizeof(unsigned int));
+		strSectionKey=_T("SendADCCmd");			// 发送ADC采样数据重发命令
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oSendADCCmd = iTemp;
 
-	strSectionKey=_T("CmdSn");				// 串号
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdSn = iTemp;
+		strSectionKey=_T("CmdTBCtrl");			// TB开始采集开关控制命令(TB_L高8位)
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &pConstVar->m_oCmdTBCtrl, sizeof(unsigned int));
 
-	strSectionKey=_T("CmdHeadFrameTime");	// 首包时间
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdHeadFrameTime = iTemp;
+		strSectionKey=_T("CmdSn");				// 串号
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdSn = iTemp;
 
-	strSectionKey=_T("CmdLocalIPAddr");		// 本地IP地址
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &pConstVar->m_oCmdLocalIPAddr, sizeof(byte));
+		strSectionKey=_T("CmdHeadFrameTime");	// 首包时间
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdHeadFrameTime = iTemp;
 
-	strSectionKey=_T("CmdLocalSysTime");	// 本地系统时间
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLocalSysTime = iTemp;
+		strSectionKey=_T("CmdLocalIPAddr");		// 本地IP地址
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &pConstVar->m_oCmdLocalIPAddr, sizeof(byte));
 
-	strSectionKey=_T("CmdLocalTimeFixedHigh");	// 本地时间修正高位
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLocalTimeFixedHigh = iTemp;
+		strSectionKey=_T("CmdLocalSysTime");	// 本地系统时间
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLocalSysTime = iTemp;
 
-	strSectionKey=_T("CmdLocalTimeFixedLow");	// 本地时间修正低位
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLocalTimeFixedLow = iTemp;
+		strSectionKey=_T("CmdLocalTimeFixedHigh");	// 本地时间修正高位
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLocalTimeFixedHigh = iTemp;
 
-	strSectionKey=_T("CmdADCDataReturnAddr");	// 自动数据返回地址
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdADCDataReturnAddr = iTemp;
+		strSectionKey=_T("CmdLocalTimeFixedLow");	// 本地时间修正低位
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLocalTimeFixedLow = iTemp;
 
-	strSectionKey=_T("CmdADCDataReturnPort");	// 自动数据返回端口和命令
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdADCDataReturnPort = iTemp;
+		strSectionKey=_T("CmdADCDataReturnAddr");	// 自动数据返回地址
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdADCDataReturnAddr = iTemp;
 
-	strSectionKey=_T("CmdADCDataReturnPortLimit");	// 端口递增下限和上限
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdADCDataReturnPortLimit = iTemp;
+		strSectionKey=_T("CmdADCDataReturnPort");	// 自动数据返回端口和命令
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdADCDataReturnPort = iTemp;
 
-	strSectionKey=_T("CmdSetBroadCastPort");	// 设置网络等待端口和命令
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdSetBroadCastPort = iTemp;
+		strSectionKey=_T("CmdADCDataReturnPortLimit");	// 端口递增下限和上限
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdADCDataReturnPortLimit = iTemp;
 
-	strSectionKey=_T("CmdFDUErrorCode");		// 系统硬件状态拷贝
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdFDUErrorCode = iTemp;
+		strSectionKey=_T("CmdSetBroadCastPort");	// 设置网络等待端口和命令
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdSetBroadCastPort = iTemp;
 
-	strSectionKey=_T("CmdTBHigh");				// TB时刻高位
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdTBHigh = iTemp;
+		strSectionKey=_T("CmdFDUErrorCode");		// 系统硬件状态拷贝
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdFDUErrorCode = iTemp;
 
-	strSectionKey=_T("CmdTbLow");				// TB时刻低位
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdTbLow = iTemp;
+		strSectionKey=_T("CmdTBHigh");				// TB时刻高位
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdTBHigh = iTemp;
 
-	strSectionKey=_T("CmdLAUXRoutOpenQuery");	// work_ctrl 交叉站方向
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLAUXRoutOpenQuery = iTemp;
+		strSectionKey=_T("CmdTbLow");				// TB时刻低位
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdTbLow = iTemp;
 
-	strSectionKey=_T("CmdLAUXRoutOpenSet");		// 路由开关
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLAUXRoutOpenSet = iTemp;
+		strSectionKey=_T("CmdLAUXRoutOpenQuery");	// work_ctrl 交叉站方向
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLAUXRoutOpenQuery = iTemp;
 
-	strSectionKey=_T("CmdTailRecSndTimeLow");	// 尾包接收\发送时刻低位
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdTailRecSndTimeLow = iTemp;
+		strSectionKey=_T("CmdLAUXRoutOpenSet");		// 路由开关
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLAUXRoutOpenSet = iTemp;
 
-	strSectionKey=_T("CmdBroadCastPortSet");	// 广播命令等待端口匹配
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdBroadCastPortSet = iTemp;
+		strSectionKey=_T("CmdTailRecSndTimeLow");	// 尾包接收\发送时刻低位
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdTailRecSndTimeLow = iTemp;
 
-	strSectionKey=_T("CmdADCSet");				// 设置ADC控制命令命令字
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdADCSet = iTemp;
+		strSectionKey=_T("CmdBroadCastPortSet");	// 广播命令等待端口匹配
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdBroadCastPortSet = iTemp;
 
-	strSectionKey=_T("CmdNetTime");				// 网络时刻
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdNetTime = iTemp;
+		strSectionKey=_T("CmdADCSet");				// 设置ADC控制命令命令字
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdADCSet = iTemp;
 
-	strSectionKey=_T("CmdLineTailRecTimeLAUX");	// 交叉站大线尾包接收时刻
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLineTailRecTimeLAUX = iTemp;
+		strSectionKey=_T("CmdNetTime");				// 网络时刻
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdNetTime = iTemp;
 
-	strSectionKey=_T("CmdLAUTailRecTimeLAUX");	// 交叉站交叉线尾包接收时刻
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLAUTailRecTimeLAUX = iTemp;
+		strSectionKey=_T("CmdLineTailRecTimeLAUX");	// 交叉站大线尾包接收时刻
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLineTailRecTimeLAUX = iTemp;
 
-	strSectionKey=_T("CmdLAUXErrorCode1");		// 交叉站故障1
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLAUXErrorCode1 = iTemp;
+		strSectionKey=_T("CmdLAUTailRecTimeLAUX");	// 交叉站交叉线尾包接收时刻
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLAUTailRecTimeLAUX = iTemp;
 
-	strSectionKey=_T("CmdLAUXErrorCode2");		// 交叉站故障2
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLAUXErrorCode2 = iTemp;
+		strSectionKey=_T("CmdLAUXErrorCode1");		// 交叉站故障1
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLAUXErrorCode1 = iTemp;
 
-	strSectionKey=_T("CmdLAUXSetRout");			// 交叉站路由分配
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdLAUXSetRout = iTemp;
+		strSectionKey=_T("CmdLAUXErrorCode2");		// 交叉站故障2
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLAUXErrorCode2 = iTemp;
 
-	strSectionKey=_T("CmdReturnRout");			// 返回路由
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdReturnRout = iTemp;
+		strSectionKey=_T("CmdLAUXSetRout");			// 交叉站路由分配
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdLAUXSetRout = iTemp;
 
-	strSectionKey=_T("CmdEnd");					// 命令解析结束命令
-	GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
-	strValue = strBuff;
-	_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
-	pConstVar->m_oCmdEnd = iTemp;
+		strSectionKey=_T("CmdReturnRout");			// 返回路由
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdReturnRout = iTemp;
+
+		strSectionKey=_T("CmdEnd");					// 命令解析结束命令
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff),strFilePath);
+		strValue = strBuff;
+		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
+		pConstVar->m_oCmdEnd = iTemp;
+	}
+	catch (CMemoryException* e)
+	{
+		// 加入错误消息
+		e->ReportError(MB_OK);
+	}
+	catch (CFileException* e)
+	{
+		e->ReportError(MB_OK);
+	}
+	catch (CException* e)
+	{
+		e->ReportError(MB_OK);
+	}
 }
 // 初始化常量信息结构体
-MatrixServerDll_API void InitConstVar(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API void InitConstVar(m_oConstVarStruct* pConstVar)
 {
-	if (pEnv == NULL)
+	if (pConstVar == NULL)
 	{
 		return;
 	}
-	LoadIniFile(pEnv->m_pConstVar);
+	LoadIniFile(pConstVar);
 }
 // 释放常量信息结构体
-MatrixServerDll_API void FreeConstVar(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API void FreeConstVar(m_oConstVarStruct* pConstVar)
 {
-	if (pEnv->m_pConstVar != NULL)
-	{
-		if (pEnv->m_pConstVar->m_pFrameHeadCheck != NULL)
-		{
-			delete[] pEnv->m_pConstVar->m_pFrameHeadCheck;
-		}
-		delete pEnv->m_pConstVar;
-	}
-}
-// 创建仪器通讯信息结构体
-MatrixServerDll_API void CreateInstrumentCommInfo(m_oEnvironmentStruct* pEnv)
-{
-	if (pEnv == NULL)
+	if (pConstVar == NULL)
 	{
 		return;
 	}
-	pEnv->m_pInstrumentCommInfo = new m_oInstrumentCommInfoStruct;
+	if (pConstVar->m_pFrameHeadCheck != NULL)
+	{
+		delete[] pConstVar->m_pFrameHeadCheck;
+	}
+	delete pConstVar;
+}
+// 创建仪器通讯信息结构体
+MatrixServerDll_API m_oInstrumentCommInfoStruct* CreateInstrumentCommInfo()
+{
+	m_oInstrumentCommInfoStruct* pCommInfo = NULL;
+	pCommInfo = new m_oInstrumentCommInfoStruct;
+	return pCommInfo;
 }
 // 打开程序配置文件
-MatrixServerDll_API void OpenAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInfo)
+MatrixServerDll_API BOOL OpenAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInfo)
 {
 	// 初始化COM库
 	CoInitialize(NULL);
@@ -987,10 +1062,16 @@ MatrixServerDll_API void OpenAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInf
 	COleVariant oVariant;
 
 	strOLEObject = _T("msxml2.domdocument");
-	BOOL bData = pCommInfo->m_oXMLDOMDocument.CreateDispatch(strOLEObject, &oError);
-
-	oVariant = _T("..\\parameter\\MatrixLineApp.XML");
-	bData = pCommInfo->m_oXMLDOMDocument.load(oVariant);
+	if (FALSE == pCommInfo->m_oXMLDOMDocument.CreateDispatch(strOLEObject, &oError))
+	{
+		return FALSE;
+	}
+	oVariant = CommXMLFilePath;
+	if (_taccess(CommXMLFilePath, 0) == -1)
+	{
+		return FALSE;
+	}
+	return pCommInfo->m_oXMLDOMDocument.load(oVariant);
 }
 //加载IP地址设置数据
 MatrixServerDll_API void LoadIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
@@ -1001,23 +1082,37 @@ MatrixServerDll_API void LoadIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	LPDISPATCH lpDispatch;
 	CString csSrcIP = _T("");
 	CString csDstIP = _T("");
-	// 找到IP地址设置区
-	strKey = _T("LineServerAppIPSetup");
-	lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
-	oNodeList.AttachDispatch(lpDispatch);
-	// 找到入口
-	lpDispatch = oNodeList.get_item(0);
-	oElement.AttachDispatch(lpDispatch);
+	try
+	{
+		// 找到IP地址设置区
+		strKey = _T("LineServerAppIPSetup");
+		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		oNodeList.AttachDispatch(lpDispatch);
+		// 找到入口
+		lpDispatch = oNodeList.get_item(0);
+		oElement.AttachDispatch(lpDispatch);
 
-	// 和现场仪器通讯的本机IP地址
-	strKey = _T("IPForInstrument");
-	csSrcIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
-//	pCommInfo->m_uiSrcIP = inet_addr(ConvertCStringToConstCharPointer(csSrcIP));
-	pCommInfo->m_uiSrcIP = inet_addr("192.168.0.19");
-	strKey = _T("IPLCI");
-	csDstIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
-//	pCommInfo->m_uiDstIP = inet_addr(ConvertCStringToConstCharPointer(csDstIP));
-	pCommInfo->m_uiDstIP = inet_addr("255.255.255.255");
+		// 和现场仪器通讯的本机IP地址
+		strKey = _T("IPForInstrument");
+		csSrcIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
+		pCommInfo->m_uiSrcIP = inet_addr(ConvertCStrToCCharptr(csSrcIP));
+
+		strKey = _T("IPLCI");
+		csDstIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
+		pCommInfo->m_uiDstIP = inet_addr(ConvertCStrToCCharptr(csDstIP));
+	}
+	catch (CMemoryException* e)
+	{
+		e->ReportError(MB_OK);
+	}
+	catch (CFileException* e)
+	{
+		e->ReportError(MB_OK);
+	}
+	catch (CException* e)
+	{
+		e->ReportError(MB_OK);
+	}
 }
 //加载端口设置数据
 MatrixServerDll_API void LoadPortSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
@@ -1026,23 +1121,37 @@ MatrixServerDll_API void LoadPortSetupData(m_oInstrumentCommInfoStruct* pCommInf
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
+	try
+	{
+		// 找到IP地址设置区
+		strKey = _T("LineServerAppPortSetup");
+		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		oNodeList.AttachDispatch(lpDispatch);
+		// 找到入口
+		lpDispatch = oNodeList.get_item(0);
+		oElement.AttachDispatch(lpDispatch);
 
-	// 找到IP地址设置区
-	strKey = _T("LineServerAppPortSetup");
-	lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
-	oNodeList.AttachDispatch(lpDispatch);
-	// 找到入口
-	lpDispatch = oNodeList.get_item(0);
-	oElement.AttachDispatch(lpDispatch);
-
-	strKey = _T("PortLCI");
-	pCommInfo->m_uiAimPort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
-	strKey = _T("PortForHeartBeat");
-	pCommInfo->m_usHeartBeatReturnPort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
-	strKey = _T("PortForHeadFrame");
-	pCommInfo->m_usHeadFramePort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
-	strKey = _T("PortForIPSet");
-	pCommInfo->m_usIPSetReturnPort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		strKey = _T("PortLCI");
+		pCommInfo->m_uiAimPort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		strKey = _T("PortForHeartBeat");
+		pCommInfo->m_usHeartBeatReturnPort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		strKey = _T("PortForHeadFrame");
+		pCommInfo->m_usHeadFramePort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		strKey = _T("PortForIPSet");
+		pCommInfo->m_usIPSetReturnPort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+	}
+	catch (CMemoryException* e)
+	{
+		e->ReportError(MB_OK);
+	}
+	catch (CFileException* e)
+	{
+		e->ReportError(MB_OK);
+	}
+	catch (CException* e)
+	{
+		e->ReportError(MB_OK);
+	}
 }
 //加载数据缓冲区大小数据
 MatrixServerDll_API void LoadBufferSizeSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
@@ -1052,16 +1161,31 @@ MatrixServerDll_API void LoadBufferSizeSetupData(m_oInstrumentCommInfoStruct* pC
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 
-	// 找到数据缓冲区大小设置区
-	strKey = _T("LineServerAppBufferSizeSetup");
-	lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
-	oNodeList.AttachDispatch(lpDispatch);
-	// 找到入口
-	lpDispatch = oNodeList.get_item(0);
-	oElement.AttachDispatch(lpDispatch);
+	try
+	{
+		// 找到数据缓冲区大小设置区
+		strKey = _T("LineServerAppBufferSizeSetup");
+		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		oNodeList.AttachDispatch(lpDispatch);
+		// 找到入口
+		lpDispatch = oNodeList.get_item(0);
+		oElement.AttachDispatch(lpDispatch);
 
-	strKey = _T("InstrumentCountAll");
-	pCommInfo->m_uiInstrumentNum = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		strKey = _T("InstrumentCountAll");
+		pCommInfo->m_uiInstrumentNum = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+	}
+	catch (CMemoryException* e)
+	{
+		e->ReportError(MB_OK);
+	}
+	catch (CFileException* e)
+	{
+		e->ReportError(MB_OK);
+	}
+	catch (CException* e)
+	{
+		e->ReportError(MB_OK);
+	}
 }
 // 关闭程序配置文件
 MatrixServerDll_API void CloseAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInfo)
@@ -1074,337 +1198,483 @@ MatrixServerDll_API void CloseAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommIn
 MatrixServerDll_API void LoadLineServerAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 {
 	// 打开程序配置文件
-	OpenAppIniXMLFile(pCommInfo);
-
-	//加载IP地址设置数据
-	LoadIPSetupData(pCommInfo);
-	//加载端口设置数据
-	LoadPortSetupData(pCommInfo);
-	//加载数据缓冲区大小数据
-	LoadBufferSizeSetupData(pCommInfo);
-
+	if (TRUE == OpenAppIniXMLFile(pCommInfo))
+	{
+		//加载IP地址设置数据
+		LoadIPSetupData(pCommInfo);
+		//加载端口设置数据
+		LoadPortSetupData(pCommInfo);
+		//加载数据缓冲区大小数据
+		LoadBufferSizeSetupData(pCommInfo);
+	}
 	// 关闭程序配置文件
 	CloseAppIniXMLFile(pCommInfo);
 }
 // 初始化仪器通讯信息结构体
-MatrixServerDll_API void InitInstrumentCommInfo(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API void InitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
+	LoadLineServerAppSetupData(pCommInfo);
+}
+// 释放仪器通讯信息结构体
+MatrixServerDll_API void FreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
+	delete pCommInfo;
+}
+// 创建心跳帧信息结构体
+MatrixServerDll_API m_oHeartBeatFrameStruct* CreateInstrumentHeartBeat()
+{
+	m_oHeartBeatFrameStruct* pHeartBeatFrame = NULL;
+	pHeartBeatFrame = new m_oHeartBeatFrameStruct;
+	InitializeCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+	pHeartBeatFrame->m_pbySndFrameData = NULL;
+	pHeartBeatFrame->m_pbyCommandWord = NULL;
+	return pHeartBeatFrame;
+}
+// 初始化心跳
+MatrixServerDll_API void InitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
+													m_oInstrumentCommInfoStruct* pCommInfo,
+													m_oConstVarStruct* pConstVar)
+{
+	if (pHeartBeatFrame == NULL)
+	{
+		return;
+	}
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
+	if (pConstVar == NULL)
+	{
+		return;
+	}
+	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+	// 源地址
+	pHeartBeatFrame->m_oCommandStruct.m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	// 目的地址
+	pHeartBeatFrame->m_oCommandStruct.m_uiDstIP = pCommInfo->m_uiDstIP;
+	// 目标IP地址端口号
+	pHeartBeatFrame->m_oCommandStruct.m_uiAimPort = pCommInfo->m_uiAimPort;
+	// 心跳返回端口
+	pHeartBeatFrame->m_oCommandStruct.m_usReturnPort = pCommInfo->m_usHeartBeatReturnPort;
+	// 重置帧内通讯信息
+	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+	pHeartBeatFrame->m_oCommandStruct.m_usCommand = pConstVar->m_oSendQueryCmd;
+	// 重置帧内容解析变量
+	ResetInstrumentFramePacket(&pHeartBeatFrame->m_oCommandStruct);
+	// 清空发送帧缓冲区
+	pHeartBeatFrame->m_pbySndFrameData = new byte[pConstVar->m_oSndFrameSize];
+	memset(pHeartBeatFrame->m_pbySndFrameData, pConstVar->m_oSndFrameBufInit, pConstVar->m_oSndFrameSize);
+	// 清空心跳命令字集合
+	pHeartBeatFrame->m_pbyCommandWord = new byte[pConstVar->m_oCommandWordMaxNum];
+	memset(pHeartBeatFrame->m_pbyCommandWord, pConstVar->m_oSndFrameBufInit, pConstVar->m_oCommandWordMaxNum);
+	// 心跳命令字个数
+	pHeartBeatFrame->m_usCommandWordNum = 0;
+	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+}
+// 释放心跳帧信息结构体
+MatrixServerDll_API void FreeInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
+{
+	if (pHeartBeatFrame == NULL)
+	{
+		return;
+	}
+	DeleteCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+	if (pHeartBeatFrame->m_pbySndFrameData != NULL)
+	{
+		delete[] pHeartBeatFrame->m_pbySndFrameData;
+	}
+	if (pHeartBeatFrame->m_pbyCommandWord != NULL)
+	{
+		delete[] pHeartBeatFrame->m_pbyCommandWord;
+	}
+	delete pHeartBeatFrame;
+}
+// 创建首包帧信息结构体
+MatrixServerDll_API m_oHeadFrameStruct* CreateInstrumentHeadFrame()
+{
+	m_oHeadFrameStruct* pHeadFrame = NULL;
+	pHeadFrame = new m_oHeadFrameStruct;
+	InitializeCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+	pHeadFrame->m_pbyRcvFrameData = NULL;
+	return pHeadFrame;
+}
+// 初始化首包
+MatrixServerDll_API void InitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
+													m_oInstrumentCommInfoStruct* pCommInfo,
+													m_oConstVarStruct* pConstVar)
+{
+	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+	// 首包接收缓冲区帧数设定为仪器个数
+	pHeadFrame->m_uiRcvBufferSize = pCommInfo->m_uiInstrumentNum * pConstVar->m_oRcvFrameSize;
+	// 接收端口
+	pHeadFrame->m_oCommandStruct.m_usReturnPort = pCommInfo->m_usHeadFramePort;
+	// 重置帧内容解析变量
+	ResetInstrumentFramePacket(&pHeadFrame->m_oCommandStruct);
+	// 清空接收帧缓冲区
+	pHeadFrame->m_pbyRcvFrameData = new byte[pConstVar->m_oRcvFrameSize];
+	memset(pHeadFrame->m_pbyRcvFrameData, pConstVar->m_oSndFrameBufInit, pConstVar->m_oRcvFrameSize);
+	LeaveCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+}
+// 释放首包帧信息结构体
+MatrixServerDll_API void FreeInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame)
+{
+	if (pHeadFrame == NULL)
+	{
+		return;
+	}
+	DeleteCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+	if (pHeadFrame->m_pbyRcvFrameData != NULL)
+	{
+		delete[] pHeadFrame->m_pbyRcvFrameData;
+	}
+	delete pHeadFrame;
+}
+// 创建IP地址设置帧信息结构体
+MatrixServerDll_API m_oIPSetFrameStruct* CreateInstrumentIPSetFrame()
+{
+	m_oIPSetFrameStruct* pIPSetFrame = NULL;
+	pIPSetFrame = new m_oIPSetFrameStruct;
+	InitializeCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+	pIPSetFrame->m_pbySndFrameData = NULL;
+	pIPSetFrame->m_pbyCommandWord = NULL;
+	pIPSetFrame->m_pbyRcvFrameData = NULL;
+	return pIPSetFrame;
+}
+// 初始化IP地址设置
+MatrixServerDll_API void InitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
+													m_oInstrumentCommInfoStruct* pCommInfo,
+													m_oConstVarStruct* pConstVar)
+{
+	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+	// 源地址
+	pIPSetFrame->m_oCommandStructSet.m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	// 目的地址
+	pIPSetFrame->m_oCommandStructSet.m_uiDstIP = pCommInfo->m_uiDstIP;
+	// 目标IP地址端口号
+	pIPSetFrame->m_oCommandStructSet.m_uiAimPort = pCommInfo->m_uiAimPort;
+	// IP地址设置发送缓冲区帧数设定为仪器个数
+	pIPSetFrame->m_uiSndBufferSize = pCommInfo->m_uiInstrumentNum * pConstVar->m_oSndFrameSize;
+	// IP地址设置应答接收缓冲区帧数设定为仪器个数
+	pIPSetFrame->m_uiRcvBufferSize = pCommInfo->m_uiInstrumentNum * pConstVar->m_oRcvFrameSize;
+	// IP地址设置返回端口
+	pIPSetFrame->m_oCommandStructSet.m_usReturnPort = pCommInfo->m_usIPSetReturnPort;
+	// 重置帧内通讯信息
+	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+	pIPSetFrame->m_oCommandStructSet.m_usCommand = pConstVar->m_oSendSetCmd;
+	// 重置帧内容解析变量
+	ResetInstrumentFramePacket(&pIPSetFrame->m_oCommandStructSet);
+	// 清空发送帧缓冲区
+	pIPSetFrame->m_pbySndFrameData = new byte[pConstVar->m_oSndFrameSize];
+	memset(pIPSetFrame->m_pbySndFrameData, pConstVar->m_oSndFrameBufInit, pConstVar->m_oSndFrameSize);
+	// 清空IP地址设置命令字集合
+	pIPSetFrame->m_pbyCommandWord = new byte[pConstVar->m_oCommandWordMaxNum];
+	memset(pIPSetFrame->m_pbyCommandWord, pConstVar->m_oSndFrameBufInit, pConstVar->m_oCommandWordMaxNum);
+	// IP地址设置命令字个数
+	pIPSetFrame->m_usCommandWordNum = 0;
+
+	// 重置帧内容解析变量
+	ResetInstrumentFramePacket(&pIPSetFrame->m_oCommandStructReturn);
+	// 清空接收帧缓冲区
+	pIPSetFrame->m_pbyRcvFrameData = new byte[pConstVar->m_oRcvFrameSize];
+	memset(pIPSetFrame->m_pbyRcvFrameData, pConstVar->m_oSndFrameBufInit, pConstVar->m_oRcvFrameSize);
+	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+}
+// 释放IP地址设置帧信息结构体
+MatrixServerDll_API void FreeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
+{
+	if (pIPSetFrame == NULL)
+	{
+		return;
+	}
+	DeleteCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+	if (pIPSetFrame->m_pbySndFrameData != NULL)
+	{
+		delete[] pIPSetFrame->m_pbySndFrameData;
+	}
+	if (pIPSetFrame->m_pbyCommandWord != NULL)
+	{
+		delete[] pIPSetFrame->m_pbyCommandWord;
+	}
+	if (pIPSetFrame->m_pbyRcvFrameData != NULL)
+	{
+		delete[] pIPSetFrame->m_pbyRcvFrameData;
+	}
+	delete pIPSetFrame;
+}
+// 创建线程处理标志位信息结构体
+MatrixServerDll_API m_oThreadProcFlagStruct* CreateThreadProcFlag()
+{
+	m_oThreadProcFlagStruct* pThreadProcFlag = NULL;
+	pThreadProcFlag = new m_oThreadProcFlagStruct;
+	InitializeCriticalSection(&pThreadProcFlag->m_oSecFlag);
+	return pThreadProcFlag;
+}
+// 初始化线程处理标志位
+MatrixServerDll_API void InitThreadProcFlag(m_oThreadProcFlagStruct* pThreadProcFlag)
+{
+	EnterCriticalSection(&pThreadProcFlag->m_oSecFlag);
+	// 心跳处理线程停止标志位
+	pThreadProcFlag->m_bProcHeartBeatStop = false;
+	// 首包处理线程停止标志位
+	pThreadProcFlag->m_bProcHeadFrameStop = false;
+	// 仪器IP地址设置线程停止标志位
+	pThreadProcFlag->m_bProcIPSetStop = false;
+	LeaveCriticalSection(&pThreadProcFlag->m_oSecFlag);
+}
+// 释放线程处理标志位信息结构体
+MatrixServerDll_API void FreeThreadProcFlag(m_oThreadProcFlagStruct* pThreadProcFlag)
+{
+	if (pThreadProcFlag == NULL)
+	{
+		return;
+	}
+	DeleteCriticalSection(&pThreadProcFlag->m_oSecFlag);
+	delete pThreadProcFlag;
+}
+// 创建日志输出结构体
+MatrixServerDll_API m_oLogOutPutStruct* CreateLogOutPut()
+{
+	m_oLogOutPutStruct* pLogOutPut = NULL;
+	pLogOutPut = new m_oLogOutPutStruct;
+	InitializeCriticalSection(&pLogOutPut->m_oSecLogFile);
+	pLogOutPut->m_pFile = NULL;
+	return pLogOutPut;
+}
+// 写日志输出文件
+MatrixServerDll_API void WriteLogOutPutFile(FILE* pFile, string str)
+{
+	size_t  strSize;
+	strSize = str.length();
+	fwrite(str.c_str(), sizeof(byte), strSize, pFile);
+}
+// 打开日志输出文件
+MatrixServerDll_API void OpenLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
+{
+	CString str = _T("");
+	CString csSaveLogFilePath = _T("");
+	SYSTEMTIME  sysTime;
+	errno_t err;
+	// 创建程序运行日志文件夹
+	CreateDirectory(LogFolderPath, NULL);
+	csSaveLogFilePath += LogFolderPath;
+	GetLocalTime(&sysTime);
+	str.Format(_T("\\%04d%02d%02d%02d%02d%02d.log"),sysTime.wYear, sysTime.wMonth, 
+		sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond);
+	csSaveLogFilePath += str;
+	err = fopen_s(&pLogOutPut->m_pFile, ConvertCStrToCCharptr(csSaveLogFilePath), "wt+, ccs=UNICODE");
+}
+
+// 关闭日志输出文件
+MatrixServerDll_API void CloseLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
+{
+	errno_t err;
+	if( pLogOutPut->m_pFile )
+	{
+		err = fclose( pLogOutPut->m_pFile );
+	}
+}
+// 写入日志输出文件
+
+// 初始化日志输出结构体
+MatrixServerDll_API void InitLogOutPut(m_oLogOutPutStruct* pLogOutPut)
+{
+	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
+	// 清空日志输出队列
+	pLogOutPut->m_oLogOutputList.clear();
+	// 打开日志输出文件
+	OpenLogOutPutFile(pLogOutPut);
+	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
+}
+// 释放日志输出结构体
+MatrixServerDll_API void FreeLogOutPut(m_oLogOutPutStruct* pLogOutPut)
+{
+	if (pLogOutPut == NULL)
+	{
+		return;
+	}
+	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
+	// 清空日志输出队列
+	pLogOutPut->m_oLogOutputList.clear();
+	// 关闭日志输出文件
+	CloseLogOutPutFile(pLogOutPut);
+	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
+	DeleteCriticalSection(&pLogOutPut->m_oSecLogFile);
+	delete pLogOutPut;
+}
+// 初始化套接字库
+MatrixServerDll_API void InitSocketLib()
+{
+	WSADATA data;									// 定义结构体变量
+	WORD w = MAKEWORD(2, 2);			// 初始化套接字版本号
+	int err = WSAStartup(w, &data);							// 初始化套接字库
+	if (err == 0)
+	{
+		/*m_oLogFile.OnWriteLogFile(_T("CMatrixTestSoftDlg::OnInitDialog"), _T("初始化套接字库成功！"), SuccessStatus);*/
+	}
+	else
+	{
+		WSAGetLastError();
+// 		str.Format(_T("初始化套接字库失败，错误码为%d！"), err);
+// 		m_oLogFile.OnWriteLogFile(_T("CMatrixTestSoftDlg::OnInitDialog"), str, ErrorStatus);
+	}
+}
+// 释放套接字库
+MatrixServerDll_API void FreeSocketLib()
+{
+	// 释放套接字库
+	int err = WSACleanup();	
+	if (err == 0)
+	{
+//		m_oLogFile.OnWriteLogFile(_T("CMatrixTestSoftDlg::OnClose"), _T("释放套接字库成功！"), SuccessStatus);
+	}
+	else
+	{
+		WSAGetLastError();
+// 		CString str = _T("");
+// 		str.Format(_T("释放套接字库失败，错误码为%d！"), err);
+// 		m_oLogFile.OnWriteLogFile(_T("CMatrixTestSoftDlg::OnClose"), str, ErrorStatus);
+	}
+}
+// 创建并设置心跳端口
+MatrixServerDll_API void CreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame)
+{
+	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+	// 创建套接字
+	pHeartBeatFrame->m_oHeartBeatSocket = CreateInstrumentSocket(pHeartBeatFrame->m_oCommandStruct.m_usReturnPort, 
+																pHeartBeatFrame->m_oCommandStruct.m_uiSrcIP);
+	// 设置为广播端口
+	SetInstrumentSocketBroadCast(pHeartBeatFrame->m_oHeartBeatSocket);
+	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+}
+// 创建并设置首包端口
+MatrixServerDll_API void CreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame)
+{
+	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+	// 创建套接字
+	pHeadFrame->m_oHeadFrameSocket = CreateInstrumentSocket(pHeadFrame->m_oCommandStruct.m_usReturnPort, 
+															pHeadFrame->m_oCommandStruct.m_uiSrcIP);
+	// 设置接收缓冲区
+	SetRcvBufferSize(pHeadFrame->m_oHeadFrameSocket, pHeadFrame->m_uiRcvBufferSize);
+	LeaveCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+}
+// 创建并设置IP地址设置端口
+MatrixServerDll_API void CreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame)
+{
+	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+	// 创建套接字
+	pIPSetFrame->m_oIPSetFrameSocket = CreateInstrumentSocket(pIPSetFrame->m_oCommandStructSet.m_usReturnPort, 
+																pIPSetFrame->m_oCommandStructSet.m_uiSrcIP);
+	// 设置为广播端口
+	SetInstrumentSocketBroadCast(pIPSetFrame->m_oIPSetFrameSocket);
+	// 设置发送缓冲区
+	SetSndBufferSize(pIPSetFrame->m_oIPSetFrameSocket, pIPSetFrame->m_uiSndBufferSize);
+	// 设置接收缓冲区大小
+	SetRcvBufferSize(pIPSetFrame->m_oIPSetFrameSocket, pIPSetFrame->m_uiRcvBufferSize);
+	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+}
+// 初始化实例
+MatrixServerDll_API void InitInstance(m_oEnvironmentStruct* pEnv)
 {
 	if (pEnv == NULL)
 	{
 		return;
 	}
-	LoadLineServerAppSetupData(pEnv->m_pInstrumentCommInfo);
-// 	pEnv->m_pInstrumentCommInfo->m_uiDstIP = pCommInfo->m_uiDstIP;
-// 	pEnv->m_pInstrumentCommInfo->m_uiSrcIP = pCommInfo->m_uiSrcIP;
-// 	pEnv->m_pInstrumentCommInfo->m_uiAimPort = pCommInfo->m_uiAimPort;
-// 	pEnv->m_pInstrumentCommInfo->m_usHeartBeatReturnPort = pCommInfo->m_usHeartBeatReturnPort;
-// 	pEnv->m_pInstrumentCommInfo->m_usHeadFramePort = pCommInfo->m_usHeadFramePort;
-// 	pEnv->m_pInstrumentCommInfo->m_usIPSetReturnPort = pCommInfo->m_usIPSetReturnPort;
-}
-// 释放仪器通讯信息结构体
-MatrixServerDll_API void FreeInstrumentCommInfo(m_oEnvironmentStruct* pEnv)
-{
-	if (pEnv->m_pInstrumentCommInfo != NULL)
-	{
-		delete pEnv->m_pInstrumentCommInfo;
-	}
-}
-// 创建心跳帧信息结构体
-MatrixServerDll_API void CreateInstrumentHeartBeat(m_oEnvironmentStruct* pEnv)
-{
-	pEnv->m_pHeartBeatFrame = new m_oHeartBeatFrameStruct;
-	InitializeCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
-	pEnv->m_pHeartBeatFrame->m_pbySndFrameData = NULL;
-	pEnv->m_pHeartBeatFrame->m_pbyCommandWord = NULL;
-}
-// 初始化心跳
-MatrixServerDll_API void InitInstrumentHeartBeat(m_oEnvironmentStruct* pEnv)
-{
-	EnterCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
-	// 源地址
-	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_uiSrcIP = pEnv->m_pInstrumentCommInfo->m_uiSrcIP;
-	// 目的地址
-	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_uiDstIP = pEnv->m_pInstrumentCommInfo->m_uiDstIP;
-	// 目标IP地址端口号
-	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_uiAimPort = pEnv->m_pInstrumentCommInfo->m_uiAimPort;
-	// 心跳返回端口
-	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_usReturnPort = pEnv->m_pInstrumentCommInfo->m_usHeartBeatReturnPort;
-	// 重置帧内通讯信息
-	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
-	pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_usCommand = pEnv->m_pConstVar->m_oSendQueryCmd;
-	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pEnv->m_pHeartBeatFrame->m_oCommandStruct, pEnv->m_pConstVar);
-	// 清空发送帧缓冲区
-	pEnv->m_pHeartBeatFrame->m_pbySndFrameData = new byte[pEnv->m_pConstVar->m_oSndFrameSize];
-	memset(pEnv->m_pHeartBeatFrame->m_pbySndFrameData, pEnv->m_pConstVar->m_oSndFrameBufInit, pEnv->m_pConstVar->m_oSndFrameSize);
-	// 清空心跳命令字集合
-	pEnv->m_pHeartBeatFrame->m_pbyCommandWord = new byte[pEnv->m_pConstVar->m_oCommandWordMaxNum];
-	memset(pEnv->m_pHeartBeatFrame->m_pbyCommandWord, pEnv->m_pConstVar->m_oSndFrameBufInit, pEnv->m_pConstVar->m_oCommandWordMaxNum);
-	// 心跳命令字个数
-	pEnv->m_pHeartBeatFrame->m_usCommandWordNum = 0;
-	LeaveCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
-}
-// 释放心跳帧信息结构体
-MatrixServerDll_API void FreeInstrumentHeartBeat(m_oEnvironmentStruct* pEnv)
-{
-	if (pEnv->m_pHeartBeatFrame != NULL)
-	{
-		DeleteCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
-		if (pEnv->m_pHeartBeatFrame->m_pbySndFrameData != NULL)
-		{
-			delete[] pEnv->m_pHeartBeatFrame->m_pbySndFrameData;
-		}
-		if (pEnv->m_pHeartBeatFrame->m_pbyCommandWord != NULL)
-		{
-			delete[] pEnv->m_pHeartBeatFrame->m_pbyCommandWord;
-		}
-		delete pEnv->m_pHeartBeatFrame;
-	}
-}
-// 创建首包帧信息结构体
-MatrixServerDll_API void CreateInstrumentHeadFrame(m_oEnvironmentStruct* pEnv)
-{
-	pEnv->m_pHeadFrame = new m_oHeadFrameStruct;
-	InitializeCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
-	pEnv->m_pHeadFrame->m_pbyRcvFrameData = NULL;
-}
-// 初始化首包
-MatrixServerDll_API void InitInstrumentHeadFrame(m_oEnvironmentStruct* pEnv)
-{
-	EnterCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
-	// 首包接收缓冲区帧数设定为仪器个数
-	pEnv->m_pHeadFrame->m_uiRcvFrameNum = pEnv->m_pInstrumentCommInfo->m_uiInstrumentNum;
-	// 接收端口
-	pEnv->m_pHeadFrame->m_oCommandStruct.m_usReturnPort = pEnv->m_pInstrumentCommInfo->m_usHeadFramePort;
-	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pEnv->m_pHeadFrame->m_oCommandStruct, pEnv->m_pConstVar);
-	// 清空接收帧缓冲区
-	pEnv->m_pHeadFrame->m_pbyRcvFrameData = new byte[pEnv->m_pConstVar->m_oRcvFrameSize];
-	memset(pEnv->m_pHeadFrame->m_pbyRcvFrameData, pEnv->m_pConstVar->m_oSndFrameBufInit, pEnv->m_pConstVar->m_oRcvFrameSize);
-	LeaveCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
-}
-// 释放首包帧信息结构体
-MatrixServerDll_API void FreeInstrumentHeadFrame(m_oEnvironmentStruct* pEnv)
-{
-	if (pEnv->m_pHeadFrame != NULL)
-	{
-		DeleteCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
-		if (pEnv->m_pHeadFrame->m_pbyRcvFrameData != NULL)
-		{
-			delete[] pEnv->m_pHeadFrame->m_pbyRcvFrameData;
-		}
-		delete pEnv->m_pHeadFrame;
-	}
-}
-// 创建IP地址设置帧信息结构体
-MatrixServerDll_API void CreateInstrumentIPSetFrame(m_oEnvironmentStruct* pEnv)
-{
-	pEnv->m_pIPSetFrame = new m_oIPSetFrameStruct;
-	InitializeCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
-	pEnv->m_pIPSetFrame->m_pbySndFrameData = NULL;
-	pEnv->m_pIPSetFrame->m_pbyCommandWord = NULL;
-	pEnv->m_pIPSetFrame->m_pbyRcvFrameData = NULL;
-}
-// 初始化IP地址设置
-MatrixServerDll_API void InitInstrumentIPSetFrame(m_oEnvironmentStruct* pEnv)
-{
-	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
-	// 源地址
-	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_uiSrcIP = pEnv->m_pInstrumentCommInfo->m_uiSrcIP;
-	// 目的地址
-	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_uiDstIP = pEnv->m_pInstrumentCommInfo->m_uiDstIP;
-	// 目标IP地址端口号
-	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_uiAimPort = pEnv->m_pInstrumentCommInfo->m_uiAimPort;
-	// IP地址设置发送缓冲区帧数设定为仪器个数
-	pEnv->m_pIPSetFrame->m_uiSndFrameNum = pEnv->m_pInstrumentCommInfo->m_uiInstrumentNum;
-	// IP地址设置应答接收缓冲区帧数设定为仪器个数
-	pEnv->m_pIPSetFrame->m_uiRcvFrameNum = pEnv->m_pInstrumentCommInfo->m_uiInstrumentNum;
-	// IP地址设置返回端口
-	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_usReturnPort = pEnv->m_pInstrumentCommInfo->m_usIPSetReturnPort;
-	// 重置帧内通讯信息
-	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
-	pEnv->m_pIPSetFrame->m_oCommandStructSet.m_usCommand = pEnv->m_pConstVar->m_oSendSetCmd;
-	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pEnv->m_pIPSetFrame->m_oCommandStructSet, pEnv->m_pConstVar);
-	// 清空发送帧缓冲区
-	pEnv->m_pIPSetFrame->m_pbySndFrameData = new byte[pEnv->m_pConstVar->m_oSndFrameSize];
-	memset(pEnv->m_pIPSetFrame->m_pbySndFrameData, pEnv->m_pConstVar->m_oSndFrameBufInit, pEnv->m_pConstVar->m_oSndFrameSize);
-	// 清空IP地址设置命令字集合
-	pEnv->m_pIPSetFrame->m_pbyCommandWord = new byte[pEnv->m_pConstVar->m_oCommandWordMaxNum];
-	memset(pEnv->m_pIPSetFrame->m_pbyCommandWord, pEnv->m_pConstVar->m_oSndFrameBufInit, pEnv->m_pConstVar->m_oCommandWordMaxNum);
-	// IP地址设置命令字个数
-	pEnv->m_pIPSetFrame->m_usCommandWordNum = 0;
-
-	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pEnv->m_pIPSetFrame->m_oCommandStructReturn, pEnv->m_pConstVar);
-	// 清空接收帧缓冲区
-	pEnv->m_pIPSetFrame->m_pbyRcvFrameData = new byte[pEnv->m_pConstVar->m_oRcvFrameSize];
-	memset(pEnv->m_pIPSetFrame->m_pbyRcvFrameData, pEnv->m_pConstVar->m_oSndFrameBufInit, pEnv->m_pConstVar->m_oRcvFrameSize);
-	LeaveCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
-}
-// 释放IP地址设置帧信息结构体
-MatrixServerDll_API void FreeInstrumentIPSetFrame(m_oEnvironmentStruct* pEnv)
-{
-	if (pEnv->m_pIPSetFrame != NULL)
-	{
-		DeleteCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
-		if (pEnv->m_pIPSetFrame->m_pbySndFrameData != NULL)
-		{
-			delete[] pEnv->m_pIPSetFrame->m_pbySndFrameData;
-		}
-		if (pEnv->m_pIPSetFrame->m_pbyCommandWord != NULL)
-		{
-			delete[] pEnv->m_pIPSetFrame->m_pbyCommandWord;
-		}
-		if (pEnv->m_pIPSetFrame->m_pbyRcvFrameData != NULL)
-		{
-			delete[] pEnv->m_pIPSetFrame->m_pbyRcvFrameData;
-		}
-		delete pEnv->m_pIPSetFrame;
-	}
-}
-// 创建线程处理标志位信息结构体
-MatrixServerDll_API void CreateThreadProcFlag(m_oEnvironmentStruct* pEnv)
-{
-	pEnv->m_pThreadProcFlag = new m_oThreadProcFlagStruct;
-	InitializeCriticalSection(&pEnv->m_pThreadProcFlag->m_oSecFlag);
-}
-// 初始化线程处理标志位
-MatrixServerDll_API void InitThreadProcFlag(m_oEnvironmentStruct* pEnv)
-{
-	EnterCriticalSection(&pEnv->m_pThreadProcFlag->m_oSecFlag);
-	// 心跳处理线程停止标志位
-	pEnv->m_pThreadProcFlag->m_bProcHeartBeatStop = false;
-	// 首包处理线程停止标志位
-	pEnv->m_pThreadProcFlag->m_bProcHeadFrameStop = false;
-	// 仪器IP地址设置线程停止标志位
-	pEnv->m_pThreadProcFlag->m_bProcIPSetStop = false;
-	LeaveCriticalSection(&pEnv->m_pThreadProcFlag->m_oSecFlag);
-}
-// 释放线程处理标志位信息结构体
-MatrixServerDll_API void FreeThreadProcFlag(m_oEnvironmentStruct* pEnv)
-{
-	if (pEnv->m_pThreadProcFlag != NULL)
-	{
-		DeleteCriticalSection(&pEnv->m_pThreadProcFlag->m_oSecFlag);
-		delete pEnv->m_pThreadProcFlag;
-	}
-}
-// 创建并设置心跳端口
-MatrixServerDll_API void CreateAndSetHeartBeatSocket(m_oEnvironmentStruct* pEnv)
-{
-	EnterCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
-	// 创建套接字
-	pEnv->m_pHeartBeatFrame->m_oHeartBeatSocket = CreateInstrumentSocket(pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_usReturnPort, pEnv->m_pHeartBeatFrame->m_oCommandStruct.m_uiSrcIP);
-	// 设置为广播端口
-	SetInstrumentSocketBroadCast(pEnv->m_pHeartBeatFrame->m_oHeartBeatSocket);
-	LeaveCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
-}
-// 创建并设置首包端口
-MatrixServerDll_API void CreateAndSetHeadFrameSocket(m_oEnvironmentStruct* pEnv)
-{
-	EnterCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
-	// 创建套接字
-	pEnv->m_pHeadFrame->m_oHeadFrameSocket = CreateInstrumentSocket(pEnv->m_pHeadFrame->m_oCommandStruct.m_usReturnPort, pEnv->m_pHeadFrame->m_oCommandStruct.m_uiSrcIP);
-	// 设置接收缓冲区
-	SetRcvBufferSize(pEnv->m_pHeadFrame->m_oHeadFrameSocket, pEnv->m_pHeadFrame->m_uiRcvFrameNum * pEnv->m_pConstVar->m_oRcvFrameSize);
-	LeaveCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
-}
-// 创建并设置IP地址设置端口
-MatrixServerDll_API void CreateAndSetIPSetFrameSocket(m_oEnvironmentStruct* pEnv)
-{
-	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
-	// 创建套接字
-	pEnv->m_pIPSetFrame->m_oIPSetFrameSocket = CreateInstrumentSocket(pEnv->m_pIPSetFrame->m_oCommandStructSet.m_usReturnPort, pEnv->m_pIPSetFrame->m_oCommandStructSet.m_uiSrcIP);
-	// 设置为广播端口
-	SetInstrumentSocketBroadCast(pEnv->m_pIPSetFrame->m_oIPSetFrameSocket);
-	// 设置发送缓冲区
-	SetSndBufferSize(pEnv->m_pIPSetFrame->m_oIPSetFrameSocket, pEnv->m_pIPSetFrame->m_uiSndFrameNum * pEnv->m_pConstVar->m_oSndFrameSize);
-	// 设置接收缓冲区大小
-	SetRcvBufferSize(pEnv->m_pIPSetFrame->m_oIPSetFrameSocket, pEnv->m_pIPSetFrame->m_uiRcvFrameNum * pEnv->m_pConstVar->m_oRcvFrameSize);
-	LeaveCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
-}
-// 初始化实例
-MatrixServerDll_API void InitInstance(m_oEnvironmentStruct* pEnv)
-{
+	// 创建日志输出结构体
+	pEnv->m_pLogOutPut = CreateLogOutPut();
+	// 初始化日志输出结构体
+	InitLogOutPut(pEnv->m_pLogOutPut);
+	// 初始化套接字库
+	InitSocketLib();
 	// 创建常量信息结构体
-	CreateConstVar(pEnv);
+	pEnv->m_pConstVar = CreateConstVar();
 	// 初始化常量信息结构体
-	InitConstVar(pEnv);
+	InitConstVar(pEnv->m_pConstVar);
 	// 创建仪器通讯信息结构体
-	CreateInstrumentCommInfo(pEnv);
+	pEnv->m_pInstrumentCommInfo = CreateInstrumentCommInfo();
 	// 初始化仪器通讯信息结构体
-	InitInstrumentCommInfo(pEnv);
+	InitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
 	// 创建心跳帧信息结构体
-	CreateInstrumentHeartBeat(pEnv);
+	pEnv->m_pHeartBeatFrame = CreateInstrumentHeartBeat();
 	// 初始化心跳
-	InitInstrumentHeartBeat(pEnv);
+	InitInstrumentHeartBeat(pEnv->m_pHeartBeatFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 创建首包帧信息结构体
-	CreateInstrumentHeadFrame(pEnv);
+	pEnv->m_pHeadFrame = CreateInstrumentHeadFrame();
 	// 初始化首包
-	InitInstrumentHeadFrame(pEnv);
+	InitInstrumentHeadFrame(pEnv->m_pHeadFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 创建IP地址设置帧信息结构体
-	CreateInstrumentIPSetFrame(pEnv);
+	pEnv->m_pIPSetFrame = CreateInstrumentIPSetFrame();
 	// 初始化IP地址设置
-	InitInstrumentIPSetFrame(pEnv);
+	InitInstrumentIPSetFrame(pEnv->m_pIPSetFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 创建线程处理标志位信息结构体
-	CreateThreadProcFlag(pEnv);
+	pEnv->m_pThreadProcFlag = CreateThreadProcFlag();
 	// 初始化线程处理标志位
-	InitThreadProcFlag(pEnv);
+	InitThreadProcFlag(pEnv->m_pThreadProcFlag);
 	// 创建并设置心跳端口
-	CreateAndSetHeartBeatSocket(pEnv);
+	CreateAndSetHeartBeatSocket(pEnv->m_pHeartBeatFrame);
 	// 创建并设置首包端口
-	CreateAndSetHeadFrameSocket(pEnv);
+	CreateAndSetHeadFrameSocket(pEnv->m_pHeadFrame);
 	// 创建并设置IP地址设置端口
-	CreateAndSetIPSetFrameSocket(pEnv);
+	CreateAndSetIPSetFrameSocket(pEnv->m_pIPSetFrame);
 }
 // 释放实例资源
 MatrixServerDll_API void FreeInstance(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv != NULL)
+	if (pEnv == NULL)
 	{
-		FreeConstVar(pEnv);
-		FreeInstrumentCommInfo(pEnv);
-		FreeInstrumentHeartBeat(pEnv);
-		FreeInstrumentHeadFrame(pEnv);
-		FreeInstrumentIPSetFrame(pEnv);
-		FreeThreadProcFlag(pEnv);
-		delete pEnv;
-		pEnv = NULL;
+		return;
 	}
+	FreeConstVar(pEnv->m_pConstVar);
+	FreeInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
+	FreeInstrumentHeartBeat(pEnv->m_pHeartBeatFrame);
+	FreeInstrumentHeadFrame(pEnv->m_pHeadFrame);
+	FreeInstrumentIPSetFrame(pEnv->m_pIPSetFrame);
+	FreeThreadProcFlag(pEnv->m_pThreadProcFlag);
+	// 释放日志输出结构体
+	FreeLogOutPut(pEnv->m_pLogOutPut);
+	delete pEnv;
+	pEnv = NULL;
+	// 释放套接字库
+	FreeSocketLib();
 }
 // 解析首包帧
-MatrixServerDll_API bool ParseInstrumentHeadFrame(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API bool ParseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, m_oConstVarStruct* pConstVar)
 {
 	bool bReturn = false;
-	EnterCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
-	bReturn = ParseInstrumentFrame(&pEnv->m_pHeadFrame->m_oCommandStruct, pEnv->m_pHeadFrame->m_pbyRcvFrameData,
-		pEnv->m_pConstVar);
-	LeaveCriticalSection(&pEnv->m_pHeadFrame->m_oSecHeadFrame);
+	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+	bReturn = ParseInstrumentFrame(&pHeadFrame->m_oCommandStruct, pHeadFrame->m_pbyRcvFrameData, pConstVar);
+	LeaveCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	return bReturn;
 }
 // 解析IP地址设置应答帧
-MatrixServerDll_API bool ParseInstrumentIPSetReturnFrame(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API bool ParseInstrumentIPSetReturnFrame(m_oIPSetFrameStruct* pIPSetFrame, m_oConstVarStruct* pConstVar)
 {
 	bool bReturn = false;
-	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
-	bReturn = ParseInstrumentFrame(&pEnv->m_pIPSetFrame->m_oCommandStructReturn, pEnv->m_pIPSetFrame->m_pbyRcvFrameData, pEnv->m_pConstVar);
-	LeaveCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+	bReturn = ParseInstrumentFrame(&pIPSetFrame->m_oCommandStructReturn, pIPSetFrame->m_pbyRcvFrameData, pConstVar);
+	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	return bReturn;
 }
 // 生成心跳帧
-MatrixServerDll_API void MakeInstrumentHeartBeatFrame(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API void MakeInstrumentHeartBeatFrame(m_oHeartBeatFrameStruct* pHeartBeatFrame, m_oConstVarStruct* pConstVar)
 {
-	EnterCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
-	MakeInstrumentFrame(&pEnv->m_pHeartBeatFrame->m_oCommandStruct, pEnv->m_pHeartBeatFrame->m_pbySndFrameData,
-		pEnv->m_pHeartBeatFrame->m_pbyCommandWord, pEnv->m_pHeartBeatFrame->m_usCommandWordNum, pEnv->m_pConstVar);
-	LeaveCriticalSection(&pEnv->m_pHeartBeatFrame->m_oSecHeartBeat);
+	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+	MakeInstrumentFrame(&pHeartBeatFrame->m_oCommandStruct,  pConstVar, pHeartBeatFrame->m_pbySndFrameData,
+						pHeartBeatFrame->m_pbyCommandWord, pHeartBeatFrame->m_usCommandWordNum);
+	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 }
 // 生成IP地址设置帧
-MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, m_oConstVarStruct* pConstVar)
 {
-	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
-	MakeInstrumentFrame(&pEnv->m_pIPSetFrame->m_oCommandStructSet, pEnv->m_pIPSetFrame->m_pbySndFrameData, 
-		pEnv->m_pIPSetFrame->m_pbyCommandWord, pEnv->m_pIPSetFrame->m_usCommandWordNum, pEnv->m_pConstVar);
-	LeaveCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+	MakeInstrumentFrame(&pIPSetFrame->m_oCommandStructSet, pConstVar, pIPSetFrame->m_pbySndFrameData, 
+						pIPSetFrame->m_pbyCommandWord, pIPSetFrame->m_usCommandWordNum);
+	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }

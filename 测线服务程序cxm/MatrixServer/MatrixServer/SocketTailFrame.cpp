@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MatrixServer.h"
 #include "SocketTailFrame.h"
-#include "..\\parameter\\Parameter.h"
+#include "Parameter.h"
 
 // CSocketTailFrame
 

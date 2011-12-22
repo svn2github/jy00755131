@@ -101,7 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h" />
-    <ClInclude Include="..\parameter\Parameter.h" />
     <ClInclude Include="CXMLDOMDocument.h" />
     <ClInclude Include="CXMLDOMElement.h" />
     <ClInclude Include="CXMLDOMNode.h" />

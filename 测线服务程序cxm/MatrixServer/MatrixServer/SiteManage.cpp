@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "SiteManage.h"
-#include "..\\parameter\\Parameter.h"
+#include "Parameter.h"
 #include <string>
 using std::string;
 using std::wstring;
@@ -20,7 +20,7 @@ string WideCharToMultiChar(wstring str)
 	delete []buffer;
 	return return_value;
 }
-const char* ConvertCStringToConstCharPointer(CString str)
+const char* ConvertCStrToCCharptr(CString str)
 {
 	const char* pChar = NULL;
 	char pach[2000];
@@ -52,7 +52,7 @@ CSiteManage::CSiteManage()
 	// 和现场仪器通讯的本机IP地址
 	m_strIPForInstrument = _T("192.168.0.11");
  	// 和现场仪器通讯的本机IP地址
- 	m_uiIPForInstrument = inet_addr(ConvertCStringToConstCharPointer(m_strIPForInstrument));
+ 	m_uiIPForInstrument = inet_addr(ConvertCStrToCCharptr(m_strIPForInstrument));
 	// 和内部网络通讯的本机IP地址
 	m_strIPForInterface = _T("192.168.0.11");
 
@@ -543,7 +543,7 @@ void CSiteManage::LoadIPSetupData()
 	strKey = _T("IPForInstrument");
 	m_strIPForInstrument = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
 	// 和现场仪器通讯的本机IP地址
-	m_uiIPForInstrument = inet_addr(ConvertCStringToConstCharPointer(m_strIPForInstrument));
+	m_uiIPForInstrument = inet_addr(ConvertCStrToCCharptr(m_strIPForInstrument));
 	strKey = _T("IPForInterface");
 	m_strIPForInterface = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
 	strKey = _T("IPLCI");

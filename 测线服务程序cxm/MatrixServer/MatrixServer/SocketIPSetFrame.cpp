@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MatrixServer.h"
 #include "SocketIPSetFrame.h"
-#include "..\\parameter\\Parameter.h"
+#include "Parameter.h"
 
 // CSocketIPSetFrame
 

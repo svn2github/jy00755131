@@ -1,5 +1,5 @@
 #pragma once
-#include "..\\parameter\\Parameter.h"
+#include "Parameter.h"
 /**
 *@brief 服务器和客户端之间信息交互网络帧类
 *

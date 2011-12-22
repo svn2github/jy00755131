@@ -4,7 +4,9 @@
 // 任何其他项目上不应定义此符号。这样，源文件中包含此文件的任何其他项目都会将
 // MATRIXSERVERDLL_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的
 // 符号视为是被导出的。
-//#include "..\\parameter\\Parameter.h"
+
+#include <list>
+using std::list;
 using std::string;
 #ifdef MATRIXSERVERDLL_EXPORTS
 #define MATRIXSERVERDLL_API __declspec(dllexport)
@@ -108,8 +110,6 @@ typedef struct ConstVar_Struct
 	byte m_oCmdLAUXErrorCode2;
 	// 交叉站路由分配
 	byte m_oCmdLAUXSetRout;
-	// ADC数据图形化显示抽样率
-	byte m_oCmdADCDataSamplingRate;
 	// 返回路由
 	byte m_oCmdReturnRout;
 	// 命令解析结束命令
@@ -139,7 +139,7 @@ typedef struct InstrumentCommInfo_Struct
 // 线程处理标志位结构
 typedef struct ThreadProcFlag_Struct
 {
-	// 标志位的线程同步对象
+	// 标志位的资源同步对象
 	CRITICAL_SECTION m_oSecFlag;
 	// 心跳处理线程停止标志位
 	bool m_bProcHeartBeatStop;
@@ -251,7 +251,7 @@ typedef struct InstrumentCommand_Struct
 // 心跳
 typedef struct HeartBeatFrame_Struct
 {
-	// 心跳线程同步对象
+	// 心跳帧资源同步对象
 	CRITICAL_SECTION m_oSecHeartBeat;
 	// 发送帧缓冲区
 	byte* m_pbySndFrameData;
@@ -267,10 +267,10 @@ typedef struct HeartBeatFrame_Struct
 // 首包
 typedef struct HeadFrame_Struct
 {
-	// 首包线程同步对象
+	// 首包帧资源同步对象
 	CRITICAL_SECTION m_oSecHeadFrame;
-	// 接收缓冲区帧数
-	unsigned int m_uiRcvFrameNum;
+	// 网络端口接收缓冲区大小
+	unsigned int m_uiRcvBufferSize;
 	// 接收帧缓冲区
 	byte* m_pbyRcvFrameData;
 	// 首包帧命令
@@ -281,10 +281,10 @@ typedef struct HeadFrame_Struct
 // IP地址设置
 typedef struct IPSetFrame_Struct
 {
-	// IP地址设置线程同步对象
+	// IP地址设置帧资源同步对象
 	CRITICAL_SECTION m_oSecIPSetFrame;
-	// 发送缓冲区帧数
-	unsigned int m_uiSndFrameNum;
+	// 网络端口发送缓冲区大小
+	unsigned int m_uiSndBufferSize;
 	// 发送帧缓冲区
 	byte* m_pbySndFrameData;
 	// IP地址设置命令字集合
@@ -293,8 +293,8 @@ typedef struct IPSetFrame_Struct
 	unsigned short m_usCommandWordNum;
 	// IP地址设置帧命令
 	m_oInstrumentCommandStruct m_oCommandStructSet;
-	// 接收缓冲区帧数
-	unsigned int m_uiRcvFrameNum;
+	// 网络端口接收缓冲区大小
+	unsigned int m_uiRcvBufferSize;
 	// 接收帧缓冲区
 	byte* m_pbyRcvFrameData;
 	// IP地址设置应答帧命令
@@ -302,6 +302,16 @@ typedef struct IPSetFrame_Struct
 	// IP地址设置Socket套接字
 	SOCKET m_oIPSetFrameSocket;
 }m_oIPSetFrameStruct;
+// 日志输出结构
+typedef struct LogOutPut_Struct
+{
+	// 日志输出资源同步对象
+	CRITICAL_SECTION m_oSecLogFile;
+	// 日志输出文件指针
+	FILE* m_pFile;
+	// 日志输出结构
+	list<string> m_oLogOutputList;
+}m_oLogOutPutStruct;
 // 环境结构体
 typedef struct Environment_Struct
 {
@@ -317,6 +327,8 @@ typedef struct Environment_Struct
 	m_oIPSetFrameStruct* m_pIPSetFrame;
 	// 线程处理标志位结构
 	m_oThreadProcFlagStruct* m_pThreadProcFlag;
+	// 日志输出结构
+	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oEnvironmentStruct;
 
 

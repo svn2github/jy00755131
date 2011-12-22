@@ -1,5 +1,5 @@
 #pragma once
-#include "..\\parameter\\Parameter.h"
+#include "Parameter.h"
 /**
 *@brief ÒÇÆ÷Ê×°üÖ¡Àà
 */
