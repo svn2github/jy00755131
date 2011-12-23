@@ -6,6 +6,7 @@
 // 符号视为是被导出的。
 
 #include <list>
+#include "Resource.h"
 using std::list;
 using std::string;
 #ifdef MATRIXSERVERDLL_EXPORTS
@@ -25,6 +26,34 @@ public:
 extern MATRIXSERVERDLL_API int nMatrixServerDll;
 
 MATRIXSERVERDLL_API int fnMatrixServerDll(void);
+// ini参数文件相对路径
+#define INIFilePath			_T("..\\parameter\\MatrixServerDLL.ini")
+// 测线网络配置XML文件相对路径
+#define CommXMLFilePath		_T("..\\parameter\\MatrixLineApp.XML")
+// 日志文件夹
+#define LogFolderPath		_T("..\\Log")
+// Debug输出
+#define OutPutDebug			0
+// Release输出
+#define OutPutRelease		1
+// 输出选择
+#define OutPutSelect		OutPutDebug
+// 输出错误日志上限
+#define OutPutLogErrorLimit	100
+// 日志输出类型
+enum{LogType, WarningType, ErrorType, ExpandType};
+// 日志输出结构
+typedef struct LogOutPut_Struct
+{
+	// 日志输出资源同步对象
+	CRITICAL_SECTION m_oSecLogFile;
+	// 日志输出文件指针
+	FILE* m_pFile;
+	// 日志输出结构
+	list<string> m_oLogOutputList;
+	// 错误计数
+	unsigned int m_uiErrorCount;
+}m_oLogOutPutStruct;
 // 从INI文件中解析得到的常量
 typedef struct ConstVar_Struct
 {
@@ -114,6 +143,8 @@ typedef struct ConstVar_Struct
 	byte m_oCmdReturnRout;
 	// 命令解析结束命令
 	byte m_oCmdEnd;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
 // 从XML文件中解析得到的信息
 typedef struct InstrumentCommInfo_Struct
@@ -134,6 +165,8 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned short m_usIPSetReturnPort;
 	// 仪器设备个数
 	unsigned int m_uiInstrumentNum;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oInstrumentCommInfoStruct;
 
 // 线程处理标志位结构
@@ -263,6 +296,8 @@ typedef struct HeartBeatFrame_Struct
 	m_oInstrumentCommandStruct m_oCommandStruct;
 	// 心跳Socket套接字
 	SOCKET m_oHeartBeatSocket;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oHeartBeatFrameStruct;
 // 首包
 typedef struct HeadFrame_Struct
@@ -277,6 +312,8 @@ typedef struct HeadFrame_Struct
 	m_oInstrumentCommandStruct m_oCommandStruct;
 	// 首包Socket套接字
 	SOCKET m_oHeadFrameSocket;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oHeadFrameStruct;
 // IP地址设置
 typedef struct IPSetFrame_Struct
@@ -301,17 +338,9 @@ typedef struct IPSetFrame_Struct
 	m_oInstrumentCommandStruct m_oCommandStructReturn;
 	// IP地址设置Socket套接字
 	SOCKET m_oIPSetFrameSocket;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oIPSetFrameStruct;
-// 日志输出结构
-typedef struct LogOutPut_Struct
-{
-	// 日志输出资源同步对象
-	CRITICAL_SECTION m_oSecLogFile;
-	// 日志输出文件指针
-	FILE* m_pFile;
-	// 日志输出结构
-	list<string> m_oLogOutputList;
-}m_oLogOutPutStruct;
 // 环境结构体
 typedef struct Environment_Struct
 {
