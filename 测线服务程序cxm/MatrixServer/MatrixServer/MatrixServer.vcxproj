@@ -115,6 +115,7 @@
     <ClInclude Include="MatrixServer.h" />
     <ClInclude Include="MatrixServerDlg.h" />
     <ClInclude Include="NetProcInterface.h" />
+    <ClInclude Include="Parameter.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Rout.h" />
     <ClInclude Include="RoutList.h" />

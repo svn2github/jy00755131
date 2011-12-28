@@ -166,11 +166,77 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	GetCurrentDirectory(256,strBuff);		// 获取当前路径
 	strFilePath.Format(_T("%s\\MatrixServerDLL.ini"),strBuff);
 
+	strSection = _T("常量设置");			// 获取当前区域
+
+	strSectionKey=_T("HeadFrameStableNum");		// 首包计数
+	strValue = _T("4");
+	//写入ini文件中相应字段
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("IPAddrResetTimes");		// IP地址重设次数
+	strValue = _T("3");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("InstrumentTypeLAUL");		// 仪器类型-电源站
+	strValue = _T("2");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("InstrumentTypeFDU");		// 仪器类型-采集站
+	strValue = _T("3");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("InstrumentTypeLCI");		// 仪器类型-LCI
+	strValue = _T("4");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("DirectionTop");			// 方向上方
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("DirectionDown");			// 方向下方
+	strValue = _T("2");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("DirectionLeft");			// 方向左方
+	strValue = _T("3");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("DirectionRight");			// 方向右方
+	strValue = _T("4");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("DirectionCenter");		// 方向正中
+	strValue = _T("0");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("IPSetAddrStart");			// IP地址设置的起始地址
+	strValue = _T("71");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("IPSetAddrInterval");		// IP地址设置的间隔
+	strValue = _T("10");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("RoutSetAddrStart");		// 路由地址设置的起始地址
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("RoutSetAddrInterval");	// 路由地址设置的间隔
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("BroadcastPortStart");		// 设置广播端口起始地址
+	strValue = _T("0x00000010");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSection = _T("帧格式设置");			// 获取当前区域
 
 	strSectionKey=_T("FrameHeadSize");		// 帧头长度
 	strValue = _T("16");
-	//写入ini文件中相应字段
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("FrameHeadCheck");		// 同步帧头

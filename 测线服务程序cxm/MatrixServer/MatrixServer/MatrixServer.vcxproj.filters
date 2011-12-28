@@ -117,6 +117,9 @@
     <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Parameter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MatrixServer.cpp">

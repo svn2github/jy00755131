@@ -6,16 +6,19 @@
 // 符号视为是被导出的。
 
 #include <list>
+#include <hash_map>
 #include "Resource.h"
 using std::list;
+using stdext::hash_map;
 using std::string;
 #ifdef MATRIXSERVERDLL_EXPORTS
 #define MATRIXSERVERDLL_API __declspec(dllexport)
+#define MatrixServerDll_API extern "C" __declspec(dllexport)
 #else
 #define MATRIXSERVERDLL_API __declspec(dllimport)
+#define MatrixServerDll_API extern "C" __declspec(dllimport)
 #endif
 
-#define MatrixServerDll_API extern "C" __declspec(dllexport)
 // 此类是从 MatrixServerDll.dll 导出的
 class MATRIXSERVERDLL_API CMatrixServerDll {
 public:
@@ -32,12 +35,8 @@ MATRIXSERVERDLL_API int fnMatrixServerDll(void);
 #define CommXMLFilePath		_T("..\\parameter\\MatrixLineApp.XML")
 // 日志文件夹
 #define LogFolderPath		_T("..\\Log")
-// Debug输出
-#define OutPutDebug			0
-// Release输出
-#define OutPutRelease		1
-// 输出选择
-#define OutPutSelect		OutPutDebug
+// 输出选择:Debug输出则为0，Release输出则为1
+#define OutPutSelect		0
 // 输出错误日志上限
 #define OutPutLogErrorLimit	100
 // 日志输出类型
@@ -57,92 +56,126 @@ typedef struct LogOutPut_Struct
 // 从INI文件中解析得到的常量
 typedef struct ConstVar_Struct
 {
+	//____常量设置____
+	// 首包计数
+	int m_iHeadFrameStableNum;
+	// IP地址重设次数
+	int m_iIPAddrResetTimes;
+	// 仪器类型-交叉站
+	byte m_byInstrumentTypeLAUX;
+	// 仪器类型-电源站
+	byte m_byInstrumentTypeLAUL;
+	// 仪器类型-采集站
+	byte m_byInstrumentTypeFDU;
+	// 仪器类型-LCI
+	byte m_byInstrumentTypeLCI;
+	// 方向上方
+	int m_iDirectionTop;
+	// 方向下方
+	int m_iDirectionDown;
+	// 方向左方
+	int m_iDirectionLeft;
+	// 方向右方
+	int m_iDirectionRight;
+	// 方向正中
+	int m_iDirectionCenter;
+	// IP地址设置的起始地址
+	int m_iIPSetAddrStart;
+	// IP地址设置的间隔
+	int m_iIPSetAddrInterval;
+	// 路由地址设置的起始地址
+	int m_iRoutSetAddrStart;
+	// 路由地址设置的间隔
+	int m_iRoutSetAddrInterval;
+	// 设置广播端口起始地址
+	int m_iBroadcastPortStart;
+
 	//____帧格式设置____
 	// 帧头长度
-	int m_oFrameHeadSize;
+	int m_iFrameHeadSize;
 	// 同步帧头
 	byte* m_pFrameHeadCheck;
 	// 命令字长度1字节
-	int m_oFrameCmdSize1B;
+	int m_iFrameCmdSize1B;
 	// 命令包长度1字节
-	int m_oFramePacketSize1B;
+	int m_iFramePacketSize1B;
 	// 命令包长度2字节
-	int m_oFramePacketSize2B;
+	int m_iFramePacketSize2B;
 	// 命令包长度4字节
-	int m_oFramePacketSize4B;
+	int m_iFramePacketSize4B;
 	// ADC数据所占字节数
-	int m_oADCDataSize3B;
+	int m_iADCDataSize3B;
 	// 命令字个数最大值
-	int m_oCommandWordMaxNum;
+	int m_iCommandWordMaxNum;
 	// 0x18命令数组包含的最大字节数
-	int m_oADCSetCommandMaxByte;
+	int m_iADCSetCommandMaxByte;
 	// 发送帧缓冲区初值设定
-	byte m_oSndFrameBufInit;
+	byte m_bySndFrameBufInit;
 	// 接收的网络数据帧帧长度
-	int m_oRcvFrameSize;
+	int m_iRcvFrameSize;
 	// 发送的网络数据帧帧长度
-	int m_oSndFrameSize;
+	int m_iSndFrameSize;
 	//____服务器与设备命令字设置____
 	// 发送设置命令
-	unsigned short m_oSendSetCmd;
+	unsigned short m_usSendSetCmd;
 	// 发送查询命令
-	unsigned short m_oSendQueryCmd;
+	unsigned short m_usSendQueryCmd;
 	// 发送ADC采样数据重发命令
-	unsigned short m_oSendADCCmd;
+	unsigned short m_usSendADCCmd;
 	// TB开始采集开关控制命令(TB_L高8位)
-	unsigned int m_oCmdTBCtrl;
+	unsigned int m_uiCmdTBCtrl;
 	// 串号
-	byte m_oCmdSn;
+	byte m_byCmdSn;
 	// 首包时间
-	byte m_oCmdHeadFrameTime;
+	byte m_byCmdHeadFrameTime;
 	// 本地IP地址
-	byte m_oCmdLocalIPAddr;
+	byte m_byCmdLocalIPAddr;
 	// 本地系统时间
-	byte m_oCmdLocalSysTime;
+	byte m_byCmdLocalSysTime;
 	// 本地时间修正高位
-	byte m_oCmdLocalTimeFixedHigh;
+	byte m_byCmdLocalTimeFixedHigh;
 	// 本地时间修正低位
-	byte m_oCmdLocalTimeFixedLow;
+	byte m_byCmdLocalTimeFixedLow;
 	// 自动数据返回地址
-	byte m_oCmdADCDataReturnAddr;
+	byte m_byCmdADCDataReturnAddr;
 	// 自动数据返回端口和命令
-	byte m_oCmdADCDataReturnPort;
+	byte m_byCmdADCDataReturnPort;
 	// 端口递增下限和上限
-	byte m_oCmdADCDataReturnPortLimit;
+	byte m_byCmdADCDataReturnPortLimit;
 	// 设置网络等待端口和命令
-	byte m_oCmdSetBroadCastPort;
+	byte m_byCmdSetBroadCastPort;
 	// 系统硬件状态拷贝
-	byte m_oCmdFDUErrorCode;
+	byte m_byCmdFDUErrorCode;
 	// TB时刻高位
-	byte m_oCmdTBHigh;
+	byte m_byCmdTBHigh;
 	// TB时刻低位
-	byte m_oCmdTbLow;
+	byte m_byCmdTbLow;
 	// work_ctrl 交叉站方向
-	byte m_oCmdLAUXRoutOpenQuery;
+	byte m_byCmdLAUXRoutOpenQuery;
 	// 路由开关
-	byte m_oCmdLAUXRoutOpenSet;
+	byte m_byCmdLAUXRoutOpenSet;
 	// 尾包接收\发送时刻低位
-	byte m_oCmdTailRecSndTimeLow;
+	byte m_byCmdTailRecSndTimeLow;
 	// 广播命令等待端口匹配
-	byte m_oCmdBroadCastPortSet;
+	byte m_byCmdBroadCastPortSet;
 	// 设置ADC控制命令命令字
-	byte m_oCmdADCSet;
+	byte m_byCmdADCSet;
 	// 网络时刻
-	byte m_oCmdNetTime;
+	byte m_byCmdNetTime;
 	// 交叉站大线尾包接收时刻
-	byte m_oCmdLineTailRecTimeLAUX;
+	byte m_byCmdLineTailRecTimeLAUX;
 	// 交叉站交叉线尾包接收时刻
-	byte m_oCmdLAUTailRecTimeLAUX;
+	byte m_byCmdLAUTailRecTimeLAUX;
 	// 交叉站故障1
-	byte m_oCmdLAUXErrorCode1;
+	byte m_byCmdLAUXErrorCode1;
 	// 交叉站故障2
-	byte m_oCmdLAUXErrorCode2;
+	byte m_byCmdLAUXErrorCode2;
 	// 交叉站路由分配
-	byte m_oCmdLAUXSetRout;
+	byte m_byCmdLAUXSetRout;
 	// 返回路由
-	byte m_oCmdReturnRout;
+	byte m_byCmdReturnRout;
 	// 命令解析结束命令
-	byte m_oCmdEnd;
+	byte m_byCmdEnd;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
@@ -281,6 +314,172 @@ typedef struct InstrumentCommand_Struct
 	// 0x18命令数据个数
 	unsigned short m_usADCSetNum;
 }m_oInstrumentCommandStruct;
+
+// 仪器属性结构体
+typedef struct Instrument_Struct 
+{
+	/** 在仪器数组中的位置*/
+	unsigned int m_uiIndex;
+	/** 仪器是否使用中*/
+	bool m_bInUsed;
+	/** 仪器设备号*/
+	unsigned int m_uiSN;
+	/** 仪器类型 1-交叉站；2-电源站；3-采集站*/
+	unsigned int m_uiInstrumentType;
+	/** 仪器IP地址*/
+	unsigned int m_uiIP;
+	/** 仪器路由IP地址*/
+	unsigned int m_uiRoutIP;
+	/** 路由方向 1-上；2-下；3-左；4右*/
+	unsigned int m_uiRoutDirection;
+	/** 路由地址 交叉线方向 上方*/
+	unsigned int m_uiRoutIPTop;
+	/** 路由地址 交叉线方向 下方*/
+	unsigned int m_uiRoutIPDown;
+	/** 路由地址 测线线方向 左方*/
+	unsigned int m_uiRoutIPLeft;
+	/** 路由地址 测线线方向 右方*/
+	unsigned int m_uiRoutIPRight;
+	/** 链接的仪器 上方*/
+	Instrument_Struct* m_pInstrumentTop;
+	/** 链接的仪器 下方*/
+	Instrument_Struct* m_pInstrumentDown;
+	/** 链接的仪器 左方*/
+	Instrument_Struct* m_pInstrumentLeft;
+	/** 链接的仪器 右方*/
+	Instrument_Struct* m_pInstrumentRight;
+	/** 首包时刻*/
+	unsigned int m_uiTimeHeadFrame;
+	/** 尾包计数*/
+	unsigned int m_uiTailFrameCount;
+	/** 仪器时延*/
+	unsigned int m_uiTimeDelay;
+	/** 仪器本地系统时间*/
+	unsigned int m_uiTimeSystem;
+	/** 仪器网络时间*/
+	unsigned int m_uiNetTime;
+	/** 仪器网络状态*/
+	unsigned int m_uiNetState;
+	/** 仪器参数备用1*/
+	unsigned int m_uiNetOrder;
+	/** 16bits时间，接收时刻低位*/
+	unsigned short m_usReceiveTime;	
+	/** 16bits时间，发送时刻低位*/
+	unsigned short m_usSendTime;
+	/** 16bits 测线方向左面尾包接收时刻*/
+	unsigned short m_usLineLeftReceiveTime;	
+	/** 16bits 测线方向右面尾包接收时刻*/
+	unsigned short m_usLineRightReceiveTime;	
+	/** 16bits 交叉线方向上面尾包接收时刻*/
+	unsigned short m_usCrossTopReceiveTime;	
+	/** 16bits 交叉线方下面尾包接收时刻*/
+	unsigned short m_usCrossDownReceiveTime;	
+	// 采集站或电源站的广播端口
+	unsigned int m_uiBroadCastPort;
+	// 	/** 测线*/
+	// 	unsigned int m_uiLineNb;
+	// 	/** 测点*/
+	// 	unsigned int m_uiPointNb;
+	// 	/** 测道*/
+	// 	unsigned int m_uiChannelNb;
+	/** 是否跳过道*/
+	bool m_bJumpedChannel;
+	/** 是否连接检波器*/
+	bool m_bSensor;
+	/** 是否辅助道*/
+	bool m_bAux;
+	/** 是否连接爆炸机*/
+	bool m_bBlastMachine;
+	/** 是否迂回道*/
+	bool m_bDetour;
+	/** 是否迂回道低端标记点*/
+	bool m_bDetourMarkerLow;
+	/** 是否迂回道高端标记点*/
+	bool m_bDetourMarkerHigh;
+	/** 是否迂回道停止标记*/
+	unsigned int m_uiStopMarking;
+	/** 是否标记点*/
+	bool m_bMarker;
+	// 首包位置稳定次数
+	int m_iHeadFrameStableNum;
+	/** 第几次设置IP地址*/
+	int m_iIPSetCount;
+	/** IP地址设置是否成功*/
+	bool m_bIPSetOK;
+	/** 第几次尾包时刻查询*/
+	int m_iTailTimeQueryCount;
+	/** 尾包时刻查询是否成功*/
+	bool m_bTailTimeQueryOK;
+	/** 本地时间修正高位*/
+	unsigned int m_uiTimeHigh;
+	/** 本地时间修正低位*/
+	unsigned int m_uiTimeLow;
+	/** 第几次设置仪器时间*/
+	int m_iTimeSetCount;
+	/** 仪器时间设置是否成功*/
+	bool m_bTimeSetOK;
+}m_oInstrumentStruct;
+
+// 仪器队列
+typedef struct InstrumentList_Struct
+{
+	// 仪器队列资源同步对象
+	CRITICAL_SECTION m_oSecInstrumentList;
+	/** 仪器数组指针*/
+	m_oInstrumentStruct* m_pArrayInstrument;
+	/** 空闲仪器队列*/
+	list<m_oInstrumentStruct*> m_olsInstrumentFree;
+	/** 设置IP地址的仪器队列*/
+	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPSetMap;
+	// 仪器SN索引表
+	hash_map<unsigned int, m_oInstrumentStruct*> m_oSNInstrumentMap;
+	// 仪器IP地址索引表
+	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPInstrumentMap;
+	/** 仪器总数*/
+	unsigned int m_uiCountAll;
+	/** 空闲仪器数量*/
+	unsigned int m_uiCountFree;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
+}m_oInstrumentListStruct;
+// 路由属性结构体
+typedef struct Rout_Struct
+{
+	/** 在路由数组中的位置*/
+	unsigned int m_uiIndex;
+	/** 路由是否使用中*/
+	bool m_bInUsed;
+	/** 路由IP地址*/
+	unsigned int m_uiRoutIP;
+	/** 路由方向 1-上；2-下；3-左；4右*/
+	unsigned int m_uiRoutDirection;
+	/** 路由头仪器*/
+	Instrument_Struct* m_pHead;
+	/** 路由尾仪器*/
+	Instrument_Struct* m_pTail;
+	/** 路由时刻*/
+	unsigned int m_uiRoutTime;
+	/** 上次时统处理时刻*/
+	unsigned int m_uiDelayProcTime;
+}m_oRoutStruct;
+// 路由队列结构体
+typedef struct RoutList_Struct
+{
+	// 路由队列资源同步对象
+	CRITICAL_SECTION m_oSecRoutList;
+	/** 路由数组指针*/
+	m_oRoutStruct* m_pArrayRout;
+	/** 空闲路由队列*/
+	list<m_oRoutStruct*> m_olsRoutFree;
+	// 仪器路由地址索引表
+	hash_map<unsigned int, m_oRoutStruct*> m_oRoutMap;
+	/** 路由总数*/
+	unsigned int m_uiCountAll;
+	/** 空闲路由数量*/
+	unsigned int m_uiCountFree;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
+}m_oRoutListStruct;
 // 心跳
 typedef struct HeartBeatFrame_Struct
 {
@@ -299,6 +498,7 @@ typedef struct HeartBeatFrame_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oHeartBeatFrameStruct;
+
 // 首包
 typedef struct HeadFrame_Struct
 {
@@ -315,6 +515,7 @@ typedef struct HeadFrame_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oHeadFrameStruct;
+
 // IP地址设置
 typedef struct IPSetFrame_Struct
 {
@@ -341,6 +542,7 @@ typedef struct IPSetFrame_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oIPSetFrameStruct;
+
 // 环境结构体
 typedef struct Environment_Struct
 {
@@ -358,6 +560,10 @@ typedef struct Environment_Struct
 	m_oThreadProcFlagStruct* m_pThreadProcFlag;
 	// 日志输出结构
 	m_oLogOutPutStruct* m_pLogOutPut;
+	// 仪器队列结构
+	m_oInstrumentListStruct* m_pInstrumentList;
+	// 路由对列结构
+	m_oRoutListStruct* m_pRoutList;
 }m_oEnvironmentStruct;
 
 
