@@ -70,7 +70,7 @@ MATRIXSERVERDLL_API string ConvertCStrToStr(CString str)
 	return mstring;
 }
 // 创建实例，并返回实例指针
-MatrixServerDll_API m_oEnvironmentStruct* CreateInstance(void)
+MatrixServerDll_API m_oEnvironmentStruct* OnCreateInstance(void)
 {
 	m_oEnvironmentStruct* pEnv = new m_oEnvironmentStruct;
 	pEnv->m_pConstVar = NULL;
@@ -78,20 +78,19 @@ MatrixServerDll_API m_oEnvironmentStruct* CreateInstance(void)
 	pEnv->m_pHeartBeatFrame = NULL;
 	pEnv->m_pHeadFrame = NULL;
 	pEnv->m_pIPSetFrame = NULL;
-	pEnv->m_pThreadProcFlag = NULL;
+/*	pEnv->m_pThreadProcFlag = NULL;*/
 	pEnv->m_pLogOutPut = NULL;
 	pEnv->m_pInstrumentList = NULL;
 	pEnv->m_pRoutList = NULL;
+	pEnv->m_pLogOutPutThread = NULL;
 	return pEnv;
 }
 // 创建日志输出结构体
-MatrixServerDll_API m_oLogOutPutStruct* CreateLogOutPut()
+MatrixServerDll_API m_oLogOutPutStruct* OnCreateLogOutPut()
 {
 	m_oLogOutPutStruct* pLogOutPut = NULL;
 	pLogOutPut = new m_oLogOutPutStruct;
 	InitializeCriticalSection(&pLogOutPut->m_oSecLogFile);
-	pLogOutPut->m_pFile = NULL;
-	pLogOutPut->m_uiErrorCount = 0;
 	return pLogOutPut;
 }
 // 打开日志输出文件
@@ -230,32 +229,40 @@ MatrixServerDll_API void CloseLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 }
 
 // 初始化日志输出结构体
-MatrixServerDll_API void InitLogOutPut(m_oLogOutPutStruct* pLogOutPut)
+MatrixServerDll_API void OnInitLogOutPut(m_oLogOutPutStruct* pLogOutPut)
 {
 	if (pLogOutPut == NULL)
 	{
 		return;
 	}
 	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
+	// 日志文件指针为空
+	pLogOutPut->m_pFile = NULL;
+	// 日志错误计数清零
+	pLogOutPut->m_uiErrorCount = 0;
 	// 清空日志输出队列
 	pLogOutPut->m_oLogOutputList.clear();
 	// 打开日志输出文件
 	OpenLogOutPutFile(pLogOutPut);
 	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
 }
-// 释放日志输出结构体
-MatrixServerDll_API void FreeLogOutPut(m_oLogOutPutStruct* pLogOutPut)
+// 关闭日志输出结构体
+MatrixServerDll_API void OnCloseLogOutPut(m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pLogOutPut == NULL)
-	{
-		return;
-	}
 	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
 	// 关闭日志输出文件
 	CloseLogOutPutFile(pLogOutPut);
 	// 清空日志输出队列
 	pLogOutPut->m_oLogOutputList.clear();
 	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
+}
+// 释放日志输出结构体
+MatrixServerDll_API void OnFreeLogOutPut(m_oLogOutPutStruct* pLogOutPut)
+{
+	if (pLogOutPut == NULL)
+	{
+		return;
+	}
 	DeleteCriticalSection(&pLogOutPut->m_oSecLogFile);
 	delete pLogOutPut;
 }
@@ -923,13 +930,12 @@ MatrixServerDll_API bool SendFrame(SOCKET oSocket, byte* pFrameData,int iSndFram
 	return bReturn;
 }
 // 创建常量信息结构体
-MatrixServerDll_API m_oConstVarStruct* CreateConstVar(m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API m_oConstVarStruct* OnCreateConstVar(m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	m_oConstVarStruct* pConstVar = NULL;
 	pConstVar = new m_oConstVarStruct;
 	pConstVar->m_pFrameHeadCheck = NULL;
 	pConstVar->m_pLogOutPut = pLogOutPut;
-//	AddMsgToLogOutPutList(pLogOutPut, LogType, 0, "CreateConstVar", "成功创建常量信息结构体");
 	return pConstVar;
 }
 // 载入INI文件
@@ -1048,6 +1054,10 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("FrameHeadCheck");		// 同步帧头
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
+		if (pConstVar->m_pFrameHeadCheck != NULL)
+		{
+			delete[] pConstVar->m_pFrameHeadCheck;
+		}
 		pConstVar->m_pFrameHeadCheck = new byte[pConstVar->m_iFrameHeadSize];
 		for (int i=0; i<pConstVar->m_iFrameHeadSize; i++)
 		{
@@ -1299,7 +1309,7 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 	}
 }
 // 初始化常量信息结构体
-MatrixServerDll_API void InitConstVar(m_oConstVarStruct* pConstVar)
+MatrixServerDll_API void OnWorkConstVar(m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -1307,21 +1317,25 @@ MatrixServerDll_API void InitConstVar(m_oConstVarStruct* pConstVar)
 	}
 	LoadIniFile(pConstVar);
 }
+// 关闭常量信息结构体
+MatrixServerDll_API void OnCloseConstVar(m_oConstVarStruct* pConstVar)
+{
+	if (pConstVar->m_pFrameHeadCheck != NULL)
+	{
+		delete[] pConstVar->m_pFrameHeadCheck;
+	}
+}
 // 释放常量信息结构体
-MatrixServerDll_API void FreeConstVar(m_oConstVarStruct* pConstVar)
+MatrixServerDll_API void OnFreeConstVar(m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
 		return;
 	}
-	if (pConstVar->m_pFrameHeadCheck != NULL)
-	{
-		delete[] pConstVar->m_pFrameHeadCheck;
-	}
 	delete pConstVar;
 }
 // 创建仪器通讯信息结构体
-MatrixServerDll_API m_oInstrumentCommInfoStruct* CreateInstrumentCommInfo(m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API m_oInstrumentCommInfoStruct* OnCreateInstrumentCommInfo(m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	m_oInstrumentCommInfoStruct* pCommInfo = NULL;
 	pCommInfo = new m_oInstrumentCommInfoStruct;
@@ -1492,7 +1506,7 @@ MatrixServerDll_API void LoadLineServerAppSetupData(m_oInstrumentCommInfoStruct*
 	CloseAppIniXMLFile(pCommInfo);
 }
 // 初始化仪器通讯信息结构体
-MatrixServerDll_API void InitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
+MatrixServerDll_API void OnWorkInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
 {
 	if (pCommInfo == NULL)
 	{
@@ -1501,7 +1515,7 @@ MatrixServerDll_API void InitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCo
 	LoadLineServerAppSetupData(pCommInfo);
 }
 // 释放仪器通讯信息结构体
-MatrixServerDll_API void FreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
+MatrixServerDll_API void OnFreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
 {
 	if (pCommInfo == NULL)
 	{
@@ -1510,18 +1524,20 @@ MatrixServerDll_API void FreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCo
 	delete pCommInfo;
 }
 // 创建心跳帧信息结构体
-MatrixServerDll_API m_oHeartBeatFrameStruct* CreateInstrumentHeartBeat(m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API m_oHeartBeatFrameStruct* OnCreateInstrumentHeartBeat(m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	m_oHeartBeatFrameStruct* pHeartBeatFrame = NULL;
 	pHeartBeatFrame = new m_oHeartBeatFrameStruct;
 	InitializeCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	pHeartBeatFrame->m_pbySndFrameData = NULL;
 	pHeartBeatFrame->m_pbyCommandWord = NULL;
+	pHeartBeatFrame->m_oHeartBeatSocket = INVALID_SOCKET;
+	pHeartBeatFrame->m_pCommandStruct = NULL;
 	pHeartBeatFrame->m_pLogOutPut = pLogOutPut;
 	return pHeartBeatFrame;
 }
 // 初始化心跳
-MatrixServerDll_API void InitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
+MatrixServerDll_API void OnWorkInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
 													m_oInstrumentCommInfoStruct* pCommInfo,
 													m_oConstVarStruct* pConstVar)
 {
@@ -1542,37 +1558,46 @@ MatrixServerDll_API void InitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeart
 		return;
 	}
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+	if (pHeartBeatFrame->m_pCommandStruct != NULL)
+	{
+		delete pHeartBeatFrame->m_pCommandStruct;
+	}
+	pHeartBeatFrame->m_pCommandStruct = new m_oInstrumentCommandStruct;
 	// 源地址
-	pHeartBeatFrame->m_oCommandStruct.m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	pHeartBeatFrame->m_pCommandStruct->m_uiSrcIP = pCommInfo->m_uiSrcIP;
 	// 目的地址
-	pHeartBeatFrame->m_oCommandStruct.m_uiDstIP = pCommInfo->m_uiDstIP;
+	pHeartBeatFrame->m_pCommandStruct->m_uiDstIP = pCommInfo->m_uiDstIP;
 	// 目标IP地址端口号
-	pHeartBeatFrame->m_oCommandStruct.m_uiAimPort = pCommInfo->m_uiAimPort;
+	pHeartBeatFrame->m_pCommandStruct->m_uiAimPort = pCommInfo->m_uiAimPort;
 	// 心跳返回端口
-	pHeartBeatFrame->m_oCommandStruct.m_usReturnPort = pCommInfo->m_usHeartBeatReturnPort;
+	pHeartBeatFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_usHeartBeatReturnPort;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
-	pHeartBeatFrame->m_oCommandStruct.m_usCommand = pConstVar->m_usSendQueryCmd;
+	pHeartBeatFrame->m_pCommandStruct->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pHeartBeatFrame->m_oCommandStruct);
+	ResetInstrumentFramePacket(pHeartBeatFrame->m_pCommandStruct);
 	// 清空发送帧缓冲区
+	if (pHeartBeatFrame->m_pbySndFrameData != NULL)
+	{
+		delete[] pHeartBeatFrame->m_pbySndFrameData;
+	}
 	pHeartBeatFrame->m_pbySndFrameData = new byte[pConstVar->m_iSndFrameSize];
 	memset(pHeartBeatFrame->m_pbySndFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iSndFrameSize);
 	// 清空心跳命令字集合
+	if (pHeartBeatFrame->m_pbyCommandWord != NULL)
+	{
+		delete pHeartBeatFrame->m_pbyCommandWord;
+	}
 	pHeartBeatFrame->m_pbyCommandWord = new byte[pConstVar->m_iCommandWordMaxNum];
 	memset(pHeartBeatFrame->m_pbyCommandWord, pConstVar->m_bySndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
 	// 心跳命令字个数
 	pHeartBeatFrame->m_usCommandWordNum = 0;
 	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 }
-// 释放心跳帧信息结构体
-MatrixServerDll_API void FreeInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
+// 关闭心跳帧信息结构体
+MatrixServerDll_API void OnCloseInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
 {
-	if (pHeartBeatFrame == NULL)
-	{
-		return;
-	}
-	DeleteCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	if (pHeartBeatFrame->m_pbySndFrameData != NULL)
 	{
 		delete[] pHeartBeatFrame->m_pbySndFrameData;
@@ -1581,20 +1606,36 @@ MatrixServerDll_API void FreeInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeart
 	{
 		delete[] pHeartBeatFrame->m_pbyCommandWord;
 	}
+	if (pHeartBeatFrame->m_pCommandStruct != NULL)
+	{
+		delete pHeartBeatFrame->m_pCommandStruct;
+	}
+	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+}
+// 释放心跳帧信息结构体
+MatrixServerDll_API void OnFreeInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
+{
+	if (pHeartBeatFrame == NULL)
+	{
+		return;
+	}
+	DeleteCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	delete pHeartBeatFrame;
 }
 // 创建首包帧信息结构体
-MatrixServerDll_API m_oHeadFrameStruct* CreateInstrumentHeadFrame(m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API m_oHeadFrameStruct* OnCreateInstrumentHeadFrame(m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	m_oHeadFrameStruct* pHeadFrame = NULL;
 	pHeadFrame = new m_oHeadFrameStruct;
 	InitializeCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	pHeadFrame->m_pbyRcvFrameData = NULL;
+	pHeadFrame->m_oHeadFrameSocket = INVALID_SOCKET;
+	pHeadFrame->m_pCommandStruct = NULL;
 	pHeadFrame->m_pLogOutPut = pLogOutPut;
 	return pHeadFrame;
 }
 // 初始化首包
-MatrixServerDll_API void InitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
+MatrixServerDll_API void OnWorkInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
 													m_oInstrumentCommInfoStruct* pCommInfo,
 													m_oConstVarStruct* pConstVar)
 {
@@ -1615,37 +1656,56 @@ MatrixServerDll_API void InitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame,
 		return;
 	}
 	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+	if (pHeadFrame->m_pCommandStruct != NULL)
+	{
+		delete pHeadFrame->m_pCommandStruct;
+	}
+	pHeadFrame->m_pCommandStruct = new m_oInstrumentCommandStruct;
 	// 源地址
-	pHeadFrame->m_oCommandStruct.m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	pHeadFrame->m_pCommandStruct->m_uiSrcIP = pCommInfo->m_uiSrcIP;
 	// 目的地址
-	pHeadFrame->m_oCommandStruct.m_uiDstIP = pCommInfo->m_uiDstIP;
+	pHeadFrame->m_pCommandStruct->m_uiDstIP = pCommInfo->m_uiDstIP;
 	// 首包接收缓冲区帧数设定为仪器个数
 	pHeadFrame->m_uiRcvBufferSize = pCommInfo->m_uiInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// 接收端口
-	pHeadFrame->m_oCommandStruct.m_usReturnPort = pCommInfo->m_usHeadFramePort;
+	pHeadFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_usHeadFramePort;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pHeadFrame->m_oCommandStruct);
+	ResetInstrumentFramePacket(pHeadFrame->m_pCommandStruct);
 	// 清空接收帧缓冲区
+	if (pHeadFrame->m_pbyRcvFrameData != NULL)
+	{
+		delete[] pHeadFrame->m_pbyRcvFrameData;
+	}
 	pHeadFrame->m_pbyRcvFrameData = new byte[pConstVar->m_iRcvFrameSize];
 	memset(pHeadFrame->m_pbyRcvFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iRcvFrameSize);
 	LeaveCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 }
+// 关闭首包帧信息结构体
+MatrixServerDll_API void OnCloseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame)
+{
+	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+	if (pHeadFrame->m_pbyRcvFrameData != NULL)
+	{
+		delete[] pHeadFrame->m_pbyRcvFrameData;
+	}
+	if (pHeadFrame->m_pCommandStruct != NULL)
+	{
+		delete pHeadFrame->m_pCommandStruct;
+	}
+	LeaveCriticalSection(&pHeadFrame->m_oSecHeadFrame);
+}
 // 释放首包帧信息结构体
-MatrixServerDll_API void FreeInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame)
+MatrixServerDll_API void OnFreeInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame)
 {
 	if (pHeadFrame == NULL)
 	{
 		return;
 	}
 	DeleteCriticalSection(&pHeadFrame->m_oSecHeadFrame);
-	if (pHeadFrame->m_pbyRcvFrameData != NULL)
-	{
-		delete[] pHeadFrame->m_pbyRcvFrameData;
-	}
 	delete pHeadFrame;
 }
 // 创建IP地址设置帧信息结构体
-MatrixServerDll_API m_oIPSetFrameStruct* CreateInstrumentIPSetFrame(m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API m_oIPSetFrameStruct* OnCreateInstrumentIPSetFrame(m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	m_oIPSetFrameStruct* pIPSetFrame = NULL;
 	pIPSetFrame = new m_oIPSetFrameStruct;
@@ -1653,11 +1713,14 @@ MatrixServerDll_API m_oIPSetFrameStruct* CreateInstrumentIPSetFrame(m_oLogOutPut
 	pIPSetFrame->m_pbySndFrameData = NULL;
 	pIPSetFrame->m_pbyCommandWord = NULL;
 	pIPSetFrame->m_pbyRcvFrameData = NULL;
+	pIPSetFrame->m_oIPSetFrameSocket = INVALID_SOCKET;
+	pIPSetFrame->m_pCommandStructSet = NULL;
+	pIPSetFrame->m_pCommandStructReturn = NULL;
 	pIPSetFrame->m_pLogOutPut = pLogOutPut;
 	return pIPSetFrame;
 }
 // 初始化IP地址设置
-MatrixServerDll_API void InitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
+MatrixServerDll_API void OnWorkInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 													m_oInstrumentCommInfoStruct* pCommInfo,
 													m_oConstVarStruct* pConstVar)
 {
@@ -1678,47 +1741,65 @@ MatrixServerDll_API void InitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFra
 		return;
 	}
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+	if (pIPSetFrame->m_pCommandStructSet != NULL)
+	{
+		delete pIPSetFrame->m_pCommandStructSet;
+	}
+	pIPSetFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
-	pIPSetFrame->m_oCommandStructSet.m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	pIPSetFrame->m_pCommandStructSet->m_uiSrcIP = pCommInfo->m_uiSrcIP;
 	// 目的地址
-	pIPSetFrame->m_oCommandStructSet.m_uiDstIP = pCommInfo->m_uiDstIP;
+	pIPSetFrame->m_pCommandStructSet->m_uiDstIP = pCommInfo->m_uiDstIP;
 	// 目标IP地址端口号
-	pIPSetFrame->m_oCommandStructSet.m_uiAimPort = pCommInfo->m_uiAimPort;
+	pIPSetFrame->m_pCommandStructSet->m_uiAimPort = pCommInfo->m_uiAimPort;
 	// IP地址设置发送缓冲区帧数设定为仪器个数
 	pIPSetFrame->m_uiSndBufferSize = pCommInfo->m_uiInstrumentNum * pConstVar->m_iSndFrameSize;
 	// IP地址设置应答接收缓冲区帧数设定为仪器个数
 	pIPSetFrame->m_uiRcvBufferSize = pCommInfo->m_uiInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// IP地址设置返回端口
-	pIPSetFrame->m_oCommandStructSet.m_usReturnPort = pCommInfo->m_usIPSetReturnPort;
+	pIPSetFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_usIPSetReturnPort;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
-	pIPSetFrame->m_oCommandStructSet.m_usCommand = pConstVar->m_usSendSetCmd;
+	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pIPSetFrame->m_oCommandStructSet);
+	ResetInstrumentFramePacket(pIPSetFrame->m_pCommandStructSet);
 	// 清空发送帧缓冲区
+	if (pIPSetFrame->m_pbySndFrameData != NULL)
+	{
+		delete[] pIPSetFrame->m_pbySndFrameData;
+	}
 	pIPSetFrame->m_pbySndFrameData = new byte[pConstVar->m_iSndFrameSize];
 	memset(pIPSetFrame->m_pbySndFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iSndFrameSize);
 	// 清空IP地址设置命令字集合
+	if (pIPSetFrame->m_pbyCommandWord != NULL)
+	{
+		delete[] pIPSetFrame->m_pbyCommandWord;
+	}
 	pIPSetFrame->m_pbyCommandWord = new byte[pConstVar->m_iCommandWordMaxNum];
 	memset(pIPSetFrame->m_pbyCommandWord, pConstVar->m_bySndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
 	// IP地址设置命令字个数
 	pIPSetFrame->m_usCommandWordNum = 0;
 
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(&pIPSetFrame->m_oCommandStructReturn);
+	if (pIPSetFrame->m_pCommandStructReturn != NULL)
+	{
+		delete pIPSetFrame->m_pCommandStructReturn;
+	}
+	pIPSetFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
+	ResetInstrumentFramePacket(pIPSetFrame->m_pCommandStructReturn);
 	// 清空接收帧缓冲区
+	if (pIPSetFrame->m_pbyRcvFrameData != NULL)
+	{
+		delete[] pIPSetFrame->m_pbyRcvFrameData;
+	}
 	pIPSetFrame->m_pbyRcvFrameData = new byte[pConstVar->m_iRcvFrameSize];
 	memset(pIPSetFrame->m_pbyRcvFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iRcvFrameSize);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
-// 释放IP地址设置帧信息结构体
-MatrixServerDll_API void FreeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
+// 关闭IP地址设置帧信息结构体
+MatrixServerDll_API void OnCloseInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
 {
-	if (pIPSetFrame == NULL)
-	{
-		return;
-	}
-	DeleteCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	if (pIPSetFrame->m_pbySndFrameData != NULL)
 	{
 		delete[] pIPSetFrame->m_pbySndFrameData;
@@ -1731,45 +1812,28 @@ MatrixServerDll_API void FreeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFra
 	{
 		delete[] pIPSetFrame->m_pbyRcvFrameData;
 	}
+	if (pIPSetFrame->m_pCommandStructSet != NULL)
+	{
+		delete pIPSetFrame->m_pCommandStructSet;
+	}
+	if (pIPSetFrame->m_pCommandStructReturn != NULL)
+	{
+		delete pIPSetFrame->m_pCommandStructReturn;
+	}
+	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+}
+// 释放IP地址设置帧信息结构体
+MatrixServerDll_API void OnFreeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
+{
+	if (pIPSetFrame == NULL)
+	{
+		return;
+	}
+	DeleteCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	delete pIPSetFrame;
 }
-
-// 创建线程处理标志位信息结构体
-MatrixServerDll_API m_oThreadProcFlagStruct* CreateThreadProcFlag()
-{
-	m_oThreadProcFlagStruct* pThreadProcFlag = NULL;
-	pThreadProcFlag = new m_oThreadProcFlagStruct;
-	InitializeCriticalSection(&pThreadProcFlag->m_oSecFlag);
-	return pThreadProcFlag;
-}
-// 初始化线程处理标志位
-MatrixServerDll_API void InitThreadProcFlag(m_oThreadProcFlagStruct* pThreadProcFlag)
-{
-	if (pThreadProcFlag == NULL)
-	{
-		return;
-	}
-	EnterCriticalSection(&pThreadProcFlag->m_oSecFlag);
-	// 心跳处理线程停止标志位
-	pThreadProcFlag->m_bProcHeartBeatStop = false;
-	// 首包处理线程停止标志位
-	pThreadProcFlag->m_bProcHeadFrameStop = false;
-	// 仪器IP地址设置线程停止标志位
-	pThreadProcFlag->m_bProcIPSetStop = false;
-	LeaveCriticalSection(&pThreadProcFlag->m_oSecFlag);
-}
-// 释放线程处理标志位信息结构体
-MatrixServerDll_API void FreeThreadProcFlag(m_oThreadProcFlagStruct* pThreadProcFlag)
-{
-	if (pThreadProcFlag == NULL)
-	{
-		return;
-	}
-	DeleteCriticalSection(&pThreadProcFlag->m_oSecFlag);
-	delete pThreadProcFlag;
-}
 // 初始化套接字库
-MatrixServerDll_API void InitSocketLib(m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnInitSocketLib(m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	WSADATA data;									// 定义结构体变量
 	WORD w = MAKEWORD(2, 2);			// 初始化套接字版本号
@@ -1786,7 +1850,7 @@ MatrixServerDll_API void InitSocketLib(m_oLogOutPutStruct* pLogOutPut = NULL)
 	}
 }
 // 释放套接字库
-MatrixServerDll_API void FreeSocketLib(m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnCloseSocketLib(m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	// 释放套接字库
 	int err = WSACleanup();	
@@ -1804,17 +1868,21 @@ MatrixServerDll_API void FreeSocketLib(m_oLogOutPutStruct* pLogOutPut = NULL)
 // 关闭Socket套接字
 MatrixServerDll_API void OnCloseSocket(SOCKET oSocket)
 {
+	if (oSocket == INVALID_SOCKET)
+	{
+		return;
+	}
 	shutdown(oSocket, SD_BOTH);
 	closesocket(oSocket);
 	oSocket = INVALID_SOCKET;
 }
 // 创建并设置心跳端口
-MatrixServerDll_API void CreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame)
+MatrixServerDll_API void OnCreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame)
 {
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	// 创建套接字
-	pHeartBeatFrame->m_oHeartBeatSocket = CreateInstrumentSocket(pHeartBeatFrame->m_oCommandStruct.m_usReturnPort, 
-																pHeartBeatFrame->m_oCommandStruct.m_uiSrcIP,
+	pHeartBeatFrame->m_oHeartBeatSocket = CreateInstrumentSocket(pHeartBeatFrame->m_pCommandStruct->m_usReturnPort, 
+																pHeartBeatFrame->m_pCommandStruct->m_uiSrcIP,
 																pHeartBeatFrame->m_pLogOutPut);
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pHeartBeatFrame->m_oHeartBeatSocket, pHeartBeatFrame->m_pLogOutPut);
@@ -1824,12 +1892,12 @@ MatrixServerDll_API void CreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pH
 }
 
 // 创建并设置首包端口
-MatrixServerDll_API void CreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame)
+MatrixServerDll_API void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame)
 {
 	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	// 创建套接字
-	pHeadFrame->m_oHeadFrameSocket = CreateInstrumentSocket(pHeadFrame->m_oCommandStruct.m_usReturnPort, 
-															pHeadFrame->m_oCommandStruct.m_uiSrcIP,
+	pHeadFrame->m_oHeadFrameSocket = CreateInstrumentSocket(pHeadFrame->m_pCommandStruct->m_usReturnPort, 
+															pHeadFrame->m_pCommandStruct->m_uiSrcIP,
 															pHeadFrame->m_pLogOutPut);
 	// 设置接收缓冲区
 	SetRcvBufferSize(pHeadFrame->m_oHeadFrameSocket, pHeadFrame->m_uiRcvBufferSize, pHeadFrame->m_pLogOutPut);
@@ -1838,12 +1906,12 @@ MatrixServerDll_API void CreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFr
 		"CreateAndSetHeadFrameSocket", "创建并设置首包端口！");
 }
 // 创建并设置IP地址设置端口
-MatrixServerDll_API void CreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame)
+MatrixServerDll_API void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame)
 {
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	// 创建套接字
-	pIPSetFrame->m_oIPSetFrameSocket = CreateInstrumentSocket(pIPSetFrame->m_oCommandStructSet.m_usReturnPort, 
-																pIPSetFrame->m_oCommandStructSet.m_uiSrcIP,
+	pIPSetFrame->m_oIPSetFrameSocket = CreateInstrumentSocket(pIPSetFrame->m_pCommandStructSet->m_usReturnPort, 
+																pIPSetFrame->m_pCommandStructSet->m_uiSrcIP,
 																pIPSetFrame->m_pLogOutPut);
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pIPSetFrame->m_oIPSetFrameSocket, pIPSetFrame->m_pLogOutPut);
@@ -1952,7 +2020,7 @@ MatrixServerDll_API void OnInstrumentReset(m_oInstrumentStruct* pInstrument)
 	pInstrument->m_bTimeSetOK = false;
 }
 // 创建仪器队列结构体
-MatrixServerDll_API m_oInstrumentListStruct* CreateInstrumentList(m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API m_oInstrumentListStruct* OnCreateInstrumentList(m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	m_oInstrumentListStruct* pInstrumentList = NULL;
 	pInstrumentList = new m_oInstrumentListStruct;
@@ -1961,35 +2029,8 @@ MatrixServerDll_API m_oInstrumentListStruct* CreateInstrumentList(m_oLogOutPutSt
 	pInstrumentList->m_pLogOutPut = pLogOutPut;
 	return pInstrumentList;
 }
-// 重置仪器队列结构体
-MatrixServerDll_API void OnInstrumentListReset(m_oInstrumentListStruct* pInstrumentList)
-{
-	if (pInstrumentList == NULL)
-	{
-		return;
-	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
-	// 清空SN仪器索引表
-	pInstrumentList->m_oSNInstrumentMap.clear();
-	// 清空IP地址仪器索引表
-	pInstrumentList->m_oIPInstrumentMap.clear();
-	// 清空空闲仪器队列
-	pInstrumentList->m_olsInstrumentFree.clear();
-	// 清空IP地址设置仪器索引表
-	pInstrumentList->m_oIPSetMap.clear();
-	// 空闲仪器数量
-	pInstrumentList->m_uiCountFree = pInstrumentList->m_uiCountAll;
-	for(unsigned int i = 0; i < pInstrumentList->m_uiCountAll; i++)
-	{
-		// 重置仪器
-		OnInstrumentReset(&pInstrumentList->m_pArrayInstrument[i]);
-		// 仪器加在空闲仪器队列尾部
-		pInstrumentList->m_olsInstrumentFree.push_back(&pInstrumentList->m_pArrayInstrument[i]);
-	}
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
-}
 // 初始化仪器队列结构体
-MatrixServerDll_API void InitInstrumentList(m_oInstrumentListStruct* pInstrumentList,
+MatrixServerDll_API void OnWorkInstrumentList(m_oInstrumentListStruct* pInstrumentList,
 											m_oInstrumentCommInfoStruct* pCommInfo,
 											m_oConstVarStruct* pConstVar)
 {
@@ -2021,6 +2062,10 @@ MatrixServerDll_API void InitInstrumentList(m_oInstrumentListStruct* pInstrument
 	// 仪器队列中仪器个数
  	pInstrumentList->m_uiCountAll = pCommInfo->m_uiInstrumentNum;
  	// 生成仪器数组
+	if (pInstrumentList->m_pArrayInstrument != NULL)
+	{
+		delete[] pInstrumentList->m_pArrayInstrument;
+	}
  	pInstrumentList->m_pArrayInstrument = new m_oInstrumentStruct[pInstrumentList->m_uiCountAll];
 	// 空闲仪器数量
 	pInstrumentList->m_uiCountFree = pInstrumentList->m_uiCountAll;
@@ -2037,7 +2082,7 @@ MatrixServerDll_API void InitInstrumentList(m_oInstrumentListStruct* pInstrument
 	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 }
 // 关闭仪器队列结构体
-MatrixServerDll_API void CloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
+MatrixServerDll_API void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 {
 	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	// 清空SN仪器索引表
@@ -2049,11 +2094,14 @@ MatrixServerDll_API void CloseInstrumentList(m_oInstrumentListStruct* pInstrumen
 	// 清空IP地址设置仪器索引表
 	pInstrumentList->m_oIPSetMap.clear();
 	// 删除仪器数组
-	delete[] pInstrumentList->m_pArrayInstrument;
+	if (pInstrumentList->m_pArrayInstrument != NULL)
+	{
+		delete[] pInstrumentList->m_pArrayInstrument;
+	}
 	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 }
 // 释放仪器队列结构体
-MatrixServerDll_API void FreeInstrumentList(m_oInstrumentListStruct* pInstrumentList)
+MatrixServerDll_API void OnFreeInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 {
 	if (pInstrumentList == NULL)
 	{
@@ -2177,7 +2225,7 @@ MatrixServerDll_API void UpdateRoutDelayProcTime(m_oRoutStruct* pRout)
 	pRout->m_uiDelayProcTime = GetTickCount();
 }
 // 创建路由队列结构体
-MatrixServerDll_API m_oRoutListStruct* CreateRoutList(m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API m_oRoutListStruct* OnCreateRoutList(m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	m_oRoutListStruct* pRoutList = NULL;
 	pRoutList = new m_oRoutListStruct;
@@ -2186,34 +2234,10 @@ MatrixServerDll_API m_oRoutListStruct* CreateRoutList(m_oLogOutPutStruct* pLogOu
 	pRoutList->m_pLogOutPut = pLogOutPut;
 	return pRoutList;
 }
-// 重置路由队列结构体
-MatrixServerDll_API void OnRoutListReset(m_oRoutListStruct* pRoutList)
-{
-	if (pRoutList == NULL)
-	{
-		return;
-	}
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
-	// 清空路由地址索引
-	pRoutList->m_oRoutMap.clear();
-	// 清空空闲路由队列
-	pRoutList->m_olsRoutFree.clear();
-	// 空闲路由总数
-	pRoutList->m_uiCountFree = pRoutList->m_uiCountAll;
-	// 加入空闲路由队列
-	for(unsigned int i = 0; i < pRoutList->m_uiCountAll; i++)
-	{
-		// 重置路由
-		OnRoutReset(&pRoutList->m_pArrayRout[i]);
-		// 路由加在空闲路由队列尾部
-		pRoutList->m_olsRoutFree.push_back(&pRoutList->m_pArrayRout[i]);
-	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
-}
 // 初始化路由队列结构体
-MatrixServerDll_API void InitRoutList(m_oRoutListStruct* pRoutList,
-									m_oInstrumentCommInfoStruct* pCommInfo,
-									m_oConstVarStruct* pConstVar)
+MatrixServerDll_API void OnWorkRoutList(m_oRoutListStruct* pRoutList,
+										m_oInstrumentCommInfoStruct* pCommInfo,
+										m_oConstVarStruct* pConstVar)
 {
 	if (pRoutList == NULL)
 	{
@@ -2235,6 +2259,10 @@ MatrixServerDll_API void InitRoutList(m_oRoutListStruct* pRoutList,
 	// 空闲路由总数
 	pRoutList->m_uiCountFree = pRoutList->m_uiCountAll;
 	// 生成路由数组
+	if (pRoutList->m_pArrayRout != NULL)
+	{
+		delete[] pRoutList->m_pArrayRout;
+	}
 	pRoutList->m_pArrayRout = new m_oRoutStruct[pRoutList->m_uiCountAll];
 
 	// 加入空闲路由队列
@@ -2252,7 +2280,7 @@ MatrixServerDll_API void InitRoutList(m_oRoutListStruct* pRoutList,
 	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 关闭仪器队列结构体
-MatrixServerDll_API void CloseRoutList(m_oRoutListStruct* pRoutList)
+MatrixServerDll_API void OnCloseRoutList(m_oRoutListStruct* pRoutList)
 {
 	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 清空路由地址索引
@@ -2260,11 +2288,14 @@ MatrixServerDll_API void CloseRoutList(m_oRoutListStruct* pRoutList)
 	// 清空空闲路由队列
 	pRoutList->m_olsRoutFree.clear();
 	// 删除路由数组
-	delete[] pRoutList->m_pArrayRout;
+	if (pRoutList->m_pArrayRout != NULL)
+	{
+		delete[] pRoutList->m_pArrayRout;
+	}
 	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 释放仪器队列结构体
-MatrixServerDll_API void FreeRoutList(m_oRoutListStruct* pRoutList)
+MatrixServerDll_API void OnFreeRoutList(m_oRoutListStruct* pRoutList)
 {
 	if (pRoutList == NULL)
 	{
@@ -2346,12 +2377,134 @@ MatrixServerDll_API void DeleteRout(unsigned int uiIndex, hash_map<unsigned int,
 		pRoutMap->erase(iter);
 	}
 }
+// 创建日志输出线程
+MatrixServerDll_API m_oLogOutPutThreadStruct* OnCreateLogOutPutThread(m_oLogOutPutStruct* pLogOutPut)
+{
+	m_oLogOutPutThreadStruct* pLogOutPutThread = NULL;
+	pLogOutPutThread = new m_oLogOutPutThreadStruct;
+	pLogOutPutThread->m_pThread = new m_oThreadStruct;
+	pLogOutPutThread->m_pThread->m_pLogOutPut = pLogOutPut;
+	pLogOutPutThread->m_pThread->m_hThread = INVALID_HANDLE_VALUE;
+	pLogOutPutThread->m_pThread->m_hThreadClose = INVALID_HANDLE_VALUE;
+	pLogOutPutThread->m_pThread->m_dwThreadID = 0;
+	return pLogOutPutThread;
+}
+// 线程等待函数
+MatrixServerDll_API void WaitLogOutPutThread(int iWaitStopCount, m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	// 初始化等待次数为0
+	int iWaitCount = 0;
+	// 循环
+	while(true)
+	{	// 休眠50毫秒
+		Sleep(50);
+		// 等待次数加1
+		iWaitCount++;
+		// 判断是否可以处理的条件
+		if(pLogOutPutThread->m_pThread->m_bClose == true)
+		{
+			// 返回
+			return;
+		}
+		// 判断等待次数是否大于等于最多等待次数
+		if(iWaitStopCount <= iWaitCount)
+		{
+			// 返回
+			return;
+		}		
+	}
+}
+// 线程函数
+DWORD WINAPI RunLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	while(true)
+	{
+		if (pLogOutPutThread->m_pThread->m_bClose == true)
+		{
+			break;
+		}
+		if (pLogOutPutThread->m_pThread->m_bWork == true)
+		{
+			WriteLogOutPutListToFile(pLogOutPutThread->m_pThread->m_pLogOutPut);
+		}
+		if (pLogOutPutThread->m_pThread->m_bClose == true)
+		{
+			break;
+		}
+		WaitLogOutPutThread(4, pLogOutPutThread);
+	}
+	::SetEvent(pLogOutPutThread->m_pThread->m_hThreadClose); // 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
+	return 1;
+}
+// 初始化日志输出线程
+MatrixServerDll_API bool OnInitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	if (pLogOutPutThread == NULL)
+	{
+		return false;
+	}
+	pLogOutPutThread->m_pThread->m_bClose = false;
+	pLogOutPutThread->m_pThread->m_bWork = false;
+	pLogOutPutThread->m_pThread->m_hThreadClose = ::CreateEvent(false, false, NULL, NULL);	// 创建事件对象
+	if ((pLogOutPutThread->m_pThread->m_hThreadClose == NULL)||(GetLastError() == ERROR_ALREADY_EXISTS))
+	{
+		return false;
+	}
+	else
+	{
+		::ResetEvent(pLogOutPutThread->m_pThread->m_hThreadClose);	// 设置事件对象为无信号状态
+	}
+	// 创建线程
+	pLogOutPutThread->m_pThread->m_hThread = ::CreateThread((LPSECURITY_ATTRIBUTES)NULL, 
+															0,
+															(LPTHREAD_START_ROUTINE)RunLogOutPutThread,
+															pLogOutPutThread, 
+															0, 
+															&pLogOutPutThread->m_pThread->m_dwThreadID);
+	if (pLogOutPutThread->m_pThread->m_hThread == NULL)
+	{
+		return false;
+	}
+	return true;
+}
+// 关闭日志输出线程
+MatrixServerDll_API bool OnCloseLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	if (pLogOutPutThread == NULL)
+	{
+		return false;
+	}
+	int iResult = WaitForSingleObject(pLogOutPutThread->m_pThread->m_hThreadClose, 500);
+	if (iResult != WAIT_OBJECT_0)
+	{
+		::TerminateThread(pLogOutPutThread->m_pThread->m_hThread, 0);
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	return true;
+}
+// 释放日志输出线程
+MatrixServerDll_API void OnFreeLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	if (pLogOutPutThread == NULL)
+	{
+		return;
+	}
+	if (pLogOutPutThread->m_pThread != NULL)
+	{
+		delete pLogOutPutThread->m_pThread;
+	}
+	delete pLogOutPutThread;
+}
 // 解析首包帧
 MatrixServerDll_API bool ParseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, m_oConstVarStruct* pConstVar)
 {
 	bool bReturn = false;
 	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
-	bReturn = ParseInstrumentFrame(&pHeadFrame->m_oCommandStruct, pHeadFrame->m_pbyRcvFrameData, pConstVar);
+	bReturn = ParseInstrumentFrame(pHeadFrame->m_pCommandStruct, pHeadFrame->m_pbyRcvFrameData, pConstVar);
 	LeaveCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	return bReturn;
 }
@@ -2360,7 +2513,7 @@ MatrixServerDll_API bool ParseInstrumentIPSetReturnFrame(m_oIPSetFrameStruct* pI
 {
 	bool bReturn = false;
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
-	bReturn = ParseInstrumentFrame(&pIPSetFrame->m_oCommandStructReturn, pIPSetFrame->m_pbyRcvFrameData, pConstVar);
+	bReturn = ParseInstrumentFrame(pIPSetFrame->m_pCommandStructReturn, pIPSetFrame->m_pbyRcvFrameData, pConstVar);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	return bReturn;
 }
@@ -2368,7 +2521,7 @@ MatrixServerDll_API bool ParseInstrumentIPSetReturnFrame(m_oIPSetFrameStruct* pI
 MatrixServerDll_API void MakeInstrumentHeartBeatFrame(m_oHeartBeatFrameStruct* pHeartBeatFrame, m_oConstVarStruct* pConstVar)
 {
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
-	MakeInstrumentFrame(&pHeartBeatFrame->m_oCommandStruct,  pConstVar, pHeartBeatFrame->m_pbySndFrameData,
+	MakeInstrumentFrame(pHeartBeatFrame->m_pCommandStruct,  pConstVar, pHeartBeatFrame->m_pbySndFrameData,
 						pHeartBeatFrame->m_pbyCommandWord, pHeartBeatFrame->m_usCommandWordNum);
 	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 }
@@ -2376,96 +2529,146 @@ MatrixServerDll_API void MakeInstrumentHeartBeatFrame(m_oHeartBeatFrameStruct* p
 MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, m_oConstVarStruct* pConstVar)
 {
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
-	MakeInstrumentFrame(&pIPSetFrame->m_oCommandStructSet, pConstVar, pIPSetFrame->m_pbySndFrameData, 
+	MakeInstrumentFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_pbySndFrameData, 
 						pIPSetFrame->m_pbyCommandWord, pIPSetFrame->m_usCommandWordNum);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
 // 初始化实例
-MatrixServerDll_API void InitInstance(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API void OnInitInstance(m_oEnvironmentStruct* pEnv)
 {
 	if (pEnv == NULL)
 	{
 		return;
 	}
 	// 创建日志输出结构体
-	pEnv->m_pLogOutPut = CreateLogOutPut();
+	pEnv->m_pLogOutPut = OnCreateLogOutPut();
 	// 创建常量信息结构体
-	pEnv->m_pConstVar = CreateConstVar(pEnv->m_pLogOutPut);
+	pEnv->m_pConstVar = OnCreateConstVar(pEnv->m_pLogOutPut);
 	// 创建仪器通讯信息结构体
-	pEnv->m_pInstrumentCommInfo = CreateInstrumentCommInfo(pEnv->m_pLogOutPut);
+	pEnv->m_pInstrumentCommInfo = OnCreateInstrumentCommInfo(pEnv->m_pLogOutPut);
 	// 创建心跳帧信息结构体
-	pEnv->m_pHeartBeatFrame = CreateInstrumentHeartBeat(pEnv->m_pLogOutPut);
+	pEnv->m_pHeartBeatFrame = OnCreateInstrumentHeartBeat(pEnv->m_pLogOutPut);
 	// 创建首包帧信息结构体
-	pEnv->m_pHeadFrame = CreateInstrumentHeadFrame(pEnv->m_pLogOutPut);
+	pEnv->m_pHeadFrame = OnCreateInstrumentHeadFrame(pEnv->m_pLogOutPut);
 	// 创建IP地址设置帧信息结构体
-	pEnv->m_pIPSetFrame = CreateInstrumentIPSetFrame(pEnv->m_pLogOutPut);
-	// 创建线程处理标志位信息结构体
-	pEnv->m_pThreadProcFlag = CreateThreadProcFlag();
+	pEnv->m_pIPSetFrame = OnCreateInstrumentIPSetFrame(pEnv->m_pLogOutPut);
 	// 创建仪器队列结构体
-	pEnv->m_pInstrumentList = CreateInstrumentList(pEnv->m_pLogOutPut);
+	pEnv->m_pInstrumentList = OnCreateInstrumentList(pEnv->m_pLogOutPut);
 	// 创建路由队列结构体
-	pEnv->m_pRoutList = CreateRoutList(pEnv->m_pLogOutPut);
+	pEnv->m_pRoutList = OnCreateRoutList(pEnv->m_pLogOutPut);
+	// 创建日志输出线程
+	pEnv->m_pLogOutPutThread = OnCreateLogOutPutThread(pEnv->m_pLogOutPut);
 
 	// 初始化日志输出结构体
-	InitLogOutPut(pEnv->m_pLogOutPut);
+	OnInitLogOutPut(pEnv->m_pLogOutPut);
 	// 初始化套接字库
-	InitSocketLib(pEnv->m_pLogOutPut);
-	// 初始化常量信息结构体
-	InitConstVar(pEnv->m_pConstVar);
-	// 初始化仪器通讯信息结构体
-	InitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
-	// 初始化心跳
-	InitInstrumentHeartBeat(pEnv->m_pHeartBeatFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
-	// 初始化首包
-	InitInstrumentHeadFrame(pEnv->m_pHeadFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
-	// 初始化IP地址设置
-	InitInstrumentIPSetFrame(pEnv->m_pIPSetFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
-	// 初始化线程处理标志位
-	InitThreadProcFlag(pEnv->m_pThreadProcFlag);
-	// 初始化仪器队列结构体
-	InitInstrumentList(pEnv->m_pInstrumentList, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
-	// 初始化路由队列结构体
-	InitRoutList(pEnv->m_pRoutList, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
-	// 创建并设置心跳端口
-	CreateAndSetHeartBeatSocket(pEnv->m_pHeartBeatFrame);
-	// 创建并设置首包端口
-	CreateAndSetHeadFrameSocket(pEnv->m_pHeadFrame);
-	// 创建并设置IP地址设置端口
-	CreateAndSetIPSetFrameSocket(pEnv->m_pIPSetFrame);
+	OnInitSocketLib(pEnv->m_pLogOutPut);
+	// 初始化日志输出线程
+	OnInitLogOutPutThread(pEnv->m_pLogOutPutThread);
 }
 // 初始化
 MatrixServerDll_API void OnInit(m_oEnvironmentStruct* pEnv)
 {
-	InitInstance(pEnv);
+	OnInitInstance(pEnv);
 }
-// 初始化
+// 关闭
 MatrixServerDll_API void OnClose(m_oEnvironmentStruct* pEnv)
 {
-	CloseInstrumentList(pEnv->m_pInstrumentList);
-	CloseRoutList(pEnv->m_pRoutList);
+	// 释放套接字库
+	OnCloseSocketLib(pEnv->m_pLogOutPut);
+	// 释放常量资源
+	OnCloseConstVar(pEnv->m_pConstVar);
+	// 释放心跳资源
+	OnCloseInstrumentHeartBeat(pEnv->m_pHeartBeatFrame);
+	// 释放首包资源
+	OnCloseInstrumentHeadFrame(pEnv->m_pHeadFrame);
+	// 释放IP地址设置资源
+	OnCloseInstrumentIPSetFrame(pEnv->m_pIPSetFrame);
+	// 释放仪器队列资源
+	OnCloseInstrumentList(pEnv->m_pInstrumentList);
+	// 释放路由队列资源
+	OnCloseRoutList(pEnv->m_pRoutList);
+	// 关闭日志文件
+	OnCloseLogOutPut(pEnv->m_pLogOutPut);
+	// 关闭心跳Socket
 	OnCloseSocket(pEnv->m_pHeartBeatFrame->m_oHeartBeatSocket);
+	// 关闭首包Socket
 	OnCloseSocket(pEnv->m_pHeadFrame->m_oHeadFrameSocket);
+	// 关闭IP地址设置Socket
 	OnCloseSocket(pEnv->m_pIPSetFrame->m_oIPSetFrameSocket);
+
+	// 线程关闭标志位为true
+	pEnv->m_pLogOutPutThread->m_pThread->m_bClose = true;
+	// 关闭日志输出线程
+	OnCloseLogOutPutThread(pEnv->m_pLogOutPutThread);
+}
+// 工作
+MatrixServerDll_API void OnWork(m_oEnvironmentStruct* pEnv)
+{
+	// 初始化常量信息结构体
+	OnWorkConstVar(pEnv->m_pConstVar);
+	// 初始化仪器通讯信息结构体
+	OnWorkInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
+	// 初始化心跳
+	OnWorkInstrumentHeartBeat(pEnv->m_pHeartBeatFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	// 初始化首包
+	OnWorkInstrumentHeadFrame(pEnv->m_pHeadFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	// 初始化IP地址设置
+	OnWorkInstrumentIPSetFrame(pEnv->m_pIPSetFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	// 初始化仪器队列结构体
+	OnWorkInstrumentList(pEnv->m_pInstrumentList, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	// 初始化路由队列结构体
+	OnWorkRoutList(pEnv->m_pRoutList, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	// 关闭心跳Socket
+	OnCloseSocket(pEnv->m_pHeartBeatFrame->m_oHeartBeatSocket);
+	// 创建并设置心跳端口
+	OnCreateAndSetHeartBeatSocket(pEnv->m_pHeartBeatFrame);
+	// 关闭首包Socket
+	OnCloseSocket(pEnv->m_pHeadFrame->m_oHeadFrameSocket);
+	// 创建并设置首包端口
+	OnCreateAndSetHeadFrameSocket(pEnv->m_pHeadFrame);
+	// 关闭IP地址设置Socket
+	OnCloseSocket(pEnv->m_pIPSetFrame->m_oIPSetFrameSocket);
+	// 创建并设置IP地址设置端口
+	OnCreateAndSetIPSetFrameSocket(pEnv->m_pIPSetFrame);
+	// 日志输出线程开始工作
+	pEnv->m_pLogOutPutThread->m_pThread->m_bWork = true;
+	AddMsgToLogOutPutList(pEnv->m_pLogOutPut, LogType, 0, 
+		"OnWork", "开始工作");
+}
+// 停止
+MatrixServerDll_API void OnStop(m_oEnvironmentStruct* pEnv)
+{
+	// 日志输出线程停止工作
+	pEnv->m_pLogOutPutThread->m_pThread->m_bWork = false;
+	AddMsgToLogOutPutList(pEnv->m_pLogOutPut, LogType, 0, 
+		"OnStop", "停止工作");
 }
 // 释放实例资源
-MatrixServerDll_API void FreeInstance(m_oEnvironmentStruct* pEnv)
+MatrixServerDll_API void OnFreeInstance(m_oEnvironmentStruct* pEnv)
 {
 	if (pEnv == NULL)
 	{
 		return;
 	}
-	// 释放日志输出结构体
-	// 释放套接字库
-	FreeSocketLib(pEnv->m_pLogOutPut);
-	FreeLogOutPut(pEnv->m_pLogOutPut);
-	FreeConstVar(pEnv->m_pConstVar);
-	FreeInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
-	FreeInstrumentHeartBeat(pEnv->m_pHeartBeatFrame);
-	FreeInstrumentHeadFrame(pEnv->m_pHeadFrame);
-	FreeInstrumentIPSetFrame(pEnv->m_pIPSetFrame);
-	FreeThreadProcFlag(pEnv->m_pThreadProcFlag);
-	FreeInstrumentList(pEnv->m_pInstrumentList);
-	FreeRoutList(pEnv->m_pRoutList);
+	// 释放日志输出结构体资源
+	OnFreeLogOutPut(pEnv->m_pLogOutPut);
+	// 释放INI文件导入常量结构体资源
+	OnFreeConstVar(pEnv->m_pConstVar);
+	// 释放XML文件导入的通讯信息设置结构体资源
+	OnFreeInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
+	// 释放心跳帧结构体资源
+	OnFreeInstrumentHeartBeat(pEnv->m_pHeartBeatFrame);
+	// 释放首包帧结构体资源
+	OnFreeInstrumentHeadFrame(pEnv->m_pHeadFrame);
+	// 释放IP地址设置帧结构体资源
+	OnFreeInstrumentIPSetFrame(pEnv->m_pIPSetFrame);
+	// 释放仪器队列结构体资源
+	OnFreeInstrumentList(pEnv->m_pInstrumentList);
+	// 释放路由队列结构体资源
+	OnFreeRoutList(pEnv->m_pRoutList);
+	// 释放日志输出线程
+	OnFreeLogOutPutThread(pEnv->m_pLogOutPutThread);
 	delete pEnv;
 	pEnv = NULL;
 }

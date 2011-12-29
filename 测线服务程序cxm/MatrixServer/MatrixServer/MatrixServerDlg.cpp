@@ -6,7 +6,6 @@
 #include "MatrixServer.h"
 #include "MatrixServerDlg.h"
 #include "afxdialogex.h"
-#include "..\\MatrixServerDll\\MatrixServerDll.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -104,22 +103,18 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	HMODULE hMod = LoadLibrary(_T("MatrixServerDll"));
+	hMod = LoadLibrary(_T("MatrixServerDll"));
 	Create_Instance a = NULL;
-	Free_Instance b = NULL;
-	Init_Instance c = NULL;
+	On_Init b = NULL;
 	if (hMod)
 	{
-		a = (Create_Instance)GetProcAddress(hMod, "CreateInstance");
-		b = (Free_Instance)GetProcAddress(hMod, "FreeInstance");
-		c = (Init_Instance)GetProcAddress(hMod, "InitInstance");
-		m_oEnvironmentStruct* pEnv = (*a)();
-		(*c)(pEnv);
+		a = (Create_Instance)GetProcAddress(hMod, "OnCreateInstance");
+		b = (On_Init)GetProcAddress(hMod, "OnInit");
+		pEnv = (*a)();
 		(*b)(pEnv);
-		FreeLibrary(hMod);
 	}
 	// 现场管理对象初始化
-	m_oSiteManage.OnInit();
+//	m_oSiteManage.OnInit();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -178,7 +173,13 @@ void CMatrixServerDlg::OnBnClickedBnStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 现场管理对象
-	m_oSiteManage.OnWork();
+//	m_oSiteManage.OnWork();
+	On_Work a = NULL;
+	if (hMod)
+	{
+		a = (On_Work)GetProcAddress(hMod, "OnWork");
+		(*a)(pEnv);
+	}
 }
 
 
@@ -186,7 +187,13 @@ void CMatrixServerDlg::OnBnClickedBnStop()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 现场管理对象
-	m_oSiteManage.OnStop();
+//	m_oSiteManage.OnStop();
+	On_Stop a = NULL;
+	if (hMod)
+	{
+		a = (On_Stop)GetProcAddress(hMod, "OnStop");
+		(*a)(pEnv);
+	}
 }
 
 
@@ -194,7 +201,17 @@ void CMatrixServerDlg::OnBnClickedBnClose()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 现场管理对象
-	m_oSiteManage.OnClose();
+//	m_oSiteManage.OnClose();
+	On_Close a = NULL;
+	Free_Instance b = NULL;
+	if (hMod)
+	{
+		a = (On_Close)GetProcAddress(hMod, "OnClose");
+		b = (Free_Instance)GetProcAddress(hMod, "OnFreeInstance");
+		(*a)(pEnv);
+		(*b)(pEnv);
+		FreeLibrary(hMod);
+	}
 }
 
 

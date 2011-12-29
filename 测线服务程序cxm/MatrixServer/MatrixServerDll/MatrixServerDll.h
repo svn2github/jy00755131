@@ -203,17 +203,17 @@ typedef struct InstrumentCommInfo_Struct
 }m_oInstrumentCommInfoStruct;
 
 // 线程处理标志位结构
-typedef struct ThreadProcFlag_Struct
-{
-	// 标志位的资源同步对象
-	CRITICAL_SECTION m_oSecFlag;
-	// 心跳处理线程停止标志位
-	bool m_bProcHeartBeatStop;
-	// 首包处理线程停止标志位
-	bool m_bProcHeadFrameStop;
-	// 仪器IP地址设置线程停止标志位
-	bool m_bProcIPSetStop;
-}m_oThreadProcFlagStruct;
+// typedef struct ThreadProcFlag_Struct
+// {
+// 	// 标志位的资源同步对象
+// 	CRITICAL_SECTION m_oSecFlag;
+// 	// 心跳处理线程停止标志位
+// 	bool m_bProcHeartBeatStop;
+// 	// 首包处理线程停止标志位
+// 	bool m_bProcHeadFrameStop;
+// 	// 仪器IP地址设置线程停止标志位
+// 	bool m_bProcIPSetStop;
+// }m_oThreadProcFlagStruct;
 
 // 与设备通讯命令字内容
 typedef struct InstrumentCommand_Struct
@@ -492,7 +492,7 @@ typedef struct HeartBeatFrame_Struct
 	// 心跳命令字个数
 	unsigned short m_usCommandWordNum;
 	// 心跳帧命令
-	m_oInstrumentCommandStruct m_oCommandStruct;
+	m_oInstrumentCommandStruct* m_pCommandStruct;
 	// 心跳Socket套接字
 	SOCKET m_oHeartBeatSocket;
 	// 输出日志指针
@@ -509,7 +509,7 @@ typedef struct HeadFrame_Struct
 	// 接收帧缓冲区
 	byte* m_pbyRcvFrameData;
 	// 首包帧命令
-	m_oInstrumentCommandStruct m_oCommandStruct;
+	m_oInstrumentCommandStruct* m_pCommandStruct;
 	// 首包Socket套接字
 	SOCKET m_oHeadFrameSocket;
 	// 输出日志指针
@@ -530,19 +530,46 @@ typedef struct IPSetFrame_Struct
 	// IP地址设置命令字个数
 	unsigned short m_usCommandWordNum;
 	// IP地址设置帧命令
-	m_oInstrumentCommandStruct m_oCommandStructSet;
+	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	// 网络端口接收缓冲区大小
 	unsigned int m_uiRcvBufferSize;
 	// 接收帧缓冲区
 	byte* m_pbyRcvFrameData;
 	// IP地址设置应答帧命令
-	m_oInstrumentCommandStruct m_oCommandStructReturn;
+	m_oInstrumentCommandStruct* m_pCommandStructReturn;
 	// IP地址设置Socket套接字
 	SOCKET m_oIPSetFrameSocket;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oIPSetFrameStruct;
-
+// 线程结构体
+typedef struct Thread_Struct
+{
+	// 线程句柄
+	HANDLE m_hThread;
+	// 线程号
+	DWORD m_dwThreadID;
+	//是否工作状态
+	bool m_bWork;
+	// 是否关闭线程
+	bool m_bClose;
+	// 线程结束事件
+	HANDLE m_hThreadClose;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
+}m_oThreadStruct;
+// 日志输出线程
+typedef struct LogOutPutThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread; 
+}m_oLogOutPutThreadStruct;
+// 心跳线程
+typedef struct HeartBeatThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+}m_oHeartBeatThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct
 {
@@ -557,13 +584,15 @@ typedef struct Environment_Struct
 	// IP地址设置帧结构
 	m_oIPSetFrameStruct* m_pIPSetFrame;
 	// 线程处理标志位结构
-	m_oThreadProcFlagStruct* m_pThreadProcFlag;
+/*	m_oThreadProcFlagStruct* m_pThreadProcFlag;*/
 	// 日志输出结构
 	m_oLogOutPutStruct* m_pLogOutPut;
 	// 仪器队列结构
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由对列结构
 	m_oRoutListStruct* m_pRoutList;
+	// 日志输出线程
+	m_oLogOutPutThreadStruct* m_pLogOutPutThread;
 }m_oEnvironmentStruct;
 
 
@@ -650,7 +679,10 @@ typedef void (*CreateAndSet_IPSetFrameSocket)(m_oEnvironmentStruct* pEnv);
 // 创建并设置首包端口
 // 创建并设置IP地址设置端口
 typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv);
-
+typedef void (*On_Init)(m_oEnvironmentStruct* pEnv);
+typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
+typedef void (*On_Stop)(m_oEnvironmentStruct* pEnv);
+typedef void (*On_Close)(m_oEnvironmentStruct* pEnv);
 // 解析首包帧
 typedef bool (*Instrument_ParseHeadFrame)(m_oEnvironmentStruct* pEnv);
 // 解析IP地址设置应答帧
