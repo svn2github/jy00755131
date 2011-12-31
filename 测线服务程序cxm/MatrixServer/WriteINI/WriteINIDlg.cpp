@@ -168,6 +168,34 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 
 	strSection = _T("常量设置");			// 获取当前区域
 
+	strSectionKey=_T("OneSleepTime");				// 一次休眠的时间
+	strValue = _T("50");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("LogOutPutSleepTimes");		// 日志输出线程写日志的延时次数
+	strValue = _T("10");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("HertBeatSleepTimes");			// 心跳线程发送心跳帧延时次数
+	strValue = _T("5");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("HeadFrameSleepTimes");		// 首包线程接收首包延时次数
+	strValue = _T("5");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("IPSetFrameSleepTimes");		// IP地址设置线程延时次数
+	strValue = _T("5");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("TailFrameSleepTimes");		// 尾包线程延时次数
+	strValue = _T("5");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CloseThreadSleepTimes ");		// 等待线程关闭的延时次数
+	strValue = _T("20");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSectionKey=_T("HeadFrameStableNum");		// 首包计数
 	strValue = _T("4");
 	//写入ini文件中相应字段

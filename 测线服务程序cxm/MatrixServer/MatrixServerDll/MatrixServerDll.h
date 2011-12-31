@@ -57,6 +57,21 @@ typedef struct LogOutPut_Struct
 typedef struct ConstVar_Struct
 {
 	//____常量设置____
+	// 一次休眠的时间
+	int m_iOneSleepTime;
+	// 日志输出线程写日志的延时次数
+	int m_iLogOutPutSleepTimes;
+	// 心跳线程发送心跳帧延时次数
+	int m_iHeartBeatSleepTimes;
+	// 首包线程接收首包延时次数
+	int m_iHeadFrameSleepTimes;
+	// IP地址设置线程延时次数
+	int m_iIPSetFrameSleepTimes;
+	// 尾包线程延时次数
+	int m_iTailFrameSleepTimes;
+	// 等待线程关闭的延时次数
+	int m_iCloseThreadSleepTimes;
+
 	// 首包计数
 	int m_iHeadFrameStableNum;
 	// IP地址重设次数
@@ -201,19 +216,6 @@ typedef struct InstrumentCommInfo_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oInstrumentCommInfoStruct;
-
-// 线程处理标志位结构
-// typedef struct ThreadProcFlag_Struct
-// {
-// 	// 标志位的资源同步对象
-// 	CRITICAL_SECTION m_oSecFlag;
-// 	// 心跳处理线程停止标志位
-// 	bool m_bProcHeartBeatStop;
-// 	// 首包处理线程停止标志位
-// 	bool m_bProcHeadFrameStop;
-// 	// 仪器IP地址设置线程停止标志位
-// 	bool m_bProcIPSetStop;
-// }m_oThreadProcFlagStruct;
 
 // 与设备通讯命令字内容
 typedef struct InstrumentCommand_Struct
@@ -555,6 +557,8 @@ typedef struct Thread_Struct
 	bool m_bClose;
 	// 线程结束事件
 	HANDLE m_hThreadClose;
+	// 常量指针
+	m_oConstVarStruct* m_pConstVar;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oThreadStruct;
@@ -569,6 +573,8 @@ typedef struct HeartBeatThread_Struct
 {
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
+	// 心跳帧指针
+	m_oHeartBeatFrameStruct* m_pHeartBeatFrame;
 }m_oHeartBeatThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct
@@ -593,6 +599,8 @@ typedef struct Environment_Struct
 	m_oRoutListStruct* m_pRoutList;
 	// 日志输出线程
 	m_oLogOutPutThreadStruct* m_pLogOutPutThread;
+	// 心跳线程
+	m_oHeartBeatThreadStruct* m_pHeartBeatThread;
 }m_oEnvironmentStruct;
 
 

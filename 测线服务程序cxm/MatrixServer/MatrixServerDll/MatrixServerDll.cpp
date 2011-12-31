@@ -83,6 +83,7 @@ MatrixServerDll_API m_oEnvironmentStruct* OnCreateInstance(void)
 	pEnv->m_pInstrumentList = NULL;
 	pEnv->m_pRoutList = NULL;
 	pEnv->m_pLogOutPutThread = NULL;
+	pEnv->m_pHeartBeatThread = NULL;
 	return pEnv;
 }
 // 创建日志输出结构体
@@ -957,6 +958,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 	strFilePath = INIFilePath;
 	if (_taccess(strFilePath, 0) == -1)
 	{
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, ErrorType, 
+							IDS_ERR_FILE_EXIST, "LoadIniFile");
 		return;
 	}
 //	GetFileAttributes(strFilePath);
@@ -964,6 +967,42 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 	{
 		//读取ini文件中相应字段的内容
 		strSection = _T("常量设置");					// 获取当前区域
+
+		strSectionKey=_T("OneSleepTime");				// 一次休眠的时间
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iOneSleepTime = _ttoi(strValue);
+
+		strSectionKey=_T("LogOutPutSleepTimes");		// 日志输出线程写日志的延时次数
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iLogOutPutSleepTimes = _ttoi(strValue);
+
+		strSectionKey=_T("HertBeatSleepTimes");			// 心跳线程发送心跳帧延时次数
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iHeartBeatSleepTimes = _ttoi(strValue);
+
+		strSectionKey=_T("HeadFrameSleepTimes");		// 首包线程接收首包延时次数
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iHeadFrameSleepTimes = _ttoi(strValue);
+
+		strSectionKey=_T("IPSetFrameSleepTimes");		// IP地址设置线程延时次数
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iIPSetFrameSleepTimes = _ttoi(strValue);
+
+		strSectionKey=_T("TailFrameSleepTimes");		// 尾包线程延时次数
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iTailFrameSleepTimes = _ttoi(strValue);
+
+		strSectionKey=_T("CloseThreadSleepTimes ");		// 等待线程关闭的延时次数
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iCloseThreadSleepTimes = _ttoi(strValue);
+
 		strSectionKey=_T("HeadFrameStableNum");			// 首包计数
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
@@ -1309,7 +1348,7 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 	}
 }
 // 初始化常量信息结构体
-MatrixServerDll_API void OnWorkConstVar(m_oConstVarStruct* pConstVar)
+MatrixServerDll_API void OnInitConstVar(m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -1362,8 +1401,8 @@ MatrixServerDll_API BOOL OpenAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInf
 	oVariant = CommXMLFilePath;
 	if (_taccess(CommXMLFilePath, 0) == -1)
 	{
-		AddMsgToLogOutPutList(pCommInfo->m_pLogOutPut, ErrorType, IDS_ERR_FILE_EXIST, 
-							"OpenAppIniXMLFile");
+		AddMsgToLogOutPutList(pCommInfo->m_pLogOutPut, ErrorType, 
+							IDS_ERR_FILE_EXIST, "OpenAppIniXMLFile");
 		return FALSE;
 	}
 	return pCommInfo->m_oXMLDOMDocument.load(oVariant);
@@ -1506,7 +1545,7 @@ MatrixServerDll_API void LoadLineServerAppSetupData(m_oInstrumentCommInfoStruct*
 	CloseAppIniXMLFile(pCommInfo);
 }
 // 初始化仪器通讯信息结构体
-MatrixServerDll_API void OnWorkInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
+MatrixServerDll_API void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
 {
 	if (pCommInfo == NULL)
 	{
@@ -2377,128 +2416,6 @@ MatrixServerDll_API void DeleteRout(unsigned int uiIndex, hash_map<unsigned int,
 		pRoutMap->erase(iter);
 	}
 }
-// 创建日志输出线程
-MatrixServerDll_API m_oLogOutPutThreadStruct* OnCreateLogOutPutThread(m_oLogOutPutStruct* pLogOutPut)
-{
-	m_oLogOutPutThreadStruct* pLogOutPutThread = NULL;
-	pLogOutPutThread = new m_oLogOutPutThreadStruct;
-	pLogOutPutThread->m_pThread = new m_oThreadStruct;
-	pLogOutPutThread->m_pThread->m_pLogOutPut = pLogOutPut;
-	pLogOutPutThread->m_pThread->m_hThread = INVALID_HANDLE_VALUE;
-	pLogOutPutThread->m_pThread->m_hThreadClose = INVALID_HANDLE_VALUE;
-	pLogOutPutThread->m_pThread->m_dwThreadID = 0;
-	return pLogOutPutThread;
-}
-// 线程等待函数
-MatrixServerDll_API void WaitLogOutPutThread(int iWaitStopCount, m_oLogOutPutThreadStruct* pLogOutPutThread)
-{
-	// 初始化等待次数为0
-	int iWaitCount = 0;
-	// 循环
-	while(true)
-	{	// 休眠50毫秒
-		Sleep(50);
-		// 等待次数加1
-		iWaitCount++;
-		// 判断是否可以处理的条件
-		if(pLogOutPutThread->m_pThread->m_bClose == true)
-		{
-			// 返回
-			return;
-		}
-		// 判断等待次数是否大于等于最多等待次数
-		if(iWaitStopCount <= iWaitCount)
-		{
-			// 返回
-			return;
-		}		
-	}
-}
-// 线程函数
-DWORD WINAPI RunLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
-{
-	while(true)
-	{
-		if (pLogOutPutThread->m_pThread->m_bClose == true)
-		{
-			break;
-		}
-		if (pLogOutPutThread->m_pThread->m_bWork == true)
-		{
-			WriteLogOutPutListToFile(pLogOutPutThread->m_pThread->m_pLogOutPut);
-		}
-		if (pLogOutPutThread->m_pThread->m_bClose == true)
-		{
-			break;
-		}
-		WaitLogOutPutThread(4, pLogOutPutThread);
-	}
-	::SetEvent(pLogOutPutThread->m_pThread->m_hThreadClose); // 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
-	return 1;
-}
-// 初始化日志输出线程
-MatrixServerDll_API bool OnInitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
-{
-	if (pLogOutPutThread == NULL)
-	{
-		return false;
-	}
-	pLogOutPutThread->m_pThread->m_bClose = false;
-	pLogOutPutThread->m_pThread->m_bWork = false;
-	pLogOutPutThread->m_pThread->m_hThreadClose = ::CreateEvent(false, false, NULL, NULL);	// 创建事件对象
-	if ((pLogOutPutThread->m_pThread->m_hThreadClose == NULL)||(GetLastError() == ERROR_ALREADY_EXISTS))
-	{
-		return false;
-	}
-	else
-	{
-		::ResetEvent(pLogOutPutThread->m_pThread->m_hThreadClose);	// 设置事件对象为无信号状态
-	}
-	// 创建线程
-	pLogOutPutThread->m_pThread->m_hThread = ::CreateThread((LPSECURITY_ATTRIBUTES)NULL, 
-															0,
-															(LPTHREAD_START_ROUTINE)RunLogOutPutThread,
-															pLogOutPutThread, 
-															0, 
-															&pLogOutPutThread->m_pThread->m_dwThreadID);
-	if (pLogOutPutThread->m_pThread->m_hThread == NULL)
-	{
-		return false;
-	}
-	return true;
-}
-// 关闭日志输出线程
-MatrixServerDll_API bool OnCloseLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
-{
-	if (pLogOutPutThread == NULL)
-	{
-		return false;
-	}
-	int iResult = WaitForSingleObject(pLogOutPutThread->m_pThread->m_hThreadClose, 500);
-	if (iResult != WAIT_OBJECT_0)
-	{
-		::TerminateThread(pLogOutPutThread->m_pThread->m_hThread, 0);
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-	return true;
-}
-// 释放日志输出线程
-MatrixServerDll_API void OnFreeLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
-{
-	if (pLogOutPutThread == NULL)
-	{
-		return;
-	}
-	if (pLogOutPutThread->m_pThread != NULL)
-	{
-		delete pLogOutPutThread->m_pThread;
-	}
-	delete pLogOutPutThread;
-}
 // 解析首包帧
 MatrixServerDll_API bool ParseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, m_oConstVarStruct* pConstVar)
 {
@@ -2522,7 +2439,16 @@ MatrixServerDll_API void MakeInstrumentHeartBeatFrame(m_oHeartBeatFrameStruct* p
 {
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	MakeInstrumentFrame(pHeartBeatFrame->m_pCommandStruct,  pConstVar, pHeartBeatFrame->m_pbySndFrameData,
-						pHeartBeatFrame->m_pbyCommandWord, pHeartBeatFrame->m_usCommandWordNum);
+		pHeartBeatFrame->m_pbyCommandWord, pHeartBeatFrame->m_usCommandWordNum);
+	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+}
+// 发送心跳帧
+MatrixServerDll_API void SendInstrumentHeartBeatFrame(m_oHeartBeatFrameStruct* pHeartBeatFrame, m_oConstVarStruct* pConstVar)
+{
+	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
+	SendFrame(pHeartBeatFrame->m_oHeartBeatSocket, pHeartBeatFrame->m_pbySndFrameData, pConstVar->m_iSndFrameSize,
+		pHeartBeatFrame->m_pCommandStruct->m_uiAimPort, pHeartBeatFrame->m_pCommandStruct->m_uiDstIP, 
+		pHeartBeatFrame->m_pLogOutPut);
 	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 }
 // 生成IP地址设置帧
@@ -2530,8 +2456,287 @@ MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFra
 {
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	MakeInstrumentFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_pbySndFrameData, 
-						pIPSetFrame->m_pbyCommandWord, pIPSetFrame->m_usCommandWordNum);
+		pIPSetFrame->m_pbyCommandWord, pIPSetFrame->m_usCommandWordNum);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+}
+// 创建日志输出线程
+MatrixServerDll_API m_oLogOutPutThreadStruct* OnCreateLogOutPutThread(m_oLogOutPutStruct* pLogOutPut)
+{
+	m_oLogOutPutThreadStruct* pLogOutPutThread = NULL;
+	pLogOutPutThread = new m_oLogOutPutThreadStruct;
+	pLogOutPutThread->m_pThread = new m_oThreadStruct;
+	pLogOutPutThread->m_pThread->m_pLogOutPut = pLogOutPut;
+	pLogOutPutThread->m_pThread->m_hThread = INVALID_HANDLE_VALUE;
+	pLogOutPutThread->m_pThread->m_hThreadClose = INVALID_HANDLE_VALUE;
+	pLogOutPutThread->m_pThread->m_dwThreadID = 0;
+	return pLogOutPutThread;
+}
+// 线程等待函数
+MatrixServerDll_API void WaitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	// 初始化等待次数为0
+	int iWaitCount = 0;
+	// 循环
+	while(true)
+	{	// 休眠50毫秒
+		Sleep(pLogOutPutThread->m_pThread->m_pConstVar->m_iOneSleepTime);
+		// 等待次数加1
+		iWaitCount++;
+		// 判断是否可以处理的条件
+		if(pLogOutPutThread->m_pThread->m_bClose == true)
+		{
+			// 返回
+			return;
+		}
+		// 判断等待次数是否大于等于最多等待次数
+		if(pLogOutPutThread->m_pThread->m_pConstVar->m_iLogOutPutSleepTimes == iWaitCount)
+		{
+			// 返回
+			return;
+		}		
+	}
+}
+// 线程函数
+DWORD WINAPI RunLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	while(true)
+	{
+		if (pLogOutPutThread->m_pThread->m_bClose == true)
+		{
+			break;
+		}
+		if (pLogOutPutThread->m_pThread->m_bWork == true)
+		{
+			AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, LogType, 0, "RunLogOutPutThread");
+			WriteLogOutPutListToFile(pLogOutPutThread->m_pThread->m_pLogOutPut);
+		}
+		else
+		{
+			AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, LogType, 0, "RunLogOutPutThread", "停止写日志");
+		}
+		if (pLogOutPutThread->m_pThread->m_bClose == true)
+		{
+			break;
+		}
+		WaitLogOutPutThread(pLogOutPutThread);
+	}
+	::SetEvent(pLogOutPutThread->m_pThread->m_hThreadClose); // 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
+	return 1;
+}
+// 初始化日志输出线程
+MatrixServerDll_API bool OnInitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	if (pLogOutPutThread == NULL)
+	{
+		AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, ErrorType, IDS_ERR_PTRISNULL, 
+			"OnInitLogOutPutThread", "pLogOutPutThread");
+		return false;
+	}
+	pLogOutPutThread->m_pThread->m_bClose = false;
+	pLogOutPutThread->m_pThread->m_bWork = false;
+	pLogOutPutThread->m_pThread->m_hThreadClose = ::CreateEvent(false, false, NULL, NULL);	// 创建事件对象
+	if (pLogOutPutThread->m_pThread->m_hThreadClose == NULL)
+	{
+		AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, ErrorType, IDS_ERR_CREATE_EVENT, 
+			"OnInitLogOutPutThread", "pLogOutPutThread->m_pThread->m_hThreadClose");
+		return false;
+	}
+	if (GetLastError() == ERROR_ALREADY_EXISTS)
+	{
+		AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, ErrorType, ERROR_ALREADY_EXISTS, 
+			"OnInitLogOutPutThread", "pLogOutPutThread->m_pThread->m_hThreadClose");
+	}
+	::ResetEvent(pLogOutPutThread->m_pThread->m_hThreadClose);	// 设置事件对象为无信号状态
+	// 创建线程
+	pLogOutPutThread->m_pThread->m_hThread = ::CreateThread((LPSECURITY_ATTRIBUTES)NULL, 
+															0,
+															(LPTHREAD_START_ROUTINE)RunLogOutPutThread,
+															pLogOutPutThread, 
+															0, 
+															&pLogOutPutThread->m_pThread->m_dwThreadID);
+	if (pLogOutPutThread->m_pThread->m_hThread == NULL)
+	{
+		AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, ErrorType, IDS_ERR_CREATE_THREAD, 
+			"OnInitLogOutPutThread", "pLogOutPutThread->m_pThread->m_hThread");
+		return false;
+	}
+	AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, LogType, 0, 
+		"OnInitLogOutPutThread", "日志输出线程创建成功");
+	return true;
+}
+// 关闭日志输出线程
+MatrixServerDll_API bool OnCloseLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	if (pLogOutPutThread == NULL)
+	{
+		return false;
+	}
+	int iResult = WaitForSingleObject(pLogOutPutThread->m_pThread->m_hThreadClose, 
+									pLogOutPutThread->m_pThread->m_pConstVar->m_iCloseThreadSleepTimes);
+	if (iResult != WAIT_OBJECT_0)
+	{
+		::TerminateThread(pLogOutPutThread->m_pThread->m_hThread, 0);
+		AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, WarningType, 0, 
+			"OnCloseLogOutPutThread", "日志输出线程强制关闭");
+		return false;
+	}
+	AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, LogType, 0, 
+		"OnCloseLogOutPutThread", "日志输出线程成功关闭");
+	return true;
+}
+// 释放日志输出线程
+MatrixServerDll_API void OnFreeLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
+{
+	if (pLogOutPutThread == NULL)
+	{
+		return;
+	}
+	if (pLogOutPutThread->m_pThread != NULL)
+	{
+		delete pLogOutPutThread->m_pThread;
+	}
+	delete pLogOutPutThread;
+}
+// 创建心跳线程
+MatrixServerDll_API m_oHeartBeatThreadStruct* OnCreateHeartBeatThread(m_oLogOutPutStruct* pLogOutPut)
+{
+	m_oHeartBeatThreadStruct* pHeartBeatThread = NULL;
+	pHeartBeatThread = new m_oHeartBeatThreadStruct;
+	pHeartBeatThread->m_pThread = new m_oThreadStruct;
+	pHeartBeatThread->m_pThread->m_pLogOutPut = pLogOutPut;
+	pHeartBeatThread->m_pThread->m_hThread = INVALID_HANDLE_VALUE;
+	pHeartBeatThread->m_pThread->m_hThreadClose = INVALID_HANDLE_VALUE;
+	pHeartBeatThread->m_pThread->m_dwThreadID = 0;
+	return pHeartBeatThread;
+}
+// 线程等待函数
+MatrixServerDll_API void WaitHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
+{
+	// 初始化等待次数为0
+	int iWaitCount = 0;
+	// 循环
+	while(true)
+	{	// 休眠50毫秒
+		Sleep(pHeartBeatThread->m_pThread->m_pConstVar->m_iOneSleepTime);
+		// 等待次数加1
+		iWaitCount++;
+		// 判断是否可以处理的条件
+		if(pHeartBeatThread->m_pThread->m_bClose == true)
+		{
+			// 返回
+			return;
+		}
+		// 判断等待次数是否大于等于最多等待次数
+		if(pHeartBeatThread->m_pThread->m_pConstVar->m_iHeartBeatSleepTimes == iWaitCount)
+		{
+			// 返回
+			return;
+		}		
+	}
+}
+// 线程函数
+DWORD WINAPI RunHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
+{
+	while(true)
+	{
+		if (pHeartBeatThread->m_pThread->m_bClose == true)
+		{
+			break;
+		}
+		if (pHeartBeatThread->m_pThread->m_bWork == true)
+		{
+			MakeInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, pHeartBeatThread->m_pThread->m_pConstVar);
+			SendInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, pHeartBeatThread->m_pThread->m_pConstVar);
+			AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, LogType, 0,
+								"RunHeartBeatThread", "发送心跳");
+		}
+		else
+		{
+			AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, LogType, 0,
+				"RunHeartBeatThread", "停止发送心跳");
+		}
+		if (pHeartBeatThread->m_pThread->m_bClose == true)
+		{
+			break;
+		}
+		WaitHeartBeatThread(pHeartBeatThread);
+	}
+	::SetEvent(pHeartBeatThread->m_pThread->m_hThreadClose); // 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
+	return 1;
+}
+// 初始化心跳线程
+MatrixServerDll_API bool OnInitHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
+{
+	if (pHeartBeatThread == NULL)
+	{
+		AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, ErrorType, IDS_ERR_PTRISNULL, 
+			"OnInitHeartBeatThread", "pHeartBeatThread");
+		return false;
+	}
+	pHeartBeatThread->m_pThread->m_bClose = false;
+	pHeartBeatThread->m_pThread->m_bWork = false;
+	pHeartBeatThread->m_pThread->m_hThreadClose = ::CreateEvent(false, false, NULL, NULL);	// 创建事件对象
+	if (pHeartBeatThread->m_pThread->m_hThreadClose == NULL)
+	{
+		AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, ErrorType, IDS_ERR_CREATE_EVENT, 
+			"OnInitHeartBeatThread", "pHeartBeatThread->m_pThread->m_hThreadClose");
+		return false;
+	}
+	if (GetLastError() == ERROR_ALREADY_EXISTS)
+	{
+		AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, ErrorType, ERROR_ALREADY_EXISTS, 
+			"OnInitHeartBeatThread", "pHeartBeatThread->m_pThread->m_hThreadClose");
+	}
+	::ResetEvent(pHeartBeatThread->m_pThread->m_hThreadClose);	// 设置事件对象为无信号状态
+	// 创建线程
+	pHeartBeatThread->m_pThread->m_hThread = ::CreateThread((LPSECURITY_ATTRIBUTES)NULL, 
+															0,
+															(LPTHREAD_START_ROUTINE)RunHeartBeatThread,
+															pHeartBeatThread, 
+															0, 
+															&pHeartBeatThread->m_pThread->m_dwThreadID);
+	if (pHeartBeatThread->m_pThread->m_hThread == NULL)
+	{
+		AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, ErrorType, IDS_ERR_CREATE_THREAD, 
+			"OnInitHeartBeatThread", "pHeartBeatThread->m_pThread->m_hThread");
+		return false;
+	}
+	AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, LogType, 0, 
+		"OnInitHeartBeatThread", "心跳线程创建成功");
+	return true;
+}
+// 关闭心跳线程
+MatrixServerDll_API bool OnCloseHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
+{
+	if (pHeartBeatThread == NULL)
+	{
+		return false;
+	}
+	int iResult = WaitForSingleObject(pHeartBeatThread->m_pThread->m_hThreadClose, 
+									pHeartBeatThread->m_pThread->m_pConstVar->m_iCloseThreadSleepTimes);
+	if (iResult != WAIT_OBJECT_0)
+	{
+		::TerminateThread(pHeartBeatThread->m_pThread->m_hThread, 0);
+		AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, WarningType, 0, 
+			"OnCloseHeartBeatThread", "心跳线程强制关闭");
+		return false;
+	}
+	AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, LogType, 0, 
+		"OnCloseHeartBeatThread", "心跳线程成功关闭");
+	return true;
+}
+// 释放心跳线程
+MatrixServerDll_API void OnFreeHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
+{
+	if (pHeartBeatThread == NULL)
+	{
+		return;
+	}
+	if (pHeartBeatThread->m_pThread != NULL)
+	{
+		delete pHeartBeatThread->m_pThread;
+	}
+	delete pHeartBeatThread;
 }
 // 初始化实例
 MatrixServerDll_API void OnInitInstance(m_oEnvironmentStruct* pEnv)
@@ -2558,13 +2763,25 @@ MatrixServerDll_API void OnInitInstance(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pRoutList = OnCreateRoutList(pEnv->m_pLogOutPut);
 	// 创建日志输出线程
 	pEnv->m_pLogOutPutThread = OnCreateLogOutPutThread(pEnv->m_pLogOutPut);
+ 	// 创建心跳线程
+ 	pEnv->m_pHeartBeatThread = OnCreateHeartBeatThread(pEnv->m_pLogOutPut);
 
 	// 初始化日志输出结构体
 	OnInitLogOutPut(pEnv->m_pLogOutPut);
+	// 初始化常量信息结构体
+	OnInitConstVar(pEnv->m_pConstVar);
+	// 初始化仪器通讯信息结构体
+	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
 	// 初始化套接字库
 	OnInitSocketLib(pEnv->m_pLogOutPut);
 	// 初始化日志输出线程
+	pEnv->m_pLogOutPutThread->m_pThread->m_pConstVar = pEnv->m_pConstVar;
 	OnInitLogOutPutThread(pEnv->m_pLogOutPutThread);
+	// 初始化心跳线程
+ 	pEnv->m_pHeartBeatThread->m_pThread->m_pConstVar = pEnv->m_pConstVar;
+ 	pEnv->m_pHeartBeatThread->m_pHeartBeatFrame = pEnv->m_pHeartBeatFrame;
+ 	OnInitHeartBeatThread(pEnv->m_pHeartBeatThread);
+
 }
 // 初始化
 MatrixServerDll_API void OnInit(m_oEnvironmentStruct* pEnv)
@@ -2588,8 +2805,6 @@ MatrixServerDll_API void OnClose(m_oEnvironmentStruct* pEnv)
 	OnCloseInstrumentList(pEnv->m_pInstrumentList);
 	// 释放路由队列资源
 	OnCloseRoutList(pEnv->m_pRoutList);
-	// 关闭日志文件
-	OnCloseLogOutPut(pEnv->m_pLogOutPut);
 	// 关闭心跳Socket
 	OnCloseSocket(pEnv->m_pHeartBeatFrame->m_oHeartBeatSocket);
 	// 关闭首包Socket
@@ -2599,16 +2814,18 @@ MatrixServerDll_API void OnClose(m_oEnvironmentStruct* pEnv)
 
 	// 线程关闭标志位为true
 	pEnv->m_pLogOutPutThread->m_pThread->m_bClose = true;
+	// 线程关闭标志位为true
+	pEnv->m_pHeartBeatThread->m_pThread->m_bClose = true;
 	// 关闭日志输出线程
 	OnCloseLogOutPutThread(pEnv->m_pLogOutPutThread);
+	// 关闭日志输出线程
+	OnCloseHeartBeatThread(pEnv->m_pHeartBeatThread);
+	// 关闭日志文件
+	OnCloseLogOutPut(pEnv->m_pLogOutPut);
 }
 // 工作
 MatrixServerDll_API void OnWork(m_oEnvironmentStruct* pEnv)
 {
-	// 初始化常量信息结构体
-	OnWorkConstVar(pEnv->m_pConstVar);
-	// 初始化仪器通讯信息结构体
-	OnWorkInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
 	// 初始化心跳
 	OnWorkInstrumentHeartBeat(pEnv->m_pHeartBeatFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化首包
@@ -2633,6 +2850,8 @@ MatrixServerDll_API void OnWork(m_oEnvironmentStruct* pEnv)
 	OnCreateAndSetIPSetFrameSocket(pEnv->m_pIPSetFrame);
 	// 日志输出线程开始工作
 	pEnv->m_pLogOutPutThread->m_pThread->m_bWork = true;
+ 	// 心跳线程开始工作
+ 	pEnv->m_pHeartBeatThread->m_pThread->m_bWork = true;
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPut, LogType, 0, 
 		"OnWork", "开始工作");
 }
@@ -2641,6 +2860,8 @@ MatrixServerDll_API void OnStop(m_oEnvironmentStruct* pEnv)
 {
 	// 日志输出线程停止工作
 	pEnv->m_pLogOutPutThread->m_pThread->m_bWork = false;
+	// 心跳线程停止工作
+	pEnv->m_pHeartBeatThread->m_pThread->m_bWork = false;
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPut, LogType, 0, 
 		"OnStop", "停止工作");
 }
@@ -2669,6 +2890,8 @@ MatrixServerDll_API void OnFreeInstance(m_oEnvironmentStruct* pEnv)
 	OnFreeRoutList(pEnv->m_pRoutList);
 	// 释放日志输出线程
 	OnFreeLogOutPutThread(pEnv->m_pLogOutPutThread);
+	// 释放心跳线程
+	OnFreeHeartBeatThread(pEnv->m_pHeartBeatThread);
 	delete pEnv;
 	pEnv = NULL;
 }
