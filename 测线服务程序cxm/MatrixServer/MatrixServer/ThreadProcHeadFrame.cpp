@@ -485,8 +485,6 @@ void CThreadProcHeadFrame::GetFreeInstrument(CInstrument* &pInstrument, CFrameHe
 	pInstrument->m_uiRoutIP = pFrameHead->m_uiRoutIP;
 	//设置新仪器的首包时刻
 	pInstrument->m_uiTimeHeadFrame = pFrameHead->m_uiTimeHeadFrame;
-	// 新仪器加入SN索引表
-	m_pSiteData->m_oInstrumentList.AddInstrumentToSNMap(pInstrument->m_uiSN, pInstrument);
 }
 
 // /**

@@ -77,13 +77,13 @@ typedef struct ConstVar_Struct
 	// IP地址重设次数
 	int m_iIPAddrResetTimes;
 	// 仪器类型-交叉站
-	byte m_byInstrumentTypeLAUX;
+	char m_byInstrumentTypeLAUX;
 	// 仪器类型-电源站
-	byte m_byInstrumentTypeLAUL;
+	char m_byInstrumentTypeLAUL;
 	// 仪器类型-采集站
-	byte m_byInstrumentTypeFDU;
+	char m_byInstrumentTypeFDU;
 	// 仪器类型-LCI
-	byte m_byInstrumentTypeLCI;
+	char m_byInstrumentTypeLCI;
 	// 方向上方
 	int m_iDirectionTop;
 	// 方向下方
@@ -109,7 +109,7 @@ typedef struct ConstVar_Struct
 	// 帧头长度
 	int m_iFrameHeadSize;
 	// 同步帧头
-	byte* m_pFrameHeadCheck;
+	char* m_pFrameHeadCheck;
 	// 命令字长度1字节
 	int m_iFrameCmdSize1B;
 	// 命令包长度1字节
@@ -125,7 +125,7 @@ typedef struct ConstVar_Struct
 	// 0x18命令数组包含的最大字节数
 	int m_iADCSetCommandMaxByte;
 	// 发送帧缓冲区初值设定
-	byte m_bySndFrameBufInit;
+	char m_cSndFrameBufInit;
 	// 接收的网络数据帧帧长度
 	int m_iRcvFrameSize;
 	// 发送的网络数据帧帧长度
@@ -140,57 +140,57 @@ typedef struct ConstVar_Struct
 	// TB开始采集开关控制命令(TB_L高8位)
 	unsigned int m_uiCmdTBCtrl;
 	// 串号
-	byte m_byCmdSn;
+	char m_byCmdSn;
 	// 首包时间
-	byte m_byCmdHeadFrameTime;
+	char m_byCmdHeadFrameTime;
 	// 本地IP地址
-	byte m_byCmdLocalIPAddr;
+	char m_byCmdLocalIPAddr;
 	// 本地系统时间
-	byte m_byCmdLocalSysTime;
+	char m_byCmdLocalSysTime;
 	// 本地时间修正高位
-	byte m_byCmdLocalTimeFixedHigh;
+	char m_byCmdLocalTimeFixedHigh;
 	// 本地时间修正低位
-	byte m_byCmdLocalTimeFixedLow;
+	char m_byCmdLocalTimeFixedLow;
 	// 自动数据返回地址
-	byte m_byCmdADCDataReturnAddr;
+	char m_byCmdADCDataReturnAddr;
 	// 自动数据返回端口和命令
-	byte m_byCmdADCDataReturnPort;
+	char m_byCmdADCDataReturnPort;
 	// 端口递增下限和上限
-	byte m_byCmdADCDataReturnPortLimit;
+	char m_byCmdADCDataReturnPortLimit;
 	// 设置网络等待端口和命令
-	byte m_byCmdSetBroadCastPort;
+	char m_byCmdSetBroadCastPort;
 	// 系统硬件状态拷贝
-	byte m_byCmdFDUErrorCode;
+	char m_byCmdFDUErrorCode;
 	// TB时刻高位
-	byte m_byCmdTBHigh;
+	char m_byCmdTBHigh;
 	// TB时刻低位
-	byte m_byCmdTbLow;
+	char m_byCmdTbLow;
 	// work_ctrl 交叉站方向
-	byte m_byCmdLAUXRoutOpenQuery;
+	char m_byCmdLAUXRoutOpenQuery;
 	// 路由开关
-	byte m_byCmdLAUXRoutOpenSet;
+	char m_byCmdLAUXRoutOpenSet;
 	// 尾包接收\发送时刻低位
-	byte m_byCmdTailRecSndTimeLow;
+	char m_byCmdTailRecSndTimeLow;
 	// 广播命令等待端口匹配
-	byte m_byCmdBroadCastPortSet;
+	char m_byCmdBroadCastPortSet;
 	// 设置ADC控制命令命令字
-	byte m_byCmdADCSet;
+	char m_byCmdADCSet;
 	// 网络时刻
-	byte m_byCmdNetTime;
+	char m_byCmdNetTime;
 	// 交叉站大线尾包接收时刻
-	byte m_byCmdLineTailRecTimeLAUX;
+	char m_byCmdLineTailRecTimeLAUX;
 	// 交叉站交叉线尾包接收时刻
-	byte m_byCmdLAUTailRecTimeLAUX;
+	char m_byCmdLAUTailRecTimeLAUX;
 	// 交叉站故障1
-	byte m_byCmdLAUXErrorCode1;
+	char m_byCmdLAUXErrorCode1;
 	// 交叉站故障2
-	byte m_byCmdLAUXErrorCode2;
+	char m_byCmdLAUXErrorCode2;
 	// 交叉站路由分配
-	byte m_byCmdLAUXSetRout;
+	char m_byCmdLAUXSetRout;
 	// 返回路由
-	byte m_byCmdReturnRout;
+	char m_byCmdReturnRout;
 	// 命令解析结束命令
-	byte m_byCmdEnd;
+	char m_byCmdEnd;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
@@ -256,13 +256,13 @@ typedef struct InstrumentCommand_Struct
 	// 设置网络等待端口，指设置接收上位机广播命令的端口
 	unsigned short m_usSetBroadCastPort;
 	// 网络数据错误计数
-	byte m_byFDUErrorCodeDataCount;
+	char m_byFDUErrorCodeDataCount;
 	// 命令错误计数
-	byte m_byFDUErrorCodeCmdCount;
+	char m_byFDUErrorCodeCmdCount;
 	// 时间报文状态
-	byte m_byTimeStatus;
+	char m_byTimeStatus;
 	// 控制状态
-	byte m_byCtrlStatus;
+	char m_byCtrlStatus;
 	// TB时刻高位
 	unsigned int m_uiTBHigh;
 	// TB时刻低位
@@ -272,11 +272,11 @@ typedef struct InstrumentCommand_Struct
 	// work_ctrl控制交叉站接收和发送命令的方向
 	// 由高到低位每位分别控制发送口交叉线A、B，大线A、B，接收端交叉线A、B，大线A、B
 	// =0为开，=1为关
-	byte m_byLAUXRoutOpenQuery;
+	char m_byLAUXRoutOpenQuery;
 	// 路由开关
 	// 由高位到低位分别控制开交叉线A、开交叉线B、开大线A、开大线B
 	// =0为开，=1为关
-	byte m_byLAUXRoutOpenSet;
+	char m_byLAUXRoutOpenSet;
 	// 尾包接收\发送时刻低位//交叉站尾包发送时刻，低14位有效
 	unsigned short m_usTailRecSndTimeLow;
 	// 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令
@@ -292,15 +292,15 @@ typedef struct InstrumentCommand_Struct
 	// 交叉站交叉线B尾包接收时刻
 	unsigned short m_usLAUXTailRecTimeLAUXLineB;
 	// 交叉站大线A数据故障
-	byte m_byLAUXErrorCodeDataLineACount;
+	char m_byLAUXErrorCodeDataLineACount;
 	// 交叉站大线B数据故障
-	byte m_byLAUXErrorCodeDataLineBCount;
+	char m_byLAUXErrorCodeDataLineBCount;
 	// 交叉站交叉线A数据故障
-	byte m_byLAUXErrorCodeDataLAUXLineACount;
+	char m_byLAUXErrorCodeDataLAUXLineACount;
 	// 交叉站交叉线B数据故障
-	byte m_byLAUXErrorCodeDataLAUXLineBCount;
+	char m_byLAUXErrorCodeDataLAUXLineBCount;
 	// 交叉站命令口故障
-	byte m_byLAUXErrorCodeCmdCount;
+	char m_byLAUXErrorCodeCmdCount;
 	// 交叉站上方路由IP
 	unsigned int m_uiRoutIPTop;
 	// 交叉站下方路由IP
@@ -312,7 +312,7 @@ typedef struct InstrumentCommand_Struct
 	// 路由IP地址
 	unsigned int m_uiRoutIP;
 	// 0x18命令数组
-	byte* m_pbyADCSet;
+	char* m_pcADCSet;
 	// 0x18命令数据个数
 	unsigned short m_usADCSetNum;
 }m_oInstrumentCommandStruct;
@@ -488,9 +488,9 @@ typedef struct HeartBeatFrame_Struct
 	// 心跳帧资源同步对象
 	CRITICAL_SECTION m_oSecHeartBeat;
 	// 发送帧缓冲区
-	byte* m_pbySndFrameData;
+	char* m_pcSndFrameData;
 	// 心跳命令字集合
-	byte* m_pbyCommandWord;
+	char* m_pcCommandWord;
 	// 心跳命令字个数
 	unsigned short m_usCommandWordNum;
 	// 心跳帧命令
@@ -509,7 +509,7 @@ typedef struct HeadFrame_Struct
 	// 网络端口接收缓冲区大小
 	unsigned int m_uiRcvBufferSize;
 	// 接收帧缓冲区
-	byte* m_pbyRcvFrameData;
+	char* m_pcRcvFrameData;
 	// 首包帧命令
 	m_oInstrumentCommandStruct* m_pCommandStruct;
 	// 首包Socket套接字
@@ -526,9 +526,9 @@ typedef struct IPSetFrame_Struct
 	// 网络端口发送缓冲区大小
 	unsigned int m_uiSndBufferSize;
 	// 发送帧缓冲区
-	byte* m_pbySndFrameData;
+	char* m_pcSndFrameData;
 	// IP地址设置命令字集合
-	byte* m_pbyCommandWord;
+	char* m_pcCommandWord;
 	// IP地址设置命令字个数
 	unsigned short m_usCommandWordNum;
 	// IP地址设置帧命令
@@ -536,7 +536,7 @@ typedef struct IPSetFrame_Struct
 	// 网络端口接收缓冲区大小
 	unsigned int m_uiRcvBufferSize;
 	// 接收帧缓冲区
-	byte* m_pbyRcvFrameData;
+	char* m_pcRcvFrameData;
 	// IP地址设置应答帧命令
 	m_oInstrumentCommandStruct* m_pCommandStructReturn;
 	// IP地址设置Socket套接字
@@ -576,6 +576,28 @@ typedef struct HeartBeatThread_Struct
 	// 心跳帧指针
 	m_oHeartBeatFrameStruct* m_pHeartBeatFrame;
 }m_oHeartBeatThreadStruct;
+// 首包线程
+typedef struct HeadFrameThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// 首包帧指针
+	m_oHeadFrameStruct* m_pHeadFrame;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
+	// 路由队列结构体指针
+	m_oRoutListStruct* m_pRoutList;
+}m_oHeadFrameThreadStruct;
+// IP地址设置线程
+typedef struct IPSetFrameThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// IP地址设置帧指针
+	m_oIPSetFrameStruct* m_pIPSetFrame;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
+}m_oIPSetFrameThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct
 {
@@ -601,6 +623,10 @@ typedef struct Environment_Struct
 	m_oLogOutPutThreadStruct* m_pLogOutPutThread;
 	// 心跳线程
 	m_oHeartBeatThreadStruct* m_pHeartBeatThread;
+	// 首包接收线程
+	m_oHeadFrameThreadStruct* m_pHeadFrameThread;
+	// IP地址设置线程
+	m_oIPSetFrameThreadStruct* m_pIPSetFrameThread;
 }m_oEnvironmentStruct;
 
 
@@ -609,15 +635,15 @@ typedef m_oEnvironmentStruct* (*Create_Instance)(void);
 // 释放实例资源
 typedef void (*Free_Instance)(m_oEnvironmentStruct* pEnv);
 // 校验与设备通讯帧的同步码
-typedef bool (*Instrument_CheckFrameHead)(byte* pFrameData);
+typedef bool (*Instrument_CheckFrameHead)(char* pFrameData);
 // 生成帧的同步码
-typedef void (*Instrument_MakeFrameHead)(byte* pFrameData);
+typedef void (*Instrument_MakeFrameHead)(char* pFrameData);
 // 重置帧内容解析变量
 typedef void (*Instrument_ResetFramePacket)(m_oInstrumentCommandStruct* pCommand);
 // 解析与设备通讯接收帧内容
-typedef bool (*Instrument_ParseFrame)(m_oInstrumentCommandStruct* pCommand, byte* pFrameData);
+typedef bool (*Instrument_ParseFrame)(m_oInstrumentCommandStruct* pCommand, char* pFrameData);
 // 生成与设备通讯帧
-typedef void (*Instrument_MakeFrame)(m_oInstrumentCommandStruct* pCommand, byte* pFrameData);
+typedef void (*Instrument_MakeFrame)(m_oInstrumentCommandStruct* pCommand, char* pFrameData);
 // 创建CSocket接收端口并绑定端口和IP地址,必须先执行初始化该模块后才能创建该模块端口
 typedef SOCKET (*Instrument_CreateSocket)(unsigned short usPort, unsigned int uiIP);
 // 设置广播模式
@@ -629,9 +655,9 @@ typedef void (*Set_SndBufferSize)(SOCKET oSocket, int iFrameCount);
 // 得到网络接收缓冲区收到的帧数量
 typedef DWORD (*Get_FrameCount)(SOCKET oSocket);
 // 得到帧数据
-typedef bool (*Get_FrameData)(SOCKET oSocket, byte* pFrameData);
+typedef bool (*Get_FrameData)(SOCKET oSocket, char* pFrameData);
 // 发送帧
-typedef void (*Send_Frame)(SOCKET oSocket, byte* pFrameData, unsigned short usPort, unsigned int uiIP);
+typedef void (*Send_Frame)(SOCKET oSocket, char* pFrameData, unsigned short usPort, unsigned int uiIP);
 
 // 创建常量信息结构体
 typedef void (*Create_ConstVar)(m_oEnvironmentStruct* pEnv);
