@@ -261,6 +261,10 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("0x00000010");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("IPBroadcastAddr");		// 设置为广播IP
+	strValue = _T("0xffffffff");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSection = _T("帧格式设置");			// 获取当前区域
 
 	strSectionKey=_T("FrameHeadSize");		// 帧头长度

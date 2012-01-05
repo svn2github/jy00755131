@@ -3,7 +3,7 @@
 	<Line>
 		<LineServerAppSetup>
 			<LineServerAppIPSetup IPFTPServer="192.168.0.104" IPForInstrument="192.168.100.22" IPForInterface="192.168.0.104" IPLCI="255.255.255.255"/>
-			<LineServerAppPortSetup PortLCI="36869" PortForHeartBeat="28672" PortForHeadFrame="32768" PortForTailFrame="36864" PortForTailFrameSend="49152" PortForIPSet="37120" PortForTailTimeFrame="37376" PortForTimeSet="37632" PortForTestSetBase="37888" PortForTestDataFrameBase="20480" PortForTestSetNoise="37889" PortForTestDataFrameNoise="38656" PortForCmdRev="24576" PortForCmdSend="25088" PortForCmdSendToLine="24832" PortForCmdSendToOperation="49168" PortForDataSendTest="25600" PortForDataSendMonitor="26112" PortForDataSendTo="25344"/>
+			<LineServerAppPortSetup PortLCI="36866" PortForHeartBeat="28672" PortForHeadFrame="32768" PortForTailFrame="36864" PortForTailFrameSend="49152" PortForIPSet="37120" PortForTailTimeFrame="37376" PortForTimeSet="37632" PortForTestSetBase="37888" PortForTestDataFrameBase="20480" PortForTestSetNoise="37889" PortForTestDataFrameNoise="38656" PortForCmdRev="24576" PortForCmdSend="25088" PortForCmdSendToLine="24832" PortForCmdSendToOperation="49168" PortForDataSendTest="25600" PortForDataSendMonitor="26112" PortForDataSendTo="25344"/>
 			<LineServerAppBufferSizeSetup InstrumentCountAll="20000" IPTempCountAll="2000" LineCountAll="50" PointCountAll="20000" ChannelCountAll="20000" TestElementCountAll="20000"/>
 		</LineServerAppSetup>
 		<LineClientAppSetup>

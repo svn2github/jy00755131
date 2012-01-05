@@ -104,6 +104,8 @@ typedef struct ConstVar_Struct
 	int m_iRoutSetAddrInterval;
 	// 设置广播端口起始地址
 	int m_iBroadcastPortStart;
+	// 设置为广播IP
+	int m_iIPBroadcastAddr;
 
 	//____帧格式设置____
 	// 帧头长度
@@ -201,9 +203,9 @@ typedef struct InstrumentCommInfo_Struct
 	CXMLDOMDocument m_oXMLDOMDocument;
 	// 源地址
 	unsigned int m_uiSrcIP;
-	// 目的地址
-	unsigned int m_uiDstIP;
-	// 目标IP地址端口号
+	// LCI的IP地址
+	unsigned int m_uiAimIP;
+	// LCI接收的端口号
 	unsigned int m_uiAimPort;
 	// 心跳帧返回端口
 	unsigned short m_usHeartBeatReturnPort;
@@ -220,12 +222,14 @@ typedef struct InstrumentCommInfo_Struct
 // 与设备通讯命令字内容
 typedef struct InstrumentCommand_Struct
 {
+	// LCI的IP地址
+	unsigned int m_uiAimIP;
+	// LCI接收的端口号
+	unsigned int m_uiAimPort;
 	// 源地址
 	unsigned int m_uiSrcIP;
 	// 目的地址
 	unsigned int m_uiDstIP;
-	// 目标IP地址端口号
-	unsigned int m_uiAimPort;
 	// 应答端口
 	unsigned short m_usReturnPort;
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
@@ -254,7 +258,7 @@ typedef struct InstrumentCommand_Struct
 	// 端口递增上限
 	unsigned short m_usADCDataReturnPortLimitHigh;
 	// 设置网络等待端口，指设置接收上位机广播命令的端口
-	unsigned short m_usSetBroadCastPort;
+	unsigned int m_uiSetBroadCastPort;
 	// 网络数据错误计数
 	char m_byFDUErrorCodeDataCount;
 	// 命令错误计数
@@ -280,7 +284,7 @@ typedef struct InstrumentCommand_Struct
 	// 尾包接收\发送时刻低位//交叉站尾包发送时刻，低14位有效
 	unsigned short m_usTailRecSndTimeLow;
 	// 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令
-	unsigned short m_usBroadCastPortSet;
+	unsigned int m_uiBroadCastPortSet;
 	// 网络时刻
 	unsigned int m_uiNetTime;
 	// 交叉站大线A尾包接收时刻
@@ -315,6 +319,8 @@ typedef struct InstrumentCommand_Struct
 	char* m_pcADCSet;
 	// 0x18命令数据个数
 	unsigned short m_usADCSetNum;
+	/** 仪器类型 1-交叉站；2-电源站；3-采集站；4-LCI*/
+	unsigned int m_uiInstrumentType;
 }m_oInstrumentCommandStruct;
 
 // 仪器属性结构体
@@ -326,7 +332,7 @@ typedef struct Instrument_Struct
 	bool m_bInUsed;
 	/** 仪器设备号*/
 	unsigned int m_uiSN;
-	/** 仪器类型 1-交叉站；2-电源站；3-采集站*/
+	/** 仪器类型 1-交叉站；2-电源站；3-采集站；4-LCI*/
 	unsigned int m_uiInstrumentType;
 	/** 仪器IP地址*/
 	unsigned int m_uiIP;
@@ -342,6 +348,8 @@ typedef struct Instrument_Struct
 	unsigned int m_uiRoutIPLeft;
 	/** 路由地址 测线线方向 右方*/
 	unsigned int m_uiRoutIPRight;
+	/** 路由开关*/
+	byte m_byLAUXRoutOpenSet;
 	/** 链接的仪器 上方*/
 	Instrument_Struct* m_pInstrumentTop;
 	/** 链接的仪器 下方*/
