@@ -181,15 +181,15 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("HeadFrameSleepTimes");		// 首包线程接收首包延时次数
-	strValue = _T("5");
+	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("IPSetFrameSleepTimes");		// IP地址设置线程延时次数
-	strValue = _T("5");
+	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TailFrameSleepTimes");		// 尾包线程延时次数
-	strValue = _T("5");
+	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CloseThreadSleepTimes ");		// 等待线程关闭的延时次数

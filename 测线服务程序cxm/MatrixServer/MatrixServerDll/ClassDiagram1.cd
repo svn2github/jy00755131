@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Struct Name="Environment_Struct" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="2.5" />
+    <AssociationLine Name="m_pLogOutPutThread" Type="m_oLogOutPutThreadStruct" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="3" Y="0.981" />
+        <Point X="3.124" Y="0.981" />
+        <Point X="3.124" Y="1.562" />
+        <Point X="5" Y="1.562" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAQAAEAAIAAgAgBEAAAAAAAAKAAQAAAAAAEEAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_pConstVar" />
+      <Field Name="m_pInstrumentCommInfo" />
+      <Field Name="m_pHeadFrame" />
+      <Field Name="m_pHeadFrameThread" />
+      <Field Name="m_pHeartBeatFrame" />
+      <Field Name="m_pHeartBeatThread" />
+      <Field Name="m_pIPSetFrame" />
+      <Field Name="m_pIPSetFrameThread" />
+      <Field Name="m_pLogOutPut" />
+      <Field Name="m_pLogOutPutThread" />
+      <Field Name="m_pInstrumentList" />
+      <Field Name="m_pRoutList" />
+    </ShowAsAssociation>
+  </Struct>
+  <Struct Name="ConstVar_Struct" Collapsed="true">
+    <Position X="10" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>WOCAVhAWRKBMAQIQkkIgwIAKBE4SAAJJAAYChQ1AJIY=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="InstrumentCommInfo_Struct" Collapsed="true">
+    <Position X="10" Y="2.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAgQAAABAAAAABAAAAAAAAAAQAABIAAAAAAAAAgA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="HeadFrame_Struct" Collapsed="true">
+    <Position X="10" Y="6.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAkIAAAAAAAAAAIAAAQAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="HeadFrameThread_Struct" Collapsed="true">
+    <Position X="10" Y="7.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAgBAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="HeartBeatFrame_Struct" Collapsed="true">
+    <Position X="10" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAEAAAAAIAAAACAAAQQAAAAAAACAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="HeartBeatThread_Struct" Collapsed="true">
+    <Position X="10" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IPSetFrame_Struct" Collapsed="true">
+    <Position X="10" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAgAAAAAAAAAgAAAEYQACAAAAACIABAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="IPSetFrameThread_Struct" Collapsed="true">
+    <Position X="10" Y="8.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAQAAAAAEAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="LogOutPut_Struct" Collapsed="true">
+    <Position X="10" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAACAAAAAAAAAAAAAAACEAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="LogOutPutThread_Struct" Collapsed="true">
+    <Position X="10" Y="1.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="InstrumentList_Struct" Collapsed="true">
+    <Position X="10" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AQgBAAAAABAQAABACAAAAAAAAAAQAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="RoutList_Struct" Collapsed="true">
+    <Position X="10" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAABAABAAAAAAAAAAAAAAQAAAAAEAACAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Thread_Struct" Collapsed="true">
+    <Position X="13.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAACAAgAAAAAAAQAQAAAAEAAAAAgAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="InstrumentCommand_Struct" Collapsed="true">
+    <Position X="13.5" Y="1.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>wOQCEiYQADBAFEQBBABDEAAAAYAAAMCAABYIACAGABQ=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Rout_Struct" Collapsed="true">
+    <Position X="13.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAIACAAAEAAAgAQACAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Instrument_Struct" Collapsed="true">
+    <Position X="13.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AcECARBCBAABEAAaAkoAEAAjCYAAgGKAEgQIAJCgoAI=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="m_oConstVarStruct" Collapsed="true">
+    <Position X="5" Y="2" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oInstrumentCommInfoStruct" Collapsed="true">
+    <Position X="5" Y="2.75" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oHeadFrameStruct" Collapsed="true">
+    <Position X="5" Y="6.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oHeadFrameThreadStruct" Collapsed="true">
+    <Position X="5" Y="7.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oHeartBeatFrameStruct" Collapsed="true">
+    <Position X="5" Y="5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oHeartBeatThreadStruct" Collapsed="true">
+    <Position X="5" Y="5.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oIPSetFrameStruct" Collapsed="true">
+    <Position X="5" Y="8" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oIPSetFrameThreadStruct" Collapsed="true">
+    <Position X="5" Y="8.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oLogOutPutStruct" Collapsed="true">
+    <Position X="5" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oLogOutPutThreadStruct" Collapsed="true">
+    <Position X="5" Y="1.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oInstrumentListStruct" Collapsed="true">
+    <Position X="5" Y="3.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="m_oRoutListStruct" Collapsed="true">
+    <Position X="5" Y="4.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatrixServerDll.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="微软雅黑" Size="9" />
+</ClassDiagram>

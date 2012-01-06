@@ -213,6 +213,8 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned short m_usHeadFramePort;
 	// IP地址设置返回端口
 	unsigned short m_usIPSetReturnPort;
+	// 尾包接收端口
+	unsigned short m_usTailFramePort;
 	// 仪器设备个数
 	unsigned int m_uiInstrumentNum;
 	// 输出日志指针
@@ -384,12 +386,14 @@ typedef struct Instrument_Struct
 	unsigned short m_usCrossTopReceiveTime;	
 	/** 16bits 交叉线方下面尾包接收时刻*/
 	unsigned short m_usCrossDownReceiveTime;	
-	// 采集站或电源站的广播端口
+	/** 采集站或电源站的广播端口*/
 	unsigned int m_uiBroadCastPort;
-	// 	/** 测线*/
-	// 	unsigned int m_uiLineNb;
-	// 	/** 测点*/
-	// 	unsigned int m_uiPointNb;
+ 	/** 测线*/
+	int m_iLineNb;
+	/** 测点号*/
+	int m_iPointIndex;
+	/** 标记点号*/
+	unsigned int m_uiPointNb;
 	// 	/** 测道*/
 	// 	unsigned int m_uiChannelNb;
 	/** 是否跳过道*/
@@ -552,6 +556,22 @@ typedef struct IPSetFrame_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oIPSetFrameStruct;
+// 尾包
+typedef struct TailFrame_Struct
+{
+	// 首包帧资源同步对象
+	CRITICAL_SECTION m_oSecTailFrame;
+	// 网络端口接收缓冲区大小
+	unsigned int m_uiRcvBufferSize;
+	// 接收帧缓冲区
+	char* m_pcRcvFrameData;
+	// 尾包帧命令
+	m_oInstrumentCommandStruct* m_pCommandStruct;
+	// 尾包Socket套接字
+	SOCKET m_oTailFrameSocket;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
+}m_oTailFrameStruct;
 // 线程结构体
 typedef struct Thread_Struct
 {
@@ -606,6 +626,18 @@ typedef struct IPSetFrameThread_Struct
 	// 仪器队列结构体指针
 	m_oInstrumentListStruct* m_pInstrumentList;
 }m_oIPSetFrameThreadStruct;
+// 尾包线程
+typedef struct TailFrameThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// 尾包帧指针
+	m_oTailFrameStruct* m_pTailFrame;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
+	// 路由队列结构体指针
+	m_oRoutListStruct* m_pRoutList;
+}m_oTailFrameThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct
 {
@@ -619,8 +651,8 @@ typedef struct Environment_Struct
 	m_oHeadFrameStruct* m_pHeadFrame;
 	// IP地址设置帧结构
 	m_oIPSetFrameStruct* m_pIPSetFrame;
-	// 线程处理标志位结构
-/*	m_oThreadProcFlagStruct* m_pThreadProcFlag;*/
+	// 尾包帧结构
+	m_oTailFrameStruct* m_pTailFrame;
 	// 日志输出结构
 	m_oLogOutPutStruct* m_pLogOutPut;
 	// 仪器队列结构
@@ -635,6 +667,8 @@ typedef struct Environment_Struct
 	m_oHeadFrameThreadStruct* m_pHeadFrameThread;
 	// IP地址设置线程
 	m_oIPSetFrameThreadStruct* m_pIPSetFrameThread;
+	// 尾包接收线程
+	m_oTailFrameThreadStruct* m_pTailFrameThread;
 }m_oEnvironmentStruct;
 
 
