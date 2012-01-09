@@ -192,6 +192,10 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("MonitorRoutSleepTimes");		// 路由监视线程延时次数
+	strValue = _T("10");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSectionKey=_T("CloseThreadSleepTimes ");		// 等待线程关闭的延时次数
 	strValue = _T("20");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
@@ -203,6 +207,14 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 
 	strSectionKey=_T("IPAddrResetTimes");		// IP地址重设次数
 	strValue = _T("3");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("TailFrameStableTimes");	// 尾包稳定次数
+	strValue = _T("5");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("MonitorRoutStableTime");	// 路由监视稳定时间
+	strValue = _T("5000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站

@@ -69,13 +69,20 @@ typedef struct ConstVar_Struct
 	int m_iIPSetFrameSleepTimes;
 	// 尾包线程延时次数
 	int m_iTailFrameSleepTimes;
+	// 路由监视线程延时次数
+	int m_iMonitorRoutSleepTimes;
 	// 等待线程关闭的延时次数
 	int m_iCloseThreadSleepTimes;
 
-	// 首包计数
-	int m_iHeadFrameStableNum;
+	// 首包稳定计数
+	int m_iHeadFrameStableTimes;
 	// IP地址重设次数
 	int m_iIPAddrResetTimes;
+	// 尾包稳定次数
+	int m_iTailFrameStableTimes;
+	// 路由监视稳定时间
+	int m_iMonitorRoutStableTime;
+
 	// 仪器类型-交叉站
 	char m_byInstrumentTypeLAUX;
 	// 仪器类型-电源站
@@ -363,7 +370,7 @@ typedef struct Instrument_Struct
 	/** 首包时刻*/
 	unsigned int m_uiTimeHeadFrame;
 	/** 尾包计数*/
-	unsigned int m_uiTailFrameCount;
+	int m_iTailFrameCount;
 	/** 仪器时延*/
 	unsigned int m_uiTimeDelay;
 	/** 仪器本地系统时间*/
@@ -638,6 +645,16 @@ typedef struct TailFrameThread_Struct
 	// 路由队列结构体指针
 	m_oRoutListStruct* m_pRoutList;
 }m_oTailFrameThreadStruct;
+// 路由监视线程
+typedef struct MonitorRoutThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
+	// 路由队列结构体指针
+	m_oRoutListStruct* m_pRoutList;
+}m_oMonitorRoutThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct
 {
@@ -669,6 +686,8 @@ typedef struct Environment_Struct
 	m_oIPSetFrameThreadStruct* m_pIPSetFrameThread;
 	// 尾包接收线程
 	m_oTailFrameThreadStruct* m_pTailFrameThread;
+	// 路由监视线程
+	m_oMonitorRoutThreadStruct* m_pMonitorRoutThread;
 }m_oEnvironmentStruct;
 
 
