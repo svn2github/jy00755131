@@ -222,6 +222,8 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned short m_usIPSetReturnPort;
 	// 尾包接收端口
 	unsigned short m_usTailFramePort;
+	// 尾包时刻查询接收端口
+	unsigned short m_usTailTimeReturnPort;
 	// 仪器设备个数
 	unsigned int m_uiInstrumentNum;
 	// 输出日志指针
@@ -482,6 +484,8 @@ typedef struct Rout_Struct
 	unsigned int m_uiRoutTime;
 	/** 上次时统处理时刻*/
 	unsigned int m_uiDelayProcTime;
+	/** 路由过期标志位*/
+	bool m_bExpired;
 }m_oRoutStruct;
 // 路由队列结构体
 typedef struct RoutList_Struct
@@ -566,7 +570,7 @@ typedef struct IPSetFrame_Struct
 // 尾包
 typedef struct TailFrame_Struct
 {
-	// 首包帧资源同步对象
+	// 尾包帧资源同步对象
 	CRITICAL_SECTION m_oSecTailFrame;
 	// 网络端口接收缓冲区大小
 	unsigned int m_uiRcvBufferSize;
@@ -579,6 +583,32 @@ typedef struct TailFrame_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oTailFrameStruct;
+// 尾包时刻
+typedef struct TailTimeFrame_Struct
+{
+	// 尾包时刻帧资源同步对象
+	CRITICAL_SECTION m_oSecTailTimeFrame;
+	// 网络端口接收缓冲区大小
+	unsigned int m_uiRcvBufferSize;
+	// 接收帧缓冲区
+	char* m_pcRcvFrameData;
+	// 网络端口发送缓冲区大小
+	unsigned int m_uiSndBufferSize;
+	// 发送帧缓冲区
+	char* m_pcSndFrameData;
+	// 尾包时刻查询命令字集合
+	char* m_pcCommandWord;
+	// 尾包时刻查询命令字个数
+	unsigned short m_usCommandWordNum;
+	// 尾包时刻发送帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructSet;
+	// 尾包时刻应答帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructReturn;
+	// 尾包时刻Socket套接字
+	SOCKET m_oTailTimeFrameSocket;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
+}m_oTailTimeFrameStruct;
 // 线程结构体
 typedef struct Thread_Struct
 {
@@ -670,6 +700,8 @@ typedef struct Environment_Struct
 	m_oIPSetFrameStruct* m_pIPSetFrame;
 	// 尾包帧结构
 	m_oTailFrameStruct* m_pTailFrame;
+	// 尾包时刻帧结构
+	m_oTailTimeFrameStruct* m_pTailTimeFrame;
 	// 日志输出结构
 	m_oLogOutPutStruct* m_pLogOutPut;
 	// 仪器队列结构

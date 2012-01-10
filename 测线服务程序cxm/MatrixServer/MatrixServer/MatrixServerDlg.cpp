@@ -68,6 +68,7 @@ BEGIN_MESSAGE_MAP(CMatrixServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BN_REFRESH, &CMatrixServerDlg::OnBnClickedBnRefresh)
 	ON_BN_CLICKED(IDC_BN_SAVE, &CMatrixServerDlg::OnBnClickedBnSave)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BUTTON_INIT, &CMatrixServerDlg::OnBnClickedButtonInit)
 END_MESSAGE_MAP()
 
 
@@ -105,13 +106,10 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	hMod = LoadLibrary(_T("MatrixServerDll"));
 	Create_Instance a = NULL;
-	On_Init b = NULL;
 	if (hMod)
 	{
 		a = (Create_Instance)GetProcAddress(hMod, "OnCreateInstance");
-		b = (On_Init)GetProcAddress(hMod, "OnInit");
 		pEnv = (*a)();
-		(*b)(pEnv);
 	}
 	// 现场管理对象初始化
 //	m_oSiteManage.OnInit();
@@ -203,14 +201,10 @@ void CMatrixServerDlg::OnBnClickedBnClose()
 	// 现场管理对象
 //	m_oSiteManage.OnClose();
 	On_Close a = NULL;
-	Free_Instance b = NULL;
 	if (hMod)
 	{
 		a = (On_Close)GetProcAddress(hMod, "OnClose");
-		b = (Free_Instance)GetProcAddress(hMod, "OnFreeInstance");
 		(*a)(pEnv);
-		(*b)(pEnv);
-		FreeLibrary(hMod);
 	}
 }
 
@@ -234,5 +228,23 @@ void CMatrixServerDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
-	OnBnClickedBnClose();
+	Free_Instance b = NULL;
+	if (hMod)
+	{
+		b = (Free_Instance)GetProcAddress(hMod, "OnFreeInstance");
+		(*b)(pEnv);
+		FreeLibrary(hMod);
+	}
+}
+
+
+void CMatrixServerDlg::OnBnClickedButtonInit()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	On_Init b = NULL;
+	if (hMod)
+	{
+		b = (On_Init)GetProcAddress(hMod, "OnInit");
+		(*b)(pEnv);
+	}
 }

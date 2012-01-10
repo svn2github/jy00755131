@@ -41,4 +41,5 @@ public:
 	HMODULE hMod;
 	m_oEnvironmentStruct* pEnv;
 	afx_msg void OnDestroy();
+	afx_msg void OnBnClickedButtonInit();
 };
