@@ -71,6 +71,8 @@ typedef struct ConstVar_Struct
 	int m_iTailFrameSleepTimes;
 	// 路由监视线程延时次数
 	int m_iMonitorRoutSleepTimes;
+	// 时统设置线程延时次数
+	int m_iTimeDelaySleepTimes;
 	// 等待线程关闭的延时次数
 	int m_iCloseThreadSleepTimes;
 
@@ -82,6 +84,16 @@ typedef struct ConstVar_Struct
 	int m_iTailFrameStableTimes;
 	// 路由监视稳定时间
 	int m_iMonitorRoutStableTime;
+	// 测网系统状态-link
+	int m_iLineSysStatusLink;
+	// 测网系统状态-稳定
+	int m_iLineSysStatusStable;
+	// 测网系统状态-噪声采集
+	int m_iLineSysStatusNoise;
+	// 测网系统状态-TB采集
+	int m_iLineSysStatusSample;
+	// 测网系统达到稳定状态时间
+	int m_iLineSysStableTime;
 
 	// 仪器类型-交叉站
 	char m_byInstrumentTypeLAUX;
@@ -167,7 +179,7 @@ typedef struct ConstVar_Struct
 	// 端口递增下限和上限
 	char m_byCmdADCDataReturnPortLimit;
 	// 设置网络等待端口和命令
-	char m_byCmdSetBroadCastPort;
+	char m_byCmdBroadCastPortSeted;
 	// 系统硬件状态拷贝
 	char m_byCmdFDUErrorCode;
 	// TB时刻高位
@@ -224,6 +236,8 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned short m_usTailFramePort;
 	// 尾包时刻查询接收端口
 	unsigned short m_usTailTimeReturnPort;
+	// 时统设置应答端口
+	unsigned short m_usTimeDelayReturnPort;
 	// 仪器设备个数
 	unsigned int m_uiInstrumentNum;
 	// 输出日志指针
@@ -269,7 +283,7 @@ typedef struct InstrumentCommand_Struct
 	// 端口递增上限
 	unsigned short m_usADCDataReturnPortLimitHigh;
 	// 设置网络等待端口，指设置接收上位机广播命令的端口
-	unsigned int m_uiSetBroadCastPort;
+	unsigned int m_uiBroadCastPortSeted;
 	// 网络数据错误计数
 	char m_byFDUErrorCodeDataCount;
 	// 命令错误计数
@@ -371,6 +385,8 @@ typedef struct Instrument_Struct
 	Instrument_Struct* m_pInstrumentRight;
 	/** 首包时刻*/
 	unsigned int m_uiTimeHeadFrame;
+	/** 尾包时刻*/
+	unsigned int m_uiTailSysTime;
 	/** 尾包计数*/
 	int m_iTailFrameCount;
 	/** 仪器时延*/
@@ -458,6 +474,12 @@ typedef struct InstrumentList_Struct
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oSNInstrumentMap;
 	// 仪器IP地址索引表
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPInstrumentMap;
+	// 测网系统发生变化的时间
+	unsigned int m_uiLineChangeTime;
+	// 测网系统当前的状态
+	unsigned int m_uiLineStatus;
+	// 测网状态由不稳定变为稳定
+	bool m_bLineStableChange;
 	/** 仪器总数*/
 	unsigned int m_uiCountAll;
 	/** 空闲仪器数量*/
@@ -482,8 +504,6 @@ typedef struct Rout_Struct
 	Instrument_Struct* m_pTail;
 	/** 路由时刻*/
 	unsigned int m_uiRoutTime;
-	/** 上次时统处理时刻*/
-	unsigned int m_uiDelayProcTime;
 	/** 路由过期标志位*/
 	bool m_bExpired;
 }m_oRoutStruct;
@@ -498,6 +518,10 @@ typedef struct RoutList_Struct
 	list<m_oRoutStruct*> m_olsRoutFree;
 	// 仪器路由地址索引表
 	hash_map<unsigned int, m_oRoutStruct*> m_oRoutMap;
+	// 仪器时统的任务队列，成员为路由IP
+	list<unsigned int> m_olsTimeDelayTaskQueue;
+	// 仪器时统的任务中转队列
+	list<unsigned int> m_olsTimeDelayTemp;
 	/** 路由总数*/
 	unsigned int m_uiCountAll;
 	/** 空闲路由数量*/
@@ -505,6 +529,7 @@ typedef struct RoutList_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oRoutListStruct;
+
 // 心跳
 typedef struct HeartBeatFrame_Struct
 {
@@ -592,6 +617,8 @@ typedef struct TailTimeFrame_Struct
 	unsigned int m_uiRcvBufferSize;
 	// 接收帧缓冲区
 	char* m_pcRcvFrameData;
+	// 尾包时刻应答帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructReturn;
 	// 网络端口发送缓冲区大小
 	unsigned int m_uiSndBufferSize;
 	// 发送帧缓冲区
@@ -602,13 +629,38 @@ typedef struct TailTimeFrame_Struct
 	unsigned short m_usCommandWordNum;
 	// 尾包时刻发送帧命令
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
-	// 尾包时刻应答帧命令
-	m_oInstrumentCommandStruct* m_pCommandStructReturn;
 	// 尾包时刻Socket套接字
 	SOCKET m_oTailTimeFrameSocket;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oTailTimeFrameStruct;
+
+// 时统设置
+typedef struct TimeDelayFrame_Struct
+{
+	// 时统设置帧资源同步对象
+	CRITICAL_SECTION m_oSecTimeDelayFrame;
+	// 网络端口接收缓冲区大小
+	unsigned int m_uiRcvBufferSize;
+	// 接收帧缓冲区
+	char* m_pcRcvFrameData;
+	// 时统设置应答帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructReturn;
+	// 网络端口发送缓冲区大小
+	unsigned int m_uiSndBufferSize;
+	// 发送帧缓冲区
+	char* m_pcSndFrameData;
+	// 时统设置命令字集合
+	char* m_pcCommandWord;
+	// 时统设置命令字个数
+	unsigned short m_usCommandWordNum;
+	// 时统设置发送帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructSet;
+	// 时统设置Socket套接字
+	SOCKET m_oTimeDelayFrameSocket;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
+}m_oTimeDelayFrameStruct;
 // 线程结构体
 typedef struct Thread_Struct
 {
@@ -675,6 +727,20 @@ typedef struct TailFrameThread_Struct
 	// 路由队列结构体指针
 	m_oRoutListStruct* m_pRoutList;
 }m_oTailFrameThreadStruct;
+// 时统线程
+typedef struct TimeDelayThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// 尾包时刻帧指针
+	m_oTailTimeFrameStruct* m_pTailTimeFrame;
+	// 时统设置帧指针
+	m_oTimeDelayFrameStruct* m_pTimeDelayFrame;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
+	// 路由队列结构体指针
+	m_oRoutListStruct* m_pRoutList;
+}m_oTimeDelayThreadStruct;
 // 路由监视线程
 typedef struct MonitorRoutThread_Struct
 {
@@ -684,6 +750,8 @@ typedef struct MonitorRoutThread_Struct
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由队列结构体指针
 	m_oRoutListStruct* m_pRoutList;
+	// 时统线程指针
+	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
 }m_oMonitorRoutThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct
@@ -702,6 +770,8 @@ typedef struct Environment_Struct
 	m_oTailFrameStruct* m_pTailFrame;
 	// 尾包时刻帧结构
 	m_oTailTimeFrameStruct* m_pTailTimeFrame;
+	// 时统设置帧结构
+	m_oTimeDelayFrameStruct* m_pTimeDelayFrame;
 	// 日志输出结构
 	m_oLogOutPutStruct* m_pLogOutPut;
 	// 仪器队列结构
@@ -720,6 +790,8 @@ typedef struct Environment_Struct
 	m_oTailFrameThreadStruct* m_pTailFrameThread;
 	// 路由监视线程
 	m_oMonitorRoutThreadStruct* m_pMonitorRoutThread;
+	// 时统线程
+	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
 }m_oEnvironmentStruct;
 
 

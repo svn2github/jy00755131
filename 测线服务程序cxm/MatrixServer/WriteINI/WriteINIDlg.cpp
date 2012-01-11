@@ -196,7 +196,11 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("CloseThreadSleepTimes ");		// 等待线程关闭的延时次数
+	strSectionKey=_T("TimeDelaySleepTimes");		// 时统设置线程延时次数
+	strValue = _T("10");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CloseThreadSleepTimes");		// 等待线程关闭的延时次数
 	strValue = _T("20");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
@@ -214,6 +218,26 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("MonitorRoutStableTime");	// 路由监视稳定时间
+	strValue = _T("5000");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("LineSysStatusLink");		// 测网系统状态-link
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("LineSysStatusStable");	// 测网系统状态-稳定
+	strValue = _T("2");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("LineSysStatusNoise");		// 测网系统状态-噪声采集
+	strValue = _T("3");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("LineSysStatusSample");	// 测网系统状态-TB采集
+	strValue = _T("4");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("LineSysStableTime");		// 测网系统达到稳定状态时间
 	strValue = _T("5000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
