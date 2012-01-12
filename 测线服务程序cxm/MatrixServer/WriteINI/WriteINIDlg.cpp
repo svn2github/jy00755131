@@ -197,7 +197,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TimeDelaySleepTimes");		// 时统设置线程延时次数
-	strValue = _T("10");
+	strValue = _T("4");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CloseThreadSleepTimes");		// 等待线程关闭的延时次数

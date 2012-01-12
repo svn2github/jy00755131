@@ -191,7 +191,7 @@ typedef struct ConstVar_Struct
 	// 路由开关
 	char m_byCmdLAUXRoutOpenSet;
 	// 尾包接收\发送时刻低位
-	char m_byCmdTailRecSndTimeLow;
+	char m_byCmdTailRecSndTime;
 	// 广播命令等待端口匹配
 	char m_byCmdBroadCastPortSet;
 	// 设置ADC控制命令命令字
@@ -306,8 +306,10 @@ typedef struct InstrumentCommand_Struct
 	// 由高位到低位分别控制开交叉线A、开交叉线B、开大线A、开大线B
 	// =0为开，=1为关
 	char m_byLAUXRoutOpenSet;
-	// 尾包接收\发送时刻低位//交叉站尾包发送时刻，低14位有效
-	unsigned short m_usTailRecSndTimeLow;
+	// 尾包接收时刻，低14位有效
+	unsigned short m_usTailRecTime;
+	// 尾包发送时刻//交叉站尾包发送时刻，低14位有效
+	unsigned short m_usTailSndTime;
 	// 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令
 	unsigned int m_uiBroadCastPortSet;
 	// 网络时刻
@@ -344,8 +346,6 @@ typedef struct InstrumentCommand_Struct
 	char* m_pcADCSet;
 	// 0x18命令数据个数
 	unsigned short m_usADCSetNum;
-	/** 仪器类型 1-交叉站；2-电源站；3-采集站；4-LCI*/
-	unsigned int m_uiInstrumentType;
 }m_oInstrumentCommandStruct;
 
 // 仪器属性结构体
@@ -504,6 +504,8 @@ typedef struct Rout_Struct
 	Instrument_Struct* m_pTail;
 	/** 路由时刻*/
 	unsigned int m_uiRoutTime;
+	/** 路由是否为交叉线路由*/
+	bool m_bRoutLaux;
 	/** 路由过期标志位*/
 	bool m_bExpired;
 }m_oRoutStruct;
@@ -740,6 +742,10 @@ typedef struct TimeDelayThread_Struct
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由队列结构体指针
 	m_oRoutListStruct* m_pRoutList;
+	// 计数器
+	unsigned int m_uiCounter;
+	// 当前处理时统的路由IP
+	unsigned int m_uiProcRoutIP;
 }m_oTimeDelayThreadStruct;
 // 路由监视线程
 typedef struct MonitorRoutThread_Struct
