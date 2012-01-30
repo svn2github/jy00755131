@@ -179,7 +179,7 @@ typedef struct ConstVar_Struct
 	// 端口递增下限和上限
 	char m_byCmdADCDataReturnPortLimit;
 	// 设置网络等待端口和命令
-	char m_byCmdBroadCastPortSeted;
+	char m_byCmdBroadCastPortSet;
 	// 系统硬件状态拷贝
 	char m_byCmdFDUErrorCode;
 	// TB时刻高位
@@ -193,7 +193,7 @@ typedef struct ConstVar_Struct
 	// 尾包接收\发送时刻低位
 	char m_byCmdTailRecSndTime;
 	// 广播命令等待端口匹配
-	char m_byCmdBroadCastPortSet;
+	char m_byCmdBroadCastPortSeted;
 	// 设置ADC控制命令命令字
 	char m_byCmdADCSet;
 	// 网络时刻
@@ -283,7 +283,7 @@ typedef struct InstrumentCommand_Struct
 	// 端口递增上限
 	unsigned short m_usADCDataReturnPortLimitHigh;
 	// 设置网络等待端口，指设置接收上位机广播命令的端口
-	unsigned int m_uiBroadCastPortSeted;
+	unsigned int m_uiBroadCastPortSet;
 	// 网络数据错误计数
 	char m_byFDUErrorCodeDataCount;
 	// 命令错误计数
@@ -311,7 +311,7 @@ typedef struct InstrumentCommand_Struct
 	// 尾包发送时刻//交叉站尾包发送时刻，低14位有效
 	unsigned short m_usTailSndTime;
 	// 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令
-	unsigned int m_uiBroadCastPortSet;
+	unsigned int m_uiBroadCastPortSeted;
 	// 网络时刻
 	unsigned int m_uiNetTime;
 	// 交叉站大线A尾包接收时刻
@@ -390,9 +390,9 @@ typedef struct Instrument_Struct
 	/** 尾包计数*/
 	int m_iTailFrameCount;
 	/** 仪器时延*/
-	unsigned int m_uiTimeDelay;
+	unsigned int m_uiDelayTime;
 	/** 仪器本地系统时间*/
-	unsigned int m_uiTimeSystem;
+	unsigned int m_uiSystemTime;
 	/** 仪器网络时间*/
 	unsigned int m_uiNetTime;
 	/** 仪器网络状态*/
@@ -445,16 +445,16 @@ typedef struct Instrument_Struct
 	int m_iIPSetCount;
 	/** IP地址设置是否成功*/
 	bool m_bIPSetOK;
-	/** 第几次尾包时刻查询*/
-	int m_iTailTimeQueryCount;
+// 	/** 第几次尾包时刻查询*/
+// 	int m_iTailTimeQueryCount;
 	/** 尾包时刻查询是否成功*/
 	bool m_bTailTimeQueryOK;
 	/** 本地时间修正高位*/
 	unsigned int m_uiTimeHigh;
 	/** 本地时间修正低位*/
 	unsigned int m_uiTimeLow;
-	/** 第几次设置仪器时间*/
-	int m_iTimeSetCount;
+// 	/** 第几次设置仪器时间*/
+// 	int m_iTimeSetCount;
 	/** 仪器时间设置是否成功*/
 	bool m_bTimeSetOK;
 }m_oInstrumentStruct;
