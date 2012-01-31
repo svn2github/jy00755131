@@ -238,6 +238,8 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned short m_usTailTimeReturnPort;
 	// 时统设置应答端口
 	unsigned short m_usTimeDelayReturnPort;
+	// ADC参数设置应答端口
+	unsigned short m_usADCSetReturnPort;
 	// 仪器设备个数
 	unsigned int m_uiInstrumentNum;
 	// 输出日志指针
@@ -475,7 +477,7 @@ typedef struct InstrumentList_Struct
 	// 仪器IP地址索引表
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPInstrumentMap;
 	// 测网系统发生变化的时间
-	unsigned int m_uiLineChangeTime;
+	ULONGLONG m_ullLineChangeTime;
 	// 测网系统当前的状态
 	unsigned int m_uiLineStatus;
 	// 测网状态由不稳定变为稳定
@@ -503,7 +505,7 @@ typedef struct Rout_Struct
 	/** 路由尾仪器*/
 	Instrument_Struct* m_pTail;
 	/** 路由时刻*/
-	unsigned int m_uiRoutTime;
+	ULONGLONG m_ullRoutTime;
 	/** 路由是否为交叉线路由*/
 	bool m_bRoutLaux;
 	/** 路由过期标志位*/
@@ -663,6 +665,32 @@ typedef struct TimeDelayFrame_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oTimeDelayFrameStruct;
+// ADC参数设置
+typedef struct ADCSetFrame_Struct
+{
+	// ADC参数设置帧资源同步对象
+	CRITICAL_SECTION m_oSecADCSetFrame;
+	// 网络端口接收缓冲区大小
+	unsigned int m_uiRcvBufferSize;
+	// 接收帧缓冲区
+	char* m_pcRcvFrameData;
+	// ADC参数设置应答帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructReturn;
+	// 网络端口发送缓冲区大小
+	unsigned int m_uiSndBufferSize;
+	// 发送帧缓冲区
+	char* m_pcSndFrameData;
+	// ADC参数设置命令字集合
+	char* m_pcCommandWord;
+	// ADC参数设置命令字个数
+	unsigned short m_usCommandWordNum;
+	// ADC参数设置发送帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructSet;
+	// ADC参数设置Socket套接字
+	SOCKET m_oADCSetFrameSocket;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
+}m_oADCSetFrameStruct;
 // 线程结构体
 typedef struct Thread_Struct
 {
@@ -744,8 +772,6 @@ typedef struct TimeDelayThread_Struct
 	m_oRoutListStruct* m_pRoutList;
 	// 计数器
 	unsigned int m_uiCounter;
-	// 当前处理时统的路由IP
-	unsigned int m_uiProcRoutIP;
 }m_oTimeDelayThreadStruct;
 // 路由监视线程
 typedef struct MonitorRoutThread_Struct
@@ -759,6 +785,20 @@ typedef struct MonitorRoutThread_Struct
 	// 时统线程指针
 	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
 }m_oMonitorRoutThreadStruct;
+// ADC参数设置线程
+typedef struct ADCSetThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// ADC参数设置帧指针
+	m_oADCSetFrameStruct* m_pADCSetFrame;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
+	// 路由队列结构体指针
+	m_oRoutListStruct* m_pRoutList;
+	// 计数器
+	unsigned int m_uiCounter;
+}m_oADCSetThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct
 {
@@ -778,6 +818,8 @@ typedef struct Environment_Struct
 	m_oTailTimeFrameStruct* m_pTailTimeFrame;
 	// 时统设置帧结构
 	m_oTimeDelayFrameStruct* m_pTimeDelayFrame;
+	// ADC参数设置帧结构
+	m_oADCSetFrameStruct* m_pADCSetFrame;
 	// 日志输出结构
 	m_oLogOutPutStruct* m_pLogOutPut;
 	// 仪器队列结构
@@ -798,6 +840,8 @@ typedef struct Environment_Struct
 	m_oMonitorRoutThreadStruct* m_pMonitorRoutThread;
 	// 时统线程
 	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
+	// ADC参数设置线程
+	m_oADCSetThreadStruct* m_pADCSetThread;
 }m_oEnvironmentStruct;
 
 
