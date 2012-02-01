@@ -1114,6 +1114,11 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strValue = strBuff;
 		pConstVar->m_iTimeDelaySleepTimes = _ttoi(strValue);
 
+		strSectionKey=_T("ADCSetSleepTimes");			// ADC参数设置线程延时次数
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iADCSetSleepTimes = _ttoi(strValue);
+
 		strSectionKey=_T("CloseThreadSleepTimes");		// 等待线程关闭的延时次数
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
@@ -1254,6 +1259,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 			delete[] pConstVar->m_pFrameHeadCheck;
 		}
 		pConstVar->m_pFrameHeadCheck = new char[pConstVar->m_iFrameHeadSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
 		for (int i=0; i<pConstVar->m_iFrameHeadSize; i++)
 		{
 			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
@@ -2760,6 +2767,8 @@ MatrixServerDll_API void OnInstrumentReset(m_oInstrumentStruct* pInstrument)
 // 	pInstrument->m_iTimeSetCount = 0;
 	// 仪器时间设置是否成功
 	pInstrument->m_bTimeSetOK = false;
+	// ADC命令设置序号
+	pInstrument->m_uiADCSetOperationNb = 0;
 }
 // 创建仪器队列结构体
 MatrixServerDll_API m_oInstrumentListStruct* OnCreateInstrumentList(m_oLogOutPutStruct* pLogOutPut = NULL)
@@ -3188,12 +3197,12 @@ MatrixServerDll_API void SendInstrumentHeartBeatFrame(m_oHeartBeatFrameStruct* p
 }
 // 生成IP地址查询帧
 MatrixServerDll_API void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame, 
-	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument)
+	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP)
 {
 	CString str = _T("");
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	// 仪器IP地址
-	pIPSetFrame->m_pCommandStructSet->m_uiDstIP = pInstrument->m_uiIP;
+	pIPSetFrame->m_pCommandStructSet->m_uiDstIP = uiInstrumentIP;
 	// IP地址查询命令
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 查询命令字内容
@@ -3279,12 +3288,12 @@ MatrixServerDll_API void SendInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFra
 }
 // 按IP地址查询交叉站或LCI大线方向尾包时刻帧
 MatrixServerDll_API void MakeInstrumentLineTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
-	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument)
+	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP)
 {
 	CString str = _T("");
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 仪器IP地址
-	pTailTimeFrame->m_pCommandStructSet->m_uiDstIP = pInstrument->m_uiIP;
+	pTailTimeFrame->m_pCommandStructSet->m_uiDstIP = uiInstrumentIP;
 	// 查询命令
 	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 查询命令字内容
@@ -3302,12 +3311,12 @@ MatrixServerDll_API void MakeInstrumentLineTailTimeQueryFramebyIP(m_oTailTimeFra
 }
 // 按IP地址查询交叉站或LCI交叉线方向尾包时刻帧
 MatrixServerDll_API void MakeInstrumentLauxTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
-	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument)
+	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP)
 {
 	CString str = _T("");
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 仪器IP地址
-	pTailTimeFrame->m_pCommandStructSet->m_uiDstIP = pInstrument->m_uiIP;
+	pTailTimeFrame->m_pCommandStructSet->m_uiDstIP = uiInstrumentIP;
 	// 查询命令
 	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 查询命令字内容
@@ -3325,7 +3334,7 @@ MatrixServerDll_API void MakeInstrumentLauxTailTimeQueryFramebyIP(m_oTailTimeFra
 }
 // 广播查询采集站或电源站的尾包时刻帧
 MatrixServerDll_API void MakeInstrumentLineTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFrame, 
-	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument)
+	m_oConstVarStruct* pConstVar, unsigned int uiBroadCastPort)
 {
 	CString str = _T("");
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
@@ -3334,7 +3343,7 @@ MatrixServerDll_API void MakeInstrumentLineTailTimeQueryFramebyBroadCast(m_oTail
 	// 查询命令
 	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 广播端口
-	pTailTimeFrame->m_pCommandStructSet->m_uiBroadCastPortSeted = pInstrument->m_uiBroadCastPort;
+	pTailTimeFrame->m_pCommandStructSet->m_uiBroadCastPortSeted = uiBroadCastPort;
 	// 查询命令字内容
 	// 广播端口
 	pTailTimeFrame->m_pcCommandWord[0] = pConstVar->m_byCmdBroadCastPortSeted;
@@ -3344,7 +3353,7 @@ MatrixServerDll_API void MakeInstrumentLineTailTimeQueryFramebyBroadCast(m_oTail
 	pTailTimeFrame->m_usCommandWordNum = 2;
 	MakeInstrumentFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_pcSndFrameData, 
 		pTailTimeFrame->m_pcCommandWord, pTailTimeFrame->m_usCommandWordNum);
-	str.Format(_T("向广播端口 = 0x%x 的仪器广播发送大线方向尾包时刻查询帧"), pInstrument->m_uiBroadCastPort);
+	str.Format(_T("向广播端口 = 0x%x 的仪器广播发送大线方向尾包时刻查询帧"), uiBroadCastPort);
 	AddMsgToLogOutPutList(pTailTimeFrame->m_pLogOutPut, "MakeInstrumentLineTailTimeQueryFramebyBroadCast", ConvertCStrToStr(str));
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 }
@@ -4477,7 +4486,7 @@ MatrixServerDll_API void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameTh
 			else if (iter->second->m_iIPSetCount <= pIPSetFrameThread->m_pThread->m_pConstVar->m_iIPAddrResetTimes)
 			{
 				// 生成IP地址查询帧
-				MakeInstrumentIPQueryFrame(pIPSetFrameThread->m_pIPSetFrame, pIPSetFrameThread->m_pThread->m_pConstVar, iter->second);
+				MakeInstrumentIPQueryFrame(pIPSetFrameThread->m_pIPSetFrame, pIPSetFrameThread->m_pThread->m_pConstVar, iter->second->m_uiIP);
 				// 发送IP地址查询帧
 				SendInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, pIPSetFrameThread->m_pThread->m_pConstVar);
 
@@ -5456,12 +5465,12 @@ MatrixServerDll_API void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThr
 	{
 		// 按IP查询路由头仪器交叉线方向的尾包时刻
 		MakeInstrumentLauxTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-			pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pHead);
+			pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pHead->m_uiIP);
 		SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
 			pTimeDelayThread->m_pThread->m_pConstVar);
 		// 按IP查询路由尾仪器交叉线方向的尾包时刻
 		MakeInstrumentLauxTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-			pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pTail);
+			pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiIP);
 		SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
 			pTimeDelayThread->m_pThread->m_pConstVar);
 	}
@@ -5470,7 +5479,7 @@ MatrixServerDll_API void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThr
 	{
 		// 按IP查询路由头仪器（交叉站或LCI）大线方向尾包时刻
 		MakeInstrumentLineTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-			pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pHead);
+			pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pHead->m_uiIP);
 		SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
 			pTimeDelayThread->m_pThread->m_pConstVar);
 		pInstrumentNext = GetNextInstrument(pRout->m_uiRoutDirection, pRout->m_pHead, 
@@ -5479,7 +5488,7 @@ MatrixServerDll_API void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThr
 		if (pInstrumentNext->m_uiInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_byInstrumentTypeLAUX)
 		{
 			MakeInstrumentLineTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-				pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext);
+				pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext->m_uiIP);
 			SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
 				pTimeDelayThread->m_pThread->m_pConstVar);
 			return;
@@ -5488,7 +5497,7 @@ MatrixServerDll_API void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThr
 		else
 		{
 			MakeInstrumentLineTailTimeQueryFramebyBroadCast(pTimeDelayThread->m_pTailTimeFrame,
-				pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext);
+				pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext->m_uiBroadCastPort);
 			SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
 				pTimeDelayThread->m_pThread->m_pConstVar);
 		}
@@ -5496,7 +5505,7 @@ MatrixServerDll_API void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThr
 		if (pRout->m_pTail->m_uiInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_byInstrumentTypeLAUX)
 		{
 			MakeInstrumentLineTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-				pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pTail);
+				pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiIP);
 			SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
 				pTimeDelayThread->m_pThread->m_pConstVar);
 		}
@@ -5998,6 +6007,71 @@ MatrixServerDll_API m_oADCSetThreadStruct* OnCreateADCSetThread(m_oLogOutPutStru
 	pADCSetThread->m_pThread->m_dwThreadID = 0;
 	return pADCSetThread;
 }
+// 发送ADC命令设置帧
+MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
+{
+	int iPos = 0;
+	CString str = _T("");
+	// 1~11为ADC参数设置命令
+	// 12~27为ADC零漂校正指令
+	switch (pADCSetThread->m_uiADCSetOperationNb)
+	{
+	case 1:
+// 		// 广播发送
+// 		iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
+// 		OnSetTB(iPos, 0, 0, true);
+// 		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
+
+		break;
+	}
+}
+// 发送ADC命令设置帧
+MatrixServerDll_API void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
+{
+	list<m_oADCSetStruct> ::iterator iter;
+	for (iter = pADCSetThread->m_olsADCSet.begin();iter != pADCSetThread->m_olsADCSet.end(); iter++)
+	{
+		// 按照路由的广播端口广播发送ADC参数设置命令帧
+		if (iter->m_bBroadCast == true)
+		{
+
+		}
+		// 按照IP地址发送ADC参数设置命令帧
+		else
+		{
+
+		}
+	}
+}
+// 线程等待函数
+MatrixServerDll_API void WaitADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
+{
+	if (pADCSetThread == NULL)
+	{
+		return;
+	}
+	// 初始化等待次数为0
+	int iWaitCount = 0;
+	// 循环
+	while(true)
+	{	// 休眠50毫秒
+		Sleep(pADCSetThread->m_pThread->m_pConstVar->m_iOneSleepTime);
+		// 等待次数加1
+		iWaitCount++;
+		// 判断是否可以处理的条件
+		if(pADCSetThread->m_pThread->m_bClose == true)
+		{
+			// 返回
+			return;
+		}
+		// 判断等待次数是否大于等于最多等待次数
+		if(pADCSetThread->m_pThread->m_pConstVar->m_iADCSetSleepTimes == iWaitCount)
+		{
+			// 返回
+			return;
+		}		
+	}
+}
 // 线程函数
 DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 {
@@ -6015,7 +6089,29 @@ DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 		{
 			EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 			EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
+			// 根据ADC参数设置任务队列发送参数设置帧
+			pADCSetThread->m_uiCounter++;
+			if (pADCSetThread->m_uiCounter == 1)
+			{
+				OnSendADCSetCmd(pADCSetThread);
+			}
+			else if (pADCSetThread->m_uiCounter == 2)
+			{
 
+			}
+			else if (pADCSetThread->m_uiCounter == 3)
+			{
+
+			}
+			else if (pADCSetThread->m_uiCounter == 4)
+			{
+
+			}
+			else if (pADCSetThread->m_uiCounter == 5)
+			{
+				// 接收ADC参数设置应答帧
+				pADCSetThread->m_uiCounter = 0;
+			}
 			LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 			LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 		}
@@ -6023,8 +6119,7 @@ DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 		{
 			break;
 		}
-		// @@@@@@@@@@@
-//		WaitTimeDelayThread(pADCSetThread);
+		WaitADCSetThread(pADCSetThread);
 	}
 	::SetEvent(pADCSetThread->m_pThread->m_hThreadClose); // 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	return 1;
@@ -6039,6 +6134,8 @@ MatrixServerDll_API bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread
 	pADCSetThread->m_pThread->m_bClose = false;
 	pADCSetThread->m_pThread->m_bWork = false;
 	pADCSetThread->m_pThread->m_hThreadClose = ::CreateEvent(false, false, NULL, NULL);	// 创建事件对象
+	// 清空ADC参数设置任务队列
+	pADCSetThread->m_olsADCSet.clear();
 	if (pADCSetThread->m_pThread->m_hThreadClose == NULL)
 	{
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnInitADCSetThread",
@@ -6074,6 +6171,8 @@ MatrixServerDll_API bool OnCloseADCSetThread(m_oADCSetThreadStruct* pADCSetThrea
 	{
 		return false;
 	}
+	// 清空ADC参数设置任务队列
+	pADCSetThread->m_olsADCSet.clear();
 	int iResult = WaitForSingleObject(pADCSetThread->m_pThread->m_hThreadClose, 
 		pADCSetThread->m_pThread->m_pConstVar->m_iCloseThreadSleepTimes
 		* pADCSetThread->m_pThread->m_pConstVar->m_iOneSleepTime);

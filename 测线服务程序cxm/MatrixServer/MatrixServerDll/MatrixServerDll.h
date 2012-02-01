@@ -73,6 +73,8 @@ typedef struct ConstVar_Struct
 	int m_iMonitorRoutSleepTimes;
 	// 时统设置线程延时次数
 	int m_iTimeDelaySleepTimes;
+	// ADC参数设置线程延时次数
+	int m_iADCSetSleepTimes;
 	// 等待线程关闭的延时次数
 	int m_iCloseThreadSleepTimes;
 
@@ -459,8 +461,23 @@ typedef struct Instrument_Struct
 // 	int m_iTimeSetCount;
 	/** 仪器时间设置是否成功*/
 	bool m_bTimeSetOK;
+	// ADC命令设置序号
+	unsigned int m_uiADCSetOperationNb;
 }m_oInstrumentStruct;
-
+// ADC参数设置任务结构体
+typedef struct ADCSet_Struct
+{
+	// 广播标志位
+	bool m_bBroadCast;
+	// 目标IP地址
+	unsigned int m_uiIP;
+	// 广播命令的广播端口
+	unsigned int m_uiBroadCastPort;
+	// 路由IP地址
+	unsigned int m_uiRoutIP;
+	// ADC命令设置序号
+	unsigned int m_uiADCSetOperationNb;
+}m_oADCSetStruct;
 // 仪器队列
 typedef struct InstrumentList_Struct
 {
@@ -798,6 +815,10 @@ typedef struct ADCSetThread_Struct
 	m_oRoutListStruct* m_pRoutList;
 	// 计数器
 	unsigned int m_uiCounter;
+	// ADC参数设置任务队列
+	list<m_oADCSetStruct> m_olsADCSet;
+	// ADC命令设置序号
+	unsigned int m_uiADCSetOperationNb;
 }m_oADCSetThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct

@@ -200,6 +200,10 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("4");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("ADCSetSleepTimes");			// ADC参数设置线程延时次数
+	strValue = _T("2");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSectionKey=_T("CloseThreadSleepTimes");		// 等待线程关闭的延时次数
 	strValue = _T("20");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
