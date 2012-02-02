@@ -472,4 +472,94 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strSectionKey=_T("CmdEnd");					// 命令解析结束命令
 	strValue = _T("0x00");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSection = _T("ADC参数设置");				// 获取当前区域
+
+	strSectionKey=_T("SetADCSetSineSize");		// ADC设置正弦波命令大小
+	strValue = _T("4");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCSetSine");			// ADC设置正弦波命令
+	strValue = _T("{0xb2,0x00,0x80,0x00}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCStopSampleSize");	// ADC设置停止采样命令大小
+	strValue = _T("4");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCStopSample");		// ADC设置停止采样命令
+	strValue = _T("{0x81,0x11,0x00,0x00}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCOpenTBPowerLowSize");	// ADC设置打开TB电源低位大小
+	strValue = _T("4");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCOpenTBPowerLow");		// ADC设置打开TB电源低位
+	strValue = _T("{0xa3,0x00,0x30,0x00}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCOpenTBPowerHighSize");	// ADC设置打开TB电源高位大小
+	strValue = _T("4");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCOpenTBPowerHigh");		// ADC设置打开TB电源高位
+	strValue = _T("{0xa3,0x00,0x30,0x40}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCOpenSwitchTBLowSize");	// ADC设置打开TB开关低位大小
+	strValue = _T("4");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCOpenSwitchTBLow");		// ADC设置打开TB开关低位
+	strValue = _T("{0xa3,0x00,0xf0,0x00}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCOpenSwitchTBHighSize");	// ADC设置打开TB开关高位大小
+	strValue = _T("4");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCOpenSwitchTBHigh");		// ADC设置打开TB开关高位
+	strValue = _T("{0xa3,0x00,0xf0,0x40}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCRegisterReadSize");	// ADC设置读寄存器大小
+	strValue = _T("4");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCRegisterRead");		// ADC设置读寄存器
+	strValue = _T("{0x82,0x20,0x0a,0x00}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCRegisterWriteSize");// ADC设置写寄存器大小
+	strValue = _T("16");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCRegisterWrite");	// ADC设置写寄存器
+	strValue = _T("{0x8d,0x40,0x0a,0x00,0x52,0x08,0x32,0x03,0x6f,0x0c,0xff,0x7d,0x52,0x40,0x00,0x00}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCTBSwitchOpenSize");	// ADC设置打开TB开关大小
+	strValue = _T("4");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCTBSwitchOpen");		// ADC设置打开TB开关
+	strValue = _T("{0xa3,0x05,0xf8,0x40}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCSampleSize");		// ADC采样设置大小
+	strValue = _T("8");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCSample");			// ADC采样设置
+	strValue = _T("{0x87,0x40,0x04,0x00,0x52,0x08,0x32,0x03}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCReadContinuousSize");	// ADC设置连续采样大小
+	strValue = _T("4");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SetADCReadContinuous");		// ADC设置连续采样
+	strValue = _T("{0x81,0x10,0x00,0x00}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 }

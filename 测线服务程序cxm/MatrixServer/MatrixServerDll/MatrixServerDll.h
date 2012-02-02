@@ -214,6 +214,53 @@ typedef struct ConstVar_Struct
 	char m_byCmdReturnRout;
 	// 命令解析结束命令
 	char m_byCmdEnd;
+
+	//____ADC参数设置____
+	// ADC设置正弦波命令大小
+	int m_iSetADCSetSineSize;
+	// ADC设置正弦波命令
+	char* m_pSetADCSetSine;
+	// ADC设置停止采样命令大小
+	int m_iSetADCStopSampleSize;
+	// ADC设置停止采样命令
+	char* m_pSetADCStopSample;
+	// ADC设置打开TB电源低位大小
+	int m_iSetADCOpenTBPowerLowSize;
+	// ADC设置打开TB电源低位
+	char* m_pSetADCOpenTBPowerLow;
+	// ADC设置打开TB电源高位大小
+	int m_iSetADCOpenTBPowerHighSize;
+	// ADC设置打开TB电源高位
+	char* m_pSetADCOpenTBPowerHigh;
+	// ADC设置打开TB开关低位大小
+	int m_iSetADCOpenSwitchTBLowSize;
+	// ADC设置打开TB开关低位
+	char* m_pSetADCOpenSwitchTBLow;
+	// ADC设置打开TB开关高位大小
+	int m_iSetADCOpenSwitchTBHighSize;
+	// ADC设置打开TB开关高位
+	char* m_pSetADCOpenSwitchTBHigh;
+	// ADC设置读寄存器大小
+	int m_iSetADCRegisterReadSize;
+	// ADC设置读寄存器
+	char* m_pSetADCRegisterRead;
+	// ADC设置写寄存器大小
+	int m_iSetADCRegisterWriteSize;
+	// ADC设置写寄存器
+	char* m_pSetADCRegisterWrite;
+	// ADC设置打开TB开关大小
+	int m_iSetADCTBSwitchOpenSize;
+	// ADC设置打开TB开关
+	char* m_pSetADCTBSwitchOpen;
+	// ADC采样设置大小
+	int m_iSetADCSampleSize;
+	// ADC采样设置
+	char* m_pSetADCSample;
+	// ADC设置连续采样大小
+	int m_iSetADCReadContinuousSize;
+	// ADC设置连续采样
+	char* m_pSetADCReadContinuous;
+
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
@@ -299,9 +346,8 @@ typedef struct InstrumentCommand_Struct
 	// TB时刻高位
 	unsigned int m_uiTBHigh;
 	// TB时刻低位
-	unsigned short m_usTBLow;
 	// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
-	unsigned short m_usTBCtrl;
+	unsigned int m_uiTBLow;
 	// work_ctrl控制交叉站接收和发送命令的方向
 	// 由高到低位每位分别控制发送口交叉线A、B，大线A、B，接收端交叉线A、B，大线A、B
 	// =0为开，=1为关
@@ -816,7 +862,7 @@ typedef struct ADCSetThread_Struct
 	// 计数器
 	unsigned int m_uiCounter;
 	// ADC参数设置任务队列
-	list<m_oADCSetStruct> m_olsADCSet;
+	hash_map<unsigned int, m_oADCSetStruct> m_oADCSetMap;
 	// ADC命令设置序号
 	unsigned int m_uiADCSetOperationNb;
 }m_oADCSetThreadStruct;

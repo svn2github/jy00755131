@@ -364,9 +364,8 @@ MatrixServerDll_API bool ResetInstrumentFramePacket(m_oInstrumentCommandStruct* 
 	// TB时刻高位
 	pCommand->m_uiTBHigh = 0;
 	// TB时刻低位
-	pCommand->m_usTBLow = 0;
 	// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
-	pCommand->m_usTBCtrl = 0;
+	pCommand->m_uiTBLow = 0;
 	// work_ctrl控制交叉站接收和发送命令的方向
 	// 由高到低位每位分别控制发送口交叉线A、B，大线A、B，接收端交叉线A、B，大线A、B
 	// =0为开，=1为关
@@ -536,10 +535,8 @@ MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pComma
 		}
 		else if (byCommandWord == pConstVar->m_byCmdTbLow)
 		{
-			memcpy(&pCommand->m_usTBLow, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pCommand->m_usTBCtrl, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pCommand->m_uiTBLow, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
+			iPos += pConstVar->m_iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLAUXRoutOpenQuery)
 		{
@@ -773,10 +770,8 @@ MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pComman
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdTbLow)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_usTBLow, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pFrameData[iPos], &pCommand->m_usTBCtrl, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiTBLow, pConstVar->m_iFramePacketSize4B);
+			iPos += pConstVar->m_iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXRoutOpenQuery)
 		{
@@ -802,6 +797,23 @@ MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pComman
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdADCSet)
 		{
+			if (pCommand->m_usADCSetNum == pConstVar->m_iFramePacketSize4B)
+			{
+				memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[0], pConstVar->m_iFramePacketSize4B);
+				iPos += pConstVar->m_iFramePacketSize4B;
+			}
+			else
+			{
+				memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[0], pConstVar->m_iFramePacketSize4B);
+				iPos += pConstVar->m_iFramePacketSize4B;
+				for (int j = pConstVar->m_iFramePacketSize4B; j < pCommand->m_usADCSetNum; j += pConstVar->m_iFramePacketSize4B)
+				{
+					memcpy(&pFrameData[iPos], &pConstVar->m_byCmdADCSet, pConstVar->m_iFrameCmdSize1B);
+					iPos += pConstVar->m_iFrameCmdSize1B;
+					memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[j], pConstVar->m_iFramePacketSize4B);
+					iPos += pConstVar->m_iFramePacketSize4B;
+				}
+			}
 			memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[pCommand->m_usADCSetNum], pConstVar->m_iFramePacketSize4B);
 			iPos += pConstVar->m_iFramePacketSize4B;
 			pCommand->m_usADCSetNum += pConstVar->m_iFramePacketSize4B;
@@ -1042,6 +1054,17 @@ MatrixServerDll_API m_oConstVarStruct* OnCreateConstVar(m_oLogOutPutStruct* pLog
 	m_oConstVarStruct* pConstVar = NULL;
 	pConstVar = new m_oConstVarStruct;
 	pConstVar->m_pFrameHeadCheck = NULL;
+	pConstVar->m_pSetADCSetSine = NULL;
+	pConstVar->m_pSetADCStopSample = NULL;
+	pConstVar->m_pSetADCOpenTBPowerLow = NULL;
+	pConstVar->m_pSetADCOpenTBPowerHigh = NULL;
+	pConstVar->m_pSetADCOpenSwitchTBLow = NULL;
+	pConstVar->m_pSetADCOpenSwitchTBHigh = NULL;
+	pConstVar->m_pSetADCRegisterRead = NULL;
+	pConstVar->m_pSetADCRegisterWrite = NULL;
+	pConstVar->m_pSetADCTBSwitchOpen = NULL;
+	pConstVar->m_pSetADCSample = NULL;
+	pConstVar->m_pSetADCReadContinuous = NULL;
 	pConstVar->m_pLogOutPut = pLogOutPut;
 	return pConstVar;
 }
@@ -1270,6 +1293,7 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 			pConstVar->m_pFrameHeadCheck[i] = iTemp;
 			iDirectionOld = iDirectionNew;
 		}
+
 		strSectionKey=_T("FrameCmdSize1B");		// 命令字长度1字节
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
@@ -1495,6 +1519,283 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strValue = strBuff;
 		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
 		pConstVar->m_byCmdEnd = iTemp;
+
+		//读取ini文件中相应字段的内容
+		strSection = _T("ADC参数设置");			// 获取当前区域
+		strSectionKey=_T("SetADCSetSineSize");	// ADC设置正弦波命令大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCSetSineSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCSetSine");		// ADC设置正弦波命令
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCSetSine != NULL)
+		{
+			delete[] pConstVar->m_pSetADCSetSine;
+		}
+		pConstVar->m_pSetADCSetSine = new char[pConstVar->m_iSetADCSetSineSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCSetSineSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCSetSine[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("SetADCStopSampleSize");	// ADC设置停止采样命令大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCStopSampleSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCStopSample");		// ADC设置停止采样命令
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCStopSample != NULL)
+		{
+			delete[] pConstVar->m_pSetADCStopSample;
+		}
+		pConstVar->m_pSetADCStopSample = new char[pConstVar->m_iSetADCStopSampleSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCStopSampleSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCStopSample[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("SetADCOpenTBPowerLowSize");	// ADC设置打开TB电源低位大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCOpenTBPowerLowSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCOpenTBPowerLow");		// ADC设置打开TB电源低位
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCOpenTBPowerLow != NULL)
+		{
+			delete[] pConstVar->m_pSetADCOpenTBPowerLow;
+		}
+		pConstVar->m_pSetADCOpenTBPowerLow = new char[pConstVar->m_iSetADCOpenTBPowerLowSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCOpenTBPowerLowSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCOpenTBPowerLow[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("m_iSetADCOpenTBPowerHighSize");	// ADC设置打开TB电源高位大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCOpenTBPowerHighSize = _ttoi(strValue);
+
+		strSectionKey=_T("m_iSetADCOpenTBPowerHigh");		// ADC设置打开TB电源高位
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCOpenTBPowerHigh != NULL)
+		{
+			delete[] pConstVar->m_pSetADCOpenTBPowerHigh;
+		}
+		pConstVar->m_pSetADCOpenTBPowerHigh = new char[pConstVar->m_iSetADCOpenTBPowerHighSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCOpenTBPowerHighSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCOpenTBPowerHigh[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("SetADCOpenSwitchTBLowSize");	// ADC设置打开TB开关低位大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCOpenSwitchTBLowSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCOpenSwitchTBLow");		// ADC设置打开TB开关低位
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCOpenSwitchTBLow != NULL)
+		{
+			delete[] pConstVar->m_pSetADCOpenSwitchTBLow;
+		}
+		pConstVar->m_pSetADCOpenSwitchTBLow = new char[pConstVar->m_iSetADCOpenSwitchTBLowSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCOpenSwitchTBLowSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCOpenSwitchTBLow[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("SetADCOpenSwitchTBHighSize");	// ADC设置打开TB开关高位大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCOpenSwitchTBHighSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCOpenSwitchTBHigh");		// ADC设置打开TB开关高位
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCOpenSwitchTBHigh != NULL)
+		{
+			delete[] pConstVar->m_pSetADCOpenSwitchTBHigh;
+		}
+		pConstVar->m_pSetADCOpenSwitchTBHigh = new char[pConstVar->m_iSetADCOpenSwitchTBHighSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCOpenSwitchTBHighSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCOpenSwitchTBHigh[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("SetADCRegisterReadSize");	// ADC设置读寄存器大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCRegisterReadSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCRegisterRead");		// ADC设置读寄存器
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCRegisterRead != NULL)
+		{
+			delete[] pConstVar->m_pSetADCRegisterRead;
+		}
+		pConstVar->m_pSetADCRegisterRead = new char[pConstVar->m_iSetADCRegisterReadSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCRegisterReadSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCRegisterRead[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("SetADCRegisterWriteSize");	// ADC设置写寄存器大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCRegisterWriteSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCRegisterWrite");		// ADC设置写寄存器
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCRegisterWrite != NULL)
+		{
+			delete[] pConstVar->m_pSetADCRegisterWrite;
+		}
+		pConstVar->m_pSetADCRegisterWrite = new char[pConstVar->m_iSetADCRegisterWriteSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCRegisterWriteSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCRegisterWrite[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("SetADCTBSwitchOpenSize");	// ADC设置打开TB开关大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCTBSwitchOpenSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCTBSwitchOpen");		// ADC设置打开TB开关
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCTBSwitchOpen != NULL)
+		{
+			delete[] pConstVar->m_pSetADCTBSwitchOpen;
+		}
+		pConstVar->m_pSetADCTBSwitchOpen = new char[pConstVar->m_iSetADCTBSwitchOpenSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCTBSwitchOpenSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCTBSwitchOpen[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("SetADCSampleSize");	// ADC采样设置大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCSampleSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCSample");		// ADC采样设置
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCSample != NULL)
+		{
+			delete[] pConstVar->m_pSetADCSample;
+		}
+		pConstVar->m_pSetADCSample = new char[pConstVar->m_iSetADCSampleSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCSampleSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCSample[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
+
+		strSectionKey=_T("SetADCReadContinuousSize");	// ADC设置连续采样大小
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iSetADCReadContinuousSize = _ttoi(strValue);
+
+		strSectionKey=_T("SetADCReadContinuous");		// ADC设置连续采样
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		if (pConstVar->m_pSetADCReadContinuous != NULL)
+		{
+			delete[] pConstVar->m_pSetADCReadContinuous;
+		}
+		pConstVar->m_pSetADCReadContinuous = new char[pConstVar->m_iSetADCReadContinuousSize];
+		iDirectionOld = 0;
+		iDirectionNew = 0;
+		for (int i=0; i<pConstVar->m_iSetADCReadContinuousSize; i++)
+		{
+			iDirectionNew = strValue.Find(_T("0x"), iDirectionOld);
+			iDirectionNew += 2;
+			csTemp = strValue.Mid(iDirectionNew, 2);
+			_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+			pConstVar->m_pSetADCReadContinuous[i] = iTemp;
+			iDirectionOld = iDirectionNew;
+		}
 	}
 	catch (CMemoryException* e)
 	{
@@ -1525,6 +1826,50 @@ MatrixServerDll_API void OnCloseConstVar(m_oConstVarStruct* pConstVar)
 	if (pConstVar->m_pFrameHeadCheck != NULL)
 	{
 		delete[] pConstVar->m_pFrameHeadCheck;
+	}
+	if (pConstVar->m_pSetADCSetSine != NULL)
+	{
+		delete[] pConstVar->m_pSetADCSetSine;
+	}
+	if (pConstVar->m_pSetADCStopSample != NULL)
+	{
+		delete[] pConstVar->m_pSetADCStopSample;
+	}
+	if (pConstVar->m_pSetADCOpenTBPowerLow != NULL)
+	{
+		delete[] pConstVar->m_pSetADCOpenTBPowerLow;
+	}
+	if (pConstVar->m_pSetADCOpenTBPowerHigh != NULL)
+	{
+		delete[] pConstVar->m_pSetADCOpenTBPowerHigh;
+	}
+	if (pConstVar->m_pSetADCOpenSwitchTBLow != NULL)
+	{
+		delete[] pConstVar->m_pSetADCOpenSwitchTBLow;
+	}
+	if (pConstVar->m_pSetADCOpenSwitchTBHigh != NULL)
+	{
+		delete[] pConstVar->m_pSetADCOpenSwitchTBHigh;
+	}
+	if (pConstVar->m_pSetADCRegisterRead != NULL)
+	{
+		delete[] pConstVar->m_pSetADCRegisterRead;
+	}
+	if (pConstVar->m_pSetADCRegisterWrite != NULL)
+	{
+		delete[] pConstVar->m_pSetADCRegisterWrite;
+	}
+	if (pConstVar->m_pSetADCTBSwitchOpen != NULL)
+	{
+		delete[] pConstVar->m_pSetADCTBSwitchOpen;
+	}
+	if (pConstVar->m_pSetADCSample != NULL)
+	{
+		delete[] pConstVar->m_pSetADCSample;
+	}
+	if (pConstVar->m_pSetADCReadContinuous != NULL)
+	{
+		delete[] pConstVar->m_pSetADCReadContinuous;
 	}
 }
 // 释放常量信息结构体
@@ -3239,34 +3584,44 @@ MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFra
 	pIPSetFrame->m_pCommandStructSet->m_byLAUXRoutOpenSet = pInstrument->m_byLAUXRoutOpenSet;
 	// 广播IP地址
 	pIPSetFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_iIPBroadcastAddr;
+	// 时间修正高位
+	pIPSetFrame->m_pCommandStructSet->m_uiLocalTimeFixedHigh = 0;
+	// 时间修正低位
+	pIPSetFrame->m_pCommandStructSet->m_usLocalTimeFixedLow = 0;
+
 	// 仪器SN命令字
 	pIPSetFrame->m_pcCommandWord[0] = pConstVar->m_byCmdSn;
 	// 仪器IP命令字
 	pIPSetFrame->m_pcCommandWord[1] = pConstVar->m_byCmdLocalIPAddr;
+	// 时间修正高位命令字
+	pIPSetFrame->m_pcCommandWord[2] = pConstVar->m_byCmdLocalTimeFixedHigh;
+	// 时间修正低位命令字
+	pIPSetFrame->m_pcCommandWord[3] = pConstVar->m_byCmdLocalTimeFixedLow;
+
 	// 生成IP地址设置帧
 	if((pInstrument->m_uiInstrumentType == pConstVar->m_byInstrumentTypeFDU)
 		|| (pInstrument->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLAUL))
 	{
 		// 仪器广播端口命令字
-		pIPSetFrame->m_pcCommandWord[2] = pConstVar->m_byCmdBroadCastPortSet;
+		pIPSetFrame->m_pcCommandWord[4] = pConstVar->m_byCmdBroadCastPortSet;
 		// 命令字个数
-		pIPSetFrame->m_usCommandWordNum = 3;
+		pIPSetFrame->m_usCommandWordNum = 5;
 	}
 	// LCI和交叉站需要设置路由IP地址
 	else
 	{
 		// 仪器路由IP命令字
-		pIPSetFrame->m_pcCommandWord[2] = pConstVar->m_byCmdLAUXSetRout;
-		// 仪器路由IP命令字
-		pIPSetFrame->m_pcCommandWord[3] = pConstVar->m_byCmdLAUXSetRout;
-		// 仪器路由IP命令字
 		pIPSetFrame->m_pcCommandWord[4] = pConstVar->m_byCmdLAUXSetRout;
 		// 仪器路由IP命令字
 		pIPSetFrame->m_pcCommandWord[5] = pConstVar->m_byCmdLAUXSetRout;
+		// 仪器路由IP命令字
+		pIPSetFrame->m_pcCommandWord[6] = pConstVar->m_byCmdLAUXSetRout;
+		// 仪器路由IP命令字
+		pIPSetFrame->m_pcCommandWord[7] = pConstVar->m_byCmdLAUXSetRout;
 		// 打开仪器路由命令字
-		pIPSetFrame->m_pcCommandWord[6] = pConstVar->m_byCmdLAUXRoutOpenSet;
+		pIPSetFrame->m_pcCommandWord[8] = pConstVar->m_byCmdLAUXRoutOpenSet;
 		// 命令字个数
-		pIPSetFrame->m_usCommandWordNum = 7;
+		pIPSetFrame->m_usCommandWordNum = 9;
 	}
 	// IP地址设置命令
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
@@ -3405,6 +3760,15 @@ MatrixServerDll_API void SendInstrumentDelayTimeFrame(m_oTimeDelayFrameStruct* p
 		pTimeDelayFrame->m_pCommandStructSet->m_uiAimPort, pTimeDelayFrame->m_pCommandStructSet->m_uiAimIP, 
 		pTimeDelayFrame->m_pLogOutPut);
 	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
+}
+// 发送ADC参数设置帧
+MatrixServerDll_API void SendInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame, m_oConstVarStruct* pConstVar)
+{
+	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
+	SendFrame(pADCSetFrame->m_oADCSetFrameSocket, pADCSetFrame->m_pcSndFrameData, pConstVar->m_iSndFrameSize,
+		pADCSetFrame->m_pCommandStructSet->m_uiAimPort, pADCSetFrame->m_pCommandStructSet->m_uiAimIP, 
+		pADCSetFrame->m_pLogOutPut);
+	LeaveCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 }
 // 创建日志输出线程
 MatrixServerDll_API m_oLogOutPutThreadStruct* OnCreateLogOutPutThread(m_oLogOutPutStruct* pLogOutPut = NULL)
@@ -5720,7 +6084,7 @@ MatrixServerDll_API void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayTh
 			itmp1 = pInstrument->m_usCrossDownReceiveTime - pInstrumentNext->m_usSendTime;
 		}
 		// 时间修正低位
-		itmp2 += itmp1/2 - 12;
+		itmp2 += itmp1;
 		pInstrumentNext->m_uiTimeLow = itmp2 & 0xffff;
 		// 时间修正高位
 		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
@@ -5743,7 +6107,7 @@ MatrixServerDll_API void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayTh
 			itmp1 = pInstrument->m_usLineRightReceiveTime - pInstrumentNext->m_usSendTime;
 		}
 		// 时间修正低位
-		itmp2 += itmp1/2 - 12;
+		itmp2 += itmp1;
 		pInstrumentNext->m_uiTimeLow = itmp2 & 0xffff;
 		// 时间修正高位
 		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
@@ -5756,7 +6120,7 @@ MatrixServerDll_API void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayTh
 			pInstrumentNext = GetNextInstrument(pRout->m_uiRoutDirection, pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
 			itmp1 = pInstrument->m_usReceiveTime - pInstrumentNext->m_usSendTime;
 			// 时间修正低位
-			itmp2 += itmp1/2 - 12;
+			itmp2 += itmp1;
 			pInstrumentNext->m_uiTimeLow = itmp2 & 0xffff;
 			// 时间修正高位
 			pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
@@ -6008,39 +6372,157 @@ MatrixServerDll_API m_oADCSetThreadStruct* OnCreateADCSetThread(m_oLogOutPutStru
 	return pADCSetThread;
 }
 // 发送ADC命令设置帧
-MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
+MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, m_oADCSetStruct* pADCSetStruct)
 {
 	int iPos = 0;
 	CString str = _T("");
+	EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
+	// 查询命令字个数
+	pADCSetThread->m_pADCSetFrame->m_usCommandWordNum = 0;
+	// 按照路由的广播端口广播发送ADC参数设置命令帧
+	if (pADCSetStruct->m_bBroadCast == true)
+	{
+		// 目标IP地址
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiDstIP = pADCSetThread->m_pThread->m_pConstVar->m_iIPBroadcastAddr;
+		// 广播端口
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiBroadCastPortSeted = pADCSetStruct->m_uiBroadCastPort;
+		// 查询命令字内容
+		// 广播端口
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdBroadCastPortSeted;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		str.Format(_T("向广播端口 = 0x%x 的仪器广播发送ADC参数设置帧"), pADCSetStruct->m_uiBroadCastPort);
+		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnSelectADCSetCmd", ConvertCStrToStr(str));
+	}
+	// 按照IP地址发送ADC参数设置命令帧
+	else
+	{
+		// 目标IP地址
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiDstIP = pADCSetStruct->m_uiIP;
+		str.Format(_T("向IP地址 = 0x%x 的仪器发送ADC参数设置帧"), pADCSetStruct->m_uiIP);
+		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnSelectADCSetCmd", ConvertCStrToStr(str));
+	}
 	// 1~11为ADC参数设置命令
-	// 12~27为ADC零漂校正指令
 	switch (pADCSetThread->m_uiADCSetOperationNb)
 	{
 	case 1:
-// 		// 广播发送
-// 		iPos = ADCSetFrameHead(IPBroadcastAddr, SendSetCmd, iter2->second);
-// 		OnSetTB(iPos, 0, 0, true);
-// 		sendto(m_ADCSetSocket, reinterpret_cast<const char*>(&m_ucFrameData), SndFrameSize, 0, reinterpret_cast<sockaddr*>(&m_SendToAddr), sizeof(m_SendToAddr));
-
+		// 设置TB低位关闭TB开关
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBLow = 0;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdTbLow;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 2:
+		// ADC设置正弦波命令
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCSetSine;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCSetSineSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 3:
+		// ADC设置停止采样命令
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCStopSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 4:
+		// ADC设置打开TB电源低位
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCOpenTBPowerLow;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCOpenTBPowerLowSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 5:
+		// ADC设置打开TB电源高位
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCOpenTBPowerHigh;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCOpenTBPowerHighSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 6:
+		// ADC设置打开TB开关低位
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCOpenSwitchTBLow;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCOpenSwitchTBLowSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 7:
+		// ADC设置打开TB开关高位
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCOpenSwitchTBHigh;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCOpenSwitchTBHighSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 8:
+		// ADC设置停止采样命令
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCStopSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 9:
+		// ADC设置写寄存器
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCRegisterWrite;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCRegisterWriteSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 10:
+		// ADC设置读寄存器
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCRegisterRead;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCRegisterReadSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 11:
+		// ADC设置数据返回端口
+		// @@@@@自动AD返回地址
+// 		uiIPSource = m_uiIPSource;
+// 		m_ucFrameData[iPos] = CmdADCDataReturnAddr;
+// 		iPos += FrameCmdSize1B;
+// 		memcpy(&m_ucFrameData[iPos], &uiIPSource, FramePacketSize4B);
+// 		iPos += FramePacketSize4B;
+// 		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCDataReturnAddr;
+// 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+// 		// ad返回端口：返回固定端口则ad_cmd(7) = 0,
+// 		// 例如0x00035005,其中03为ADC数据返回命令，5005为返回端口号
+// 		// 返回端口递增则ad_cmd(7) = 1,例如0x80035005
+// 		uiReturnPort = (SendADCCmd << 16) + ADRecPort;	// 0x00038300
+// 		m_ucFrameData[iPos] = CmdADCDataReturnPort;
+// 		iPos += FrameCmdSize1B;
+// 		memcpy(&m_ucFrameData[iPos], &uiReturnPort, FramePacketSize4B);
+// 		iPos += FramePacketSize4B;
+// 
+// 		//端口递增上下限命令
+// 		uiReturnPortMove = static_cast<unsigned int>((ADRecPort << 16) + ADRecPort);
+// 		m_ucFrameData[iPos] = CmdADCDataReturnPortLimit;
+// 		iPos += FrameCmdSize1B;
+// 		memcpy(&m_ucFrameData[iPos], &uiReturnPortMove, FramePacketSize4B);
+// 		iPos += FramePacketSize4B;
+// 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCRegisterRead;
+// 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCRegisterReadSize;
+// 		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+// 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	default:
 		break;
 	}
+	MakeInstrumentFrame(pADCSetThread->m_pADCSetFrame->m_pCommandStructSet, 
+		pADCSetThread->m_pThread->m_pConstVar, 
+		pADCSetThread->m_pADCSetFrame->m_pcSndFrameData, 
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord, 
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum);
+	LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
+	// 发送ADC参数设置帧
+	SendInstrumentADCSetFrame(pADCSetThread->m_pADCSetFrame, pADCSetThread->m_pThread->m_pConstVar);
 }
 // 发送ADC命令设置帧
 MatrixServerDll_API void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 {
-	list<m_oADCSetStruct> ::iterator iter;
-	for (iter = pADCSetThread->m_olsADCSet.begin();iter != pADCSetThread->m_olsADCSet.end(); iter++)
+	hash_map<unsigned int, m_oADCSetStruct> ::iterator iter;
+	for (iter = pADCSetThread->m_oADCSetMap.begin();iter != pADCSetThread->m_oADCSetMap.end(); iter++)
 	{
-		// 按照路由的广播端口广播发送ADC参数设置命令帧
-		if (iter->m_bBroadCast == true)
-		{
-
-		}
-		// 按照IP地址发送ADC参数设置命令帧
-		else
-		{
-
-		}
+		// 选择ADC参数设置命令
+		OnSelectADCSetCmd(pADCSetThread, &iter->second);
 	}
 }
 // 线程等待函数
@@ -6135,7 +6617,8 @@ MatrixServerDll_API bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread
 	pADCSetThread->m_pThread->m_bWork = false;
 	pADCSetThread->m_pThread->m_hThreadClose = ::CreateEvent(false, false, NULL, NULL);	// 创建事件对象
 	// 清空ADC参数设置任务队列
-	pADCSetThread->m_olsADCSet.clear();
+	pADCSetThread->m_oADCSetMap.clear();
+	pADCSetThread->m_uiADCSetOperationNb = 0;
 	if (pADCSetThread->m_pThread->m_hThreadClose == NULL)
 	{
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnInitADCSetThread",
@@ -6172,7 +6655,7 @@ MatrixServerDll_API bool OnCloseADCSetThread(m_oADCSetThreadStruct* pADCSetThrea
 		return false;
 	}
 	// 清空ADC参数设置任务队列
-	pADCSetThread->m_olsADCSet.clear();
+	pADCSetThread->m_oADCSetMap.clear();
 	int iResult = WaitForSingleObject(pADCSetThread->m_pThread->m_hThreadClose, 
 		pADCSetThread->m_pThread->m_pConstVar->m_iCloseThreadSleepTimes
 		* pADCSetThread->m_pThread->m_pConstVar->m_iOneSleepTime);
