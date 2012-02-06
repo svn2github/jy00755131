@@ -364,8 +364,9 @@ MatrixServerDll_API bool ResetInstrumentFramePacket(m_oInstrumentCommandStruct* 
 	// TB时刻高位
 	pCommand->m_uiTBHigh = 0;
 	// TB时刻低位
+	pCommand->m_usTBLow = 0;
 	// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
-	pCommand->m_uiTBLow = 0;
+	pCommand->m_usTBCtrl = 0;
 	// work_ctrl控制交叉站接收和发送命令的方向
 	// 由高到低位每位分别控制发送口交叉线A、B，大线A、B，接收端交叉线A、B，大线A、B
 	// =0为开，=1为关
@@ -535,8 +536,10 @@ MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pComma
 		}
 		else if (byCommandWord == pConstVar->m_byCmdTbLow)
 		{
-			memcpy(&pCommand->m_uiTBLow, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_usTBLow, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
+			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pCommand->m_usTBCtrl, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
+			iPos += pConstVar->m_iFramePacketSize2B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLAUXRoutOpenQuery)
 		{
@@ -770,8 +773,10 @@ MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pComman
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdTbLow)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiTBLow, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usTBLow, pConstVar->m_iFramePacketSize2B);
+			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usTBCtrl, pConstVar->m_iFramePacketSize2B);
+			iPos += pConstVar->m_iFramePacketSize2B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXRoutOpenQuery)
 		{
@@ -857,12 +862,12 @@ MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pComman
 		{
 			if (uiRoutAddrNum == 0)
 			{
-				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPRight, pConstVar->m_iFramePacketSize4B);
+				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPLeft, pConstVar->m_iFramePacketSize4B);
 				iPos += pConstVar->m_iFramePacketSize4B;
 			}
 			else if (uiRoutAddrNum == 1)
 			{
-				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPLeft, pConstVar->m_iFramePacketSize4B);
+				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPRight, pConstVar->m_iFramePacketSize4B);
 				iPos += pConstVar->m_iFramePacketSize4B;
 			}
 			else if (uiRoutAddrNum == 2)
@@ -1938,10 +1943,14 @@ MatrixServerDll_API void LoadIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 		strKey = _T("IPForInstrument");
 		csSrcIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
 		pCommInfo->m_uiSrcIP = inet_addr(ConvertCStrToStr(csSrcIP).c_str());
-
+		// LCI的IP地址
 		strKey = _T("IPLCI");
 		csDstIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
 		pCommInfo->m_uiAimIP = inet_addr(ConvertCStrToStr(csDstIP).c_str());
+		// ADC数据返回地址
+		strKey = _T("IPForADCData");
+		csDstIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
+		pCommInfo->m_uiADCDataReturnAddr = inet_addr(ConvertCStrToStr(csDstIP).c_str());
 	}
 	catch (CMemoryException* e)
 	{
@@ -1989,6 +1998,8 @@ MatrixServerDll_API void LoadPortSetupData(m_oInstrumentCommInfoStruct* pCommInf
 		pCommInfo->m_usTimeDelayReturnPort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = _T("PortForADCSet");
 		pCommInfo->m_usADCSetReturnPort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		strKey = _T("PortForADCData");
+		pCommInfo->m_usADCDataReturnPort = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 	}
 	catch (CMemoryException* e)
 	{
@@ -2773,6 +2784,16 @@ MatrixServerDll_API void OnWorkInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCS
 	pADCSetFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_uiAimIP;
 	// 目标IP地址端口号
 	pADCSetFrame->m_pCommandStructSet->m_uiAimPort = pCommInfo->m_uiAimPort;
+	// ADC数据返回地址
+	pADCSetFrame->m_pCommandStructSet->m_uiADCDataReturnAddr = pCommInfo->m_uiADCDataReturnAddr;
+	// ADC数据返回端口
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPort = pCommInfo->m_usADCDataReturnPort;
+	// 自动数据返回命令，ad_cmd(7)=1，端口递增；=0，端口不变
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnCmd = pConstVar->m_usSendADCCmd;
+	// 端口递增下限
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitLow = pCommInfo->m_usADCDataReturnPort;
+	// 端口递增上限
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitHigh = pCommInfo->m_usADCDataReturnPort;
 	// ADC参数设置发送缓冲区帧数设定为仪器个数
 	pADCSetFrame->m_uiSndBufferSize = pCommInfo->m_uiInstrumentNum * pConstVar->m_iSndFrameSize;
 	// ADC参数设置应答接收缓冲区帧数设定为仪器个数
@@ -3585,9 +3606,9 @@ MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFra
 	// 广播IP地址
 	pIPSetFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_iIPBroadcastAddr;
 	// 时间修正高位
-	pIPSetFrame->m_pCommandStructSet->m_uiLocalTimeFixedHigh = 0;
+	pIPSetFrame->m_pCommandStructSet->m_uiLocalTimeFixedHigh = pInstrument->m_uiTimeHigh;
 	// 时间修正低位
-	pIPSetFrame->m_pCommandStructSet->m_usLocalTimeFixedLow = 0;
+	pIPSetFrame->m_pCommandStructSet->m_usLocalTimeFixedLow = pInstrument->m_uiTimeLow;
 
 	// 仪器SN命令字
 	pIPSetFrame->m_pcCommandWord[0] = pConstVar->m_byCmdSn;
@@ -4492,6 +4513,8 @@ MatrixServerDll_API void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameTh
 			{
 				pRout = GetRout(pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP,
 					&pHeadFrameThread->m_pRoutList->m_oRoutMap);
+				// 更新路由对象的路由时间
+				UpdateRoutTime(pRout);
 				pInstrument->m_uiRoutDirection = pRout->m_uiRoutDirection;
 				if (pRout->m_pHead->m_uiRoutIPTop == pInstrument->m_uiRoutIP)
 				{
@@ -6067,7 +6090,7 @@ MatrixServerDll_API void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayTh
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	// 临时变量
 	int itmp1 = 0;
-	int itmp2 = 0;
+	CString str = _T("");
 	pInstrument = pRout->m_pHead;
 	// 如果为交叉线方向路由
 	if (pRout->m_bRoutLaux == true)
@@ -6083,9 +6106,9 @@ MatrixServerDll_API void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayTh
 		{
 			itmp1 = pInstrument->m_usCrossDownReceiveTime - pInstrumentNext->m_usSendTime;
 		}
+		itmp1 = itmp1 / 2;
 		// 时间修正低位
-		itmp2 += itmp1;
-		pInstrumentNext->m_uiTimeLow = itmp2 & 0xffff;
+		pInstrumentNext->m_uiTimeLow = itmp1 & 0x3fff;
 		// 时间修正高位
 		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
 		// 生成并发送时统设置帧
@@ -6106,9 +6129,11 @@ MatrixServerDll_API void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayTh
 		{
 			itmp1 = pInstrument->m_usLineRightReceiveTime - pInstrumentNext->m_usSendTime;
 		}
+		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻差值为 %d"), pInstrumentNext->m_uiIP, itmp1 & 0x3fff);
+		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTimeDelayReturn", ConvertCStrToStr(str));
+		itmp1 = itmp1 / 2;
 		// 时间修正低位
-		itmp2 += itmp1;
-		pInstrumentNext->m_uiTimeLow = itmp2 & 0xffff;
+		pInstrumentNext->m_uiTimeLow = itmp1 & 0x3fff;
 		// 时间修正高位
 		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
 		// 生成并发送时统设置帧
@@ -6119,9 +6144,12 @@ MatrixServerDll_API void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayTh
 			pInstrument = pInstrumentNext;
 			pInstrumentNext = GetNextInstrument(pRout->m_uiRoutDirection, pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
 			itmp1 = pInstrument->m_usReceiveTime - pInstrumentNext->m_usSendTime;
+			str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻差值为 %d"), pInstrumentNext->m_uiIP, itmp1 & 0x3fff);
+			AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTimeDelayReturn", ConvertCStrToStr(str));
+			itmp1 = itmp1 / 2;
+			itmp1 += pInstrument->m_uiTimeLow;
 			// 时间修正低位
-			itmp2 += itmp1;
-			pInstrumentNext->m_uiTimeLow = itmp2 & 0xffff;
+			pInstrumentNext->m_uiTimeLow = itmp1 & 0x3fff;
 			// 时间修正高位
 			pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
 			// 生成并发送时统设置帧
@@ -6406,7 +6434,9 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 	{
 	case 1:
 		// 设置TB低位关闭TB开关
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBLow = 0;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBLow = 0;
+		// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBCtrl = 0;
 		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdTbLow;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -6475,34 +6505,18 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		break;
 	case 11:
 		// ADC设置数据返回端口
-		// @@@@@自动AD返回地址
-// 		uiIPSource = m_uiIPSource;
-// 		m_ucFrameData[iPos] = CmdADCDataReturnAddr;
-// 		iPos += FrameCmdSize1B;
-// 		memcpy(&m_ucFrameData[iPos], &uiIPSource, FramePacketSize4B);
-// 		iPos += FramePacketSize4B;
-// 		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCDataReturnAddr;
-// 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
-// 		// ad返回端口：返回固定端口则ad_cmd(7) = 0,
-// 		// 例如0x00035005,其中03为ADC数据返回命令，5005为返回端口号
-// 		// 返回端口递增则ad_cmd(7) = 1,例如0x80035005
-// 		uiReturnPort = (SendADCCmd << 16) + ADRecPort;	// 0x00038300
-// 		m_ucFrameData[iPos] = CmdADCDataReturnPort;
-// 		iPos += FrameCmdSize1B;
-// 		memcpy(&m_ucFrameData[iPos], &uiReturnPort, FramePacketSize4B);
-// 		iPos += FramePacketSize4B;
-// 
-// 		//端口递增上下限命令
-// 		uiReturnPortMove = static_cast<unsigned int>((ADRecPort << 16) + ADRecPort);
-// 		m_ucFrameData[iPos] = CmdADCDataReturnPortLimit;
-// 		iPos += FrameCmdSize1B;
-// 		memcpy(&m_ucFrameData[iPos], &uiReturnPortMove, FramePacketSize4B);
-// 		iPos += FramePacketSize4B;
-// 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCRegisterRead;
-// 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCRegisterReadSize;
-// 		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
-// 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		// 自动AD返回地址
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCDataReturnAddr;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		// 自动数据返回端口和命令
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCDataReturnPort;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		// 端口递增下限和上限
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCDataReturnPortLimit;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
+	case 12:
+
 	default:
 		break;
 	}

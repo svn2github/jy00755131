@@ -273,6 +273,8 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned int m_uiSrcIP;
 	// LCI的IP地址
 	unsigned int m_uiAimIP;
+	// 自动数据返回地址
+	unsigned int m_uiADCDataReturnAddr;
 	// LCI接收的端口号
 	unsigned int m_uiAimPort;
 	// 心跳帧返回端口
@@ -289,6 +291,8 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned short m_usTimeDelayReturnPort;
 	// ADC参数设置应答端口
 	unsigned short m_usADCSetReturnPort;
+	// ADC数据返回端口
+	unsigned short m_usADCDataReturnPort;
 	// 仪器设备个数
 	unsigned int m_uiInstrumentNum;
 	// 输出日志指针
@@ -346,8 +350,9 @@ typedef struct InstrumentCommand_Struct
 	// TB时刻高位
 	unsigned int m_uiTBHigh;
 	// TB时刻低位
+	unsigned short m_usTBLow;
 	// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
-	unsigned int m_uiTBLow;
+	unsigned short m_usTBCtrl;
 	// work_ctrl控制交叉站接收和发送命令的方向
 	// 由高到低位每位分别控制发送口交叉线A、B，大线A、B，接收端交叉线A、B，大线A、B
 	// =0为开，=1为关
