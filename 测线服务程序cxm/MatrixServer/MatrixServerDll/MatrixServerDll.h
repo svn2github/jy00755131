@@ -590,6 +590,8 @@ typedef struct RoutList_Struct
 	list<m_oRoutStruct*> m_olsRoutFree;
 	// 仪器路由地址索引表
 	hash_map<unsigned int, m_oRoutStruct*> m_oRoutMap;
+	// 需要删除路由仪器的路由索引表
+	hash_map<unsigned int, m_oRoutStruct*> m_oRoutDeleteMap;
 	// 仪器时统的任务队列，成员为路由IP
 	list<unsigned int> m_olsTimeDelayTaskQueue;
 	// 仪器时统的任务中转队列

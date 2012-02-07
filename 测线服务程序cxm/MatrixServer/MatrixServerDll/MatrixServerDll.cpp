@@ -3371,6 +3371,8 @@ MatrixServerDll_API void OnWorkRoutList(m_oRoutListStruct* pRoutList,
 	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 清空路由地址索引
 	pRoutList->m_oRoutMap.clear();
+	// 清空需要删除的路由地址索引
+	pRoutList->m_oRoutDeleteMap.clear();
 	// 清空空闲路由队列
 	pRoutList->m_olsRoutFree.clear();
 	// 清空仪器时统的任务队列
@@ -3407,6 +3409,8 @@ MatrixServerDll_API void OnCloseRoutList(m_oRoutListStruct* pRoutList)
 	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 清空路由地址索引
 	pRoutList->m_oRoutMap.clear();
+	// 清空需要删除的路由地址索引
+	pRoutList->m_oRoutDeleteMap.clear();
 	// 清空空闲路由队列
 	pRoutList->m_olsRoutFree.clear();
 	// 清空仪器时统的任务队列
@@ -3457,20 +3461,6 @@ MatrixServerDll_API void AddFreeRout(m_oRoutStruct* pRout, m_oRoutListStruct* pR
 	// 空闲路由计数加1
 	pRoutList->m_uiCountFree++;
 }
-// 增加一个路由
-MatrixServerDll_API void AddRout(unsigned int uiIndex, 
-								m_oRoutStruct* pRout, 
-								hash_map<unsigned int, m_oRoutStruct*>* pRoutMap)
-{
-	pRoutMap->insert(hash_map<unsigned int, m_oRoutStruct*>::value_type (uiIndex, pRout));
-}
-// 根据输入索引号，由索引表得到一个路由指针
-MatrixServerDll_API m_oRoutStruct* GetRout(unsigned int uiIndex, hash_map<unsigned int, m_oRoutStruct*>* pRoutMap)
-{
-	hash_map<unsigned int, m_oRoutStruct*>::iterator iter;
-	iter = pRoutMap->find(uiIndex);
-	return iter->second;
-}
 // 路由地址是否已加入索引表
 MatrixServerDll_API BOOL IfIndexExistInRoutMap(unsigned int uiRoutIP, hash_map<unsigned int, m_oRoutStruct*>* pRoutMap)
 {
@@ -3486,6 +3476,23 @@ MatrixServerDll_API BOOL IfIndexExistInRoutMap(unsigned int uiRoutIP, hash_map<u
 		bResult = FALSE;
 	}
 	return bResult;
+}
+// 增加一个路由
+MatrixServerDll_API void AddRout(unsigned int uiIndex, 
+								m_oRoutStruct* pRout, 
+								hash_map<unsigned int, m_oRoutStruct*>* pRoutMap)
+{
+	if (false == IfIndexExistInRoutMap(uiIndex, pRoutMap))
+	{
+		pRoutMap->insert(hash_map<unsigned int, m_oRoutStruct*>::value_type (uiIndex, pRout));
+	}
+}
+// 根据输入索引号，由索引表得到一个路由指针
+MatrixServerDll_API m_oRoutStruct* GetRout(unsigned int uiIndex, hash_map<unsigned int, m_oRoutStruct*>* pRoutMap)
+{
+	hash_map<unsigned int, m_oRoutStruct*>::iterator iter;
+	iter = pRoutMap->find(uiIndex);
+	return iter->second;
 }
 
 // 根据输入索引号，从索引表中删除一个路由
@@ -3618,13 +3625,13 @@ MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFra
 	pIPSetFrame->m_pcCommandWord[2] = pConstVar->m_byCmdLocalTimeFixedHigh;
 	// 时间修正低位命令字
 	pIPSetFrame->m_pcCommandWord[3] = pConstVar->m_byCmdLocalTimeFixedLow;
+	// 仪器广播端口命令字
+	pIPSetFrame->m_pcCommandWord[4] = pConstVar->m_byCmdBroadCastPortSet;
 
 	// 生成IP地址设置帧
 	if((pInstrument->m_uiInstrumentType == pConstVar->m_byInstrumentTypeFDU)
 		|| (pInstrument->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLAUL))
 	{
-		// 仪器广播端口命令字
-		pIPSetFrame->m_pcCommandWord[4] = pConstVar->m_byCmdBroadCastPortSet;
 		// 命令字个数
 		pIPSetFrame->m_usCommandWordNum = 5;
 	}
@@ -3632,17 +3639,17 @@ MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFra
 	else
 	{
 		// 仪器路由IP命令字
-		pIPSetFrame->m_pcCommandWord[4] = pConstVar->m_byCmdLAUXSetRout;
-		// 仪器路由IP命令字
 		pIPSetFrame->m_pcCommandWord[5] = pConstVar->m_byCmdLAUXSetRout;
 		// 仪器路由IP命令字
 		pIPSetFrame->m_pcCommandWord[6] = pConstVar->m_byCmdLAUXSetRout;
 		// 仪器路由IP命令字
 		pIPSetFrame->m_pcCommandWord[7] = pConstVar->m_byCmdLAUXSetRout;
+		// 仪器路由IP命令字
+		pIPSetFrame->m_pcCommandWord[8] = pConstVar->m_byCmdLAUXSetRout;
 		// 打开仪器路由命令字
-		pIPSetFrame->m_pcCommandWord[8] = pConstVar->m_byCmdLAUXRoutOpenSet;
+		pIPSetFrame->m_pcCommandWord[9] = pConstVar->m_byCmdLAUXRoutOpenSet;
 		// 命令字个数
-		pIPSetFrame->m_usCommandWordNum = 9;
+		pIPSetFrame->m_usCommandWordNum = 10;
 	}
 	// IP地址设置命令
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
@@ -3662,8 +3669,8 @@ MatrixServerDll_API void SendInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFra
 		pIPSetFrame->m_pLogOutPut);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
-// 按IP地址查询交叉站或LCI大线方向尾包时刻帧
-MatrixServerDll_API void MakeInstrumentLineTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
+// 按IP地址查询尾包时刻帧
+MatrixServerDll_API void MakeInstrumentTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP)
 {
 	CString str = _T("");
@@ -3673,43 +3680,22 @@ MatrixServerDll_API void MakeInstrumentLineTailTimeQueryFramebyIP(m_oTailTimeFra
 	// 查询命令
 	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 查询命令字内容
-	// 交叉站大线尾包接收时刻
-	pTailTimeFrame->m_pcCommandWord[0] = pConstVar->m_byCmdLineTailRecTimeLAUX;
-	// 交叉站尾包发送时刻
-	pTailTimeFrame->m_pcCommandWord[1] = pConstVar->m_byCmdTailRecSndTime;
-	// 查询命令字个数
-	pTailTimeFrame->m_usCommandWordNum = 2;
-	MakeInstrumentFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_pcSndFrameData, 
-		pTailTimeFrame->m_pcCommandWord, pTailTimeFrame->m_usCommandWordNum);
-	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送大线方向尾包时刻查询帧"), pTailTimeFrame->m_pCommandStructSet->m_uiDstIP);
-	AddMsgToLogOutPutList(pTailTimeFrame->m_pLogOutPut, "MakeInstrumentLineTailTimeQueryFramebyIP", ConvertCStrToStr(str));
-	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
-}
-// 按IP地址查询交叉站或LCI交叉线方向尾包时刻帧
-MatrixServerDll_API void MakeInstrumentLauxTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
-	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP)
-{
-	CString str = _T("");
-	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
-	// 仪器IP地址
-	pTailTimeFrame->m_pCommandStructSet->m_uiDstIP = uiInstrumentIP;
-	// 查询命令
-	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
-	// 查询命令字内容
-	// 交叉站大线尾包接收时刻
+	// 交叉站交叉线尾包接收时刻
 	pTailTimeFrame->m_pcCommandWord[0] = pConstVar->m_byCmdLAUTailRecTimeLAUX;
-	// 交叉站尾包发送时刻
-	pTailTimeFrame->m_pcCommandWord[1] = pConstVar->m_byCmdTailRecSndTime;
+	// 交叉站大线尾包接收时刻
+	pTailTimeFrame->m_pcCommandWord[1] = pConstVar->m_byCmdLineTailRecTimeLAUX;
+	// 尾包接收/发送时刻
+	pTailTimeFrame->m_pcCommandWord[2] = pConstVar->m_byCmdTailRecSndTime;
 	// 查询命令字个数
-	pTailTimeFrame->m_usCommandWordNum = 2;
+	pTailTimeFrame->m_usCommandWordNum = 3;
 	MakeInstrumentFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_pcSndFrameData, 
 		pTailTimeFrame->m_pcCommandWord, pTailTimeFrame->m_usCommandWordNum);
-	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送交叉线方向尾包时刻查询帧"), pTailTimeFrame->m_pCommandStructSet->m_uiDstIP);
-	AddMsgToLogOutPutList(pTailTimeFrame->m_pLogOutPut, "MakeInstrumentLineTailTimeQueryFramebyIP", ConvertCStrToStr(str));
+	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送尾包时刻查询帧"), pTailTimeFrame->m_pCommandStructSet->m_uiDstIP);
+	AddMsgToLogOutPutList(pTailTimeFrame->m_pLogOutPut, "MakeInstrumentTailTimeQueryFramebyIP", ConvertCStrToStr(str));
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 }
-// 广播查询采集站或电源站的尾包时刻帧
-MatrixServerDll_API void MakeInstrumentLineTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFrame, 
+// 广播查询尾包时刻帧
+MatrixServerDll_API void MakeInstrumentTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiBroadCastPort)
 {
 	CString str = _T("");
@@ -3723,17 +3709,20 @@ MatrixServerDll_API void MakeInstrumentLineTailTimeQueryFramebyBroadCast(m_oTail
 	// 查询命令字内容
 	// 广播端口
 	pTailTimeFrame->m_pcCommandWord[0] = pConstVar->m_byCmdBroadCastPortSeted;
-	// 采集站或电源站尾包接收和发送时刻
-	pTailTimeFrame->m_pcCommandWord[1] = pConstVar->m_byCmdTailRecSndTime;
+	// 交叉站交叉线尾包接收时刻
+	pTailTimeFrame->m_pcCommandWord[1] = pConstVar->m_byCmdLAUTailRecTimeLAUX;
+	// 交叉站大线尾包接收时刻
+	pTailTimeFrame->m_pcCommandWord[2] = pConstVar->m_byCmdLineTailRecTimeLAUX;
+	// 尾包接收/发送时刻
+	pTailTimeFrame->m_pcCommandWord[3] = pConstVar->m_byCmdTailRecSndTime;
 	// 查询命令字个数
-	pTailTimeFrame->m_usCommandWordNum = 2;
+	pTailTimeFrame->m_usCommandWordNum = 4;
 	MakeInstrumentFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_pcSndFrameData, 
 		pTailTimeFrame->m_pcCommandWord, pTailTimeFrame->m_usCommandWordNum);
-	str.Format(_T("向广播端口 = 0x%x 的仪器广播发送大线方向尾包时刻查询帧"), uiBroadCastPort);
-	AddMsgToLogOutPutList(pTailTimeFrame->m_pLogOutPut, "MakeInstrumentLineTailTimeQueryFramebyBroadCast", ConvertCStrToStr(str));
+	str.Format(_T("向广播端口 = 0x%x 的仪器广播发送尾包时刻查询帧"), uiBroadCastPort);
+	AddMsgToLogOutPutList(pTailTimeFrame->m_pLogOutPut, "MakeInstrumentTailTimeQueryFramebyBroadCast", ConvertCStrToStr(str));
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 }
-
 // 发送尾包时刻查询帧
 MatrixServerDll_API void SendInstrumentTailTimeQueryFrame(m_oTailTimeFrameStruct* pTailTimeFrame, m_oConstVarStruct* pConstVar)
 {
@@ -4099,7 +4088,13 @@ MatrixServerDll_API m_oInstrumentStruct* GetNextInstrument(unsigned int uiRoutDi
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentRight;
 	}
-
+	if (pInstrumentNext != NULL)
+	{
+		if (pInstrumentNext->m_bInUsed == false)
+		{
+			return NULL;
+		}
+	}
 	return pInstrumentNext;
 }
 /**
@@ -4129,8 +4124,204 @@ MatrixServerDll_API m_oInstrumentStruct* GetPreviousInstrument(unsigned int uiRo
 	{
 		pInstrumentPrevious = pInstrument->m_pInstrumentLeft;
 	}
-
+	if (pInstrumentPrevious != NULL)
+	{
+		if (pInstrumentPrevious->m_bInUsed == false)
+		{
+			return NULL;
+		}
+	}
 	return pInstrumentPrevious;
+}
+// 仪器位置按照首包时刻排序
+MatrixServerDll_API void InstrumentLocationSortTop(m_oInstrumentStruct* pInstrument, m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
+{
+	bool bLocation = false;
+	bool bStable = true;
+	m_oInstrumentStruct* pInstrumentNext = NULL;
+	m_oInstrumentStruct* pInstrumentTop = NULL;
+	m_oInstrumentStruct* pInstrumentDown = NULL;
+	if (pConstVar == NULL)
+	{
+		return;
+	}
+	if (pInstrument == NULL)
+	{
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "InstrumentLocationSortLeft", "pInstrument", 
+			ErrorType, IDS_ERR_PTRISNULL);
+		return;
+	}
+	if (pRout == NULL)
+	{
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "InstrumentLocationSortLeft", "pRout", 
+			ErrorType, IDS_ERR_PTRISNULL);
+		return;
+	}
+	// 该路由方向尾仪器为空
+	if (pRout->m_pTail == NULL)
+	{
+		pInstrument->m_iLineNb = pRout->m_pHead->m_iLineNb - 1;
+		pRout->m_pTail = pInstrument;
+		pRout->m_pHead->m_pInstrumentTop = pInstrument;
+		pInstrument->m_pInstrumentDown = pRout->m_pHead;
+		pInstrument->m_iHeadFrameStableNum++;
+	}
+	else
+	{
+		// 该路由方向尾仪器首包时刻小于该仪器的首包时刻
+		if (pRout->m_pTail->m_uiTimeHeadFrame < pInstrument->m_uiTimeHeadFrame)
+		{
+			pInstrument->m_iLineNb = pRout->m_pTail->m_iLineNb - 1;
+			pRout->m_pTail->m_pInstrumentTop = pInstrument;
+			pInstrument->m_pInstrumentDown = pRout->m_pTail;
+			pRout->m_pTail = pInstrument;
+			pInstrument->m_iHeadFrameStableNum++;
+		} 
+		// 仪器位于路由链中
+		else
+		{
+			pInstrumentNext = pRout->m_pHead;
+			pInstrumentDown = pRout->m_pHead;
+			while(pInstrumentNext != NULL)
+			{
+				if (pInstrumentNext->m_uiTimeHeadFrame < pInstrument->m_uiTimeHeadFrame)
+				{
+					pInstrumentDown = pInstrumentNext;
+				}
+				else
+				{
+					// 找到路由表第一个首包时刻大于等于仪器首包时刻的仪器
+					if (bLocation == false)
+					{
+						bLocation = true;
+						pInstrumentTop = pInstrumentNext;
+						if (pInstrumentTop == pInstrument)
+						{
+							pInstrument->m_iHeadFrameStableNum++;
+							pInstrument->m_iLineNb = pInstrumentDown->m_iLineNb - 1;
+						}
+						// 在路由表中两个仪器中间插入仪器
+						else
+						{
+							pInstrumentDown->m_pInstrumentTop = pInstrument;
+							pInstrument->m_pInstrumentDown = pInstrumentDown;
+							pInstrumentTop->m_pInstrumentDown = pInstrument;
+							pInstrument->m_pInstrumentTop = pInstrumentTop;
+							pInstrumentTop->m_iHeadFrameStableNum = 0;
+							pInstrument->m_iHeadFrameStableNum = 0;
+							pInstrument->m_iLineNb = pInstrumentDown->m_iLineNb - 1;
+							pInstrumentTop->m_iLineNb--;
+							bStable = false;	
+						}
+					}
+					else
+					{
+						if (bStable == false)
+						{
+							pInstrumentNext->m_iHeadFrameStableNum = 0;
+							pInstrumentNext->m_iLineNb--;
+						}
+					}
+				}
+				pInstrumentNext = GetNextInstrument(pConstVar->m_iDirectionTop, pInstrumentNext, pConstVar);
+			}
+		}
+	}
+}
+// 仪器位置按照首包时刻排序
+MatrixServerDll_API void InstrumentLocationSortDown(m_oInstrumentStruct* pInstrument, m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
+{
+	bool bLocation = false;
+	bool bStable = true;
+	m_oInstrumentStruct* pInstrumentNext = NULL;
+	m_oInstrumentStruct* pInstrumentTop = NULL;
+	m_oInstrumentStruct* pInstrumentDown = NULL;
+	if (pConstVar == NULL)
+	{
+		return;
+	}
+	if (pInstrument == NULL)
+	{
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "InstrumentLocationSortRight", "pInstrument", 
+			ErrorType, IDS_ERR_PTRISNULL);
+		return;
+	}
+	if (pRout == NULL)
+	{
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "InstrumentLocationSortRight", "pRout", 
+			ErrorType, IDS_ERR_PTRISNULL);
+		return;
+	}
+	// 该路由方向尾仪器为空
+	if (pRout->m_pTail == NULL)
+	{
+		pInstrument->m_iLineNb = pRout->m_pHead->m_iLineNb + 1;
+		pRout->m_pTail = pInstrument;
+		pRout->m_pHead->m_pInstrumentDown = pInstrument;
+		pInstrument->m_pInstrumentTop = pRout->m_pHead;
+		pInstrument->m_iHeadFrameStableNum++;
+	}
+	else
+	{
+		// 该路由方向尾仪器首包时刻小于该仪器的首包时刻
+		if (pRout->m_pTail->m_uiTimeHeadFrame < pInstrument->m_uiTimeHeadFrame)
+		{
+			pInstrument->m_iLineNb = pRout->m_pTail->m_iLineNb + 1;
+			pRout->m_pTail->m_pInstrumentDown = pInstrument;
+			pInstrument->m_pInstrumentTop = pRout->m_pTail;
+			pRout->m_pTail = pInstrument;
+			pInstrument->m_iHeadFrameStableNum++;
+		} 
+		// 仪器位于路由链中
+		else
+		{
+			pInstrumentNext = pRout->m_pHead;
+			pInstrumentTop = pRout->m_pHead;
+			while(pInstrumentNext != NULL)
+			{
+				if (pInstrumentNext->m_uiTimeHeadFrame < pInstrument->m_uiTimeHeadFrame)
+				{
+					pInstrumentTop = pInstrumentNext;
+				}
+				else
+				{
+					// 找到路由表第一个首包时刻大于等于仪器首包时刻的仪器
+					if (bLocation == false)
+					{
+						bLocation = true;
+						pInstrumentDown = pInstrumentNext;
+						if (pInstrumentDown == pInstrument)
+						{
+							pInstrument->m_iHeadFrameStableNum++;
+							pInstrument->m_iLineNb = pInstrumentTop->m_iLineNb + 1;
+						}
+						// 在路由表中两个仪器中间插入仪器
+						else
+						{
+							pInstrumentDown->m_pInstrumentTop = pInstrument;
+							pInstrument->m_pInstrumentDown = pInstrumentDown;
+							pInstrumentTop->m_pInstrumentDown = pInstrument;
+							pInstrument->m_pInstrumentTop = pInstrumentTop;
+							pInstrumentDown->m_iHeadFrameStableNum = 0;
+							pInstrument->m_iHeadFrameStableNum = 0;
+							pInstrument->m_iLineNb = pInstrumentTop->m_iLineNb + 1;
+							pInstrumentDown->m_iLineNb++;
+							bStable = false;	
+						}
+					}
+					else
+					{
+						if (bStable == false)
+						{
+							pInstrumentNext->m_iHeadFrameStableNum = 0;
+							pInstrumentNext->m_iLineNb++;
+						}
+					}
+				}
+				pInstrumentNext = GetNextInstrument(pConstVar->m_iDirectionDown, pInstrumentNext, pConstVar);
+			}
+		}
+	}
 }
 // 仪器位置按照首包时刻排序
 MatrixServerDll_API void InstrumentLocationSortLeft(m_oInstrumentStruct* pInstrument, m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
@@ -4341,29 +4532,35 @@ MatrixServerDll_API void SetInstrumentLocation(m_oInstrumentStruct* pInstrument,
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
-	// 在路由索引表中找到路由头仪器
-	// 如果是LCI及交叉线方向的交叉站
-	if ((pInstrument->m_uiRoutDirection == pConstVar->m_iDirectionCenter)
-		|| (pInstrument->m_uiRoutDirection == pConstVar->m_iDirectionTop)
-		|| (pInstrument->m_uiRoutDirection == pConstVar->m_iDirectionDown))
+
+	// 上方
+	if (pInstrument->m_uiRoutDirection == pConstVar->m_iDirectionTop)
 	{
-		pInstrument->m_iHeadFrameStableNum++;
+		pInstrument->m_iPointIndex = pRout->m_pHead->m_iPointIndex;
+		InstrumentLocationSortTop(pInstrument, pRout, pConstVar);
 	}
+	// 下方
+	else if (pInstrument->m_uiRoutDirection == pConstVar->m_iDirectionDown)
+	{
+		pInstrument->m_iPointIndex = pRout->m_pHead->m_iPointIndex;
+		InstrumentLocationSortDown(pInstrument, pRout, pConstVar);
+	}
+	// 大线左方
+	else if (pInstrument->m_uiRoutDirection == pConstVar->m_iDirectionLeft)
+	{
+		pInstrument->m_iLineNb = pRout->m_pHead->m_iLineNb;
+		InstrumentLocationSortLeft(pInstrument, pRout, pConstVar);
+	}
+	// 大线右方
+	else if (pInstrument->m_uiRoutDirection == pConstVar->m_iDirectionRight)
+	{
+		pInstrument->m_iLineNb = pRout->m_pHead->m_iLineNb;
+		InstrumentLocationSortRight(pInstrument, pRout, pConstVar);
+	}
+	// LCI
 	else
 	{
-		if (pRout != NULL)
-		{
-			// 大线左方
-			if (pInstrument->m_uiRoutDirection == pConstVar->m_iDirectionLeft)
-			{
-				InstrumentLocationSortLeft(pInstrument, pRout, pConstVar);
-			}
-			// 大线右方
-			else
-			{
-				InstrumentLocationSortRight(pInstrument, pRout, pConstVar);
-			}
-		}
+		pInstrument->m_iHeadFrameStableNum++;
 	}
 }
 /**
@@ -4490,18 +4687,12 @@ MatrixServerDll_API void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameTh
 		pInstrument->m_uiInstrumentType = pInstrument->m_uiSN & 0xff;
 		//设置新仪器的路由IP地址
 		pInstrument->m_uiRoutIP = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP;
-		//设置新仪器的首包时刻
-		pInstrument->m_uiTimeHeadFrame = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiTimeHeadFrame;
 		// 设置新仪器的仪器类型
 		// 路由地址为0为LCI
 		if (pInstrument->m_uiRoutIP == 0)
 		{
 			pInstrument->m_uiInstrumentType = pHeadFrameThread->m_pThread->m_pConstVar->m_byInstrumentTypeLCI;
 			pInstrument->m_uiRoutDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionCenter;
-			// LCI测点序号为0
-			pInstrument->m_iPointIndex = 0;
-			// LCI测线序号为0
-			pInstrument->m_iLineNb = 0;
 			// 得到空闲路由对象
 			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionCenter;
 			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pRoutList);
@@ -4516,26 +4707,6 @@ MatrixServerDll_API void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameTh
 				// 更新路由对象的路由时间
 				UpdateRoutTime(pRout);
 				pInstrument->m_uiRoutDirection = pRout->m_uiRoutDirection;
-				if (pRout->m_pHead->m_uiRoutIPTop == pInstrument->m_uiRoutIP)
-				{
-					pRout->m_pHead->m_pInstrumentTop = pInstrument;
-					pRout->m_pTail = pInstrument;
-					pInstrument->m_pInstrumentDown = pRout->m_pHead;
-					pInstrument->m_iLineNb = pRout->m_pHead->m_iLineNb - 1;
-					pInstrument->m_iPointIndex = pRout->m_pHead->m_iPointIndex;
-				}
-				else if (pRout->m_pHead->m_uiRoutIPDown == pInstrument->m_uiRoutIP)
-				{
-					pRout->m_pHead->m_pInstrumentDown = pInstrument;
-					pRout->m_pTail = pInstrument;
-					pInstrument->m_pInstrumentTop = pRout->m_pHead;
-					pInstrument->m_iLineNb = pRout->m_pHead->m_iLineNb + 1;
-					pInstrument->m_iPointIndex = pRout->m_pHead->m_iPointIndex;
-				}
-				else
-				{
-					pInstrument->m_iLineNb = pRout->m_pHead->m_iLineNb;
-				}
 			}
 			else
 			{
@@ -4546,12 +4717,8 @@ MatrixServerDll_API void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameTh
 			}
 		}
 
-		if ((pInstrument->m_uiInstrumentType == pHeadFrameThread->m_pThread->m_pConstVar->m_byInstrumentTypeFDU)
-			|| (pInstrument->m_uiInstrumentType == pHeadFrameThread->m_pThread->m_pConstVar->m_byInstrumentTypeLAUL))
-		{
-			pInstrument->m_uiBroadCastPort = pHeadFrameThread->m_pThread->m_pConstVar->m_iBroadcastPortStart + pInstrument->m_uiRoutIP;
-		}
-		else
+		if ((pInstrument->m_uiInstrumentType == pHeadFrameThread->m_pThread->m_pConstVar->m_byInstrumentTypeLCI)
+			|| (pInstrument->m_uiInstrumentType == pHeadFrameThread->m_pThread->m_pConstVar->m_byInstrumentTypeLAUX))
 		{
 			// 设置交叉站路由
 			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionTop;
@@ -4566,6 +4733,7 @@ MatrixServerDll_API void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameTh
 			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionRight;
 			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pRoutList);
 		}
+		pInstrument->m_uiBroadCastPort = pHeadFrameThread->m_pThread->m_pConstVar->m_iBroadcastPortStart + pInstrument->m_uiRoutIP;
 		// 新仪器加入SN索引表
 		AddInstrumentToMap(pInstrument->m_uiSN, pInstrument, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
 	}
@@ -4608,9 +4776,10 @@ MatrixServerDll_API void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThrea
 				{
 					EnterCriticalSection(&pHeadFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 					EnterCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
-					UpdateLineChangeTime(pHeadFrameThread->m_pInstrumentList);
 					// 处理单个首包帧
 					ProcHeadFrameOne(pHeadFrameThread);
+					// 系统发生变化的时间
+					UpdateLineChangeTime(pHeadFrameThread->m_pInstrumentList);
 					LeaveCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
 					LeaveCriticalSection(&pHeadFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
@@ -5094,6 +5263,14 @@ MatrixServerDll_API void OnClearSameRoutTailCount(m_oInstrumentStruct* pInstrume
 		pInstrumentNext = GetNextInstrument(pInstrumentNext->m_uiRoutDirection, pInstrumentNext, pConstVar);
 	}
 }
+// 回收一个路由
+MatrixServerDll_API void FreeRoutFromMap(unsigned int uiRoutIP, m_oRoutListStruct* pRoutList)
+{
+	m_oRoutStruct* pRout = NULL;
+	CString str = _T("");
+	pRout = GetRout(uiRoutIP, &pRoutList->m_oRoutMap);
+	AddRout(uiRoutIP, pRout, &pRoutList->m_oRoutDeleteMap);
+}
 // 回收一个仪器
 MatrixServerDll_API void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument, 
 												m_oInstrumentListStruct* pInstrumentList, 
@@ -5109,9 +5286,6 @@ MatrixServerDll_API void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 		return;
 	}
 	CString str = _T("");
-	m_oRoutStruct* pRout = NULL;
-
-	UpdateLineChangeTime(pInstrumentList);
 	// 从SN索引表中删除该仪器指针
 	DeleteInstrumentFromMap(pInstrument->m_uiSN, &pInstrumentList->m_oSNInstrumentMap);
 	// 从IP地址设置索引表中删除该仪器指针
@@ -5120,43 +5294,23 @@ MatrixServerDll_API void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oIPInstrumentMap);
 	str.Format(_T("删除仪器的SN = 0x%x，路由 = 0x%x"), pInstrument->m_uiSN, pInstrument->m_uiRoutIP);
 	AddMsgToLogOutPutList(pInstrumentList->m_pLogOutPut, "FreeInstrumentFromMap", ConvertCStrToStr(str));
+
 	// 删除仪器的类型为LCI或交叉站
 	if ((pInstrument->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLCI)
 		|| (pInstrument->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLAUX))
 	{
-		// 如果删除LCI则路由地址为0的过期路由标志位为true
 		if (pInstrument->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLCI)
 		{
-			pRout = GetRout(pInstrument->m_uiRoutIP, &pRoutList->m_oRoutMap);
-			if (pRout != NULL)
-			{
-				pRout->m_bExpired = true;
-			}
+			FreeRoutFromMap(pInstrument->m_uiRoutIP, pRoutList);
 		}
-		// 仪器上方的过期路由标志位为true
-		pRout = GetRout(pInstrument->m_uiRoutIPTop, &pRoutList->m_oRoutMap);
-		if (pRout != NULL)
-		{
-			pRout->m_bExpired = true;
-		}
-		// 仪器下方的过期路由标志位为true
-		pRout = GetRout(pInstrument->m_uiRoutIPDown, &pRoutList->m_oRoutMap);
-		if (pRout != NULL)
-		{
-			pRout->m_bExpired = true;
-		}
-		// 仪器左方的过期路由标志位为true
-		pRout = GetRout(pInstrument->m_uiRoutIPLeft, &pRoutList->m_oRoutMap);
-		if (pRout != NULL)
-		{
-			pRout->m_bExpired = true;
-		}
-		// 仪器右方的过期路由标志位为true
-		pRout = GetRout(pInstrument->m_uiRoutIPRight, &pRoutList->m_oRoutMap);
-		if (pRout != NULL)
-		{
-			pRout->m_bExpired = true;
-		}
+		// 仪器上方路由
+		FreeRoutFromMap(pInstrument->m_uiRoutIPTop, pRoutList);
+		// 仪器下方路由
+		FreeRoutFromMap(pInstrument->m_uiRoutIPDown, pRoutList);
+		// 仪器左方路由
+		FreeRoutFromMap(pInstrument->m_uiRoutIPLeft, pRoutList);
+		// 仪器右方路由
+		FreeRoutFromMap(pInstrument->m_uiRoutIPRight, pRoutList);
 	}
 	// 将仪器加入到空闲仪器队列
 	AddFreeInstrument(pInstrument, pInstrumentList);
@@ -5172,12 +5326,6 @@ MatrixServerDll_API void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrum
 {
 	if (pInstrumentList == NULL)
 	{
-		return;
-	}
-	if (pInstrument == NULL)
-	{
-		AddMsgToLogOutPutList(pInstrumentList->m_pLogOutPut, "DeleteInstrumentAlongRout", 
-							"pInstrument", ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
 	if (pRout == NULL)
@@ -5206,6 +5354,10 @@ MatrixServerDll_API void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrum
 		// 得到要删除仪器沿着路由方向的前一个仪器的指针
 		pInstrumentPrevious = GetPreviousInstrument(pInstrumentDelete->m_uiRoutDirection, pInstrumentDelete, pConstVar);
 		pRout->m_pTail = pInstrumentPrevious;
+		if (pRout->m_pTail == pRout->m_pHead)
+		{
+			pRout->m_pTail = NULL;
+		}
 		// 回收一个仪器
 		FreeInstrumentFromMap(pInstrumentDelete, pInstrumentList, pRoutList, pConstVar);
 	}
@@ -5221,6 +5373,7 @@ MatrixServerDll_API void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameTh
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentPrevious = NULL;
 	m_oRoutStruct* pRout = NULL;
+	hash_map <unsigned int, m_oRoutStruct*> :: iterator iter;
 	CString str = _T("");
 	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包"),
 		pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSN,pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiRoutIP);
@@ -5254,43 +5407,26 @@ MatrixServerDll_API void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameTh
 				{
 					DeleteInstrumentAlongRout(pInstrument, pRout, pTailFrameThread->m_pInstrumentList, 
 						pTailFrameThread->m_pRoutList, pTailFrameThread->m_pThread->m_pConstVar);
+					while(1)
+					{
+						if (pTailFrameThread->m_pRoutList->m_oRoutDeleteMap.empty() == true)
+						{
+							break;
+						}
+						iter = pTailFrameThread->m_pRoutList->m_oRoutDeleteMap.begin();
+						DeleteInstrumentAlongRout(iter->second->m_pHead, iter->second, pTailFrameThread->m_pInstrumentList, 
+							pTailFrameThread->m_pRoutList, pTailFrameThread->m_pThread->m_pConstVar);
+						// 路由索引表回收路由
+						DeleteRout(iter->first, &pTailFrameThread->m_pRoutList->m_oRoutMap);
+						str.Format(_T("回收路由IP = 0x%x的过期路由"), iter->first);
+						AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", ConvertCStrToStr(str));
+						// 将过期路由回收到空闲路由队列
+						AddFreeRout(iter->second, pTailFrameThread->m_pRoutList);
+						// 路由删除索引表回收路由
+						DeleteRout(iter->first, &pTailFrameThread->m_pRoutList->m_oRoutDeleteMap);
+					}
 				}
 				pInstrument->m_iTailFrameCount = 0;
-			}
-			// 如果尾包仪器为交叉站且路由方向为上方或者下方
-			if ((pInstrument->m_uiInstrumentType == pTailFrameThread->m_pThread->m_pConstVar->m_byInstrumentTypeLAUX)
-				&& ((pInstrument->m_uiRoutDirection == pTailFrameThread->m_pThread->m_pConstVar->m_iDirectionTop)
-					|| (pInstrument->m_uiRoutDirection == pTailFrameThread->m_pThread->m_pConstVar->m_iDirectionDown)))
-			{
-				// 得到此尾包仪器前一个仪器的仪器指针
-				pInstrumentPrevious = pRout->m_pHead;
-				// 仪器类型不为LCI时执行此循环
-				while(pInstrumentPrevious->m_uiInstrumentType != pTailFrameThread->m_pThread->m_pConstVar->m_byInstrumentTypeLCI)
-				{
-					// 得到此仪器前一个仪器的仪器指针
-					pInstrumentPrevious = GetPreviousInstrument(pInstrument->m_uiRoutDirection, pInstrumentPrevious, 
-						pTailFrameThread->m_pThread->m_pConstVar);
-					if (pInstrumentPrevious == NULL)
-					{
-						break;
-					}
-					// 如果尾包仪器的路由方向为上方
-					if (pInstrument->m_uiRoutDirection == pTailFrameThread->m_pThread->m_pConstVar->m_iDirectionTop)
-					{
-						// 由路由IP得到路由对象
-						pRout = GetRout(pInstrumentPrevious->m_uiRoutIPTop, &pTailFrameThread->m_pRoutList->m_oRoutMap);
-						// 更新路由对象的路由时间
-						UpdateRoutTime(pRout);
-					}
-					// 如果尾包仪器的路由方向为下方
-					else if (pInstrument->m_uiRoutDirection == pTailFrameThread->m_pThread->m_pConstVar->m_iDirectionDown)
-					{
-						// 由路由IP得到路由对象
-						pRout = GetRout(pInstrumentPrevious->m_uiRoutIPDown, &pTailFrameThread->m_pRoutList->m_oRoutMap);
-						// 更新路由对象的路由时间
-						UpdateRoutTime(pRout);
-					}
-				}
 			}
 		}
 		else
@@ -5488,6 +5624,39 @@ MatrixServerDll_API void WaitMonitorRoutThread(m_oMonitorRoutThreadStruct* pMoni
 		}		
 	}
 }
+// 沿着路由方向得到时统任务
+MatrixServerDll_API void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout, m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
+{
+	m_oInstrumentStruct* pInstrumentNext = NULL;
+	if (pRout->m_pTail == NULL)
+	{
+		return;
+	}
+	pInstrumentNext = GetNextInstrument(pRout->m_uiRoutDirection, pRout->m_pHead, pConstVar);
+	while(pInstrumentNext != pRout->m_pTail)
+	{
+		// 如果仪器为交叉站
+		if (pInstrumentNext->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLAUX)
+		{
+			// 将仪器四个方向的路由加入临时队列
+			pRoutList->m_olsTimeDelayTemp.push_back(pInstrumentNext->m_uiRoutIPTop);
+			pRoutList->m_olsTimeDelayTemp.push_back(pInstrumentNext->m_uiRoutIPDown);
+			pRoutList->m_olsTimeDelayTemp.push_back(pInstrumentNext->m_uiRoutIPLeft);
+			pRoutList->m_olsTimeDelayTemp.push_back(pInstrumentNext->m_uiRoutIPRight);
+		}
+		pInstrumentNext = GetNextInstrument(pRout->m_uiRoutDirection, pInstrumentNext, pConstVar);
+	}
+	// 如果路由尾仪器为交叉站或者LCI
+	if ((pRout->m_pTail->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLCI)
+		|| (pRout->m_pTail->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLAUX))
+	{
+		// 将路由尾仪器四个方向的路由加入临时队列
+		pRoutList->m_olsTimeDelayTemp.push_back(pRout->m_pTail->m_uiRoutIPTop);
+		pRoutList->m_olsTimeDelayTemp.push_back(pRout->m_pTail->m_uiRoutIPDown);
+		pRoutList->m_olsTimeDelayTemp.push_back(pRout->m_pTail->m_uiRoutIPLeft);
+		pRoutList->m_olsTimeDelayTemp.push_back(pRout->m_pTail->m_uiRoutIPRight);
+	}
+}
 // 得到时统任务
 MatrixServerDll_API void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
 {
@@ -5501,6 +5670,7 @@ MatrixServerDll_API void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConst
 		return;
 	}
 	m_oRoutStruct* pRout = NULL;
+	m_oInstrumentStruct* pInstrument = NULL;
 	unsigned int uiRoutIP = 0;
 	CString str = _T("");
 	while(false == pRoutList->m_olsTimeDelayTemp.empty())
@@ -5522,16 +5692,19 @@ MatrixServerDll_API void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConst
 					str.Format(_T("将路由IP = 0x%x 加入时统任务队列"), uiRoutIP);
 					AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetTimeDelayTask", ConvertCStrToStr(str));
 				}
-				// 如果路由尾仪器为交叉站或者LCI
-				if ((pRout->m_pTail->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLCI)
-					|| (pRout->m_pTail->m_uiInstrumentType == pConstVar->m_byInstrumentTypeLAUX))
-				{
-					// 将路由尾仪器四个方向的路由加入临时队列
-					pRoutList->m_olsTimeDelayTemp.push_back(pRout->m_pTail->m_uiRoutIPTop);
-					pRoutList->m_olsTimeDelayTemp.push_back(pRout->m_pTail->m_uiRoutIPDown);
-					pRoutList->m_olsTimeDelayTemp.push_back(pRout->m_pTail->m_uiRoutIPLeft);
-					pRoutList->m_olsTimeDelayTemp.push_back(pRout->m_pTail->m_uiRoutIPRight);
-				}
+				pInstrument = pRout->m_pHead;
+				// 沿着路由方向得到时统任务
+				pRout = GetRout(pInstrument->m_uiRoutIPTop, &pRoutList->m_oRoutMap);
+				GetTimeDelayTaskAlongRout(pRout, pRoutList, pConstVar);
+				// 沿着路由方向得到时统任务
+				pRout = GetRout(pInstrument->m_uiRoutIPDown, &pRoutList->m_oRoutMap);
+				GetTimeDelayTaskAlongRout(pRout, pRoutList, pConstVar);
+				// 沿着路由方向得到时统任务
+				pRout = GetRout(pInstrument->m_uiRoutIPLeft, &pRoutList->m_oRoutMap);
+				GetTimeDelayTaskAlongRout(pRout, pRoutList, pConstVar);
+				// 沿着路由方向得到时统任务
+				pRout = GetRout(pInstrument->m_uiRoutIPRight, &pRoutList->m_oRoutMap);
+				GetTimeDelayTaskAlongRout(pRout, pRoutList, pConstVar);
 			}
 		}
 	}
@@ -5569,49 +5742,47 @@ MatrixServerDll_API void ProcMonitorRout(m_oMonitorRoutThreadStruct* pMonitorRou
 	ullTimeNow = GetTickCount64();
 	// hash_map迭代器
 	hash_map<unsigned int, m_oRoutStruct*>::iterator  iter;
-	m_oRoutStruct* pRout = NULL;
 	CString str = _T("");
-	for(iter = pMonitorRoutThread->m_pRoutList->m_oRoutMap.begin(); iter != pMonitorRoutThread->m_pRoutList->m_oRoutMap.end();iter++)
+	for(iter = pMonitorRoutThread->m_pRoutList->m_oRoutMap.begin(); iter != pMonitorRoutThread->m_pRoutList->m_oRoutMap.end(); iter++)
 	{
 		if (ullTimeNow > (iter->second->m_ullRoutTime + pMonitorRoutThread->m_pThread->m_pConstVar->m_iMonitorRoutStableTime))
 		{
-			pRout = iter->second;
-			if (pRout->m_pTail != NULL)
+			if (iter->second->m_pTail != NULL)
 			{
-				str.Format(_T("路由IP = 0x%x的路由时间过期，删除该路由方向上的仪器"), pRout->m_uiRoutIP);
+				str.Format(_T("路由IP = 0x%x的路由时间过期，删除该路由方向上的仪器"), iter->second->m_uiRoutIP);
 				AddMsgToLogOutPutList(pMonitorRoutThread->m_pThread->m_pLogOutPut, "ProcMonitorRout", ConvertCStrToStr(str));
 				// 如果路由尾仪器为LCI则表明要删除的是LCI本身
-				if (pRout->m_pTail->m_uiInstrumentType == pMonitorRoutThread->m_pThread->m_pConstVar->m_byInstrumentTypeLCI)
+				if (iter->second->m_pTail->m_uiInstrumentType == pMonitorRoutThread->m_pThread->m_pConstVar->m_byInstrumentTypeLCI)
 				{
 					// 回收一个仪器
-					FreeInstrumentFromMap(pRout->m_pTail, pMonitorRoutThread->m_pInstrumentList, 
+					FreeInstrumentFromMap(iter->second->m_pHead, pMonitorRoutThread->m_pInstrumentList, 
 						pMonitorRoutThread->m_pRoutList, pMonitorRoutThread->m_pThread->m_pConstVar);
 				}
 				else
 				{
-					DeleteInstrumentAlongRout(pRout->m_pHead, pRout, pMonitorRoutThread->m_pInstrumentList, 
+					DeleteInstrumentAlongRout(iter->second->m_pHead, iter->second, pMonitorRoutThread->m_pInstrumentList, 
 						pMonitorRoutThread->m_pRoutList, pMonitorRoutThread->m_pThread->m_pConstVar);
 				}
-				pRout->m_pTail = NULL;
 			}
 		}
 	}
-	// 回收过期路由
-	for(iter = pMonitorRoutThread->m_pRoutList->m_oRoutMap.begin(); iter != pMonitorRoutThread->m_pRoutList->m_oRoutMap.end();)
+	while(1)
 	{
-		pRout = iter->second;
-		if (pRout->m_bExpired == true)
+		if (pMonitorRoutThread->m_pRoutList->m_oRoutDeleteMap.empty() == true)
 		{
-			pMonitorRoutThread->m_pRoutList->m_oRoutMap.erase(iter++);
-			str.Format(_T("回收路由IP = 0x%x的时间过期路由"), pRout->m_uiRoutIP);
-			AddMsgToLogOutPutList(pMonitorRoutThread->m_pThread->m_pLogOutPut, "ProcMonitorRout", ConvertCStrToStr(str));
-			// 将过期路由回收到空闲路由队列
-			AddFreeRout(pRout, pMonitorRoutThread->m_pRoutList);
+			break;
 		}
-		else
-		{
-			iter++;
-		}
+		iter = pMonitorRoutThread->m_pRoutList->m_oRoutDeleteMap.begin();
+		DeleteInstrumentAlongRout(iter->second->m_pHead, iter->second, pMonitorRoutThread->m_pInstrumentList, 
+			pMonitorRoutThread->m_pRoutList, pMonitorRoutThread->m_pThread->m_pConstVar);
+		// 路由索引表回收路由
+		DeleteRout(iter->first, &pMonitorRoutThread->m_pRoutList->m_oRoutMap);
+		str.Format(_T("回收路由IP = 0x%x的过期路由"), iter->first);
+		AddMsgToLogOutPutList(pMonitorRoutThread->m_pThread->m_pLogOutPut, "ProcMonitorRout", ConvertCStrToStr(str));
+		// 将过期路由回收到空闲路由队列
+		AddFreeRout(iter->second, pMonitorRoutThread->m_pRoutList);
+		// 路由删除索引表回收路由
+		DeleteRout(iter->first, &pMonitorRoutThread->m_pRoutList->m_oRoutDeleteMap);
 	}
 	// 判断系统稳定
 	if (ullTimeNow > (pMonitorRoutThread->m_pInstrumentList->m_ullLineChangeTime 
@@ -5829,7 +6000,7 @@ MatrixServerDll_API void PrepareTailTimeFrame(m_oRoutStruct* pRout, m_oConstVarS
 // 	/** 尾包时刻查询计数*/
 // 	pInstrumentNext->m_iTailTimeQueryCount++;
 	/** 尾包时刻查询是否成功*/
-	pInstrumentNext->m_bTailTimeQueryOK = false;
+	pRout->m_pTail->m_bTailTimeQueryOK = false;
 }
 // 处理尾包时刻查询
 MatrixServerDll_API void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDelayThread)
@@ -5847,56 +6018,16 @@ MatrixServerDll_API void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThr
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	// 准备工作
 	PrepareTailTimeFrame(pRout, pTimeDelayThread->m_pThread->m_pConstVar);
-	// 如果为交叉线方向路由
-	if (pRout->m_bRoutLaux == true)
-	{
-		// 按IP查询路由头仪器交叉线方向的尾包时刻
-		MakeInstrumentLauxTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-			pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pHead->m_uiIP);
-		SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
-			pTimeDelayThread->m_pThread->m_pConstVar);
-		// 按IP查询路由尾仪器交叉线方向的尾包时刻
-		MakeInstrumentLauxTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-			pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiIP);
-		SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
-			pTimeDelayThread->m_pThread->m_pConstVar);
-	}
-	// 如果为大线方向路由
-	else
-	{
-		// 按IP查询路由头仪器（交叉站或LCI）大线方向尾包时刻
-		MakeInstrumentLineTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-			pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pHead->m_uiIP);
-		SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
-			pTimeDelayThread->m_pThread->m_pConstVar);
-		pInstrumentNext = GetNextInstrument(pRout->m_uiRoutDirection, pRout->m_pHead, 
-			pTimeDelayThread->m_pThread->m_pConstVar);
-		// 如果路由头的下一个仪器为交叉站则不发广播命令
-		if (pInstrumentNext->m_uiInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_byInstrumentTypeLAUX)
-		{
-			MakeInstrumentLineTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-				pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext->m_uiIP);
-			SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
-				pTimeDelayThread->m_pThread->m_pConstVar);
-			return;
-		}
-		// 发送广播查询命令
-		else
-		{
-			MakeInstrumentLineTailTimeQueryFramebyBroadCast(pTimeDelayThread->m_pTailTimeFrame,
-				pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext->m_uiBroadCastPort);
-			SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
-				pTimeDelayThread->m_pThread->m_pConstVar);
-		}
-		// 如果路由尾仪器为交叉站则按IP查询其大线方向尾包时刻
-		if (pRout->m_pTail->m_uiInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_byInstrumentTypeLAUX)
-		{
-			MakeInstrumentLineTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
-				pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiIP);
-			SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
-				pTimeDelayThread->m_pThread->m_pConstVar);
-		}
-	}
+	// 按IP查询路由头仪器的尾包时刻
+	MakeInstrumentTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
+		pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pHead->m_uiIP);
+	SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
+		pTimeDelayThread->m_pThread->m_pConstVar);
+	// 广播查询路由仪器的尾包时刻
+	MakeInstrumentTailTimeQueryFramebyBroadCast(pTimeDelayThread->m_pTailTimeFrame,
+		pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiBroadCastPort);
+	SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
+		pTimeDelayThread->m_pThread->m_pConstVar);
 }
 // 处理单个尾包时刻查询应答帧
 MatrixServerDll_API void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDelayThread)
@@ -6272,32 +6403,32 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 				}
 				else if (pTimeDelayThread->m_uiCounter == 5)
 				{
-					// 处理尾包时刻查询应答
-					ProcTailTimeReturnFrame(pRout, pTimeDelayThread);
-					// 检查尾包时刻查询结果是否接收完全
-					if (false == CheckTailTimeReturn(pRout, pTimeDelayThread))
-					{
-						pTimeDelayThread->m_uiCounter = 0;
-					}
-					else
-					{
-						// 处理时统设置
-						ProcTimeDelayFrame(pRout, pTimeDelayThread);
-					}
+// 					// 处理尾包时刻查询应答
+// 					ProcTailTimeReturnFrame(pRout, pTimeDelayThread);
+// 					// 检查尾包时刻查询结果是否接收完全
+// 					if (false == CheckTailTimeReturn(pRout, pTimeDelayThread))
+// 					{
+// 						pTimeDelayThread->m_uiCounter = 0;
+// 					}
+// 					else
+// 					{
+// 						// 处理时统设置
+// 						ProcTimeDelayFrame(pRout, pTimeDelayThread);
+// 					}
 				}
 				else if (pTimeDelayThread->m_uiCounter == 10)
 				{
-					// 处理时统设置应答
-					ProcTimeDelayReturnFrame(pTimeDelayThread);
-					// 判断该路由方向是否完成时统
-					// 检查时统设置应答是否接收完全
-					if (true == CheckTimeDelayReturn(pRout, pTimeDelayThread))
-					{
-						// 时统任务移到队列尾
-						uiProcRoutIP = *pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.begin();
-						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
-						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.push_back(uiProcRoutIP);
-					}
+// 					// 处理时统设置应答
+// 					ProcTimeDelayReturnFrame(pTimeDelayThread);
+// 					// 判断该路由方向是否完成时统
+// 					// 检查时统设置应答是否接收完全
+// 					if (true == CheckTimeDelayReturn(pRout, pTimeDelayThread))
+// 					{
+// 						// 时统任务移到队列尾
+// 						uiProcRoutIP = *pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.begin();
+// 						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
+// 						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.push_back(uiProcRoutIP);
+// 					}
 				}
 				else if (pTimeDelayThread->m_uiCounter == 15)
 				{
