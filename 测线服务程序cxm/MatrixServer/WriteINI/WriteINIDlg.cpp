@@ -365,10 +365,6 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("0x0003");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("CmdTBCtrl");			// TB开始采集开关控制命令(TB_L高8位)
-	strValue = _T("0x050000");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
 	strSectionKey=_T("CmdSn");				// 串号
 	strValue = _T("0x01");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
@@ -552,7 +548,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("SetADCSample");			// ADC采样设置
-	strValue = _T("{0x87,0x40,0x04,0x00,0x52,0x08,0x32,0x03}");  
+	strValue = _T("{0x87,0x40,0x04,0x00,0x53,0x08,0xd3,0x04}");  
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("SetADCReadContinuousSize");	// ADC设置连续采样大小
@@ -561,5 +557,29 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 
 	strSectionKey=_T("SetADCReadContinuous");		// ADC设置连续采样
 	strValue = _T("{0x81,0x10,0x00,0x00}");  
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("TBSleepTimeHigh");			// TB设置延时高位
+	strValue = _T("0x0000a000");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("TBSleepTimeLow");				// TB设置延时低位
+	strValue = _T("0x00fa");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdTBCtrlStartSample");		// TB开关控制ADC数据采集命令
+	strValue = _T("0x0001");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+	
+	strSectionKey=_T("CmdTBLoseCtrlStartSample");	// 无需TB开关控制ADC数据采集命令
+	strValue = _T("0x0002");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdTBCtrlStopSample");		// TB开关控制ADC数据停止采集命令
+	strValue = _T("0x0000");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdCtrlCloseLed");			// LED灯灭
+	strValue = _T("0x0004");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 }

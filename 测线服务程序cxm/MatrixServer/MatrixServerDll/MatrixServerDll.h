@@ -160,8 +160,6 @@ typedef struct ConstVar_Struct
 	unsigned short m_usSendQueryCmd;
 	// 发送ADC采样数据重发命令
 	unsigned short m_usSendADCCmd;
-	// TB开始采集开关控制命令(TB_L高8位)
-	unsigned int m_uiCmdTBCtrl;
 	// 串号
 	char m_byCmdSn;
 	// 首包时间
@@ -260,7 +258,18 @@ typedef struct ConstVar_Struct
 	int m_iSetADCReadContinuousSize;
 	// ADC设置连续采样
 	char* m_pSetADCReadContinuous;
-
+	// TB设置延时高位
+	unsigned int m_uiTBSleepTimeHigh;
+	// TB设置延时低位
+	unsigned short m_usTBSleepTimeLow;
+	// TB控制，0x0001 启动TB进行ADC数据采集
+	unsigned short m_usCmdTBCtrlStartSample;
+	// 0x0002 无需TB开关控制ADC数据采集命令
+	unsigned short m_usCmdTBLoseCtrlStartSample;
+	// 0x0000 TB开关控制ADC数据停止采集命令
+	unsigned short m_usCmdTBCtrlStopSample;
+	// LED灯灭
+	unsigned short m_usCmdCtrlCloseLed;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
@@ -512,23 +521,9 @@ typedef struct Instrument_Struct
 // 	int m_iTimeSetCount;
 	/** 仪器时间设置是否成功*/
 	bool m_bTimeSetOK;
-	// ADC命令设置序号
-	unsigned int m_uiADCSetOperationNb;
+	// ADC命令设置是否应答
+	bool m_bADCSetReturn;
 }m_oInstrumentStruct;
-// ADC参数设置任务结构体
-typedef struct ADCSet_Struct
-{
-	// 广播标志位
-	bool m_bBroadCast;
-	// 目标IP地址
-	unsigned int m_uiIP;
-	// 广播命令的广播端口
-	unsigned int m_uiBroadCastPort;
-	// 路由IP地址
-	unsigned int m_uiRoutIP;
-	// ADC命令设置序号
-	unsigned int m_uiADCSetOperationNb;
-}m_oADCSetStruct;
 // 仪器队列
 typedef struct InstrumentList_Struct
 {
@@ -603,7 +598,18 @@ typedef struct RoutList_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oRoutListStruct;
-
+// ADC参数设置任务结构体
+typedef struct ADCSet_Struct
+{
+	// 广播标志位
+	bool m_bRout;
+	// 仪器指针
+	m_oInstrumentStruct* m_pInstrument;
+	// 路由指针
+	m_oRoutStruct* m_pRout;
+	// ADC命令设置应答
+	bool m_bADCSetReturn;
+}m_oADCSetStruct;
 // 心跳
 typedef struct HeartBeatFrame_Struct
 {
@@ -843,18 +849,6 @@ typedef struct TimeDelayThread_Struct
 	// 计数器
 	unsigned int m_uiCounter;
 }m_oTimeDelayThreadStruct;
-// 路由监视线程
-typedef struct MonitorRoutThread_Struct
-{
-	// 线程结构体指针
-	m_oThreadStruct* m_pThread;
-	// 仪器队列结构体指针
-	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由队列结构体指针
-	m_oRoutListStruct* m_pRoutList;
-	// 时统线程指针
-	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
-}m_oMonitorRoutThreadStruct;
 // ADC参数设置线程
 typedef struct ADCSetThread_Struct
 {
@@ -866,13 +860,31 @@ typedef struct ADCSetThread_Struct
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由队列结构体指针
 	m_oRoutListStruct* m_pRoutList;
-	// 计数器
-	unsigned int m_uiCounter;
 	// ADC参数设置任务队列
 	hash_map<unsigned int, m_oADCSetStruct> m_oADCSetMap;
 	// ADC命令设置序号
 	unsigned int m_uiADCSetOperationNb;
+	// 当前系统时间
+	unsigned int m_uiSysTimeNow;
+	// 计数器
+	unsigned int m_uiCounter;
+	// 尾包接收线程指针
+	m_oTailFrameThreadStruct* m_pTailFrameThread;
 }m_oADCSetThreadStruct;
+// 路由监视线程
+typedef struct MonitorRoutThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
+	// 路由队列结构体指针
+	m_oRoutListStruct* m_pRoutList;
+	// 时统线程指针
+	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
+	// ADC参数设置线程
+	m_oADCSetThreadStruct* m_pADCSetThread;
+}m_oMonitorRoutThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct
 {
