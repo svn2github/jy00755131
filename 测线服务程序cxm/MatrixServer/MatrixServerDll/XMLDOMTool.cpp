@@ -34,6 +34,14 @@ unsigned int CXMLDOMTool::GetElementAttributeUnsignedInt(CXMLDOMElement* pElemen
 	unsigned int uiData = oVariant.uintVal;
 	return uiData;
 }
+// 解析属性，返回无符号整数
+unsigned short CXMLDOMTool::GetElementAttributeUnsignedShort(CXMLDOMElement* pElement, CString strKey)
+{
+	COleVariant oVariant = pElement->getAttribute(strKey);
+	oVariant.ChangeType(VT_UI2);
+	unsigned short uiData = oVariant.uiVal;
+	return uiData;
+}
 
 // 解析属性，返回单精度浮点数
 float CXMLDOMTool::GetElementAttributeFloat(CXMLDOMElement* pElement, CString strKey)

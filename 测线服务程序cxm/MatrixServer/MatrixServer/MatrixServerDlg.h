@@ -42,4 +42,6 @@ public:
 	m_oEnvironmentStruct* pEnv;
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedButtonInit();
+	afx_msg void OnBnClickedButtonStartsample();
+	afx_msg void OnBnClickedButtonStopsample();
 };

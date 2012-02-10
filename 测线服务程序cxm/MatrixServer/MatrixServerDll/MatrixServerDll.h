@@ -98,13 +98,13 @@ typedef struct ConstVar_Struct
 	int m_iLineSysStableTime;
 
 	// 仪器类型-交叉站
-	char m_byInstrumentTypeLAUX;
+	int m_iInstrumentTypeLAUX;
 	// 仪器类型-电源站
-	char m_byInstrumentTypeLAUL;
+	int m_iInstrumentTypeLAUL;
 	// 仪器类型-采集站
-	char m_byInstrumentTypeFDU;
+	int m_iInstrumentTypeFDU;
 	// 仪器类型-LCI
-	char m_byInstrumentTypeLCI;
+	int m_iInstrumentTypeLCI;
 	// 方向上方
 	int m_iDirectionTop;
 	// 方向下方
@@ -148,7 +148,7 @@ typedef struct ConstVar_Struct
 	// 0x18命令数组包含的最大字节数
 	int m_iADCSetCommandMaxByte;
 	// 发送帧缓冲区初值设定
-	char m_cSndFrameBufInit;
+	char m_bySndFrameBufInit;
 	// 接收的网络数据帧帧长度
 	int m_iRcvFrameSize;
 	// 发送的网络数据帧帧长度
@@ -409,7 +409,7 @@ typedef struct InstrumentCommand_Struct
 	// 0x18命令数组
 	char* m_pcADCSet;
 	// 0x18命令数据个数
-	unsigned short m_usADCSetNum;
+	int m_iADCSetNum;
 }m_oInstrumentCommandStruct;
 
 // 仪器属性结构体
@@ -422,13 +422,13 @@ typedef struct Instrument_Struct
 	/** 仪器设备号*/
 	unsigned int m_uiSN;
 	/** 仪器类型 1-交叉站；2-电源站；3-采集站；4-LCI*/
-	unsigned int m_uiInstrumentType;
+	int m_iInstrumentType;
 	/** 仪器IP地址*/
 	unsigned int m_uiIP;
 	/** 仪器路由IP地址*/
 	unsigned int m_uiRoutIP;
 	/** 路由方向 1-上；2-下；3-左；4右*/
-	unsigned int m_uiRoutDirection;
+	int m_iRoutDirection;
 	/** 路由地址 交叉线方向 上方*/
 	unsigned int m_uiRoutIPTop;
 	/** 路由地址 交叉线方向 下方*/
@@ -539,10 +539,12 @@ typedef struct InstrumentList_Struct
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oSNInstrumentMap;
 	// 仪器IP地址索引表
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPInstrumentMap;
+	// 未完成ADC参数设置的仪器队列
+	hash_map<unsigned int, m_oInstrumentStruct*> m_oADCSetInstrumentMap;
 	// 测网系统发生变化的时间
 	ULONGLONG m_ullLineChangeTime;
 	// 测网系统当前的状态
-	unsigned int m_uiLineStatus;
+	int m_iLineStatus;
 	// 测网状态由不稳定变为稳定
 	bool m_bLineStableChange;
 	/** 仪器总数*/
@@ -562,7 +564,7 @@ typedef struct Rout_Struct
 	/** 路由IP地址*/
 	unsigned int m_uiRoutIP;
 	/** 路由方向 1-上；2-下；3-左；4右*/
-	unsigned int m_uiRoutDirection;
+	int m_iRoutDirection;
 	/** 路由头仪器*/
 	Instrument_Struct* m_pHead;
 	/** 路由尾仪器*/
@@ -571,8 +573,10 @@ typedef struct Rout_Struct
 	ULONGLONG m_ullRoutTime;
 	/** 路由是否为交叉线路由*/
 	bool m_bRoutLaux;
-	/** 路由过期标志位*/
-	bool m_bExpired;
+	/** 路由是否接收到ADC设置参数应答*/
+	bool m_bADCSetReturn;
+	// 路由是否发送ADC参数设置帧
+	bool m_bADCSetRout;
 }m_oRoutStruct;
 // 路由队列结构体
 typedef struct RoutList_Struct
@@ -591,6 +595,8 @@ typedef struct RoutList_Struct
 	list<unsigned int> m_olsTimeDelayTaskQueue;
 	// 仪器时统的任务中转队列
 	list<unsigned int> m_olsTimeDelayTemp;
+	// ADC参数设置任务索引
+	hash_map<unsigned int, m_oRoutStruct*> m_oADCSetRoutMap;
 	/** 路由总数*/
 	unsigned int m_uiCountAll;
 	/** 空闲路由数量*/
@@ -598,18 +604,6 @@ typedef struct RoutList_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oRoutListStruct;
-// ADC参数设置任务结构体
-typedef struct ADCSet_Struct
-{
-	// 广播标志位
-	bool m_bRout;
-	// 仪器指针
-	m_oInstrumentStruct* m_pInstrument;
-	// 路由指针
-	m_oRoutStruct* m_pRout;
-	// ADC命令设置应答
-	bool m_bADCSetReturn;
-}m_oADCSetStruct;
 // 心跳
 typedef struct HeartBeatFrame_Struct
 {
@@ -860,8 +854,6 @@ typedef struct ADCSetThread_Struct
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由队列结构体指针
 	m_oRoutListStruct* m_pRoutList;
-	// ADC参数设置任务队列
-	hash_map<unsigned int, m_oADCSetStruct> m_oADCSetMap;
 	// ADC命令设置序号
 	unsigned int m_uiADCSetOperationNb;
 	// 当前系统时间
@@ -1018,6 +1010,8 @@ typedef void (*On_Init)(m_oEnvironmentStruct* pEnv);
 typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
 typedef void (*On_Stop)(m_oEnvironmentStruct* pEnv);
 typedef void (*On_Close)(m_oEnvironmentStruct* pEnv);
+typedef void (*On_StartSample)(m_oADCSetThreadStruct* pADCSetThread);
+typedef void (*On_StopSample)(m_oADCSetThreadStruct* pADCSetThread);
 // 解析首包帧
 typedef bool (*Instrument_ParseHeadFrame)(m_oEnvironmentStruct* pEnv);
 // 解析IP地址设置应答帧

@@ -13,6 +13,8 @@ public: //方法
 	static int GetElementAttributeInt(CXMLDOMElement* pElement, CString strKey);
 	// 解析属性，返回无符号整数
 	static unsigned int GetElementAttributeUnsignedInt(CXMLDOMElement* pElement, CString strKey);
+	// 解析属性，返回无符号2字节整数
+	static unsigned short GetElementAttributeUnsignedShort(CXMLDOMElement* pElement, CString strKey);
 	// 解析属性，返回单精度浮点数
 	static float GetElementAttributeFloat(CXMLDOMElement* pElement, CString strKey);
 	// 解析属性，返回双精度浮点数

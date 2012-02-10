@@ -69,6 +69,8 @@ BEGIN_MESSAGE_MAP(CMatrixServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BN_SAVE, &CMatrixServerDlg::OnBnClickedBnSave)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BUTTON_INIT, &CMatrixServerDlg::OnBnClickedButtonInit)
+	ON_BN_CLICKED(IDC_BUTTON_STARTSAMPLE, &CMatrixServerDlg::OnBnClickedButtonStartsample)
+	ON_BN_CLICKED(IDC_BUTTON_STOPSAMPLE, &CMatrixServerDlg::OnBnClickedButtonStopsample)
 END_MESSAGE_MAP()
 
 
@@ -246,5 +248,29 @@ void CMatrixServerDlg::OnBnClickedButtonInit()
 	{
 		b = (On_Init)GetProcAddress(hMod, "OnInit");
 		(*b)(pEnv);
+	}
+}
+
+
+void CMatrixServerDlg::OnBnClickedButtonStartsample()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	On_StartSample b = NULL;
+	if (hMod)
+	{
+		b = (On_StartSample)GetProcAddress(hMod, "OnADCStartSample");
+		(*b)(pEnv->m_pADCSetThread);
+	}
+}
+
+
+void CMatrixServerDlg::OnBnClickedButtonStopsample()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	On_StopSample b = NULL;
+	if (hMod)
+	{
+		b = (On_StopSample)GetProcAddress(hMod, "OnADCStopSample");
+		(*b)(pEnv->m_pADCSetThread);
 	}
 }
