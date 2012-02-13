@@ -18,13 +18,13 @@ class CAboutDlg : public CDialogEx
 public:
 	CAboutDlg();
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_ABOUTBOX };
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-// 实现
+	// 实现
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -114,7 +114,7 @@ BOOL CMatrixServerDlg::OnInitDialog()
 		pEnv = (*a)();
 	}
 	// 现场管理对象初始化
-//	m_oSiteManage.OnInit();
+	//	m_oSiteManage.OnInit();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -173,7 +173,7 @@ void CMatrixServerDlg::OnBnClickedBnStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 现场管理对象
-//	m_oSiteManage.OnWork();
+	//	m_oSiteManage.OnWork();
 	On_Work a = NULL;
 	if (hMod)
 	{
@@ -187,7 +187,7 @@ void CMatrixServerDlg::OnBnClickedBnStop()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 现场管理对象
-//	m_oSiteManage.OnStop();
+	//	m_oSiteManage.OnStop();
 	On_Stop a = NULL;
 	if (hMod)
 	{
@@ -201,7 +201,7 @@ void CMatrixServerDlg::OnBnClickedBnClose()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 现场管理对象
-//	m_oSiteManage.OnClose();
+	//	m_oSiteManage.OnClose();
 	On_Close a = NULL;
 	if (hMod)
 	{
@@ -259,7 +259,7 @@ void CMatrixServerDlg::OnBnClickedButtonStartsample()
 	if (hMod)
 	{
 		b = (On_StartSample)GetProcAddress(hMod, "OnADCStartSample");
-		(*b)(pEnv->m_pADCSetThread);
+		(*b)(pEnv->m_pMonitorRoutThread);
 	}
 }
 
@@ -271,6 +271,6 @@ void CMatrixServerDlg::OnBnClickedButtonStopsample()
 	if (hMod)
 	{
 		b = (On_StopSample)GetProcAddress(hMod, "OnADCStopSample");
-		(*b)(pEnv->m_pADCSetThread);
+		(*b)(pEnv->m_pMonitorRoutThread);
 	}
 }

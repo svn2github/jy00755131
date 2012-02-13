@@ -285,7 +285,7 @@ typedef struct InstrumentCommInfo_Struct
 	// 自动数据返回地址
 	unsigned int m_uiADCDataReturnAddr;
 	// LCI接收的端口号
-	unsigned int m_uiAimPort;
+	unsigned short m_usAimPort;
 	// 心跳帧返回端口
 	unsigned short m_usHeartBeatReturnPort;
 	// 首包接收端口
@@ -314,7 +314,7 @@ typedef struct InstrumentCommand_Struct
 	// LCI的IP地址
 	unsigned int m_uiAimIP;
 	// LCI接收的端口号
-	unsigned int m_uiAimPort;
+	unsigned short m_usAimPort;
 	// 源地址
 	unsigned int m_uiSrcIP;
 	// 目的地址
@@ -334,7 +334,7 @@ typedef struct InstrumentCommand_Struct
 	// 本地时间修正高位
 	unsigned int m_uiLocalTimeFixedHigh;
 	// 本地时间修正低位
-	unsigned short m_usLocalTimeFixedLow;
+	unsigned int m_uiLocalTimeFixedLow;
 	// 自动数据返回地址
 	unsigned int m_uiADCDataReturnAddr;
 	// 自动数据返回端口
@@ -477,7 +477,7 @@ typedef struct Instrument_Struct
 	unsigned short m_usCrossDownReceiveTime;	
 	/** 采集站或电源站的广播端口*/
 	unsigned int m_uiBroadCastPort;
- 	/** 测线*/
+	/** 测线*/
 	int m_iLineNb;
 	/** 测点号*/
 	int m_iPointIndex;
@@ -509,20 +509,24 @@ typedef struct Instrument_Struct
 	int m_iIPSetCount;
 	/** IP地址设置是否成功*/
 	bool m_bIPSetOK;
-// 	/** 第几次尾包时刻查询*/
-// 	int m_iTailTimeQueryCount;
+	// 	/** 第几次尾包时刻查询*/
+	// 	int m_iTailTimeQueryCount;
 	/** 尾包时刻查询是否成功*/
 	bool m_bTailTimeQueryOK;
 	/** 本地时间修正高位*/
 	unsigned int m_uiTimeHigh;
 	/** 本地时间修正低位*/
 	unsigned int m_uiTimeLow;
-// 	/** 第几次设置仪器时间*/
-// 	int m_iTimeSetCount;
+	/** 第几次设置仪器时间*/
+	int m_iTimeSetCount;
 	/** 仪器时间设置是否成功*/
 	bool m_bTimeSetOK;
 	// ADC命令设置是否应答
 	bool m_bADCSetReturn;
+	// 仪器是否进行了ADC参数设置
+	bool m_bADCSet;
+	// 仪器是否参与ADC数据采集
+	bool m_bADCStartSample;
 }m_oInstrumentStruct;
 // 仪器队列
 typedef struct InstrumentList_Struct
@@ -1010,8 +1014,8 @@ typedef void (*On_Init)(m_oEnvironmentStruct* pEnv);
 typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
 typedef void (*On_Stop)(m_oEnvironmentStruct* pEnv);
 typedef void (*On_Close)(m_oEnvironmentStruct* pEnv);
-typedef void (*On_StartSample)(m_oADCSetThreadStruct* pADCSetThread);
-typedef void (*On_StopSample)(m_oADCSetThreadStruct* pADCSetThread);
+typedef void (*On_StartSample)(m_oMonitorRoutThreadStruct* pMonitorRoutThread);
+typedef void (*On_StopSample)(m_oMonitorRoutThreadStruct* pMonitorRoutThread);
 // 解析首包帧
 typedef bool (*Instrument_ParseHeadFrame)(m_oEnvironmentStruct* pEnv);
 // 解析IP地址设置应答帧
