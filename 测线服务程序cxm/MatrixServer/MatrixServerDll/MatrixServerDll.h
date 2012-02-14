@@ -96,7 +96,12 @@ typedef struct ConstVar_Struct
 	int m_iLineSysStatusSample;
 	// 测网系统达到稳定状态时间
 	int m_iLineSysStableTime;
-
+	// ADC参数设置操作序号
+	int m_iADCSetOptNb;
+	// ADC开始采集操作序号
+	int m_iADCStartSampleOptNb;
+	// ADC停止采集操作序号
+	int m_iADCStopSampleOptNb;
 	// 仪器类型-交叉站
 	int m_iInstrumentTypeLAUX;
 	// 仪器类型-电源站
@@ -449,8 +454,8 @@ typedef struct Instrument_Struct
 	Instrument_Struct* m_pInstrumentRight;
 	/** 首包时刻*/
 	unsigned int m_uiTimeHeadFrame;
-	/** 尾包时刻*/
-	unsigned int m_uiTailSysTime;
+// 	/** 尾包时刻*/
+// 	unsigned int m_uiTailSysTime;
 	/** 尾包计数*/
 	int m_iTailFrameCount;
 	/** 仪器时延*/
@@ -525,8 +530,10 @@ typedef struct Instrument_Struct
 	bool m_bADCSetReturn;
 	// 仪器是否进行了ADC参数设置
 	bool m_bADCSet;
-	// 仪器是否参与ADC数据采集
+	// 仪器开始ADC数据采集设置成功
 	bool m_bADCStartSample;
+	// 仪器停止ADC数据采集设置成功
+	bool m_bADCStopSample;
 }m_oInstrumentStruct;
 // 仪器队列
 typedef struct InstrumentList_Struct
@@ -547,8 +554,6 @@ typedef struct InstrumentList_Struct
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oADCSetInstrumentMap;
 	// 测网系统发生变化的时间
 	ULONGLONG m_ullLineChangeTime;
-	// 测网系统当前的状态
-	int m_iLineStatus;
 	// 测网状态由不稳定变为稳定
 	bool m_bLineStableChange;
 	/** 仪器总数*/
@@ -844,6 +849,8 @@ typedef struct TimeDelayThread_Struct
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由队列结构体指针
 	m_oRoutListStruct* m_pRoutList;
+	// ADC开始数据采集标志位
+	bool m_bADCStartSample;
 	// 计数器
 	unsigned int m_uiCounter;
 }m_oTimeDelayThreadStruct;
@@ -860,12 +867,16 @@ typedef struct ADCSetThread_Struct
 	m_oRoutListStruct* m_pRoutList;
 	// ADC命令设置序号
 	unsigned int m_uiADCSetOperationNb;
-	// 当前系统时间
-	unsigned int m_uiSysTimeNow;
 	// 计数器
 	unsigned int m_uiCounter;
-	// 尾包接收线程指针
-	m_oTailFrameThreadStruct* m_pTailFrameThread;
+	// ADC开始数据采集标志位
+	bool m_bADCStartSample;
+	// ADC停止数据采集标志位
+	bool m_bADCStopSample;
+	// 仪器的系统时间
+	unsigned int m_uiLocalSysTime;
+	// 上一次开始采样的采样时间
+	unsigned int m_uiTBTimeOld;
 }m_oADCSetThreadStruct;
 // 路由监视线程
 typedef struct MonitorRoutThread_Struct
@@ -1014,8 +1025,8 @@ typedef void (*On_Init)(m_oEnvironmentStruct* pEnv);
 typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
 typedef void (*On_Stop)(m_oEnvironmentStruct* pEnv);
 typedef void (*On_Close)(m_oEnvironmentStruct* pEnv);
-typedef void (*On_StartSample)(m_oMonitorRoutThreadStruct* pMonitorRoutThread);
-typedef void (*On_StopSample)(m_oMonitorRoutThreadStruct* pMonitorRoutThread);
+typedef void (*On_StartSample)(m_oEnvironmentStruct* pEnv);
+typedef void (*On_StopSample)(m_oEnvironmentStruct* pEnv);
 // 解析首包帧
 typedef bool (*Instrument_ParseHeadFrame)(m_oEnvironmentStruct* pEnv);
 // 解析IP地址设置应答帧

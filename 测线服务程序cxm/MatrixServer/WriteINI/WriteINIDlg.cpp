@@ -225,24 +225,20 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("5000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("LineSysStatusLink");		// 测网系统状态-link
+	strSectionKey=_T("LineSysStableTime");		// 测网系统达到稳定状态时间
+	strValue = _T("5000");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCSetOptNb");			// ADC参数设置操作序号
 	strValue = _T("1");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("LineSysStatusStable");	// 测网系统状态-稳定
+	strSectionKey=_T("ADCStartSampleOptNb");	// ADC开始采集操作序号
 	strValue = _T("2");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("LineSysStatusNoise");		// 测网系统状态-噪声采集
+	strSectionKey=_T("ADCStopSampleOptNb");		// ADC停止采集操作序号
 	strValue = _T("3");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("LineSysStatusSample");	// 测网系统状态-TB采集
-	strValue = _T("4");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("LineSysStableTime");		// 测网系统达到稳定状态时间
-	strValue = _T("5000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
@@ -560,7 +556,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TBSleepTimeHigh");			// TB设置延时高位
-	strValue = _T("0x0000a000");
+	strValue = _T("0x00004000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TBSleepTimeLow");				// TB设置延时低位

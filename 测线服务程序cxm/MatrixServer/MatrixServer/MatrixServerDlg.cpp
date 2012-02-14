@@ -259,7 +259,7 @@ void CMatrixServerDlg::OnBnClickedButtonStartsample()
 	if (hMod)
 	{
 		b = (On_StartSample)GetProcAddress(hMod, "OnADCStartSample");
-		(*b)(pEnv->m_pMonitorRoutThread);
+		(*b)(pEnv);
 	}
 }
 
@@ -271,6 +271,6 @@ void CMatrixServerDlg::OnBnClickedButtonStopsample()
 	if (hMod)
 	{
 		b = (On_StopSample)GetProcAddress(hMod, "OnADCStopSample");
-		(*b)(pEnv->m_pMonitorRoutThread);
+		(*b)(pEnv);
 	}
 }

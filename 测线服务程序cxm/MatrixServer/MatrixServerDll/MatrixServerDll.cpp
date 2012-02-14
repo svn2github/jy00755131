@@ -1190,30 +1190,25 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strValue = strBuff;
 		pConstVar->m_iMonitorRoutStableTime = _ttoi(strValue);
 
-		strSectionKey=_T("LineSysStatusLink");		// 测网系统状态-link
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iLineSysStatusLink = _ttoi(strValue);
-
-		strSectionKey=_T("LineSysStatusStable");	// 测网系统状态-稳定
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iLineSysStatusStable = _ttoi(strValue);
-
-		strSectionKey=_T("LineSysStatusNoise");		// 测网系统状态-噪声采集
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iLineSysStatusNoise = _ttoi(strValue);
-
-		strSectionKey=_T("LineSysStatusSample");	// 测网系统状态-TB采集
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iLineSysStatusSample = _ttoi(strValue);
-
 		strSectionKey=_T("LineSysStableTime");		// 测网系统达到稳定状态时间
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
 		pConstVar->m_iLineSysStableTime = _ttoi(strValue);
+
+		strSectionKey=_T("ADCSetOptNb");			// ADC参数设置操作序号
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iADCSetOptNb = _ttoi(strValue);
+
+		strSectionKey=_T("ADCStartSampleOptNb");	// ADC开始采集操作序号
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iADCStartSampleOptNb = _ttoi(strValue);
+
+		strSectionKey=_T("ADCStopSampleOptNb");		// ADC停止采集操作序号
+		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
+		strValue = strBuff;
+		pConstVar->m_iADCStopSampleOptNb = _ttoi(strValue);
 
 		strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -2652,16 +2647,6 @@ MatrixServerDll_API void OnWorkInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCS
 	pADCSetFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_uiAimIP;
 	// 目标IP地址端口号
 	pADCSetFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_usAimPort;
-	// ADC数据返回地址
-	pADCSetFrame->m_pCommandStructSet->m_uiADCDataReturnAddr = pCommInfo->m_uiADCDataReturnAddr;
-	// ADC数据返回端口
-	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPort = pCommInfo->m_usADCDataReturnPort;
-	// 自动数据返回命令，ad_cmd(7)=1，端口递增；=0，端口不变
-	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnCmd = pConstVar->m_usSendADCCmd;
-	// 端口递增下限
-	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitLow = pCommInfo->m_usADCDataReturnPort;
-	// 端口递增上限
-	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitHigh = pCommInfo->m_usADCDataReturnPort;
 	// ADC参数设置发送缓冲区帧数设定为仪器个数
 	pADCSetFrame->m_uiSndBufferSize = pCommInfo->m_uiInstrumentNum * pConstVar->m_iSndFrameSize;
 	// ADC参数设置应答接收缓冲区帧数设定为仪器个数
@@ -2673,6 +2658,16 @@ MatrixServerDll_API void OnWorkInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCS
 	pADCSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
 	// 重置帧内容解析变量
 	ResetInstrumentFramePacket(pADCSetFrame->m_pCommandStructSet);
+	// ADC数据返回地址
+	pADCSetFrame->m_pCommandStructSet->m_uiADCDataReturnAddr = pCommInfo->m_uiADCDataReturnAddr;
+	// ADC数据返回端口
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPort = pCommInfo->m_usADCDataReturnPort;
+	// 自动数据返回命令，ad_cmd(7)=1，端口递增；=0，端口不变
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnCmd = pConstVar->m_usSendADCCmd;
+	// 端口递增下限
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitLow = pCommInfo->m_usADCDataReturnPort;
+	// 端口递增上限
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitHigh = pCommInfo->m_usADCDataReturnPort;
 	// 清空发送帧缓冲区
 	if (pADCSetFrame->m_pcSndFrameData != NULL)
 	{
@@ -2965,8 +2960,8 @@ MatrixServerDll_API void OnInstrumentReset(m_oInstrumentStruct* pInstrument)
 
 	// 首包时刻
 	pInstrument->m_uiTimeHeadFrame = 0;
-	// 尾包时刻
-	pInstrument->m_uiTailSysTime = 0;
+// 	// 尾包时刻
+// 	pInstrument->m_uiTailSysTime = 0;
 	// 尾包计数
 	pInstrument->m_iTailFrameCount = 0;
 	// 仪器时延
@@ -3033,8 +3028,10 @@ MatrixServerDll_API void OnInstrumentReset(m_oInstrumentStruct* pInstrument)
 	pInstrument->m_bADCSetReturn = false;
 	// 仪器是否进行了ADC参数设置
 	pInstrument->m_bADCSet = false;
-	// 仪器是否参与ADC数据采集
+	// 仪器开始ADC数据采集设置成功
 	pInstrument->m_bADCStartSample = false;
+	// 仪器停止ADC数据采集设置成功
+	pInstrument->m_bADCStopSample = false;
 }
 // 创建仪器队列结构体
 MatrixServerDll_API m_oInstrumentListStruct* OnCreateInstrumentList(m_oLogOutPutStruct* pLogOutPut = NULL)
@@ -3080,8 +3077,6 @@ MatrixServerDll_API void OnWorkInstrumentList(m_oInstrumentListStruct* pInstrume
 	pInstrumentList->m_oADCSetInstrumentMap.clear();
 	// 测网系统发生变化的时间
 	pInstrumentList->m_ullLineChangeTime = 0;
-	// 测网系统当前的状态
-	pInstrumentList->m_iLineStatus = 0;
 	// 测网状态由不稳定变为稳定
 	pInstrumentList->m_bLineStableChange = false;
 	// 仪器队列中仪器个数
@@ -5221,6 +5216,8 @@ MatrixServerDll_API void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oIPSetMap);
 	// 从IP地址索引表中删除该仪器指针
 	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oIPInstrumentMap);
+	// 从ADC参数设置索引表中删除该仪器指针
+	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oADCSetInstrumentMap);
 	str.Format(_T("删除仪器的SN = 0x%x，路由 = 0x%x"), pInstrument->m_uiSN, pInstrument->m_uiRoutIP);
 	AddMsgToLogOutPutList(pInstrumentList->m_pLogOutPut, "FreeInstrumentFromMap", ConvertCStrToStr(str));
 
@@ -5314,8 +5311,8 @@ MatrixServerDll_API void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameTh
 			&pTailFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
 		// 尾包计数器加一
 		pInstrument->m_iTailFrameCount++;
-		// 更新尾包仪器的尾包时刻
-		pInstrument->m_uiTailSysTime = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTime;
+// 		// 更新尾包仪器的尾包时刻
+// 		pInstrument->m_uiTailSysTime = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTime;
 		// 在路由索引表中找到该尾包所在的路由
 		if (TRUE == IfIndexExistInRoutMap(pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiRoutIP,
 			&pTailFrameThread->m_pRoutList->m_oRoutMap))
@@ -5352,6 +5349,8 @@ MatrixServerDll_API void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameTh
 						AddFreeRout(iter->second, pTailFrameThread->m_pRoutList);
 						// 路由删除索引表回收路由
 						DeleteRout(iter->first, &pTailFrameThread->m_pRoutList->m_oRoutDeleteMap);
+						// ADC参数设置索引表回收路由
+						DeleteRout(iter->first, &pTailFrameThread->m_pRoutList->m_oADCSetRoutMap);
 					}
 				}
 				pInstrument->m_iTailFrameCount = 0;
@@ -5637,12 +5636,13 @@ MatrixServerDll_API void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_o
 	GetTimeDelayTask(pRoutList, pConstVar);
 }
 // 判断路由方向上是否有采集站
-MatrixServerDll_API void GetADCSetTaskQueueByRout(m_oInstrumentListStruct* pInstrumentList, 
-	m_oRoutListStruct* pRoutList,m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
+MatrixServerDll_API void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread, 
+	m_oRoutStruct* pRout, int iOpt)
 {
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	bool bRoutADCSet = true;
+	bool bADCSet = true;
 	if (pRout->m_pTail == NULL)
 	{
 		return;
@@ -5650,17 +5650,53 @@ MatrixServerDll_API void GetADCSetTaskQueueByRout(m_oInstrumentListStruct* pInst
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
-		if (pInstrumentNext->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
+		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
+			pADCSetThread->m_pThread->m_pConstVar);
+		if (pInstrumentNext->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
 		{
-			if (false == pInstrumentNext->m_bADCSet)
+			if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
+			{
+				if (false == pInstrumentNext->m_bADCSet)
+				{
+					bADCSet = false;
+				}
+				else
+				{
+					bADCSet = true;
+				}
+			}
+			else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb)
+			{
+				if ((true == pADCSetThread->m_bADCStartSample)
+					&& (false == pInstrumentNext->m_bADCStartSample))
+				{
+					bADCSet = false;
+				}
+				else
+				{
+					bADCSet = true;
+				}
+			}
+			else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb)
+			{
+				if ((true == pADCSetThread->m_bADCStopSample)
+					&& (false == pInstrumentNext->m_bADCStopSample))
+				{
+					bADCSet = false;
+				}
+				else
+				{
+					bADCSet = true;
+				}
+			}
+			if (bADCSet == false)
 			{
 				pInstrumentNext->m_bADCSetReturn = false;
-				AddInstrumentToMap(pInstrumentNext->m_uiIP, pInstrumentNext, &pInstrumentList->m_oADCSetInstrumentMap);
+				AddInstrumentToMap(pInstrumentNext->m_uiIP, pInstrumentNext, &pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
 			else
 			{
-				DeleteInstrumentFromMap(pInstrumentNext->m_uiIP, &pInstrumentList->m_oADCSetInstrumentMap);
+				DeleteInstrumentFromMap(pInstrumentNext->m_uiIP, &pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 				bRoutADCSet = false;
 			}
 		}
@@ -5671,40 +5707,122 @@ MatrixServerDll_API void GetADCSetTaskQueueByRout(m_oInstrumentListStruct* pInst
 		// 将路由加入索引
 		pRout->m_bADCSetReturn = false;
 		pRout->m_bADCSetRout = true;
-		AddRout(pRout->m_uiRoutIP, pRout, &pRoutList->m_oADCSetRoutMap);
+		AddRout(pRout->m_uiRoutIP, pRout, &pADCSetThread->m_pRoutList->m_oADCSetRoutMap);
 		// 从仪器索引表删除该路由的仪器
 		pInstrument = pRout->m_pHead;
 		do 
 		{
-			pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
-			if (pInstrumentNext->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
+			pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pADCSetThread->m_pThread->m_pConstVar);
+			if (pInstrumentNext->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
 			{
-				DeleteInstrumentFromMap(pInstrumentNext->m_uiIP, &pInstrumentList->m_oADCSetInstrumentMap);
+				DeleteInstrumentFromMap(pInstrumentNext->m_uiIP, &pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
 			pInstrument = pInstrumentNext;
 		} while (pInstrumentNext != pRout->m_pTail);
 	}
 	else
 	{
-		DeleteRout(pRout->m_uiRoutIP, &pRoutList->m_oADCSetRoutMap);
+		DeleteRout(pRout->m_uiRoutIP, &pADCSetThread->m_pRoutList->m_oADCSetRoutMap);
 	}
 }
 // 生成ADC参数设置任务队列
-MatrixServerDll_API void GetADCSetTaskQueue(m_oInstrumentListStruct* pInstrumentList, 
-	m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
+MatrixServerDll_API void GetADCTaskQueue(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 {
-	if (pInstrumentList == NULL)
+	if (pADCSetThread == NULL)
 	{
 		return;
 	}
+	// 仪器路由地址索引表
+	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
+	for (iter = pADCSetThread->m_pRoutList->m_oRoutMap.begin(); iter != pADCSetThread->m_pRoutList->m_oRoutMap.end(); iter++)
+	{
+		// 将路由索引表中的大线方向路由加入到ADC参数设置任务索引
+		if (iter->second->m_bRoutLaux == false)
+		{
+			GetADCTaskQueueByRout(pADCSetThread, iter->second, iOpt);
+		}
+	}
+}
+MatrixServerDll_API void OnADCCmdAuto(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
+{
+	// 生成ADC参数设置任务队列
+	GetADCTaskQueue(pADCSetThread, iOpt);
+	if ((false == pADCSetThread->m_pRoutList->m_oADCSetRoutMap.empty())
+		|| (false == pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.empty()))
+	{
+		// 进行ADC参数设置
+		pADCSetThread->m_uiCounter = 0;
+		if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
+		{
+			pADCSetThread->m_uiADCSetOperationNb = 1;
+		}
+		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb)
+		{
+			pADCSetThread->m_uiADCSetOperationNb = 12;
+		}
+		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb)
+		{
+			pADCSetThread->m_uiADCSetOperationNb = 19;
+		}
+		// ADC参数设置线程开始工作
+		pADCSetThread->m_pThread->m_bWork = true;
+	}
+}
+// ADC参数设置
+MatrixServerDll_API void OnADCSetAuto(m_oADCSetThreadStruct* pADCSetThread)
+{
+	OnADCCmdAuto(pADCSetThread, pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb);
+}
+// ADC开始采集命令
+MatrixServerDll_API void OnADCStartSampleAuto(m_oADCSetThreadStruct* pADCSetThread)
+{
+	OnADCCmdAuto(pADCSetThread, pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb);
+}
+// ADC停止采集命令
+MatrixServerDll_API void OnADCStopSampleAuto(m_oADCSetThreadStruct* pADCSetThread)
+{
+	OnADCCmdAuto(pADCSetThread, pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb);
+}
+// 按路由重置ADC参数设置标志位
+MatrixServerDll_API void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, m_oConstVarStruct* pConstVar)
+{
+	m_oInstrumentStruct* pInstrument = NULL;
+	m_oInstrumentStruct* pInstrumentNext = NULL;
+	if (pRout->m_pTail == NULL)
+	{
+		return;
+	}
+	pInstrument = pRout->m_pHead;
+	do 
+	{
+		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
+		if (pInstrumentNext->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
+		{
+			if (iOpt == pConstVar->m_iADCSetOptNb)
+			{
+				pInstrumentNext->m_bADCSet = false;
+			}
+			else if (iOpt == pConstVar->m_iADCStartSampleOptNb)
+			{
+				pInstrumentNext->m_bADCStartSample = false;
+			}
+			else if (iOpt == pConstVar->m_iADCStopSampleOptNb)
+			{
+				pInstrumentNext->m_bADCStopSample = false;
+			}
+		}
+		pInstrument = pInstrumentNext;
+	} while (pInstrumentNext != pRout->m_pTail);
+
+}
+// 重置ADC参数设置标志位
+MatrixServerDll_API void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt, m_oConstVarStruct* pConstVar)
+{
 	if (pRoutList == NULL)
 	{
 		return;
 	}
-	if (pConstVar == NULL)
-	{
-		return;
-	}
+	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 仪器路由地址索引表
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	for (iter = pRoutList->m_oRoutMap.begin(); iter != pRoutList->m_oRoutMap.end(); iter++)
@@ -5712,53 +5830,44 @@ MatrixServerDll_API void GetADCSetTaskQueue(m_oInstrumentListStruct* pInstrument
 		// 将路由索引表中的大线方向路由加入到ADC参数设置任务索引
 		if (iter->second->m_bRoutLaux == false)
 		{
-			GetADCSetTaskQueueByRout(pInstrumentList, pRoutList, iter->second, pConstVar);
+			OnResetADCSetLableByRout(iter->second, iOpt, pConstVar);
 		}
 	}
+	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // ADC参数设置
-MatrixServerDll_API void OnADCSet(m_oADCSetThreadStruct* pADCSetThread)
+MatrixServerDll_API void OnADCSet(m_oEnvironmentStruct* pEnv)
 {
-	// 生成ADC参数设置任务队列
-	GetADCSetTaskQueue(pADCSetThread->m_pInstrumentList, pADCSetThread->m_pRoutList, pADCSetThread->m_pThread->m_pConstVar);
-	if ((false == pADCSetThread->m_pRoutList->m_oADCSetRoutMap.empty())
-		|| (false == pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.empty()))
-	{
-		// 进行ADC参数设置
-		pADCSetThread->m_uiCounter = 0;
-		pADCSetThread->m_uiADCSetOperationNb = 1;
-		// ADC参数设置线程开始工作
-		pADCSetThread->m_pThread->m_bWork = true;
-	}
+	// 重置ADC参数设置成功的标志位
+	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCSetOptNb, pEnv->m_pConstVar);
 }
+
 // ADC开始采集命令
-MatrixServerDll_API void OnADCStartSample(m_oMonitorRoutThreadStruct* pMonitorRoutThread)
+MatrixServerDll_API void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 {
-	// @@@全部参与采集
-	// 生成ADC参数设置任务队列
-	GetADCSetTaskQueue(pMonitorRoutThread->m_pInstrumentList, pMonitorRoutThread->m_pRoutList, pMonitorRoutThread->m_pThread->m_pConstVar);
-	// 进行ADC参数设置
-	pMonitorRoutThread->m_pADCSetThread->m_uiCounter = 0;
-	pMonitorRoutThread->m_pADCSetThread->m_uiADCSetOperationNb = 12;
-	// ADC参数设置线程开始工作
-	pMonitorRoutThread->m_pADCSetThread->m_pThread->m_bWork = true;
-// 	pMonitorRoutThread->m_pADCSetThread->m_pInstrumentList->m_iLineStatus = pMonitorRoutThread->m_pThread->m_pConstVar->m_iLineSysStatusSample;
-// 	pMonitorRoutThread->m_pInstrumentList->m_bLineStableChange = false;
+	pEnv->m_pADCSetThread->m_bADCStartSample = true;
+	pEnv->m_pADCSetThread->m_bADCStopSample = false;
+	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
+	// 重置ADC开始采集命令成功的标志位
+	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStartSampleOptNb, pEnv->m_pConstVar);
 }
 // ADC停止采集命令
-MatrixServerDll_API void OnADCStopSample(m_oMonitorRoutThreadStruct* pMonitorRoutThread)
+MatrixServerDll_API void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 {
-	// @@@全部参与采集
-	// 生成ADC参数设置任务队列
-	GetADCSetTaskQueue(pMonitorRoutThread->m_pInstrumentList, pMonitorRoutThread->m_pRoutList, pMonitorRoutThread->m_pThread->m_pConstVar);
-	// 进行ADC参数设置
-	pMonitorRoutThread->m_pADCSetThread->m_uiCounter = 0;
-	pMonitorRoutThread->m_pADCSetThread->m_uiADCSetOperationNb = 18;
-	// ADC参数设置线程开始工作
-	pMonitorRoutThread->m_pADCSetThread->m_pThread->m_bWork = true;
-//	pMonitorRoutThread->m_pADCSetThread->m_pInstrumentList->m_iLineStatus = pMonitorRoutThread->m_pThread->m_pConstVar->m_iLineSysStatusLink;
-//	pMonitorRoutThread->m_pInstrumentList->m_bLineStableChange = false;
+	pEnv->m_pADCSetThread->m_bADCStartSample = false;
+	pEnv->m_pADCSetThread->m_bADCStopSample = true;
+	pEnv->m_pTimeDelayThread->m_bADCStartSample = false;
+	// 重置ADC停止采集命令成功的标志位
+	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStopSampleOptNb, pEnv->m_pConstVar);
+	pEnv->m_pTimeDelayThread->m_uiCounter = 0;
+	// 清空尾包时刻查询帧接收缓冲区
+	OnClearSocketRcvBuf(pEnv->m_pTailTimeFrame->m_oTailTimeFrameSocket, pEnv->m_pConstVar);
+	// 清空时统设置应答帧接收缓冲区
+	OnClearSocketRcvBuf(pEnv->m_pTimeDelayFrame->m_oTimeDelayFrameSocket, pEnv->m_pConstVar);
+	// 时统设置线程开始工作
+	pEnv->m_pTimeDelayThread->m_pThread->m_bWork = true;
 }
+
 // 监视过期路由及仪器
 MatrixServerDll_API void MonitorRoutAndInstrument(m_oMonitorRoutThreadStruct* pMonitorRoutThread)
 {
@@ -5812,7 +5921,80 @@ MatrixServerDll_API void MonitorRoutAndInstrument(m_oMonitorRoutThreadStruct* pM
 		AddFreeRout(iter->second, pMonitorRoutThread->m_pRoutList);
 		// 路由删除索引表回收路由
 		DeleteRout(iter->first, &pMonitorRoutThread->m_pRoutList->m_oRoutDeleteMap);
+		// ADC参数设置索引表回收路由
+		DeleteRout(iter->first, &pMonitorRoutThread->m_pRoutList->m_oADCSetRoutMap);
 	}
+}
+// 检查时统设置应答是否接收完全
+MatrixServerDll_API bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDelayThread, bool bSample)
+{
+	if (pTimeDelayThread == NULL)
+	{
+		return false;
+	}
+	if (pRout == NULL)
+	{
+		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTimeDelayReturnByRout", "pRout", 
+			ErrorType, IDS_ERR_PTRISNULL);
+		return false;
+	}
+	if (pRout->m_pTail == NULL)
+	{
+		return true;
+	}
+	// LCI
+	if (pRout->m_pTail == pRout->m_pHead)
+	{
+		return true;
+	}
+	m_oInstrumentStruct* pInstrumentNext = NULL;
+	m_oInstrumentStruct* pInstrument = NULL;
+	CString str = _T("");
+	pInstrument = pRout->m_pHead;
+	do 
+	{
+		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
+		pInstrument = pInstrumentNext;
+		if (bSample == true)
+		{
+			if (pInstrumentNext->m_iTimeSetCount == 0)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			/** 时统设置是否成功*/
+			if (pInstrumentNext->m_bTimeSetOK == false)
+			{
+				return false;
+			}
+		}
+	} while (pInstrumentNext != pRout->m_pTail);
+	if (bSample == false)
+	{
+		str.Format(_T("路由IP = 0x%x的仪器的时统设置应答接收完全"), pRout->m_uiRoutIP);
+		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTimeDelayReturnByRout", ConvertCStrToStr(str));
+	}
+	return true;
+}
+// 检查仪器是否都完成了时统
+MatrixServerDll_API bool CheckTimeDelayReturn(m_oTimeDelayThreadStruct* pTimeDelayThread)
+{
+	if (pTimeDelayThread == NULL)
+	{
+		return false;
+	}
+	// hash_map迭代器
+	hash_map<unsigned int, m_oRoutStruct*>::iterator  iter;
+	for(iter = pTimeDelayThread->m_pRoutList->m_oRoutMap.begin(); iter != pTimeDelayThread->m_pRoutList->m_oRoutMap.end(); iter++)
+	{
+		if (false == CheckTimeDelayReturnByRout(iter->second, pTimeDelayThread, true))
+		{
+			return false;
+		}
+	}
+	return true;
 }
 // 监视时统
 MatrixServerDll_API void MonitorTimeDelay(m_oTimeDelayThreadStruct* pTimeDelayThread)
@@ -5844,10 +6026,21 @@ MatrixServerDll_API void MonitorTimeDelay(m_oTimeDelayThreadStruct* pTimeDelayTh
 			// 时统设置线程开始工作
 			pTimeDelayThread->m_pThread->m_bWork = true;
 		}
+		else
+		{
+			// 采集过程中，如果仪器都完成了时统则停止时统线程
+			if (pTimeDelayThread->m_bADCStartSample == true)
+			{
+				if (true == CheckTimeDelayReturn(pTimeDelayThread))
+				{
+					// 时统设置线程停止工作
+					pTimeDelayThread->m_pThread->m_bWork = false;
+				}
+			}
+		}
 	} 
 	else
 	{
-//		pMonitorRoutThread->m_pInstrumentList->m_iLineStatus = pMonitorRoutThread->m_pThread->m_pConstVar->m_iLineSysStatusLink;
 		// 时统设置线程停止工作
 		pTimeDelayThread->m_pThread->m_bWork = false;
 		// 测网状态为不稳定
@@ -5868,11 +6061,20 @@ MatrixServerDll_API void MonitorADCSet(m_oADCSetThreadStruct* pADCSetThread)
 	if (ullTimeNow > (pADCSetThread->m_pInstrumentList->m_ullLineChangeTime 
 		+ pADCSetThread->m_pThread->m_pConstVar->m_iLineSysStableTime))
 	{
-		// 前一次ADC参数设置完成
-		// 当前ADC参数设置线程没有工作在进行
+		// 自动进行未完成的ADC参数设置
 		if (pADCSetThread->m_uiADCSetOperationNb == 0)
 		{
-			OnADCSet(pADCSetThread);
+			OnADCSetAuto(pADCSetThread);
+		}
+		// 自动进行未完成的开始ADC数据采集
+		if (pADCSetThread->m_uiADCSetOperationNb == 0)
+		{
+			OnADCStartSampleAuto(pADCSetThread);
+		}
+		// 自动进行未完成的停止ADC数据采集
+		if (pADCSetThread->m_uiADCSetOperationNb == 0)
+		{
+			OnADCStopSampleAuto(pADCSetThread);
 		}
 	}
 }
@@ -6218,37 +6420,6 @@ MatrixServerDll_API bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayT
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTailTimeReturn", ConvertCStrToStr(str));
 	return true;
 }
-// 检查时统设置应答是否接收完全
-MatrixServerDll_API bool CheckTimeDelayReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDelayThread)
-{
-	if (pTimeDelayThread == NULL)
-	{
-		return false;
-	}
-	if (pRout == NULL)
-	{
-		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTimeDelayReturn", "pRout", 
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
-	m_oInstrumentStruct* pInstrumentNext = NULL;
-	m_oInstrumentStruct* pInstrument = NULL;
-	CString str = _T("");
-	pInstrument = pRout->m_pHead;
-	do 
-	{
-		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
-		pInstrument = pInstrumentNext;
-		/** 时统设置是否成功*/
-		if (pInstrumentNext->m_bTimeSetOK == false)
-		{
-			return false;
-		}
-	} while (pInstrumentNext != pRout->m_pTail);
-	str.Format(_T("路由IP = 0x%x的仪器的时统设置应答接收完全"), pRout->m_uiRoutIP);
-	AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTimeDelayReturn", ConvertCStrToStr(str));
-	return true;
-}
 // 处理时统设置
 MatrixServerDll_API void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDelayThread)
 {
@@ -6314,9 +6485,22 @@ MatrixServerDll_API void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayTh
 		pInstrumentNext->m_uiTimeLow = itmp2 & 0x3fff;
 		// 时间修正高位
 		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
-		// 生成并发送时统设置帧
-		MakeInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext);
-		SendInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, pTimeDelayThread->m_pThread->m_pConstVar);
+		// 在数据采集期间只针对未时统的仪器进行时统设置
+		if (pTimeDelayThread->m_bADCStartSample == true)
+		{
+			if (pInstrumentNext->m_iTimeSetCount == 0)
+			{
+				// 生成并发送时统设置帧
+				MakeInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext);
+				SendInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, pTimeDelayThread->m_pThread->m_pConstVar);
+			}
+		}
+		else
+		{
+			// 生成并发送时统设置帧
+			MakeInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext);
+			SendInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, pTimeDelayThread->m_pThread->m_pConstVar);
+		}
 		pInstrument = pInstrumentNext;
 	} while (pInstrumentNext != pRout->m_pTail);
 }
@@ -6452,7 +6636,7 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 					ProcTimeDelayReturnFrame(pTimeDelayThread);
 					// 判断该路由方向是否完成时统
 					// 检查时统设置应答是否接收完全
-					if (true == CheckTimeDelayReturn(pRout, pTimeDelayThread))
+					if (true == CheckTimeDelayReturnByRout(pRout, pTimeDelayThread, false))
 					{
 						// 时统任务移到队列尾
 						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
@@ -6483,6 +6667,7 @@ MatrixServerDll_API bool OnInitTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDe
 	{
 		return false;
 	}
+	pTimeDelayThread->m_bADCStartSample = false;
 	pTimeDelayThread->m_pThread->m_bClose = false;
 	pTimeDelayThread->m_pThread->m_bWork = false;
 	pTimeDelayThread->m_pThread->m_hThreadClose = ::CreateEvent(false, false, NULL, NULL);	// 创建事件对象
@@ -6557,13 +6742,13 @@ MatrixServerDll_API m_oADCSetThreadStruct* OnCreateADCSetThread(m_oLogOutPutStru
 	pADCSetThread->m_pThread->m_hThread = INVALID_HANDLE_VALUE;
 	pADCSetThread->m_pThread->m_hThreadClose = INVALID_HANDLE_VALUE;
 	pADCSetThread->m_pThread->m_dwThreadID = 0;
-	pADCSetThread->m_pTailFrameThread = NULL;
 	return pADCSetThread;
 }
 // 发送ADC命令设置帧
 MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout, unsigned int uiDstIP)
 {
 	CString str = _T("");
+	unsigned int uiTemp = 0;
 	EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	// 查询命令字个数
 	pADCSetThread->m_pADCSetFrame->m_usCommandWordNum = 0;
@@ -6591,10 +6776,12 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 			uiDstIP, pADCSetThread->m_uiADCSetOperationNb);
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnSelectADCSetCmd", ConvertCStrToStr(str));
 	}
-	// 1~11为ADC参数设置命令，12~17为ADC开始采样命令，18~21为ADC停止采样命令
+	// 1~11为ADC参数设置命令，12~18为ADC开始采样命令，19~22为ADC停止采样命令
 	switch (pADCSetThread->m_uiADCSetOperationNb)
 	{
 	case 1:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置TB低位关闭TB开关
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBLow = 0;
 		// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
@@ -6603,6 +6790,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 2:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置正弦波命令
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCSetSine;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCSetSineSize;
@@ -6610,6 +6799,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 3:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCStopSample;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCStopSampleSize;
@@ -6617,6 +6808,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 4:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB电源低位
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCOpenTBPowerLow;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCOpenTBPowerLowSize;
@@ -6624,6 +6817,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 5:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB电源高位
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCOpenTBPowerHigh;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCOpenTBPowerHighSize;
@@ -6631,6 +6826,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 6:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB开关低位
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCOpenSwitchTBLow;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCOpenSwitchTBLowSize;
@@ -6638,6 +6835,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 7:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB开关高位
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCOpenSwitchTBHigh;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCOpenSwitchTBHighSize;
@@ -6645,6 +6844,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 8:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCStopSample;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCStopSampleSize;
@@ -6652,6 +6853,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 9:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置写寄存器
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCRegisterWrite;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCRegisterWriteSize;
@@ -6659,6 +6862,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 10:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置读寄存器
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCRegisterRead;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCRegisterReadSize;
@@ -6666,6 +6871,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 11:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置数据返回端口
 		// 自动AD返回地址
 		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCDataReturnAddr;
@@ -6678,6 +6885,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 12:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB开关
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCTBSwitchOpen;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCTBSwitchOpenSize;
@@ -6685,6 +6894,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 13:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCStopSample;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCStopSampleSize;
@@ -6692,6 +6903,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 14:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置TB低位关闭TB开关
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBLow = 0;
 		// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
@@ -6700,6 +6913,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 15:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置ADC数据采样率等参数
 		// @@@需要界面设置采样率等参数，暂选为1K采样率
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCSample;
@@ -6708,6 +6923,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 16:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置连续采样命令
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCReadContinuous;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCReadContinuousSize;
@@ -6715,11 +6932,35 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 17:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendQueryCmd;
+		// 查询仪器的当前系统时间
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdLocalSysTime;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 18:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置TB时间高位
-		EnterCriticalSection(&pADCSetThread->m_pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBHigh = pADCSetThread->m_pThread->m_pConstVar->m_uiTBSleepTimeHigh
-			+ pADCSetThread->m_pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTime;
-		LeaveCriticalSection(&pADCSetThread->m_pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
+		if (pADCSetThread->m_uiLocalSysTime < pADCSetThread->m_uiTBTimeOld)
+		{
+			uiTemp = (0xffffffff - pADCSetThread->m_uiTBTimeOld + pADCSetThread->m_uiLocalSysTime) % (72 * 16);
+		}
+		else
+		{
+			uiTemp = (pADCSetThread->m_uiLocalSysTime - pADCSetThread->m_uiTBTimeOld) % (72 * 16);
+		}
+		if (pADCSetThread->m_uiLocalSysTime < uiTemp)
+		{
+			pADCSetThread->m_uiLocalSysTime = 0xffffffff - uiTemp + pADCSetThread->m_uiLocalSysTime;
+		}
+		else
+		{
+			pADCSetThread->m_uiLocalSysTime -= uiTemp;
+		}
+		pADCSetThread->m_uiTBTimeOld = pADCSetThread->m_uiLocalSysTime;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBHigh = 
+			pADCSetThread->m_pThread->m_pConstVar->m_uiTBSleepTimeHigh + pADCSetThread->m_uiLocalSysTime;
 		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdTBHigh;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		// 设置TB时间低位
@@ -6729,15 +6970,14 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 			+ pADCSetThread->m_pThread->m_pConstVar->m_usCmdCtrlCloseLed;
 		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdTbLow;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
-		break;
-	case 18:
-		// ADC设置停止采样命令
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCStopSampleSize;
-		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
-		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		str.Format(_T("ADC开始采样：TB时间高位 = 0x%x，TB时间低位 = 0x%x"), 
+			pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBHigh, 
+			pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBLow);
+		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnSelectADCSetCmd", ConvertCStrToStr(str));
 		break;
 	case 19:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCStopSample;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCStopSampleSize;
@@ -6745,6 +6985,8 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 20:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCStopSample;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCStopSampleSize;
@@ -6752,6 +6994,17 @@ MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 21:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
+		// ADC设置停止采样命令
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_pcADCSet = pADCSetThread->m_pThread->m_pConstVar->m_pSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCStopSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pcCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdADCSet;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		break;
+	case 22:
+		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置TB低位关闭TB开关
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBLow = 0;
 		// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
@@ -6820,6 +7073,12 @@ MatrixServerDll_API void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSet
 	{
 		pInstrument = GetInstrumentFromMap(uiIPInstrument, &pADCSetThread->m_pInstrumentList->m_oIPInstrumentMap);
 		pInstrument->m_bADCSetReturn = true;
+		if (pADCSetThread->m_uiADCSetOperationNb == 17)
+		{
+			pADCSetThread->m_uiLocalSysTime = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiSysTime;
+			str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x"), uiIPInstrument, pADCSetThread->m_uiLocalSysTime);
+			AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ProcADCSetReturnFrameOne", ConvertCStrToStr(str));
+		}
 	}
 	else
 	{
@@ -6843,7 +7102,7 @@ MatrixServerDll_API void OnADCSetNextOpt(m_oADCSetThreadStruct* pADCSetThread)
 		return;
 	}
 	// 完成ADC开始数据采集
-	else if (pADCSetThread->m_uiADCSetOperationNb == 18)
+	else if (pADCSetThread->m_uiADCSetOperationNb == 19)
 	{
 		pADCSetThread->m_uiADCSetOperationNb = 0;
 		// ADC参数设置线程停止工作
@@ -6851,7 +7110,7 @@ MatrixServerDll_API void OnADCSetNextOpt(m_oADCSetThreadStruct* pADCSetThread)
 		return;
 	}
 	// 完成ADC停止数据采集
-	else if (pADCSetThread->m_uiADCSetOperationNb == 22)
+	else if (pADCSetThread->m_uiADCSetOperationNb == 23)
 	{
 		pADCSetThread->m_uiADCSetOperationNb = 0;
 		// ADC参数设置线程停止工作
@@ -6896,6 +7155,14 @@ MatrixServerDll_API bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetTh
 						{
 							pInstrumentNext->m_bADCSet = true;
 						}
+						else if (pADCSetThread->m_uiADCSetOperationNb == 18)
+						{
+							pInstrumentNext->m_bADCStartSample = true;
+						}
+						else if (pADCSetThread->m_uiADCSetOperationNb == 22)
+						{
+							pInstrumentNext->m_bADCStopSample = true;
+						}
 						// 如果在索引表中找到该仪器则删除
 						DeleteInstrumentFromMap(pInstrumentNext->m_uiIP, &pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 					}
@@ -6918,6 +7185,14 @@ MatrixServerDll_API bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetTh
 			if (pADCSetThread->m_uiADCSetOperationNb == 11)
 			{
 				iter2->second->m_bADCSet = true;
+			}
+			else if (pADCSetThread->m_uiADCSetOperationNb == 18)
+			{
+				iter2->second->m_bADCStartSample = true;
+			}
+			else if (pADCSetThread->m_uiADCSetOperationNb == 22)
+			{
+				iter2->second->m_bADCStopSample = true;
 			}
 		}
 	}
@@ -7072,6 +7347,10 @@ MatrixServerDll_API bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread
 	pADCSetThread->m_pThread->m_bWork = false;
 	pADCSetThread->m_pThread->m_hThreadClose = ::CreateEvent(false, false, NULL, NULL);	// 创建事件对象
 	pADCSetThread->m_uiADCSetOperationNb = 0;
+	pADCSetThread->m_bADCStartSample = false;
+	pADCSetThread->m_bADCStopSample = false;
+	pADCSetThread->m_uiLocalSysTime = 0;
+	pADCSetThread->m_uiTBTimeOld = 0;
 	if (pADCSetThread->m_pThread->m_hThreadClose == NULL)
 	{
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnInitADCSetThread",
@@ -7232,7 +7511,6 @@ MatrixServerDll_API void OnInitInstance(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pADCSetThread->m_pADCSetFrame = pEnv->m_pADCSetFrame;
 	pEnv->m_pADCSetThread->m_pInstrumentList = pEnv->m_pInstrumentList;
 	pEnv->m_pADCSetThread->m_pRoutList = pEnv->m_pRoutList;
-	pEnv->m_pADCSetThread->m_pTailFrameThread = pEnv->m_pTailFrameThread;
 	OnInitADCSetThread(pEnv->m_pADCSetThread);
 }
 // 初始化
