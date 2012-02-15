@@ -35,10 +35,23 @@ MATRIXSERVERDLL_API int fnMatrixServerDll(void);
 #define CommXMLFilePath		_T("..\\parameter\\MatrixLineApp.XML")
 // 日志文件夹
 #define LogFolderPath		_T("..\\Log")
+// 系统日志文件夹（包含操作、警告、错误）
+#define SysOptLogFolderPath	_T("\\系统运行日志")
+// 时统日志文件夹（包含尾包时刻查询及时统设置应答及结果统计）
+#define TimeDelayLogFolderPath	_T("\\时统日志")
+// 误码查询日志文件夹（包含误码查询应答及结果统计）
+#define ErrorCodeLogFolderPath	_T("\\误码查询日志")
+// 帧时间和偏移量日志（包含丢帧、重发帧及失效帧结果统计）
+#define ADCFrameTimeLogFolderPath	_T("\\采样数据帧时间及偏移量")
+// ADC数据帧
+#define ADCDataLogFolderPath	_T("\\采样数据")
+
 // 输出选择:Debug输出则为0，Release输出则为1
-#define OutPutSelect		0
+#define OutPutSelect				0
 // 输出错误日志上限
-#define OutPutLogErrorLimit	100
+#define OutPutLogErrorLimit			100
+// 日志文件单个文件输出信息条数
+#define OutPutLogFileInfoNumLimit	5000
 // 日志输出类型
 enum{LogType, WarningType, ErrorType, ExpandType};
 // 日志输出结构
@@ -52,6 +65,12 @@ typedef struct LogOutPut_Struct
 	list<string> m_oLogOutputList;
 	// 错误计数
 	unsigned int m_uiErrorCount;
+	// 日志输出路径
+	CString m_csSaveLogFilePath;
+	// 日志文件序号
+	unsigned int m_uiLogFileNb;
+	// 日志文件存储信息条数记数
+	unsigned int m_uiLogInfoCount;
 }m_oLogOutPutStruct;
 // 从INI文件中解析得到的常量
 typedef struct ConstVar_Struct
@@ -586,6 +605,8 @@ typedef struct Rout_Struct
 	bool m_bADCSetReturn;
 	// 路由是否发送ADC参数设置帧
 	bool m_bADCSetRout;
+	// 该路由方向上仪器的个数
+	unsigned int m_uiInstrumentNum;
 }m_oRoutStruct;
 // 路由队列结构体
 typedef struct RoutList_Struct
@@ -792,7 +813,13 @@ typedef struct Thread_Struct
 typedef struct LogOutPutThread_Struct
 {
 	// 线程结构体指针
-	m_oThreadStruct* m_pThread; 
+	m_oThreadStruct* m_pThread;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPutTimeDelay;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
 }m_oLogOutPutThreadStruct;
 // 心跳线程
 typedef struct HeartBeatThread_Struct
@@ -853,6 +880,16 @@ typedef struct TimeDelayThread_Struct
 	bool m_bADCStartSample;
 	// 计数器
 	unsigned int m_uiCounter;
+	// 尾包查询帧查询的仪器计数
+	unsigned int m_uiTailTimeQueryNum;
+	// 尾包查询帧应答计数
+	unsigned int m_uiTailTimeReturnNum;
+	// 时统设置帧计数
+	unsigned int m_uiTimeDelaySetNum;
+	// 时统设置应答帧计数
+	unsigned int m_uiTimeDelayReturnNum;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPutTimeDelay;
 }m_oTimeDelayThreadStruct;
 // ADC参数设置线程
 typedef struct ADCSetThread_Struct
@@ -877,6 +914,10 @@ typedef struct ADCSetThread_Struct
 	unsigned int m_uiLocalSysTime;
 	// 上一次开始采样的采样时间
 	unsigned int m_uiTBTimeOld;
+	// ADC参数设置仪器个数
+	unsigned int m_uiADCSetNum;
+	// ADC参数设置应答仪器个数
+	unsigned int m_uiADCSetReturnNum;
 }m_oADCSetThreadStruct;
 // 路由监视线程
 typedef struct MonitorRoutThread_Struct
@@ -913,8 +954,14 @@ typedef struct Environment_Struct
 	m_oTimeDelayFrameStruct* m_pTimeDelayFrame;
 	// ADC参数设置帧结构
 	m_oADCSetFrameStruct* m_pADCSetFrame;
-	// 日志输出结构
-	m_oLogOutPutStruct* m_pLogOutPut;
+	// 操作日志输出结构
+	m_oLogOutPutStruct* m_pLogOutPutOpt;
+	// 时统日志输出结构
+	m_oLogOutPutStruct* m_pLogOutPutTimeDelay;
+	// 误码查询日志输出结构
+	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
+	// 帧时间和偏移量日志输出结构
+	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
 	// 仪器队列结构
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由对列结构
