@@ -30,17 +30,17 @@ extern MATRIXSERVERDLL_API int nMatrixServerDll;
 
 MATRIXSERVERDLL_API int fnMatrixServerDll(void);
 // ini参数文件相对路径
-#define INIFilePath			_T("..\\parameter\\MatrixServerDLL.ini")
+#define INIFilePath					_T("..\\parameter\\MatrixServerDLL.ini")
 // 测线网络配置XML文件相对路径
-#define CommXMLFilePath		_T("..\\parameter\\MatrixLineApp.XML")
+#define CommXMLFilePath				_T("..\\parameter\\MatrixLineApp.XML")
 // 日志文件夹
-#define LogFolderPath		_T("..\\Log")
+#define LogFolderPath				_T("..\\Log")
 // 系统日志文件夹（包含操作、警告、错误）
-#define SysOptLogFolderPath	_T("\\系统运行日志")
+#define SysOptLogFolderPath			_T("\\系统运行日志")
 // 时统日志文件夹（包含尾包时刻查询及时统设置应答及结果统计）
-#define TimeDelayLogFolderPath	_T("\\时统日志")
+#define TimeDelayLogFolderPath		_T("\\时统日志")
 // 误码查询日志文件夹（包含误码查询应答及结果统计）
-#define ErrorCodeLogFolderPath	_T("\\误码查询日志")
+#define ErrorCodeLogFolderPath		_T("\\误码查询日志")
 // 帧时间和偏移量日志（包含丢帧、重发帧及失效帧结果统计）
 #define ADCFrameTimeLogFolderPath	_T("\\采样数据帧时间及偏移量")
 // ADC数据帧
@@ -89,7 +89,7 @@ typedef struct ConstVar_Struct
 	// 尾包线程延时次数
 	int m_iTailFrameSleepTimes;
 	// 路由监视线程延时次数
-	int m_iMonitorRoutSleepTimes;
+	int m_iMonitorSleepTimes;
 	// 时统设置线程延时次数
 	int m_iTimeDelaySleepTimes;
 	// ADC参数设置线程延时次数
@@ -104,7 +104,7 @@ typedef struct ConstVar_Struct
 	// 尾包稳定次数
 	int m_iTailFrameStableTimes;
 	// 路由监视稳定时间
-	int m_iMonitorRoutStableTime;
+	int m_iMonitorStableTime;
 	// 测网系统状态-link
 	int m_iLineSysStatusLink;
 	// 测网系统状态-稳定
@@ -324,6 +324,8 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned short m_usTimeDelayReturnPort;
 	// ADC参数设置应答端口
 	unsigned short m_usADCSetReturnPort;
+	// 误码查询返回端口
+	unsigned short m_usErrorCodeReturnPort;
 	// ADC数据返回端口
 	unsigned short m_usADCDataReturnPort;
 	// 仪器设备个数
@@ -791,6 +793,32 @@ typedef struct ADCSetFrame_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oADCSetFrameStruct;
+// 误码查询
+typedef struct ErrorCodeFrame_Struct
+{
+	// ADC参数设置帧资源同步对象
+	CRITICAL_SECTION m_oSecErrorCodeFrame;
+	// 网络端口接收缓冲区大小
+	unsigned int m_uiRcvBufferSize;
+	// 接收帧缓冲区
+	char* m_pcRcvFrameData;
+	// 应答帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructReturn;
+	// 网络端口发送缓冲区大小
+	unsigned int m_uiSndBufferSize;
+	// 发送帧缓冲区
+	char* m_pcSndFrameData;
+	// 误码查询命令字集合
+	char* m_pcCommandWord;
+	// 误码查询命令字个数
+	unsigned short m_usCommandWordNum;
+	// 发送帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructSet;
+	// 误码查询Socket套接字
+	SOCKET m_oErrorCodeFrameSocket;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
+}m_oErrorCodeFrameStruct;
 // 线程结构体
 typedef struct Thread_Struct
 {
@@ -919,8 +947,22 @@ typedef struct ADCSetThread_Struct
 	// ADC参数设置应答仪器个数
 	unsigned int m_uiADCSetReturnNum;
 }m_oADCSetThreadStruct;
+// 误码查询线程
+typedef struct ErrorCodeThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// 误码查询帧指针
+	m_oErrorCodeFrameStruct* m_pErrorCodeFrame;
+	// 路由队列结构体指针
+	m_oRoutListStruct* m_pRoutList;
+	// 计数器
+	unsigned int m_uiCounter;
+	// 误码查询日志指针
+	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
+}m_oErrorCodeThreadStruct;
 // 路由监视线程
-typedef struct MonitorRoutThread_Struct
+typedef struct MonitorThread_Struct
 {
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
@@ -932,7 +974,9 @@ typedef struct MonitorRoutThread_Struct
 	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
 	// ADC参数设置线程
 	m_oADCSetThreadStruct* m_pADCSetThread;
-}m_oMonitorRoutThreadStruct;
+	// 误码查询线程
+	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
+}m_oMonitorThreadStruct;
 // 环境结构体
 typedef struct Environment_Struct
 {
@@ -954,6 +998,8 @@ typedef struct Environment_Struct
 	m_oTimeDelayFrameStruct* m_pTimeDelayFrame;
 	// ADC参数设置帧结构
 	m_oADCSetFrameStruct* m_pADCSetFrame;
+	// 误码查询帧结构
+	m_oErrorCodeFrameStruct* m_pErrorCodeFrame;
 	// 操作日志输出结构
 	m_oLogOutPutStruct* m_pLogOutPutOpt;
 	// 时统日志输出结构
@@ -977,11 +1023,13 @@ typedef struct Environment_Struct
 	// 尾包接收线程
 	m_oTailFrameThreadStruct* m_pTailFrameThread;
 	// 路由监视线程
-	m_oMonitorRoutThreadStruct* m_pMonitorRoutThread;
+	m_oMonitorThreadStruct* m_pMonitorThread;
 	// 时统线程
 	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
 	// ADC参数设置线程
 	m_oADCSetThreadStruct* m_pADCSetThread;
+	// 误码查询线程
+	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
 }m_oEnvironmentStruct;
 
 
