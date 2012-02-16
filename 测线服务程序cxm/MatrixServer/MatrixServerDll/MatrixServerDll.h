@@ -54,6 +54,8 @@ MATRIXSERVERDLL_API int fnMatrixServerDll(void);
 #define OutPutLogFileInfoNumLimit	5000
 // 日志输出类型
 enum{LogType, WarningType, ErrorType, ExpandType};
+// 日志文件类型
+enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
 // 日志输出结构
 typedef struct LogOutPut_Struct
 {
@@ -71,6 +73,8 @@ typedef struct LogOutPut_Struct
 	unsigned int m_uiLogFileNb;
 	// 日志文件存储信息条数记数
 	unsigned int m_uiLogInfoCount;
+	// 日志文件类型
+	byte m_byLogFileType;
 }m_oLogOutPutStruct;
 // 从INI文件中解析得到的常量
 typedef struct ConstVar_Struct
@@ -581,8 +585,6 @@ typedef struct InstrumentList_Struct
 	unsigned int m_uiCountAll;
 	/** 空闲仪器数量*/
 	unsigned int m_uiCountFree;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oInstrumentListStruct;
 // 路由属性结构体
 typedef struct Rout_Struct
@@ -633,8 +635,6 @@ typedef struct RoutList_Struct
 	unsigned int m_uiCountAll;
 	/** 空闲路由数量*/
 	unsigned int m_uiCountFree;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oRoutListStruct;
 // 心跳
 typedef struct HeartBeatFrame_Struct
@@ -651,8 +651,6 @@ typedef struct HeartBeatFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStruct;
 	// 心跳Socket套接字
 	SOCKET m_oHeartBeatSocket;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oHeartBeatFrameStruct;
 
 // 首包
@@ -668,8 +666,6 @@ typedef struct HeadFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStruct;
 	// 首包Socket套接字
 	SOCKET m_oHeadFrameSocket;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oHeadFrameStruct;
 
 // IP地址设置
@@ -695,8 +691,6 @@ typedef struct IPSetFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructReturn;
 	// IP地址设置Socket套接字
 	SOCKET m_oIPSetFrameSocket;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oIPSetFrameStruct;
 // 尾包
 typedef struct TailFrame_Struct
@@ -711,8 +705,6 @@ typedef struct TailFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStruct;
 	// 尾包Socket套接字
 	SOCKET m_oTailFrameSocket;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oTailFrameStruct;
 // 尾包时刻
 typedef struct TailTimeFrame_Struct
@@ -737,8 +729,6 @@ typedef struct TailTimeFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	// 尾包时刻Socket套接字
 	SOCKET m_oTailTimeFrameSocket;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oTailTimeFrameStruct;
 
 // 时统设置
@@ -764,8 +754,6 @@ typedef struct TimeDelayFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	// 时统设置Socket套接字
 	SOCKET m_oTimeDelayFrameSocket;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oTimeDelayFrameStruct;
 // ADC参数设置
 typedef struct ADCSetFrame_Struct
@@ -790,8 +778,6 @@ typedef struct ADCSetFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	// ADC参数设置Socket套接字
 	SOCKET m_oADCSetFrameSocket;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oADCSetFrameStruct;
 // 误码查询
 typedef struct ErrorCodeFrame_Struct
@@ -816,8 +802,6 @@ typedef struct ErrorCodeFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	// 误码查询Socket套接字
 	SOCKET m_oErrorCodeFrameSocket;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oErrorCodeFrameStruct;
 // 线程结构体
 typedef struct Thread_Struct

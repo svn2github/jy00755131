@@ -192,7 +192,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("MonitorRoutSleepTimes");		// 路由监视线程延时次数
+	strSectionKey=_T("MonitorSleepTimes");		// 路由监视线程延时次数
 	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
@@ -221,7 +221,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("5");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("MonitorRoutStableTime");	// 路由监视稳定时间
+	strSectionKey=_T("MonitorStableTime");	// 路由监视稳定时间
 	strValue = _T("5000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
