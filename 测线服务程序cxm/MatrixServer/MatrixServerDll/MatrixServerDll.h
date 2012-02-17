@@ -98,6 +98,8 @@ typedef struct ConstVar_Struct
 	int m_iTimeDelaySleepTimes;
 	// ADC参数设置线程延时次数
 	int m_iADCSetSleepTimes;
+	// 误码查询线程延时次数
+	int m_iErrorCodeSleepTimes;
 	// 等待线程关闭的延时次数
 	int m_iCloseThreadSleepTimes;
 
@@ -171,6 +173,8 @@ typedef struct ConstVar_Struct
 	int m_iFramePacketSize4B;
 	// ADC数据所占字节数
 	int m_iADCDataSize3B;
+	// 一帧内ADC数据个数
+	int m_iADCDataInOneFrameNum;
 	// 命令字个数最大值
 	int m_iCommandWordMaxNum;
 	// 0x18命令数组包含的最大字节数
@@ -440,6 +444,12 @@ typedef struct InstrumentCommand_Struct
 	char* m_pcADCSet;
 	// 0x18命令数据个数
 	int m_iADCSetNum;
+	// ADC数据指针偏移量
+	unsigned short m_usADCDataPoint;
+	// ADC数据采集时仪器本地时间
+	unsigned int m_uiADCSampleSysTime;
+	// ADC采样数据缓冲区指针
+	int* m_pADCData;
 }m_oInstrumentCommandStruct;
 
 // 仪器属性结构体
@@ -539,8 +549,10 @@ typedef struct Instrument_Struct
 	int m_iIPSetCount;
 	/** IP地址设置是否成功*/
 	bool m_bIPSetOK;
-	// 	/** 第几次尾包时刻查询*/
-	// 	int m_iTailTimeQueryCount;
+ 	/** 第几次尾包时刻查询*/
+ 	int m_iTailTimeQueryCount;
+	/** 尾包时刻查询应答次数*/
+	int m_iTailTimeReturnCount;
 	/** 尾包时刻查询是否成功*/
 	bool m_bTailTimeQueryOK;
 	/** 本地时间修正高位*/
@@ -549,6 +561,8 @@ typedef struct Instrument_Struct
 	unsigned int m_uiTimeLow;
 	/** 第几次设置仪器时间*/
 	int m_iTimeSetCount;
+	/** 仪器时统成功次数*/
+	int m_iTimeSetReturnCount;
 	/** 仪器时间设置是否成功*/
 	bool m_bTimeSetOK;
 	// ADC命令设置是否应答
@@ -559,6 +573,40 @@ typedef struct Instrument_Struct
 	bool m_bADCStartSample;
 	// 仪器停止ADC数据采集设置成功
 	bool m_bADCStopSample;
+	// 误码查询发送帧数
+	unsigned int m_uiErrorCodeQueryNum;
+	// 误码查询应答帧数
+	unsigned int m_uiErrorCodeReturnNum;
+	// 采集站和电源站网络数据错误计数
+	int m_iFDUErrorCodeDataCount;
+	// 采集站和电源站命令错误计数
+	int m_iFDUErrorCodeCmdCount;
+	// 采集站和电源站网络数据错误计数
+	char m_byFDUErrorCodeDataCountOld;
+	// 采集站和电源站命令错误计数
+	char m_byFDUErrorCodeCmdCountOld;
+
+	// 交叉站大线A数据故障
+	int m_iLAUXErrorCodeDataLineACount;
+	// 交叉站大线B数据故障
+	int m_iLAUXErrorCodeDataLineBCount;
+	// 交叉站交叉线A数据故障
+	int m_iLAUXErrorCodeDataLAUXLineACount;
+	// 交叉站交叉线B数据故障
+	int m_iLAUXErrorCodeDataLAUXLineBCount;
+	// 交叉站命令口故障
+	int m_iLAUXErrorCodeCmdCount;
+
+	// 交叉站大线A数据故障
+	char m_byLAUXErrorCodeDataLineACountOld;
+	// 交叉站大线B数据故障
+	char m_byLAUXErrorCodeDataLineBCountOld;
+	// 交叉站交叉线A数据故障
+	char m_byLAUXErrorCodeDataLAUXLineACountOld;
+	// 交叉站交叉线B数据故障
+	char m_byLAUXErrorCodeDataLAUXLineBCountOld;
+	// 交叉站命令口故障
+	char m_byLAUXErrorCodeCmdCountOld;
 }m_oInstrumentStruct;
 // 仪器队列
 typedef struct InstrumentList_Struct
@@ -803,6 +851,26 @@ typedef struct ErrorCodeFrame_Struct
 	// 误码查询Socket套接字
 	SOCKET m_oErrorCodeFrameSocket;
 }m_oErrorCodeFrameStruct;
+// ADC数据接收
+typedef struct ADCDataFrame_Struct
+{
+	// ADC数据接收帧资源同步对象
+	CRITICAL_SECTION m_oSecADCDataFrame;
+	// 网络端口接收缓冲区大小
+	unsigned int m_uiRcvBufferSize;
+	// 接收帧缓冲区
+	char* m_pcRcvFrameData;
+	// 应答帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructReturn;
+	// 网络端口发送缓冲区大小
+	unsigned int m_uiSndBufferSize;
+	// 发送帧缓冲区
+	char* m_pcSndFrameData;
+	// 发送帧命令
+	m_oInstrumentCommandStruct* m_pCommandStructSet;
+	// ADC数据接收和重发Socket套接字
+	SOCKET m_oADCDataFrameSocket;
+}m_oADCDataFrameStruct;
 // 线程结构体
 typedef struct Thread_Struct
 {
@@ -892,14 +960,6 @@ typedef struct TimeDelayThread_Struct
 	bool m_bADCStartSample;
 	// 计数器
 	unsigned int m_uiCounter;
-	// 尾包查询帧查询的仪器计数
-	unsigned int m_uiTailTimeQueryNum;
-	// 尾包查询帧应答计数
-	unsigned int m_uiTailTimeReturnNum;
-	// 时统设置帧计数
-	unsigned int m_uiTimeDelaySetNum;
-	// 时统设置应答帧计数
-	unsigned int m_uiTimeDelayReturnNum;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPutTimeDelay;
 }m_oTimeDelayThreadStruct;
@@ -938,10 +998,10 @@ typedef struct ErrorCodeThread_Struct
 	m_oThreadStruct* m_pThread;
 	// 误码查询帧指针
 	m_oErrorCodeFrameStruct* m_pErrorCodeFrame;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由队列结构体指针
 	m_oRoutListStruct* m_pRoutList;
-	// 计数器
-	unsigned int m_uiCounter;
 	// 误码查询日志指针
 	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
 }m_oErrorCodeThreadStruct;
@@ -984,6 +1044,8 @@ typedef struct Environment_Struct
 	m_oADCSetFrameStruct* m_pADCSetFrame;
 	// 误码查询帧结构
 	m_oErrorCodeFrameStruct* m_pErrorCodeFrame;
+	// ADC数据帧结构
+	m_oADCDataFrameStruct* m_pADCDataFrame;
 	// 操作日志输出结构
 	m_oLogOutPutStruct* m_pLogOutPutOpt;
 	// 时统日志输出结构
