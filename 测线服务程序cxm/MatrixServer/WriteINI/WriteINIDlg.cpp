@@ -208,6 +208,10 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("20");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("ADCDataRecSleepTimes");		// ADC数据接收线程延时次数
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSectionKey=_T("CloseThreadSleepTimes");		// 等待线程关闭的延时次数
 	strValue = _T("20");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
@@ -337,6 +341,10 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 
 	strSectionKey=_T("ADCDataInOneFrameNum");	// 一帧内ADC数据个数
 	strValue = _T("72");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCFramePointLimit");		// ADC数据帧指针偏移量上限
+	strValue = _T("2048");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CommandWordMaxNum");	// 命令字个数最大值

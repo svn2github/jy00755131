@@ -56,6 +56,8 @@ MATRIXSERVERDLL_API int fnMatrixServerDll(void);
 enum{LogType, WarningType, ErrorType, ExpandType};
 // 日志文件类型
 enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
+
+#define MAX_STRING_SIZE		260
 // 日志输出结构
 typedef struct LogOutPut_Struct
 {
@@ -100,6 +102,8 @@ typedef struct ConstVar_Struct
 	int m_iADCSetSleepTimes;
 	// 误码查询线程延时次数
 	int m_iErrorCodeSleepTimes;
+	// ADC数据接收线程延时次数
+	int m_iADCDataRecSleepTimes;
 	// 等待线程关闭的延时次数
 	int m_iCloseThreadSleepTimes;
 
@@ -175,6 +179,8 @@ typedef struct ConstVar_Struct
 	int m_iADCDataSize3B;
 	// 一帧内ADC数据个数
 	int m_iADCDataInOneFrameNum;
+	// ADC数据帧指针偏移量上限
+	int m_iADCFramePointLimit;
 	// 命令字个数最大值
 	int m_iCommandWordMaxNum;
 	// 0x18命令数组包含的最大字节数
@@ -305,6 +311,34 @@ typedef struct ConstVar_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
+typedef struct netd_parameter
+{
+	unsigned int netcard_id_; //!< pcap绑定网卡编号
+	unsigned int lci_ip_;//!< LCI ip地址(pcap读取发送数据到该ip) 
+	unsigned int lci_inp_port_;//<! pcap读取LCI 端口
+	unsigned int lci_outp_port_;//<! pcap写入端口
+
+	unsigned int matrix_service_ip_;//!< 上位机ip地址(socket监听该ip,并将LCI上行数据包发送到该ip)
+	unsigned int matrix_service_listen_port_;//<! 36866 #socket写入上位机端口
+
+	unsigned int netd_ip_; //!< 中转程序ip地址
+	unsigned int netd_listen_port_; //!< 中转程序监听端口
+	unsigned int netd_outp_port_; //!< 中转程序通过pcap写入到LCI的中转程序发送端口
+	unsigned int netd_recv_buffer_size_;//<! 10485760 #socket上位机接受缓冲
+	unsigned int netd_snd_buffer_size_;//<! 10485760 #socket上位机发送缓冲
+
+	unsigned int pcap_buff_size_; //<! pcap缓冲大小
+	unsigned int pcap_max_package_size_;//!< pcap指定最大数据包大小
+	unsigned int pcap_timeout_;	//!< pcap操作超时时间以毫秒为单位
+	unsigned int pcap_outp_poll_time_; //!< pcap写入LCI时,轮询outp_queue队列时间
+	char pcap_filter_[MAX_STRING_SIZE]; //!< 指定当前pcap使用的过滤器参数
+
+	unsigned int inp_queue_size_;//!< 存放pcap输入(读取)队列缓冲大小 
+	unsigned int outp_queue_size_;//!< 存放pcap输出(写入)队列缓冲大小
+
+	unsigned int netd_recv_poll_time_;//<! 10 #中转程序从上位机接受数据的轮询时间
+	unsigned int netd_snd_poll_time_;//<! 10 #中转程序向上位机发送数据时,轮询缓冲队列时间
+}m_oNetd_parameterStruct;
 // 从XML文件中解析得到的信息
 typedef struct InstrumentCommInfo_Struct
 {
@@ -607,6 +641,15 @@ typedef struct Instrument_Struct
 	char m_byLAUXErrorCodeDataLAUXLineBCountOld;
 	// 交叉站命令口故障
 	char m_byLAUXErrorCodeCmdCountOld;
+	
+	// 实际接收ADC数据帧数
+	unsigned int m_uiADCDataActualRecFrameNum;
+	// 应该接收ADC数据帧数（含丢帧）
+	unsigned int m_uiADCDataShouldRecFrameNum;
+	// ADC数据帧的指针偏移量
+	unsigned short m_usADCDataFramePoint;
+	// ADC数据帧发送时的本地时间
+	unsigned int m_uiADCDataFrameSysTime;
 }m_oInstrumentStruct;
 // 仪器队列
 typedef struct InstrumentList_Struct
@@ -990,6 +1033,8 @@ typedef struct ADCSetThread_Struct
 	unsigned int m_uiADCSetNum;
 	// ADC参数设置应答仪器个数
 	unsigned int m_uiADCSetReturnNum;
+	// 误码查询日志指针
+	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
 }m_oADCSetThreadStruct;
 // 误码查询线程
 typedef struct ErrorCodeThread_Struct
@@ -1005,6 +1050,18 @@ typedef struct ErrorCodeThread_Struct
 	// 误码查询日志指针
 	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
 }m_oErrorCodeThreadStruct;
+// ADC数据接收线程
+typedef struct ADCDataRecThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// 误码查询帧指针
+	m_oADCDataFrameStruct* m_pADCDataFrame;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
+	// 误码查询日志指针
+	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
+}m_oADCDataRecThreadStruct;
 // 路由监视线程
 typedef struct MonitorThread_Struct
 {
@@ -1076,8 +1133,9 @@ typedef struct Environment_Struct
 	m_oADCSetThreadStruct* m_pADCSetThread;
 	// 误码查询线程
 	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
+	// ADC数据接收线程
+	m_oADCDataRecThreadStruct* m_pADCDataRecThread;
 }m_oEnvironmentStruct;
-
 
 // 创建实例，并返回实例指针
 typedef m_oEnvironmentStruct* (*Create_Instance)(void);
