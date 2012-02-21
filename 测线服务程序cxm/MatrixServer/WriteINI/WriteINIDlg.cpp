@@ -309,6 +309,10 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("0xffffffff");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("ADCFrameSaveInOneFileNum");	// 一个文件内存储单个设备ADC数据帧数
+	strValue = _T("406");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSection = _T("帧格式设置");			// 获取当前区域
 
 	strSectionKey=_T("FrameHeadSize");		// 帧头长度

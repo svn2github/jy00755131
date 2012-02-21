@@ -7,9 +7,11 @@
 
 #include <list>
 #include <hash_map>
+#include <map>
 #include "Resource.h"
 using std::list;
 using stdext::hash_map;
+using std::map;
 using std::string;
 #ifdef MATRIXSERVERDLL_EXPORTS
 #define MATRIXSERVERDLL_API __declspec(dllexport)
@@ -161,6 +163,8 @@ typedef struct ConstVar_Struct
 	int m_iBroadcastPortStart;
 	// 设置为广播IP
 	int m_iIPBroadcastAddr;
+	// 一个文件内存储单个设备ADC数据帧数
+	int m_iADCFrameSaveInOneFileNum;
 
 	//____帧格式设置____
 	// 帧头长度
@@ -180,7 +184,7 @@ typedef struct ConstVar_Struct
 	// 一帧内ADC数据个数
 	int m_iADCDataInOneFrameNum;
 	// ADC数据帧指针偏移量上限
-	int m_iADCFramePointLimit;
+	unsigned short m_usADCFramePointLimit;
 	// 命令字个数最大值
 	int m_iCommandWordMaxNum;
 	// 0x18命令数组包含的最大字节数
@@ -523,8 +527,8 @@ typedef struct Instrument_Struct
 	Instrument_Struct* m_pInstrumentRight;
 	/** 首包时刻*/
 	unsigned int m_uiTimeHeadFrame;
-// 	/** 尾包时刻*/
-// 	unsigned int m_uiTailSysTime;
+	// 	/** 尾包时刻*/
+	// 	unsigned int m_uiTailSysTime;
 	/** 尾包计数*/
 	int m_iTailFrameCount;
 	/** 仪器时延*/
@@ -583,8 +587,8 @@ typedef struct Instrument_Struct
 	int m_iIPSetCount;
 	/** IP地址设置是否成功*/
 	bool m_bIPSetOK;
- 	/** 第几次尾包时刻查询*/
- 	int m_iTailTimeQueryCount;
+	/** 第几次尾包时刻查询*/
+	int m_iTailTimeQueryCount;
 	/** 尾包时刻查询应答次数*/
 	int m_iTailTimeReturnCount;
 	/** 尾包时刻查询是否成功*/
@@ -641,15 +645,19 @@ typedef struct Instrument_Struct
 	char m_byLAUXErrorCodeDataLAUXLineBCountOld;
 	// 交叉站命令口故障
 	char m_byLAUXErrorCodeCmdCountOld;
-	
-	// 实际接收ADC数据帧数
+
+	// 实际接收ADC数据帧数（含重发帧）
 	unsigned int m_uiADCDataActualRecFrameNum;
+	// 重发查询帧得到的应答帧数
+	unsigned int m_uiADCDataRetransmissionFrameNum;
 	// 应该接收ADC数据帧数（含丢帧）
 	unsigned int m_uiADCDataShouldRecFrameNum;
 	// ADC数据帧的指针偏移量
 	unsigned short m_usADCDataFramePoint;
 	// ADC数据帧发送时的本地时间
 	unsigned int m_uiADCDataFrameSysTime;
+	// ADC数据帧起始帧数
+	unsigned int m_uiADCDataFrameStartNum;
 }m_oInstrumentStruct;
 // 仪器队列
 typedef struct InstrumentList_Struct
@@ -1050,6 +1058,52 @@ typedef struct ErrorCodeThread_Struct
 	// 误码查询日志指针
 	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
 }m_oErrorCodeThreadStruct;
+// 丢失帧IP地址和偏移量结构体
+typedef struct ADCLostFrameKey_Struct
+{
+	// 丢帧的指针偏移量
+	unsigned short m_usADCFramePointNb;
+	// 丢帧的IP地址
+	unsigned int m_uiIP;
+	bool operator == (const ADCLostFrameKey_Struct& rhs) const
+	{
+		return ((m_uiIP == rhs.m_uiIP) && (m_usADCFramePointNb == rhs.m_usADCFramePointNb));
+	}
+	bool operator < (const ADCLostFrameKey_Struct& rhs) const
+	{
+		if (m_uiIP == rhs.m_uiIP)
+		{
+			return (m_usADCFramePointNb < rhs.m_usADCFramePointNb);
+		}
+		else
+		{
+			return (m_uiIP < rhs.m_uiIP);
+		}
+	}
+
+}m_oADCLostFrameKeyStruct;
+// 丢失帧结构体
+typedef struct ADCLostFrame_Struct
+{
+	// 丢失帧重发次数
+	unsigned int m_uiCount;
+	// 丢失帧写入文件的序号，从1开始
+	unsigned int m_uiFileNb;
+	// 丢帧在文件内的行序号，从1开始
+	unsigned int m_uiRowNb;
+	// 丢帧在文件内的列序号，从1开始
+	unsigned int m_uiLineNb;
+	// 是否已经收到应答
+	bool m_bReturnOk;
+	// 	void operator = (const ADCLostFrame_Struct& rhs)
+	// 	{
+	// 		m_uiCount = rhs.m_uiCount;
+	// 		m_uiFileNb = rhs.m_uiFileNb;
+	// 		m_uiRowNb = rhs.m_uiRowNb;
+	// 		m_uiLineNb = rhs.m_uiLineNb;
+	// 		m_bReturnOk = rhs.m_bReturnOk;
+	// 	}
+}m_oADCLostFrameStruct;
 // ADC数据接收线程
 typedef struct ADCDataRecThread_Struct
 {
@@ -1061,6 +1115,12 @@ typedef struct ADCDataRecThread_Struct
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 误码查询日志指针
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
+	// 上一帧的指针偏移量
+	unsigned short m_usADCDataFramePointOld;
+	// 存文件数据帧行数计数
+	unsigned int m_uiADCFrameRowCount;
+	// 丢帧索引表
+	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct> m_oADCLostFrameMap;
 }m_oADCDataRecThreadStruct;
 // 路由监视线程
 typedef struct MonitorThread_Struct
