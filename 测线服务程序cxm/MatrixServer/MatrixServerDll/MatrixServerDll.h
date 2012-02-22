@@ -59,7 +59,6 @@ enum{LogType, WarningType, ErrorType, ExpandType};
 // 日志文件类型
 enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
 
-#define MAX_STRING_SIZE		260
 // 日志输出结构
 typedef struct LogOutPut_Struct
 {
@@ -315,34 +314,6 @@ typedef struct ConstVar_Struct
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
-typedef struct netd_parameter
-{
-	unsigned int netcard_id_; //!< pcap绑定网卡编号
-	unsigned int lci_ip_;//!< LCI ip地址(pcap读取发送数据到该ip) 
-	unsigned int lci_inp_port_;//<! pcap读取LCI 端口
-	unsigned int lci_outp_port_;//<! pcap写入端口
-
-	unsigned int matrix_service_ip_;//!< 上位机ip地址(socket监听该ip,并将LCI上行数据包发送到该ip)
-	unsigned int matrix_service_listen_port_;//<! 36866 #socket写入上位机端口
-
-	unsigned int netd_ip_; //!< 中转程序ip地址
-	unsigned int netd_listen_port_; //!< 中转程序监听端口
-	unsigned int netd_outp_port_; //!< 中转程序通过pcap写入到LCI的中转程序发送端口
-	unsigned int netd_recv_buffer_size_;//<! 10485760 #socket上位机接受缓冲
-	unsigned int netd_snd_buffer_size_;//<! 10485760 #socket上位机发送缓冲
-
-	unsigned int pcap_buff_size_; //<! pcap缓冲大小
-	unsigned int pcap_max_package_size_;//!< pcap指定最大数据包大小
-	unsigned int pcap_timeout_;	//!< pcap操作超时时间以毫秒为单位
-	unsigned int pcap_outp_poll_time_; //!< pcap写入LCI时,轮询outp_queue队列时间
-	char pcap_filter_[MAX_STRING_SIZE]; //!< 指定当前pcap使用的过滤器参数
-
-	unsigned int inp_queue_size_;//!< 存放pcap输入(读取)队列缓冲大小 
-	unsigned int outp_queue_size_;//!< 存放pcap输出(写入)队列缓冲大小
-
-	unsigned int netd_recv_poll_time_;//<! 10 #中转程序从上位机接受数据的轮询时间
-	unsigned int netd_snd_poll_time_;//<! 10 #中转程序向上位机发送数据时,轮询缓冲队列时间
-}m_oNetd_parameterStruct;
 // 从XML文件中解析得到的信息
 typedef struct InstrumentCommInfo_Struct
 {
@@ -657,7 +628,7 @@ typedef struct Instrument_Struct
 	// ADC数据帧发送时的本地时间
 	unsigned int m_uiADCDataFrameSysTime;
 	// ADC数据帧起始帧数
-	unsigned int m_uiADCDataFrameStartNum;
+	int m_iADCDataFrameStartNum;
 }m_oInstrumentStruct;
 // 仪器队列
 typedef struct InstrumentList_Struct
@@ -1087,12 +1058,10 @@ typedef struct ADCLostFrame_Struct
 {
 	// 丢失帧重发次数
 	unsigned int m_uiCount;
-	// 丢失帧写入文件的序号，从1开始
+	// 丢失帧写入文件的序号，从0开始
 	unsigned int m_uiFileNb;
-	// 丢帧在文件内的行序号，从1开始
-	unsigned int m_uiRowNb;
-	// 丢帧在文件内的列序号，从1开始
-	unsigned int m_uiLineNb;
+	// 丢帧在文件内的帧序号，从0开始
+	unsigned int m_uiFrameInFileNb;
 	// 是否已经收到应答
 	bool m_bReturnOk;
 	// 	void operator = (const ADCLostFrame_Struct& rhs)
@@ -1115,10 +1084,10 @@ typedef struct ADCDataRecThread_Struct
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 误码查询日志指针
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
-	// 上一帧的指针偏移量
-	unsigned short m_usADCDataFramePointOld;
-	// 存文件数据帧行数计数
-	unsigned int m_uiADCFrameRowCount;
+	// 上一帧的本地时间
+	unsigned int m_uiADCDataFrameSysTime;
+	// 存文件数据帧数计数
+	int m_iADCFrameCount;
 	// 丢帧索引表
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct> m_oADCLostFrameMap;
 }m_oADCDataRecThreadStruct;

@@ -3492,7 +3492,7 @@ MatrixServerDll_API void OnInstrumentReset(m_oInstrumentStruct* pInstrument)
 	// ADC数据帧发送时的本地时间
 	pInstrument->m_uiADCDataFrameSysTime = 0;
 	// ADC数据帧起始帧数
-	pInstrument->m_uiADCDataFrameStartNum = 0;
+	pInstrument->m_iADCDataFrameStartNum = 0;
 }
 // 创建仪器队列结构体
 MatrixServerDll_API m_oInstrumentListStruct* OnCreateInstrumentList(void)
@@ -6297,7 +6297,7 @@ MatrixServerDll_API void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThr
 					// ADC数据帧发送时的本地时间
 					pInstrumentNext->m_uiADCDataFrameSysTime = 0;
 					// ADC数据帧起始帧数
-					pInstrumentNext->m_uiADCDataFrameStartNum = 0;
+					pInstrumentNext->m_iADCDataFrameStartNum = 0;
 				}
 				else
 				{
@@ -6475,8 +6475,8 @@ MatrixServerDll_API void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pADCSetThread->m_bADCStartSample = true;
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
-	pEnv->m_pADCDataRecThread->m_usADCDataFramePointOld = 0;
-	pEnv->m_pADCDataRecThread->m_uiADCFrameRowCount = 0;
+	pEnv->m_pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
+	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
 	// 清空丢帧索引
 	pEnv->m_pADCDataRecThread->m_oADCLostFrameMap.clear();
 	// 重置ADC开始采集命令成功的标志位
@@ -8581,6 +8581,15 @@ MatrixServerDll_API void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDat
 		}		
 	}
 }
+// 将ADC数据加入到任务列表
+MatrixServerDll_API void AddToADCDataWriteFileList(unsigned int uiFileNb, unsigned int uiFrameInFileNb, unsigned int uiIP, m_oADCDataRecThreadStruct* pADCDataRecThread)
+{
+	// @@@@ADC解析数据加锁，写施工放炮文件加锁
+// 	// 调试用
+// 	CString str = _T("");
+// 	str.Format(_T("仪器IP = 0x%x，写入文件序号 = %d，帧序号 = %d"), uiIP, uiFileNb, uiFrameInFileNb);
+// 	AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", ConvertCStrToStr(str));
+}
 // 处理单个ADC数据帧
 MatrixServerDll_API void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
@@ -8598,6 +8607,10 @@ MatrixServerDll_API void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCD
 	unsigned short usADCFramePointLimit = 0;
 	m_oADCLostFrameKeyStruct oLostFrameKey;
 	ADCLostFrame_Struct* pADCLostFrame = NULL;
+	// 文件序号
+	unsigned int uiFileNb = 0;
+	// 文件内帧序号
+	unsigned int uiFrameInFileNb = 0;
 	if (pADCDataRecThread == NULL)
 	{
 		return;
@@ -8633,18 +8646,18 @@ MatrixServerDll_API void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCD
 				pInstrument->m_uiADCDataRetransmissionFrameNum++;
 				pADCLostFrame->m_bReturnOk = true;
 				// 将该应答帧数据写入文件
-
+				uiFileNb = pADCLostFrame->m_uiFileNb;
+				uiFrameInFileNb = pADCLostFrame->m_uiFrameInFileNb;
+				AddToADCDataWriteFileList(uiFileNb, uiFrameInFileNb, pInstrument->m_uiIP, pADCDataRecThread);
 			}
 			return;
 		}
-		// @@@调试用
+// 		// 调试用
 // 		if (usADCDataFramePointNow == 288)
 // 		{
 // 			return;
 // 		}
-		pInstrument->m_uiADCDataActualRecFrameNum++;
-		pInstrument->m_uiADCDataShouldRecFrameNum++;
-		if (pInstrument->m_uiADCDataActualRecFrameNum > 1)
+		if (pInstrument->m_uiADCDataActualRecFrameNum > 0)
 		{
 			if (usADCDataFramePointNow > usADCFramePointLimit)
 			{
@@ -8675,6 +8688,15 @@ MatrixServerDll_API void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCD
 			}
 			else
 			{
+				if (uiADCDataFrameSysTimeNow != pADCDataRecThread->m_uiADCDataFrameSysTime)
+				{
+					pADCDataRecThread->m_iADCFrameCount++;
+				}
+				if (pInstrument->m_uiADCDataActualRecFrameNum == 1)
+				{
+					pInstrument->m_iADCDataFrameStartNum = pADCDataRecThread->m_iADCFrameCount - 1 - 1;
+				}
+
 				uiLostFrameNum = uiADCDataFramePointMove / iADCDataInOneFrameNum - 1;
 				if (uiLostFrameNum > 0)
 				{
@@ -8689,43 +8711,40 @@ MatrixServerDll_API void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCD
 						{
 							Key.m_usADCFramePointNb = Key.m_usADCFramePointNb - usADCFramePointLimit;
 						}
-
-						// 						ADCLostFrame.m_uiFileNb = (pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_uiADCDataFrameStartNum) / iADCFrameSaveInOneFileNum;
-						// 						if ((pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_uiADCDataFrameStartNum) % iADCFrameSaveInOneFileNum != 0)
-						// 						{
-						// 							ADCLostFrame.m_uiFileNb += 1;
-						// 						}
-						/*oADCLostFrame.m_uiRowNb = pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_uiADCDataFrameStartNum - */
-						pInstrument->m_uiADCDataShouldRecFrameNum++;
 						ADCLostFrame.m_uiCount = 0;
 						ADCLostFrame.m_bReturnOk = false;
+						ADCLostFrame.m_uiFileNb = (pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum) / iADCFrameSaveInOneFileNum;
+						ADCLostFrame.m_uiFrameInFileNb = (pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum) % iADCFrameSaveInOneFileNum;
 						AddToADCFrameLostMap(Key, ADCLostFrame, &pADCDataRecThread->m_oADCLostFrameMap);
+						pInstrument->m_uiADCDataShouldRecFrameNum++;
+						// 在丢帧的位置写当前帧的内容
+						AddToADCDataWriteFileList(ADCLostFrame.m_uiFileNb, ADCLostFrame.m_uiFrameInFileNb, pInstrument->m_uiIP, pADCDataRecThread);
 					}
 					str.Format(_T("仪器SN = 0x%x，IP = 0x%x，丢失帧数为%d"), pInstrument->m_uiSN, pInstrument->m_uiIP, uiLostFrameNum);
 					AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", ConvertCStrToStr(str), WarningType);
 					AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", ConvertCStrToStr(str), WarningType);
 				}
-				// 				if (pADCDataRecThread->m_usADCDataFramePointOld != usADCDataFramePointNow)
-				// 				{
-				// 				}
+				// 数据采样第一帧数据不写入文件
+				uiFileNb = (pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum) / iADCFrameSaveInOneFileNum;
+				uiFrameInFileNb = (pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum) % iADCFrameSaveInOneFileNum;
+				AddToADCDataWriteFileList(uiFileNb, uiFrameInFileNb, pInstrument->m_uiIP, pADCDataRecThread);
 			}
 		}
-		else
-		{
-			pInstrument->m_uiADCDataFrameStartNum = pADCDataRecThread->m_uiADCFrameRowCount;
-		}
-		pADCDataRecThread->m_usADCDataFramePointOld = usADCDataFramePointNow;
+
+		pADCDataRecThread->m_uiADCDataFrameSysTime = uiADCDataFrameSysTimeNow;
+		pInstrument->m_uiADCDataActualRecFrameNum++;
+		pInstrument->m_uiADCDataShouldRecFrameNum++;
 		pInstrument->m_usADCDataFramePoint = usADCDataFramePointNow;
 		pInstrument->m_uiADCDataFrameSysTime = uiADCDataFrameSysTimeNow;
 		str.Format(_T("仪器SN = 0x%x，IP = 0x%x；"), pInstrument->m_uiSN, pInstrument->m_uiIP);
 		strOut += str;
 		str.Format(_T("接收帧的指针偏移量为 %d，差值为 %d；"), pInstrument->m_usADCDataFramePoint, uiADCDataFramePointMove);
 		strOut += str;
-		str.Format(_T("本地时间为 %d，差值为%d"), pInstrument->m_uiADCDataFrameSysTime, uiADCDataFrameSysTimeMove);
+		str.Format(_T("本地时间为 %d，差值为%d；"), pInstrument->m_uiADCDataFrameSysTime, uiADCDataFrameSysTimeMove);
+		strOut += str;
+		str.Format(_T("应收帧数为 %d, 起始的帧数为%d"), pInstrument->m_uiADCDataShouldRecFrameNum, pInstrument->m_iADCDataFrameStartNum);
 		strOut += str;
 		AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", ConvertCStrToStr(strOut));
-
-		// 将数据写入文件
 	}
 }
 // 处理ADC数据接收帧
@@ -8797,6 +8816,7 @@ MatrixServerDll_API void ProcADCRetransmission(m_oADCDataRecThreadStruct* pADCDa
 		// 重发次数大于指定次数则从索引中删除
 		else if (pLostFrame->m_uiCount > 6)
 		{
+			// 没有收到重发帧应答
 			if (pLostFrame->m_bReturnOk == false)
 			{
 				// 没有收到重发帧
@@ -8852,8 +8872,8 @@ MatrixServerDll_API bool OnInitADCDataRecThread(m_oADCDataRecThreadStruct* pADCD
 	{
 		return false;
 	}
-	pADCDataRecThread->m_usADCDataFramePointOld = 0;
-	pADCDataRecThread->m_uiADCFrameRowCount = 0;
+	pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
+	pADCDataRecThread->m_iADCFrameCount = 0;
 	pADCDataRecThread->m_oADCLostFrameMap.clear();
 	::ResetEvent(pADCDataRecThread->m_pThread->m_hThreadClose);	// 设置事件对象为无信号状态
 	// 创建线程
