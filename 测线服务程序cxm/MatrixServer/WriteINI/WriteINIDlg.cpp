@@ -168,6 +168,14 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 
 	strSection = _T("常量设置");			// 获取当前区域
 
+	strSectionKey=_T("InstrumentCountAll");			// 仪器个数
+	strValue = _T("20000");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCDataCountAll");			// ADC数据缓冲区个数
+	strValue = _T("200000");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSectionKey=_T("OneSleepTime");				// 一次休眠的时间
 	strValue = _T("50");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);

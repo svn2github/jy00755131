@@ -71,7 +71,7 @@ typedef struct LogOutPut_Struct
 	// 错误计数
 	unsigned int m_uiErrorCount;
 	// 日志输出路径
-	CString m_csSaveLogFilePath;
+	string m_SaveLogFilePath;
 	// 日志文件序号
 	unsigned int m_uiLogFileNb;
 	// 日志文件存储信息条数记数
@@ -83,6 +83,10 @@ typedef struct LogOutPut_Struct
 typedef struct ConstVar_Struct
 {
 	//____常量设置____
+	// 仪器设备个数
+	unsigned int m_iInstrumentNum;
+	// ADC数据缓冲区个数
+	int m_iADCDataCountAll;
 	// 一次休眠的时间
 	int m_iOneSleepTime;
 	// 日志输出线程写日志的延时次数
@@ -345,8 +349,6 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned short m_usErrorCodeReturnPort;
 	// ADC数据返回端口
 	unsigned short m_usADCDataReturnPort;
-	// 仪器设备个数
-	unsigned int m_uiInstrumentNum;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oInstrumentCommInfoStruct;
@@ -1064,14 +1066,6 @@ typedef struct ADCLostFrame_Struct
 	unsigned int m_uiFrameInFileNb;
 	// 是否已经收到应答
 	bool m_bReturnOk;
-	// 	void operator = (const ADCLostFrame_Struct& rhs)
-	// 	{
-	// 		m_uiCount = rhs.m_uiCount;
-	// 		m_uiFileNb = rhs.m_uiFileNb;
-	// 		m_uiRowNb = rhs.m_uiRowNb;
-	// 		m_uiLineNb = rhs.m_uiLineNb;
-	// 		m_bReturnOk = rhs.m_bReturnOk;
-	// 	}
 }m_oADCLostFrameStruct;
 // ADC数据接收线程
 typedef struct ADCDataRecThread_Struct
@@ -1107,6 +1101,78 @@ typedef struct MonitorThread_Struct
 	// 误码查询线程
 	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
 }m_oMonitorThreadStruct;
+// 数据存储缓冲区结构体
+typedef struct ADCDataBuf_Struct
+{
+	// 缓冲区是否使用中
+	bool m_bInUsed;
+	// ADC数据存储缓冲区
+	int* m_pADCDataBuf;
+	// 数据存储文件夹号
+	unsigned int m_uiFolderNb;
+	// 数据存储文件号，从0开始
+	unsigned int m_uiFileNb;
+	// 数据存储帧序号，从0开始
+	unsigned int m_uiFrameInFileNb;
+	// 采样仪器SN
+	unsigned int m_uiSN;
+	// 缓冲区序号
+	unsigned int m_uiIndex;
+}m_oADCDataBufStruct;
+// 数据存储缓冲区结构体
+typedef struct ADCDataBufArray_Struct
+{
+	// 缓冲区资源同步对象
+	CRITICAL_SECTION m_oSecADCDataBufArray;
+	/** 缓冲区数组指针*/
+	m_oADCDataBufStruct* m_pArrayADCDataBuf;
+	/** 缓冲区队列*/
+	list<m_oADCDataBufStruct*> m_olsADCDataBufFree;
+	// 写入文件的数据缓冲区索引
+	hash_map<unsigned int, m_oADCDataBufStruct*> m_oADCDataMap;
+	/** 缓冲区总数*/
+	unsigned int m_uiCountAll;
+	/** 空闲缓冲区数量*/
+	unsigned int m_uiCountFree;
+}m_oADCDataBufArrayStruct;
+// 施工任务结构体
+typedef struct OptTask_Struct
+{
+	// 任务是否使用中
+	bool m_bInUsed;
+	// 任务序号
+	unsigned int m_uiIndex;
+	// 施工数据输出文件指针
+	FILE* m_pFile;
+	// 施工任务索引表，关键字为SN，内容为行号
+	hash_map<unsigned int, unsigned int> m_oSNMap;
+}m_oOptTaskStruct;
+// 施工任务结构体数组
+typedef struct OptTaskArray_Struct
+{
+	/** 施工任务数组指针*/
+	m_oOptTaskStruct* m_pArrayOptTask;
+	// 空闲的施工任务队列
+	list<m_oOptTaskStruct*> m_olsOptTaskFree;
+	// 正在进行的施工任务索引
+	hash_map<unsigned int, m_oOptTaskStruct*> m_oOptTaskMap;
+	/** 施工任务总数*/
+	unsigned int m_uiOptTaskCountAll;
+	/** 空闲任务数量*/
+	unsigned int m_uiOptTaskCountFree;
+}m_oOptTaskArrayStruct;
+// 施工放炮数据存储线程
+typedef struct ADCDataSaveThread_Struct
+{
+	// 线程结构体指针
+	m_oThreadStruct* m_pThread;
+	// 数据存储缓冲区结构体指针
+	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
+	// 施工任务数组结构体指针
+	m_oOptTaskArrayStruct* m_pOptTaskArray;
+
+}m_oADCDataSaveThreadStruct;
+
 // 环境结构体
 typedef struct Environment_Struct
 {
@@ -1144,6 +1210,11 @@ typedef struct Environment_Struct
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由对列结构
 	m_oRoutListStruct* m_pRoutList;
+	// 数据存储缓冲区结构体指针
+	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
+	// 施工任务数组结构体指针
+	m_oOptTaskArrayStruct* m_pOptTaskArray;
+
 	// 日志输出线程
 	m_oLogOutPutThreadStruct* m_pLogOutPutThread;
 	// 心跳线程
@@ -1164,6 +1235,7 @@ typedef struct Environment_Struct
 	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
 	// ADC数据接收线程
 	m_oADCDataRecThreadStruct* m_pADCDataRecThread;
+
 }m_oEnvironmentStruct;
 
 // 创建实例，并返回实例指针
