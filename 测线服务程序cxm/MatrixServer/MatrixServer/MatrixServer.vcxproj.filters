@@ -39,9 +39,6 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="SiteManage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CXMLDOMDocument.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -57,67 +54,7 @@
     <ClInclude Include="XMLDOMTool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="FrameHeartBeat.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketHeartBeatFrame.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadProcHeartBeat.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SiteData.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="NetProcInterface.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameInterface.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameHead.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketHeadFrame.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadProcHeadFrame.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Instrument.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="InstrumentList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rout.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="RoutList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameIPSet.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketIPSetFrame.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadProcIPSet.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameTail.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketTailFrame.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadProcTailFrame.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Parameter.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -131,67 +68,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="SiteManage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="XMLDOMTool.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameHeartBeat.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketHeartBeatFrame.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadProcHeartBeat.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SiteData.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="NetProcInterface.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameInterface.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameHead.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketHeadFrame.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadProcHeadFrame.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Instrument.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="InstrumentList.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rout.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RoutList.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameIPSet.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketIPSetFrame.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadProcIPSet.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameTail.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketTailFrame.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadProcTailFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

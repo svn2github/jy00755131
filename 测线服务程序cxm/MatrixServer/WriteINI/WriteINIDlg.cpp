@@ -176,6 +176,10 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("200000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("OptTaskCountAll");			// 施工任务个数
+	strValue = _T("20");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSectionKey=_T("OneSleepTime");				// 一次休眠的时间
 	strValue = _T("50");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
@@ -217,7 +221,11 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("ADCDataRecSleepTimes");		// ADC数据接收线程延时次数
-	strValue = _T("1");
+	strValue = _T("2");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCDataSaveSleepTimes");		// ADC数据存储线程延时次数
+	strValue = _T("4");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CloseThreadSleepTimes");		// 等待线程关闭的延时次数

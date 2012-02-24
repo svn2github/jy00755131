@@ -3,7 +3,6 @@
 //
 
 #pragma once
-#include "SiteManage.h"
 #include "..\\MatrixServerDll\\MatrixServerDll.h"
 // CMatrixServerDlg 对话框
 class CMatrixServerDlg : public CDialogEx
@@ -36,8 +35,6 @@ public:
 	afx_msg void OnBnClickedBnRefresh();
 	afx_msg void OnBnClickedBnSave();
 public:
-	/** 现场管理对象*/
-	CSiteManage m_oSiteManage;
 	HMODULE hMod;
 	m_oEnvironmentStruct* pEnv;
 	afx_msg void OnDestroy();

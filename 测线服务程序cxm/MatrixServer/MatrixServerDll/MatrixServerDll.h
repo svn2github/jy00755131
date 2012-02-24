@@ -87,6 +87,8 @@ typedef struct ConstVar_Struct
 	unsigned int m_iInstrumentNum;
 	// ADC数据缓冲区个数
 	int m_iADCDataCountAll;
+	// 施工任务个数
+	int m_iOptTaskCountAll;
 	// 一次休眠的时间
 	int m_iOneSleepTime;
 	// 日志输出线程写日志的延时次数
@@ -109,6 +111,8 @@ typedef struct ConstVar_Struct
 	int m_iErrorCodeSleepTimes;
 	// ADC数据接收线程延时次数
 	int m_iADCDataRecSleepTimes;
+	// ADC数据存储线程延时次数
+	int m_iADCDataSaveSleepTimes;
 	// 等待线程关闭的延时次数
 	int m_iCloseThreadSleepTimes;
 
@@ -650,7 +654,7 @@ typedef struct InstrumentList_Struct
 	// 未完成ADC参数设置的仪器队列
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oADCSetInstrumentMap;
 	// 测网系统发生变化的时间
-	ULONGLONG m_ullLineChangeTime;
+	unsigned int m_uiLineChangeTime;
 	// 测网状态由不稳定变为稳定
 	bool m_bLineStableChange;
 	/** 仪器总数*/
@@ -674,7 +678,7 @@ typedef struct Rout_Struct
 	/** 路由尾仪器*/
 	Instrument_Struct* m_pTail;
 	/** 路由时刻*/
-	ULONGLONG m_ullRoutTime;
+	unsigned int m_uiRoutTime;
 	/** 路由是否为交叉线路由*/
 	bool m_bRoutLaux;
 	/** 路由是否接收到ADC设置参数应答*/
@@ -1144,12 +1148,16 @@ typedef struct OptTask_Struct
 	unsigned int m_uiIndex;
 	// 施工数据输出文件指针
 	FILE* m_pFile;
+	// 施工数据输出前一个文件指针
+	FILE* m_pPreviousFile;
 	// 施工任务索引表，关键字为SN，内容为行号
 	hash_map<unsigned int, unsigned int> m_oSNMap;
 }m_oOptTaskStruct;
 // 施工任务结构体数组
 typedef struct OptTaskArray_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecOptTaskArray;
 	/** 施工任务数组指针*/
 	m_oOptTaskStruct* m_pArrayOptTask;
 	// 空闲的施工任务队列
@@ -1157,9 +1165,9 @@ typedef struct OptTaskArray_Struct
 	// 正在进行的施工任务索引
 	hash_map<unsigned int, m_oOptTaskStruct*> m_oOptTaskMap;
 	/** 施工任务总数*/
-	unsigned int m_uiOptTaskCountAll;
+	unsigned int m_uiCountAll;
 	/** 空闲任务数量*/
-	unsigned int m_uiOptTaskCountFree;
+	unsigned int m_uiCountFree;
 }m_oOptTaskArrayStruct;
 // 施工放炮数据存储线程
 typedef struct ADCDataSaveThread_Struct
@@ -1235,7 +1243,8 @@ typedef struct Environment_Struct
 	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
 	// ADC数据接收线程
 	m_oADCDataRecThreadStruct* m_pADCDataRecThread;
-
+	// 施工放炮数据存储线程
+	m_oADCDataSaveThreadStruct* m_pADCDataSaveThread;
 }m_oEnvironmentStruct;
 
 // 创建实例，并返回实例指针

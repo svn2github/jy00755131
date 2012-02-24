@@ -106,12 +106,20 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	hMod = LoadLibrary(_T("MatrixServerDll"));
+	hMod = ::LoadLibrary(_T("MatrixServerDll.dll"));
 	Create_Instance a = NULL;
+	CString str = _T("");
+	int ierr = 0;
 	if (hMod)
 	{
 		a = (Create_Instance)GetProcAddress(hMod, "OnCreateInstance");
 		pEnv = (*a)();
+	}
+	else
+	{
+		ierr = GetLastError();
+		str.Format(_T("载入失败！错误码为%d。"), ierr);
+		AfxMessageBox(str);
 	}
 	// 现场管理对象初始化
 	//	m_oSiteManage.OnInit();
@@ -235,7 +243,7 @@ void CMatrixServerDlg::OnDestroy()
 	{
 		b = (Free_Instance)GetProcAddress(hMod, "OnFreeInstance");
 		(*b)(pEnv);
-		FreeLibrary(hMod);
+		::FreeLibrary(hMod);
 	}
 }
 
