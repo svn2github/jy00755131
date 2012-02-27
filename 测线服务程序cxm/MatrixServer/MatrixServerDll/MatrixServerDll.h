@@ -172,6 +172,16 @@ typedef struct ConstVar_Struct
 	int m_iIPBroadcastAddr;
 	// 一个文件内存储单个设备ADC数据帧数
 	int m_iADCFrameSaveInOneFileNum;
+	// 存储ADC数据的文件头行数
+	int m_iADCSaveHeadLineNum;
+	// 存储ADC数据的左侧预留信息字节数
+	int m_iADCSaveLeftInfoBytes;
+	// 存储ADC数据的字节数
+	int m_iADCSaveDataBytes;
+	// 存储ADC数据之间的间隔字节数
+	int m_iADCSaveDataIntervalBytes;
+	// 设备ADC数据缓冲区大小
+	int m_iADCDataBufSize;
 
 	//____帧格式设置____
 	// 帧头长度
@@ -1144,10 +1154,12 @@ typedef struct OptTask_Struct
 	unsigned int m_uiIndex;
 	// 施工任务开始记录的数据帧数
 	unsigned int m_uiStartFrame;
-	// 施工数据存储文件计数
-	unsigned int m_uiFileCount;
 	// 施工数据输出文件指针
 	FILE* m_pFile;
+	// 施工数据输出前一个文件的文件指针
+	FILE* m_pPreviousFile;
+	// 最新的文件存储序号
+	unsigned int m_uiFileSaveNb;
 	// 施工数据存储文件路径
 	string m_SaveLogFilePath;
 	// 施工任务索引表，关键字为SN，内容为行号

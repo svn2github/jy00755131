@@ -329,6 +329,26 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("406");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("ADCSaveHeadLineNum");		// 存储ADC数据的文件头行数
+	strValue = _T("3");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCSaveLeftInfoBytes");	// 存储ADC数据的左侧预留信息字节数
+	strValue = _T("10");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCSaveDataBytes");		// 存储ADC数据的字节数
+	strValue = _T("10");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCSaveDataIntervalBytes");	// 存储ADC数据之间的间隔字节数
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCDataBufSize");			// 设备ADC数据缓冲区大小
+	strValue = _T("2048");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSection = _T("帧格式设置");			// 获取当前区域
 
 	strSectionKey=_T("FrameHeadSize");		// 帧头长度
