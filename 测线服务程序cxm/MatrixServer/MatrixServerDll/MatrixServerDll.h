@@ -1076,6 +1076,8 @@ typedef struct ADCLostFrame_Struct
 	unsigned int m_uiCount;
 	// 丢帧在文件内的帧序号，从0开始
 	unsigned int m_uiFrameNb;
+	// 丢失帧的本地时间
+	unsigned int m_uiSysTime;
 	// 是否已经收到应答
 	bool m_bReturnOk;
 }m_oADCLostFrameStruct;
@@ -1090,6 +1092,8 @@ typedef struct ADCDataBuf_Struct
 	unsigned int m_uiFrameNb;
 	// 采样仪器SN
 	unsigned int m_uiSN;
+	// 帧的本地时间
+	unsigned int m_uiSysTime;
 	// 缓冲区序号
 	unsigned int m_uiIndex;
 }m_oADCDataBufStruct;
@@ -1145,6 +1149,27 @@ typedef struct MonitorThread_Struct
 	// 误码查询线程
 	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
 }m_oMonitorThreadStruct;
+// 参与施工的仪器结构体
+typedef struct OptInstrument_Struct
+{
+	// SN
+	unsigned int m_uiSN;
+	/** 测线*/
+	int m_iLineNb;
+	/** 测点号*/
+	int m_iPointIndex;
+	bool operator < (const OptInstrument_Struct& rhs) const
+	{
+		if (m_iLineNb == rhs.m_iLineNb)
+		{
+			return (m_iPointIndex < rhs.m_iPointIndex);
+		}
+		else
+		{
+			return (m_iLineNb < rhs.m_iLineNb);
+		}
+	}
+}m_oOptInstrumentStruct;
 // 施工任务结构体
 typedef struct OptTask_Struct
 {
@@ -1164,6 +1189,8 @@ typedef struct OptTask_Struct
 	string m_SaveLogFilePath;
 	// 施工任务索引表，关键字为SN，内容为行号
 	hash_map<unsigned int, unsigned int> m_oSNMap;
+	// 参与施工的仪器队列
+	list<m_oOptInstrumentStruct> m_olsOptInstrument;
 }m_oOptTaskStruct;
 // 施工任务结构体数组
 typedef struct OptTaskArray_Struct

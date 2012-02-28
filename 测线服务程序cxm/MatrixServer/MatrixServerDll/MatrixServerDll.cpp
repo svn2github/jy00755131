@@ -297,7 +297,10 @@ MatrixServerDll_API void CloseLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 	}
 	errno_t err;
 	WriteLogOutPutListToFile(pLogOutPut);
-	err = fclose( pLogOutPut->m_pFile );
+	if (pLogOutPut->m_pFile != NULL)
+	{
+		err = fclose( pLogOutPut->m_pFile );
+	}
 }
 
 // 初始化日志输出结构体
@@ -545,6 +548,7 @@ MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pComma
 		iPos += pConstVar->m_iFramePacketSize2B;
 		for (int i=0; i<pConstVar->m_iADCDataInOneFrameNum; i++)
 		{
+			iTemp = 0;
 			memcpy(&iTemp, &pFrameData[iPos], pConstVar->m_iADCDataSize3B);
 			iPos += pConstVar->m_iADCDataSize3B;
 			if (iTemp > 0x800000)
@@ -3991,6 +3995,8 @@ MatrixServerDll_API void OnADCDataBufReset(m_oADCDataBufStruct* pADCDataBuf)
 	pADCDataBuf->m_uiFrameNb = 0;
 	// 采样仪器SN
 	pADCDataBuf->m_uiSN = 0;
+	// 帧的本地时间
+	pADCDataBuf->m_uiSysTime = 0;
 }
 // 创建数据存储缓冲区结构体
 MatrixServerDll_API m_oADCDataBufArrayStruct* OnCreateADCDataBufArray(void)
@@ -4144,6 +4150,8 @@ MatrixServerDll_API void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	pOptTask->m_uiFileSaveNb = 0;
 	// 施工任务索引表，关键字为SN，内容为行号
 	pOptTask->m_oSNMap.clear();
+	// 参与施工的仪器队列
+	pOptTask->m_olsOptInstrument.clear();
 }
 // 创建施工任务数组结构体
 MatrixServerDll_API m_oOptTaskArrayStruct* OnCreateOptTaskArray(void)
@@ -4290,7 +4298,7 @@ MatrixServerDll_API BOOL IfIndexExistInOptTaskMap(unsigned int uiIndex,
 	return bResult;
 }
 // 判断仪器SN号是否已加入施工任务仪器索引表
-MatrixServerDll_API BOOL IfIndexExistInOptTaskSNMap(unsigned int uiIndex, unsigned int& uiLineIndex,
+MatrixServerDll_API BOOL IfIndexExistInOptTaskSNMap(unsigned int uiIndex,
 	hash_map<unsigned int, unsigned int>* pMap)
 {
 	BOOL bResult = FALSE;
@@ -4299,7 +4307,6 @@ MatrixServerDll_API BOOL IfIndexExistInOptTaskSNMap(unsigned int uiIndex, unsign
 	if (iter != pMap->end())
 	{
 		bResult = TRUE;
-		uiLineIndex = iter->second;
 	}
 	else
 	{
@@ -4307,11 +4314,28 @@ MatrixServerDll_API BOOL IfIndexExistInOptTaskSNMap(unsigned int uiIndex, unsign
 	}
 	return bResult;
 }
+// 从施工任务仪器索引表中得到仪器的行号
+MatrixServerDll_API unsigned int GetLineNbFromOptTaskSNMap(unsigned int uiIndex,
+	hash_map<unsigned int, unsigned int>* pMap)
+{
+	hash_map<unsigned int, unsigned int>::iterator iter;
+	iter = pMap->find(uiIndex);
+	return iter->second;
+}
+// 向施工任务仪器索引表中加入仪器
+MatrixServerDll_API void AddToOptTaskSNMap(unsigned int uiIndex, unsigned int uiLineNb,
+	hash_map<unsigned int, unsigned int>* pMap)
+{
+	if (FALSE == IfIndexExistInOptTaskSNMap(uiIndex, pMap))
+	{
+		pMap->insert(hash_map<unsigned int, unsigned int>::value_type (uiIndex, uiLineNb));
+	}
+}
 // 增加一个施工任务
 MatrixServerDll_API void AddOptTaskToMap(unsigned int uiIndex, m_oOptTaskStruct* pOptTask, 
 	hash_map<unsigned int, m_oOptTaskStruct*>* pMap)
 {
-	if (false == IfIndexExistInOptTaskMap(uiIndex, pMap))
+	if (FALSE == IfIndexExistInOptTaskMap(uiIndex, pMap))
 	{
 		pMap->insert(hash_map<unsigned int, m_oOptTaskStruct*>::value_type (uiIndex, pOptTask));
 	}
@@ -4343,11 +4367,16 @@ MatrixServerDll_API BOOL DeleteOptTaskFromMap(unsigned int uiIndex,
 	return bResult;
 }
 // 产生一个施工任务
-MatrixServerDll_API void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame, m_oOptTaskArrayStruct* pOptTaskArray)
+MatrixServerDll_API void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame, 
+	m_oOptTaskArrayStruct* pOptTaskArray, m_oInstrumentListStruct* pInstrumentList,
+	m_oConstVarStruct* pConstVar)
 {
 	m_oOptTaskStruct* pOptTask = NULL;
 	CString str = _T("");
 	CString str2 = _T("");
+	unsigned int uiLineNb = 0;
+	hash_map <unsigned int, m_oInstrumentStruct*>::iterator iter;
+	list<m_oOptInstrumentStruct>::iterator list_iter;
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	pOptTaskArray->m_uiADCDataFolderNb++;
 	// 得到一个空闲施工任务
@@ -4366,7 +4395,28 @@ MatrixServerDll_API void GenOneOptTask(unsigned int uiIndex, unsigned int uiStar
 	// 创建施工任务数据文件夹
 	pOptTask->m_SaveLogFilePath = ConvertCStrToStr(str2);
 	// @@@@参与施工任务的采集站排序后加入施工任务的仪器索引表
-	pOptTask->m_oSNMap.clear();
+	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	for (iter = pInstrumentList->m_oIPInstrumentMap.begin(); 
+		iter != pInstrumentList->m_oIPInstrumentMap.end(); iter++)
+	{
+		if (iter->second->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
+		{
+			m_oOptInstrumentStruct oOptInstrument;
+			oOptInstrument.m_uiSN = iter->second->m_uiSN;
+			oOptInstrument.m_iLineNb = iter->second->m_iLineNb;
+			oOptInstrument.m_iPointIndex = iter->second->m_iPointIndex;
+			pOptTask->m_olsOptInstrument.push_back(oOptInstrument);
+		}
+	}
+	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	pOptTask->m_olsOptInstrument.sort();
+	for (list_iter = pOptTask->m_olsOptInstrument.begin();
+		list_iter != pOptTask->m_olsOptInstrument.end();
+		list_iter++)
+	{
+		AddToOptTaskSNMap(list_iter->m_uiSN, uiLineNb, &pOptTask->m_oSNMap);
+		uiLineNb++;
+	}
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	// 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	// 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
@@ -4378,8 +4428,14 @@ MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStr
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	// 得到施工任务
 	pOptTask = GetOptTaskFromMap(uiIndex, &pOptTaskArray->m_oOptTaskWorkMap);
-	fclose(pOptTask->m_pPreviousFile);
-	fclose(pOptTask->m_pFile);
+	if (pOptTask->m_pPreviousFile != NULL)
+	{
+		fclose(pOptTask->m_pPreviousFile);
+	}
+	if (pOptTask->m_pFile != NULL)
+	{
+		fclose(pOptTask->m_pFile);
+	}
 	// 将施工任务加入到空闲列表
 	AddFreeOptTask(pOptTask, pOptTaskArray);
 	// 从施工任务索引表中删除
@@ -6945,8 +7001,12 @@ MatrixServerDll_API void OnADCSet(m_oEnvironmentStruct* pEnv)
 // ADC开始采集命令
 MatrixServerDll_API void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 {
+	// @@@@调试用
 	// 产生一个施工任务
-	GenOneOptTask(1, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
+	GenOneOptTask(1, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray,
+		pEnv->m_pInstrumentList, pEnv->m_pConstVar);
+	// 产生一个施工任务
+//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
 	pEnv->m_pADCSetThread->m_bADCStartSample = true;
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
@@ -6962,8 +7022,11 @@ MatrixServerDll_API void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 // ADC停止采集命令
 MatrixServerDll_API void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 {
+	// @@@@调试用
 	// 释放一个施工任务
 	FreeOneOptTask(1, pEnv->m_pOptTaskArray);
+	// 释放一个施工任务
+//	FreeOneOptTask(2, pEnv->m_pOptTaskArray);
 	pEnv->m_pADCSetThread->m_bADCStartSample = false;
 	pEnv->m_pADCSetThread->m_bADCStopSample = true;
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = false;
@@ -9065,7 +9128,7 @@ MatrixServerDll_API void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDat
 	}
 }
 // 将ADC数据加入到任务列表
-MatrixServerDll_API void AddToADCDataWriteFileList(unsigned int uiFrameNb, unsigned int uiSN, m_oADCDataRecThreadStruct* pADCDataRecThread)
+MatrixServerDll_API void AddToADCDataWriteFileList(unsigned int uiFrameNb, unsigned int uiSN, unsigned int uiSysTime, m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
 	// @@@@ADC解析数据加锁，写施工放炮文件加锁
 	// 	// 调试用
@@ -9078,8 +9141,9 @@ MatrixServerDll_API void AddToADCDataWriteFileList(unsigned int uiFrameNb, unsig
 	pADCDataBuf = GetFreeADCDataBuf(pADCDataRecThread->m_pADCDataBufArray);
 	pADCDataBuf->m_uiFrameNb = uiFrameNb;
 	pADCDataBuf->m_uiSN = uiSN;
+	pADCDataBuf->m_uiSysTime = uiSysTime;
 	memcpy(pADCDataBuf->m_pADCDataBuf, pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
-		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum);
+		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * sizeof(int));
 	pADCDataRecThread->m_pADCDataBufArray->m_olsADCDataToWrite.push_back(pADCDataBuf);
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
@@ -9139,7 +9203,7 @@ MatrixServerDll_API void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCD
 				pADCLostFrame->m_bReturnOk = true;
 				// 将该应答帧数据写入文件
 				uiFrameNb = pADCLostFrame->m_uiFrameNb;
-				AddToADCDataWriteFileList(uiFrameNb, pInstrument->m_uiSN, pADCDataRecThread);
+				AddToADCDataWriteFileList(uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
 			}
 			return;
 		}
@@ -9205,10 +9269,12 @@ MatrixServerDll_API void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCD
 						ADCLostFrame.m_uiCount = 0;
 						ADCLostFrame.m_bReturnOk = false;
 						ADCLostFrame.m_uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum;
+						// @@@@1K采样率的时间差为288
+						ADCLostFrame.m_uiSysTime = pInstrument->m_uiADCDataFrameSysTime + (i + 1) * 288;
 						AddToADCFrameLostMap(Key, ADCLostFrame, &pADCDataRecThread->m_oADCLostFrameMap);
 						pInstrument->m_uiADCDataShouldRecFrameNum++;
 						// 在丢帧的位置写当前帧的内容
-						AddToADCDataWriteFileList(ADCLostFrame.m_uiFrameNb, pInstrument->m_uiSN, pADCDataRecThread);
+						AddToADCDataWriteFileList(ADCLostFrame.m_uiFrameNb, pInstrument->m_uiSN, ADCLostFrame.m_uiSysTime, pADCDataRecThread);
 					}
 					str.Format(_T("仪器SN = 0x%x，IP = 0x%x，丢失帧数为%d"), pInstrument->m_uiSN, pInstrument->m_uiIP, uiLostFrameNum);
 					AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", ConvertCStrToStr(str), WarningType);
@@ -9218,7 +9284,7 @@ MatrixServerDll_API void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCD
 				// 				uiFileNb = (pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum) / iADCFrameSaveInOneFileNum;
 				// 				uiFrameNb = (pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum) % iADCFrameSaveInOneFileNum;
 				uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum;
-				AddToADCDataWriteFileList(uiFrameNb, pInstrument->m_uiSN, pADCDataRecThread);
+				AddToADCDataWriteFileList(uiFrameNb, pInstrument->m_uiSN, uiADCDataFrameSysTimeNow, pADCDataRecThread);
 			}
 		}
 
@@ -9473,6 +9539,7 @@ MatrixServerDll_API void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCData
 	CString strPath = _T("");
 	CString str = _T("");
 	string strOut = "";
+	FILE* pFile = NULL;
 	char pdata[100];
 	size_t strOutSize = 0;
 	long lOffSet = 0;
@@ -9490,14 +9557,15 @@ MatrixServerDll_API void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCData
 	}
 	uiFrameInFileNb = (pADCDataBuf->m_uiFrameNb - pOptTask->m_uiStartFrame) % pConstVar->m_iADCFrameSaveInOneFileNum;
 	// 得到文件路径
-	strPath.Format(_T("%d.txt"), uiFileNb);
+	strPath.Format(_T("\\%d.txt"), uiFileNb);
 	str = pOptTask->m_SaveLogFilePath.c_str();
 	strPath = str + strPath;
 	// 一行的长度=左侧信息长度+（间隔长度+数据长度）*数据帧数*一帧数据个数 + 换行符长度
 	uiLineLength = pConstVar->m_iADCSaveLeftInfoBytes + (pConstVar->m_iADCSaveDataIntervalBytes + pConstVar->m_iADCSaveDataBytes)
 		* pConstVar->m_iADCFrameSaveInOneFileNum * pConstVar->m_iADCDataInOneFrameNum + 2;
 	uiLineNb = pConstVar->m_iADCSaveHeadLineNum + uiLineIndex;
-	uiRowNb = pConstVar->m_iADCSaveLeftInfoBytes + (pConstVar->m_iADCSaveDataIntervalBytes + pConstVar->m_iADCSaveDataBytes) * uiFrameInFileNb;
+	uiRowNb = pConstVar->m_iADCSaveLeftInfoBytes + (pConstVar->m_iADCSaveDataIntervalBytes + pConstVar->m_iADCSaveDataBytes) 
+		* uiFrameInFileNb * pConstVar->m_iADCDataInOneFrameNum;
 	// 如果文件不存在则创建
 	if (false == IfFileExist(strPath))
 	{
@@ -9511,34 +9579,82 @@ MatrixServerDll_API void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCData
 			fseek(pOptTask->m_pFile, lOffSet, SEEK_CUR);
 			fwrite(strOut.c_str(), sizeof(char), strOutSize, pOptTask->m_pFile);
 		}
+		// 文件刚创建，写前三行文件头信息：
+		// 第一行
+		str.Format(_T("施工任务数据存储从 %d 帧开始"), pOptTask->m_uiStartFrame);
+		fseek(pOptTask->m_pFile, 0, SEEK_SET);
+		strOut = ConvertCStrToStr(str);
+		strOutSize = strOut.length();
+		fwrite(strOut.c_str(), sizeof(char), strOutSize, pOptTask->m_pFile);
+		// 第三行左侧信息
+		lOffSet = uiLineLength * (pConstVar->m_iADCSaveHeadLineNum - 1);
+		fseek(pOptTask->m_pFile, lOffSet, SEEK_SET);
+		strOut = "";
+		for (int i=0; i<(pConstVar->m_iADCSaveLeftInfoBytes - 1); i++)
+		{
+			strOut += '-';
+		}
+		strOut += ' ';
+		strOutSize = strOut.length();
+		fwrite(strOut.c_str(), sizeof(char), strOutSize, pOptTask->m_pFile);
 	}
-	strOut = "";
-	for (int i=0; i<pConstVar->m_iADCDataInOneFrameNum; i++)
-	{
-		sprintf_s(pdata, 100, "%*d ", pConstVar->m_iADCSaveDataBytes, pADCDataBuf->m_pADCDataBuf[i]);
-		strOut += pdata;
-	}
-	strOutSize = strOut.length();
-	lOffSet = uiLineLength * uiLineNb + uiRowNb;
 	// 表明存的是前一个文件
 	if (uiFileNb < pOptTask->m_uiFileSaveNb)
 	{
-		if (pOptTask->m_pPreviousFile != NULL)
-		{
-			fseek(pOptTask->m_pPreviousFile, lOffSet, SEEK_SET);
-			fwrite(strOut.c_str(), sizeof(char), strOutSize, pOptTask->m_pPreviousFile);
-		}
+		pFile = pOptTask->m_pPreviousFile;
 	}
 	// 存的是最新的文件
 	else
 	{
-		if (uiFrameInFileNb > (pConstVar->m_iADCDataBufSize / pConstVar->m_iADCDataInOneFrameNum))
+		if ((pOptTask->m_pPreviousFile != NULL) 
+			&& (uiFrameInFileNb > (static_cast<unsigned int>(pConstVar->m_iADCDataBufSize / pConstVar->m_iADCDataInOneFrameNum))))
 		{
 			fclose(pOptTask->m_pPreviousFile);
 			pOptTask->m_pPreviousFile = NULL;
 		}
-		fseek(pOptTask->m_pFile, lOffSet, SEEK_SET);
-		fwrite(strOut.c_str(), sizeof(char), strOutSize, pOptTask->m_pFile);
+		pFile = pOptTask->m_pFile;
+	}
+
+	if (pFile != NULL)
+	{
+		lOffSet = uiLineLength * uiLineNb + uiRowNb;
+		fseek(pFile, lOffSet, SEEK_SET);
+		strOut = "";
+		for (int i=0; i<pConstVar->m_iADCDataInOneFrameNum; i++)
+		{
+			sprintf_s(pdata, 100, "%*d ", pConstVar->m_iADCSaveDataBytes, pADCDataBuf->m_pADCDataBuf[i]);
+			strOut += pdata;
+		}
+		strOutSize = strOut.length();
+		fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
+	}
+	// 写第一个仪器的采样数据时写入采样帧的本地时间作为第三行
+	if (uiLineIndex == 0)
+	{
+		lOffSet = uiLineLength * (pConstVar->m_iADCSaveHeadLineNum - 1) + uiRowNb;
+		fseek(pFile, lOffSet, SEEK_SET);
+		str.Format(_T("%*d "), pConstVar->m_iADCSaveDataBytes, pADCDataBuf->m_uiSysTime);
+		strOut = ConvertCStrToStr(str);
+		for (int i=0; i<(pConstVar->m_iADCDataInOneFrameNum - 1); i++)
+		{
+			for (int j=0; j<pConstVar->m_iADCSaveDataBytes; j++)
+			{
+				strOut += '-';
+			}
+			strOut += ' ';
+		}
+		strOutSize = strOut.length();
+		fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
+	}
+	// 记录文件中每个设备的最后一个数据帧时将SN写入左侧信息区
+	if ((uiFrameInFileNb + 1) == static_cast<unsigned int>(pConstVar->m_iADCFrameSaveInOneFileNum))
+	{
+		lOffSet = uiLineLength * uiLineNb;
+		fseek(pFile, lOffSet, SEEK_SET);
+		str.Format(_T("SN=0x%x "), pADCDataBuf->m_uiSN);
+		strOut = ConvertCStrToStr(str);
+		strOutSize = strOut.length();
+		fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
 	}
 }
 // 关闭所有的施工文件
@@ -9549,8 +9665,14 @@ MatrixServerDll_API void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTa
 	for (iter = pOptTaskArray->m_oOptTaskWorkMap.begin();
 		iter != pOptTaskArray->m_oOptTaskWorkMap.end(); iter++)
 	{
-		fclose(iter->second->m_pPreviousFile);
-		fclose(iter->second->m_pFile);
+		if (iter->second->m_pPreviousFile != NULL)
+		{
+			fclose(iter->second->m_pPreviousFile);
+		}
+		if (iter->second->m_pFile != NULL)
+		{
+			fclose(iter->second->m_pFile);
+		}
 	}
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 }
@@ -9578,8 +9700,9 @@ MatrixServerDll_API void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCD
 			iter2 != pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.end(); iter2++)
 		{
 			// 仪器在施工任务仪器索引表中
-			if (TRUE == IfIndexExistInOptTaskSNMap(pADCDataBuf->m_uiSN, uiLineIndex, &iter2->second->m_oSNMap))
+			if (TRUE == IfIndexExistInOptTaskSNMap(pADCDataBuf->m_uiSN, &iter2->second->m_oSNMap))
 			{
+				uiLineIndex = GetLineNbFromOptTaskSNMap(pADCDataBuf->m_uiSN, &iter2->second->m_oSNMap);
 				// 将数据写入文件
 				WriteADCDataInOptTaskFile(pADCDataBuf, iter2->second, uiLineIndex, pADCDataSaveThread->m_pThread->m_pConstVar);
 			}

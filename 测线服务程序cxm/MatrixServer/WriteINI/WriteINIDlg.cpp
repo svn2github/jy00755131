@@ -326,7 +326,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("ADCFrameSaveInOneFileNum");	// 一个文件内存储单个设备ADC数据帧数
-	strValue = _T("406");
+	strValue = _T("200");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("ADCSaveHeadLineNum");		// 存储ADC数据的文件头行数
@@ -334,7 +334,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("ADCSaveLeftInfoBytes");	// 存储ADC数据的左侧预留信息字节数
-	strValue = _T("10");
+	strValue = _T("14");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("ADCSaveDataBytes");		// 存储ADC数据的字节数
