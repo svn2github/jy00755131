@@ -50,9 +50,11 @@ string WideCharToMultiChar(wstring str)
 	//获取缓冲区的大小，并申请空间，缓冲区大小是按字节计算的
 	LPCWSTR lpWideCharStr = str.c_str();
 	int iWideCharSize = (int)str.size();
-	int len = WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, iWideCharSize, NULL, 0, NULL, NULL);
+	int len = WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, iWideCharSize, 
+		NULL, 0, NULL, NULL);
 	char *buffer = new char[len+1];
-	WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, iWideCharSize, buffer, len, NULL, NULL);
+	WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, iWideCharSize, 
+		buffer, len, NULL, NULL);
 	buffer[len] = '\0';
 	//删除缓冲区并返回值
 	return_value.append(buffer);
@@ -79,14 +81,14 @@ MATRIXSERVERDLL_API void ParseCStringToArray(char** pData, int iSize, CString st
 	*pData = new char[iSize];
 	int iDirectionOld = 0;
 	int iDirectionNew = 0;
-	CString csTemp = _T("");
+	CString strTemp = _T("");
 	int iTemp = 0;
 	for (int i=0; i<iSize; i++)
 	{
 		iDirectionNew = str.Find(_T("0x"), iDirectionOld);
 		iDirectionNew += 2;
-		csTemp = str.Mid(iDirectionNew, 2);
-		_stscanf_s(csTemp, _T("%x"), &iTemp, sizeof(int));
+		strTemp = str.Mid(iDirectionNew, 2);
+		_stscanf_s(strTemp, _T("%x"), &iTemp, sizeof(int));
 		(*pData)[i] = static_cast<char>(iTemp);
 		iDirectionOld = iDirectionNew;
 	}
@@ -106,18 +108,17 @@ MatrixServerDll_API m_oLogOutPutStruct* OnCreateLogOutPut()
 	m_oLogOutPutStruct* pLogOutPut = NULL;
 	pLogOutPut = new m_oLogOutPutStruct;
 	InitializeCriticalSection(&pLogOutPut->m_oSecLogFile);
-
 	return pLogOutPut;
 }
 // 打开日志输出文件
-MatrixServerDll_API void OpenLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
+MatrixServerDll_API int OpenLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 {
 	if (pLogOutPut == NULL)
 	{
-		return;
+		return -1;
 	}
+	CString strPath = _T("");
 	CString str = _T("");
-	CString str2 = _T("");
 	errno_t err;
 	// 创建程序运行日志文件夹
 	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
@@ -126,30 +127,24 @@ MatrixServerDll_API void OpenLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 		if (pLogOutPut->m_byLogFileType != OptLogType)
 		{
 			LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
-			return;
+			return -1;
 		}
 	}
 	pLogOutPut->m_uiLogFileNb++;
-	str.Format(_T("\\%d.log"), pLogOutPut->m_uiLogFileNb);
-	str2 = pLogOutPut->m_SaveLogFilePath.c_str();
-	str = str2 + str;
+	strPath.Format(_T("\\%d.log"), pLogOutPut->m_uiLogFileNb);
+	str = pLogOutPut->m_SaveLogFilePath.c_str();
+	strPath = str + strPath;
 	pLogOutPut->m_uiLogInfoCount = 0;
-	err = fopen_s(&pLogOutPut->m_pFile, ConvertCStrToStr(str).c_str(), "wt+, ccs=UNICODE");
+	err = fopen_s(&pLogOutPut->m_pFile, ConvertCStrToStr(strPath).c_str(), 
+		"wt+, ccs=UNICODE");
 	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
+	return err;
 }
 // 加入到日志输出队列
-MatrixServerDll_API void AddMsgToLogOutPutList(m_oLogOutPutStruct* pLogOutPut = NULL, 
-	string pFuncName = "", 
-	string pVarName = "", 
-	byte byErrorType = LogType, 
+MatrixServerDll_API void AddMsgToLogOutPutList(m_oLogOutPutStruct* pLogOutPut, 
+	string pFuncName = "", string pVarName = "", byte byErrorType = LogType, 
 	unsigned int uiErrorCode = 0)
 {
-	CString cstrTime = _T("");
-	CString cstrErrorCode = _T("");
-	CString strOutPut = _T("");
-	string str = "";
-	string strTemp = "";
-	SYSTEMTIME  sysTime;
 	if (pLogOutPut == NULL)
 	{
 		return;
@@ -161,9 +156,16 @@ MatrixServerDll_API void AddMsgToLogOutPutList(m_oLogOutPutStruct* pLogOutPut = 
 			return;
 		}
 	}
+	CString strTime = _T("");
+	CString strErrorCode = _T("");
+	CString strOutPut = _T("");
+	string str = "";
+	string strTemp = "";
+	SYSTEMTIME  sysTime;
 	GetLocalTime(&sysTime);
-	cstrTime.Format(_T("%04d年%02d月%02d日 %02d:%02d:%02d:%03d\t"), sysTime.wYear,sysTime.wMonth,sysTime.wDay,
-		sysTime.wHour,sysTime.wMinute,sysTime.wSecond,sysTime.wMilliseconds);
+	strTime.Format(_T("%04d年%02d月%02d日 %02d:%02d:%02d:%03d\t"), sysTime.wYear,
+		sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, 
+		sysTime.wSecond, sysTime.wMilliseconds);
 	if (byErrorType == LogType)
 	{
 		strOutPut += _T("Log\t");
@@ -175,14 +177,14 @@ MatrixServerDll_API void AddMsgToLogOutPutList(m_oLogOutPutStruct* pLogOutPut = 
 	else if (byErrorType == ErrorType)
 	{
 		strOutPut += _T("Error\t");
-		cstrErrorCode.Format(_T("ErrorCode = %d\t"), uiErrorCode);
-		strOutPut += cstrErrorCode;
+		strErrorCode.Format(_T("ErrorCode = %d\t"), uiErrorCode);
+		strOutPut += strErrorCode;
 	}
 	else if (byErrorType == ExpandType)
 	{
 		strOutPut += _T("ExpandType\t");
 	}
-	strOutPut += cstrTime;
+	strOutPut += strTime;
 	str = ConvertCStrToStr(strOutPut);
 	if (pFuncName.empty() == false)
 	{
@@ -198,7 +200,7 @@ MatrixServerDll_API void AddMsgToLogOutPutList(m_oLogOutPutStruct* pLogOutPut = 
 		str += strTemp;
 		str += pVarName;
 	}
-//	str += '\r';
+	//	str += '\r';
 	str += '\n';
 	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
 	if (OutPutSelect == 1)
@@ -222,7 +224,8 @@ MatrixServerDll_API void AddMsgToLogOutPutList(m_oLogOutPutStruct* pLogOutPut = 
 	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
 }
 // 日志输出写入文件
-MatrixServerDll_API void LogOutPutWriteInFile(FILE* pFile, string str, bool bFlush = false)
+MatrixServerDll_API void LogOutPutWriteInFile(FILE* pFile, string str, 
+	bool bFlush = false)
 {
 	if (pFile == NULL)
 	{
@@ -238,14 +241,13 @@ MatrixServerDll_API void LogOutPutWriteInFile(FILE* pFile, string str, bool bFlu
 // 写入日志输出文件
 MatrixServerDll_API void WriteLogOutPutListToFile(m_oLogOutPutStruct* pLogOutPut)
 {
-	list<string>::iterator iter;
-	string str = "";
-	errno_t err;
-	bool bOpenNewFile = false;
 	if (pLogOutPut == NULL)
 	{
 		return;
 	}
+	list<string>::iterator iter;
+	string str = "";
+	bool bOpenNewFile = false;
 	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
 	if (OutPutSelect == 1)
 	{
@@ -272,7 +274,12 @@ MatrixServerDll_API void WriteLogOutPutListToFile(m_oLogOutPutStruct* pLogOutPut
 	}
 	if (pLogOutPut->m_uiLogInfoCount > OutPutLogFileInfoNumLimit)
 	{
-		err = fclose( pLogOutPut->m_pFile );
+		if (pLogOutPut->m_pFile == NULL)
+		{
+			LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
+			return;
+		}
+		fclose(pLogOutPut->m_pFile);
 		bOpenNewFile = true;
 	}
 	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
@@ -295,11 +302,10 @@ MatrixServerDll_API void CloseLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 			return;
 		}
 	}
-	errno_t err;
 	WriteLogOutPutListToFile(pLogOutPut);
 	if (pLogOutPut->m_pFile != NULL)
 	{
-		err = fclose( pLogOutPut->m_pFile );
+		fclose( pLogOutPut->m_pFile );
 	}
 }
 
@@ -354,7 +360,8 @@ MatrixServerDll_API void OnFreeLogOutPut(m_oLogOutPutStruct* pLogOutPut)
 	delete pLogOutPut;
 }
 // 校验帧的同步码
-MatrixServerDll_API bool CheckInstrumentFrameHead(char* pFrameData, m_oConstVarStruct* pConstVar)
+MatrixServerDll_API bool CheckInstrumentFrameHead(char* pFrameData, 
+	m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -362,8 +369,8 @@ MatrixServerDll_API bool CheckInstrumentFrameHead(char* pFrameData, m_oConstVarS
 	}
 	if (pFrameData == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "CheckInstrumentFrameHead", "pFrameData", 
-			ErrorType, IDS_ERR_PTRISNULL);
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "CheckInstrumentFrameHead", 
+			"pFrameData", ErrorType, IDS_ERR_PTRISNULL);
 		return false;
 	}
 	// @@@@@@@@同步头目前只有前4位有效，其余12位可能用于它用
@@ -371,15 +378,16 @@ MatrixServerDll_API bool CheckInstrumentFrameHead(char* pFrameData, m_oConstVarS
 	{
 		if (pFrameData[i] != pConstVar->m_pFrameHeadCheck[i])
 		{
-			AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "CheckInstrumentFrameHead", "",
-				ErrorType, IDS_ERR_CHECKFRAMEHEAD);
+			AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "CheckInstrumentFrameHead",
+				"", ErrorType, IDS_ERR_CHECKFRAMEHEAD);
 			return false;
 		}
 	}
 	return true;
 }
 // 生成帧的同步码
-MatrixServerDll_API bool MakeInstrumentFrameHead(char* pFrameData, m_oConstVarStruct* pConstVar)
+MatrixServerDll_API bool MakeInstrumentFrameHead(char* pFrameData, 
+	m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -387,8 +395,8 @@ MatrixServerDll_API bool MakeInstrumentFrameHead(char* pFrameData, m_oConstVarSt
 	}
 	if (pFrameData == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentFrameHead", "pFrameData", 
-			ErrorType, IDS_ERR_PTRISNULL);
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentFrameHead", 
+			"pFrameData", ErrorType, IDS_ERR_PTRISNULL);
 		return false;
 	}
 	memcpy(pFrameData, pConstVar->m_pFrameHeadCheck, pConstVar->m_iFrameHeadSize);
@@ -493,13 +501,11 @@ MatrixServerDll_API bool ResetInstrumentFramePacket(m_oInstrumentCommandStruct* 
 	return true;
 }
 // 解析与设备通讯接收帧内容
-MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand, char* pFrameData,
-	m_oConstVarStruct* pConstVar)
+MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand, 
+	char* pFrameData, m_oConstVarStruct* pConstVar)
 {
 	if (pCommand == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", "pCommand", 
-			ErrorType, IDS_ERR_PTRISNULL);
 		return false;
 	}
 	if (pConstVar == NULL)
@@ -508,49 +514,60 @@ MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pComma
 	}
 	if (pFrameData == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", "pFrameData", 
-			ErrorType, IDS_ERR_PTRISNULL);
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", 
+			"pFrameData", ErrorType, IDS_ERR_PTRISNULL);
+		return false;
+	}
+	// 校验帧的同步码
+	if (false == CheckInstrumentFrameHead(pFrameData, pConstVar))
+	{
 		return false;
 	}
 	unsigned char	byCommandWord = 0;
 	unsigned int uiRoutAddrNum = 0;
 	int iPos = 0;
 	int iTemp = 0;
-	// 校验帧的同步码
-	if (false == CheckInstrumentFrameHead(pFrameData, pConstVar))
-	{
-		return false;
-	}
+	int iFramePacketSize4B = 0;
+	int iFramePacketSize2B = 0;
+	int iFramePacketSize1B = 0;
+	int iFrameCmdSize1B = 0;
+	int iADCDataSize3B = 0;
+
+	iFramePacketSize4B = pConstVar->m_iFramePacketSize4B;
+	iFramePacketSize2B = pConstVar->m_iFramePacketSize2B;
+	iFramePacketSize1B = pConstVar->m_iFramePacketSize1B;
+	iFrameCmdSize1B = pConstVar->m_iFrameCmdSize1B;
+	iADCDataSize3B = pConstVar->m_iADCDataSize3B;
 	iPos += pConstVar->m_iFrameHeadSize;
 	// 重置帧内容解析变量
 	ResetInstrumentFramePacket(pCommand);
 	// 源IP地址
-	memcpy(&pCommand->m_uiSrcIP, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-	iPos += pConstVar->m_iFramePacketSize4B;
+	memcpy(&pCommand->m_uiSrcIP, &pFrameData[iPos], iFramePacketSize4B);
+	iPos += iFramePacketSize4B;
 	// 目标IP地址
-	memcpy(&pCommand->m_uiDstIP, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-	iPos += pConstVar->m_iFramePacketSize4B;
+	memcpy(&pCommand->m_uiDstIP, &pFrameData[iPos], iFramePacketSize4B);
+	iPos += iFramePacketSize4B;
 	// 目标端口号
-	memcpy(&pCommand->m_usReturnPort, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-	iPos += pConstVar->m_iFramePacketSize2B;
+	memcpy(&pCommand->m_usReturnPort, &pFrameData[iPos], iFramePacketSize2B);
+	iPos += iFramePacketSize2B;
 	// 命令号 1-设置命令应答；2-查询命令应答；3-AD采样数据重发
-	memcpy(&pCommand->m_usCommand, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-	iPos += pConstVar->m_iFramePacketSize2B;
+	memcpy(&pCommand->m_usCommand, &pFrameData[iPos], iFramePacketSize2B);
+	iPos += iFramePacketSize2B;
 	// 如果为ADC采样数据帧
 	if (pCommand->m_usCommand == pConstVar->m_usSendADCCmd)
 	{
 		// ADC数据指针偏移量
-		memcpy(&pCommand->m_usADCDataPoint, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-		iPos += pConstVar->m_iFramePacketSize2B;
+		memcpy(&pCommand->m_usADCDataPoint, &pFrameData[iPos], iFramePacketSize2B);
+		iPos += iFramePacketSize2B;
 		// ADC数据采集时仪器本地时间
-		memcpy(&pCommand->m_uiADCSampleSysTime, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-		iPos += pConstVar->m_iFramePacketSize4B;
-		iPos += pConstVar->m_iFramePacketSize2B;
+		memcpy(&pCommand->m_uiADCSampleSysTime, &pFrameData[iPos], iFramePacketSize4B);
+		iPos += iFramePacketSize4B;
+		iPos += iFramePacketSize2B;
 		for (int i=0; i<pConstVar->m_iADCDataInOneFrameNum; i++)
 		{
 			iTemp = 0;
-			memcpy(&iTemp, &pFrameData[iPos], pConstVar->m_iADCDataSize3B);
-			iPos += pConstVar->m_iADCDataSize3B;
+			memcpy(&iTemp, &pFrameData[iPos], iADCDataSize3B);
+			iPos += iADCDataSize3B;
 			if (iTemp > 0x800000)
 			{
 				iTemp = -(0xffffff - iTemp);
@@ -562,182 +579,182 @@ MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pComma
 	// 解析帧内容
 	while(true)
 	{
-		memcpy(&byCommandWord, &pFrameData[iPos], pConstVar->m_iFrameCmdSize1B);
-		iPos += pConstVar->m_iFrameCmdSize1B;
+		memcpy(&byCommandWord, &pFrameData[iPos], iFrameCmdSize1B);
+		iPos += iFrameCmdSize1B;
 		if (byCommandWord == pConstVar->m_byCmdSn)
 		{
-			memcpy(&pCommand->m_uiSN, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiSN, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdHeadFrameTime)
 		{
-			memcpy(&pCommand->m_uiTimeHeadFrame, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiTimeHeadFrame, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLocalIPAddr)
 		{
-			memcpy(&pCommand->m_uiInstrumentIP, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiInstrumentIP, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLocalSysTime)
 		{
-			memcpy(&pCommand->m_uiSysTime, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiSysTime, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLocalTimeFixedHigh)
 		{
-			memcpy(&pCommand->m_uiLocalTimeFixedHigh, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiLocalTimeFixedHigh, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLocalTimeFixedLow)
 		{
-			memcpy(&pCommand->m_uiLocalTimeFixedLow, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiLocalTimeFixedLow, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdADCDataReturnAddr)
 		{
-			memcpy(&pCommand->m_uiADCDataReturnAddr, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiADCDataReturnAddr, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdADCDataReturnPort)
 		{
-			memcpy(&pCommand->m_usADCDataReturnPort, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pCommand->m_usADCDataReturnCmd, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pCommand->m_usADCDataReturnPort, &pFrameData[iPos], iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pCommand->m_usADCDataReturnCmd, &pFrameData[iPos], iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdADCDataReturnPortLimit)
 		{
-			memcpy(&pCommand->m_usADCDataReturnPortLimitLow, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pCommand->m_usADCDataReturnPortLimitHigh, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pCommand->m_usADCDataReturnPortLimitLow, &pFrameData[iPos], iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pCommand->m_usADCDataReturnPortLimitHigh, &pFrameData[iPos], iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdBroadCastPortSet)
 		{
-			memcpy(&pCommand->m_uiBroadCastPortSet, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiBroadCastPortSet, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdFDUErrorCode)
 		{
-			memcpy(&pCommand->m_byFDUErrorCodeDataCount, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pCommand->m_byFDUErrorCodeCmdCount, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pCommand->m_byTimeStatus, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pCommand->m_byCtrlStatus, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
+			memcpy(&pCommand->m_byFDUErrorCodeDataCount, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pCommand->m_byFDUErrorCodeCmdCount, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pCommand->m_byTimeStatus, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pCommand->m_byCtrlStatus, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdTBHigh)
 		{
-			memcpy(&pCommand->m_uiTBHigh, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiTBHigh, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdTbLow)
 		{
-			memcpy(&pCommand->m_usTBLow, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pCommand->m_usTBCtrl, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pCommand->m_usTBLow, &pFrameData[iPos], iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pCommand->m_usTBCtrl, &pFrameData[iPos], iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLAUXRoutOpenQuery)
 		{
-			memcpy(&pCommand->m_byLAUXRoutOpenQuery, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_byLAUXRoutOpenQuery, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLAUXRoutOpenSet)
 		{
-			memcpy(&pCommand->m_byLAUXRoutOpenSet, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_byLAUXRoutOpenSet, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdTailRecSndTime)
 		{
-			memcpy(&pCommand->m_usTailRecTime, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
+			memcpy(&pCommand->m_usTailRecTime, &pFrameData[iPos], iFramePacketSize2B);
 			pCommand->m_usTailRecTime &= 0x3fff;
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pCommand->m_usTailSndTime, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pCommand->m_usTailSndTime, &pFrameData[iPos], iFramePacketSize2B);
 			pCommand->m_usTailSndTime &= 0x3fff;
-			iPos += pConstVar->m_iFramePacketSize2B;
+			iPos += iFramePacketSize2B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdBroadCastPortSeted)
 		{
-			memcpy(&pCommand->m_uiBroadCastPortSeted, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiBroadCastPortSeted, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdADCSet)
 		{
-			memcpy(&pCommand->m_pcADCSet[pCommand->m_iADCSetNum], &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
-			pCommand->m_iADCSetNum += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_pcADCSet[pCommand->m_iADCSetNum], &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
+			pCommand->m_iADCSetNum += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdNetTime)
 		{
-			memcpy(&pCommand->m_uiNetTime, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiNetTime, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLineTailRecTimeLAUX)
 		{
-			memcpy(&pCommand->m_usLAUXTailRecTimeLineA, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
+			memcpy(&pCommand->m_usLAUXTailRecTimeLineA, &pFrameData[iPos], iFramePacketSize2B);
 			pCommand->m_usLAUXTailRecTimeLineA &= 0x3fff;
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pCommand->m_usLAUXTailRecTimeLineB, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pCommand->m_usLAUXTailRecTimeLineB, &pFrameData[iPos], iFramePacketSize2B);
 			pCommand->m_usLAUXTailRecTimeLineB &= 0x3fff;
-			iPos += pConstVar->m_iFramePacketSize2B;
+			iPos += iFramePacketSize2B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLAUTailRecTimeLAUX)
 		{
-			memcpy(&pCommand->m_usLAUXTailRecTimeLAUXLineA, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
+			memcpy(&pCommand->m_usLAUXTailRecTimeLAUXLineA, &pFrameData[iPos], iFramePacketSize2B);
 			pCommand->m_usLAUXTailRecTimeLAUXLineA &= 0x3fff;
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pCommand->m_usLAUXTailRecTimeLAUXLineB, &pFrameData[iPos], pConstVar->m_iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pCommand->m_usLAUXTailRecTimeLAUXLineB, &pFrameData[iPos], iFramePacketSize2B);
 			pCommand->m_usLAUXTailRecTimeLAUXLineB &= 0x3fff;
-			iPos += pConstVar->m_iFramePacketSize2B;
+			iPos += iFramePacketSize2B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLAUXErrorCode1)
 		{
-			memcpy(&pCommand->m_byLAUXErrorCodeDataLineACount, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pCommand->m_byLAUXErrorCodeDataLineBCount, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pCommand->m_byLAUXErrorCodeDataLAUXLineACount, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pCommand->m_byLAUXErrorCodeDataLAUXLineBCount, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
+			memcpy(&pCommand->m_byLAUXErrorCodeDataLineACount, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pCommand->m_byLAUXErrorCodeDataLineBCount, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pCommand->m_byLAUXErrorCodeDataLAUXLineACount, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pCommand->m_byLAUXErrorCodeDataLAUXLineBCount, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLAUXErrorCode2)
 		{
-			memcpy(&pCommand->m_byLAUXErrorCodeCmdCount, &pFrameData[iPos], pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_byLAUXErrorCodeCmdCount, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLAUXSetRout)
 		{
 			if (uiRoutAddrNum == 0)
 			{
-				memcpy(&pCommand->m_uiRoutIPRight, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
+				memcpy(&pCommand->m_uiRoutIPRight, &pFrameData[iPos], iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
 			}
 			else if (uiRoutAddrNum == 1)
 			{
-				memcpy(&pCommand->m_uiRoutIPLeft, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
+				memcpy(&pCommand->m_uiRoutIPLeft, &pFrameData[iPos], iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
 			}
 			else if (uiRoutAddrNum == 2)
 			{
-				memcpy(&pCommand->m_uiRoutIPTop, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
+				memcpy(&pCommand->m_uiRoutIPTop, &pFrameData[iPos], iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
 			}
 			else if (uiRoutAddrNum == 3)
 			{
-				memcpy(&pCommand->m_uiRoutIPDown, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
+				memcpy(&pCommand->m_uiRoutIPDown, &pFrameData[iPos], iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
 			}
 			uiRoutAddrNum++;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdReturnRout)
 		{
-			memcpy(&pCommand->m_uiRoutIP, &pFrameData[iPos], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pCommand->m_uiRoutIP, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdEnd)
 		{
@@ -745,14 +762,15 @@ MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pComma
 		}
 		else
 		{
-			iPos += pConstVar->m_iFramePacketSize4B;
+			iPos += iFramePacketSize4B;
 		}
 	}
 	return true;
 }
 // 生成与设备通讯帧
-MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pConstVar,
-	char* pFrameData, char* pCommandWord = NULL, unsigned short usCommandWordNum = 0)
+MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, 
+	m_oConstVarStruct* pConstVar,char* pFrameData, char* pCommandWord = NULL, 
+	unsigned short usCommandWordNum = 0)
 {
 	if (pConstVar == NULL)
 	{
@@ -770,31 +788,40 @@ MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pComman
 			ErrorType, IDS_ERR_PTRISNULL);
 		return false;
 	}
+	int iFramePacketSize4B = 0;
+	int iFramePacketSize2B = 0;
+	int iFramePacketSize1B = 0;
+	int iFrameCmdSize1B = 0;
 	int iPos = 0;
 	unsigned int uiRoutAddrNum = 0;
+
+	iFramePacketSize4B = pConstVar->m_iFramePacketSize4B;
+	iFramePacketSize2B = pConstVar->m_iFramePacketSize2B;
+	iFramePacketSize1B = pConstVar->m_iFramePacketSize1B;
+	iFrameCmdSize1B = pConstVar->m_iFrameCmdSize1B;
 	// 生成帧的同步码
 	MakeInstrumentFrameHead(pFrameData, pConstVar);
 	iPos += pConstVar->m_iFrameHeadSize;
 	// 源IP地址
-	memcpy(&pFrameData[iPos], &pCommand->m_uiSrcIP, pConstVar->m_iFramePacketSize4B);
-	iPos += pConstVar->m_iFramePacketSize4B;
+	memcpy(&pFrameData[iPos], &pCommand->m_uiSrcIP, iFramePacketSize4B);
+	iPos += iFramePacketSize4B;
 	// 目标IP地址
-	memcpy(&pFrameData[iPos], &pCommand->m_uiDstIP, pConstVar->m_iFramePacketSize4B);
-	iPos += pConstVar->m_iFramePacketSize4B;
+	memcpy(&pFrameData[iPos], &pCommand->m_uiDstIP, iFramePacketSize4B);
+	iPos += iFramePacketSize4B;
 	// 目标端口号
-	memcpy(&pFrameData[iPos], &pCommand->m_usReturnPort, pConstVar->m_iFramePacketSize2B);
-	iPos += pConstVar->m_iFramePacketSize2B;
+	memcpy(&pFrameData[iPos], &pCommand->m_usReturnPort, iFramePacketSize2B);
+	iPos += iFramePacketSize2B;
 	// 命令号 1-设置命令应答；2-查询命令应答；3-AD采样数据重发
-	memcpy(&pFrameData[iPos], &pCommand->m_usCommand, pConstVar->m_iFramePacketSize2B);
-	iPos += pConstVar->m_iFramePacketSize2B;
+	memcpy(&pFrameData[iPos], &pCommand->m_usCommand, iFramePacketSize2B);
+	iPos += iFramePacketSize2B;
 	// 包时间
-	iPos += pConstVar->m_iFramePacketSize4B;
+	iPos += iFramePacketSize4B;
 	// 如果为ADC数据重发帧
 	if (pCommand->m_usCommand == pConstVar->m_usSendADCCmd)
 	{
 		// 指针偏移量
-		memcpy(&pFrameData[iPos], &pCommand->m_usADCDataPoint, pConstVar->m_iFramePacketSize2B);
-		iPos += pConstVar->m_iFramePacketSize2B;
+		memcpy(&pFrameData[iPos], &pCommand->m_usADCDataPoint, iFramePacketSize2B);
+		iPos += iFramePacketSize2B;
 		// 截止
 		pFrameData[iPos] = pConstVar->m_byCmdEnd;
 		return true;
@@ -802,205 +829,206 @@ MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pComman
 	// 生成帧内容
 	for (unsigned short i=0; i<usCommandWordNum; i++)
 	{
-		memcpy(&pFrameData[iPos], &pCommandWord[i], pConstVar->m_iFrameCmdSize1B);
-		iPos += pConstVar->m_iFrameCmdSize1B;
+		memcpy(&pFrameData[iPos], &pCommandWord[i], iFrameCmdSize1B);
+		iPos += iFrameCmdSize1B;
 		if (pCommandWord[i] == pConstVar->m_byCmdSn)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiSN, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiSN, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdHeadFrameTime)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiTimeHeadFrame, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiTimeHeadFrame, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLocalIPAddr)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiInstrumentIP, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiInstrumentIP, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLocalSysTime)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiSysTime, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiSysTime, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLocalTimeFixedHigh)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiLocalTimeFixedHigh, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiLocalTimeFixedHigh, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLocalTimeFixedLow)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiLocalTimeFixedLow, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiLocalTimeFixedLow, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdADCDataReturnAddr)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiADCDataReturnAddr, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiADCDataReturnAddr, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdADCDataReturnPort)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnPort, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnCmd, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnPort, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnCmd, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdADCDataReturnPortLimit)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnPortLimitLow, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnPortLimitHigh, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnPortLimitLow, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnPortLimitHigh, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdBroadCastPortSet)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiBroadCastPortSet, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiBroadCastPortSet, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdFDUErrorCode)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_byFDUErrorCodeDataCount, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pFrameData[iPos], &pCommand->m_byFDUErrorCodeCmdCount, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pFrameData[iPos], &pCommand->m_byTimeStatus, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pFrameData[iPos], &pCommand->m_byCtrlStatus, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byFDUErrorCodeDataCount, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byFDUErrorCodeCmdCount, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byTimeStatus, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byCtrlStatus, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdTBHigh)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiTBHigh, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiTBHigh, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdTbLow)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_usTBLow, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pFrameData[iPos], &pCommand->m_usTBCtrl, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usTBLow, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usTBCtrl, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXRoutOpenQuery)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXRoutOpenQuery, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXRoutOpenQuery, iFramePacketSize1B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXRoutOpenSet)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXRoutOpenSet, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXRoutOpenSet, iFramePacketSize1B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdTailRecSndTime)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_usTailRecTime, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pFrameData[iPos], &pCommand->m_usTailSndTime, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usTailRecTime, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usTailSndTime, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdBroadCastPortSeted)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiBroadCastPortSeted, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiBroadCastPortSeted, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdADCSet)
 		{
-			if (pCommand->m_iADCSetNum == pConstVar->m_iFramePacketSize4B)
+			if (pCommand->m_iADCSetNum == iFramePacketSize4B)
 			{
-				memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[0], pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
+				memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[0], iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
 			}
 			else
 			{
-				memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[0], pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
-				for (int j = pConstVar->m_iFramePacketSize4B; j < pCommand->m_iADCSetNum; j += pConstVar->m_iFramePacketSize4B)
+				memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[0], iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
+				for (int j = iFramePacketSize4B; j < pCommand->m_iADCSetNum; j += iFramePacketSize4B)
 				{
-					memcpy(&pFrameData[iPos], &pConstVar->m_byCmdADCSet, pConstVar->m_iFrameCmdSize1B);
-					iPos += pConstVar->m_iFrameCmdSize1B;
-					memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[j], pConstVar->m_iFramePacketSize4B);
-					iPos += pConstVar->m_iFramePacketSize4B;
+					memcpy(&pFrameData[iPos], &pConstVar->m_byCmdADCSet, iFrameCmdSize1B);
+					iPos += iFrameCmdSize1B;
+					memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[j], iFramePacketSize4B);
+					iPos += iFramePacketSize4B;
 				}
 			}
-			memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[pCommand->m_iADCSetNum], pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
-			pCommand->m_iADCSetNum += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_pcADCSet[pCommand->m_iADCSetNum], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
+			pCommand->m_iADCSetNum += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdNetTime)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiNetTime, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiNetTime, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLineTailRecTimeLAUX)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLineA, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLineB, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLineA, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLineB, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLAUTailRecTimeLAUX)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLAUXLineA, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
-			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLAUXLineB, pConstVar->m_iFramePacketSize2B);
-			iPos += pConstVar->m_iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLAUXLineA, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLAUXLineB, iFramePacketSize2B);
+			iPos += iFramePacketSize2B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXErrorCode1)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeDataLineACount, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeDataLineBCount, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeDataLAUXLineACount, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
-			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeDataLAUXLineBCount, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeDataLineACount, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeDataLineBCount, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeDataLAUXLineACount, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeDataLAUXLineBCount, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXErrorCode2)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeCmdCount, pConstVar->m_iFramePacketSize1B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_byLAUXErrorCodeCmdCount, iFramePacketSize1B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXSetRout)
 		{
 			if (uiRoutAddrNum == 0)
 			{
-				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPLeft, pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
+				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPLeft, iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
 			}
 			else if (uiRoutAddrNum == 1)
 			{
-				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPRight, pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
+				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPRight, iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
 			}
 			else if (uiRoutAddrNum == 2)
 			{
-				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPTop, pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
+				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPTop, iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
 			}
 			else if (uiRoutAddrNum == 3)
 			{
-				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPDown, pConstVar->m_iFramePacketSize4B);
-				iPos += pConstVar->m_iFramePacketSize4B;
+				memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIPDown, iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
 			}
 			uiRoutAddrNum++;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdReturnRout)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIP, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIP, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else
 		{
-			memset(&pFrameData[iPos], pConstVar->m_bySndFrameBufInit, pConstVar->m_iFramePacketSize4B);
-			iPos += pConstVar->m_iFramePacketSize4B;
+			memset(&pFrameData[iPos], pConstVar->m_bySndFrameBufInit, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 	}
 	pFrameData[iPos] = pConstVar->m_byCmdEnd;
 	return true;
 }
 // 创建CSocket接收端口并绑定端口和IP地址
-MatrixServerDll_API SOCKET CreateInstrumentSocket(unsigned short usPort, unsigned int uiIP, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API SOCKET CreateInstrumentSocket(unsigned short usPort, unsigned int uiIP, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	SOCKET oSocket = INVALID_SOCKET;
 	sockaddr_in oAddr;
@@ -1024,7 +1052,8 @@ MatrixServerDll_API SOCKET CreateInstrumentSocket(unsigned short usPort, unsigne
 MatrixServerDll_API void SetInstrumentSocketBroadCast(SOCKET oSocket, m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	//设置广播模式
-	int	iOptval, iOptlen;
+	int	iOptval = 0;
+	int iOptlen = 0;
 	iOptlen = sizeof(int);
 	iOptval = 1;
 	if (SOCKET_ERROR == setsockopt(oSocket, SOL_SOCKET, SO_BROADCAST, 
@@ -1072,12 +1101,15 @@ MatrixServerDll_API DWORD GetFrameCount(SOCKET oSocket, int iRcvFrameSize, m_oLo
 	return dwFrameCount;
 }
 // 得到帧数据
-MatrixServerDll_API bool GetFrameData(SOCKET oSocket, char* pFrameData, int iRcvFrameSize, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API bool GetFrameData(SOCKET oSocket, char* pFrameData, int iRcvFrameSize, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	bool bReturn = false;
 	sockaddr_in AddrFrom;
 	int iSize = sizeof(AddrFrom);
-	int iCount = recvfrom(oSocket, pFrameData, iRcvFrameSize, 0, reinterpret_cast<sockaddr*>(&AddrFrom), &iSize);
+	int iCount = 0;
+	iCount = recvfrom(oSocket, pFrameData, iRcvFrameSize, 0, 
+		reinterpret_cast<sockaddr*>(&AddrFrom), &iSize);
 	if(iCount == iRcvFrameSize)	//帧大小正确
 	{
 		bReturn = true;
@@ -1095,7 +1127,8 @@ MatrixServerDll_API bool GetFrameData(SOCKET oSocket, char* pFrameData, int iRcv
 	return bReturn;
 }
 // 清空接收帧缓冲区
-MatrixServerDll_API void ClearRcvFrameBuf(SOCKET oSocket, char* pFrameData, int iRcvFrameSize, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void ClearRcvFrameBuf(SOCKET oSocket, char* pFrameData, int iRcvFrameSize, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	sockaddr_in AddrFrom;
 	int iSize = sizeof(AddrFrom);
@@ -1114,7 +1147,8 @@ MatrixServerDll_API void ClearRcvFrameBuf(SOCKET oSocket, char* pFrameData, int 
 		{
 			if(dwFrameCount > 0) 
 			{
-				iCount = recvfrom(oSocket, pFrameData, iRcvFrameSize, 0, reinterpret_cast<sockaddr*>(&AddrFrom), &iSize);
+				iCount = recvfrom(oSocket, pFrameData, iRcvFrameSize, 0, 
+					reinterpret_cast<sockaddr*>(&AddrFrom), &iSize);
 				if (iCount == SOCKET_ERROR)
 				{
 					AddMsgToLogOutPutList(pLogOutPut, "ClearRcvFrameBuf", "recvfrom", 
@@ -1131,13 +1165,12 @@ MatrixServerDll_API void ClearRcvFrameBuf(SOCKET oSocket, char* pFrameData, int 
 }
 // 发送帧
 MatrixServerDll_API bool SendFrame(SOCKET oSocket, char* pFrameData,int iSndFrameSize, 
-	unsigned short usPort, unsigned int uiIP, 
-	m_oLogOutPutStruct* pLogOutPut = NULL)
+	unsigned short usPort, unsigned int uiIP, m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	bool bReturn = false;
-	// 发送帧
+	// 填充套接字地址结构
 	sockaddr_in addrSend;
-	addrSend.sin_family = AF_INET;											// 填充套接字地址结构
+	addrSend.sin_family = AF_INET;
 	addrSend.sin_port = htons(usPort);
 	addrSend.sin_addr.S_un.S_addr = uiIP;
 	int iCount = sendto(oSocket, pFrameData, iSndFrameSize, 0, 
@@ -1148,11 +1181,13 @@ MatrixServerDll_API bool SendFrame(SOCKET oSocket, char* pFrameData,int iSndFram
 	} 
 	else if (iCount == SOCKET_ERROR)
 	{
-		AddMsgToLogOutPutList(pLogOutPut, "SendFrame", "sendto", ErrorType, WSAGetLastError());
+		AddMsgToLogOutPutList(pLogOutPut, "SendFrame", "sendto", 
+			ErrorType, WSAGetLastError());
 	}
 	else
 	{
-		AddMsgToLogOutPutList(pLogOutPut, "SendFrame", "sendto", ErrorType, IDS_ERR_SNDFRAMESIZE);
+		AddMsgToLogOutPutList(pLogOutPut, "SendFrame", "sendto", 
+			ErrorType, IDS_ERR_SNDFRAMESIZE);
 	}
 	return bReturn;
 }
@@ -1196,7 +1231,6 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 			ErrorType, IDS_ERR_FILE_EXIST);
 		return;
 	}
-	//	GetFileAttributes(strFilePath);
 	try
 	{
 		//读取ini文件中相应字段的内容
@@ -1691,7 +1725,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("SetADCStopSample");		// ADC设置停止采样命令
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
-		ParseCStringToArray(&pConstVar->m_pSetADCStopSample, pConstVar->m_iSetADCStopSampleSize, strValue);
+		ParseCStringToArray(&pConstVar->m_pSetADCStopSample, 
+			pConstVar->m_iSetADCStopSampleSize, strValue);
 
 		strSectionKey=_T("SetADCOpenTBPowerLowSize");	// ADC设置打开TB电源低位大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -1701,7 +1736,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("SetADCOpenTBPowerLow");		// ADC设置打开TB电源低位
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
-		ParseCStringToArray(&pConstVar->m_pSetADCOpenTBPowerLow, pConstVar->m_iSetADCOpenTBPowerLowSize, strValue);
+		ParseCStringToArray(&pConstVar->m_pSetADCOpenTBPowerLow, 
+			pConstVar->m_iSetADCOpenTBPowerLowSize, strValue);
 
 		strSectionKey=_T("m_iSetADCOpenTBPowerHighSize");	// ADC设置打开TB电源高位大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -1711,7 +1747,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("m_iSetADCOpenTBPowerHigh");		// ADC设置打开TB电源高位
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
-		ParseCStringToArray(&pConstVar->m_pSetADCOpenTBPowerHigh, pConstVar->m_iSetADCOpenTBPowerHighSize, strValue);
+		ParseCStringToArray(&pConstVar->m_pSetADCOpenTBPowerHigh, 
+			pConstVar->m_iSetADCOpenTBPowerHighSize, strValue);
 
 		strSectionKey=_T("SetADCOpenSwitchTBLowSize");	// ADC设置打开TB开关低位大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -1721,7 +1758,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("SetADCOpenSwitchTBLow");		// ADC设置打开TB开关低位
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
-		ParseCStringToArray(&pConstVar->m_pSetADCOpenSwitchTBLow, pConstVar->m_iSetADCOpenSwitchTBLowSize, strValue);
+		ParseCStringToArray(&pConstVar->m_pSetADCOpenSwitchTBLow, 
+			pConstVar->m_iSetADCOpenSwitchTBLowSize, strValue);
 
 		strSectionKey=_T("SetADCOpenSwitchTBHighSize");	// ADC设置打开TB开关高位大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -1731,7 +1769,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("SetADCOpenSwitchTBHigh");		// ADC设置打开TB开关高位
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
-		ParseCStringToArray(&pConstVar->m_pSetADCOpenSwitchTBHigh, pConstVar->m_iSetADCOpenSwitchTBHighSize, strValue);
+		ParseCStringToArray(&pConstVar->m_pSetADCOpenSwitchTBHigh, 
+			pConstVar->m_iSetADCOpenSwitchTBHighSize, strValue);
 
 		strSectionKey=_T("SetADCRegisterReadSize");	// ADC设置读寄存器大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -1741,7 +1780,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("SetADCRegisterRead");		// ADC设置读寄存器
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
-		ParseCStringToArray(&pConstVar->m_pSetADCRegisterRead, pConstVar->m_iSetADCRegisterReadSize, strValue);
+		ParseCStringToArray(&pConstVar->m_pSetADCRegisterRead, 
+			pConstVar->m_iSetADCRegisterReadSize, strValue);
 
 		strSectionKey=_T("SetADCRegisterWriteSize");	// ADC设置写寄存器大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -1751,7 +1791,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("SetADCRegisterWrite");		// ADC设置写寄存器
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
-		ParseCStringToArray(&pConstVar->m_pSetADCRegisterWrite, pConstVar->m_iSetADCRegisterWriteSize, strValue);
+		ParseCStringToArray(&pConstVar->m_pSetADCRegisterWrite, 
+			pConstVar->m_iSetADCRegisterWriteSize, strValue);
 
 		strSectionKey=_T("SetADCTBSwitchOpenSize");	// ADC设置打开TB开关大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -1761,7 +1802,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("SetADCTBSwitchOpen");		// ADC设置打开TB开关
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
-		ParseCStringToArray(&pConstVar->m_pSetADCTBSwitchOpen, pConstVar->m_iSetADCTBSwitchOpenSize, strValue);
+		ParseCStringToArray(&pConstVar->m_pSetADCTBSwitchOpen, 
+			pConstVar->m_iSetADCTBSwitchOpenSize, strValue);
 
 		strSectionKey=_T("SetADCSampleSize");	// ADC采样设置大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -1781,7 +1823,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("SetADCReadContinuous");		// ADC设置连续采样
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
-		ParseCStringToArray(&pConstVar->m_pSetADCReadContinuous, pConstVar->m_iSetADCReadContinuousSize, strValue);
+		ParseCStringToArray(&pConstVar->m_pSetADCReadContinuous, 
+			pConstVar->m_iSetADCReadContinuousSize, strValue);
 
 		strSectionKey=_T("TBSleepTimeHigh");			// TB设置延时高位
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -1833,7 +1876,8 @@ MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar)
 	}
 }
 // 初始化常量信息结构体
-MatrixServerDll_API void OnInitConstVar(m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnInitConstVar(m_oConstVarStruct* pConstVar, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	if (pConstVar == NULL)
 	{
@@ -1845,6 +1889,10 @@ MatrixServerDll_API void OnInitConstVar(m_oConstVarStruct* pConstVar, m_oLogOutP
 // 关闭常量信息结构体
 MatrixServerDll_API void OnCloseConstVar(m_oConstVarStruct* pConstVar)
 {
+	if (pConstVar == NULL)
+	{
+		return;
+	}
 	if (pConstVar->m_pFrameHeadCheck != NULL)
 	{
 		delete[] pConstVar->m_pFrameHeadCheck;
@@ -1926,6 +1974,10 @@ MatrixServerDll_API m_oInstrumentCommInfoStruct* OnCreateInstrumentCommInfo(void
 // 打开程序配置文件
 MatrixServerDll_API BOOL OpenAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInfo)
 {
+	if (pCommInfo == NULL)
+	{
+		return FALSE;
+	}
 	// 初始化COM库
 	CoInitialize(NULL);
 
@@ -1952,6 +2004,10 @@ MatrixServerDll_API BOOL OpenAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInf
 //加载IP地址设置数据
 MatrixServerDll_API void LoadIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 {
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -1997,6 +2053,10 @@ MatrixServerDll_API void LoadIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 //加载端口设置数据
 MatrixServerDll_API void LoadPortSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 {
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -2048,6 +2108,10 @@ MatrixServerDll_API void LoadPortSetupData(m_oInstrumentCommInfoStruct* pCommInf
 // 关闭程序配置文件
 MatrixServerDll_API void CloseAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInfo)
 {
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
 	pCommInfo->m_oXMLDOMDocument.DetachDispatch();
 	// 释放COM库
 	CoUninitialize();
@@ -2055,6 +2119,10 @@ MatrixServerDll_API void CloseAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommIn
 //加载测线服务器程序设置数据
 MatrixServerDll_API void LoadLineServerAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 {
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
 	// 打开程序配置文件
 	if (TRUE == OpenAppIniXMLFile(pCommInfo))
 	{
@@ -2067,7 +2135,8 @@ MatrixServerDll_API void LoadLineServerAppSetupData(m_oInstrumentCommInfoStruct*
 	CloseAppIniXMLFile(pCommInfo);
 }
 // 初始化仪器通讯信息结构体
-MatrixServerDll_API void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
 	if (pCommInfo == NULL)
 	{
@@ -2099,8 +2168,7 @@ MatrixServerDll_API m_oHeartBeatFrameStruct* OnCreateInstrumentHeartBeat(void)
 }
 // 初始化心跳
 MatrixServerDll_API void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
-	m_oInstrumentCommInfoStruct* pCommInfo,
-	m_oConstVarStruct* pConstVar)
+	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -2108,13 +2176,13 @@ MatrixServerDll_API void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHea
 	}
 	if (pHeartBeatFrame == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentHeartBeat", "pHeartBeatFrame",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentHeartBeat", "pHeartBeatFrame",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
 	if (pCommInfo == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentHeartBeat", "pCommInfo",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentHeartBeat", "pCommInfo",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
@@ -2143,14 +2211,16 @@ MatrixServerDll_API void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHea
 		delete[] pHeartBeatFrame->m_pcSndFrameData;
 	}
 	pHeartBeatFrame->m_pcSndFrameData = new char[pConstVar->m_iSndFrameSize];
-	memset(pHeartBeatFrame->m_pcSndFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iSndFrameSize);
+	memset(pHeartBeatFrame->m_pcSndFrameData, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iSndFrameSize);
 	// 清空心跳命令字集合
 	if (pHeartBeatFrame->m_pcCommandWord != NULL)
 	{
-		delete pHeartBeatFrame->m_pcCommandWord;
+		delete[] pHeartBeatFrame->m_pcCommandWord;
 	}
 	pHeartBeatFrame->m_pcCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pHeartBeatFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
+	memset(pHeartBeatFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iCommandWordMaxNum);
 	// 心跳命令字个数
 	pHeartBeatFrame->m_usCommandWordNum = 0;
 	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
@@ -2158,6 +2228,10 @@ MatrixServerDll_API void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHea
 // 关闭心跳帧信息结构体
 MatrixServerDll_API void OnCloseInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
 {
+	if (pHeartBeatFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	if (pHeartBeatFrame->m_pcSndFrameData != NULL)
 	{
@@ -2199,8 +2273,7 @@ MatrixServerDll_API m_oHeadFrameStruct* OnCreateInstrumentHeadFrame(void)
 }
 // 初始化首包
 MatrixServerDll_API void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
-	m_oInstrumentCommInfoStruct* pCommInfo,
-	m_oConstVarStruct* pConstVar)
+	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -2208,13 +2281,13 @@ MatrixServerDll_API void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFram
 	}
 	if (pHeadFrame == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentHeadFrame", "pHeadFrame",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentHeadFrame", "pHeadFrame",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
 	if (pCommInfo == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentHeadFrame", "pCommInfo",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentHeadFrame", "pCommInfo",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
@@ -2246,6 +2319,10 @@ MatrixServerDll_API void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFram
 // 关闭首包帧信息结构体
 MatrixServerDll_API void OnCloseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame)
 {
+	if (pHeadFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	if (pHeadFrame->m_pcRcvFrameData != NULL)
 	{
@@ -2285,8 +2362,7 @@ MatrixServerDll_API m_oIPSetFrameStruct* OnCreateInstrumentIPSetFrame(void)
 }
 // 初始化IP地址设置
 MatrixServerDll_API void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
-	m_oInstrumentCommInfoStruct* pCommInfo,
-	m_oConstVarStruct* pConstVar)
+	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -2294,13 +2370,13 @@ MatrixServerDll_API void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetF
 	}
 	if (pIPSetFrame == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentIPSetFrame", "pIPSetFrame",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentIPSetFrame", "pIPSetFrame",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
 	if (pCommInfo == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentIPSetFrame", "pCommInfo",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentIPSetFrame", "pCommInfo",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
@@ -2340,7 +2416,8 @@ MatrixServerDll_API void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetF
 		delete[] pIPSetFrame->m_pcCommandWord;
 	}
 	pIPSetFrame->m_pcCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pIPSetFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
+	memset(pIPSetFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iCommandWordMaxNum);
 	// IP地址设置命令字个数
 	pIPSetFrame->m_usCommandWordNum = 0;
 
@@ -2363,6 +2440,10 @@ MatrixServerDll_API void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetF
 // 关闭IP地址设置帧信息结构体
 MatrixServerDll_API void OnCloseInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
 {
+	if (pIPSetFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	if (pIPSetFrame->m_pcSndFrameData != NULL)
 	{
@@ -2414,8 +2495,7 @@ MatrixServerDll_API m_oTailFrameStruct* OnCreateInstrumentTailFrame(void)
 }
 // 初始化尾包
 MatrixServerDll_API void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFrame, 
-	m_oInstrumentCommInfoStruct* pCommInfo,
-	m_oConstVarStruct* pConstVar)
+	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -2423,13 +2503,13 @@ MatrixServerDll_API void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFram
 	}
 	if (pTailFrame == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentTailFrame", "pTailFrame",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentTailFrame", "pTailFrame",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
 	if (pCommInfo == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentTailFrame", "pCommInfo",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentTailFrame", "pCommInfo",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
@@ -2461,6 +2541,10 @@ MatrixServerDll_API void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFram
 // 关闭尾包帧信息结构体
 MatrixServerDll_API void OnCloseInstrumentTailFrame(m_oTailFrameStruct* pTailFrame)
 {
+	if (pTailFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pTailFrame->m_oSecTailFrame);
 	if (pTailFrame->m_pcRcvFrameData != NULL)
 	{
@@ -2500,8 +2584,7 @@ MatrixServerDll_API m_oTailTimeFrameStruct* OnCreateInstrumentTailTimeFrame(void
 }
 // 初始化尾包时刻帧
 MatrixServerDll_API void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
-	m_oInstrumentCommInfoStruct* pCommInfo,
-	m_oConstVarStruct* pConstVar)
+	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -2509,13 +2592,13 @@ MatrixServerDll_API void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* p
 	}
 	if (pTailTimeFrame == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentTailTimeFrame", "pTailTimeFrame",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentTailTimeFrame", "pTailTimeFrame",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
 	if (pCommInfo == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentTailTimeFrame", "pCommInfo",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentTailTimeFrame", "pCommInfo",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
@@ -2548,14 +2631,16 @@ MatrixServerDll_API void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* p
 		delete[] pTailTimeFrame->m_pcSndFrameData;
 	}
 	pTailTimeFrame->m_pcSndFrameData = new char[pConstVar->m_iSndFrameSize];
-	memset(pTailTimeFrame->m_pcSndFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iSndFrameSize);
+	memset(pTailTimeFrame->m_pcSndFrameData, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iSndFrameSize);
 	// 清空尾包时刻查询命令字集合
 	if (pTailTimeFrame->m_pcCommandWord != NULL)
 	{
 		delete[] pTailTimeFrame->m_pcCommandWord;
 	}
 	pTailTimeFrame->m_pcCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pTailTimeFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
+	memset(pTailTimeFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iCommandWordMaxNum);
 	// 尾包时刻查询命令字个数
 	pTailTimeFrame->m_usCommandWordNum = 0;
 
@@ -2572,12 +2657,17 @@ MatrixServerDll_API void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* p
 		delete[] pTailTimeFrame->m_pcRcvFrameData;
 	}
 	pTailTimeFrame->m_pcRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
-	memset(pTailTimeFrame->m_pcRcvFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iRcvFrameSize);
+	memset(pTailTimeFrame->m_pcRcvFrameData, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iRcvFrameSize);
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 }
 // 关闭尾包时刻帧信息结构体
 MatrixServerDll_API void OnCloseInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 {
+	if (pTailTimeFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	if (pTailTimeFrame->m_pcSndFrameData != NULL)
 	{
@@ -2632,8 +2722,7 @@ MatrixServerDll_API m_oTimeDelayFrameStruct* OnCreateInstrumentTimeDelayFrame(vo
 }
 // 初始化时统设置帧
 MatrixServerDll_API void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
-	m_oInstrumentCommInfoStruct* pCommInfo,
-	m_oConstVarStruct* pConstVar)
+	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -2641,13 +2730,13 @@ MatrixServerDll_API void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct*
 	}
 	if (pTimeDelayFrame == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentTimeDelayFrame", "pTimeDelayFrame",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentTimeDelayFrame", "pTimeDelayFrame",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
 	if (pCommInfo == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentTimeDelayFrame", "pCommInfo",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentTimeDelayFrame", "pCommInfo",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
@@ -2680,14 +2769,16 @@ MatrixServerDll_API void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct*
 		delete[] pTimeDelayFrame->m_pcSndFrameData;
 	}
 	pTimeDelayFrame->m_pcSndFrameData = new char[pConstVar->m_iSndFrameSize];
-	memset(pTimeDelayFrame->m_pcSndFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iSndFrameSize);
+	memset(pTimeDelayFrame->m_pcSndFrameData, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iSndFrameSize);
 	// 清空时统设置命令字集合
 	if (pTimeDelayFrame->m_pcCommandWord != NULL)
 	{
 		delete[] pTimeDelayFrame->m_pcCommandWord;
 	}
 	pTimeDelayFrame->m_pcCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pTimeDelayFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
+	memset(pTimeDelayFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iCommandWordMaxNum);
 	// 时统设置命令字个数
 	pTimeDelayFrame->m_usCommandWordNum = 0;
 
@@ -2704,12 +2795,17 @@ MatrixServerDll_API void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct*
 		delete[] pTimeDelayFrame->m_pcRcvFrameData;
 	}
 	pTimeDelayFrame->m_pcRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
-	memset(pTimeDelayFrame->m_pcRcvFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iRcvFrameSize);
+	memset(pTimeDelayFrame->m_pcRcvFrameData, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iRcvFrameSize);
 	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 }
 // 关闭时统设置帧信息结构体
 MatrixServerDll_API void OnCloseInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 {
+	if (pTimeDelayFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	if (pTimeDelayFrame->m_pcSndFrameData != NULL)
 	{
@@ -2764,8 +2860,7 @@ MatrixServerDll_API m_oADCSetFrameStruct* OnCreateInstrumentADCSetFrame(void)
 }
 // 初始化ADC参数设置帧
 MatrixServerDll_API void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
-	m_oInstrumentCommInfoStruct* pCommInfo,
-	m_oConstVarStruct* pConstVar)
+	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -2773,13 +2868,13 @@ MatrixServerDll_API void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCS
 	}
 	if (pADCSetFrame == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentADCSetFrame", "pADCSetFrame",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentADCSetFrame", "pADCSetFrame",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
 	if (pCommInfo == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentADCSetFrame", "pCommInfo",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentADCSetFrame", "pCommInfo",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
@@ -2853,6 +2948,10 @@ MatrixServerDll_API void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCS
 // 关闭ADC参数设置帧信息结构体
 MatrixServerDll_API void OnCloseInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 {
+	if (pADCSetFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	if (pADCSetFrame->m_pcSndFrameData != NULL)
 	{
@@ -2912,8 +3011,7 @@ MatrixServerDll_API m_oErrorCodeFrameStruct* OnCreateInstrumentErrorCodeFrame(vo
 }
 // 初始化误码查询帧
 MatrixServerDll_API void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
-	m_oInstrumentCommInfoStruct* pCommInfo,
-	m_oConstVarStruct* pConstVar)
+	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -2921,13 +3019,13 @@ MatrixServerDll_API void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct*
 	}
 	if (pErrorCodeFrame == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentErrorCodeFrame", "pErrorCodeFrame",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentErrorCodeFrame", "pErrorCodeFrame",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
 	if (pCommInfo == NULL)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnWorkInstrumentErrorCodeFrame", "pCommInfo",
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentErrorCodeFrame", "pCommInfo",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
@@ -2960,14 +3058,16 @@ MatrixServerDll_API void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct*
 		delete[] pErrorCodeFrame->m_pcSndFrameData;
 	}
 	pErrorCodeFrame->m_pcSndFrameData = new char[pConstVar->m_iSndFrameSize];
-	memset(pErrorCodeFrame->m_pcSndFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iSndFrameSize);
+	memset(pErrorCodeFrame->m_pcSndFrameData, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iSndFrameSize);
 	// 清空误码查询命令字集合
 	if (pErrorCodeFrame->m_pcCommandWord != NULL)
 	{
 		delete[] pErrorCodeFrame->m_pcCommandWord;
 	}
 	pErrorCodeFrame->m_pcCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pErrorCodeFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
+	memset(pErrorCodeFrame->m_pcCommandWord, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iCommandWordMaxNum);
 	// 误码查询命令字个数
 	pErrorCodeFrame->m_usCommandWordNum = 0;
 
@@ -2985,12 +3085,17 @@ MatrixServerDll_API void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct*
 		delete[] pErrorCodeFrame->m_pcRcvFrameData;
 	}
 	pErrorCodeFrame->m_pcRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
-	memset(pErrorCodeFrame->m_pcRcvFrameData, pConstVar->m_bySndFrameBufInit, pConstVar->m_iRcvFrameSize);
+	memset(pErrorCodeFrame->m_pcRcvFrameData, pConstVar->m_bySndFrameBufInit, 
+		pConstVar->m_iRcvFrameSize);
 	LeaveCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 }
 // 关闭误码查询帧信息结构体
 MatrixServerDll_API void OnCloseInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame)
 {
+	if (pErrorCodeFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	if (pErrorCodeFrame->m_pcSndFrameData != NULL)
 	{
@@ -3044,8 +3149,7 @@ MatrixServerDll_API m_oADCDataFrameStruct* OnCreateInstrumentADCDataFrame(void)
 }
 // 初始化ADC数据帧
 MatrixServerDll_API void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
-	m_oInstrumentCommInfoStruct* pCommInfo,
-	m_oConstVarStruct* pConstVar)
+	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -3114,6 +3218,10 @@ MatrixServerDll_API void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pAD
 // 关闭ADC数据帧信息结构体
 MatrixServerDll_API void OnCloseInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 {
+	if (pADCDataFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	if (pADCDataFrame->m_pcSndFrameData != NULL)
 	{
@@ -3194,8 +3302,13 @@ MatrixServerDll_API void OnCloseSocket(SOCKET oSocket)
 	oSocket = INVALID_SOCKET;
 }
 // 创建并设置心跳端口
-MatrixServerDll_API void OnCreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnCreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
+	if (pHeartBeatFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	// 创建套接字
 	pHeartBeatFrame->m_oHeartBeatSocket = CreateInstrumentSocket(pHeartBeatFrame->m_pCommandStruct->m_usReturnPort, 
@@ -3207,8 +3320,13 @@ MatrixServerDll_API void OnCreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* 
 }
 
 // 创建并设置首包端口
-MatrixServerDll_API void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
+	if (pHeadFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	// 创建套接字
 	pHeadFrame->m_oHeadFrameSocket = CreateInstrumentSocket(pHeadFrame->m_pCommandStruct->m_usReturnPort, 
@@ -3219,8 +3337,13 @@ MatrixServerDll_API void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHead
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetHeadFrameSocket", "创建并设置首包端口！");
 }
 // 创建并设置IP地址设置端口
-MatrixServerDll_API void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
+	if (pIPSetFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	// 创建套接字
 	pIPSetFrame->m_oIPSetFrameSocket = CreateInstrumentSocket(pIPSetFrame->m_pCommandStructSet->m_usReturnPort, 
@@ -3235,8 +3358,13 @@ MatrixServerDll_API void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIP
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetIPSetFrameSocket", "创建并设置IP地址设置端口！");
 }
 // 创建并设置尾包端口
-MatrixServerDll_API void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTailFrame, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTailFrame, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
+	if (pTailFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pTailFrame->m_oSecTailFrame);
 	// 创建套接字
 	pTailFrame->m_oTailFrameSocket = CreateInstrumentSocket(pTailFrame->m_pCommandStruct->m_usReturnPort, 
@@ -3247,8 +3375,13 @@ MatrixServerDll_API void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTail
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetTailFrameSocket", "创建并设置尾包端口！");
 }
 // 创建并设置尾包时刻端口
-MatrixServerDll_API void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruct* pTailTimeFrame, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruct* pTailTimeFrame, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
+	if (pTailTimeFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 创建套接字
 	pTailTimeFrame->m_oTailTimeFrameSocket = CreateInstrumentSocket(pTailTimeFrame->m_pCommandStructSet->m_usReturnPort, 
@@ -3256,15 +3389,22 @@ MatrixServerDll_API void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruc
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pTailTimeFrame->m_oTailTimeFrameSocket, pLogOutPut);
 	// 设置发送缓冲区
-	SetSndBufferSize(pTailTimeFrame->m_oTailTimeFrameSocket, pTailTimeFrame->m_uiSndBufferSize, pLogOutPut);
+	SetSndBufferSize(pTailTimeFrame->m_oTailTimeFrameSocket, 
+		pTailTimeFrame->m_uiSndBufferSize, pLogOutPut);
 	// 设置接收缓冲区大小
-	SetRcvBufferSize(pTailTimeFrame->m_oTailTimeFrameSocket, pTailTimeFrame->m_uiRcvBufferSize, pLogOutPut);
+	SetRcvBufferSize(pTailTimeFrame->m_oTailTimeFrameSocket, 
+		pTailTimeFrame->m_uiRcvBufferSize, pLogOutPut);
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetTailTimeFrameSocket", "创建并设置尾包时刻查询帧端口！");
 }
 // 创建并设置时统设置端口
-MatrixServerDll_API void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStruct* pTimeDelayFrame, m_oLogOutPutStruct* pLogOutPut = NULL)
+MatrixServerDll_API void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
+	if (pTimeDelayFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	// 创建套接字
 	pTimeDelayFrame->m_oTimeDelayFrameSocket = CreateInstrumentSocket(pTimeDelayFrame->m_pCommandStructSet->m_usReturnPort, 
@@ -3272,15 +3412,22 @@ MatrixServerDll_API void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStr
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pTimeDelayFrame->m_oTimeDelayFrameSocket, pLogOutPut);
 	// 设置发送缓冲区
-	SetSndBufferSize(pTimeDelayFrame->m_oTimeDelayFrameSocket, pTimeDelayFrame->m_uiSndBufferSize, pLogOutPut);
+	SetSndBufferSize(pTimeDelayFrame->m_oTimeDelayFrameSocket, 
+		pTimeDelayFrame->m_uiSndBufferSize, pLogOutPut);
 	// 设置接收缓冲区大小
-	SetRcvBufferSize(pTimeDelayFrame->m_oTimeDelayFrameSocket, pTimeDelayFrame->m_uiRcvBufferSize, pLogOutPut);
+	SetRcvBufferSize(pTimeDelayFrame->m_oTimeDelayFrameSocket, 
+		pTimeDelayFrame->m_uiRcvBufferSize, pLogOutPut);
 	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetTimeDelayFrameSocket", "创建并设置时统设置帧端口！");
 }
 // 创建并设置ADC参数设置端口
-MatrixServerDll_API void OnCreateAndSetADCSetFrameSocket(m_oADCSetFrameStruct* pADCSetFrame, m_oLogOutPutStruct* pLogOutPut)
+MatrixServerDll_API void OnCreateAndSetADCSetFrameSocket(m_oADCSetFrameStruct* pADCSetFrame, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
+	if (pADCSetFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	// 创建套接字
 	pADCSetFrame->m_oADCSetFrameSocket = CreateInstrumentSocket(pADCSetFrame->m_pCommandStructSet->m_usReturnPort, 
@@ -3295,8 +3442,13 @@ MatrixServerDll_API void OnCreateAndSetADCSetFrameSocket(m_oADCSetFrameStruct* p
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetADCSetFrameSocket", "创建并设置ADC参数设置帧端口！");
 }
 // 创建并设置误码查询端口
-MatrixServerDll_API void OnCreateAndSetErrorCodeFrameSocket(m_oErrorCodeFrameStruct* pErrorCodeFrame, m_oLogOutPutStruct* pLogOutPut)
+MatrixServerDll_API void OnCreateAndSetErrorCodeFrameSocket(m_oErrorCodeFrameStruct* pErrorCodeFrame, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
+	if (pErrorCodeFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	// 创建套接字
 	pErrorCodeFrame->m_oErrorCodeFrameSocket = CreateInstrumentSocket(pErrorCodeFrame->m_pCommandStructSet->m_usReturnPort, 
@@ -3304,15 +3456,22 @@ MatrixServerDll_API void OnCreateAndSetErrorCodeFrameSocket(m_oErrorCodeFrameStr
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pErrorCodeFrame->m_oErrorCodeFrameSocket, pLogOutPut);
 	// 设置发送缓冲区
-	SetSndBufferSize(pErrorCodeFrame->m_oErrorCodeFrameSocket, pErrorCodeFrame->m_uiSndBufferSize, pLogOutPut);
+	SetSndBufferSize(pErrorCodeFrame->m_oErrorCodeFrameSocket, 
+		pErrorCodeFrame->m_uiSndBufferSize, pLogOutPut);
 	// 设置接收缓冲区大小
-	SetRcvBufferSize(pErrorCodeFrame->m_oErrorCodeFrameSocket, pErrorCodeFrame->m_uiRcvBufferSize, pLogOutPut);
+	SetRcvBufferSize(pErrorCodeFrame->m_oErrorCodeFrameSocket, 
+		pErrorCodeFrame->m_uiRcvBufferSize, pLogOutPut);
 	LeaveCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetErrorCodeFrameSocket", "创建并设置误码查询帧端口！");
 }
 // 创建并设置ADC数据帧端口
-MatrixServerDll_API void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, m_oLogOutPutStruct* pLogOutPut)
+MatrixServerDll_API void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, 
+	m_oLogOutPutStruct* pLogOutPut = NULL)
 {
+	if (pADCDataFrame == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	// 创建套接字
 	pADCDataFrame->m_oADCDataFrameSocket = CreateInstrumentSocket(pADCDataFrame->m_pCommandStructSet->m_usReturnPort, 
@@ -3329,6 +3488,10 @@ MatrixServerDll_API void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct*
 // 清空接收缓冲区
 MatrixServerDll_API void OnClearSocketRcvBuf(SOCKET oSocket, m_oConstVarStruct* pConstVar)
 {
+	if (pConstVar == NULL)
+	{
+		return;
+	}
 	// 帧数量设置为0
 	int iFrameCount = 0;
 	// 接收缓冲区
@@ -3604,7 +3767,8 @@ MatrixServerDll_API void OnInitInstrumentList(m_oInstrumentListStruct* pInstrume
 	{
 		// 仪器在仪器数组中的位置
 		pInstrumentList->m_pArrayInstrument[i].m_uiIndex = i;
-		pInstrumentList->m_pArrayInstrument[i].m_uiIP = pConstVar->m_iIPSetAddrStart + i * pConstVar->m_iIPSetAddrInterval;
+		pInstrumentList->m_pArrayInstrument[i].m_uiIP = pConstVar->m_iIPSetAddrStart 
+			+ i * pConstVar->m_iIPSetAddrInterval;
 		// 重置仪器
 		OnInstrumentReset(&pInstrumentList->m_pArrayInstrument[i]);
 		// 仪器加在空闲仪器队列尾部
@@ -3615,6 +3779,10 @@ MatrixServerDll_API void OnInitInstrumentList(m_oInstrumentListStruct* pInstrume
 // 关闭仪器队列结构体
 MatrixServerDll_API void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 {
+	if (pInstrumentList == NULL)
+	{
+		return;
+	}
 	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	// 清空SN仪器索引表
 	pInstrumentList->m_oSNInstrumentMap.clear();
@@ -3648,6 +3816,10 @@ MatrixServerDll_API void OnFreeInstrumentList(m_oInstrumentListStruct* pInstrume
 // 得到一个空闲仪器
 MatrixServerDll_API m_oInstrumentStruct* GetFreeInstrument(m_oInstrumentListStruct* pInstrumentList)
 {
+	if (pInstrumentList == NULL)
+	{
+		return NULL;
+	}
 	m_oInstrumentStruct* pInstrument = NULL;
 	list <m_oInstrumentStruct*>::iterator iter;
 	if(pInstrumentList->m_uiCountFree > 0)	//有空闲仪器
@@ -3664,8 +3836,17 @@ MatrixServerDll_API m_oInstrumentStruct* GetFreeInstrument(m_oInstrumentListStru
 
 
 // 增加一个空闲仪器
-MatrixServerDll_API void AddFreeInstrument(m_oInstrumentStruct* pInstrument, m_oInstrumentListStruct* pInstrumentList)
+MatrixServerDll_API void AddFreeInstrument(m_oInstrumentStruct* pInstrument, 
+	m_oInstrumentListStruct* pInstrumentList)
 {
+	if (pInstrument == NULL)
+	{
+		return;
+	}
+	if (pInstrumentList == NULL)
+	{
+		return;
+	}
 	//初始化仪器
 	OnInstrumentReset(pInstrument);
 	//加入空闲队列
@@ -3676,6 +3857,10 @@ MatrixServerDll_API void AddFreeInstrument(m_oInstrumentStruct* pInstrument, m_o
 MatrixServerDll_API BOOL IfIndexExistInMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
+	if (pMap == NULL)
+	{
+		return FALSE;
+	}
 	BOOL bResult = FALSE;
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
@@ -3693,6 +3878,14 @@ MatrixServerDll_API BOOL IfIndexExistInMap(unsigned int uiIndex,
 MatrixServerDll_API void AddInstrumentToMap(unsigned int uiIndex, m_oInstrumentStruct* pInstrument, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
+	if (pInstrument == NULL)
+	{
+		return;
+	}
+	if (pMap == NULL)
+	{
+		return;
+	}
 	if (false == IfIndexExistInMap(uiIndex, pMap))
 	{
 		pMap->insert(hash_map<unsigned int, m_oInstrumentStruct*>::value_type (uiIndex, pInstrument));
@@ -3702,6 +3895,10 @@ MatrixServerDll_API void AddInstrumentToMap(unsigned int uiIndex, m_oInstrumentS
 MatrixServerDll_API m_oInstrumentStruct* GetInstrumentFromMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
+	if (pMap == NULL)
+	{
+		return NULL;
+	}
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
 	return iter->second;
@@ -3710,6 +3907,10 @@ MatrixServerDll_API m_oInstrumentStruct* GetInstrumentFromMap(unsigned int uiInd
 MatrixServerDll_API BOOL DeleteInstrumentFromMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
+	if (pMap == NULL)
+	{
+		return FALSE;
+	}
 	BOOL bResult = FALSE;
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
@@ -3729,6 +3930,10 @@ MatrixServerDll_API BOOL DeleteInstrumentFromMap(unsigned int uiIndex,
 MatrixServerDll_API BOOL IfIndexExistInADCFrameLostMap(m_oADCLostFrameKeyStruct Key, 
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap)
 {
+	if (pMap == NULL)
+	{
+		return FALSE;
+	}
 	BOOL bResult = FALSE;
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>::iterator iter;
 	iter = pMap->find(Key);
@@ -3743,9 +3948,13 @@ MatrixServerDll_API BOOL IfIndexExistInADCFrameLostMap(m_oADCLostFrameKeyStruct 
 	return bResult;
 }
 // 增加到索引
-MatrixServerDll_API void AddToADCFrameLostMap(m_oADCLostFrameKeyStruct Key, m_oADCLostFrameStruct oLostFrame, 
-	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap)
+MatrixServerDll_API void AddToADCFrameLostMap(m_oADCLostFrameKeyStruct Key, 
+	m_oADCLostFrameStruct oLostFrame, map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap)
 {
+	if (pMap == NULL)
+	{
+		return;
+	}
 	if (false == IfIndexExistInADCFrameLostMap(Key, pMap))
 	{
 		pMap->insert(map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>::value_type (Key, oLostFrame));
@@ -3755,6 +3964,10 @@ MatrixServerDll_API void AddToADCFrameLostMap(m_oADCLostFrameKeyStruct Key, m_oA
 MatrixServerDll_API ADCLostFrame_Struct* GetFromADCFrameLostMap(m_oADCLostFrameKeyStruct Key, 
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap)
 {
+	if (pMap == NULL)
+	{
+		return NULL;
+	}
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>::iterator iter;
 	iter = pMap->find(Key);
 	return &iter->second;
@@ -3763,6 +3976,10 @@ MatrixServerDll_API ADCLostFrame_Struct* GetFromADCFrameLostMap(m_oADCLostFrameK
 // 重置路由信息
 MatrixServerDll_API void OnRoutReset(m_oRoutStruct* pRout)
 {
+	if (pRout == NULL)
+	{
+		return;
+	}
 	// 仪器是否使用中
 	pRout->m_bInUsed = false;
 	// 路由方向 1-上；2-下；3-左；4右
@@ -3785,6 +4002,10 @@ MatrixServerDll_API void OnRoutReset(m_oRoutStruct* pRout)
 // 更新路由对象的路由时间
 MatrixServerDll_API void UpdateRoutTime(m_oRoutStruct* pRout)
 {
+	if (pRout == NULL)
+	{
+		return;
+	}
 	// 路由时刻
 	pRout->m_uiRoutTime = GetTickCount();
 }
@@ -3792,6 +4013,10 @@ MatrixServerDll_API void UpdateRoutTime(m_oRoutStruct* pRout)
 // 更新上次测网系统变化时刻
 MatrixServerDll_API void UpdateLineChangeTime(m_oInstrumentListStruct* pInstrumentList)
 {
+	if (pInstrumentList == NULL)
+	{
+		return;
+	}
 	// 上次测网系统变化时刻
 	pInstrumentList->m_uiLineChangeTime = GetTickCount();
 }
@@ -3839,6 +4064,10 @@ MatrixServerDll_API void OnResetRoutList(m_oRoutListStruct* pRoutList)
 MatrixServerDll_API void OnInitRoutList(m_oRoutListStruct* pRoutList,
 	m_oConstVarStruct* pConstVar)
 {
+	if (pConstVar == NULL)
+	{
+		return;
+	}
 	if (pRoutList == NULL)
 	{
 		return;
@@ -7006,7 +7235,7 @@ MatrixServerDll_API void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	GenOneOptTask(1, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray,
 		pEnv->m_pInstrumentList, pEnv->m_pConstVar);
 	// 产生一个施工任务
-//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
+	//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
 	pEnv->m_pADCSetThread->m_bADCStartSample = true;
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
@@ -7026,7 +7255,7 @@ MatrixServerDll_API void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 	// 释放一个施工任务
 	FreeOneOptTask(1, pEnv->m_pOptTaskArray);
 	// 释放一个施工任务
-//	FreeOneOptTask(2, pEnv->m_pOptTaskArray);
+	//	FreeOneOptTask(2, pEnv->m_pOptTaskArray);
 	pEnv->m_pADCSetThread->m_bADCStartSample = false;
 	pEnv->m_pADCSetThread->m_bADCStopSample = true;
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = false;
@@ -10124,7 +10353,7 @@ MatrixServerDll_API void OnInitInstance(m_oEnvironmentStruct* pEnv)
 	OnCloseSocket(pEnv->m_pADCDataFrame->m_oADCDataFrameSocket);
 	// 创建并设置ADC数据帧端口
 	OnCreateAndSetADCDataFrameSocket(pEnv->m_pADCDataFrame, pEnv->m_pLogOutPutOpt);
-		// 测试用
+	// 测试用
 	// 	errno_t err;
 	// 	CString str1 = _T("");
 	// 	FILE* pFile = NULL;
