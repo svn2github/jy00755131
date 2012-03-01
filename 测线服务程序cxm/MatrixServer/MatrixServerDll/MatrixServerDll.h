@@ -46,7 +46,7 @@ MATRIXSERVERDLL_API int fnMatrixServerDll(void);
 // 帧时间和偏移量日志（包含丢帧、重发帧及失效帧结果统计）
 #define ADCFrameTimeLogFolderPath	_T("\\采样数据帧时间及偏移量")
 // ADC数据帧
-#define ADCDataLogFolderPath	_T("\\采样数据")
+#define ADCDataLogFolderPath		_T("\\采样数据")
 
 // 输出选择:Debug输出则为0，Release输出则为1
 #define OutPutSelect				0
@@ -54,6 +54,8 @@ MATRIXSERVERDLL_API int fnMatrixServerDll(void);
 #define OutPutLogErrorLimit			100
 // 日志文件单个文件输出信息条数
 #define OutPutLogFileInfoNumLimit	5000
+// INI文件读取关键字缓冲区大小
+#define INIFileStrBufSize			256
 // 日志输出类型
 enum{LogType, WarningType, ErrorType, ExpandType};
 // 日志文件类型
