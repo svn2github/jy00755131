@@ -7007,9 +7007,13 @@ MatrixServerDll_API void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConst
 		}
 		else
 		{
-			str.Format(_T("路由IP = 0x%x"), uiRoutIP);
-			AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetTimeDelayTask", ConvertCStrToStr(str),
-				ErrorType, IDS_ERR_ROUT_NOTEXIT);
+			// 不是LCI路由
+			if (uiRoutIP != 0)
+			{
+				str.Format(_T("路由IP = 0x%x"), uiRoutIP);
+				AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetTimeDelayTask", ConvertCStrToStr(str),
+					ErrorType, IDS_ERR_ROUT_NOTEXIT);
+			}
 		}
 	}
 }

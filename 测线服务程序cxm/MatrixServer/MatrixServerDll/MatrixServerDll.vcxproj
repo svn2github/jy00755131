@@ -84,22 +84,92 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ADCDataBuf.h" />
+    <ClInclude Include="ADCDataBufArray.h" />
+    <ClInclude Include="ADCDataFrame.h" />
+    <ClInclude Include="ADCDataRecThread.h" />
+    <ClInclude Include="ADCDataSaveThread.h" />
+    <ClInclude Include="ADCLostFrame.h" />
+    <ClInclude Include="ADCSetFrame.h" />
+    <ClInclude Include="ADCSetThread.h" />
+    <ClInclude Include="CommandInfo.h" />
+    <ClInclude Include="ConstVar.h" />
     <ClInclude Include="CXMLDOMDocument.h" />
     <ClInclude Include="CXMLDOMElement.h" />
     <ClInclude Include="CXMLDOMNode.h" />
     <ClInclude Include="CXMLDOMNodeList.h" />
+    <ClInclude Include="ErrorCodeFrame.h" />
+    <ClInclude Include="ErrorCodeThread.h" />
+    <ClInclude Include="HeadFrame.h" />
+    <ClInclude Include="HeadFrameThread.h" />
+    <ClInclude Include="HeartBeatFrame.h" />
+    <ClInclude Include="HeartBeatThread.h" />
+    <ClInclude Include="Instrument.h" />
+    <ClInclude Include="InstrumentList.h" />
+    <ClInclude Include="IPSetFrame.h" />
+    <ClInclude Include="IPSetFrameThread.h" />
+    <ClInclude Include="LogOutPut.h" />
+    <ClInclude Include="LogOutPutThread.h" />
     <ClInclude Include="MatrixServerDll.h" />
+    <ClInclude Include="MonitorThread.h" />
+    <ClInclude Include="OptInstrument.h" />
+    <ClInclude Include="OptTask.h" />
+    <ClInclude Include="OptTaskArray.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Rout.h" />
+    <ClInclude Include="RoutList.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TailFrame.h" />
+    <ClInclude Include="TailFrameThread.h" />
+    <ClInclude Include="TailTimeFrame.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Thread.h" />
+    <ClInclude Include="TimeDelayFrame.h" />
+    <ClInclude Include="TimeDelayThread.h" />
+    <ClInclude Include="xml.h" />
     <ClInclude Include="XMLDOMTool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ADCDataBuf.cpp" />
+    <ClCompile Include="ADCDataBufArray.cpp" />
+    <ClCompile Include="ADCDataFrame.cpp" />
+    <ClCompile Include="ADCDataRecThread.cpp" />
+    <ClCompile Include="ADCDataSaveThread.cpp" />
+    <ClCompile Include="ADCLostFrame.cpp" />
+    <ClCompile Include="ADCSetFrame.cpp" />
+    <ClCompile Include="ADCSetThread.cpp" />
+    <ClCompile Include="CommandInfo.cpp" />
+    <ClCompile Include="ConstVar.cpp" />
+    <ClCompile Include="ErrorCodeFrame.cpp" />
+    <ClCompile Include="ErrorCodeThread.cpp" />
+    <ClCompile Include="HeadFrame.cpp" />
+    <ClCompile Include="HeadFrameThread.cpp" />
+    <ClCompile Include="HeartBeatFrame.cpp" />
+    <ClCompile Include="HeartBeatThread.cpp" />
+    <ClCompile Include="Instrument.cpp" />
+    <ClCompile Include="InstrumentList.cpp" />
+    <ClCompile Include="IPSetFrame.cpp" />
+    <ClCompile Include="IPSetFrameThread.cpp" />
+    <ClCompile Include="LogOutPut.cpp" />
+    <ClCompile Include="LogOutPutThread.cpp" />
     <ClCompile Include="MatrixServerDll.cpp" />
+    <ClCompile Include="MonitorThread.cpp" />
+    <ClCompile Include="OptInstrument.cpp" />
+    <ClCompile Include="OptTask.cpp" />
+    <ClCompile Include="OptTaskArray.cpp" />
+    <ClCompile Include="Rout.cpp" />
+    <ClCompile Include="RoutList.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TailFrame.cpp" />
+    <ClCompile Include="TailFrameThread.cpp" />
+    <ClCompile Include="TailTimeFrame.cpp" />
+    <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="TimeDelayFrame.cpp" />
+    <ClCompile Include="TimeDelayThread.cpp" />
+    <ClCompile Include="xml.cpp" />
     <ClCompile Include="XMLDOMTool.cpp" />
   </ItemGroup>
   <ItemGroup>
