@@ -38,7 +38,8 @@ BOOL COperationDoc::OnNewDocument()
 
 	// TODO: 在此添加重新初始化代码
 	// (SDI 文档将重用该文档)
-	SetTitle(_T(""));
+	// cxm 2012.3.7
+	SetTitle(_T("天津海泰光电科技有限公司"));
 	return TRUE;
 }
 

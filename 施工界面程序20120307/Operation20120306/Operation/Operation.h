@@ -30,10 +30,11 @@ public:
 	CString     m_strFTPServerIP;
 	/** 本地XML配置文件（含路径） */
 	CString     m_strLocalXMLFile;
-	/** 发送日志的Socket端口 */
-	CSocketLogInfo	m_sockLogInfo;
-	/** 日志内存映射区*/
-	CLogMapping		m_LogMapping;
+	// cxm 2012.3.7
+// 	/** 发送日志的Socket端口 */
+// 	CSocketLogInfo	m_sockLogInfo;
+// 	/** 日志内存映射区*/
+// 	CLogMapping		m_LogMapping;
 protected:
 	HINSTANCE    m_hinstBCGCBRes;
 

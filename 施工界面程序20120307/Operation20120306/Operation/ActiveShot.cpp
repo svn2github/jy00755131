@@ -274,69 +274,69 @@ int  CActiveShot::SendRequestShotService()
 
 	return SendToServer(pBuf,36);
 }
-
-int  CActiveShot::SendFDUConfig(CFDUConfig* pFDUConfig,CDiskRecordConfig* pDiskRecord)
-{
-	if(!pFDUConfig || !pDiskRecord)
-		return -1;
-	CString		strNormalFilePath;
-	// 正常采集数据文件存盘路径
-	strNormalFilePath = pDiskRecord->GetNormalFilePath();
-	int nNormalLen = WORD(strNormalFilePath.GetLength()*sizeof(TCHAR));
-	CString     strTestFilePath;
-	// 测试采集数据文件存盘路径
-	strTestFilePath = pDiskRecord->GetTestFilePath();
-	int nTestLen = WORD(strTestFilePath.GetLength()*sizeof(TCHAR));
-
-	unsigned char* pBuf=new unsigned char[56+nNormalLen+nTestLen];
-	// 帧头
-	pBuf[0] = 0xEB;
-	pBuf[1] = 0x90;
-	// 帧长
-	pBuf[2] = 56+nNormalLen+nTestLen;
-	pBuf[3] = 0;
-	// 帧计数
-	memset(pBuf+4,0,4);
-	// 帧类型
-	pBuf[8] = 0x02;
-	// 命令码
-	pBuf[9]  = LOBYTE(OPERATION_CMD_FDUCONF);
-	pBuf[10] = HIBYTE(OPERATION_CMD_FDUCONF);
-	// 数据个数
-	pBuf[11] =2;
-	pBuf[12] =0;
-	// 炮号、震源
-	memcpy_s(pBuf+13,4,&m_dwServerID,4);
-	memcpy_s(pBuf+17,4,&m_dwThreadID,4);
-	// 采集站配置信息
-	memcpy_s(pBuf+21,4,&pFDUConfig->m_dwGain3301Index,4);	
-	memcpy_s(pBuf+25,4,&pFDUConfig->m_dwMux3301Index,4);	
-	memcpy_s(pBuf+29,4,&pFDUConfig->m_dwMode5373Index,4);
-	memcpy_s(pBuf+33,4,&pFDUConfig->m_dwAttr5373Index,4);
-	memcpy_s(pBuf+37,4,&pFDUConfig->m_dwSampleRateIndex,4);
-	memcpy_s(pBuf+41,4,&pFDUConfig->m_dwFilterIIRIndex,4);
-	memcpy_s(pBuf+45,4,&pFDUConfig->m_dwFilterFIRIndex,4);
-	
-	// 正常采集数据文件存盘路径
-	memcpy_s(pBuf+49,nNormalLen, LPCTSTR(strNormalFilePath),nNormalLen);
-	pBuf[49+nNormalLen]='\0';	// 结束符
-	pBuf[50+nNormalLen]='\0';
-	
-	// 测试采集数据文件存盘路径
-	memcpy_s(pBuf+51+nNormalLen,nTestLen, LPCTSTR(strTestFilePath),nTestLen);
-	pBuf[51+nNormalLen+nTestLen]='\0';	// 结束符
-	pBuf[52+nNormalLen+nTestLen]='\0';
-
-	// 帧校验
-	pBuf[53+nNormalLen+nTestLen]=0;
-	// 帧尾
-	pBuf[54+nNormalLen+nTestLen] = 0x14;
-	pBuf[55+nNormalLen+nTestLen] = 0x6F;
-	
-	nNormalLen = SendToServer(pBuf,56+nNormalLen+nTestLen);
-	delete []pBuf;
-	return nNormalLen; 
-}
+// cxm 2012.3.7 应该是在Config程序中设置这些参数
+// int  CActiveShot::SendFDUConfig(CFDUConfig* pFDUConfig,CDiskRecordConfig* pDiskRecord)
+// {
+// 	if(!pFDUConfig || !pDiskRecord)
+// 		return -1;
+// 	CString		strNormalFilePath;
+// 	// 正常采集数据文件存盘路径
+// 	strNormalFilePath = pDiskRecord->GetNormalFilePath();
+// 	int nNormalLen = WORD(strNormalFilePath.GetLength()*sizeof(TCHAR));
+// 	CString     strTestFilePath;
+// 	// 测试采集数据文件存盘路径
+// 	strTestFilePath = pDiskRecord->GetTestFilePath();
+// 	int nTestLen = WORD(strTestFilePath.GetLength()*sizeof(TCHAR));
+// 
+// 	unsigned char* pBuf=new unsigned char[56+nNormalLen+nTestLen];
+// 	// 帧头
+// 	pBuf[0] = 0xEB;
+// 	pBuf[1] = 0x90;
+// 	// 帧长
+// 	pBuf[2] = 56+nNormalLen+nTestLen;
+// 	pBuf[3] = 0;
+// 	// 帧计数
+// 	memset(pBuf+4,0,4);
+// 	// 帧类型
+// 	pBuf[8] = 0x02;
+// 	// 命令码
+// 	pBuf[9]  = LOBYTE(OPERATION_CMD_FDUCONF);
+// 	pBuf[10] = HIBYTE(OPERATION_CMD_FDUCONF);
+// 	// 数据个数
+// 	pBuf[11] =2;
+// 	pBuf[12] =0;
+// 	// 炮号、震源
+// 	memcpy_s(pBuf+13,4,&m_dwServerID,4);
+// 	memcpy_s(pBuf+17,4,&m_dwThreadID,4);
+// 	// 采集站配置信息
+// 	memcpy_s(pBuf+21,4,&pFDUConfig->m_dwGain3301Index,4);	
+// 	memcpy_s(pBuf+25,4,&pFDUConfig->m_dwMux3301Index,4);	
+// 	memcpy_s(pBuf+29,4,&pFDUConfig->m_dwMode5373Index,4);
+// 	memcpy_s(pBuf+33,4,&pFDUConfig->m_dwAttr5373Index,4);
+// 	memcpy_s(pBuf+37,4,&pFDUConfig->m_dwSampleRateIndex,4);
+// 	memcpy_s(pBuf+41,4,&pFDUConfig->m_dwFilterIIRIndex,4);
+// 	memcpy_s(pBuf+45,4,&pFDUConfig->m_dwFilterFIRIndex,4);
+// 	
+// 	// 正常采集数据文件存盘路径
+// 	memcpy_s(pBuf+49,nNormalLen, LPCTSTR(strNormalFilePath),nNormalLen);
+// 	pBuf[49+nNormalLen]='\0';	// 结束符
+// 	pBuf[50+nNormalLen]='\0';
+// 	
+// 	// 测试采集数据文件存盘路径
+// 	memcpy_s(pBuf+51+nNormalLen,nTestLen, LPCTSTR(strTestFilePath),nTestLen);
+// 	pBuf[51+nNormalLen+nTestLen]='\0';	// 结束符
+// 	pBuf[52+nNormalLen+nTestLen]='\0';
+// 
+// 	// 帧校验
+// 	pBuf[53+nNormalLen+nTestLen]=0;
+// 	// 帧尾
+// 	pBuf[54+nNormalLen+nTestLen] = 0x14;
+// 	pBuf[55+nNormalLen+nTestLen] = 0x6F;
+// 	
+// 	nNormalLen = SendToServer(pBuf,56+nNormalLen+nTestLen);
+// 	delete []pBuf;
+// 	return nNormalLen; 
+// }
 /**
  * @brief 发送采集排列的编号、标签等属性
  * @note  与施工服务程序建立连接后，在开始放炮前，向服务器下发采集排列。

@@ -86,8 +86,9 @@ public:
 	int  SendToServer(unsigned char* pBuf,int nSize);
 	//void ParseServerData(unsigned char* pBuf,int nSize);
 
-	// 发送FDU配置信息
-	int SendFDUConfig(CFDUConfig* pFDUConfig,CDiskRecordConfig* pDiskRecord);
+	// cxm 2012.3.7 应该是在Config程序中设置这些参数
+// 	// 发送FDU配置信息
+// 	int SendFDUConfig(CFDUConfig* pFDUConfig,CDiskRecordConfig* pDiskRecord);
 	// 广播发送请求放炮服务
 	int  SendRequestShotService(void);
 	// 向服务器发送采集排列

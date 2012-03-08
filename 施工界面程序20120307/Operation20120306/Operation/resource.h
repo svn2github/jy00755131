@@ -15,7 +15,6 @@
 #define IDR_POPUP_VPSHOT                133
 #define IDB_BITMAP1                     135
 #define IDB_BITMAPVPSTATE               135
-#define E                               136
 #define IDB_SOURCESTATE                 136
 #define IDD_SOURCESETUPDLG              137
 #define IDD_SOURCEEXPLODLG              138

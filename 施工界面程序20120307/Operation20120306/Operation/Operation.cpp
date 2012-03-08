@@ -106,8 +106,9 @@ BOOL COperationApp::InitInstance()
 	// TODO: 应适当修改该字符串，
 	// 例如修改为公司或组织名	
 	m_bSaveState=FALSE;
-	SetRegistryKey(_T("BCGSoft\\BCGControlBarPro\\Samples"));
-
+	// cxm 2012.3.7
+//	SetRegistryKey(_T("BCGSoft\\BCGControlBarPro\\Samples"));
+	SetRegistryKey(_T("BCGSoft\\BCGControlBarPro\\Operation"));
 	//LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 	SetRegistryBase (_T("Settings"));
 
