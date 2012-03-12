@@ -265,39 +265,39 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp, LPARAM)
 
 	return 0;
 }
-
-BOOL CMainFrame::OnShowPopupMenu (CBCGPPopupMenu* pMenuPopup)
-{
-	//---------------------------------------------------------
-	// Replace ID_VIEW_TOOLBARS menu item to the toolbars list:
-	//---------------------------------------------------------
-
-	CFrameWnd::OnShowPopupMenu (pMenuPopup);
-
-	if (pMenuPopup != NULL &&
-		pMenuPopup->GetMenuBar ()->CommandToIndex (ID_VIEW_TOOLBARS) >= 0)
-	{
-		if (CBCGPToolBar::IsCustomizeMode ())
-		{
-			//----------------------------------------------------
-			// Don't show toolbars list in the cuztomization mode!
-			//----------------------------------------------------
-			return FALSE;
-		}
-
-		pMenuPopup->RemoveAllItems ();
-
-		CMenu menu;
-		VERIFY(menu.LoadMenu (IDR_POPUP_TOOLBAR));
-
-		CMenu* pPopup = menu.GetSubMenu(0);
-		ASSERT(pPopup != NULL);
-
-		pMenuPopup->GetMenuBar ()->ImportFromMenu (*pPopup, TRUE);
-	}
-/**/
-	return TRUE;
-}
+// cxm 2012.3.7
+// BOOL CMainFrame::OnShowPopupMenu (CBCGPPopupMenu* pMenuPopup)
+// {
+// 	//---------------------------------------------------------
+// 	// Replace ID_VIEW_TOOLBARS menu item to the toolbars list:
+// 	//---------------------------------------------------------
+// 
+// 	CFrameWnd::OnShowPopupMenu (pMenuPopup);
+// 
+// 	if (pMenuPopup != NULL &&
+// 		pMenuPopup->GetMenuBar ()->CommandToIndex (ID_VIEW_TOOLBARS) >= 0)
+// 	{
+// 		if (CBCGPToolBar::IsCustomizeMode ())
+// 		{
+// 			//----------------------------------------------------
+// 			// Don't show toolbars list in the cuztomization mode!
+// 			//----------------------------------------------------
+// 			return FALSE;
+// 		}
+// 
+// 		pMenuPopup->RemoveAllItems ();
+// 
+// 		CMenu menu;
+// 		VERIFY(menu.LoadMenu (IDR_POPUP_TOOLBAR));
+// 
+// 		CMenu* pPopup = menu.GetSubMenu(0);
+// 		ASSERT(pPopup != NULL);
+// 
+// 		pMenuPopup->GetMenuBar ()->ImportFromMenu (*pPopup, TRUE);
+// 	}
+// /**/
+// 	return TRUE;
+// }
 
 // cxm 2012.3.7
 // void CMainFrame::OnViewWorkspace() 

@@ -110,7 +110,8 @@ protected:
 	afx_msg void OnShotPoint(UINT id);
 	afx_msg void OnUpdateAppLook(CCmdUI* pCmdUI);
 	DECLARE_MESSAGE_MAP()
-	virtual BOOL OnShowPopupMenu (CBCGPPopupMenu* pMenuPopup);
+	// cxm 2012.3.7
+//	virtual BOOL OnShowPopupMenu (CBCGPPopupMenu* pMenuPopup);
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 	UINT	m_nAppLook;
 
