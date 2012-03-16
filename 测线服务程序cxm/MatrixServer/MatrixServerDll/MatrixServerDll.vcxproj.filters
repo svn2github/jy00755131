@@ -22,98 +22,8 @@
     <Filter Include="帧">
       <UniqueIdentifier>{f1120f52-afc2-4c9a-a73f-36d20c55510c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="帧\Instrument">
-      <UniqueIdentifier>{e284c5f6-6a90-4a89-a718-704d3be92572}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\InstrumentList">
-      <UniqueIdentifier>{6b119fc0-16bb-475a-be50-a8e649499679}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\Rout">
-      <UniqueIdentifier>{b4c91730-f857-4961-8c16-fa328883a3f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\RoutList">
-      <UniqueIdentifier>{b0e3623a-171f-4f59-a227-3f2a19a20618}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\HeartBeatFrame">
-      <UniqueIdentifier>{3cda4cd8-02f9-41ba-9ded-01305c1a9bb1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\HeadFrame">
-      <UniqueIdentifier>{43a914a2-a634-4df6-b901-c2c450d03cdb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\IPSetFrame">
-      <UniqueIdentifier>{6e980ef8-a7ad-4fdb-b77f-6709306adf2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\TailFrame">
-      <UniqueIdentifier>{a8b7c8e4-2894-468f-adda-33e1007c6819}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\TailTimeFrame">
-      <UniqueIdentifier>{eafffd2f-b66a-4b9a-b796-4b73d0c55f3b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\TimeDelayFrame">
-      <UniqueIdentifier>{6f78aa70-2177-4756-9884-3d22e9294065}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\ADCSetFrame">
-      <UniqueIdentifier>{6ac6dbdc-00ed-4ec7-9262-9d2b2749e580}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\ErrorCodeFrame">
-      <UniqueIdentifier>{51ff5737-7a21-4e30-8fc4-e44043b49ba9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\ADCDataFrame">
-      <UniqueIdentifier>{432747f6-425a-4027-894f-6c0f7ba115c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\LogOutPutThread">
-      <UniqueIdentifier>{130c2e96-03a1-48fb-936b-65f2dc6cf7a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\HeartBeatThread">
-      <UniqueIdentifier>{aa826362-31b8-493b-a284-cabd7fb84c04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\HeadFrameThread">
-      <UniqueIdentifier>{a8ca3421-e31a-4956-8ea3-f49cc286a73d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\TailFrameThread">
-      <UniqueIdentifier>{0c1e3853-e618-460f-82cf-3aac48efd2e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\IPSetFrameThread">
-      <UniqueIdentifier>{a1fe3fca-018c-43c4-b506-3ce8bbbbe23d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\TimeDelayThread">
-      <UniqueIdentifier>{84859329-fd5b-4e96-8f7d-d38266ea3bae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\ErrorCodeThread">
-      <UniqueIdentifier>{9606a4e5-dbc1-456f-b36a-b9c779a63028}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\ADCSetThread">
-      <UniqueIdentifier>{dd79d541-916f-42a4-8817-519c0377f2c5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\MonitorThread">
-      <UniqueIdentifier>{b483f35e-f990-429e-9aa9-6b404236a394}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\Thread">
-      <UniqueIdentifier>{32cbafb6-96a6-4a3f-b949-f7a5416477d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="帧\CommandInfo">
-      <UniqueIdentifier>{980ca9df-c3b5-44d1-8b0b-abc19fee89e3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\ADCDataBufArray">
-      <UniqueIdentifier>{ca1b8f11-4fa3-43ff-ae99-bb42d0124b81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\OptTaskArray">
-      <UniqueIdentifier>{c92bac7e-6624-4e3a-a62f-cf5c85f71822}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\ADCDataRecThread">
-      <UniqueIdentifier>{57b8fc07-403d-4c79-b3bf-c40866451b5b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="线程\ADCDataSaveThread">
-      <UniqueIdentifier>{5cd40ba9-c20d-40fd-803e-d3430e472d36}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="杂项\LogOutPut">
-      <UniqueIdentifier>{9be62754-d709-4044-b033-6d7b3beefb0c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="杂项\XML">
       <UniqueIdentifier>{9a59ad32-1f15-453d-b4be-b2c8353cf61a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="杂项\INI">
-      <UniqueIdentifier>{4e766c10-939f-4a27-940d-cd04798e07a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -133,12 +43,6 @@
     <ClInclude Include="MatrixServerDll.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="LogOutPut.h">
-      <Filter>杂项\LogOutPut</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstVar.h">
-      <Filter>杂项\INI</Filter>
-    </ClInclude>
     <ClInclude Include="CXMLDOMNodeList.h">
       <Filter>杂项\XML</Filter>
     </ClInclude>
@@ -154,105 +58,6 @@
     <ClInclude Include="XMLDOMTool.h">
       <Filter>杂项\XML</Filter>
     </ClInclude>
-    <ClInclude Include="xml.h">
-      <Filter>杂项\XML</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandInfo.h">
-      <Filter>帧\CommandInfo</Filter>
-    </ClInclude>
-    <ClInclude Include="Instrument.h">
-      <Filter>帧\Instrument</Filter>
-    </ClInclude>
-    <ClInclude Include="InstrumentList.h">
-      <Filter>帧\InstrumentList</Filter>
-    </ClInclude>
-    <ClInclude Include="Rout.h">
-      <Filter>帧\Rout</Filter>
-    </ClInclude>
-    <ClInclude Include="RoutList.h">
-      <Filter>帧\RoutList</Filter>
-    </ClInclude>
-    <ClInclude Include="HeadFrame.h">
-      <Filter>帧\HeadFrame</Filter>
-    </ClInclude>
-    <ClInclude Include="HeartBeatFrame.h">
-      <Filter>帧\HeartBeatFrame</Filter>
-    </ClInclude>
-    <ClInclude Include="IPSetFrame.h">
-      <Filter>帧\IPSetFrame</Filter>
-    </ClInclude>
-    <ClInclude Include="TailFrame.h">
-      <Filter>帧\TailFrame</Filter>
-    </ClInclude>
-    <ClInclude Include="TailTimeFrame.h">
-      <Filter>帧\TailTimeFrame</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeDelayFrame.h">
-      <Filter>帧\TimeDelayFrame</Filter>
-    </ClInclude>
-    <ClInclude Include="ADCSetFrame.h">
-      <Filter>帧\ADCSetFrame</Filter>
-    </ClInclude>
-    <ClInclude Include="ErrorCodeFrame.h">
-      <Filter>帧\ErrorCodeFrame</Filter>
-    </ClInclude>
-    <ClInclude Include="ADCDataFrame.h">
-      <Filter>帧\ADCDataFrame</Filter>
-    </ClInclude>
-    <ClInclude Include="Thread.h">
-      <Filter>线程\Thread</Filter>
-    </ClInclude>
-    <ClInclude Include="LogOutPutThread.h">
-      <Filter>线程\LogOutPutThread</Filter>
-    </ClInclude>
-    <ClInclude Include="HeartBeatThread.h">
-      <Filter>线程\HeartBeatThread</Filter>
-    </ClInclude>
-    <ClInclude Include="HeadFrameThread.h">
-      <Filter>线程\HeadFrameThread</Filter>
-    </ClInclude>
-    <ClInclude Include="IPSetFrameThread.h">
-      <Filter>线程\IPSetFrameThread</Filter>
-    </ClInclude>
-    <ClInclude Include="TailFrameThread.h">
-      <Filter>线程\TailFrameThread</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeDelayThread.h">
-      <Filter>线程\TimeDelayThread</Filter>
-    </ClInclude>
-    <ClInclude Include="ADCSetThread.h">
-      <Filter>线程\ADCSetThread</Filter>
-    </ClInclude>
-    <ClInclude Include="ErrorCodeThread.h">
-      <Filter>线程\ErrorCodeThread</Filter>
-    </ClInclude>
-    <ClInclude Include="ADCDataBufArray.h">
-      <Filter>线程\ADCDataBufArray</Filter>
-    </ClInclude>
-    <ClInclude Include="ADCDataBuf.h">
-      <Filter>线程\ADCDataBufArray</Filter>
-    </ClInclude>
-    <ClInclude Include="ADCDataRecThread.h">
-      <Filter>线程\ADCDataRecThread</Filter>
-    </ClInclude>
-    <ClInclude Include="MonitorThread.h">
-      <Filter>线程\MonitorThread</Filter>
-    </ClInclude>
-    <ClInclude Include="ADCLostFrame.h">
-      <Filter>线程\ADCDataRecThread</Filter>
-    </ClInclude>
-    <ClInclude Include="OptInstrument.h">
-      <Filter>线程\OptTaskArray</Filter>
-    </ClInclude>
-    <ClInclude Include="OptTask.h">
-      <Filter>线程\OptTaskArray</Filter>
-    </ClInclude>
-    <ClInclude Include="OptTaskArray.h">
-      <Filter>线程\OptTaskArray</Filter>
-    </ClInclude>
-    <ClInclude Include="ADCDataSaveThread.h">
-      <Filter>线程\ADCDataSaveThread</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -261,113 +66,110 @@
     <ClCompile Include="MatrixServerDll.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="LogOutPut.cpp">
-      <Filter>杂项\LogOutPut</Filter>
-    </ClCompile>
-    <ClCompile Include="ConstVar.cpp">
-      <Filter>杂项\INI</Filter>
-    </ClCompile>
     <ClCompile Include="XMLDOMTool.cpp">
       <Filter>杂项\XML</Filter>
     </ClCompile>
     <ClCompile Include="xml.cpp">
       <Filter>杂项\XML</Filter>
     </ClCompile>
-    <ClCompile Include="CommandInfo.cpp">
-      <Filter>帧\CommandInfo</Filter>
+    <ClCompile Include="LogOutPut.cpp">
+      <Filter>杂项</Filter>
     </ClCompile>
-    <ClCompile Include="Instrument.cpp">
-      <Filter>帧\Instrument</Filter>
+    <ClCompile Include="PerformanceFunc.cpp">
+      <Filter>杂项</Filter>
     </ClCompile>
-    <ClCompile Include="InstrumentList.cpp">
-      <Filter>帧\InstrumentList</Filter>
-    </ClCompile>
-    <ClCompile Include="Rout.cpp">
-      <Filter>帧\Rout</Filter>
-    </ClCompile>
-    <ClCompile Include="RoutList.cpp">
-      <Filter>帧\RoutList</Filter>
-    </ClCompile>
-    <ClCompile Include="HeadFrame.cpp">
-      <Filter>帧\HeadFrame</Filter>
+    <ClCompile Include="ConstVar.cpp">
+      <Filter>杂项</Filter>
     </ClCompile>
     <ClCompile Include="HeartBeatFrame.cpp">
-      <Filter>帧\HeartBeatFrame</Filter>
+      <Filter>帧</Filter>
+    </ClCompile>
+    <ClCompile Include="HeadFrame.cpp">
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="IPSetFrame.cpp">
-      <Filter>帧\IPSetFrame</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="TailFrame.cpp">
-      <Filter>帧\TailFrame</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="TailTimeFrame.cpp">
-      <Filter>帧\TailTimeFrame</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="TimeDelayFrame.cpp">
-      <Filter>帧\TimeDelayFrame</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="ADCSetFrame.cpp">
-      <Filter>帧\ADCSetFrame</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="ErrorCodeFrame.cpp">
-      <Filter>帧\ErrorCodeFrame</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="ADCDataFrame.cpp">
-      <Filter>帧\ADCDataFrame</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
-    <ClCompile Include="Thread.cpp">
-      <Filter>线程\Thread</Filter>
+    <ClCompile Include="Instrument.cpp">
+      <Filter>帧</Filter>
     </ClCompile>
-    <ClCompile Include="LogOutPutThread.cpp">
-      <Filter>线程\LogOutPutThread</Filter>
+    <ClCompile Include="InstrumentList.cpp">
+      <Filter>帧</Filter>
     </ClCompile>
-    <ClCompile Include="HeartBeatThread.cpp">
-      <Filter>线程\HeartBeatThread</Filter>
+    <ClCompile Include="Rout.cpp">
+      <Filter>帧</Filter>
     </ClCompile>
-    <ClCompile Include="HeadFrameThread.cpp">
-      <Filter>线程\HeadFrameThread</Filter>
-    </ClCompile>
-    <ClCompile Include="IPSetFrameThread.cpp">
-      <Filter>线程\IPSetFrameThread</Filter>
-    </ClCompile>
-    <ClCompile Include="TailFrameThread.cpp">
-      <Filter>线程\TailFrameThread</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeDelayThread.cpp">
-      <Filter>线程\TimeDelayThread</Filter>
-    </ClCompile>
-    <ClCompile Include="ADCSetThread.cpp">
-      <Filter>线程\ADCSetThread</Filter>
-    </ClCompile>
-    <ClCompile Include="ErrorCodeThread.cpp">
-      <Filter>线程\ErrorCodeThread</Filter>
-    </ClCompile>
-    <ClCompile Include="ADCDataBufArray.cpp">
-      <Filter>线程\ADCDataBufArray</Filter>
-    </ClCompile>
-    <ClCompile Include="ADCDataBuf.cpp">
-      <Filter>线程\ADCDataBufArray</Filter>
-    </ClCompile>
-    <ClCompile Include="ADCDataRecThread.cpp">
-      <Filter>线程\ADCDataRecThread</Filter>
-    </ClCompile>
-    <ClCompile Include="MonitorThread.cpp">
-      <Filter>线程\MonitorThread</Filter>
+    <ClCompile Include="RoutList.cpp">
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="ADCLostFrame.cpp">
-      <Filter>线程\ADCDataRecThread</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
-    <ClCompile Include="OptInstrument.cpp">
-      <Filter>线程\OptTaskArray</Filter>
+    <ClCompile Include="ADCDataBufArray.cpp">
+      <Filter>线程</Filter>
     </ClCompile>
-    <ClCompile Include="OptTask.cpp">
-      <Filter>线程\OptTaskArray</Filter>
+    <ClCompile Include="ADCDataBuf.cpp">
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="OptTaskArray.cpp">
-      <Filter>线程\OptTaskArray</Filter>
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="OptTask.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="LogOutPutThread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="HeartBeatThread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="HeadFrameThread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="IPSetFrameThread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="TailFrameThread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="MonitorThread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeDelayThread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ADCSetThread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ErrorCodeThread.cpp">
+      <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ADCDataRecThread.cpp">
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="ADCDataSaveThread.cpp">
-      <Filter>线程\ADCDataSaveThread</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

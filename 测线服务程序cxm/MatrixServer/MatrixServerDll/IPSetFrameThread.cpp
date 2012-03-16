@@ -1,2 +1,304 @@
 #include "stdafx.h"
-#include "IPSetFrameThread.h"
+#include "MatrixServerDll.h"
+
+// 创建IP地址设置线程
+m_oIPSetFrameThreadStruct* OnCreateIPSetFrameThread(void)
+{
+	m_oIPSetFrameThreadStruct* pIPSetFrameThread = NULL;
+	pIPSetFrameThread = new m_oIPSetFrameThreadStruct;
+	pIPSetFrameThread->m_pThread = new m_oThreadStruct;
+	pIPSetFrameThread->m_pInstrumentList = NULL;
+	pIPSetFrameThread->m_pIPSetFrame = NULL;
+	return pIPSetFrameThread;
+}
+// 处理单个IP地址设置应答帧
+void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
+{
+	if (pIPSetFrameThread == NULL)
+	{
+		return;
+	}
+	unsigned int uiIPInstrument = 0;
+	m_oInstrumentStruct* pInstrument = NULL;
+	unsigned short usCommand = 0;
+	CString str = _T("");
+	string strFrameData = "";
+	string strConv = "";
+	// 得到仪器IP
+	uiIPInstrument = pIPSetFrameThread->m_pIPSetFrame->m_pCommandStructReturn->m_uiInstrumentIP;
+	// 仪器在索引表中
+	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap))
+	{
+		pInstrument = GetInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap);
+		// 从IP地址设置索引表中删除仪器
+		DeleteInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap);
+		// 将仪器加入IP地址索引表
+		pInstrument->m_bIPSetOK = true;
+		AddInstrumentToMap(uiIPInstrument, pInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPInstrumentMap);
+		usCommand = pIPSetFrameThread->m_pIPSetFrame->m_pCommandStructReturn->m_usCommand;
+		if (usCommand == pIPSetFrameThread->m_pThread->m_pConstVar->m_usSendSetCmd)
+		{
+			str.Format(_T("接收到SN = 0x%x，IP地址 = 0x%x仪器的IP地址设置应答"), 
+				pInstrument->m_uiSN, uiIPInstrument);
+		}
+		else if (usCommand == pIPSetFrameThread->m_pThread->m_pConstVar->m_usSendQueryCmd)
+		{
+			str.Format(_T("接收到SN = 0x%x，IP地址 = 0x%x仪器的IP地址查询应答"), 
+				pInstrument->m_uiSN, uiIPInstrument);
+		}
+		ConvertCStrToStr(str, &strConv);
+		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetReturnFrameOne", 
+			strConv);
+	}
+	else
+	{
+		GetFrameInfo(pIPSetFrameThread->m_pIPSetFrame->m_cpRcvFrameData,
+			pIPSetFrameThread->m_pIPSetFrame->m_uiRcvBufferSize, &strFrameData);
+		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetReturnFrameOne", 
+			strFrameData, ErrorType, IDS_ERR_IPSETMAP_NOTEXIT);
+	}
+}
+// 处理IP地址设置应答帧
+void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
+{
+	if (pIPSetFrameThread == NULL)
+	{
+		return;
+	}
+	// 帧数量设置为0
+	int iFrameCount = 0;
+	// 得到首包接收网络端口帧数量
+	iFrameCount = GetFrameCount(pIPSetFrameThread->m_pIPSetFrame->m_oIPSetFrameSocket,
+		pIPSetFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, 
+		pIPSetFrameThread->m_pThread->m_pLogOutPut);
+	// 判断帧数量是否大于0
+	if(iFrameCount > 0)
+	{
+		// 循环处理每1帧
+		for(int i = 0; i < iFrameCount; i++)
+		{
+			// 得到帧数据
+			if (true == GetFrameData(pIPSetFrameThread->m_pIPSetFrame->m_oIPSetFrameSocket,
+				pIPSetFrameThread->m_pIPSetFrame->m_cpRcvFrameData, 
+				pIPSetFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, 
+				pIPSetFrameThread->m_pThread->m_pLogOutPut))
+			{
+				if (false == ParseInstrumentIPSetReturnFrame(pIPSetFrameThread->m_pIPSetFrame, 
+					pIPSetFrameThread->m_pThread->m_pConstVar))
+				{
+					AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, 
+						"ParseInstrumentIPSetReturnFrame", "", ErrorType, IDS_ERR_PARSE_IPSETRETURNFRAME);
+				}
+				else
+				{
+					EnterCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+					// 处理单个IP地址设置应答帧
+					ProcIPSetReturnFrameOne(pIPSetFrameThread);
+					LeaveCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+				}	
+			}		
+		}		
+	}
+}
+// 按照IP地址设置索引发送IP地址设置帧
+void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
+{
+	if (pIPSetFrameThread == NULL)
+	{
+		return;
+	}
+	CString str = _T("");
+	string strConv = "";
+	EnterCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+	// hash_map迭代器
+	hash_map<unsigned int, m_oInstrumentStruct*>::iterator  iter;
+	// IP地址设置索引不为空
+	if (false == pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap.empty())
+	{
+		// 发送索引表内设备的IP地址设置帧
+		for(iter = pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap.begin(); 
+			iter != pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap.end();)
+		{
+			// IP地址设置次数为0
+			if (iter->second->m_iIPSetCount == 0)
+			{
+				// 生成IP地址设置帧
+				MakeInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
+					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second);
+				// 发送IP地址设置帧
+				SendInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
+					pIPSetFrameThread->m_pThread->m_pConstVar);
+				// 第几次设置IP地址
+				iter->second->m_iIPSetCount++;
+				iter++;
+			}
+			// IP地址设置次数不超过指定次数则重新设置IP地址和查询IP地址
+			else if (iter->second->m_iIPSetCount <= pIPSetFrameThread->m_pThread->m_pConstVar->m_iIPAddrResetTimes)
+			{
+				// 生成IP地址查询帧
+				MakeInstrumentIPQueryFrame(pIPSetFrameThread->m_pIPSetFrame, 
+					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second->m_uiIP);
+				// 发送IP地址查询帧
+				SendInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
+					pIPSetFrameThread->m_pThread->m_pConstVar);
+
+				// 生成IP地址设置帧
+				MakeInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
+					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second);
+				// 发送IP地址设置帧
+				SendInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
+					pIPSetFrameThread->m_pThread->m_pConstVar);
+				// 第几次设置IP地址
+				iter->second->m_iIPSetCount++;
+				iter++;
+				AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetFrame",
+					"重发IP地址设置帧和IP地址查询帧", WarningType);
+			}
+			// IP地址设置次数超过指定次数则从索引表中删除该仪器指针
+			else
+			{
+				str.Format(_T("仪器SN = 0x%x，IP地址 = 0x%x 的仪器发送IP地址设置帧超过指定次数"), 
+					iter->second->m_uiSN, iter->second->m_uiIP);
+				// 加入错误日志
+				ConvertCStrToStr(str, &strConv);
+				AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetFrame",
+					strConv, WarningType);
+				iter->second->m_iIPSetCount = 0;
+				pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap.erase(iter++);
+			}
+		}
+	}
+	LeaveCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+}
+// 线程等待函数
+void WaitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
+{
+	if (pIPSetFrameThread == NULL)
+	{
+		return;
+	}
+	// 初始化等待次数为0
+	int iWaitCount = 0;
+	// 循环
+	while(true)
+	{	// 休眠50毫秒
+		Sleep(pIPSetFrameThread->m_pThread->m_pConstVar->m_iOneSleepTime);
+		// 等待次数加1
+		iWaitCount++;
+		// 判断是否可以处理的条件
+		if(pIPSetFrameThread->m_pThread->m_bClose == true)
+		{
+			// 返回
+			return;
+		}
+		// 判断等待次数是否大于等于最多等待次数
+		if(pIPSetFrameThread->m_pThread->m_pConstVar->m_iIPSetFrameSleepTimes == iWaitCount)
+		{
+			// 返回
+			return;
+		}		
+	}
+}
+// 线程函数
+DWORD WINAPI RunIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
+{
+	if (pIPSetFrameThread == NULL)
+	{
+		return 1;
+	}
+	while(true)
+	{
+		if (pIPSetFrameThread->m_pThread->m_bClose == true)
+		{
+			break;
+		}
+		if (pIPSetFrameThread->m_pThread->m_bWork == true)
+		{
+			// 处理IP地址设置应答帧
+			ProcIPSetReturnFrame(pIPSetFrameThread);
+			// 按照IP地址设置索引发送IP地址设置帧
+			ProcIPSetFrame(pIPSetFrameThread);
+		}
+		if (pIPSetFrameThread->m_pThread->m_bClose == true)
+		{
+			break;
+		}
+		WaitIPSetFrameThread(pIPSetFrameThread);
+	}
+	SetEvent(pIPSetFrameThread->m_pThread->m_hThreadClose); // 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
+	return 1;
+}
+// 初始化IP地址设置线程
+bool OnInitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread, 
+	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
+{
+	if (pIPSetFrameThread == NULL)
+	{
+		return false;
+	}
+	if (false == OnInitThread(pIPSetFrameThread->m_pThread, pLogOutPut, pConstVar))
+	{
+		return false;
+	}
+	ResetEvent(pIPSetFrameThread->m_pThread->m_hThreadClose);	// 设置事件对象为无信号状态
+	// 创建线程
+	pIPSetFrameThread->m_pThread->m_hThread = CreateThread((LPSECURITY_ATTRIBUTES)NULL, 
+		0,
+		(LPTHREAD_START_ROUTINE)RunIPSetFrameThread,
+		pIPSetFrameThread, 
+		0, 
+		&pIPSetFrameThread->m_pThread->m_dwThreadID);
+	if (pIPSetFrameThread->m_pThread->m_hThread == NULL)
+	{
+		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "OnInitIPSetFrameThread", 
+			"pIPSetFrameThread->m_pThread->m_hThread", ErrorType, IDS_ERR_CREATE_THREAD);
+		return false;
+	}
+	AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "OnInitIPSetFrameThread", 
+		"IP地址设置线程创建成功");
+	return true;
+}
+// 初始化IP地址设置线程
+bool OnInit_IPSetFrameThread(m_oEnvironmentStruct* pEnv)
+{
+	if (pEnv == NULL)
+	{
+		return false;
+	}
+	pEnv->m_pIPSetFrameThread->m_pIPSetFrame = pEnv->m_pIPSetFrame;
+	pEnv->m_pIPSetFrameThread->m_pInstrumentList = pEnv->m_pInstrumentList;
+	return OnInitIPSetFrameThread(pEnv->m_pIPSetFrameThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
+}
+// 关闭IP地址设置线程
+bool OnCloseIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
+{
+	if (pIPSetFrameThread == NULL)
+	{
+		return false;
+	}
+	if (false == OnCloseThread(pIPSetFrameThread->m_pThread))
+	{
+		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "OnCloseIPSetFrameThread", 
+			"IP地址设置线程强制关闭", WarningType);
+		return false;
+	}
+	else
+	{
+		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "OnCloseIPSetFrameThread", 
+			"IP地址设置线程成功关闭");
+		return true;
+	}
+}
+// 释放IP地址设置线程
+void OnFreeIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
+{
+	if (pIPSetFrameThread == NULL)
+	{
+		return;
+	}
+	if (pIPSetFrameThread->m_pThread != NULL)
+	{
+		delete pIPSetFrameThread->m_pThread;
+	}
+	delete pIPSetFrameThread;
+}

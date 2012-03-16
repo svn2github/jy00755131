@@ -36,16 +36,12 @@
 
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
-
 #include <afxsock.h>            // MFC 套接字扩展
-
-
 #include "CXMLDOMDocument.h"
 #include "CXMLDOMNodeList.h"
 #include "CXMLDOMNode.h"
 #include "CXMLDOMElement.h"
 #include "XMLDOMTool.h"
-
 
 #ifdef _UNICODE
 #if defined _M_IX86

@@ -10,6 +10,27 @@
 #define new DEBUG_NEW
 #endif
 
+// 创建实例，并返回实例指针
+typedef m_oEnvironmentStruct* (*Create_Instance)(void);
+// 释放实例资源
+typedef void (*Free_Instance)(m_oEnvironmentStruct* pEnv);
+// 初始化实例
+// 包括：
+// 创建并初始化仪器通讯信息结构体
+// 创建并初始化心跳帧信息结构体
+// 创建并初始化首包帧信息结构体
+// 创建并初始化IP地址设置帧信息结构体
+// 创建并初始化线程处理标志位信息结构体
+// 创建并设置心跳端口
+// 创建并设置首包端口
+// 创建并设置IP地址设置端口
+typedef void (*On_Init)(m_oEnvironmentStruct* pEnv, string strXMLFilePath, string strINIFilePath);
+typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
+typedef void (*On_Stop)(m_oEnvironmentStruct* pEnv);
+typedef void (*On_Close)(m_oEnvironmentStruct* pEnv);
+typedef void (*On_StartSample)(m_oEnvironmentStruct* pEnv);
+typedef void (*On_StopSample)(m_oEnvironmentStruct* pEnv);
+
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -255,7 +276,7 @@ void CMatrixServerDlg::OnBnClickedButtonInit()
 	if (hMod)
 	{
 		b = (On_Init)GetProcAddress(hMod, "OnInit");
-		(*b)(pEnv);
+		(*b)(pEnv, "..\\parameter\\MatrixLineApp.XML", "..\\parameter\\MatrixServerDLL.ini");
 	}
 }
 
