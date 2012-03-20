@@ -15,23 +15,23 @@ typedef m_oEnvironmentStruct* (*Create_Instance)(void);
 // 释放实例资源
 typedef void (*Free_Instance)(m_oEnvironmentStruct* pEnv);
 // 初始化实例
-// 包括：
-// 创建并初始化仪器通讯信息结构体
-// 创建并初始化心跳帧信息结构体
-// 创建并初始化首包帧信息结构体
-// 创建并初始化IP地址设置帧信息结构体
-// 创建并初始化线程处理标志位信息结构体
-// 创建并设置心跳端口
-// 创建并设置首包端口
-// 创建并设置IP地址设置端口
-typedef void (*On_Init)(m_oEnvironmentStruct* pEnv, string strXMLFilePath, string strINIFilePath);
+typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv, string strXMLFilePath, string strINIFilePath);
+// Field On
 typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
+// Field Off
 typedef void (*On_Stop)(m_oEnvironmentStruct* pEnv);
-typedef void (*On_Close)(m_oEnvironmentStruct* pEnv);
+// 关闭实例
+typedef void (*Close_Instance)(m_oEnvironmentStruct* pEnv);
+// 开始采样
 typedef void (*On_StartSample)(m_oEnvironmentStruct* pEnv);
+// 停止采样
 typedef void (*On_StopSample)(m_oEnvironmentStruct* pEnv);
 
-
+// 创建Server与客户端通讯线程
+DWORD WINAPI RunCommThread(CMatrixServerDlg* pDlg)
+{
+	return pDlg->CommThreadRun();
+}
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialogEx
@@ -85,11 +85,7 @@ BEGIN_MESSAGE_MAP(CMatrixServerDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BN_START, &CMatrixServerDlg::OnBnClickedBnStart)
 	ON_BN_CLICKED(IDC_BN_STOP, &CMatrixServerDlg::OnBnClickedBnStop)
-	ON_BN_CLICKED(IDC_BN_CLOSE, &CMatrixServerDlg::OnBnClickedBnClose)
-	ON_BN_CLICKED(IDC_BN_REFRESH, &CMatrixServerDlg::OnBnClickedBnRefresh)
-	ON_BN_CLICKED(IDC_BN_SAVE, &CMatrixServerDlg::OnBnClickedBnSave)
 	ON_WM_DESTROY()
-	ON_BN_CLICKED(IDC_BUTTON_INIT, &CMatrixServerDlg::OnBnClickedButtonInit)
 	ON_BN_CLICKED(IDC_BUTTON_STARTSAMPLE, &CMatrixServerDlg::OnBnClickedButtonStartsample)
 	ON_BN_CLICKED(IDC_BUTTON_STOPSAMPLE, &CMatrixServerDlg::OnBnClickedButtonStopsample)
 END_MESSAGE_MAP()
@@ -127,25 +123,21 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	hMod = ::LoadLibrary(_T("MatrixServerDll.dll"));
-	Create_Instance a = NULL;
-	CString str = _T("");
-	int ierr = 0;
-	if (hMod)
-	{
-		a = (Create_Instance)GetProcAddress(hMod, "OnCreateInstance");
-		pEnv = (*a)();
-	}
-	else
-	{
-		ierr = GetLastError();
-		str.Format(_T("载入失败！错误码为%d。"), ierr);
-		AfxMessageBox(str);
-	}
-	// 现场管理对象初始化
-	//	m_oSiteManage.OnInit();
+	m_dwEventTotal = 0;
+	m_hDllMod = ::LoadLibrary(_T("MatrixServerDll.dll"));
+	// 初始化套接字库
+	OnInitSocketLib();
+	// DLL创建实例
+	Dll_Create_Instance();
+	// DLL初始化实例
+	Dll_Init_Instance();
+	// 创建Server端口监听
+	CreateSocketListen();
+	// 创建Server与客户端通讯线程
+	OnCreateCommThread();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
+
 
 void CMatrixServerDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
@@ -159,7 +151,6 @@ void CMatrixServerDlg::OnSysCommand(UINT nID, LPARAM lParam)
 		CDialogEx::OnSysCommand(nID, lParam);
 	}
 }
-
 // 如果向对话框添加最小化按钮，则需要下面的代码
 //  来绘制该图标。对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
@@ -195,111 +186,434 @@ HCURSOR CMatrixServerDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
-
-
-
 void CMatrixServerDlg::OnBnClickedBnStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	// 现场管理对象
-	//	m_oSiteManage.OnWork();
-	On_Work a = NULL;
-	if (hMod)
-	{
-		a = (On_Work)GetProcAddress(hMod, "OnWork");
-		(*a)(pEnv);
-	}
+	// DLL开始工作
+	Dll_Work();
 }
-
-
 void CMatrixServerDlg::OnBnClickedBnStop()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	// 现场管理对象
-	//	m_oSiteManage.OnStop();
-	On_Stop a = NULL;
-	if (hMod)
-	{
-		a = (On_Stop)GetProcAddress(hMod, "OnStop");
-		(*a)(pEnv);
-	}
+	// DLL停止工作
+	Dll_Stop();
 }
-
-
-void CMatrixServerDlg::OnBnClickedBnClose()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	// 现场管理对象
-	//	m_oSiteManage.OnClose();
-	On_Close a = NULL;
-	if (hMod)
-	{
-		a = (On_Close)GetProcAddress(hMod, "OnClose");
-		(*a)(pEnv);
-	}
-}
-
-
-void CMatrixServerDlg::OnBnClickedBnRefresh()
-{
-	// TODO: 在此添加控件通知处理程序代码
-
-}
-
-
-void CMatrixServerDlg::OnBnClickedBnSave()
-{
-	// TODO: 在此添加控件通知处理程序代码
-
-}
-
-
 void CMatrixServerDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
-	Free_Instance b = NULL;
-	if (hMod)
-	{
-		b = (Free_Instance)GetProcAddress(hMod, "OnFreeInstance");
-		(*b)(pEnv);
-		::FreeLibrary(hMod);
-	}
+	// DLL关闭实例
+	Dll_Close_Instance();
+	// DLL释放实例
+	Dll_Free_Instance();
+	// 释放套接字库
+	OnCloseSocketLib();
 }
-
-
-void CMatrixServerDlg::OnBnClickedButtonInit()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	On_Init b = NULL;
-	if (hMod)
-	{
-		b = (On_Init)GetProcAddress(hMod, "OnInit");
-		(*b)(pEnv, "..\\parameter\\MatrixLineApp.XML", "..\\parameter\\MatrixServerDLL.ini");
-	}
-}
-
-
 void CMatrixServerDlg::OnBnClickedButtonStartsample()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	On_StartSample b = NULL;
-	if (hMod)
+	// DLL开始AD数据采集
+	Dll_StartSample();
+}
+void CMatrixServerDlg::OnBnClickedButtonStopsample()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	// DLL停止AD数据采集
+	Dll_StopSample();
+
+}
+BOOL CMatrixServerDlg::CreateSocketInformation(SOCKET s)
+{
+	CServerSocketEvent* SI;
+	if ((m_WSAEventArray[m_dwEventTotal] = WSACreateEvent()) == WSA_INVALID_EVENT)
 	{
-		b = (On_StartSample)GetProcAddress(hMod, "OnADCStartSample");
-		(*b)(pEnv);
+		printf("WSACreateEvent() failed with error %d\n", WSAGetLastError());
+		return FALSE;
+	}
+	else
+	{
+		printf("WSACreateEvent() is OK!\n");
+	}
+	SI = new CServerSocketEvent;
+	// Prepare SocketInfo structure for use
+	SI->Socket = s;
+	SI->BytesSEND = 0;
+	SI->BytesRECV = 0;
+	m_ServerSocketEventArray[m_dwEventTotal] = SI;
+	m_dwEventTotal++;
+	return(TRUE);
+}
+void CMatrixServerDlg::FreeSocketInformation(DWORD Event)
+{
+	CServerSocketEvent* SI = m_ServerSocketEventArray[Event];
+	DWORD i;
+	closesocket(SI->Socket);
+	delete SI;
+	if(WSACloseEvent(m_WSAEventArray[Event]) == TRUE)
+		printf("WSACloseEvent() is OK!\n\n");
+	else
+		printf("WSACloseEvent() failed miserably!\n\n");
+	// Squash the socket and event arrays
+	for (i = Event; i < m_dwEventTotal; i++)
+	{
+		m_WSAEventArray[i] = m_WSAEventArray[i + 1];
+		m_ServerSocketEventArray[i] = m_ServerSocketEventArray[i + 1];
+	}
+	m_dwEventTotal--;
+}
+
+// DLL创建实例
+void CMatrixServerDlg::Dll_Create_Instance(void)
+{
+	Create_Instance Dll_On_Create = NULL;
+	CString str = _T("");
+	if (m_hDllMod != NULL)
+	{
+		Dll_On_Create = (Create_Instance)GetProcAddress(m_hDllMod, "OnCreateInstance");
+		m_pEnv = (*Dll_On_Create)();
+	}
+	else
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
 	}
 }
 
 
-void CMatrixServerDlg::OnBnClickedButtonStopsample()
+// DLL初始化
+void CMatrixServerDlg::Dll_Init_Instance(void)
 {
-	// TODO: 在此添加控件通知处理程序代码
-	On_StopSample b = NULL;
-	if (hMod)
+	Init_Instance Dll_On_Init = NULL;
+	CString str = _T("");
+	if (m_hDllMod != NULL)
 	{
-		b = (On_StopSample)GetProcAddress(hMod, "OnADCStopSample");
-		(*b)(pEnv);
+		Dll_On_Init = (Init_Instance)GetProcAddress(m_hDllMod, "OnInit");
+		(*Dll_On_Init)(m_pEnv, "..\\parameter\\MatrixLineApp.XML", "..\\parameter\\MatrixServerDLL.ini");
 	}
+	else
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
+	}
+}
+
+// DLL关闭实例
+void CMatrixServerDlg::Dll_Close_Instance(void)
+{
+	CString str = _T("");
+	Close_Instance Dll_On_Close = NULL;
+	if (m_hDllMod)
+	{
+		Dll_On_Close = (Close_Instance)GetProcAddress(m_hDllMod, "OnClose");
+		(*Dll_On_Close)(m_pEnv);
+	}
+	else
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
+	}
+}
+
+
+// DLL释放实例
+void CMatrixServerDlg::Dll_Free_Instance(void)
+{
+	CString str = _T("");
+	Free_Instance Dll_On_Free = NULL;
+	if (m_hDllMod)
+	{
+		Dll_On_Free = (Free_Instance)GetProcAddress(m_hDllMod, "OnFreeInstance");
+		(*Dll_On_Free)(m_pEnv);
+		::FreeLibrary(m_hDllMod);
+	}
+	else
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
+	}
+}
+
+// 初始化套接字库
+void CMatrixServerDlg::OnInitSocketLib(void)
+{
+	WSADATA wsaData;
+	CString str = _T("");
+	if (WSAStartup(0x0202, &wsaData) != 0)
+	{
+		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+		PostQuitMessage(0);
+	}
+}
+// DLL开始AD数据采集
+void CMatrixServerDlg::Dll_StartSample(void)
+{
+	CString str = _T("");
+	On_StartSample Dll_On_StartSample = NULL;
+	if (m_hDllMod)
+	{
+		Dll_On_StartSample = (On_StartSample)GetProcAddress(m_hDllMod, "OnADCStartSample");
+		(*Dll_On_StartSample)(m_pEnv);
+	}
+	else
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
+	}
+}
+
+
+// DLL停止AD数据采集
+void CMatrixServerDlg::Dll_StopSample(void)
+{
+	CString str = _T("");
+	On_StopSample Dll_On_StopSample = NULL;
+	if (m_hDllMod)
+	{
+		Dll_On_StopSample = (On_StopSample)GetProcAddress(m_hDllMod, "OnADCStopSample");
+		(*Dll_On_StopSample)(m_pEnv);
+	}
+	else
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
+	}
+}
+
+// DLL开始工作
+void CMatrixServerDlg::Dll_Work(void)
+{
+	CString str = _T("");
+	On_Work Dll_On_Work = NULL;
+	if (m_hDllMod)
+	{
+		Dll_On_Work = (On_Work)GetProcAddress(m_hDllMod, "OnWork");
+		(*Dll_On_Work)(m_pEnv);
+	}
+	else
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
+	}
+}
+
+
+// DLL停止工作
+void CMatrixServerDlg::Dll_Stop(void)
+{
+	CString str = _T("");
+	On_Stop Dll_On_Stop = NULL;
+	if (m_hDllMod)
+	{
+		Dll_On_Stop = (On_Stop)GetProcAddress(m_hDllMod, "OnStop");
+		(*Dll_On_Stop)(m_pEnv);
+	}
+	else
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
+	}
+}
+// 释放套接字库
+void CMatrixServerDlg::OnCloseSocketLib(void)
+{
+	CString str = _T("");
+	// 释放套接字库
+	if (WSACleanup() != 0)
+	{
+		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+		PostQuitMessage(0);
+	}
+}
+
+
+// 创建Server端口监听
+void CMatrixServerDlg::CreateSocketListen(void)
+{
+	CString str = _T("");
+	if ((m_SocketListen = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
+	{
+		str.Format(_T("socket() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+		PostQuitMessage(0);
+	}
+	if(CreateSocketInformation(m_SocketListen) == FALSE)
+	{
+		AfxMessageBox(_T("CreateSocketInformation() failed!"));
+		PostQuitMessage(0);
+	}
+	if (WSAEventSelect(m_SocketListen, m_WSAEventArray[m_dwEventTotal - 1], FD_ACCEPT|FD_CLOSE) == SOCKET_ERROR)
+	{
+		str.Format(_T("WSAEventSelect() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+		PostQuitMessage(0);
+	}
+	m_ServerInternetAddr.sin_family = AF_INET;
+	m_ServerInternetAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	m_ServerInternetAddr.sin_port = htons(ServerListenPort);
+	if (bind(m_SocketListen, (PSOCKADDR) &m_ServerInternetAddr, sizeof(m_ServerInternetAddr)) == SOCKET_ERROR)
+	{
+		str.Format(_T("bind() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+		PostQuitMessage(0);
+	}
+	if (listen(m_SocketListen, 10))
+	{
+		str.Format(_T("listen() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+		PostQuitMessage(0);
+	}
+}
+
+
+// 创建Server与客户端通讯线程
+void CMatrixServerDlg::OnCreateCommThread(void)
+{
+	DWORD dwThreadID;
+	m_hThread = CreateThread((LPSECURITY_ATTRIBUTES)NULL, 
+		0,
+		(LPTHREAD_START_ROUTINE)RunCommThread,
+		this, 
+		0, 
+		&dwThreadID);
+}
+
+
+// 与客户端通讯线程函数
+DWORD CMatrixServerDlg::CommThreadRun(void)
+{
+	SOCKET SocketAccept;
+	CServerSocketEvent* pSocketInfo;
+	DWORD Event;
+	WSANETWORKEVENTS NetworkEvents;
+	DWORD Flags;
+	CString str = _T("");
+	DWORD RecvBytes;
+	DWORD SendBytes;
+	while(true)
+	{
+		// Wait for one of the sockets to receive I/O notification and 
+		if ((Event = WSAWaitForMultipleEvents(m_dwEventTotal, m_WSAEventArray, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED)
+		{
+			str.Format(_T("WSAWaitForMultipleEvents() failed with error %d"), WSAGetLastError());
+			AfxMessageBox(str);
+			return 1;
+		}
+		if (WSAEnumNetworkEvents(m_ServerSocketEventArray[Event - WSA_WAIT_EVENT_0]->Socket,
+			m_WSAEventArray[Event - WSA_WAIT_EVENT_0], &NetworkEvents) == SOCKET_ERROR)
+		{
+			str.Format(_T("WSAEnumNetworkEvents() failed with error %d"), WSAGetLastError());
+			AfxMessageBox(str);
+			return 1;
+		}
+		if (NetworkEvents.lNetworkEvents & FD_ACCEPT)
+		{
+			if (NetworkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
+			{
+				str.Format(_T("FD_ACCEPT failed with error %d"), NetworkEvents.iErrorCode[FD_ACCEPT_BIT]);
+				AfxMessageBox(str);
+				break;
+			}
+			if ((SocketAccept = accept(m_ServerSocketEventArray[Event - WSA_WAIT_EVENT_0]->Socket, NULL, NULL)) == INVALID_SOCKET)
+			{
+				printf("accept() failed with error %d\n", WSAGetLastError());
+				break;
+			}
+			if (m_dwEventTotal > WSA_MAXIMUM_WAIT_EVENTS)
+			{
+				printf("Too many connections - closing socket...\n");
+				closesocket(SocketAccept);
+				break;
+			}
+			CreateSocketInformation(SocketAccept);
+			if (WSAEventSelect(SocketAccept, m_WSAEventArray[m_dwEventTotal - 1], FD_READ|FD_WRITE|FD_CLOSE) == SOCKET_ERROR)
+			{
+				printf("WSAEventSelect() failed with error %d\n", WSAGetLastError());
+				return 1;
+			}
+			printf("Socket %d got connected...\n", SocketAccept);
+		}
+		// Try to read and write data to and from the data buffer if read and write events occur
+		if (NetworkEvents.lNetworkEvents & FD_READ || NetworkEvents.lNetworkEvents & FD_WRITE)
+		{
+			if (NetworkEvents.lNetworkEvents & FD_READ && NetworkEvents.iErrorCode[FD_READ_BIT] != 0)
+			{
+				printf("FD_READ failed with error %d\n", NetworkEvents.iErrorCode[FD_READ_BIT]);
+				break;
+			}
+			else
+				printf("FD_READ is OK!\n");
+			if (NetworkEvents.lNetworkEvents & FD_WRITE && NetworkEvents.iErrorCode[FD_WRITE_BIT] != 0)
+			{
+				printf("FD_WRITE failed with error %d\n", NetworkEvents.iErrorCode[FD_WRITE_BIT]);
+				break;
+			}
+			else
+				printf("FD_WRITE is OK!\n");
+			pSocketInfo = m_ServerSocketEventArray[Event - WSA_WAIT_EVENT_0];
+			// Read data only if the receive buffer is empty
+			if (pSocketInfo->BytesRECV == 0)
+			{
+				pSocketInfo->DataBuf.buf = pSocketInfo->Buffer;
+				pSocketInfo->DataBuf.len = DATA_BUFSIZE;
+				Flags = 0;
+				if (WSARecv(pSocketInfo->Socket, &(pSocketInfo->DataBuf), 1, &RecvBytes, &Flags, NULL, NULL) == SOCKET_ERROR)
+				{
+					if (WSAGetLastError() != WSAEWOULDBLOCK)
+					{
+						printf("WSARecv() failed with error %d\n", WSAGetLastError());
+						FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
+						return 1;
+					}
+				}
+				else
+				{
+					printf("WSARecv() is working!\n");
+					pSocketInfo->BytesRECV = RecvBytes;
+				}
+			}
+			// Write buffer data if it is available
+			if (pSocketInfo->BytesRECV > pSocketInfo->BytesSEND)
+			{
+				pSocketInfo->DataBuf.buf = pSocketInfo->Buffer + pSocketInfo->BytesSEND;
+				pSocketInfo->DataBuf.len = pSocketInfo->BytesRECV - pSocketInfo->BytesSEND;
+				if (WSASend(pSocketInfo->Socket, &(pSocketInfo->DataBuf), 1, &SendBytes, 0, NULL, NULL) == SOCKET_ERROR)
+				{
+					if (WSAGetLastError() != WSAEWOULDBLOCK)
+					{
+						printf("WSASend() failed with error %d\n", WSAGetLastError());
+						FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
+						return 1;
+					}
+					// A WSAEWOULDBLOCK error has occurred. An FD_WRITE event will be posted
+					// when more buffer space becomes available
+				}
+				else
+				{
+					printf("WSASend() is fine! Thank you...\n");
+					pSocketInfo->BytesSEND += SendBytes;
+					if (pSocketInfo->BytesSEND == pSocketInfo->BytesRECV)
+					{
+						pSocketInfo->BytesSEND = 0;
+						pSocketInfo->BytesRECV = 0;
+					}
+				}
+			}
+		}
+		if (NetworkEvents.lNetworkEvents & FD_CLOSE)
+		{
+			if (NetworkEvents.iErrorCode[FD_CLOSE_BIT] != 0)
+			{
+				printf("FD_CLOSE failed with error %d\n", NetworkEvents.iErrorCode[FD_CLOSE_BIT]);
+				break;
+			}
+			else
+				printf("FD_CLOSE is OK!\n");
+			printf("Closing socket information %d\n", m_ServerSocketEventArray[Event - WSA_WAIT_EVENT_0]->Socket);
+			FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
+		}
+	}
+	return 1;
 }
