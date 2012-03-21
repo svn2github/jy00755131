@@ -203,6 +203,36 @@ void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt,
 	}
 	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
+// 按照路由地址重置ADC参数设置标志位
+void OnResetADCSetLableByRoutIP(unsigned int uiRoutIP, int iOpt, m_oEnvironmentStruct* pEnv)
+{
+	if (pEnv == NULL)
+	{
+		return;
+	}
+	if (pEnv->m_pConstVar == NULL)
+	{
+		return;
+	}
+	if (pEnv->m_pRoutList == NULL)
+	{
+		AddMsgToLogOutPutList(pEnv->m_pConstVar->m_pLogOutPut, "OnResetADCSetLableByRoutIP", "",
+			ErrorType, IDS_ERR_PTRISNULL);
+		return;
+	}
+	EnterCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+	// 在路由索引中找到该路由
+	if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pEnv->m_pRoutList->m_oRoutMap))
+	{
+		m_oRoutStruct* pRout = GetRout(uiRoutIP, &pEnv->m_pRoutList->m_oRoutMap);
+		// 大线方向路由
+		if (pRout->m_bRoutLaux == false)
+		{
+			OnResetADCSetLableByRout(pRout, iOpt, pEnv->m_pConstVar);
+		}
+	}
+	LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+}
 // ADC参数设置
 void OnADCSet(m_oEnvironmentStruct* pEnv)
 {

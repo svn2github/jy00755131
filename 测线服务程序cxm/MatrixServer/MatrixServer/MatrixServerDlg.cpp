@@ -10,23 +10,6 @@
 #define new DEBUG_NEW
 #endif
 
-// 创建实例，并返回实例指针
-typedef m_oEnvironmentStruct* (*Create_Instance)(void);
-// 释放实例资源
-typedef void (*Free_Instance)(m_oEnvironmentStruct* pEnv);
-// 初始化实例
-typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv, string strXMLFilePath, string strINIFilePath);
-// Field On
-typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
-// Field Off
-typedef void (*On_Stop)(m_oEnvironmentStruct* pEnv);
-// 关闭实例
-typedef void (*Close_Instance)(m_oEnvironmentStruct* pEnv);
-// 开始采样
-typedef void (*On_StartSample)(m_oEnvironmentStruct* pEnv);
-// 停止采样
-typedef void (*On_StopSample)(m_oEnvironmentStruct* pEnv);
-
 // 创建Server与客户端通讯线程
 DWORD WINAPI RunCommThread(CMatrixServerDlg* pDlg)
 {
@@ -86,8 +69,12 @@ BEGIN_MESSAGE_MAP(CMatrixServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BN_START, &CMatrixServerDlg::OnBnClickedBnStart)
 	ON_BN_CLICKED(IDC_BN_STOP, &CMatrixServerDlg::OnBnClickedBnStop)
 	ON_WM_DESTROY()
-	ON_BN_CLICKED(IDC_BUTTON_STARTSAMPLE, &CMatrixServerDlg::OnBnClickedButtonStartsample)
-	ON_BN_CLICKED(IDC_BUTTON_STOPSAMPLE, &CMatrixServerDlg::OnBnClickedButtonStopsample)
+	ON_BN_CLICKED(IDC_BN_STARTSAMPLE_ALL, &CMatrixServerDlg::OnBnClickedButtonStartsampleAll)
+	ON_BN_CLICKED(IDC_BN_STOPSAMPLE_ALL, &CMatrixServerDlg::OnBnClickedButtonStopsampleAll)
+	ON_BN_CLICKED(IDC_BN_ADCSET_ALL, &CMatrixServerDlg::OnBnClickedBnAdcsetAll)
+	ON_BN_CLICKED(IDC_BN_ADCSET_BYROUT, &CMatrixServerDlg::OnBnClickedBnAdcsetByrout)
+	ON_BN_CLICKED(IDC_BN_STARTSAMPLE_BYROUT, &CMatrixServerDlg::OnBnClickedBnStartsampleByrout)
+	ON_BN_CLICKED(IDC_BN_STOPSAMPLE_BYROUT, &CMatrixServerDlg::OnBnClickedBnStopsampleByrout)
 END_MESSAGE_MAP()
 
 
@@ -123,21 +110,17 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	// 初始化动态链接库
+	m_oMatrixDllCall.OnInit(_T("MatrixServerDll.dll"));
 	m_dwEventTotal = 0;
-	m_hDllMod = ::LoadLibrary(_T("MatrixServerDll.dll"));
 	// 初始化套接字库
 	OnInitSocketLib();
-	// DLL创建实例
-	Dll_Create_Instance();
-	// DLL初始化实例
-	Dll_Init_Instance();
 	// 创建Server端口监听
 	CreateSocketListen();
 	// 创建Server与客户端通讯线程
 	OnCreateCommThread();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
-
 
 void CMatrixServerDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
@@ -190,38 +173,35 @@ void CMatrixServerDlg::OnBnClickedBnStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL开始工作
-	Dll_Work();
+	m_oMatrixDllCall.Dll_Work();
 }
 void CMatrixServerDlg::OnBnClickedBnStop()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL停止工作
-	Dll_Stop();
+	m_oMatrixDllCall.Dll_Stop();
 }
 void CMatrixServerDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
-	// DLL关闭实例
-	Dll_Close_Instance();
-	// DLL释放实例
-	Dll_Free_Instance();
+	// 关闭动态链接库
+	m_oMatrixDllCall.OnClose();
 	// 释放套接字库
 	OnCloseSocketLib();
 }
-void CMatrixServerDlg::OnBnClickedButtonStartsample()
+void CMatrixServerDlg::OnBnClickedButtonStartsampleAll()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL开始AD数据采集
-	Dll_StartSample();
+	m_oMatrixDllCall.Dll_StartSample();
 }
-void CMatrixServerDlg::OnBnClickedButtonStopsample()
+void CMatrixServerDlg::OnBnClickedButtonStopsampleAll()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL停止AD数据采集
-	Dll_StopSample();
-
+	m_oMatrixDllCall.Dll_StopSample();
 }
 BOOL CMatrixServerDlg::CreateSocketInformation(SOCKET s)
 {
@@ -263,77 +243,6 @@ void CMatrixServerDlg::FreeSocketInformation(DWORD Event)
 	m_dwEventTotal--;
 }
 
-// DLL创建实例
-void CMatrixServerDlg::Dll_Create_Instance(void)
-{
-	Create_Instance Dll_On_Create = NULL;
-	CString str = _T("");
-	if (m_hDllMod != NULL)
-	{
-		Dll_On_Create = (Create_Instance)GetProcAddress(m_hDllMod, "OnCreateInstance");
-		m_pEnv = (*Dll_On_Create)();
-	}
-	else
-	{
-		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
-		AfxMessageBox(str);
-	}
-}
-
-
-// DLL初始化
-void CMatrixServerDlg::Dll_Init_Instance(void)
-{
-	Init_Instance Dll_On_Init = NULL;
-	CString str = _T("");
-	if (m_hDllMod != NULL)
-	{
-		Dll_On_Init = (Init_Instance)GetProcAddress(m_hDllMod, "OnInit");
-		(*Dll_On_Init)(m_pEnv, "..\\parameter\\MatrixLineApp.XML", "..\\parameter\\MatrixServerDLL.ini");
-	}
-	else
-	{
-		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
-		AfxMessageBox(str);
-	}
-}
-
-// DLL关闭实例
-void CMatrixServerDlg::Dll_Close_Instance(void)
-{
-	CString str = _T("");
-	Close_Instance Dll_On_Close = NULL;
-	if (m_hDllMod)
-	{
-		Dll_On_Close = (Close_Instance)GetProcAddress(m_hDllMod, "OnClose");
-		(*Dll_On_Close)(m_pEnv);
-	}
-	else
-	{
-		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
-		AfxMessageBox(str);
-	}
-}
-
-
-// DLL释放实例
-void CMatrixServerDlg::Dll_Free_Instance(void)
-{
-	CString str = _T("");
-	Free_Instance Dll_On_Free = NULL;
-	if (m_hDllMod)
-	{
-		Dll_On_Free = (Free_Instance)GetProcAddress(m_hDllMod, "OnFreeInstance");
-		(*Dll_On_Free)(m_pEnv);
-		::FreeLibrary(m_hDllMod);
-	}
-	else
-	{
-		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
-		AfxMessageBox(str);
-	}
-}
-
 // 初始化套接字库
 void CMatrixServerDlg::OnInitSocketLib(void)
 {
@@ -344,75 +253,6 @@ void CMatrixServerDlg::OnInitSocketLib(void)
 		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
 		AfxMessageBox(str);
 		PostQuitMessage(0);
-	}
-}
-// DLL开始AD数据采集
-void CMatrixServerDlg::Dll_StartSample(void)
-{
-	CString str = _T("");
-	On_StartSample Dll_On_StartSample = NULL;
-	if (m_hDllMod)
-	{
-		Dll_On_StartSample = (On_StartSample)GetProcAddress(m_hDllMod, "OnADCStartSample");
-		(*Dll_On_StartSample)(m_pEnv);
-	}
-	else
-	{
-		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
-		AfxMessageBox(str);
-	}
-}
-
-
-// DLL停止AD数据采集
-void CMatrixServerDlg::Dll_StopSample(void)
-{
-	CString str = _T("");
-	On_StopSample Dll_On_StopSample = NULL;
-	if (m_hDllMod)
-	{
-		Dll_On_StopSample = (On_StopSample)GetProcAddress(m_hDllMod, "OnADCStopSample");
-		(*Dll_On_StopSample)(m_pEnv);
-	}
-	else
-	{
-		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
-		AfxMessageBox(str);
-	}
-}
-
-// DLL开始工作
-void CMatrixServerDlg::Dll_Work(void)
-{
-	CString str = _T("");
-	On_Work Dll_On_Work = NULL;
-	if (m_hDllMod)
-	{
-		Dll_On_Work = (On_Work)GetProcAddress(m_hDllMod, "OnWork");
-		(*Dll_On_Work)(m_pEnv);
-	}
-	else
-	{
-		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
-		AfxMessageBox(str);
-	}
-}
-
-
-// DLL停止工作
-void CMatrixServerDlg::Dll_Stop(void)
-{
-	CString str = _T("");
-	On_Stop Dll_On_Stop = NULL;
-	if (m_hDllMod)
-	{
-		Dll_On_Stop = (On_Stop)GetProcAddress(m_hDllMod, "OnStop");
-		(*Dll_On_Stop)(m_pEnv);
-	}
-	else
-	{
-		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
-		AfxMessageBox(str);
 	}
 }
 // 释放套接字库
@@ -616,4 +456,39 @@ DWORD CMatrixServerDlg::CommThreadRun(void)
 		}
 	}
 	return 1;
+}
+
+
+void CMatrixServerDlg::OnBnClickedBnAdcsetAll()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	// AD参数设置
+	m_oMatrixDllCall.Dll_ADCSet();
+}
+
+
+void CMatrixServerDlg::OnBnClickedBnAdcsetByrout()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("");
+	GetDlgItem(IDC_EDIT_ROUT)->GetWindowText(str);
+	m_oMatrixDllCall.Dll_ADCSet_Part(_ttoi(str), 1);
+}
+
+
+void CMatrixServerDlg::OnBnClickedBnStartsampleByrout()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("");
+	GetDlgItem(IDC_EDIT_ROUT)->GetWindowText(str);
+	m_oMatrixDllCall.Dll_ADCSet_Part(_ttoi(str), 2);
+}
+
+
+void CMatrixServerDlg::OnBnClickedBnStopsampleByrout()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("");
+	GetDlgItem(IDC_EDIT_ROUT)->GetWindowText(str);
+	m_oMatrixDllCall.Dll_ADCSet_Part(_ttoi(str), 3);
 }

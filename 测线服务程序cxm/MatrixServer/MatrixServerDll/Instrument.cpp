@@ -2,7 +2,7 @@
 #include "MatrixServerDll.h"
 
 // 仪器信息重置
-void OnInstrumentReset(m_oInstrumentStruct* pInstrument)
+void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bADCSetByRoutIP)
 {
 	if (pInstrument == NULL)
 	{
@@ -123,13 +123,24 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument)
 	pInstrument->m_bTimeSetOK = false;
 	// ADC命令设置是否应答
 	pInstrument->m_bADCSetReturn = false;
-	// 仪器是否进行了ADC参数设置
-	pInstrument->m_bADCSet = false;
-	// 仪器开始ADC数据采集设置成功
-	pInstrument->m_bADCStartSample = false;
-	// 仪器停止ADC数据采集设置成功
-	pInstrument->m_bADCStopSample = false;
-
+	if (bADCSetByRoutIP == true)
+	{
+		// 仪器是否进行了ADC参数设置
+		pInstrument->m_bADCSet = true;
+		// 仪器开始ADC数据采集设置成功
+		pInstrument->m_bADCStartSample = true;
+		// 仪器停止ADC数据采集设置成功
+		pInstrument->m_bADCStopSample = true;
+	}
+	else
+	{
+		// 仪器是否进行了ADC参数设置
+		pInstrument->m_bADCSet = false;
+		// 仪器开始ADC数据采集设置成功
+		pInstrument->m_bADCStartSample = false;
+		// 仪器停止ADC数据采集设置成功
+		pInstrument->m_bADCStopSample = false;
+	}
 	// 误码查询发送帧数
 	pInstrument->m_uiErrorCodeQueryNum = 0;
 	// 误码查询应答帧数

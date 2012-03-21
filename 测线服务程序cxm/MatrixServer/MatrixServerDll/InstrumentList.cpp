@@ -8,6 +8,7 @@ m_oInstrumentListStruct* OnCreateInstrumentList(void)
 	pInstrumentList = new m_oInstrumentListStruct;
 	InitializeCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	pInstrumentList->m_pArrayInstrument = NULL;
+	pInstrumentList->m_bADCSetByRoutIP = false;
 	return pInstrumentList;
 }
 // 重置仪器队列结构体
@@ -38,10 +39,21 @@ void OnResetInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	for(unsigned int i = 0; i < pInstrumentList->m_uiCountAll; i++)
 	{
 		// 重置仪器
-		OnInstrumentReset(&pInstrumentList->m_pArrayInstrument[i]);
+		OnInstrumentReset(&pInstrumentList->m_pArrayInstrument[i], pInstrumentList->m_bADCSetByRoutIP);
 		// 仪器加在空闲仪器队列尾部
 		pInstrumentList->m_olsInstrumentFree.push_back(&pInstrumentList->m_pArrayInstrument[i]);
 	}
+	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+}
+// ADC参数设置改为手动设置
+void OnSetADCSetByHand(m_oInstrumentListStruct* pInstrumentList)
+{
+	if (pInstrumentList == NULL)
+	{
+		return;
+	}
+	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	pInstrumentList->m_bADCSetByRoutIP = true;
 	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 }
 // 初始化仪器队列结构体
@@ -89,7 +101,7 @@ void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarS
 		pInstrumentList->m_pArrayInstrument[i].m_uiIP = pConstVar->m_iIPSetAddrStart 
 			+ i * pConstVar->m_iIPSetAddrInterval;
 		// 重置仪器
-		OnInstrumentReset(&pInstrumentList->m_pArrayInstrument[i]);
+		OnInstrumentReset(&pInstrumentList->m_pArrayInstrument[i], pInstrumentList->m_bADCSetByRoutIP);
 		// 仪器加在空闲仪器队列尾部
 		pInstrumentList->m_olsInstrumentFree.push_back(&pInstrumentList->m_pArrayInstrument[i]);
 	}
@@ -159,7 +171,7 @@ void AddFreeInstrument(m_oInstrumentStruct* pInstrument, m_oInstrumentListStruct
 		return;
 	}
 	//初始化仪器
-	OnInstrumentReset(pInstrument);
+	OnInstrumentReset(pInstrument, pInstrumentList->m_bADCSetByRoutIP);
 	//加入空闲队列
 	pInstrumentList->m_olsInstrumentFree.push_back(pInstrument);
 	pInstrumentList->m_uiCountFree++;	// 空闲仪器总数加1

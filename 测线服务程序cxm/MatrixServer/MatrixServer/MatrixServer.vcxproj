@@ -109,6 +109,7 @@
     <ClInclude Include="CXMLDOMElement.h" />
     <ClInclude Include="CXMLDOMNode.h" />
     <ClInclude Include="CXMLDOMNodeList.h" />
+    <ClInclude Include="MatrixDllCall.h" />
     <ClInclude Include="MatrixServer.h" />
     <ClInclude Include="MatrixServerDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="XMLDOMTool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MatrixDllCall.cpp" />
     <ClCompile Include="MatrixServer.cpp" />
     <ClCompile Include="MatrixServerDlg.cpp" />
     <ClCompile Include="ServerSocketEvent.cpp" />

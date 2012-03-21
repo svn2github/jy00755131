@@ -42,9 +42,18 @@ void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		}		
 	}
 }
+// 采样数据回调函数
+void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, ProSampleDateCallBack pCallBack)
+{
+	if (pADCDataRecThread == NULL)
+	{
+		return;
+	}
+	pADCDataRecThread->m_oProSampleDataCallBack = pCallBack;
+}
 // 将ADC数据加入到任务列表
-void AddToADCDataWriteFileList(unsigned int uiFrameNb, unsigned int uiSN, 
-	unsigned int uiSysTime, m_oADCDataRecThreadStruct* pADCDataRecThread)
+void AddToADCDataWriteFileList(int iLineIndex, int iPointIndex, unsigned int uiFrameNb,
+	unsigned int uiSN, unsigned int uiSysTime, m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
 	if (pADCDataRecThread == NULL)
 	{
@@ -64,6 +73,11 @@ void AddToADCDataWriteFileList(unsigned int uiFrameNb, unsigned int uiSN,
 	memcpy(pADCDataBuf->m_pADCDataBuf, pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
 		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * sizeof(int));
 	pADCDataRecThread->m_pADCDataBufArray->m_olsADCDataToWrite.push_back(pADCDataBuf);
+	// ADC数据处理的回调函数
+	(*pADCDataRecThread->m_oProSampleDataCallBack)(iLineIndex, iPointIndex, 
+		pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
+		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum,
+		uiSN);
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 }
@@ -128,8 +142,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				pADCLostFrame->m_bReturnOk = true;
 				// 将该应答帧数据写入文件
 				uiFrameNb = pADCLostFrame->m_uiFrameNb;
-				AddToADCDataWriteFileList(uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, 
-					pADCDataRecThread);
+				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
+					uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
 			}
 			return;
 		}
@@ -212,8 +226,9 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 						AddToADCFrameLostMap(Key, ADCLostFrame, &pADCDataRecThread->m_oADCLostFrameMap);
 						pInstrument->m_uiADCDataShouldRecFrameNum++;
 						// 在丢帧的位置写当前帧的内容
-						AddToADCDataWriteFileList(ADCLostFrame.m_uiFrameNb, pInstrument->m_uiSN, 
-							ADCLostFrame.m_uiSysTime, pADCDataRecThread);
+						AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex,
+							ADCLostFrame.m_uiFrameNb, pInstrument->m_uiSN, ADCLostFrame.m_uiSysTime, 
+							pADCDataRecThread);
 					}
 					str.Format(_T("仪器SN = 0x%x，IP = 0x%x，丢失帧数为%d"), pInstrument->m_uiSN, 
 						pInstrument->m_uiIP, uiLostFrameNum);
@@ -224,7 +239,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 						strConv, WarningType);
 				}
 				uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum;
-				AddToADCDataWriteFileList(uiFrameNb, pInstrument->m_uiSN, uiADCDataFrameSysTimeNow, pADCDataRecThread);
+				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
+					uiFrameNb, pInstrument->m_uiSN, uiADCDataFrameSysTimeNow, pADCDataRecThread);
 			}
 		}
 

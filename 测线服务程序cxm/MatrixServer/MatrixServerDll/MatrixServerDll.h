@@ -21,7 +21,7 @@ using stdext::hash_map;
 
 /*
 *	if using C++ Compiler to compile the file, adopting C linkage mode
-*/
+	*/
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -33,32 +33,35 @@ extern "C" {
 #define MatrixServerDll_API __declspec(dllimport)
 #endif
 
-// Macro definitions declarations
-// 日志文件夹
+	// Macro definitions declarations
+	// 日志文件夹
 #define LogFolderPath				_T("..\\Log")
-// 系统日志文件夹（包含操作、警告、错误）
+	// 系统日志文件夹（包含操作、警告、错误）
 #define SysOptLogFolderPath			_T("\\系统运行日志")
-// 时统日志文件夹（包含尾包时刻查询及时统设置应答及结果统计）
+	// 时统日志文件夹（包含尾包时刻查询及时统设置应答及结果统计）
 #define TimeDelayLogFolderPath		_T("\\时统日志")
-// 误码查询日志文件夹（包含误码查询应答及结果统计）
+	// 误码查询日志文件夹（包含误码查询应答及结果统计）
 #define ErrorCodeLogFolderPath		_T("\\误码查询日志")
-// 帧时间和偏移量日志（包含丢帧、重发帧及失效帧结果统计）
+	// 帧时间和偏移量日志（包含丢帧、重发帧及失效帧结果统计）
 #define ADCFrameTimeLogFolderPath	_T("\\采样数据帧时间及偏移量")
-// ADC数据帧
+	// ADC数据帧
 #define ADCDataLogFolderPath		_T("\\采样数据")
 
-// 输出选择:Debug输出则为0，Release输出则为1
+	// 输出选择:Debug输出则为0，Release输出则为1
 #define OutPutSelect				0
-// 输出错误日志上限
+	// 输出错误日志上限
 #define OutPutLogErrorLimit			100
-// 日志文件单个文件输出信息条数
+	// 日志文件单个文件输出信息条数
 #define OutPutLogFileInfoNumLimit	5000
-// 日志输出类型
-enum{LogType, WarningType, ErrorType, ExpandType};
+	// 日志输出类型
+	enum{LogType, WarningType, ErrorType, ExpandType};
 // 日志文件类型
 enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
 // INI文件读取关键字缓冲区大小
 #define INIFileStrBufSize			256
+typedef int (WINAPI *PFCALLBACK)(int Param1,int Param2) ;
+typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex, int *_piData,
+	int _iSize, unsigned int _uiSN);
 
 // Resources declarations
 // 日志输出结构
@@ -871,6 +874,8 @@ typedef struct InstrumentList_Struct
 	unsigned int m_uiCountAll;
 	/** 空闲仪器数量*/
 	unsigned int m_uiCountFree;
+	// 是否按照路由IP手动设置ADC参数
+	bool m_bADCSetByRoutIP;
 }m_oInstrumentListStruct;
 
 // 路由属性结构体
@@ -1243,6 +1248,8 @@ typedef struct ADCDataRecThread_Struct
 	int m_iADCFrameCount;
 	// 丢帧索引表
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct> m_oADCLostFrameMap;
+	// 采样数据回调函数
+	ProSampleDateCallBack m_oProSampleDataCallBack;
 }m_oADCDataRecThreadStruct;
 
 // 施工放炮数据存储线程
@@ -1665,7 +1672,7 @@ MatrixServerDll_API void SendInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCD
 /* 仪器结构体                                                           */
 /************************************************************************/
 // 仪器信息重置
-MatrixServerDll_API void OnInstrumentReset(m_oInstrumentStruct* pInstrument);
+MatrixServerDll_API void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bADCSetByRoutIP);
 // 判断仪器索引号是否已加入索引表
 MatrixServerDll_API BOOL IfIndexExistInMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap);
@@ -1680,18 +1687,18 @@ MatrixServerDll_API BOOL DeleteInstrumentFromMap(unsigned int uiIndex,
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap);
 /**
 * 根据链接方向，得到连接的下一个仪器
-* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
+	* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
 */
 MatrixServerDll_API m_oInstrumentStruct* GetNextInstrument(int iRoutDirection, 
-	m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
+m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
 /**
 * 根据链接方向，得到连接的前一个仪器
-* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
+	* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的前一个仪器不存在
 */
 MatrixServerDll_API m_oInstrumentStruct* GetPreviousInstrument(int iRoutDirection, 
-	m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
+m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
 
 
 /************************************************************************/
@@ -1704,6 +1711,8 @@ MatrixServerDll_API void OnResetInstrumentList(m_oInstrumentListStruct* pInstrum
 // 初始化仪器队列结构体
 MatrixServerDll_API void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList,
 	m_oConstVarStruct* pConstVar);
+// ADC参数设置改为手动设置
+MatrixServerDll_API void OnSetADCSetByHand(m_oInstrumentListStruct* pInstrumentList);
 // 关闭仪器队列结构体
 MatrixServerDll_API void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList);
 // 释放仪器队列结构体
@@ -1896,12 +1905,12 @@ MatrixServerDll_API void InstrumentLocationSort(m_oInstrumentStruct* pInstrument
 	m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar);
 /**
 * 设置交叉站某个方向的路由
-* @param CInstrument* &pInstrument 仪器指针
+	* @param CInstrument* &pInstrument 仪器指针
 * @param unsigned int uiRoutDirection 路由方向
 * @return void
 */
 MatrixServerDll_API void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection, 
-	m_oConstVarStruct* pConstVar, m_oRoutListStruct* pRoutList);
+m_oConstVarStruct* pConstVar, m_oRoutListStruct* pRoutList);
 // 处理单个首包帧
 MatrixServerDll_API void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread);
 // 处理首包帧
@@ -2123,8 +2132,12 @@ MatrixServerDll_API m_oADCDataRecThreadStruct* OnCreateADCDataRecThread(void);
 // 线程等待函数
 MatrixServerDll_API void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread);
 // 将ADC数据加入到任务列表
-MatrixServerDll_API void AddToADCDataWriteFileList(unsigned int uiFrameNb, unsigned int uiSN, 
-	unsigned int uiSysTime, m_oADCDataRecThreadStruct* pADCDataRecThread);
+MatrixServerDll_API void AddToADCDataWriteFileList(int iLineIndex, int iPointIndex, 
+	unsigned int uiFrameNb, unsigned int uiSN, unsigned int uiSysTime, 
+	m_oADCDataRecThreadStruct* pADCDataRecThread);
+// 采样数据回调函数
+MatrixServerDll_API void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, 
+	ProSampleDateCallBack pCallBack);
 // 处理单个ADC数据帧
 MatrixServerDll_API void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread);
 // 处理ADC数据接收帧
@@ -2177,6 +2190,9 @@ MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex,
 // 按路由重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, 
 	m_oConstVarStruct* pConstVar);
+// 按照路由地址重置ADC参数设置标志位
+MatrixServerDll_API void OnResetADCSetLableByRoutIP(unsigned int uiRoutIP, int iOpt, 
+	m_oEnvironmentStruct* pEnv);
 // 重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt, 
 	m_oConstVarStruct* pConstVar);
