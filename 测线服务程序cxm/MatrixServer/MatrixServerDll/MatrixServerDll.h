@@ -11,7 +11,6 @@
 #include <list>
 #include <map>
 #include <hash_map>
-#include "Resource.h"
 
 using std::list;
 using std::string;
@@ -2208,7 +2207,7 @@ MatrixServerDll_API void OnOutPutResult(m_oEnvironmentStruct* pEnv);
 MatrixServerDll_API m_oEnvironmentStruct* OnCreateInstance(void);
 // 初始化实例
 MatrixServerDll_API void OnInit(m_oEnvironmentStruct* pEnv, 
-	string strXMLFilePath, string strINIFilePath);
+	char* pcXMLFilePath, char* pcINIFilePath);
 // 关闭
 MatrixServerDll_API void OnClose(m_oEnvironmentStruct* pEnv);
 // 工作

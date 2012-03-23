@@ -1,10 +1,10 @@
 #pragma once
 #define DATA_BUFSIZE 8192
-class CServerSocketEvent
+class CClientInfo
 {
 public:
-	CServerSocketEvent(void);
-	~CServerSocketEvent(void);
+	CClientInfo(void);
+	~CClientInfo(void);
 public:
 	CHAR Buffer[DATA_BUFSIZE];
 	WSABUF DataBuf;

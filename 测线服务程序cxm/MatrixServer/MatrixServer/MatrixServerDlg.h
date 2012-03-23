@@ -3,9 +3,8 @@
 //
 
 #pragma once
-#include "ServerSocketEvent.h"
 #include "MatrixDllCall.h"
-#define ServerListenPort 5150
+#include "Com.h"
 
 // CMatrixServerDlg 对话框
 class CMatrixServerDlg : public CDialogEx
@@ -32,33 +31,16 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+	// DLL函数调用类成员
 	CMatrixDllCall m_oMatrixDllCall;
-	SOCKET m_SocketListen;
-	SOCKADDR_IN m_ServerInternetAddr;
-	DWORD m_dwEventTotal;
-	WSAEVENT m_WSAEventArray[WSA_MAXIMUM_WAIT_EVENTS];
-	CServerSocketEvent* m_ServerSocketEventArray[WSA_MAXIMUM_WAIT_EVENTS];
-	BOOL CreateSocketInformation(SOCKET s);
-	void FreeSocketInformation(DWORD Event);
+	// 与客户端通讯类成员
+	CCom m_oCom;
 public:
 	afx_msg void OnBnClickedBnStart();
 	afx_msg void OnBnClickedBnStop();
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedButtonStartsampleAll();
 	afx_msg void OnBnClickedButtonStopsampleAll();
-
-	// 初始化套接字库
-	void OnInitSocketLib(void);
-	// 释放套接字库
-	void OnCloseSocketLib(void);
-	// 创建Server端口监听
-	void CreateSocketListen(void);
-	// 创建Server与客户端通讯线程
-	void OnCreateCommThread(void);
-	// 线程句柄
-	HANDLE m_hThread;
-	// 与客户端通讯线程函数
-	DWORD CommThreadRun(void);
 	afx_msg void OnBnClickedBnAdcsetAll();
 	afx_msg void OnBnClickedBnAdcsetByrout();
 	afx_msg void OnBnClickedBnStartsampleByrout();

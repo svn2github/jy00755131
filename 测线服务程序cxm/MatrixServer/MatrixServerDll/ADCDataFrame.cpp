@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "MatrixServerDll.h"
-
 // 创建ADC数据帧信息结构体
 m_oADCDataFrameStruct* OnCreateInstrumentADCDataFrame(void)
 {

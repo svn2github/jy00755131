@@ -43,3 +43,4 @@
 #include "CXMLDOMNode.h"
 #include "CXMLDOMElement.h"
 #include "XMLDOMTool.h"
+#include "Resource.h"

@@ -6,7 +6,7 @@ typedef m_oEnvironmentStruct* (*Create_Instance)(void);
 // 释放实例资源
 typedef void (*Free_Instance)(m_oEnvironmentStruct* pEnv);
 // 初始化实例
-typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv, string strXMLFilePath, string strINIFilePath);
+typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv, char* pcXMLFilePath, char* pcINIFilePath);
 // Field On
 typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
 // Field Off

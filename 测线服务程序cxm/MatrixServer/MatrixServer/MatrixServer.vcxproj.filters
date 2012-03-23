@@ -57,10 +57,22 @@
     <ClInclude Include="XMLDOMTool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ServerSocketEvent.h">
+    <ClInclude Include="MatrixDllCall.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MatrixDllCall.h">
+    <ClInclude Include="Com.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSend.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectClients.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadComm.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,10 +86,22 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ServerSocketEvent.cpp">
+    <ClCompile Include="MatrixDllCall.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="MatrixDllCall.cpp">
+    <ClCompile Include="Com.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadSend.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectClients.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientInfo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadComm.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

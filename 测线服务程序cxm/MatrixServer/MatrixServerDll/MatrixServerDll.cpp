@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "MatrixServerDll.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -491,7 +490,7 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 	return pEnv;
 }
 // 初始化实例
-void OnInit(m_oEnvironmentStruct* pEnv, string strXMLFilePath, string strINIFilePath)
+void OnInit(m_oEnvironmentStruct* pEnv, char* pcXMLFilePath, char* pcINIFilePath)
 {
 	if (pEnv == NULL)
 	{
@@ -534,9 +533,9 @@ void OnInit(m_oEnvironmentStruct* pEnv, string strXMLFilePath, string strINIFile
 	CreateDirectory(strPath + ADCDataLogFolderPath, NULL);
 	ConvertCStrToStr(strPath + ADCDataLogFolderPath, &pEnv->m_pOptTaskArray->m_SaveLogFolderPath);
 	// 初始化常量信息结构体
-	OnInitConstVar(pEnv->m_pConstVar, strINIFilePath, pEnv->m_pLogOutPutOpt);
+	OnInitConstVar(pEnv->m_pConstVar, pcINIFilePath, pEnv->m_pLogOutPutOpt);
 	// 初始化仪器通讯信息结构体
-	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo, strXMLFilePath, pEnv->m_pLogOutPutOpt);
+	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo, pcXMLFilePath , pEnv->m_pLogOutPutOpt);
 	// 初始化套接字库
 	OnInitSocketLib(pEnv->m_pLogOutPutOpt);
 	// 初始化日志输出线程

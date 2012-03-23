@@ -10,11 +10,6 @@
 #define new DEBUG_NEW
 #endif
 
-// 创建Server与客户端通讯线程
-DWORD WINAPI RunCommThread(CMatrixServerDlg* pDlg)
-{
-	return pDlg->CommThreadRun();
-}
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialogEx
@@ -112,13 +107,8 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	// 初始化动态链接库
 	m_oMatrixDllCall.OnInit(_T("MatrixServerDll.dll"));
-	m_dwEventTotal = 0;
-	// 初始化套接字库
-	OnInitSocketLib();
-	// 创建Server端口监听
-	CreateSocketListen();
-	// 创建Server与客户端通讯线程
-	OnCreateCommThread();
+	// 初始化与客户端通讯连接
+	m_oCom.OnInit();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -186,10 +176,10 @@ void CMatrixServerDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
+	// 关闭与客户端通讯连接
+	m_oCom.OnClose();
 	// 关闭动态链接库
 	m_oMatrixDllCall.OnClose();
-	// 释放套接字库
-	OnCloseSocketLib();
 }
 void CMatrixServerDlg::OnBnClickedButtonStartsampleAll()
 {
@@ -202,260 +192,6 @@ void CMatrixServerDlg::OnBnClickedButtonStopsampleAll()
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL停止AD数据采集
 	m_oMatrixDllCall.Dll_StopSample();
-}
-BOOL CMatrixServerDlg::CreateSocketInformation(SOCKET s)
-{
-	CServerSocketEvent* SI;
-	if ((m_WSAEventArray[m_dwEventTotal] = WSACreateEvent()) == WSA_INVALID_EVENT)
-	{
-		printf("WSACreateEvent() failed with error %d\n", WSAGetLastError());
-		return FALSE;
-	}
-	else
-	{
-		printf("WSACreateEvent() is OK!\n");
-	}
-	SI = new CServerSocketEvent;
-	// Prepare SocketInfo structure for use
-	SI->Socket = s;
-	SI->BytesSEND = 0;
-	SI->BytesRECV = 0;
-	m_ServerSocketEventArray[m_dwEventTotal] = SI;
-	m_dwEventTotal++;
-	return(TRUE);
-}
-void CMatrixServerDlg::FreeSocketInformation(DWORD Event)
-{
-	CServerSocketEvent* SI = m_ServerSocketEventArray[Event];
-	DWORD i;
-	closesocket(SI->Socket);
-	delete SI;
-	if(WSACloseEvent(m_WSAEventArray[Event]) == TRUE)
-		printf("WSACloseEvent() is OK!\n\n");
-	else
-		printf("WSACloseEvent() failed miserably!\n\n");
-	// Squash the socket and event arrays
-	for (i = Event; i < m_dwEventTotal; i++)
-	{
-		m_WSAEventArray[i] = m_WSAEventArray[i + 1];
-		m_ServerSocketEventArray[i] = m_ServerSocketEventArray[i + 1];
-	}
-	m_dwEventTotal--;
-}
-
-// 初始化套接字库
-void CMatrixServerDlg::OnInitSocketLib(void)
-{
-	WSADATA wsaData;
-	CString str = _T("");
-	if (WSAStartup(0x0202, &wsaData) != 0)
-	{
-		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-		PostQuitMessage(0);
-	}
-}
-// 释放套接字库
-void CMatrixServerDlg::OnCloseSocketLib(void)
-{
-	CString str = _T("");
-	// 释放套接字库
-	if (WSACleanup() != 0)
-	{
-		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-		PostQuitMessage(0);
-	}
-}
-
-
-// 创建Server端口监听
-void CMatrixServerDlg::CreateSocketListen(void)
-{
-	CString str = _T("");
-	if ((m_SocketListen = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
-	{
-		str.Format(_T("socket() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-		PostQuitMessage(0);
-	}
-	if(CreateSocketInformation(m_SocketListen) == FALSE)
-	{
-		AfxMessageBox(_T("CreateSocketInformation() failed!"));
-		PostQuitMessage(0);
-	}
-	if (WSAEventSelect(m_SocketListen, m_WSAEventArray[m_dwEventTotal - 1], FD_ACCEPT|FD_CLOSE) == SOCKET_ERROR)
-	{
-		str.Format(_T("WSAEventSelect() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-		PostQuitMessage(0);
-	}
-	m_ServerInternetAddr.sin_family = AF_INET;
-	m_ServerInternetAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	m_ServerInternetAddr.sin_port = htons(ServerListenPort);
-	if (bind(m_SocketListen, (PSOCKADDR) &m_ServerInternetAddr, sizeof(m_ServerInternetAddr)) == SOCKET_ERROR)
-	{
-		str.Format(_T("bind() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-		PostQuitMessage(0);
-	}
-	if (listen(m_SocketListen, 10))
-	{
-		str.Format(_T("listen() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-		PostQuitMessage(0);
-	}
-}
-
-
-// 创建Server与客户端通讯线程
-void CMatrixServerDlg::OnCreateCommThread(void)
-{
-	DWORD dwThreadID;
-	m_hThread = CreateThread((LPSECURITY_ATTRIBUTES)NULL, 
-		0,
-		(LPTHREAD_START_ROUTINE)RunCommThread,
-		this, 
-		0, 
-		&dwThreadID);
-}
-
-
-// 与客户端通讯线程函数
-DWORD CMatrixServerDlg::CommThreadRun(void)
-{
-	SOCKET SocketAccept;
-	CServerSocketEvent* pSocketInfo;
-	DWORD Event;
-	WSANETWORKEVENTS NetworkEvents;
-	DWORD Flags;
-	CString str = _T("");
-	DWORD RecvBytes;
-	DWORD SendBytes;
-	while(true)
-	{
-		// Wait for one of the sockets to receive I/O notification and 
-		if ((Event = WSAWaitForMultipleEvents(m_dwEventTotal, m_WSAEventArray, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED)
-		{
-			str.Format(_T("WSAWaitForMultipleEvents() failed with error %d"), WSAGetLastError());
-			AfxMessageBox(str);
-			return 1;
-		}
-		if (WSAEnumNetworkEvents(m_ServerSocketEventArray[Event - WSA_WAIT_EVENT_0]->Socket,
-			m_WSAEventArray[Event - WSA_WAIT_EVENT_0], &NetworkEvents) == SOCKET_ERROR)
-		{
-			str.Format(_T("WSAEnumNetworkEvents() failed with error %d"), WSAGetLastError());
-			AfxMessageBox(str);
-			return 1;
-		}
-		if (NetworkEvents.lNetworkEvents & FD_ACCEPT)
-		{
-			if (NetworkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
-			{
-				str.Format(_T("FD_ACCEPT failed with error %d"), NetworkEvents.iErrorCode[FD_ACCEPT_BIT]);
-				AfxMessageBox(str);
-				break;
-			}
-			if ((SocketAccept = accept(m_ServerSocketEventArray[Event - WSA_WAIT_EVENT_0]->Socket, NULL, NULL)) == INVALID_SOCKET)
-			{
-				printf("accept() failed with error %d\n", WSAGetLastError());
-				break;
-			}
-			if (m_dwEventTotal > WSA_MAXIMUM_WAIT_EVENTS)
-			{
-				printf("Too many connections - closing socket...\n");
-				closesocket(SocketAccept);
-				break;
-			}
-			CreateSocketInformation(SocketAccept);
-			if (WSAEventSelect(SocketAccept, m_WSAEventArray[m_dwEventTotal - 1], FD_READ|FD_WRITE|FD_CLOSE) == SOCKET_ERROR)
-			{
-				printf("WSAEventSelect() failed with error %d\n", WSAGetLastError());
-				return 1;
-			}
-			printf("Socket %d got connected...\n", SocketAccept);
-		}
-		// Try to read and write data to and from the data buffer if read and write events occur
-		if (NetworkEvents.lNetworkEvents & FD_READ || NetworkEvents.lNetworkEvents & FD_WRITE)
-		{
-			if (NetworkEvents.lNetworkEvents & FD_READ && NetworkEvents.iErrorCode[FD_READ_BIT] != 0)
-			{
-				printf("FD_READ failed with error %d\n", NetworkEvents.iErrorCode[FD_READ_BIT]);
-				break;
-			}
-			else
-				printf("FD_READ is OK!\n");
-			if (NetworkEvents.lNetworkEvents & FD_WRITE && NetworkEvents.iErrorCode[FD_WRITE_BIT] != 0)
-			{
-				printf("FD_WRITE failed with error %d\n", NetworkEvents.iErrorCode[FD_WRITE_BIT]);
-				break;
-			}
-			else
-				printf("FD_WRITE is OK!\n");
-			pSocketInfo = m_ServerSocketEventArray[Event - WSA_WAIT_EVENT_0];
-			// Read data only if the receive buffer is empty
-			if (pSocketInfo->BytesRECV == 0)
-			{
-				pSocketInfo->DataBuf.buf = pSocketInfo->Buffer;
-				pSocketInfo->DataBuf.len = DATA_BUFSIZE;
-				Flags = 0;
-				if (WSARecv(pSocketInfo->Socket, &(pSocketInfo->DataBuf), 1, &RecvBytes, &Flags, NULL, NULL) == SOCKET_ERROR)
-				{
-					if (WSAGetLastError() != WSAEWOULDBLOCK)
-					{
-						printf("WSARecv() failed with error %d\n", WSAGetLastError());
-						FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
-						return 1;
-					}
-				}
-				else
-				{
-					printf("WSARecv() is working!\n");
-					pSocketInfo->BytesRECV = RecvBytes;
-				}
-			}
-			// Write buffer data if it is available
-			if (pSocketInfo->BytesRECV > pSocketInfo->BytesSEND)
-			{
-				pSocketInfo->DataBuf.buf = pSocketInfo->Buffer + pSocketInfo->BytesSEND;
-				pSocketInfo->DataBuf.len = pSocketInfo->BytesRECV - pSocketInfo->BytesSEND;
-				if (WSASend(pSocketInfo->Socket, &(pSocketInfo->DataBuf), 1, &SendBytes, 0, NULL, NULL) == SOCKET_ERROR)
-				{
-					if (WSAGetLastError() != WSAEWOULDBLOCK)
-					{
-						printf("WSASend() failed with error %d\n", WSAGetLastError());
-						FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
-						return 1;
-					}
-					// A WSAEWOULDBLOCK error has occurred. An FD_WRITE event will be posted
-					// when more buffer space becomes available
-				}
-				else
-				{
-					printf("WSASend() is fine! Thank you...\n");
-					pSocketInfo->BytesSEND += SendBytes;
-					if (pSocketInfo->BytesSEND == pSocketInfo->BytesRECV)
-					{
-						pSocketInfo->BytesSEND = 0;
-						pSocketInfo->BytesRECV = 0;
-					}
-				}
-			}
-		}
-		if (NetworkEvents.lNetworkEvents & FD_CLOSE)
-		{
-			if (NetworkEvents.iErrorCode[FD_CLOSE_BIT] != 0)
-			{
-				printf("FD_CLOSE failed with error %d\n", NetworkEvents.iErrorCode[FD_CLOSE_BIT]);
-				break;
-			}
-			else
-				printf("FD_CLOSE is OK!\n");
-			printf("Closing socket information %d\n", m_ServerSocketEventArray[Event - WSA_WAIT_EVENT_0]->Socket);
-			FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
-		}
-	}
-	return 1;
 }
 
 
