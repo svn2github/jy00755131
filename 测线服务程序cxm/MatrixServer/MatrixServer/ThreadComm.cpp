@@ -47,7 +47,7 @@ void CThreadComm::OnClose(void)
 		return;
 	}
 	m_bClose = true;
-	int iResult = WaitForSingleObject(m_hThreadClose, 500);
+	int iResult = WaitForSingleObject(m_hThreadClose, WaitForCloseCommThreadTimes);
 	if (iResult != WAIT_OBJECT_0)
 	{
 		TerminateThread(m_hThread, 0);

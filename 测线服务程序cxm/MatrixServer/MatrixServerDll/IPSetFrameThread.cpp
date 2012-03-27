@@ -8,6 +8,7 @@ m_oIPSetFrameThreadStruct* OnCreateIPSetFrameThread(void)
 	pIPSetFrameThread = new m_oIPSetFrameThreadStruct;
 	pIPSetFrameThread->m_pThread = new m_oThreadStruct;
 	pIPSetFrameThread->m_pInstrumentList = NULL;
+	pIPSetFrameThread->m_pRoutList = NULL;
 	pIPSetFrameThread->m_pIPSetFrame = NULL;
 	return pIPSetFrameThread;
 }
@@ -20,6 +21,7 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	}
 	unsigned int uiIPInstrument = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
+	m_oRoutStruct* pRout = NULL;
 	unsigned short usCommand = 0;
 	CString str = _T("");
 	string strFrameData = "";
@@ -34,6 +36,8 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 		DeleteInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap);
 		// 将仪器加入IP地址索引表
 		pInstrument->m_bIPSetOK = true;
+		pRout = GetRout(pInstrument->m_uiRoutIP, &pIPSetFrameThread->m_pRoutList->m_oRoutMap);
+		pRout->m_uiInstrumentNum++;
 		AddInstrumentToMap(uiIPInstrument, pInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPInstrumentMap);
 		usCommand = pIPSetFrameThread->m_pIPSetFrame->m_pCommandStructReturn->m_usCommand;
 		if (usCommand == pIPSetFrameThread->m_pThread->m_pConstVar->m_usSendSetCmd)
@@ -53,7 +57,7 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	else
 	{
 		GetFrameInfo(pIPSetFrameThread->m_pIPSetFrame->m_cpRcvFrameData,
-			pIPSetFrameThread->m_pIPSetFrame->m_uiRcvBufferSize, &strFrameData);
+			pIPSetFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetReturnFrameOne", 
 			strFrameData, ErrorType, IDS_ERR_IPSETMAP_NOTEXIT);
 	}
@@ -92,8 +96,10 @@ void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				else
 				{
 					EnterCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+					EnterCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个IP地址设置应答帧
 					ProcIPSetReturnFrameOne(pIPSetFrameThread);
+					LeaveCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
 					LeaveCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
@@ -267,6 +273,7 @@ bool OnInit_IPSetFrameThread(m_oEnvironmentStruct* pEnv)
 	}
 	pEnv->m_pIPSetFrameThread->m_pIPSetFrame = pEnv->m_pIPSetFrame;
 	pEnv->m_pIPSetFrameThread->m_pInstrumentList = pEnv->m_pInstrumentList;
+	pEnv->m_pIPSetFrameThread->m_pRoutList = pEnv->m_pRoutList;
 	return OnInitIPSetFrameThread(pEnv->m_pIPSetFrameThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
 }
 // 关闭IP地址设置线程

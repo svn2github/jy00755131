@@ -203,7 +203,7 @@ void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt,
 	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 按照路由地址重置ADC参数设置标志位
-void OnResetADCSetLableByRoutIP(unsigned int uiRoutIP, int iOpt, m_oEnvironmentStruct* pEnv)
+void OnResetADCSetLableBySN(unsigned int uiSN, int iDirection, int iOpt, m_oEnvironmentStruct* pEnv)
 {
 	if (pEnv == NULL)
 	{
@@ -215,22 +215,22 @@ void OnResetADCSetLableByRoutIP(unsigned int uiRoutIP, int iOpt, m_oEnvironmentS
 	}
 	if (pEnv->m_pRoutList == NULL)
 	{
-		AddMsgToLogOutPutList(pEnv->m_pConstVar->m_pLogOutPut, "OnResetADCSetLableByRoutIP", "",
+		AddMsgToLogOutPutList(pEnv->m_pConstVar->m_pLogOutPut, "OnResetADCSetLableBySN", "",
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
-	EnterCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
-	// 在路由索引中找到该路由
-	if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pEnv->m_pRoutList->m_oRoutMap))
+	m_oRoutStruct* pRout = NULL;
+	unsigned int uiRoutIP = 0;
+	if (false == GetRoutIPBySn(uiSN, iDirection, pEnv->m_pInstrumentList, 
+		pEnv->m_pConstVar, uiRoutIP))
 	{
-		m_oRoutStruct* pRout = GetRout(uiRoutIP, &pEnv->m_pRoutList->m_oRoutMap);
-		// 大线方向路由
-		if (pRout->m_bRoutLaux == false)
-		{
-			OnResetADCSetLableByRout(pRout, iOpt, pEnv->m_pConstVar);
-		}
+		return;
 	}
-	LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+	if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pRoutList, &pRout))
+	{
+		return;
+	}
+	OnResetADCSetLableByRout(pRout, iOpt, pEnv->m_pConstVar);
 }
 // ADC参数设置
 void OnADCSet(m_oEnvironmentStruct* pEnv)
@@ -243,7 +243,7 @@ void OnADCSet(m_oEnvironmentStruct* pEnv)
 	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCSetOptNb, pEnv->m_pConstVar);
 }
 // ADC开始采集命令
-void OnADCStartSample(m_oEnvironmentStruct* pEnv)
+void OnADCStartSample(m_oEnvironmentStruct* pEnv, int iSampleRate)
 {
 	if (pEnv == NULL)
 	{
@@ -255,6 +255,7 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 		pEnv->m_pInstrumentList, pEnv->m_pConstVar);
 	// 产生一个施工任务
 	//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
+	pEnv->m_pADCSetThread->m_iSampleRate = iSampleRate;
 	pEnv->m_pADCSetThread->m_bADCStartSample = true;
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
@@ -264,7 +265,6 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pADCDataRecThread->m_oADCLostFrameMap.clear();
 	// 重置ADC开始采集命令成功的标志位
 	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStartSampleOptNb, pEnv->m_pConstVar);
-
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
 }
 // ADC停止采集命令

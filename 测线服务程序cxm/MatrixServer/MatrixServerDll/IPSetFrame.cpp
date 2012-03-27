@@ -205,6 +205,38 @@ void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentIPQueryFrame", strConv);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
+// 打开交叉站某一路由方向的电源
+bool OpenLAUXRoutPower(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet, m_oEnvironmentStruct* pEnv)
+{
+	m_oInstrumentStruct* pInstrument = NULL;
+	if (FALSE == IfIndexExistInMap(uiSN, &pEnv->m_pInstrumentList->m_oSNInstrumentMap))
+	{
+		return false;
+	}
+	pInstrument = GetInstrumentFromMap(uiSN, &pEnv->m_pInstrumentList->m_oSNInstrumentMap);
+	if (pInstrument->m_bIPSetOK == false)
+	{
+		return false;
+	}
+	pInstrument->m_ucLAUXRoutOpenSet = ucLAUXRoutOpenSet;
+
+	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+	// 仪器IP地址
+	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_uiDstIP = pInstrument->m_uiIP;
+	// 设置命令
+	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_usCommand = pEnv->m_pConstVar->m_usSendSetCmd;
+	// 路由开关打开
+	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_cLAUXRoutOpenSet = pInstrument->m_ucLAUXRoutOpenSet;
+	// 命令字内容
+	pEnv->m_pIPSetFrame->m_cpCommandWord[0] = pEnv->m_pConstVar->m_cCmdLAUXRoutOpenSet;
+	// 命令字个数
+	pEnv->m_pIPSetFrame->m_usCommandWordNum = 1;
+	MakeInstrumentFrame(pEnv->m_pIPSetFrame->m_pCommandStructSet, pEnv->m_pConstVar, pEnv->m_pIPSetFrame->m_cpSndFrameData, 
+		pEnv->m_pIPSetFrame->m_cpCommandWord, pEnv->m_pIPSetFrame->m_usCommandWordNum);
+	LeaveCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
+	SendInstrumentIPSetFrame(pEnv->m_pIPSetFrame, pEnv->m_pConstVar);
+	return true;
+}
 // 生成IP地址设置帧
 void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, 
 	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument)
@@ -237,7 +269,7 @@ void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	// 路由IP地址，路由方向 4-右
 	pIPSetFrame->m_pCommandStructSet->m_uiRoutIPRight = pInstrument->m_uiRoutIPRight;
 	// 路由开关打开
-	pIPSetFrame->m_pCommandStructSet->m_cLAUXRoutOpenSet = pInstrument->m_cLAUXRoutOpenSet;
+	pIPSetFrame->m_pCommandStructSet->m_cLAUXRoutOpenSet = pInstrument->m_ucLAUXRoutOpenSet;
 	// 广播IP地址
 	pIPSetFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_iIPBroadcastAddr;
 	// 时间修正高位

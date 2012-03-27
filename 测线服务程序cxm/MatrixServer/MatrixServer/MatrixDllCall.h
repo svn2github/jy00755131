@@ -18,7 +18,7 @@ public:
 	// DLL释放实例
 	void Dll_Free_Instance(void);
 	// DLL开始AD数据采集
-	void Dll_StartSample(void);
+	void Dll_StartSample(int iSampleRate);
 	// DLL停止AD数据采集
 	void Dll_StopSample(void);
 	// DLL开始工作
@@ -36,9 +36,13 @@ public:
 	// Dll_开始AD参数设置
 	void Dll_ADCSet(void);
 	// DLL按照路由地址设置部分ADC参数
-	void Dll_ADCSet_Part(unsigned int uiRoutIP, int iOpt);
+	void Dll_ADCSetPart(unsigned int uiSN, int iRoutDirection, int iOpt, int iSampleRate = 0);
 	// DLL手动设置ADC参数
 	void Dll_ADCSet_ByHand(void);
+	// DLL手动打开交叉站某一路由方向的电源
+	void Dll_OpenLAUXRoutPower_ByHand(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet);
+	// DLL得到路由方向上仪器个数
+	unsigned int Dll_GetRoutInstrumentNum(unsigned int uiSN, int iDirection);
 	// DLL得到采样数据处理的回调函数
 	void Dll_GetProSampleData_CallBack(void);
 };

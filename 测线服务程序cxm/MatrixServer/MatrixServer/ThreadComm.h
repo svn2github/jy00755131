@@ -4,6 +4,8 @@
 #define ServerListenPort		5150
 // 服务器允许连接的客户端个数
 #define ConnectClientNumLimit	10
+// 线程关闭的等待时间
+#define WaitForCloseCommThreadTimes	500
 class CThreadComm
 {
 public:

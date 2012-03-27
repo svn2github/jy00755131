@@ -40,7 +40,7 @@ void GetFrameInfo(char* pFrameData, int iSize, string* strFrameData)
 	}
 	for (int i=0; i<iSize; i++)
 	{
-		cstr.Format(_T("%02x"), pFrameData[i]);
+		cstr.Format(_T("%02x"), (unsigned char)pFrameData[i]);
 		ConvertCStrToStr(cstr, &strConv);
 		*strFrameData += strConv;
 		*strFrameData += ' ';
@@ -618,12 +618,24 @@ bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct
 		else if (pCommandWord[i] == pConstVar->m_cCmdLAUXRoutOpenQuery)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_cLAUXRoutOpenQuery, iFramePacketSize1B);
-			iPos += iFramePacketSize4B;
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pConstVar->m_cSndFrameBufInit, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pConstVar->m_cSndFrameBufInit, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pConstVar->m_cSndFrameBufInit, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_cCmdLAUXRoutOpenSet)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_cLAUXRoutOpenSet, iFramePacketSize1B);
-			iPos += iFramePacketSize4B;
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pConstVar->m_cSndFrameBufInit, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pConstVar->m_cSndFrameBufInit, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
+			memcpy(&pFrameData[iPos], &pConstVar->m_cSndFrameBufInit, iFramePacketSize1B);
+			iPos += iFramePacketSize1B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_cCmdTailRecSndTime)
 		{
@@ -964,4 +976,22 @@ void OnClearSocketRcvBuf(SOCKET oSocket, int iRcvFrameSize)
 		}		
 	}
 	delete[] pcRcvFrameData;
+}
+// 得到路由方向上仪器个数
+bool OnGetRoutInstrumentNum(unsigned int uiSN, int iDirection, 
+	m_oEnvironmentStruct* pEnv, unsigned int& uiInstrumentNum)
+{
+	m_oRoutStruct* pRout = NULL;
+	unsigned int uiRoutIP = 0;
+	if (false == GetRoutIPBySn(uiSN, iDirection, pEnv->m_pInstrumentList, 
+		pEnv->m_pConstVar, uiRoutIP))
+	{
+		return false;
+	}
+	if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pRoutList, &pRout))
+	{
+		return false;
+	}
+	uiInstrumentNum = pRout->m_uiInstrumentNum;
+	return true;
 }

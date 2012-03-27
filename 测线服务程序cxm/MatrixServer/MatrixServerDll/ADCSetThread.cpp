@@ -194,6 +194,43 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置ADC数据采样率等参数
 		// @@@需要界面设置采样率等参数，暂选为1K采样率
+		if (pADCSetThread->m_iSampleRate == 250)
+		{
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[4] = 0x43;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[6] = 0x56;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[7] = 0x13;
+		}
+		else if (pADCSetThread->m_iSampleRate == 500)
+		{
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[4] = 0x4b;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[6] = 0xa7;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[7] = 0x09;
+		}
+		else if (pADCSetThread->m_iSampleRate == 1000)
+		{
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[4] = 0x53;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[6] = 0xd3;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[7] = 0x04;
+		}
+		else if (pADCSetThread->m_iSampleRate == 2000)
+		{
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[4] = 0x5b;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[6] = 0x69;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[7] = 0x02;
+		}
+		else if (pADCSetThread->m_iSampleRate == 4000)
+		{
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[4] = 0x63;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[6] = 0x34;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[7] = 0x01;
+		}
+		// 如果不在所选采样率则按照1000采样率采样
+		else
+		{
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[4] = 0x53;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[6] = 0xd3;
+			pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample[7] = 0x04;
+		}
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pThread->m_pConstVar->m_cpSetADCSample;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pThread->m_pConstVar->m_iSetADCSampleSize;
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
@@ -373,7 +410,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	else
 	{
 		GetFrameInfo(pADCSetThread->m_pADCSetFrame->m_cpRcvFrameData,
-			pADCSetThread->m_pADCSetFrame->m_uiRcvBufferSize, &strFrameData);
+			pADCSetThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ProcADCSetReturnFrameOne",
 			strFrameData, ErrorType, IDS_ERR_IPMAP_NOTEXIT);
 	}
@@ -714,6 +751,7 @@ bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread,
 	pADCSetThread->m_uiTBTimeOld = 0;
 	pADCSetThread->m_uiADCSetNum = 0;
 	pADCSetThread->m_uiADCSetReturnNum = 0;
+	pADCSetThread->m_iSampleRate = 1000;
 	if (false == OnInitThread(pADCSetThread->m_pThread, pLogOutPut, pConstVar))
 	{
 		return false;

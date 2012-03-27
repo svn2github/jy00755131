@@ -2,7 +2,7 @@
 #include "MatrixServerDll.h"
 
 // 仪器信息重置
-void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bADCSetByRoutIP)
+void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 {
 	if (pInstrument == NULL)
 	{
@@ -28,8 +28,6 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bADCSetByRoutIP)
 	pInstrument->m_uiRoutIPLeft = 0;
 	// 路由地址 测线线方向 右方
 	pInstrument->m_uiRoutIPRight = 0;
-	// 路由开关
-	pInstrument->m_cLAUXRoutOpenSet = 0;
 	// 链接的仪器 上方
 	pInstrument->m_pInstrumentTop = NULL;
 	// 链接的仪器 下方
@@ -123,7 +121,7 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bADCSetByRoutIP)
 	pInstrument->m_bTimeSetOK = false;
 	// ADC命令设置是否应答
 	pInstrument->m_bADCSetReturn = false;
-	if (bADCSetByRoutIP == true)
+	if (bSetByHand == true)
 	{
 		// 仪器是否进行了ADC参数设置
 		pInstrument->m_bADCSet = true;
@@ -131,6 +129,8 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bADCSetByRoutIP)
 		pInstrument->m_bADCStartSample = true;
 		// 仪器停止ADC数据采集设置成功
 		pInstrument->m_bADCStopSample = true;
+		// 路由开关
+		pInstrument->m_ucLAUXRoutOpenSet = 0xf0;
 	}
 	else
 	{
@@ -140,6 +140,8 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bADCSetByRoutIP)
 		pInstrument->m_bADCStartSample = false;
 		// 仪器停止ADC数据采集设置成功
 		pInstrument->m_bADCStopSample = false;
+		// 路由开关
+		pInstrument->m_ucLAUXRoutOpenSet = 0;
 	}
 	// 误码查询发送帧数
 	pInstrument->m_uiErrorCodeQueryNum = 0;
@@ -256,6 +258,32 @@ BOOL DeleteInstrumentFromMap(unsigned int uiIndex,
 		bResult = FALSE;
 	}
 	return bResult;
+}
+// 得到仪器在某一方向上的路由IP
+bool GetRoutIPBySn(unsigned int uiSN, int iDirection, 
+	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar,
+	unsigned int& uiRoutIP)
+{
+	m_oInstrumentStruct* pInstrument = NULL;
+	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	if (TRUE == IfIndexExistInMap(uiSN, &pInstrumentList->m_oSNInstrumentMap))
+	{
+		pInstrument = GetInstrumentFromMap(uiSN, &pInstrumentList->m_oSNInstrumentMap);
+		if (iDirection == pConstVar->m_iDirectionLeft)
+		{
+			uiRoutIP = pInstrument->m_uiRoutIPLeft;
+			LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+			return true;
+		}
+		else if (iDirection == pConstVar->m_iDirectionRight)
+		{
+			uiRoutIP = pInstrument->m_uiRoutIPRight;
+			LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+			return true;
+		}
+	}
+	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	return false;
 }
 /**
 * 根据链接方向，得到连接的下一个仪器

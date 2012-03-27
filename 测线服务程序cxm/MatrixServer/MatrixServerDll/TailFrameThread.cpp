@@ -171,6 +171,10 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		}
 		// 回收一个仪器
 		FreeInstrumentFromMap(pInstrumentDelete, pInstrumentList, pRoutList, pConstVar);
+		if (pRout->m_olsRoutInstrument.size() > 0)
+		{
+			pRout->m_olsRoutInstrument.pop_back();
+		}
 		pRout->m_uiInstrumentNum--;
 	}
 }
@@ -253,7 +257,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		else
 		{
 			GetFrameInfo(pTailFrameThread->m_pTailFrame->m_cpRcvFrameData,
-				pTailFrameThread->m_pTailFrame->m_uiRcvBufferSize, &strFrameData);
+				pTailFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 			AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne",
 				strFrameData,	ErrorType, IDS_ERR_ROUT_NOTEXIT);
 		}

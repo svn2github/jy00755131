@@ -45,4 +45,6 @@ public:
 	afx_msg void OnBnClickedBnAdcsetByrout();
 	afx_msg void OnBnClickedBnStartsampleByrout();
 	afx_msg void OnBnClickedBnStopsampleByrout();
+	afx_msg void OnBnClickedBtnOpenroutpower();
+	afx_msg void OnBnClickedBtnGetroutinstrumentnum();
 };

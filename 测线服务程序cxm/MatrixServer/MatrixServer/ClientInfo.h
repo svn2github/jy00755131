@@ -6,11 +6,12 @@ public:
 	CClientInfo(void);
 	~CClientInfo(void);
 public:
-	CHAR Buffer[DATA_BUFSIZE];
-	WSABUF DataBuf;
+	CHAR RevBuffer[DATA_BUFSIZE];
+	CHAR SendBuffer[DATA_BUFSIZE];
+	WSABUF DataRevBuf;
+	WSABUF DataSendBuf;
 	SOCKET Socket;
 	DWORD BytesSEND;
 	DWORD BytesRECV;
-	SOCKADDR_IN m_ClientAddr;
 };
 

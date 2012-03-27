@@ -42,7 +42,7 @@ void CThreadSend::OnClose(void)
 		return;
 	}
 	m_bClose = true;
-	int iResult = WaitForSingleObject(m_hThreadClose, 500);
+	int iResult = WaitForSingleObject(m_hThreadClose, WaitForCloseSendThreadTimes);
 	if (iResult != WAIT_OBJECT_0)
 	{
 		TerminateThread(m_hThread, 0);
@@ -64,7 +64,7 @@ DWORD CThreadSend::ThreadRunFunc(void)
 		{
 			break;
 		}
-		Sleep(100);
+		Sleep(WaitForSendThreadSleepTimes);
 	}
 	SetEvent(m_hThreadClose);
 	return 1;

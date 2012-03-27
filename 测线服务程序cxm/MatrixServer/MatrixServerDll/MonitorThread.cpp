@@ -362,6 +362,10 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 			if (iter->second->m_pTail->m_iInstrumentType == pMonitorThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
 			{
 				// 回收一个仪器
+				if (iter->second->m_olsRoutInstrument.size() > 0)
+				{
+					iter->second->m_olsRoutInstrument.pop_back();
+				}
 				FreeInstrumentFromMap(iter->second->m_pHead, pMonitorThread->m_pInstrumentList, 
 					pMonitorThread->m_pRoutList, pMonitorThread->m_pThread->m_pConstVar);
 				iter->second->m_uiInstrumentNum = 0;
@@ -391,10 +395,10 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 		AddMsgToLogOutPutList(pMonitorThread->m_pThread->m_pLogOutPut, "ProcMonitor", strConv);
 		// 将过期路由回收到空闲路由队列
 		AddFreeRout(iter->second, pMonitorThread->m_pRoutList);
-		// 路由删除索引表回收路由
-		DeleteRout(iter->first, &pMonitorThread->m_pRoutList->m_oRoutDeleteMap);
 		// ADC参数设置索引表回收路由
 		DeleteRout(iter->first, &pMonitorThread->m_pRoutList->m_oADCSetRoutMap);
+		// 路由删除索引表回收路由
+		DeleteRout(iter->first, &pMonitorThread->m_pRoutList->m_oRoutDeleteMap);
 	}
 }
 // 检查时统设置应答是否接收完全

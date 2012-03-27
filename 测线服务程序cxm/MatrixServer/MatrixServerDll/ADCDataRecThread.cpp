@@ -157,7 +157,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			if (usADCDataFramePointNow > usADCFramePointLimit)
 			{
 				GetFrameInfo(pADCDataRecThread->m_pADCDataFrame->m_cpRcvFrameData, 
-					pADCDataRecThread->m_pADCDataFrame->m_uiRcvBufferSize, &strFrameData);
+					pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 					strFrameData, ErrorType, IDS_ERR_FRAMEPOINT_LIMITOVER);
 			}
@@ -183,7 +183,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			if (uiADCDataFramePointMove % iADCDataInOneFrameNum != 0)
 			{
 				GetFrameInfo(pADCDataRecThread->m_pADCDataFrame->m_cpRcvFrameData,
-					pADCDataRecThread->m_pADCDataFrame->m_uiRcvBufferSize, &strFrameData);
+					pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 					strFrameData, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
 				str.Format(_T("指针偏移量出错，偏移量差值为%d"), uiADCDataFramePointMove);

@@ -208,7 +208,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	else
 	{
 		GetFrameInfo(pErrorCodeThread->m_pErrorCodeFrame->m_cpRcvFrameData,
-			pErrorCodeThread->m_pErrorCodeFrame->m_uiRcvBufferSize, &strFrameData);
+			pErrorCodeThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 		AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "ProcErrorCodeReturnFrameOne",
 			strFrameData, ErrorType, IDS_ERR_IPSETMAP_NOTEXIT);
 	}

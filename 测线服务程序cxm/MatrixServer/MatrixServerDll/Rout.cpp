@@ -16,6 +16,8 @@ void OnRoutReset(m_oRoutStruct* pRout)
 	pRout->m_pHead = NULL;
 	// 路由尾仪器
 	pRout->m_pTail = NULL;
+	// 路由仪器队列
+	pRout->m_olsRoutInstrument.clear();
 	// 路由时刻
 	pRout->m_uiRoutTime = 0xFFFF0000;
 	// 路由是否为交叉线路由
@@ -92,10 +94,29 @@ void DeleteRout(unsigned int uiIndex,
 	{
 		return;
 	}
+	if (pRoutMap->size() == 0)
+	{
+		return;
+	}
 	hash_map<unsigned int, m_oRoutStruct*>::iterator iter;
 	iter = pRoutMap->find(uiIndex);
 	if (iter != pRoutMap->end())
 	{
 		pRoutMap->erase(iter);
 	}
+}
+// 由路由IP得到路由结构体指针
+bool GetRoutByRoutIP(unsigned int uiRoutIP, 
+	m_oRoutListStruct* pRoutList, m_oRoutStruct** ppRout)
+{
+	EnterCriticalSection(&pRoutList->m_oSecRoutList);
+	// 在路由索引中找到该路由
+	if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pRoutList->m_oRoutMap))
+	{
+		*ppRout = GetRout(uiRoutIP, &pRoutList->m_oRoutMap);
+		LeaveCriticalSection(&pRoutList->m_oSecRoutList);
+		return true;
+	}
+	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
+	return false;
 }

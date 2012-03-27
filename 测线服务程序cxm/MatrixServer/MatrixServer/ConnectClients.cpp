@@ -132,21 +132,22 @@ void CConnectClients::FreeSocketInformation(DWORD Event)
 // 处理函数
 BOOL CConnectClients::OnProcComm(void)
 {
-	SOCKET SocketAccept;
-	CClientInfo* pSocketInfo;
 	DWORD Event;
 	WSANETWORKEVENTS NetworkEvents;
-	DWORD Flags;
 	CString str = _T("");
-	DWORD RecvBytes;
-	DWORD SendBytes;
+	int iResult = 0;
 
 	// Wait for one of the sockets to receive I/O notification and 
-	if ((Event = WSAWaitForMultipleEvents(m_dwEventTotal, m_WSAEventArray, FALSE, 100, FALSE)) == WSA_WAIT_FAILED)
+	if ((Event = WSAWaitForMultipleEvents(m_dwEventTotal, m_WSAEventArray, FALSE, 
+		WaitForCommThreadSleepTimes, FALSE)) == WSA_WAIT_FAILED)
 	{
 		str.Format(_T("WSAWaitForMultipleEvents() failed with error %d"), WSAGetLastError());
 		AfxMessageBox(str);
 		return FALSE;
+	}
+	else if (Event == WSA_WAIT_TIMEOUT)
+	{
+		return TRUE;
 	}
 	if (WSAEnumNetworkEvents(m_ClientInfoArray[Event - WSA_WAIT_EVENT_0]->Socket,
 		m_WSAEventArray[Event - WSA_WAIT_EVENT_0], &NetworkEvents) == SOCKET_ERROR)
@@ -155,111 +156,174 @@ BOOL CConnectClients::OnProcComm(void)
 		AfxMessageBox(str);
 		return FALSE;
 	}
-	if (NetworkEvents.lNetworkEvents & FD_ACCEPT)
+	// 处理TCP/IP连接事件
+	iResult = OnProcAcceptEvent(&NetworkEvents, Event);
+	if (iResult == 1)
 	{
-		if (NetworkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
-		{
-			str.Format(_T("FD_ACCEPT failed with error %d"), NetworkEvents.iErrorCode[FD_ACCEPT_BIT]);
-			AfxMessageBox(str);
-			return TRUE;
-		}
-		if ((SocketAccept = accept(m_ClientInfoArray[Event - WSA_WAIT_EVENT_0]->Socket, NULL, NULL)) == INVALID_SOCKET)
-		{
-			printf("accept() failed with error %d\n", WSAGetLastError());
-			return TRUE;
-		}
-		if (m_dwEventTotal > WSA_MAXIMUM_WAIT_EVENTS)
-		{
-			printf("Too many connections - closing socket...\n");
-			closesocket(SocketAccept);
-			return TRUE;
-		}
-		CreateSocketInformation(SocketAccept);
-		if (FALSE == OnSocketEventSelect(SocketAccept, m_WSAEventArray[m_dwEventTotal - 1], FD_READ|FD_WRITE|FD_CLOSE))
-		{
-			return FALSE;
-		}
-		printf("Socket %d got connected...\n", SocketAccept);
+		return TRUE;
 	}
-	// Try to read and write data to and from the data buffer if read and write events occur
-	if (NetworkEvents.lNetworkEvents & FD_READ || NetworkEvents.lNetworkEvents & FD_WRITE)
+	else if (iResult == -1)
 	{
-		if (NetworkEvents.lNetworkEvents & FD_READ && NetworkEvents.iErrorCode[FD_READ_BIT] != 0)
-		{
-			printf("FD_READ failed with error %d\n", NetworkEvents.iErrorCode[FD_READ_BIT]);
-			return TRUE;
-		}
-		else
-			printf("FD_READ is OK!\n");
-		if (NetworkEvents.lNetworkEvents & FD_WRITE && NetworkEvents.iErrorCode[FD_WRITE_BIT] != 0)
-		{
-			printf("FD_WRITE failed with error %d\n", NetworkEvents.iErrorCode[FD_WRITE_BIT]);
-			return TRUE;
-		}
-		else
-			printf("FD_WRITE is OK!\n");
-		pSocketInfo = m_ClientInfoArray[Event - WSA_WAIT_EVENT_0];
-		// Read data only if the receive buffer is empty
-		if (pSocketInfo->BytesRECV == 0)
-		{
-			pSocketInfo->DataBuf.buf = pSocketInfo->Buffer;
-			pSocketInfo->DataBuf.len = DATA_BUFSIZE;
-			Flags = 0;
-			if (WSARecv(pSocketInfo->Socket, &(pSocketInfo->DataBuf), 1, &RecvBytes, &Flags, NULL, NULL) == SOCKET_ERROR)
-			{
-				if (WSAGetLastError() != WSAEWOULDBLOCK)
-				{
-					printf("WSARecv() failed with error %d\n", WSAGetLastError());
-					FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
-					return FALSE;
-				}
-			}
-			else
-			{
-				printf("WSARecv() is working!\n");
-				pSocketInfo->BytesRECV = RecvBytes;
-			}
-		}
-		// Write buffer data if it is available
-		if (pSocketInfo->BytesRECV > pSocketInfo->BytesSEND)
-		{
-			pSocketInfo->DataBuf.buf = pSocketInfo->Buffer + pSocketInfo->BytesSEND;
-			pSocketInfo->DataBuf.len = pSocketInfo->BytesRECV - pSocketInfo->BytesSEND;
-			if (WSASend(pSocketInfo->Socket, &(pSocketInfo->DataBuf), 1, &SendBytes, 0, NULL, NULL) == SOCKET_ERROR)
-			{
-				if (WSAGetLastError() != WSAEWOULDBLOCK)
-				{
-					printf("WSASend() failed with error %d\n", WSAGetLastError());
-					FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
-					return FALSE;
-				}
-				// A WSAEWOULDBLOCK error has occurred. An FD_WRITE event will be posted
-				// when more buffer space becomes available
-			}
-			else
-			{
-				printf("WSASend() is fine! Thank you...\n");
-				pSocketInfo->BytesSEND += SendBytes;
-				if (pSocketInfo->BytesSEND == pSocketInfo->BytesRECV)
-				{
-					pSocketInfo->BytesSEND = 0;
-					pSocketInfo->BytesRECV = 0;
-				}
-			}
-		}
+		return FALSE;
 	}
-	if (NetworkEvents.lNetworkEvents & FD_CLOSE)
+	// 处理TCP/IP接收事件
+	iResult = OnProcRevEvent(&NetworkEvents, Event);
+	if (iResult == 1)
 	{
-		if (NetworkEvents.iErrorCode[FD_CLOSE_BIT] != 0)
-		{
-			printf("FD_CLOSE failed with error %d\n", NetworkEvents.iErrorCode[FD_CLOSE_BIT]);
-			return TRUE;
-		}
-		else
-			printf("FD_CLOSE is OK!\n");
-		printf("Closing socket information %d\n", m_ClientInfoArray[Event - WSA_WAIT_EVENT_0]->Socket);
-		FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
+		return TRUE;
+	}
+	else if (iResult == -1)
+	{
+		return FALSE;
+	}
+	// 处理TCP/IP发送事件
+	iResult = OnProcSendEvent(&NetworkEvents, Event);
+	if (iResult == 1)
+	{
+		return TRUE;
+	}
+	else if (iResult == -1)
+	{
+		return FALSE;
+	}
+	// 处理TCP/IP发送事件
+	iResult = OnProcCloseEvent(&NetworkEvents, Event);
+	if (iResult == 1)
+	{
+		return TRUE;
+	}
+	else if (iResult == -1)
+	{
+		return FALSE;
 	}
 	return TRUE;
 }
 
+
+
+// 处理TCP/IP连接事件
+int CConnectClients::OnProcAcceptEvent(WSANETWORKEVENTS* pNetworkEvents, DWORD Event)
+{
+	CString str = _T("");
+	SOCKET SocketAccept;
+	if (pNetworkEvents->lNetworkEvents & FD_ACCEPT)
+	{
+		if (pNetworkEvents->iErrorCode[FD_ACCEPT_BIT] != 0)
+		{
+			str.Format(_T("FD_ACCEPT failed with error %d"), pNetworkEvents->iErrorCode[FD_ACCEPT_BIT]);
+			AfxMessageBox(str);
+			return 1;
+		}
+		if ((SocketAccept = accept(m_ClientInfoArray[Event - WSA_WAIT_EVENT_0]->Socket, NULL, NULL)) == INVALID_SOCKET)
+		{
+			str.Format(_T("accept() failed with error %d"), WSAGetLastError());
+			AfxMessageBox(str);
+			return 1;
+		}
+		if (m_dwEventTotal > WSA_MAXIMUM_WAIT_EVENTS)
+		{
+			AfxMessageBox(_T("Too many connections - closing socket..."));
+			closesocket(SocketAccept);
+			return 1;
+		}
+		CreateSocketInformation(SocketAccept);
+		if (FALSE == OnSocketEventSelect(SocketAccept, m_WSAEventArray[m_dwEventTotal - 1], FD_READ|FD_WRITE|FD_CLOSE))
+		{
+			return -1;
+		}
+	}
+	return 0;
+}
+
+
+// 处理TCP/IP接收事件
+int CConnectClients::OnProcRevEvent(WSANETWORKEVENTS* pNetworkEvents, DWORD Event)
+{
+	CString str = _T("");
+	CClientInfo* pSocketInfo = NULL;
+	DWORD Flags = 0;
+	DWORD RecvBytes = 0;
+	if (pNetworkEvents->lNetworkEvents & FD_READ)
+	{
+		if (pNetworkEvents->lNetworkEvents & FD_READ && pNetworkEvents->iErrorCode[FD_READ_BIT] != 0)
+		{
+			str.Format(_T("FD_READ failed with error %d"), pNetworkEvents->iErrorCode[FD_READ_BIT]);
+			AfxMessageBox(str);
+			return 1;
+		}
+		pSocketInfo = m_ClientInfoArray[Event - WSA_WAIT_EVENT_0];
+		pSocketInfo->DataRevBuf.buf = pSocketInfo->RevBuffer + pSocketInfo->BytesRECV;
+		pSocketInfo->DataRevBuf.len = DATA_BUFSIZE - pSocketInfo->BytesRECV;
+		if (WSARecv(pSocketInfo->Socket, &(pSocketInfo->DataRevBuf), 1, &RecvBytes, &Flags, NULL, NULL) == SOCKET_ERROR)
+		{
+			if (WSAGetLastError() != WSAEWOULDBLOCK)
+			{
+				str.Format(_T("WSARecv() failed with error %d"), WSAGetLastError());
+				AfxMessageBox(str);
+				FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
+				return -1;
+			}
+		}
+		else
+		{
+			pSocketInfo->BytesRECV += RecvBytes;
+			// 接收数据处理
+
+		}
+	}
+	return 0;
+}
+
+
+// 处理TCP/IP发送事件
+int CConnectClients::OnProcSendEvent(WSANETWORKEVENTS* pNetworkEvents, DWORD Event)
+{
+	CString str = _T("");
+	CClientInfo* pSocketInfo = NULL;
+	DWORD SendBytes = 0;
+	if (pNetworkEvents->lNetworkEvents & FD_WRITE)
+	{
+		if (pNetworkEvents->lNetworkEvents & FD_WRITE && pNetworkEvents->iErrorCode[FD_WRITE_BIT] != 0)
+		{
+			str.Format(_T("FD_WRITE failed with error %d"), pNetworkEvents->iErrorCode[FD_WRITE_BIT]);
+			AfxMessageBox(str);
+			return 1;
+		}
+		pSocketInfo = m_ClientInfoArray[Event - WSA_WAIT_EVENT_0];
+		pSocketInfo->DataSendBuf.buf = pSocketInfo->SendBuffer;
+		pSocketInfo->DataSendBuf.len = pSocketInfo->BytesSEND;
+		if (WSASend(pSocketInfo->Socket, &(pSocketInfo->DataSendBuf), 1, &SendBytes, 0, NULL, NULL) == SOCKET_ERROR)
+		{
+			if (WSAGetLastError() != WSAEWOULDBLOCK)
+			{
+				str.Format(_T("WSASend() failed with error %d"), WSAGetLastError());
+				AfxMessageBox(str);
+				FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
+				return -1;
+			}
+		}
+		else
+		{
+			pSocketInfo->BytesSEND -= SendBytes;
+		}
+	}
+	return 0;
+}
+
+
+// 处理TCP/IP关闭事件
+int CConnectClients::OnProcCloseEvent(WSANETWORKEVENTS* pNetworkEvents, DWORD Event)
+{
+	CString str = _T("");
+	if (pNetworkEvents->lNetworkEvents & FD_CLOSE)
+	{
+		if (pNetworkEvents->iErrorCode[FD_CLOSE_BIT] != 0)
+		{
+			str.Format(_T("FD_CLOSE failed with error %d"), pNetworkEvents->iErrorCode[FD_CLOSE_BIT]);
+			AfxMessageBox(str);
+			return TRUE;
+		}
+		FreeSocketInformation(Event - WSA_WAIT_EVENT_0);
+	}
+	return 0;
+}

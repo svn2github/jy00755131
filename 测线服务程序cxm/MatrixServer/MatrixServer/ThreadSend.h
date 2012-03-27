@@ -1,4 +1,8 @@
 #pragma once
+// 线程函数的等待时间
+#define WaitForSendThreadSleepTimes	100
+// 线程关闭的等待时间
+#define WaitForCloseSendThreadTimes	500
 class CThreadSend
 {
 public:

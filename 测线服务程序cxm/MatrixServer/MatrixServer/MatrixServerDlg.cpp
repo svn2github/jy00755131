@@ -70,6 +70,8 @@ BEGIN_MESSAGE_MAP(CMatrixServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BN_ADCSET_BYROUT, &CMatrixServerDlg::OnBnClickedBnAdcsetByrout)
 	ON_BN_CLICKED(IDC_BN_STARTSAMPLE_BYROUT, &CMatrixServerDlg::OnBnClickedBnStartsampleByrout)
 	ON_BN_CLICKED(IDC_BN_STOPSAMPLE_BYROUT, &CMatrixServerDlg::OnBnClickedBnStopsampleByrout)
+	ON_BN_CLICKED(IDC_BTN_OPENROUTPOWER, &CMatrixServerDlg::OnBnClickedBtnOpenroutpower)
+	ON_BN_CLICKED(IDC_BTN_GETROUTINSTRUMENTNUM, &CMatrixServerDlg::OnBnClickedBtnGetroutinstrumentnum)
 END_MESSAGE_MAP()
 
 
@@ -185,7 +187,7 @@ void CMatrixServerDlg::OnBnClickedButtonStartsampleAll()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL开始AD数据采集
-	m_oMatrixDllCall.Dll_StartSample();
+	m_oMatrixDllCall.Dll_StartSample(4000);
 }
 void CMatrixServerDlg::OnBnClickedButtonStopsampleAll()
 {
@@ -206,25 +208,42 @@ void CMatrixServerDlg::OnBnClickedBnAdcsetAll()
 void CMatrixServerDlg::OnBnClickedBnAdcsetByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CString str = _T("");
-	GetDlgItem(IDC_EDIT_ROUT)->GetWindowText(str);
-	m_oMatrixDllCall.Dll_ADCSet_Part(_ttoi(str), 1);
+	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LAUXSN), 
+		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 1);
 }
 
 
 void CMatrixServerDlg::OnBnClickedBnStartsampleByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CString str = _T("");
-	GetDlgItem(IDC_EDIT_ROUT)->GetWindowText(str);
-	m_oMatrixDllCall.Dll_ADCSet_Part(_ttoi(str), 2);
+	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LAUXSN), 
+		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 2, 4000);
 }
 
 
 void CMatrixServerDlg::OnBnClickedBnStopsampleByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LAUXSN), 
+		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 3);
+}
+
+
+void CMatrixServerDlg::OnBnClickedBtnOpenroutpower()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_oMatrixDllCall.Dll_OpenLAUXRoutPower_ByHand(GetDlgItemInt(IDC_EDIT_LAUXSN), 
+		static_cast<unsigned char>(GetDlgItemInt(IDC_EDIT_OPENROUTPOWER)));
+}
+
+
+void CMatrixServerDlg::OnBnClickedBtnGetroutinstrumentnum()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	
+	unsigned int uiInstrumentNum = m_oMatrixDllCall.Dll_GetRoutInstrumentNum(GetDlgItemInt(IDC_EDIT_LAUXSN), 
+		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION));
 	CString str = _T("");
-	GetDlgItem(IDC_EDIT_ROUT)->GetWindowText(str);
-	m_oMatrixDllCall.Dll_ADCSet_Part(_ttoi(str), 3);
+	str.Format(_T("该方向仪器个数为%d"), uiInstrumentNum);
+	AfxMessageBox(str);
 }

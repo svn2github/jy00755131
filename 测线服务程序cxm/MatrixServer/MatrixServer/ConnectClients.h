@@ -1,6 +1,7 @@
 #pragma once
 #include "ClientInfo.h"
-
+// 线程函数的等待时间
+#define WaitForCommThreadSleepTimes	100
 class CConnectClients
 {
 public:
@@ -34,5 +35,13 @@ public:
 	void FreeSocketInformation(DWORD Event);
 	// 处理函数
 	BOOL OnProcComm(void);
+	// 处理TCP/IP连接事件
+	int OnProcAcceptEvent(WSANETWORKEVENTS* pNetworkEvents, DWORD Event);
+	// 处理TCP/IP接收事件
+	int OnProcRevEvent(WSANETWORKEVENTS* pNetworkEvents, DWORD Event);
+	// 处理TCP/IP发送事件
+	int OnProcSendEvent(WSANETWORKEVENTS* pNetworkEvents, DWORD Event);
+	// 处理TCP/IP关闭事件
+	int OnProcCloseEvent(WSANETWORKEVENTS* pNetworkEvents, DWORD Event);
 };
 

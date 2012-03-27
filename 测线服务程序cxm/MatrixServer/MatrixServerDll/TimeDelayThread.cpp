@@ -165,7 +165,7 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	else
 	{
 		GetFrameInfo(pTimeDelayThread->m_pTailTimeFrame->m_cpRcvFrameData,
-			pTimeDelayThread->m_pTailTimeFrame->m_uiRcvBufferSize, &strFrameData);
+			pTimeDelayThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "ProcTailTimeReturnFrameOne",
 			strFrameData, ErrorType, IDS_ERR_IPMAP_NOTEXIT);
 	}
@@ -379,7 +379,7 @@ void ProcTimeDelayReturnFrameOne(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	else
 	{
 		GetFrameInfo(pTimeDelayThread->m_pTimeDelayFrame->m_cpRcvFrameData,
-			pTimeDelayThread->m_pTimeDelayFrame->m_uiRcvBufferSize, &strFrameData);
+			pTimeDelayThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "ProcTimeDelayReturnFrameOne",
 			strFrameData, ErrorType, IDS_ERR_IPMAP_NOTEXIT);
 	}
