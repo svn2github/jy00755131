@@ -281,6 +281,12 @@ bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 			LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 			return true;
 		}
+		else if (iDirection == pConstVar->m_iDirectionCenter)
+		{
+			uiRoutIP = pInstrument->m_uiRoutIP;
+			LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+			return true;
+		}
 	}
 	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	return false;
