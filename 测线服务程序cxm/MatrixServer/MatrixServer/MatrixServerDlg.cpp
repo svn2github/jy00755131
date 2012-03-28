@@ -145,7 +145,6 @@ void CMatrixServerDlg::OnPaint()
 		GetClientRect(&rect);
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
-
 		// ªÊ÷∆Õº±Í
 		dc.DrawIcon(x, y, m_hIcon);
 	}

@@ -87,6 +87,8 @@ typedef struct LogOutPut_Struct
 // 从INI文件中解析得到的常量
 typedef struct ConstVar_Struct
 {
+	// 从INI文件中解析得到的常量资源同步对象
+	CRITICAL_SECTION m_oSecConstVar;
 	//____常量设置____
 	// 仪器设备个数
 	unsigned int m_iInstrumentNum;

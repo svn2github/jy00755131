@@ -25,6 +25,9 @@
     <Filter Include="杂项\XML">
       <UniqueIdentifier>{9a59ad32-1f15-453d-b4be-b2c8353cf61a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="整理">
+      <UniqueIdentifier>{73a3fedc-48b0-4fc4-a67d-806b3829e662}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -71,9 +74,6 @@
     </ClCompile>
     <ClCompile Include="xml.cpp">
       <Filter>杂项\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="LogOutPut.cpp">
-      <Filter>杂项</Filter>
     </ClCompile>
     <ClCompile Include="PerformanceFunc.cpp">
       <Filter>杂项</Filter>
@@ -170,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="ADCDataSaveThread.cpp">
       <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="LogOutPut.cpp">
+      <Filter>整理</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

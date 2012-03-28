@@ -19,6 +19,7 @@ m_oConstVarStruct* OnCreateConstVar(void)
 	pConstVar->m_cpSetADCSample = NULL;
 	pConstVar->m_cpSetADCReadContinuous = NULL;
 	pConstVar->m_pLogOutPut = NULL;
+	InitializeCriticalSection(&pConstVar->m_oSecConstVar);
 	return pConstVar;
 }
 // 载入INI文件
@@ -34,6 +35,7 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 	CString strFilePath	= _T("");
 	wchar_t strBuff[INIFileStrBufSize];
 	int iTemp = 0;
+	int iReadNum = 0;
 	strFilePath = strINIFilePath.c_str();
 	if (false == IfFileExist(strFilePath))
 	{
@@ -43,193 +45,120 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 	}
 	try
 	{
+		EnterCriticalSection(&pConstVar->m_oSecConstVar);
 		//读取ini文件中相应字段的内容
 		strSection = _T("常量设置");					// 获取当前区域
 
 		strSectionKey=_T("InstrumentCountAll");			// 仪器设备个数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iInstrumentNum = _ttoi(strValue);
+		pConstVar->m_iInstrumentNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCDataCountAll");			// ADC数据缓冲区个数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCDataCountAll = _ttoi(strValue);
+		pConstVar->m_iADCDataCountAll = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("OptTaskCountAll");			// 施工任务个数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iOptTaskCountAll = _ttoi(strValue);
+		pConstVar->m_iOptTaskCountAll = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("OneSleepTime");				// 一次休眠的时间
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iOneSleepTime = _ttoi(strValue);
+		pConstVar->m_iOneSleepTime = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("LogOutPutSleepTimes");		// 日志输出线程写日志的延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iLogOutPutSleepTimes = _ttoi(strValue);
+		pConstVar->m_iLogOutPutSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("HertBeatSleepTimes");			// 心跳线程发送心跳帧延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iHeartBeatSleepTimes = _ttoi(strValue);
+		pConstVar->m_iHeartBeatSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("HeadFrameSleepTimes");		// 首包线程接收首包延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iHeadFrameSleepTimes = _ttoi(strValue);
+		pConstVar->m_iHeadFrameSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("IPSetFrameSleepTimes");		// IP地址设置线程延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iIPSetFrameSleepTimes = _ttoi(strValue);
+		pConstVar->m_iIPSetFrameSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("TailFrameSleepTimes");		// 尾包线程延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iTailFrameSleepTimes = _ttoi(strValue);
+		pConstVar->m_iTailFrameSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("MonitorSleepTimes");		// 路由监视线程延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iMonitorSleepTimes = _ttoi(strValue);
+		pConstVar->m_iMonitorSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("TimeDelaySleepTimes");		// 时统设置线程延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iTimeDelaySleepTimes = _ttoi(strValue);
+		pConstVar->m_iTimeDelaySleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCSetSleepTimes");			// ADC参数设置线程延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCSetSleepTimes = _ttoi(strValue);
+		pConstVar->m_iADCSetSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ErrorCodeSleepTimes");		// 误码查询线程延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iErrorCodeSleepTimes = _ttoi(strValue);
+		pConstVar->m_iErrorCodeSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCDataRecSleepTimes");		// ADC数据接收线程延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCDataRecSleepTimes = _ttoi(strValue);
+		pConstVar->m_iADCDataRecSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCDataSaveSleepTimes");		// ADC数据存储线程延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCDataSaveSleepTimes = _ttoi(strValue);
+		pConstVar->m_iADCDataSaveSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("CloseThreadSleepTimes");		// 等待线程关闭的延时次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iCloseThreadSleepTimes = _ttoi(strValue);
+		pConstVar->m_iCloseThreadSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("HeadFrameStableNum");			// 首包稳定计数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iHeadFrameStableTimes = _ttoi(strValue);
+		pConstVar->m_iHeadFrameStableTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("IPAddrResetTimes");		// IP地址重设次数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iIPAddrResetTimes = _ttoi(strValue);
+		pConstVar->m_iIPAddrResetTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("TailFrameStableTimes");		// 尾包稳定计数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iTailFrameStableTimes = _ttoi(strValue);
+		pConstVar->m_iTailFrameStableTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("MonitorStableTime");		// 路由监视稳定时间
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iMonitorStableTime = _ttoi(strValue);
+		pConstVar->m_iMonitorStableTime = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("LineSysStableTime");		// 测网系统达到稳定状态时间
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iLineSysStableTime = _ttoi(strValue);
+		pConstVar->m_iLineSysStableTime = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCSetOptNb");			// ADC参数设置操作序号
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCSetOptNb = _ttoi(strValue);
+		pConstVar->m_iADCSetOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCStartSampleOptNb");	// ADC开始采集操作序号
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCStartSampleOptNb = _ttoi(strValue);
+		pConstVar->m_iADCStartSampleOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCStopSampleOptNb");		// ADC停止采集操作序号
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCStopSampleOptNb = _ttoi(strValue);
+		pConstVar->m_iADCStopSampleOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iInstrumentTypeLAUX = _ttoi(strValue);
+		pConstVar->m_iInstrumentTypeLAUX = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("InstrumentTypeLAUL");		// 仪器类型-电源站
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iInstrumentTypeLAUL = _ttoi(strValue);
+		pConstVar->m_iInstrumentTypeLAUL = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("InstrumentTypeFDU");		// 仪器类型-采集站
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iInstrumentTypeFDU = _ttoi(strValue);
+		pConstVar->m_iInstrumentTypeFDU = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("InstrumentTypeLCI");		// 仪器类型-LCI
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iInstrumentTypeLCI= _ttoi(strValue);
+		pConstVar->m_iInstrumentTypeLCI= GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("DirectionTop");			// 方向上方
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iDirectionTop = _ttoi(strValue);
+		pConstVar->m_iDirectionTop = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("DirectionDown");			// 方向下方
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iDirectionDown = _ttoi(strValue);
+		pConstVar->m_iDirectionDown = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("DirectionLeft");			// 方向左方
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iDirectionLeft = _ttoi(strValue);
+		pConstVar->m_iDirectionLeft = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("DirectionRight");			// 方向右方
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iDirectionRight = _ttoi(strValue);
+		pConstVar->m_iDirectionRight = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("DirectionCenter");		// 方向正中
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iDirectionCenter = _ttoi(strValue);
+		pConstVar->m_iDirectionCenter = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("IPSetAddrStart");			// IP地址设置的起始地址
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iIPSetAddrStart = _ttoi(strValue);
+		pConstVar->m_iIPSetAddrStart = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("IPSetAddrInterval");		// IP地址设置的间隔
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iIPSetAddrInterval = _ttoi(strValue);
+		pConstVar->m_iIPSetAddrInterval = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("RoutSetAddrStart");		// 路由地址设置的起始地址
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iRoutSetAddrStart = _ttoi(strValue);
+		pConstVar->m_iRoutSetAddrStart = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("RoutSetAddrInterval");	// 路由地址设置的间隔
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iRoutSetAddrInterval = _ttoi(strValue);
+		pConstVar->m_iRoutSetAddrInterval = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("BroadcastPortStart");		// 设置广播端口起始地址
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -242,41 +171,27 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 		_stscanf_s(strValue, _T("0x%x"), &pConstVar->m_iIPBroadcastAddr, sizeof(int));
 
 		strSectionKey=_T("ADCFrameSaveInOneFileNum");	// 一个文件内存储单个设备ADC数据帧数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCFrameSaveInOneFileNum = _ttoi(strValue);
+		pConstVar->m_iADCFrameSaveInOneFileNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCSaveHeadLineNum");		// 存储ADC数据的文件头行数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCSaveHeadLineNum = _ttoi(strValue);
+		pConstVar->m_iADCSaveHeadLineNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCSaveLeftInfoBytes");		// 存储ADC数据的左侧预留信息字节数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCSaveLeftInfoBytes = _ttoi(strValue);
+		pConstVar->m_iADCSaveLeftInfoBytes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCSaveDataBytes");		// 存储ADC数据的字节数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCSaveDataBytes = _ttoi(strValue);
+		pConstVar->m_iADCSaveDataBytes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCSaveDataIntervalBytes");		// 存储ADC数据之间的间隔字节数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCSaveDataIntervalBytes = _ttoi(strValue);
+		pConstVar->m_iADCSaveDataIntervalBytes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCDataBufSize");		// 设备ADC数据缓冲区大小
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCDataBufSize = _ttoi(strValue);
+		pConstVar->m_iADCDataBufSize = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		//读取ini文件中相应字段的内容
 		strSection = _T("帧格式设置");			// 获取当前区域
 		strSectionKey=_T("FrameHeadSize");		// 帧头长度
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iFrameHeadSize = _ttoi(strValue);
+		pConstVar->m_iFrameHeadSize = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("FrameHeadCheck");		// 同步帧头
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
@@ -284,47 +199,31 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 		ParseCStringToArray(&pConstVar->m_cpFrameHeadCheck, pConstVar->m_iFrameHeadSize, strValue);
 
 		strSectionKey=_T("FrameCmdSize1B");		// 命令字长度1字节
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iFrameCmdSize1B = _ttoi(strValue);
+		pConstVar->m_iFrameCmdSize1B = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("FramePacketSize1B");	// 命令包长度1字节
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iFramePacketSize1B = _ttoi(strValue);
+		pConstVar->m_iFramePacketSize1B = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("FramePacketSize2B");	// 命令包长度2字节
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iFramePacketSize2B = _ttoi(strValue);
+		pConstVar->m_iFramePacketSize2B = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("FramePacketSize4B");	// 命令包长度4字节
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iFramePacketSize4B = _ttoi(strValue);
+		pConstVar->m_iFramePacketSize4B = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCDataSize3B");		// ADC数据所占字节数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCDataSize3B = _ttoi(strValue);
+		pConstVar->m_iADCDataSize3B = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCDataInOneFrameNum");	// 一帧内ADC数据个数
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iADCDataInOneFrameNum = _ttoi(strValue);
+		pConstVar->m_iADCDataInOneFrameNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCFramePointLimit");	// ADC数据帧指针偏移量上限
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		iTemp = _ttoi(strValue);
-		pConstVar->m_usADCFramePointLimit = static_cast<unsigned short>(iTemp);
+		pConstVar->m_usADCFramePointLimit = static_cast<unsigned short>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CommandWordMaxNum");	// 命令字个数最大值
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iCommandWordMaxNum = _ttoi(strValue);
+		pConstVar->m_iCommandWordMaxNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 		pConstVar->m_iADCSetCommandMaxByte = pConstVar->m_iCommandWordMaxNum 
 			* pConstVar->m_iFramePacketSize4B;
+
 		strSectionKey=_T("SndFrameBufInit");	// 发送帧缓冲区初值设定
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
@@ -332,14 +231,10 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 		pConstVar->m_cSndFrameBufInit = static_cast<char>(iTemp);
 
 		strSectionKey=_T("RcvFrameSize");		// 接收的网络数据帧帧长度
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iRcvFrameSize = _ttoi(strValue);
+		pConstVar->m_iRcvFrameSize = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("SndFrameSize");		// 发送的网络数据帧帧长度
-		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
-		strValue = strBuff;
-		pConstVar->m_iSndFrameSize = _ttoi(strValue);
+		pConstVar->m_iSndFrameSize = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		/////////////////////////////////////////////////////////////////////////
 		strSection = _T("服务器与设备命令字设置");		// 获取当前区域
@@ -518,6 +413,7 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 
 		//读取ini文件中相应字段的内容
 		strSection = _T("ADC参数设置");			// 获取当前区域
+
 		strSectionKey=_T("SetADCSetSineSize");	// ADC设置正弦波命令大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
@@ -550,12 +446,12 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 		ParseCStringToArray(&pConstVar->m_cpSetADCOpenTBPowerLow, 
 			pConstVar->m_iSetADCOpenTBPowerLowSize, strValue);
 
-		strSectionKey=_T("m_iSetADCOpenTBPowerHighSize");	// ADC设置打开TB电源高位大小
+		strSectionKey=_T("SetADCOpenTBPowerHighSize");	// ADC设置打开TB电源高位大小
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
 		pConstVar->m_iSetADCOpenTBPowerHighSize = _ttoi(strValue);
 
-		strSectionKey=_T("m_iSetADCOpenTBPowerHigh");		// ADC设置打开TB电源高位
+		strSectionKey=_T("SetADCOpenTBPowerHigh");		// ADC设置打开TB电源高位
 		GetPrivateProfileString(strSection,strSectionKey,NULL,strBuff,sizeof(strBuff) / 2,strFilePath);
 		strValue = strBuff;
 		ParseCStringToArray(&pConstVar->m_cpSetADCOpenTBPowerHigh, 
@@ -671,6 +567,8 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 		strValue = strBuff;
 		_stscanf_s(strValue, _T("0x%x"), &iTemp, sizeof(int));
 		pConstVar->m_usCmdCtrlCloseLed = static_cast<unsigned short>(iTemp);
+
+		LeaveCriticalSection(&pConstVar->m_oSecConstVar);
 	}
 	catch (CMemoryException* e)
 	{
@@ -693,8 +591,10 @@ void OnInitConstVar(m_oConstVarStruct* pConstVar, string strINIFilePath, m_oLogO
 	{
 		return;
 	}
+	EnterCriticalSection(&pConstVar->m_oSecConstVar);
 	pConstVar->m_pLogOutPut = pLogOutPut;
 	LoadIniFile(pConstVar, strINIFilePath);
+	LeaveCriticalSection(&pConstVar->m_oSecConstVar);
 }
 // 关闭常量信息结构体
 void OnCloseConstVar(m_oConstVarStruct* pConstVar)
@@ -703,6 +603,7 @@ void OnCloseConstVar(m_oConstVarStruct* pConstVar)
 	{
 		return;
 	}
+	EnterCriticalSection(&pConstVar->m_oSecConstVar);
 	if (pConstVar->m_cpFrameHeadCheck != NULL)
 	{
 		delete[] pConstVar->m_cpFrameHeadCheck;
@@ -763,6 +664,7 @@ void OnCloseConstVar(m_oConstVarStruct* pConstVar)
 		delete[] pConstVar->m_cpSetADCReadContinuous;
 		pConstVar->m_cpSetADCReadContinuous = NULL;
 	}
+	LeaveCriticalSection(&pConstVar->m_oSecConstVar);
 }
 // 释放常量信息结构体
 void OnFreeConstVar(m_oConstVarStruct* pConstVar)
@@ -771,5 +673,6 @@ void OnFreeConstVar(m_oConstVarStruct* pConstVar)
 	{
 		return;
 	}
+	DeleteCriticalSection(&pConstVar->m_oSecConstVar);
 	delete pConstVar;
 }

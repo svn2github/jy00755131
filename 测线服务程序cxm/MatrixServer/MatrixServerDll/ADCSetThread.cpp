@@ -354,17 +354,18 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 		iter != pADCSetThread->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
 	{
 		iter->second->m_bADCSetReturn = false;
-		// 重置ADC参数设置应答标志位
-		pInstrument = iter->second->m_pHead;
-		do 
-		{
-			pInstrumentNext = GetNextInstrument(iter->second->m_iRoutDirection, 
-				pInstrument, pADCSetThread->m_pThread->m_pConstVar);
-			pInstrumentNext->m_bADCSetReturn = false;
-			pInstrument = pInstrumentNext;
-		} while (pInstrument != iter->second->m_pTail);
+		// 如果需要按照路由设置
 		if (iter->second->m_bADCSetRout == true)
 		{
+			// 重置ADC参数设置应答标志位
+			pInstrument = iter->second->m_pHead;
+			do 
+			{
+				pInstrumentNext = GetNextInstrument(iter->second->m_iRoutDirection, 
+					pInstrument, pADCSetThread->m_pThread->m_pConstVar);
+				pInstrumentNext->m_bADCSetReturn = false;
+				pInstrument = pInstrumentNext;
+			} while (pInstrument != iter->second->m_pTail);
 			// 选择ADC参数设置命令
 			OnSelectADCSetCmd(pADCSetThread, true, iter->second->m_pTail->m_uiBroadCastPort);
 			pADCSetThread->m_uiADCSetNum += iter->second->m_uiInstrumentNum;

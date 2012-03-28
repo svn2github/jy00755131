@@ -151,11 +151,11 @@ void WriteLogOutPutListToFile(m_oLogOutPutStruct* pLogOutPut)
 		fclose(pLogOutPut->m_pFile);
 		bOpenNewFile = true;
 	}
-	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
 	if (bOpenNewFile == true)
 	{
 		OpenLogOutPutFile(pLogOutPut);
 	}
+	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
 }
 // 关闭日志输出文件
 void CloseLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
@@ -166,9 +166,10 @@ void CloseLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 	{
 		return;
 	}
-
+	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
 	WriteLogOutPutListToFile(pLogOutPut);
 	fclose( pLogOutPut->m_pFile );
+	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
 }
 
 // 初始化日志输出结构体
