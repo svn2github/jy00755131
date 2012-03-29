@@ -33,9 +33,9 @@ void GetFrameInfo(char* pFrameData, int iSize, string* strFrameData)
 {
 	CString cstr = _T("");
 	string strConv = "";
+	*strFrameData = "";
 	if (pFrameData == NULL)
 	{
-		*strFrameData = "";
 		return;
 	}
 	for (int i=0; i<iSize; i++)

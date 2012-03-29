@@ -305,7 +305,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("IPSetAddrInterval");		// IP地址设置的间隔
-	strValue = _T("10");
+	strValue = _T("16");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("RoutSetAddrStart");		// 路由地址设置的起始地址

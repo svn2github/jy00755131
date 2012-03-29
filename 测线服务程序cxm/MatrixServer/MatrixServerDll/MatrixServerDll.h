@@ -766,7 +766,7 @@ typedef struct Instrument_Struct
 	/** 是否迂回道高端标记点*/
 	bool m_bDetourMarkerHigh;
 	/** 是否迂回道停止标记*/
-	unsigned int m_uiStopMarking;
+	bool m_bStopMarking;
 	/** 是否标记点*/
 	bool m_bMarker;
 	/** 是否哑道*/

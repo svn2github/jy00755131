@@ -91,7 +91,7 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 	// 是否迂回道高端标记点
 	pInstrument->m_bDetourMarkerHigh = false;
 	// 是否迂回道停止标记
-	pInstrument->m_uiStopMarking = false;
+	pInstrument->m_bStopMarking = false;
 	// 是否标记点
 	pInstrument->m_bMarker = false;
 	// 是否哑道
