@@ -129,6 +129,7 @@ m_oADCDataBufStruct* GetFreeADCDataBuf(m_oADCDataBufArrayStruct* pADCDataBufArra
 	}
 	m_oADCDataBufStruct* pADCDataBuf = NULL;
 	list <m_oADCDataBufStruct*>::iterator iter;
+	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	if(pADCDataBufArray->m_uiCountFree > 0)	//有空闲数据存储缓冲区
 	{
 		// 从空闲数据存储缓冲区队列头部得到一个空闲数据存储缓冲区
@@ -140,6 +141,7 @@ m_oADCDataBufStruct* GetFreeADCDataBuf(m_oADCDataBufArrayStruct* pADCDataBufArra
 		// 空闲数据存储缓冲区计数减1
 		pADCDataBufArray->m_uiCountFree--;
 	}
+	LeaveCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	return pADCDataBuf;
 }
 // 增加一个空闲数据存储缓冲区
@@ -150,10 +152,12 @@ void AddFreeADCDataBuf(m_oADCDataBufStruct* pADCDataBuf,
 	{
 		return;
 	}
+	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	//初始化数据存储缓冲区
 	OnADCDataBufReset(pADCDataBuf);
 	//加入空闲队列
 	pADCDataBufArray->m_olsADCDataBufFree.push_back(pADCDataBuf);
 	// 空闲数据存储缓冲区计数加1
 	pADCDataBufArray->m_uiCountFree++;
+	LeaveCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 }

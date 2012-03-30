@@ -85,10 +85,10 @@ typedef struct LogOutPut_Struct
 }m_oLogOutPutStruct;
 
 // 从INI文件中解析得到的常量
+// 该结构体中的变量值只能在INI文件中被修改
+// 暂不支持在程序中修改（可能会出现内存冲突的情况）
 typedef struct ConstVar_Struct
 {
-	// 从INI文件中解析得到的常量资源同步对象
-	CRITICAL_SECTION m_oSecConstVar;
 	//____常量设置____
 	// 仪器设备个数
 	unsigned int m_iInstrumentNum;
@@ -176,7 +176,7 @@ typedef struct ConstVar_Struct
 	// 设置广播端口起始地址
 	int m_iBroadcastPortStart;
 	// 设置为广播IP
-	int m_iIPBroadcastAddr;
+	unsigned int m_uiIPBroadcastAddr;
 	// 一个文件内存储单个设备ADC数据帧数
 	int m_iADCFrameSaveInOneFileNum;
 	// 存储ADC数据的文件头行数
@@ -279,6 +279,56 @@ typedef struct ConstVar_Struct
 	// 命令解析结束命令
 	char m_cCmdEnd;
 
+	// TB设置延时高位
+	unsigned int m_uiTBSleepTimeHigh;
+	// TB设置延时低位
+	unsigned short m_usTBSleepTimeLow;
+	// TB控制，0x0001 启动TB进行ADC数据采集
+	unsigned short m_usCmdTBCtrlStartSample;
+	// 0x0002 无需TB开关控制ADC数据采集命令
+	unsigned short m_usCmdTBLoseCtrlStartSample;
+	// 0x0000 TB开关控制ADC数据停止采集命令
+	unsigned short m_usCmdTBCtrlStopSample;
+	// LED灯灭
+	unsigned short m_usCmdCtrlCloseLed;
+	// 输出日志指针
+	m_oLogOutPutStruct* m_pLogOutPut;
+}m_oConstVarStruct;
+
+// 从XML文件中解析得到的信息
+typedef struct InstrumentCommInfo_Struct
+{
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecCommInfo;
+	/** XMLDOM文件对象*/
+	CXMLDOMDocument m_oXMLDOMDocument;
+	// 源地址
+	unsigned int m_uiSrcIP;
+	// LCI的IP地址
+	unsigned int m_uiAimIP;
+	// 自动数据返回地址
+	unsigned int m_uiADCDataReturnAddr;
+	// LCI接收的端口号
+	unsigned short m_usAimPort;
+	// 心跳帧返回端口
+	unsigned short m_usHeartBeatReturnPort;
+	// 首包接收端口
+	unsigned short m_usHeadFramePort;
+	// IP地址设置返回端口
+	unsigned short m_usIPSetReturnPort;
+	// 尾包接收端口
+	unsigned short m_usTailFramePort;
+	// 尾包时刻查询接收端口
+	unsigned short m_usTailTimeReturnPort;
+	// 时统设置应答端口
+	unsigned short m_usTimeDelayReturnPort;
+	// ADC参数设置应答端口
+	unsigned short m_usADCSetReturnPort;
+	// 误码查询返回端口
+	unsigned short m_usErrorCodeReturnPort;
+	// ADC数据返回端口
+	unsigned short m_usADCDataReturnPort;
+
 	//____ADC参数设置____
 	// ADC设置正弦波命令大小
 	int m_iSetADCSetSineSize;
@@ -324,53 +374,6 @@ typedef struct ConstVar_Struct
 	int m_iSetADCReadContinuousSize;
 	// ADC设置连续采样
 	char* m_cpSetADCReadContinuous;
-	// TB设置延时高位
-	unsigned int m_uiTBSleepTimeHigh;
-	// TB设置延时低位
-	unsigned short m_usTBSleepTimeLow;
-	// TB控制，0x0001 启动TB进行ADC数据采集
-	unsigned short m_usCmdTBCtrlStartSample;
-	// 0x0002 无需TB开关控制ADC数据采集命令
-	unsigned short m_usCmdTBLoseCtrlStartSample;
-	// 0x0000 TB开关控制ADC数据停止采集命令
-	unsigned short m_usCmdTBCtrlStopSample;
-	// LED灯灭
-	unsigned short m_usCmdCtrlCloseLed;
-	// 输出日志指针
-	m_oLogOutPutStruct* m_pLogOutPut;
-}m_oConstVarStruct;
-
-// 从XML文件中解析得到的信息
-typedef struct InstrumentCommInfo_Struct
-{
-	/** XMLDOM文件对象*/
-	CXMLDOMDocument m_oXMLDOMDocument;
-	// 源地址
-	unsigned int m_uiSrcIP;
-	// LCI的IP地址
-	unsigned int m_uiAimIP;
-	// 自动数据返回地址
-	unsigned int m_uiADCDataReturnAddr;
-	// LCI接收的端口号
-	unsigned short m_usAimPort;
-	// 心跳帧返回端口
-	unsigned short m_usHeartBeatReturnPort;
-	// 首包接收端口
-	unsigned short m_usHeadFramePort;
-	// IP地址设置返回端口
-	unsigned short m_usIPSetReturnPort;
-	// 尾包接收端口
-	unsigned short m_usTailFramePort;
-	// 尾包时刻查询接收端口
-	unsigned short m_usTailTimeReturnPort;
-	// 时统设置应答端口
-	unsigned short m_usTimeDelayReturnPort;
-	// ADC参数设置应答端口
-	unsigned short m_usADCSetReturnPort;
-	// 误码查询返回端口
-	unsigned short m_usErrorCodeReturnPort;
-	// ADC数据返回端口
-	unsigned short m_usADCDataReturnPort;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oInstrumentCommInfoStruct;
@@ -1092,6 +1095,8 @@ typedef struct Thread_Struct
 // 日志输出线程
 typedef struct LogOutPutThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecLogOutPutThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// 输出日志指针
@@ -1105,6 +1110,8 @@ typedef struct LogOutPutThread_Struct
 // 心跳线程
 typedef struct HeartBeatThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecHeartBeatThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// 心跳帧指针
@@ -1114,6 +1121,8 @@ typedef struct HeartBeatThread_Struct
 // 首包线程
 typedef struct HeadFrameThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecHeadFrameThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// 首包帧指针
@@ -1127,6 +1136,8 @@ typedef struct HeadFrameThread_Struct
 // IP地址设置线程
 typedef struct IPSetFrameThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecIPSetFrameThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// IP地址设置帧指针
@@ -1140,6 +1151,8 @@ typedef struct IPSetFrameThread_Struct
 // 尾包线程
 typedef struct TailFrameThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecTailFrameThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// 尾包帧指针
@@ -1153,6 +1166,8 @@ typedef struct TailFrameThread_Struct
 // 时统线程
 typedef struct TimeDelayThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecTimeDelayThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// 尾包时刻帧指针
@@ -1200,6 +1215,8 @@ typedef struct ADCSetThread_Struct
 	unsigned int m_uiADCSetReturnNum;
 	// 采样率
 	int m_iSampleRate;
+	// 从XML文件中解析得到的信息
+	m_oInstrumentCommInfoStruct* m_pCommInfo;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
 }m_oADCSetThreadStruct;
@@ -1351,11 +1368,9 @@ MatrixServerDll_API void ParseCStringToArray(char** pData, int iSize, CString st
 // 判断文件是否存在
 MatrixServerDll_API bool IfFileExist(CString str);
 // 校验帧的同步码
-MatrixServerDll_API bool CheckInstrumentFrameHead(char* pFrameData, 
-	m_oConstVarStruct* pConstVar);
+MatrixServerDll_API bool CheckInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize);
 // 生成帧的同步码
-MatrixServerDll_API bool MakeInstrumentFrameHead(char* pFrameData, 
-	m_oConstVarStruct* pConstVar);
+MatrixServerDll_API bool MakeInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize);
 // 重置帧内容解析变量
 MatrixServerDll_API bool ResetInstrumentFramePacket(m_oInstrumentCommandStruct* pCommand);
 // 解析与设备通讯接收帧内容
@@ -1453,6 +1468,8 @@ MatrixServerDll_API BOOL OpenAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInf
 MatrixServerDll_API void LoadIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 //加载端口设置数据
 MatrixServerDll_API void LoadPortSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载ADC参数设置数据
+MatrixServerDll_API void LoadADCSetData(m_oInstrumentCommInfoStruct* pCommInfo);
 //加载测线服务器程序设置数据
 MatrixServerDll_API void LoadLineServerAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo,
 	string strXMLFilePath);

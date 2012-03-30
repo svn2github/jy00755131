@@ -233,8 +233,8 @@ bool OpenLAUXRoutPower(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet, m_oEn
 	pEnv->m_pIPSetFrame->m_usCommandWordNum = 1;
 	MakeInstrumentFrame(pEnv->m_pIPSetFrame->m_pCommandStructSet, pEnv->m_pConstVar, pEnv->m_pIPSetFrame->m_cpSndFrameData, 
 		pEnv->m_pIPSetFrame->m_cpCommandWord, pEnv->m_pIPSetFrame->m_usCommandWordNum);
-	LeaveCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
 	SendInstrumentIPSetFrame(pEnv->m_pIPSetFrame, pEnv->m_pConstVar);
+	LeaveCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
 	return true;
 }
 // 生成IP地址设置帧
@@ -271,7 +271,7 @@ void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	// 路由开关打开
 	pIPSetFrame->m_pCommandStructSet->m_cLAUXRoutOpenSet = pInstrument->m_ucLAUXRoutOpenSet;
 	// 广播IP地址
-	pIPSetFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_iIPBroadcastAddr;
+	pIPSetFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_uiIPBroadcastAddr;
 	// 时间修正高位
 	pIPSetFrame->m_pCommandStructSet->m_uiLocalTimeFixedHigh = pInstrument->m_uiTimeHigh;
 	// 时间修正低位

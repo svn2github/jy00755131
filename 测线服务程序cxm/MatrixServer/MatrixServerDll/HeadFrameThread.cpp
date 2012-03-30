@@ -10,6 +10,7 @@ m_oHeadFrameThreadStruct* OnCreateHeadFrameThread(void)
 	pHeadFrameThread->m_pHeadFrame = NULL;
 	pHeadFrameThread->m_pInstrumentList = NULL;
 	pHeadFrameThread->m_pRoutList = NULL;
+	InitializeCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	return pHeadFrameThread;
 }
 bool CompareHeadFrameTime(m_oInstrumentStruct* pInstrumentFirst, m_oInstrumentStruct* pInstrumentSecond)
@@ -201,7 +202,9 @@ void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection,
 	// 更新路由对象的路由时间
 	UpdateRoutTime(pRout);
 	// 路由对象加入路由索引表
+	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	AddRout(pRout->m_uiRoutIP, pRout,&pRoutList->m_oRoutMap);
+	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 处理单个首包帧
 void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
@@ -216,21 +219,27 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	CString str = _T("");
 	string strFrameData = "";
 	string strConv = "";
+	unsigned int uiSN = 0;
+	unsigned int uiTimeHeadFrame = 0;
+	unsigned int uiRoutIP = 0;
+	EnterCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
+	uiSN = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiSN;
+	uiTimeHeadFrame = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiTimeHeadFrame;
+	uiRoutIP = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP;
+	LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 	// 判断仪器SN是否在SN索引表中
-	if(TRUE == IfIndexExistInMap(pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiSN, 
-		&pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
+	if(TRUE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
 	{
 		// 在索引表中则找到该仪器,得到该仪器指针
-		pInstrument = GetInstrumentFromMap(pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiSN, 
-			&pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
+		pInstrument = GetInstrumentFromMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
 		// 判断首包时刻是否发生变化
-		if (pInstrument->m_uiTimeHeadFrame != pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiTimeHeadFrame)
+		if (pInstrument->m_uiTimeHeadFrame != uiTimeHeadFrame)
 		{
 			GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
 				pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 			AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
 				strFrameData, ErrorType, IDS_ERR_HEADFRAMETIME);
-			pInstrument ->m_uiTimeHeadFrame = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiTimeHeadFrame;
+			pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
 		}
 		// 判断仪器是否已经设置IP
 		if (pInstrument->m_bIPSetOK == true)
@@ -244,8 +253,7 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
 			&pHeadFrameThread->m_pRoutList->m_oRoutMap))
 		{
-			pRout = GetRout(pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP,
-				&pHeadFrameThread->m_pRoutList->m_oRoutMap);
+			pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pRoutList->m_oRoutMap);
 			// 更新路由对象的路由时间
 			UpdateRoutTime(pRout);
 			// 仪器位置按照首包时刻排序
@@ -274,13 +282,13 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		// 得到新仪器
 		pInstrument = GetFreeInstrument(pHeadFrameThread->m_pInstrumentList);
 		//设置新仪器的SN
-		pInstrument->m_uiSN = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiSN;
+		pInstrument->m_uiSN = uiSN;
 		// 仪器类型
 		pInstrument->m_iInstrumentType = pInstrument->m_uiSN & 0xff;
 		//设置新仪器的路由IP地址
-		pInstrument->m_uiRoutIP = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP;
+		pInstrument->m_uiRoutIP = uiRoutIP;
 		// 设置新仪器的首包时刻
-		pInstrument->m_uiTimeHeadFrame = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiTimeHeadFrame;
+		pInstrument->m_uiTimeHeadFrame = uiTimeHeadFrame;
 		// 设置新仪器的仪器类型
 		// 路由地址为0为LCI
 		if (pInstrument->m_uiRoutIP == 0)
@@ -297,8 +305,7 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 			if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP,
 				&pHeadFrameThread->m_pRoutList->m_oRoutMap))
 			{
-				pRout = GetRout(pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP,
-					&pHeadFrameThread->m_pRoutList->m_oRoutMap);
+				pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pRoutList->m_oRoutMap);
 				// 更新路由对象的路由时间
 				UpdateRoutTime(pRout);
 				pInstrument->m_iRoutDirection = pRout->m_iRoutDirection;
@@ -402,12 +409,15 @@ void WaitHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		Sleep(pHeadFrameThread->m_pThread->m_pConstVar->m_iOneSleepTime);
 		// 等待次数加1
 		iWaitCount++;
+		EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		// 判断是否可以处理的条件
 		if(pHeadFrameThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 			// 返回
 			return;
 		}
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		// 判断等待次数是否大于等于最多等待次数
 		if(pHeadFrameThread->m_pThread->m_pConstVar->m_iHeadFrameSleepTimes == iWaitCount)
 		{
@@ -425,8 +435,10 @@ DWORD WINAPI RunHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	}
 	while(true)
 	{
+		EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		if (pHeadFrameThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 			break;
 		}
 		if (pHeadFrameThread->m_pThread->m_bWork == true)
@@ -436,12 +448,16 @@ DWORD WINAPI RunHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		}
 		if (pHeadFrameThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 			break;
 		}
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		WaitHeadFrameThread(pHeadFrameThread);
 	}
+	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pHeadFrameThread->m_pThread->m_hThreadClose);
+	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	return 1;
 }
 // 初始化首包接收线程
@@ -452,8 +468,10 @@ bool OnInitHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread,
 	{
 		return false;
 	}
+	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	if (false == OnInitThread(pHeadFrameThread->m_pThread, pLogOutPut, pConstVar))
 	{
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		return false;
 	}
 	// 设置事件对象为无信号状态
@@ -469,10 +487,12 @@ bool OnInitHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread,
 	{
 		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "OnInitHeadFrameThread", 
 			"pHeadFrameThread->m_pThread->m_hThread", ErrorType, IDS_ERR_CREATE_THREAD);
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "OnInitHeadFrameThread", 
 		"首包接收线程创建成功");
+	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	return true;
 }
 // 初始化首包接收线程
@@ -494,18 +514,18 @@ bool OnCloseHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	{
 		return false;
 	}
+	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	if (false == OnCloseThread(pHeadFrameThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, 
 			"OnCloseHeadFrameThread", "首包线程强制关闭", WarningType);
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		return false;
 	}
-	else
-	{
-		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, 
-			"OnCloseHeadFrameThread", "首包线程成功关闭");
-		return true;
-	}
+	AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, 
+		"OnCloseHeadFrameThread", "首包线程成功关闭");
+	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
+	return true;
 }
 // 释放首包接收线程
 void OnFreeHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
@@ -518,5 +538,6 @@ void OnFreeHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	{
 		delete pHeadFrameThread->m_pThread;
 	}
+	DeleteCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	delete pHeadFrameThread;
 }

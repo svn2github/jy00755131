@@ -317,11 +317,11 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("BroadcastPortStart");		// 设置广播端口起始地址
-	strValue = _T("0x00000010");
+	strValue = _T("16");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("IPBroadcastAddr");		// 设置为广播IP
-	strValue = _T("0xffffffff");
+	strValue = _T("4294967295");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("ADCFrameSaveInOneFileNum");	// 一个文件内存储单个设备ADC数据帧数
@@ -348,6 +348,14 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("2048");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("TBSleepTimeHigh");			// TB设置延时高位
+	strValue = _T("16384");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("TBSleepTimeLow");				// TB设置延时低位
+	strValue = _T("250");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSection = _T("帧格式设置");			// 获取当前区域
 
 	strSectionKey=_T("FrameHeadSize");		// 帧头长度
@@ -355,7 +363,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("FrameHeadCheck");		// 同步帧头
-	strValue = _T("{0x11,0x22,0x33,0x44,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}");    
+	strValue = _T("0x11,0x22,0x33,0x44,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00");    
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 	
 	strSectionKey=_T("FrameCmdSize1B");		// 命令字长度1字节
@@ -391,7 +399,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("SndFrameBufInit");	// 发送帧缓冲区初值设定
-	strValue = _T("0x00");
+	strValue = _T("0");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("RcvFrameSize");		// 接收的网络数据帧帧长度
@@ -405,232 +413,134 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	/////////////////////////////////////////////////////////////////////////
 	strSection = _T("服务器与设备命令字设置");		// 获取当前区域
 	strSectionKey=_T("SendSetCmd");			// 发送设置命令
-	strValue = _T("0x0001");
+	strValue = _T("1");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("SendQueryCmd");		// 发送查询命令
-	strValue = _T("0x0002");
+	strValue = _T("2");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("SendADCCmd");			// 发送ADC采样数据重发命令
-	strValue = _T("0x0003");
+	strValue = _T("3");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdSn");				// 串号
-	strValue = _T("0x01");
+	strValue = _T("1");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdHeadFrameTime");	// 首包时间
-	strValue = _T("0x02");
+	strValue = _T("2");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLocalIPAddr");		// 本地IP地址
-	strValue = _T("0x03");
+	strValue = _T("3");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLocalSysTime");	// 本地系统时间
-	strValue = _T("0x04");
+	strValue = _T("4");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLocalTimeFixedHigh");	// 本地时间修正高位
-	strValue = _T("0x05");
+	strValue = _T("5");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLocalTimeFixedLow");	// 本地时间修正低位
-	strValue = _T("0x06");
+	strValue = _T("6");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdADCDataReturnAddr");	// 自动数据返回地址
-	strValue = _T("0x07");
+	strValue = _T("7");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdADCDataReturnPort");	// 自动数据返回端口和命令
-	strValue = _T("0x08");
+	strValue = _T("8");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdADCDataReturnPortLimit");	// 端口递增下限和上限
-	strValue = _T("0x09");
+	strValue = _T("9");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdSetBroadCastPort");	// 设置网络等待端口和命令
-	strValue = _T("0x0a");
+	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdFDUErrorCode");		// 系统硬件状态拷贝
-	strValue = _T("0x0b");
+	strValue = _T("11");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdTBHigh");				// TB时刻高位
-	strValue = _T("0x0c");
+	strValue = _T("12");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdTbLow");				// TB时刻低位
-	strValue = _T("0x0d");
+	strValue = _T("13");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLAUXRoutOpenQuery");	// work_ctrl 交叉站方向
-	strValue = _T("0x0e");
+	strValue = _T("14");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLAUXRoutOpenSet");		// 路由开关
-	strValue = _T("0x0f");
+	strValue = _T("15");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdTailRecSndTimeLow");	// 尾包接收\发送时刻低位
-	strValue = _T("0x16");
+	strValue = _T("22");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdBroadCastPortSet");	// 广播命令等待端口匹配
-	strValue = _T("0x17");
+	strValue = _T("23");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdADCSet");				// 设置ADC控制命令命令字
-	strValue = _T("0x18");
+	strValue = _T("24");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdNetTime");				// 网络时刻
-	strValue = _T("0x19");
+	strValue = _T("25");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLineTailRecTimeLAUX");	// 交叉站大线尾包接收时刻
-	strValue = _T("0x1b");
+	strValue = _T("27");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLAUTailRecTimeLAUX");	// 交叉站交叉线尾包接收时刻
-	strValue = _T("0x1c");
+	strValue = _T("28");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLAUXErrorCode1");		// 交叉站故障1
-	strValue = _T("0x1d");
+	strValue = _T("29");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLAUXErrorCode2");		// 交叉站故障2
-	strValue = _T("0x1e");
+	strValue = _T("30");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLAUXSetRout");			// 交叉站路由分配
-	strValue = _T("0x1f");
+	strValue = _T("31");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdReturnRout");			// 返回路由
-	strValue = _T("0x3f");
+	strValue = _T("63");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdEnd");					// 命令解析结束命令
-	strValue = _T("0x00");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSection = _T("ADC参数设置");				// 获取当前区域
-
-	strSectionKey=_T("SetADCSetSineSize");		// ADC设置正弦波命令大小
-	strValue = _T("4");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCSetSine");			// ADC设置正弦波命令
-	strValue = _T("{0xb2,0x00,0x80,0x00}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCStopSampleSize");	// ADC设置停止采样命令大小
-	strValue = _T("4");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCStopSample");		// ADC设置停止采样命令
-	strValue = _T("{0x81,0x11,0x00,0x00}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCOpenTBPowerLowSize");	// ADC设置打开TB电源低位大小
-	strValue = _T("4");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCOpenTBPowerLow");		// ADC设置打开TB电源低位
-	strValue = _T("{0xa3,0x00,0x30,0x00}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCOpenTBPowerHighSize");	// ADC设置打开TB电源高位大小
-	strValue = _T("4");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCOpenTBPowerHigh");		// ADC设置打开TB电源高位
-	strValue = _T("{0xa3,0x00,0x30,0x40}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCOpenSwitchTBLowSize");	// ADC设置打开TB开关低位大小
-	strValue = _T("4");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCOpenSwitchTBLow");		// ADC设置打开TB开关低位
-	strValue = _T("{0xa3,0x00,0xf0,0x00}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCOpenSwitchTBHighSize");	// ADC设置打开TB开关高位大小
-	strValue = _T("4");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCOpenSwitchTBHigh");		// ADC设置打开TB开关高位
-	strValue = _T("{0xa3,0x00,0xf0,0x40}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCRegisterReadSize");	// ADC设置读寄存器大小
-	strValue = _T("4");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCRegisterRead");		// ADC设置读寄存器
-	strValue = _T("{0x82,0x20,0x0a,0x00}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCRegisterWriteSize");// ADC设置写寄存器大小
-	strValue = _T("16");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCRegisterWrite");	// ADC设置写寄存器
-	strValue = _T("{0x8d,0x40,0x0a,0x00,0x52,0x08,0x32,0x03,0x6f,0x0c,0xff,0x7d,0x52,0x40,0x00,0x00}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCTBSwitchOpenSize");	// ADC设置打开TB开关大小
-	strValue = _T("4");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCTBSwitchOpen");		// ADC设置打开TB开关
-	strValue = _T("{0xa3,0x05,0xf8,0x40}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCSampleSize");		// ADC采样设置大小
-	strValue = _T("8");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCSample");			// ADC采样设置
-	strValue = _T("{0x87,0x40,0x04,0x00,0x53,0x08,0xd3,0x04}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCReadContinuousSize");	// ADC设置连续采样大小
-	strValue = _T("4");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("SetADCReadContinuous");		// ADC设置连续采样
-	strValue = _T("{0x81,0x10,0x00,0x00}");  
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("TBSleepTimeHigh");			// TB设置延时高位
-	strValue = _T("0x00004000");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("TBSleepTimeLow");				// TB设置延时低位
-	strValue = _T("0x00fa");
+	strValue = _T("0");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdTBCtrlStartSample");		// TB开关控制ADC数据采集命令
-	strValue = _T("0x0001");
+	strValue = _T("1");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 	
 	strSectionKey=_T("CmdTBLoseCtrlStartSample");	// 无需TB开关控制ADC数据采集命令
-	strValue = _T("0x0002");
+	strValue = _T("2");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdTBCtrlStopSample");		// TB开关控制ADC数据停止采集命令
-	strValue = _T("0x0000");
+	strValue = _T("0");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdCtrlCloseLed");			// LED灯灭
-	strValue = _T("0x0004");
+	strValue = _T("4");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 }

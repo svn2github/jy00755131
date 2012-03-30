@@ -12,6 +12,7 @@ m_oTimeDelayThreadStruct* OnCreateTimeDelayThread(void)
 	pTimeDelayThread->m_pRoutList = NULL;
 	pTimeDelayThread->m_pTailTimeFrame = NULL;
 	pTimeDelayThread->m_pTimeDelayFrame = NULL;
+	InitializeCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	return pTimeDelayThread;
 }
 // 线程等待函数
@@ -29,12 +30,15 @@ void WaitTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		Sleep(pTimeDelayThread->m_pThread->m_pConstVar->m_iOneSleepTime);
 		// 等待次数加1
 		iWaitCount++;
+		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		// 判断是否可以处理的条件
 		if(pTimeDelayThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 			// 返回
 			return;
 		}
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		// 判断等待次数是否大于等于最多等待次数
 		if(pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelaySleepTimes == iWaitCount)
 		{
@@ -113,12 +117,26 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	CString strOutPut = _T("");
 	string strFrameData = "";
 	string strConv = "";
+	unsigned int uiSrcIP = 0;
+	unsigned short usLAUXTailRecTimeLAUXLineA = 0;
+	unsigned short usLAUXTailRecTimeLAUXLineB = 0;
+	unsigned short usLAUXTailRecTimeLineA = 0;
+	unsigned short usLAUXTailRecTimeLineB = 0;
+	unsigned short usTailSndTime = 0;
+	unsigned short usTailRecTime = 0;
+	EnterCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
+	uiSrcIP = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSrcIP;
+	usLAUXTailRecTimeLAUXLineA = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLAUXLineA;
+	usLAUXTailRecTimeLAUXLineB = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLAUXLineB;
+	usLAUXTailRecTimeLineA = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLineA;
+	usLAUXTailRecTimeLineB = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLineB;
+	usTailRecTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailRecTime;
+	usTailSndTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTime;
+	LeaveCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
 	// 判断仪器IP是否在SN索引表中
-	if (TRUE == IfIndexExistInMap(pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSrcIP,
-		&pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap))
+	if (TRUE == IfIndexExistInMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
-		pInstrument = GetInstrumentFromMap(pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSrcIP,
-			&pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap);
+		pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap);
 		// @@@@@@@暂不判断尾包时刻过期的情况
 		// 接收到尾包时刻查询应答标志位设为true
 		pInstrument->m_bTailTimeQueryOK = true;
@@ -132,8 +150,8 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 			// 如果为交叉线方向路由
 			if (pRout->m_bRoutLaux == true)
 			{
-				pInstrument->m_usCrossTopReceiveTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLAUXLineA;
-				pInstrument->m_usCrossDownReceiveTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLAUXLineB;
+				pInstrument->m_usCrossTopReceiveTime = usLAUXTailRecTimeLAUXLineA;
+				pInstrument->m_usCrossDownReceiveTime = usLAUXTailRecTimeLAUXLineB;
 				str.Format(_T("交叉站交叉线A尾包接收时刻 = 0x%x，交叉站交叉线B尾包接收时刻 = 0x%x,	"), 
 					pInstrument->m_usCrossTopReceiveTime, pInstrument->m_usCrossDownReceiveTime);
 				strOutPut += str;
@@ -141,8 +159,8 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 			// 大线方向
 			else
 			{
-				pInstrument->m_usLineLeftReceiveTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLineA;
-				pInstrument->m_usLineRightReceiveTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLineB;
+				pInstrument->m_usLineLeftReceiveTime = usLAUXTailRecTimeLineA;
+				pInstrument->m_usLineRightReceiveTime = usLAUXTailRecTimeLineB;
 				str.Format(_T("交叉站大线A尾包接收时刻 = 0x%x，交叉站大线B尾包接收时刻 = 0x%x,	"), 
 					pInstrument->m_usLineLeftReceiveTime, pInstrument->m_usLineRightReceiveTime);
 				strOutPut += str;
@@ -151,12 +169,12 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 		else
 		{
 			// 采集站或电源站尾包接收时刻
-			pInstrument->m_usReceiveTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailRecTime;
+			pInstrument->m_usReceiveTime = usTailRecTime;
 			str.Format(_T("采集站尾包接收时刻 = 0x%x,	"), pInstrument->m_usReceiveTime);
 			strOutPut += str;
 		}
 		// 尾包发送时刻
-		pInstrument->m_usSendTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTime;
+		pInstrument->m_usSendTime = usTailSndTime;
 		str.Format(_T("尾包发送时刻 = 0x%x"), pInstrument->m_usSendTime);
 		strOutPut += str;
 		ConvertCStrToStr(strOutPut, &strConv);
@@ -363,12 +381,14 @@ void ProcTimeDelayReturnFrameOne(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	CString str = _T("");
 	string strFrameData = "";
 	string strConv = "";
+	unsigned int uiSrcIP = 0;
+	EnterCriticalSection(&pTimeDelayThread->m_pTimeDelayFrame->m_oSecTimeDelayFrame);
+	uiSrcIP = pTimeDelayThread->m_pTimeDelayFrame->m_pCommandStructReturn->m_uiSrcIP;
+	LeaveCriticalSection(&pTimeDelayThread->m_pTimeDelayFrame->m_oSecTimeDelayFrame);
 	// 判断仪器IP是否在SN索引表中
-	if (TRUE == IfIndexExistInMap(pTimeDelayThread->m_pTimeDelayFrame->m_pCommandStructReturn->m_uiSrcIP,
-		&pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap))
+	if (TRUE == IfIndexExistInMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
-		pInstrument = GetInstrumentFromMap(pTimeDelayThread->m_pTimeDelayFrame->m_pCommandStructReturn->m_uiSrcIP,
-			&pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap);
+		pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap);
 		// 接收到时统设置应答标志位
 		pInstrument->m_bTimeSetOK = true;
 		pInstrument->m_iTimeSetReturnCount++;
@@ -438,8 +458,10 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	unsigned int uiProcRoutIP = 0;
 	while(true)
 	{
+		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		if (pTimeDelayThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 			break;
 		}
 		if (pTimeDelayThread->m_pThread->m_bWork == true)
@@ -507,12 +529,16 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		}
 		if (pTimeDelayThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 			break;
 		}
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		WaitTimeDelayThread(pTimeDelayThread);
 	}
+	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pTimeDelayThread->m_pThread->m_hThreadClose);
+	LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	return 1;
 }
 // 初始化时统设置线程
@@ -523,10 +549,12 @@ bool OnInitTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread,
 	{
 		return false;
 	}
+	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	pTimeDelayThread->m_bADCStartSample = false;
 	pTimeDelayThread->m_uiCounter = 0;
 	if (false == OnInitThread(pTimeDelayThread->m_pThread, pLogOutPut, pConstVar))
 	{
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		return false;
 	}
 	// 设置事件对象为无信号状态
@@ -542,10 +570,12 @@ bool OnInitTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread,
 	{
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "OnInitTimeDelayThread", 
 			"pTimeDelayThread->m_pThread->m_hThread", ErrorType, IDS_ERR_CREATE_THREAD);
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "OnInitTimeDelayThread", 
 		"时统设置线程创建成功");
+	LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	return true;
 }
 // 初始化时统设置线程
@@ -569,18 +599,18 @@ bool OnCloseTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	{
 		return false;
 	}
+	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	if (false == OnCloseThread(pTimeDelayThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "OnCloseTimeDelayThread", 
 			"时统设置线程强制关闭", WarningType);
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		return false;
 	}
-	else
-	{
-		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "OnCloseTimeDelayThread", 
-			"时统设置线程成功关闭");
-		return true;
-	}
+	AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "OnCloseTimeDelayThread", 
+		"时统设置线程成功关闭");
+	LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+	return true;
 }
 // 释放时统设置线程
 void OnFreeTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
@@ -593,5 +623,6 @@ void OnFreeTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	{
 		delete pTimeDelayThread->m_pThread;
 	}
+	DeleteCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	delete pTimeDelayThread;
 }

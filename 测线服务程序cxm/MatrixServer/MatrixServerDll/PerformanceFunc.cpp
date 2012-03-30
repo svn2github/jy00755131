@@ -78,22 +78,15 @@ bool IfFileExist(CString str)
 	return true;
 }
 // 校验帧的同步码
-bool CheckInstrumentFrameHead(char* pFrameData, m_oConstVarStruct* pConstVar)
+bool CheckInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize)
 {
-	if (pConstVar == NULL)
+	if ((pFrameData == NULL) || (pFrameHeadCheck == NULL))
 	{
 		return false;
 	}
-	if ((pFrameData == NULL))
+	for (int i=0; i<iCheckSize; i++)
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "CheckInstrumentFrameHead", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
-	// @@@@@@@@同步头目前只有前4位有效，其余12位可能用于它用
-	for (int i=0; i<4; i++)
-	{
-		if (pFrameData[i] != pConstVar->m_cpFrameHeadCheck[i])
+		if (pFrameData[i] != pFrameHeadCheck[i])
 		{
 			return false;
 		}
@@ -101,19 +94,13 @@ bool CheckInstrumentFrameHead(char* pFrameData, m_oConstVarStruct* pConstVar)
 	return true;
 }
 // 生成帧的同步码
-bool MakeInstrumentFrameHead(char* pFrameData, m_oConstVarStruct* pConstVar)
+bool MakeInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize)
 {
-	if (pConstVar == NULL)
+	if ((pFrameData == NULL) || (pFrameHeadCheck == NULL))
 	{
 		return false;
 	}
-	if (pFrameData == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentFrameHead", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
-	memcpy(pFrameData, pConstVar->m_cpFrameHeadCheck, pConstVar->m_iFrameHeadSize);
+	memcpy(pFrameData, pFrameHeadCheck, iCheckSize);
 	return true;
 }
 // 重置帧内容解析变量
@@ -229,14 +216,6 @@ bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand,
 			ErrorType, IDS_ERR_PTRISNULL);
 		return false;
 	}
-	// 校验帧的同步码
-	if (false == CheckInstrumentFrameHead(pFrameData, pConstVar))
-	{
-		GetFrameInfo(pFrameData, pConstVar->m_iRcvFrameSize, &strFrameData);
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", 
-			strFrameData, ErrorType, IDS_ERR_CHECKFRAMEHEAD);
-		return false;
-	}
 	unsigned char	byCommandWord = 0;
 	unsigned int uiRoutAddrNum = 0;
 	int iPos = 0;
@@ -252,9 +231,19 @@ bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand,
 	iFramePacketSize1B = pConstVar->m_iFramePacketSize1B;
 	iFrameCmdSize1B = pConstVar->m_iFrameCmdSize1B;
 	iADCDataSize3B = pConstVar->m_iADCDataSize3B;
-	iPos += pConstVar->m_iFrameHeadSize;
+
+	// 校验帧的同步码
+	// @@@@@@@@同步头目前只有前4位有效，其余12位可能用于它用
+	if (false == CheckInstrumentFrameHead(pFrameData, pConstVar->m_cpFrameHeadCheck, 4))
+	{
+		GetFrameInfo(pFrameData, pConstVar->m_iRcvFrameSize, &strFrameData);
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", 
+			strFrameData, ErrorType, IDS_ERR_CHECKFRAMEHEAD);
+		return false;
+	}
 	// 重置帧内容解析变量
 	ResetInstrumentFramePacket(pCommand);
+	iPos += pConstVar->m_iFrameHeadSize;
 	// 源IP地址
 	memcpy(&pCommand->m_uiSrcIP, &pFrameData[iPos], iFramePacketSize4B);
 	iPos += iFramePacketSize4B;
@@ -507,7 +496,7 @@ bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct
 	iFramePacketSize1B = pConstVar->m_iFramePacketSize1B;
 	iFrameCmdSize1B = pConstVar->m_iFrameCmdSize1B;
 	// 生成帧的同步码
-	MakeInstrumentFrameHead(pFrameData, pConstVar);
+	MakeInstrumentFrameHead(pFrameData, pConstVar->m_cpFrameHeadCheck, pConstVar->m_iFrameHeadSize);
 	iPos += pConstVar->m_iFrameHeadSize;
 	// 源IP地址
 	memcpy(&pFrameData[iPos], &pCommand->m_uiSrcIP, iFramePacketSize4B);

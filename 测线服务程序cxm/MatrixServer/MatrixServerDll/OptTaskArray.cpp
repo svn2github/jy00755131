@@ -118,6 +118,7 @@ m_oOptTaskStruct* GetFreeOptTask(m_oOptTaskArrayStruct* pOptTaskArray)
 	}
 	m_oOptTaskStruct* pOptTask = NULL;
 	list <m_oOptTaskStruct*>::iterator iter;
+	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	if(pOptTaskArray->m_uiCountFree > 0)	//有空闲施工任务
 	{
 		// 从空闲施工任务队列头部得到一个空闲施工任务
@@ -129,6 +130,7 @@ m_oOptTaskStruct* GetFreeOptTask(m_oOptTaskArrayStruct* pOptTaskArray)
 		// 空闲施工任务计数减1
 		pOptTaskArray->m_uiCountFree--;
 	}
+	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	return pOptTask;
 }
 // 增加一个空闲施工任务
@@ -138,10 +140,12 @@ void AddFreeOptTask(m_oOptTaskStruct* pOptTask, m_oOptTaskArrayStruct* pOptTaskA
 	{
 		return;
 	}
+	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	//初始化施工任务
 	OnOptTaskReset(pOptTask);
 	//加入空闲队列
 	pOptTaskArray->m_olsOptTaskFree.push_back(pOptTask);
 	// 空闲施工任务计数加1
 	pOptTaskArray->m_uiCountFree++;
+	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 }

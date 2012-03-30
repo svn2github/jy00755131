@@ -193,7 +193,7 @@ void MakeInstrumentErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	}
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	// ÒÇÆ÷IPµØÖ·
-	pErrorCodeFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_iIPBroadcastAddr;
+	pErrorCodeFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_uiIPBroadcastAddr;
 	// ²éÑ¯ÃüÁî
 	pErrorCodeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// ¹ã²¥¶Ë¿Ú

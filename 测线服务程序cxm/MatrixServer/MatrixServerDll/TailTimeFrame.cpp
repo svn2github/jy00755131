@@ -224,7 +224,7 @@ void MakeInstrumentTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTi
 	}
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// ÒÇÆ÷IPµØÖ·
-	pTailTimeFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_iIPBroadcastAddr;
+	pTailTimeFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_uiIPBroadcastAddr;
 	// ²éÑ¯ÃüÁî
 	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// ¹ã²¥¶Ë¿Ú
