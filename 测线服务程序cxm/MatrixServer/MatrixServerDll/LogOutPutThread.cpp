@@ -22,6 +22,7 @@ void WaitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 	}
 	// 初始化等待次数为0
 	int iWaitCount = 0;
+	bool bClose = false;
 	// 循环
 	while(true)
 	{	// 休眠50毫秒
@@ -29,14 +30,14 @@ void WaitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 		// 等待次数加1
 		iWaitCount++;
 		EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
+		bClose = pLogOutPutThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		// 判断是否可以处理的条件
-		if(pLogOutPutThread->m_pThread->m_bClose == true)
+		if(bClose == true)
 		{
-			LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 			// 返回
 			return;
 		}
-		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		// 判断等待次数是否大于等于最多等待次数
 		if(pLogOutPutThread->m_pThread->m_pConstVar->m_iLogOutPutSleepTimes == iWaitCount)
 		{
@@ -52,27 +53,34 @@ DWORD WINAPI RunLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 	{
 		return 0;
 	}
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
-		if (pLogOutPutThread->m_pThread->m_bClose == true)
+		bClose = pLogOutPutThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 			break;
 		}
-		if (pLogOutPutThread->m_pThread->m_bWork == true)
+		EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
+		bWork = pLogOutPutThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
+		if (bWork == true)
 		{
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pThread->m_pLogOutPut);
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pLogOutPutTimeDelay);
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pLogOutPutErrorCode);
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pLogOutPutADCFrameTime);
 		}
-		if (pLogOutPutThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
+		bClose = pLogOutPutThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 			break;
 		}
-		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		WaitLogOutPutThread(pLogOutPutThread);
 	}
 	EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);

@@ -22,6 +22,7 @@ void WaitTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 	}
 	// 初始化等待次数为0
 	int iWaitCount = 0;
+	bool bClose = false;
 	// 循环
 	while(true)
 	{	// 休眠50毫秒
@@ -29,14 +30,14 @@ void WaitTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 		// 等待次数加1
 		iWaitCount++;
 		EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
+		bClose = pTailFrameThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 		// 判断是否可以处理的条件
-		if(pTailFrameThread->m_pThread->m_bClose == true)
+		if(bClose == true)
 		{
-			LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 			// 返回
 			return;
 		}
-		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 		// 判断等待次数是否大于等于最多等待次数
 		if(pTailFrameThread->m_pThread->m_pConstVar->m_iTailFrameSleepTimes == iWaitCount)
 		{
@@ -207,6 +208,8 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	uiRoutIP = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiRoutIP;
 	LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包"), uiSN, uiRoutIP);
+	EnterCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+	EnterCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
 	// 判断仪器SN是否在SN索引表中
 	if(TRUE == IfIndexExistInMap(uiSN, &pTailFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
 	{
@@ -276,6 +279,8 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, 
 			"ProcTailFrameOne", strConv);
 	}
+	LeaveCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
+	LeaveCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理尾包帧
 void ProcTailFrame(m_oTailFrameThreadStruct* pTailFrameThread)
@@ -310,12 +315,8 @@ void ProcTailFrame(m_oTailFrameThreadStruct* pTailFrameThread)
 				}
 				else
 				{
-					EnterCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);
-					EnterCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个尾包帧
-					ProcTailFrameOne(pTailFrameThread);
-					LeaveCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
-					LeaveCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+					ProcTailFrameOne(pTailFrameThread);		
 				}	
 			}		
 		}		
@@ -328,25 +329,32 @@ DWORD WINAPI RunTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 	{
 		return 1;
 	}
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
-		if (pTailFrameThread->m_pThread->m_bClose == true)
+		bClose = pTailFrameThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 			break;
 		}
-		if (pTailFrameThread->m_pThread->m_bWork == true)
+		EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
+		bWork = pTailFrameThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
+		if (bWork == true)
 		{
 			// 处理尾包接收
 			ProcTailFrame(pTailFrameThread);
 		}
-		if (pTailFrameThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
+		bClose = pTailFrameThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 			break;
 		}
-		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 		WaitTailFrameThread(pTailFrameThread);
 	}
 	EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);

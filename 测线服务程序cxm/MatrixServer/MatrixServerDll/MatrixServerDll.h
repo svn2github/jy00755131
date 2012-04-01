@@ -1189,6 +1189,8 @@ typedef struct TimeDelayThread_Struct
 // ADC参数设置线程
 typedef struct ADCSetThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecADCSetThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// ADC参数设置帧指针
@@ -1224,6 +1226,8 @@ typedef struct ADCSetThread_Struct
 // 误码查询线程
 typedef struct ErrorCodeThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecErrorCodeThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// 误码查询帧指针
@@ -1239,6 +1243,8 @@ typedef struct ErrorCodeThread_Struct
 // 路由监视线程
 typedef struct MonitorThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecMonitorThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// 仪器队列结构体指针
@@ -1256,6 +1262,8 @@ typedef struct MonitorThread_Struct
 // ADC数据接收线程
 typedef struct ADCDataRecThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecADCDataRecThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// 误码查询帧指针
@@ -1279,6 +1287,8 @@ typedef struct ADCDataRecThread_Struct
 // 施工放炮数据存储线程
 typedef struct ADCDataSaveThread_Struct
 {
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecADCDataSaveThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
 	// 数据存储缓冲区结构体指针

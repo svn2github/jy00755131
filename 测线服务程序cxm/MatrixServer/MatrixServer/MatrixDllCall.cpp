@@ -283,17 +283,25 @@ void CMatrixDllCall::Dll_ADCSetPart(unsigned int uiSN, int iRoutDirection, int i
 		}
 		else if (iOpt == 2)
 		{
+			EnterCriticalSection(&m_pEnv->m_pADCSetThread->m_oSecADCSetThread);
 			m_pEnv->m_pADCSetThread->m_iSampleRate = iSampleRate;
 			m_pEnv->m_pADCSetThread->m_bADCStartSample = true;
 			m_pEnv->m_pADCSetThread->m_bADCStopSample = false;
+			LeaveCriticalSection(&m_pEnv->m_pADCSetThread->m_oSecADCSetThread);
+			EnterCriticalSection(&m_pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 			m_pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
+			LeaveCriticalSection(&m_pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 			iOperation = m_pEnv->m_pConstVar->m_iADCStartSampleOptNb;
 		}
 		else if (iOpt == 3)
 		{
+			EnterCriticalSection(&m_pEnv->m_pADCSetThread->m_oSecADCSetThread);
 			m_pEnv->m_pADCSetThread->m_bADCStartSample = false;
 			m_pEnv->m_pADCSetThread->m_bADCStopSample = true;
+			LeaveCriticalSection(&m_pEnv->m_pADCSetThread->m_oSecADCSetThread);
+			EnterCriticalSection(&m_pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 			m_pEnv->m_pTimeDelayThread->m_bADCStartSample = false;
+			LeaveCriticalSection(&m_pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 			iOperation = m_pEnv->m_pConstVar->m_iADCStopSampleOptNb;
 		}
 		else

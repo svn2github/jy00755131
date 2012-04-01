@@ -20,6 +20,7 @@ void WaitHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 	}
 	// 初始化等待次数为0
 	int iWaitCount = 0;
+	bool bClose = false;
 	// 循环
 	while(true)
 	{	// 休眠50毫秒
@@ -27,14 +28,14 @@ void WaitHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 		// 等待次数加1
 		iWaitCount++;
 		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
+		bClose = pHeartBeatThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		// 判断是否可以处理的条件
-		if(pHeartBeatThread->m_pThread->m_bClose == true)
+		if(bClose == true)
 		{
-			LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 			// 返回
 			return;
 		}
-		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		// 判断等待次数是否大于等于最多等待次数
 		if(pHeartBeatThread->m_pThread->m_pConstVar->m_iHeartBeatSleepTimes == iWaitCount)
 		{
@@ -50,27 +51,34 @@ DWORD WINAPI RunHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 	{
 		return 0;
 	}
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
-		if (pHeartBeatThread->m_pThread->m_bClose == true)
+		bClose = pHeartBeatThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 			break;
 		}
-		if (pHeartBeatThread->m_pThread->m_bWork == true)
+		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
+		bWork = pHeartBeatThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
+		if (bWork == true)
 		{
 			MakeInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
 				pHeartBeatThread->m_pThread->m_pConstVar);
 			SendInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
 				pHeartBeatThread->m_pThread->m_pConstVar);
 		}
-		if (pHeartBeatThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
+		bClose = pHeartBeatThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 			break;
 		}
-		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		WaitHeartBeatThread(pHeartBeatThread);
 	}
 	EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);

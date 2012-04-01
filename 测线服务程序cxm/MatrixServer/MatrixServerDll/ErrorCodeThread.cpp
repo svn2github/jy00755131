@@ -11,6 +11,7 @@ m_oErrorCodeThreadStruct* OnCreateErrorCodeThread(void)
 	pErrorCodeThread->m_pErrorCodeFrame = NULL;
 	pErrorCodeThread->m_pRoutList = NULL;
 	pErrorCodeThread->m_pInstrumentList = NULL;
+	InitializeCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	return pErrorCodeThread;
 }
 // 线程等待函数
@@ -22,14 +23,18 @@ void WaitErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	}
 	// 初始化等待次数为0
 	int iWaitCount = 0;
+	bool bClose = false;
 	// 循环
 	while(true)
 	{	// 休眠50毫秒
 		Sleep(pErrorCodeThread->m_pThread->m_pConstVar->m_iOneSleepTime);
 		// 等待次数加1
 		iWaitCount++;
+		EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
+		bClose = pErrorCodeThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 		// 判断是否可以处理的条件
-		if(pErrorCodeThread->m_pThread->m_bClose == true)
+		if(bClose == true)
 		{
 			// 返回
 			return;
@@ -55,10 +60,26 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	CString strOutPut = _T("");
 	string strFrameData = "";
 	string strConv = "";
-	char byTemp = 0;
+	char cLAUXErrorCodeDataLineACount = 0;
+	char cLAUXErrorCodeDataLineBCount = 0;
+	char cLAUXErrorCodeDataLAUXLineACount = 0;
+	char cLAUXErrorCodeDataLAUXLineBCount = 0;
+	char cLAUXErrorCodeCmdCount = 0;
+	char cFDUErrorCodeDataCount = 0;
+	char cFDUErrorCodeCmdCount = 0;
 	int iTemp = 0;
+	EnterCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
 	// 得到仪器IP
 	uiIPInstrument = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_uiSrcIP;
+	cLAUXErrorCodeDataLineACount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeDataLineACount;
+	cLAUXErrorCodeDataLineBCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeDataLineBCount;
+	cLAUXErrorCodeDataLAUXLineACount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeDataLAUXLineACount;
+	cLAUXErrorCodeDataLAUXLineBCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeDataLAUXLineBCount;
+	cLAUXErrorCodeCmdCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeCmdCount;
+	cFDUErrorCodeDataCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeDataCount;
+	cFDUErrorCodeCmdCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeCmdCount;
+	LeaveCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
+	EnterCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 	// 仪器在索引表中
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pErrorCodeThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -71,84 +92,79 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			|| (pInstrument->m_iInstrumentType == pErrorCodeThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
 		{
 			// 交叉站大线A数据故障
-			byTemp = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeDataLineACount;
 			if (pInstrument->m_uiErrorCodeReturnNum != 0)
 			{
-				if (pInstrument->m_cLAUXErrorCodeDataLineACountOld > byTemp)
+				if (pInstrument->m_cLAUXErrorCodeDataLineACountOld > cLAUXErrorCodeDataLineACount)
 				{
-					iTemp = 256 + byTemp - pInstrument->m_cLAUXErrorCodeDataLineACountOld;
+					iTemp = 256 + cLAUXErrorCodeDataLineACount - pInstrument->m_cLAUXErrorCodeDataLineACountOld;
 				}
 				else
 				{
-					iTemp = byTemp - pInstrument->m_cLAUXErrorCodeDataLineACountOld;
+					iTemp = cLAUXErrorCodeDataLineACount - pInstrument->m_cLAUXErrorCodeDataLineACountOld;
 				}
 				pInstrument->m_iLAUXErrorCodeDataLineACount += iTemp;
 			}
-			pInstrument->m_cLAUXErrorCodeDataLineACountOld = byTemp;
+			pInstrument->m_cLAUXErrorCodeDataLineACountOld = cLAUXErrorCodeDataLineACount;
 			str.Format(_T("大线A数据故障数=%d，"),iTemp);
 			strOutPut += str;
 			// 交叉站大线B数据故障
-			byTemp = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeDataLineBCount;
 			if (pInstrument->m_uiErrorCodeReturnNum != 0)
 			{
-				if (pInstrument->m_cLAUXErrorCodeDataLineBCountOld > byTemp)
+				if (pInstrument->m_cLAUXErrorCodeDataLineBCountOld > cLAUXErrorCodeDataLineBCount)
 				{
-					iTemp = 256 + byTemp - pInstrument->m_cLAUXErrorCodeDataLineBCountOld;
+					iTemp = 256 + cLAUXErrorCodeDataLineBCount - pInstrument->m_cLAUXErrorCodeDataLineBCountOld;
 				}
 				else
 				{
-					iTemp = byTemp - pInstrument->m_cLAUXErrorCodeDataLineBCountOld;
+					iTemp = cLAUXErrorCodeDataLineBCount - pInstrument->m_cLAUXErrorCodeDataLineBCountOld;
 				}
 				pInstrument->m_iLAUXErrorCodeDataLineBCount += iTemp;
 			}
-			pInstrument->m_cLAUXErrorCodeDataLineBCountOld = byTemp;
+			pInstrument->m_cLAUXErrorCodeDataLineBCountOld = cLAUXErrorCodeDataLineBCount;
 			str.Format(_T("大线B数据故障数=%d，"), iTemp);
 			strOutPut += str;
 			// 交叉站交叉线A数据故障
-			byTemp = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeDataLAUXLineACount;
 			if (pInstrument->m_uiErrorCodeReturnNum != 0)
 			{
-				if (pInstrument->m_cLAUXErrorCodeDataLAUXLineACountOld > byTemp)
+				if (pInstrument->m_cLAUXErrorCodeDataLAUXLineACountOld > cLAUXErrorCodeDataLAUXLineACount)
 				{
-					iTemp = 256 + byTemp - pInstrument->m_cLAUXErrorCodeDataLAUXLineACountOld;
+					iTemp = 256 + cLAUXErrorCodeDataLAUXLineACount - pInstrument->m_cLAUXErrorCodeDataLAUXLineACountOld;
 				}
 				else
 				{
-					iTemp = byTemp - pInstrument->m_cLAUXErrorCodeDataLAUXLineACountOld;
+					iTemp = cLAUXErrorCodeDataLAUXLineACount - pInstrument->m_cLAUXErrorCodeDataLAUXLineACountOld;
 				}
 				pInstrument->m_iLAUXErrorCodeDataLAUXLineACount += iTemp;
 			}
-			pInstrument->m_cLAUXErrorCodeDataLAUXLineACountOld = byTemp;
+			pInstrument->m_cLAUXErrorCodeDataLAUXLineACountOld = cLAUXErrorCodeDataLAUXLineACount;
 			str.Format(_T("交叉线A数据故障数=%d，"), iTemp);
 			strOutPut += str;
 			// 交叉站交叉线B数据故障
-			byTemp = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeDataLAUXLineBCount;
 			if (pInstrument->m_uiErrorCodeReturnNum != 0)
 			{
-				if (pInstrument->m_cLAUXErrorCodeDataLAUXLineBCountOld > byTemp)
+				if (pInstrument->m_cLAUXErrorCodeDataLAUXLineBCountOld > cLAUXErrorCodeDataLAUXLineBCount)
 				{
-					iTemp = 256 + byTemp - pInstrument->m_cLAUXErrorCodeDataLAUXLineBCountOld;
+					iTemp = 256 + cLAUXErrorCodeDataLAUXLineBCount - pInstrument->m_cLAUXErrorCodeDataLAUXLineBCountOld;
 				}
 				else
 				{
-					iTemp = byTemp - pInstrument->m_cLAUXErrorCodeDataLAUXLineBCountOld;
+					iTemp = cLAUXErrorCodeDataLAUXLineBCount - pInstrument->m_cLAUXErrorCodeDataLAUXLineBCountOld;
 				}
 				pInstrument->m_iLAUXErrorCodeDataLAUXLineBCount += iTemp;
 			}
-			pInstrument->m_cLAUXErrorCodeDataLAUXLineBCountOld = byTemp;
+			pInstrument->m_cLAUXErrorCodeDataLAUXLineBCountOld = cLAUXErrorCodeDataLAUXLineBCount;
 			str.Format(_T("交叉线B数据故障数=%d，"), iTemp);
 			strOutPut += str;
 			// 交叉站命令口故障
-			byTemp = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeCmdCount;
 			if (pInstrument->m_uiErrorCodeReturnNum != 0)
 			{
-				if (pInstrument->m_cLAUXErrorCodeCmdCountOld > byTemp)
+				if (pInstrument->m_cLAUXErrorCodeCmdCountOld > cLAUXErrorCodeCmdCount)
 				{
-					iTemp = 256 + byTemp - pInstrument->m_cLAUXErrorCodeCmdCountOld;
+					iTemp = 256 + cLAUXErrorCodeCmdCount - pInstrument->m_cLAUXErrorCodeCmdCountOld;
 				}
 				else
 				{
-					iTemp = byTemp - pInstrument->m_cLAUXErrorCodeCmdCountOld;
+					iTemp = cLAUXErrorCodeCmdCount - pInstrument->m_cLAUXErrorCodeCmdCountOld;
 				}
 				// LCI不计算命令误码
 				if (pInstrument->m_iInstrumentType == pErrorCodeThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
@@ -157,7 +173,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 				}
 				pInstrument->m_iLAUXErrorCodeCmdCount += iTemp;
 			}
-			pInstrument->m_cLAUXErrorCodeCmdCountOld = byTemp;
+			pInstrument->m_cLAUXErrorCodeCmdCountOld = cLAUXErrorCodeCmdCount;
 			str.Format(_T("命令口故障数=%d；"), iTemp);
 			strOutPut += str;
 		}
@@ -165,37 +181,35 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		else
 		{
 			// 采集站和电源站网络数据错误计数
-			byTemp = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeDataCount;
 			if (pInstrument->m_uiErrorCodeReturnNum != 0)
 			{
-				if (pInstrument->m_cFDUErrorCodeDataCountOld > byTemp)
+				if (pInstrument->m_cFDUErrorCodeDataCountOld > cFDUErrorCodeDataCount)
 				{
-					iTemp = 256 + byTemp - pInstrument->m_cFDUErrorCodeDataCountOld;
+					iTemp = 256 + cFDUErrorCodeDataCount - pInstrument->m_cFDUErrorCodeDataCountOld;
 				}
 				else
 				{
-					iTemp = byTemp - pInstrument->m_cFDUErrorCodeDataCountOld;
+					iTemp = cFDUErrorCodeDataCount - pInstrument->m_cFDUErrorCodeDataCountOld;
 				}
 				pInstrument->m_iFDUErrorCodeDataCount += iTemp;
 			}
-			pInstrument->m_cFDUErrorCodeDataCountOld = byTemp;
+			pInstrument->m_cFDUErrorCodeDataCountOld = cFDUErrorCodeDataCount;
 			str.Format(_T("网络数据错误计数=%d，"), iTemp);
 			strOutPut += str;
 			// 采集站和电源站命令错误计数
-			byTemp = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeCmdCount;
 			if (pInstrument->m_uiErrorCodeReturnNum != 0)
 			{
-				if (pInstrument->m_cFDUErrorCodeCmdCountOld > byTemp)
+				if (pInstrument->m_cFDUErrorCodeCmdCountOld > cFDUErrorCodeCmdCount)
 				{
-					iTemp = 256 + byTemp - pInstrument->m_cFDUErrorCodeCmdCountOld;
+					iTemp = 256 + cFDUErrorCodeCmdCount - pInstrument->m_cFDUErrorCodeCmdCountOld;
 				}
 				else
 				{
-					iTemp = byTemp - pInstrument->m_cFDUErrorCodeCmdCountOld;
+					iTemp = cFDUErrorCodeCmdCount - pInstrument->m_cFDUErrorCodeCmdCountOld;
 				}
 				pInstrument->m_iFDUErrorCodeCmdCount += iTemp;
 			}
-			pInstrument->m_cFDUErrorCodeCmdCountOld = byTemp;
+			pInstrument->m_cFDUErrorCodeCmdCountOld = cFDUErrorCodeCmdCount;
 			str.Format(_T("命令错误计数=%d；"), iTemp);
 			strOutPut += str;
 		}
@@ -212,6 +226,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "ProcErrorCodeReturnFrameOne",
 			strFrameData, ErrorType, IDS_ERR_IPSETMAP_NOTEXIT);
 	}
+	LeaveCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理误码查询应答帧
 void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
@@ -247,10 +262,8 @@ void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 				}
 				else
 				{
-					EnterCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 					// 处理单个IP地址设置应答帧
 					ProcErrorCodeReturnFrameOne(pErrorCodeThread);
-					LeaveCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -304,27 +317,40 @@ DWORD WINAPI RunErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	{
 		return 1;
 	}
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
-		if (pErrorCodeThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
+		bClose = pErrorCodeThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
+		if (bClose == true)
 		{
 			break;
 		}
-		if (pErrorCodeThread->m_pThread->m_bWork == true)
+		EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
+		bWork = pErrorCodeThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
+		if (bWork == true)
 		{
 			// 处理误码查询应答帧
 			ProcErrorCodeReturnFrame(pErrorCodeThread);
 			// 发送误码查询帧
 			ProcErrorCodeQueryFrame(pErrorCodeThread);
 		}
-		if (pErrorCodeThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
+		bClose = pErrorCodeThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
+		if (bClose == true)
 		{
 			break;
 		}
 		WaitErrorCodeThread(pErrorCodeThread);
 	}
+	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pErrorCodeThread->m_pThread->m_hThreadClose);
+	LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	return 1;
 }
 // 初始化误码查询线程
@@ -335,8 +361,10 @@ bool OnInitErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread,
 	{
 		return false;
 	}
+	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	if (false == OnInitThread(pErrorCodeThread->m_pThread, pLogOutPut, pConstVar))
 	{
+		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 		return false;
 	}
 	// 设置事件对象为无信号状态
@@ -352,10 +380,12 @@ bool OnInitErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread,
 	{
 		AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "OnInitErrorCodeThread", 
 			"pErrorCodeThread->m_pThread->m_hThread", ErrorType, IDS_ERR_CREATE_THREAD);
+		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "OnInitErrorCodeThread", 
 		"误码查询线程创建成功");
+	LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	return true;
 }
 // 初始化误码查询线程
@@ -378,18 +408,18 @@ bool OnCloseErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	{
 		return false;
 	}
+	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	if (false == OnCloseThread(pErrorCodeThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "OnCloseErrorCodeThread", 
 			"误码查询线程强制关闭", WarningType);
+		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 		return false;
 	}
-	else
-	{
-		AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "OnCloseErrorCodeThread", 
-			"误码查询线程成功关闭");
-		return true;
-	}
+	AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "OnCloseErrorCodeThread", 
+		"误码查询线程成功关闭");
+	LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
+	return true;
 }
 // 释放误码查询线程
 void OnFreeErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
@@ -402,5 +432,6 @@ void OnFreeErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	{
 		delete pErrorCodeThread->m_pThread;
 	}
+	DeleteCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	delete pErrorCodeThread;
 }

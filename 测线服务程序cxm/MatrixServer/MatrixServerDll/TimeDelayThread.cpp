@@ -24,6 +24,7 @@ void WaitTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	}
 	// 初始化等待次数为0
 	int iWaitCount = 0;
+	bool bClose = false;
 	// 循环
 	while(true)
 	{	// 休眠50毫秒
@@ -31,14 +32,14 @@ void WaitTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		// 等待次数加1
 		iWaitCount++;
 		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+		bClose = pTimeDelayThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		// 判断是否可以处理的条件
-		if(pTimeDelayThread->m_pThread->m_bClose == true)
+		if(bClose == true)
 		{
-			LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 			// 返回
 			return;
 		}
-		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		// 判断等待次数是否大于等于最多等待次数
 		if(pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelaySleepTimes == iWaitCount)
 		{
@@ -133,6 +134,7 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	usTailRecTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailRecTime;
 	usTailSndTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTime;
 	LeaveCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
+	EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 	// 判断仪器IP是否在SN索引表中
 	if (TRUE == IfIndexExistInMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -187,6 +189,7 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "ProcTailTimeReturnFrameOne",
 			strFrameData, ErrorType, IDS_ERR_IPMAP_NOTEXIT);
 	}
+	LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理尾包时刻查询应答
 void ProcTailTimeReturnFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDelayThread)
@@ -285,6 +288,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 	CString str = _T("");
 	CString strOutPut = _T("");
 	string strConv = "";
+	bool bStartSample = false;
 	pInstrument = pRout->m_pHead;
 
 	do 
@@ -333,7 +337,10 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		// 时间修正高位
 		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
 		// 在数据采集期间只针对未时统的仪器进行时统设置
-		if (pTimeDelayThread->m_bADCStartSample == true)
+		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+		bStartSample = pTimeDelayThread->m_bADCStartSample;
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+		if (bStartSample == true)
 		{
 			if (pInstrumentNext->m_iTimeSetReturnCount == 0)
 			{
@@ -385,6 +392,7 @@ void ProcTimeDelayReturnFrameOne(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	EnterCriticalSection(&pTimeDelayThread->m_pTimeDelayFrame->m_oSecTimeDelayFrame);
 	uiSrcIP = pTimeDelayThread->m_pTimeDelayFrame->m_pCommandStructReturn->m_uiSrcIP;
 	LeaveCriticalSection(&pTimeDelayThread->m_pTimeDelayFrame->m_oSecTimeDelayFrame);
+	EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 	// 判断仪器IP是否在SN索引表中
 	if (TRUE == IfIndexExistInMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -403,6 +411,7 @@ void ProcTimeDelayReturnFrameOne(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "ProcTimeDelayReturnFrameOne",
 			strFrameData, ErrorType, IDS_ERR_IPMAP_NOTEXIT);
 	}
+	LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理时统设置应答
 void ProcTimeDelayReturnFrame(m_oTimeDelayThreadStruct* pTimeDelayThread)
@@ -456,17 +465,22 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	CString str = _T("");
 	string strConv = "";
 	unsigned int uiProcRoutIP = 0;
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-		if (pTimeDelayThread->m_pThread->m_bClose == true)
+		bClose = pTimeDelayThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 			break;
 		}
-		if (pTimeDelayThread->m_pThread->m_bWork == true)
+		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+		bWork = pTimeDelayThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+		if (bWork == true)
 		{
-			EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 			EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 			if (pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.size() > 0)
 			{
@@ -525,14 +539,14 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 				}
 			}
 			LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
-			LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 		}
-		if (pTimeDelayThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+		bClose = pTimeDelayThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 			break;
 		}
-		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		WaitTimeDelayThread(pTimeDelayThread);
 	}
 	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);

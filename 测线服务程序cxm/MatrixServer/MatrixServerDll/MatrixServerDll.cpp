@@ -255,17 +255,24 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv, int iSampleRate)
 		pEnv->m_pInstrumentList, pEnv->m_pConstVar);
 	// 产生一个施工任务
 	//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
+	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	pEnv->m_pADCSetThread->m_iSampleRate = iSampleRate;
 	pEnv->m_pADCSetThread->m_bADCStartSample = true;
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
+	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
+	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
+	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
+	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	pEnv->m_pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
 	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
 	// 清空丢帧索引
 	pEnv->m_pADCDataRecThread->m_oADCLostFrameMap.clear();
+	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	// 重置ADC开始采集命令成功的标志位
 	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStartSampleOptNb, pEnv->m_pConstVar);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
+	TRACE(_T("StartSample\n"));
 }
 // ADC停止采集命令
 void OnADCStopSample(m_oEnvironmentStruct* pEnv)
@@ -279,19 +286,30 @@ void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 	FreeOneOptTask(1, pEnv->m_pOptTaskArray);
 	// 释放一个施工任务
 	//	FreeOneOptTask(2, pEnv->m_pOptTaskArray);
+	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	pEnv->m_pADCSetThread->m_bADCStartSample = false;
 	pEnv->m_pADCSetThread->m_bADCStopSample = true;
+	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
+	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = false;
+	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	// 重置ADC停止采集命令成功的标志位
 	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStopSampleOptNb, pEnv->m_pConstVar);
+	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_uiCounter = 0;
+	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	// 清空尾包时刻查询帧接收缓冲区
 	OnClearSocketRcvBuf(pEnv->m_pTailTimeFrame->m_oTailTimeFrameSocket, pEnv->m_pConstVar->m_iRcvFrameSize);
 	// 清空时统设置应答帧接收缓冲区
 	OnClearSocketRcvBuf(pEnv->m_pTimeDelayFrame->m_oTimeDelayFrameSocket, pEnv->m_pConstVar->m_iRcvFrameSize);
+	
 	// 时统设置线程开始工作
+	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_pThread->m_bWork = true;
+	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
+
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStopSample", "停止ADC数据采集");
+	TRACE(_T("StopSample\n"));
 }
 
 // 输出接收和发送帧的统计结果
@@ -634,27 +652,49 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 	}
 	CString str = _T("");
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pLogOutPutThread->m_oSecLogOutPutThread);
 	pEnv->m_pLogOutPutThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pLogOutPutThread->m_oSecLogOutPutThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pHeartBeatThread->m_oSecHeartBeatThread);
 	pEnv->m_pHeartBeatThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pHeartBeatThread->m_oSecHeartBeatThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pHeadFrameThread->m_oSecHeadFrameThread);
 	pEnv->m_pHeadFrameThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pHeadFrameThread->m_oSecHeadFrameThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pIPSetFrameThread->m_oSecIPSetFrameThread);
 	pEnv->m_pIPSetFrameThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pIPSetFrameThread->m_oSecIPSetFrameThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pTailFrameThread->m_oSecTailFrameThread);
 	pEnv->m_pTailFrameThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pTailFrameThread->m_oSecTailFrameThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pMonitorThread->m_oSecMonitorThread);
 	pEnv->m_pMonitorThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pMonitorThread->m_oSecMonitorThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	pEnv->m_pADCSetThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pErrorCodeThread->m_oSecErrorCodeThread);
 	pEnv->m_pErrorCodeThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pErrorCodeThread->m_oSecErrorCodeThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	pEnv->m_pADCDataRecThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	// 线程关闭标志位为true
+	EnterCriticalSection(&pEnv->m_pADCDataSaveThread->m_oSecADCDataSaveThread);
 	pEnv->m_pADCDataSaveThread->m_pThread->m_bClose = true;
+	LeaveCriticalSection(&pEnv->m_pADCDataSaveThread->m_oSecADCDataSaveThread);
 	// 关闭心跳线程
 	OnCloseHeartBeatThread(pEnv->m_pHeartBeatThread);
 	// 关闭首包接收线程
@@ -756,25 +796,36 @@ void OnWork(m_oEnvironmentStruct* pEnv)
 	OnResetADCDataBufArray(pEnv->m_pADCDataBufArray);
 	// 重置施工任务数组结构体
 	OnResetOptTaskArray(pEnv->m_pOptTaskArray);
-
 	// 日志输出线程开始工作
+	EnterCriticalSection(&pEnv->m_pLogOutPutThread->m_oSecLogOutPutThread);
 	pEnv->m_pLogOutPutThread->m_pThread->m_bWork = true;
+	LeaveCriticalSection(&pEnv->m_pLogOutPutThread->m_oSecLogOutPutThread);
 	// 心跳线程开始工作
+	EnterCriticalSection(&pEnv->m_pHeartBeatThread->m_oSecHeartBeatThread);
 	pEnv->m_pHeartBeatThread->m_pThread->m_bWork = true;
+	LeaveCriticalSection(&pEnv->m_pHeartBeatThread->m_oSecHeartBeatThread);
 	// 清空首包帧接收缓冲区
 	OnClearSocketRcvBuf(pEnv->m_pHeadFrame->m_oHeadFrameSocket, pEnv->m_pConstVar->m_iRcvFrameSize);
 	// 首包接收线程开始工作
+	EnterCriticalSection(&pEnv->m_pHeadFrameThread->m_oSecHeadFrameThread);
 	pEnv->m_pHeadFrameThread->m_pThread->m_bWork = true;
+	LeaveCriticalSection(&pEnv->m_pHeadFrameThread->m_oSecHeadFrameThread);
 	// 清空IP地址设置应答帧接收缓冲区
 	OnClearSocketRcvBuf(pEnv->m_pIPSetFrame->m_oIPSetFrameSocket, pEnv->m_pConstVar->m_iRcvFrameSize);
-	// IP地址设置线程开始工作
+	// IP地址设置线程开始工作	
+	EnterCriticalSection(&pEnv->m_pIPSetFrameThread->m_oSecIPSetFrameThread);
 	pEnv->m_pIPSetFrameThread->m_pThread->m_bWork = true;
+	LeaveCriticalSection(&pEnv->m_pIPSetFrameThread->m_oSecIPSetFrameThread);
 	// 清空尾包帧接收缓冲区
 	OnClearSocketRcvBuf(pEnv->m_pTailFrame->m_oTailFrameSocket, pEnv->m_pConstVar->m_iRcvFrameSize);
 	// 尾包接收线程开始工作
+	EnterCriticalSection(&pEnv->m_pTailFrameThread->m_oSecTailFrameThread);
 	pEnv->m_pTailFrameThread->m_pThread->m_bWork = true;
+	LeaveCriticalSection(&pEnv->m_pTailFrameThread->m_oSecTailFrameThread);
 	// 路由监视线程开始工作
+	EnterCriticalSection(&pEnv->m_pMonitorThread->m_oSecMonitorThread);
 	pEnv->m_pMonitorThread->m_pThread->m_bWork = true;
+	LeaveCriticalSection(&pEnv->m_pMonitorThread->m_oSecMonitorThread);
 	// 清空误码查询接收缓冲区
 	OnClearSocketRcvBuf(pEnv->m_pErrorCodeFrame->m_oErrorCodeFrameSocket, pEnv->m_pConstVar->m_iRcvFrameSize);
 	// 清空ADC参数设置应答帧接收缓冲区
@@ -782,9 +833,13 @@ void OnWork(m_oEnvironmentStruct* pEnv)
 	// 清空ADC数据接收缓冲区
 	OnClearSocketRcvBuf(pEnv->m_pADCDataFrame->m_oADCDataFrameSocket, pEnv->m_pConstVar->m_iRcvFrameSize);
 	// ADC数据接收线程开始工作
+	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	pEnv->m_pADCDataRecThread->m_pThread->m_bWork = true;
+	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	// ADC数据存储线程开始工作
+	EnterCriticalSection(&pEnv->m_pADCDataSaveThread->m_oSecADCDataSaveThread);
 	pEnv->m_pADCDataSaveThread->m_pThread->m_bWork = true;
+	LeaveCriticalSection(&pEnv->m_pADCDataSaveThread->m_oSecADCDataSaveThread);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnWork", "开始工作");
 }
 // 停止
@@ -795,27 +850,49 @@ void OnStop(m_oEnvironmentStruct* pEnv)
 		return;
 	}
 	// 日志输出线程停止工作
+	EnterCriticalSection(&pEnv->m_pLogOutPutThread->m_oSecLogOutPutThread);
 	pEnv->m_pLogOutPutThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pLogOutPutThread->m_oSecLogOutPutThread);
 	// 心跳线程停止工作
+	EnterCriticalSection(&pEnv->m_pHeartBeatThread->m_oSecHeartBeatThread);
 	pEnv->m_pHeartBeatThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pHeartBeatThread->m_oSecHeartBeatThread);
 	// 首包接收线程停止工作
+	EnterCriticalSection(&pEnv->m_pHeadFrameThread->m_oSecHeadFrameThread);
 	pEnv->m_pHeadFrameThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pHeadFrameThread->m_oSecHeadFrameThread);
 	// IP地址设置线程停止工作
+	EnterCriticalSection(&pEnv->m_pIPSetFrameThread->m_oSecIPSetFrameThread);
 	pEnv->m_pIPSetFrameThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pIPSetFrameThread->m_oSecIPSetFrameThread);
 	// 尾包接收线程停止工作
+	EnterCriticalSection(&pEnv->m_pTailFrameThread->m_oSecTailFrameThread);
 	pEnv->m_pTailFrameThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pTailFrameThread->m_oSecTailFrameThread);
 	// 路由监视线程停止工作
+	EnterCriticalSection(&pEnv->m_pMonitorThread->m_oSecMonitorThread);
 	pEnv->m_pMonitorThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pMonitorThread->m_oSecMonitorThread);
 	// 时统设置线程停止工作
+	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	// ADC参数设置线程停止工作
+	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	pEnv->m_pADCSetThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	// 误码查询线程停止工作
+	EnterCriticalSection(&pEnv->m_pErrorCodeThread->m_oSecErrorCodeThread);
 	pEnv->m_pErrorCodeThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pErrorCodeThread->m_oSecErrorCodeThread);
 	// ADC数据接收线程停止工作
+	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	pEnv->m_pADCDataRecThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	// ADC数据存储线程停止工作
+	EnterCriticalSection(&pEnv->m_pADCDataSaveThread->m_oSecADCDataSaveThread);
 	pEnv->m_pADCDataSaveThread->m_pThread->m_bWork = false;
+	LeaveCriticalSection(&pEnv->m_pADCDataSaveThread->m_oSecADCDataSaveThread);
 	// 关闭施工数据文件
 	CloseAllADCDataSaveInFile(pEnv->m_pOptTaskArray);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnStop", "停止工作");

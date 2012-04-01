@@ -32,6 +32,7 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	uiIPInstrument = pIPSetFrameThread->m_pIPSetFrame->m_pCommandStructReturn->m_uiInstrumentIP;
 	usCommand = pIPSetFrameThread->m_pIPSetFrame->m_pCommandStructReturn->m_usCommand;
 	LeaveCriticalSection(&pIPSetFrameThread->m_pIPSetFrame->m_oSecIPSetFrame);
+	EnterCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 	// 仪器在索引表中
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap))
 	{
@@ -40,8 +41,10 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 		DeleteInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap);
 		// 将仪器加入IP地址索引表
 		pInstrument->m_bIPSetOK = true;
+		EnterCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
 		pRout = GetRout(pInstrument->m_uiRoutIP, &pIPSetFrameThread->m_pRoutList->m_oRoutMap);
 		pRout->m_uiInstrumentNum++;
+		LeaveCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
 		AddInstrumentToMap(uiIPInstrument, pInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPInstrumentMap);
 		if (usCommand == pIPSetFrameThread->m_pThread->m_pConstVar->m_usSendSetCmd)
 		{
@@ -64,6 +67,7 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetReturnFrameOne", 
 			strFrameData, ErrorType, IDS_ERR_IPSETMAP_NOTEXIT);
 	}
+	LeaveCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理IP地址设置应答帧
 void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
@@ -98,12 +102,8 @@ void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				}
 				else
 				{
-					EnterCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
-					EnterCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个IP地址设置应答帧
 					ProcIPSetReturnFrameOne(pIPSetFrameThread);
-					LeaveCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
-					LeaveCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -188,6 +188,7 @@ void WaitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	}
 	// 初始化等待次数为0
 	int iWaitCount = 0;
+	bool bClose = false;
 	// 循环
 	while(true)
 	{	// 休眠50毫秒
@@ -195,14 +196,14 @@ void WaitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 		// 等待次数加1
 		iWaitCount++;
 		EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
+		bClose = pIPSetFrameThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 		// 判断是否可以处理的条件
-		if(pIPSetFrameThread->m_pThread->m_bClose == true)
+		if(bClose == true)
 		{
-			LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 			// 返回
 			return;
 		}
-		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 		// 判断等待次数是否大于等于最多等待次数
 		if(pIPSetFrameThread->m_pThread->m_pConstVar->m_iIPSetFrameSleepTimes == iWaitCount)
 		{
@@ -218,27 +219,34 @@ DWORD WINAPI RunIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	{
 		return 1;
 	}
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
-		if (pIPSetFrameThread->m_pThread->m_bClose == true)
+		bClose = pIPSetFrameThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 			break;
 		}
-		if (pIPSetFrameThread->m_pThread->m_bWork == true)
+		EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
+		bWork = pIPSetFrameThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
+		if (bWork == true)
 		{
 			// 处理IP地址设置应答帧
 			ProcIPSetReturnFrame(pIPSetFrameThread);
 			// 按照IP地址设置索引发送IP地址设置帧
 			ProcIPSetFrame(pIPSetFrameThread);
 		}
-		if (pIPSetFrameThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
+		bClose = pIPSetFrameThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 			break;
 		}
-		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 		WaitIPSetFrameThread(pIPSetFrameThread);
 	}
 	EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);

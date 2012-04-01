@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="线程">
-      <UniqueIdentifier>{19b019a2-2c7f-441b-81db-d57f447203e8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="整理">
       <UniqueIdentifier>{73a3fedc-48b0-4fc4-a67d-806b3829e662}</UniqueIdentifier>
     </Filter>
@@ -27,6 +24,9 @@
     </Filter>
     <Filter Include="整理\帧">
       <UniqueIdentifier>{f1120f52-afc2-4c9a-a73f-36d20c55510c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="整理\线程">
+      <UniqueIdentifier>{19b019a2-2c7f-441b-81db-d57f447203e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -74,21 +74,6 @@
     </ClCompile>
     <ClCompile Include="xml.cpp">
       <Filter>整理\杂项\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="MonitorThread.cpp">
-      <Filter>线程</Filter>
-    </ClCompile>
-    <ClCompile Include="ADCSetThread.cpp">
-      <Filter>线程</Filter>
-    </ClCompile>
-    <ClCompile Include="ErrorCodeThread.cpp">
-      <Filter>线程</Filter>
-    </ClCompile>
-    <ClCompile Include="ADCDataRecThread.cpp">
-      <Filter>线程</Filter>
-    </ClCompile>
-    <ClCompile Include="ADCDataSaveThread.cpp">
-      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="PerformanceFunc.cpp">
       <Filter>整理\杂项</Filter>
@@ -139,40 +124,55 @@
       <Filter>整理\帧</Filter>
     </ClCompile>
     <ClCompile Include="ADCDataBuf.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="ADCDataBufArray.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="Thread.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="OptTask.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="OptTaskArray.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="LogOutPutThread.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="HeadFrameThread.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="HeartBeatThread.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="IPSetFrameThread.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="ADCLostFrame.cpp">
-      <Filter>整理</Filter>
-    </ClCompile>
-    <ClCompile Include="TailFrameThread.cpp">
-      <Filter>整理</Filter>
+      <Filter>整理\线程</Filter>
     </ClCompile>
     <ClCompile Include="TimeDelayThread.cpp">
-      <Filter>整理</Filter>
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ADCDataBufArray.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ADCDataRecThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ADCDataSaveThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ADCLostFrame.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ADCSetThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ErrorCodeThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="HeadFrameThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="HeartBeatThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="IPSetFrameThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="LogOutPutThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="MonitorThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="OptTask.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="OptTaskArray.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="TailFrameThread.cpp">
+      <Filter>整理\线程</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>整理\线程</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
