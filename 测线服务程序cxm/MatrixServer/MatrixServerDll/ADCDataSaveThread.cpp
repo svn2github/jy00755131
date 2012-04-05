@@ -260,32 +260,25 @@ DWORD WINAPI RunADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread
 	{
 		return 1;
 	}
-	bool bClose = false;
-	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
-		bClose = pADCDataSaveThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
-		if (bClose == true)
+		if (pADCDataSaveThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 			break;
 		}
-		EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
-		bWork = pADCDataSaveThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
-		if (bWork == true)
+		if (pADCDataSaveThread->m_pThread->m_bWork == true)
 		{
 			// 保存ADC数据到施工文件
 			ProcADCDataSaveInFile(pADCDataSaveThread);
 		}
-		EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
-		bClose = pADCDataSaveThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
-		if (bClose == true)
+		if (pADCDataSaveThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 			break;
 		}
+		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 		WaitADCDataSaveThread(pADCDataSaveThread);
 	}
 	EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);

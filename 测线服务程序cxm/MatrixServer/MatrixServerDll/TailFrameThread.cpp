@@ -315,8 +315,12 @@ void ProcTailFrame(m_oTailFrameThreadStruct* pTailFrameThread)
 				}
 				else
 				{
+					EnterCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+					EnterCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个尾包帧
-					ProcTailFrameOne(pTailFrameThread);		
+					ProcTailFrameOne(pTailFrameThread);
+					LeaveCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
+					LeaveCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);	
 				}	
 			}		
 		}		
@@ -329,32 +333,25 @@ DWORD WINAPI RunTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 	{
 		return 1;
 	}
-	bool bClose = false;
-	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
-		bClose = pTailFrameThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
-		if (bClose == true)
+		if (pTailFrameThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 			break;
 		}
-		EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
-		bWork = pTailFrameThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
-		if (bWork == true)
+		if (pTailFrameThread->m_pThread->m_bWork == true)
 		{
 			// 处理尾包接收
 			ProcTailFrame(pTailFrameThread);
 		}
-		EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
-		bClose = pTailFrameThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
-		if (bClose == true)
+		if (pTailFrameThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 			break;
 		}
+		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 		WaitTailFrameThread(pTailFrameThread);
 	}
 	EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);

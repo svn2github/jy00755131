@@ -53,34 +53,27 @@ DWORD WINAPI RunLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 	{
 		return 0;
 	}
-	bool bClose = false;
-	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
-		bClose = pLogOutPutThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
-		if (bClose == true)
+		if (pLogOutPutThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 			break;
 		}
-		EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
-		bWork = pLogOutPutThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
-		if (bWork == true)
+		if (pLogOutPutThread->m_pThread->m_bWork == true)
 		{
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pThread->m_pLogOutPut);
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pLogOutPutTimeDelay);
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pLogOutPutErrorCode);
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pLogOutPutADCFrameTime);
-		}
-		EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
-		bClose = pLogOutPutThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
-		if (bClose == true)
+		}	
+		if (pLogOutPutThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 			break;
 		}
+		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		WaitLogOutPutThread(pLogOutPutThread);
 	}
 	EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);

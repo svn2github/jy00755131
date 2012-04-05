@@ -386,11 +386,15 @@ void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThread)
 						"", ErrorType, IDS_ERR_PARSE_HEADFRAME);
 				}
 				else
-				{			
+				{
+					EnterCriticalSection(&pHeadFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+					EnterCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个首包帧
 					ProcHeadFrameOne(pHeadFrameThread);
 					// 系统发生变化的时间
 					UpdateLineChangeTime(pHeadFrameThread->m_pInstrumentList);
+					LeaveCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
+					LeaveCriticalSection(&pHeadFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -436,32 +440,25 @@ DWORD WINAPI RunHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	{
 		return 1;
 	}
-	bool bClose = false;
-	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
-		bClose = pHeadFrameThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
-		if (bClose == true)
+		if (pHeadFrameThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 			break;
 		}
-		EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
-		bWork = pHeadFrameThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
-		if (bWork == true)
+		if (pHeadFrameThread->m_pThread->m_bWork == true)
 		{
 			// 处理首包帧
 			ProcHeadFrame(pHeadFrameThread);
 		}
-		EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
-		bClose = pHeadFrameThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
-		if (bClose == true)
+		if (pHeadFrameThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 			break;
 		}
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		WaitHeadFrameThread(pHeadFrameThread);
 	}
 	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);

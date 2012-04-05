@@ -705,8 +705,12 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 				}
 				else
 				{
+					EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
+					EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个ADC参数设置应答帧
 					ProcADCSetReturnFrameOne(pADCSetThread);
+					LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
+					LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 					EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 					pADCSetThread->m_uiADCSetReturnNum++;
 					LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
@@ -775,73 +779,56 @@ DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 	{
 		return 1;
 	}
-	bool bClose = false;
-	bool bWork = false;
-	unsigned int uiADCSetOperationNb = 0;
-	unsigned int uiCounter = 0;
 	while(true)
 	{
 		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		bClose = pADCSetThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		if (bClose == true)
+		if (pADCSetThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 			break;
 		}
-		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		bWork = pADCSetThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		if (bWork == true)
+		if (pADCSetThread->m_pThread->m_bWork == true)
 		{
-			EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-			uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
-			LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-			if (uiADCSetOperationNb != 0)
+			if (pADCSetThread->m_uiADCSetOperationNb != 0)
 			{
 				// 根据ADC参数设置任务队列发送参数设置帧
-				EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 				pADCSetThread->m_uiCounter++;
-				uiCounter = pADCSetThread->m_uiCounter;
-				LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-				if (uiCounter == 1)
+				if (pADCSetThread->m_uiCounter == 1)
 				{
 					OnSendADCSetCmd(pADCSetThread);
 				}
-				else if (uiCounter == 2)
+				else if (pADCSetThread->m_uiCounter == 2)
 				{
 					// 接收ADC参数设置应答帧
 					ProcADCSetReturnFrame(pADCSetThread);
 				}
-				else if (uiCounter == 3)
+				else if (pADCSetThread->m_uiCounter == 3)
 				{
 					// 接收ADC参数设置应答帧
 					ProcADCSetReturnFrame(pADCSetThread);
 				}
-				else if (uiCounter == 4)
+				else if (pADCSetThread->m_uiCounter == 4)
 				{
 					// 接收ADC参数设置应答帧
 					ProcADCSetReturnFrame(pADCSetThread);
 				}
-				else if (uiCounter == 5)
+				else if (pADCSetThread->m_uiCounter == 5)
 				{
 					// 接收ADC参数设置应答帧
 					ProcADCSetReturnFrame(pADCSetThread);
 				}
 				else
 				{
-					EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 					pADCSetThread->m_uiCounter = 0;
-					LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 				}
 			}
 		}
-		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		bClose = pADCSetThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		if (bClose == true)
+		if (pADCSetThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 			break;
 		}
+		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		WaitADCSetThread(pADCSetThread);
 	}
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号

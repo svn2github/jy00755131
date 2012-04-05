@@ -224,8 +224,12 @@ void ProcTailTimeReturnFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTi
 				}
 				else
 				{
+					EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
+					EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个尾包时刻查询应答帧
 					ProcTailTimeReturnFrameOne(pRout, pTimeDelayThread);
+					LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
+					LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -288,9 +292,11 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 	CString str = _T("");
 	CString strOutPut = _T("");
 	string strConv = "";
-	bool bStartSample = false;
+	bool bADCStartSample = false;
 	pInstrument = pRout->m_pHead;
-
+	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+	bADCStartSample = pTimeDelayThread->m_bADCStartSample;
+	LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	do 
 	{
 		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
@@ -336,11 +342,8 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		pInstrumentNext->m_uiTimeLow = itmp2 & 0x3fff;
 		// 时间修正高位
 		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
-		// 在数据采集期间只针对未时统的仪器进行时统设置
-		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-		bStartSample = pTimeDelayThread->m_bADCStartSample;
-		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-		if (bStartSample == true)
+		// 在数据采集期间只针对未时统的仪器进行时统设置	
+		if (bADCStartSample == true)
 		{
 			if (pInstrumentNext->m_iTimeSetReturnCount == 0)
 			{
@@ -447,8 +450,12 @@ void ProcTimeDelayReturnFrame(m_oTimeDelayThreadStruct* pTimeDelayThread)
 				}
 				else
 				{
+					EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
+					EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个时统设置应答帧
 					ProcTimeDelayReturnFrameOne(pTimeDelayThread);
+					LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
+					LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -465,21 +472,15 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	CString str = _T("");
 	string strConv = "";
 	unsigned int uiProcRoutIP = 0;
-	bool bClose = false;
-	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-		bClose = pTimeDelayThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-		if (bClose == true)
+		if (pTimeDelayThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 			break;
 		}
-		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-		bWork = pTimeDelayThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-		if (bWork == true)
+		if (pTimeDelayThread->m_pThread->m_bWork == true)
 		{
 			EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 			if (pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.size() > 0)
@@ -540,13 +541,12 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 			}
 			LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 		}
-		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-		bClose = pTimeDelayThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-		if (bClose == true)
+		if (pTimeDelayThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 			break;
 		}
+		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		WaitTimeDelayThread(pTimeDelayThread);
 	}
 	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);

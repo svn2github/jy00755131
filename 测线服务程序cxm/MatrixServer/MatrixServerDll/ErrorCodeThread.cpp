@@ -262,8 +262,12 @@ void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 				}
 				else
 				{
+					EnterCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
+					EnterCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个IP地址设置应答帧
 					ProcErrorCodeReturnFrameOne(pErrorCodeThread);
+					LeaveCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
+					LeaveCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -317,34 +321,27 @@ DWORD WINAPI RunErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	{
 		return 1;
 	}
-	bool bClose = false;
-	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
-		bClose = pErrorCodeThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
-		if (bClose == true)
+		if (pErrorCodeThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 			break;
 		}
-		EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
-		bWork = pErrorCodeThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
-		if (bWork == true)
+		if (pErrorCodeThread->m_pThread->m_bWork == true)
 		{
 			// 处理误码查询应答帧
 			ProcErrorCodeReturnFrame(pErrorCodeThread);
 			// 发送误码查询帧
 			ProcErrorCodeQueryFrame(pErrorCodeThread);
 		}
-		EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
-		bClose = pErrorCodeThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
-		if (bClose == true)
+		if (pErrorCodeThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 			break;
 		}
+		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 		WaitErrorCodeThread(pErrorCodeThread);
 	}
 	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);

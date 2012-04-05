@@ -51,34 +51,27 @@ DWORD WINAPI RunHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 	{
 		return 0;
 	}
-	bool bClose = false;
-	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
-		bClose = pHeartBeatThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
-		if (bClose == true)
+		if (pHeartBeatThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 			break;
 		}
-		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
-		bWork = pHeartBeatThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
-		if (bWork == true)
+		if (pHeartBeatThread->m_pThread->m_bWork == true)
 		{
 			MakeInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
 				pHeartBeatThread->m_pThread->m_pConstVar);
 			SendInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
 				pHeartBeatThread->m_pThread->m_pConstVar);
 		}
-		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
-		bClose = pHeartBeatThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
-		if (bClose == true)
+		if (pHeartBeatThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 			break;
 		}
+		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		WaitHeartBeatThread(pHeartBeatThread);
 	}
 	EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);

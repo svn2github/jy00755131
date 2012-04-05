@@ -259,6 +259,8 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv, int iSampleRate)
 	pEnv->m_pADCSetThread->m_iSampleRate = iSampleRate;
 	pEnv->m_pADCSetThread->m_bADCStartSample = true;
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
+	// 重置ADC开始采集命令成功的标志位
+	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStartSampleOptNb, pEnv->m_pConstVar);
 	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
@@ -269,10 +271,7 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv, int iSampleRate)
 	// 清空丢帧索引
 	pEnv->m_pADCDataRecThread->m_oADCLostFrameMap.clear();
 	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
-	// 重置ADC开始采集命令成功的标志位
-	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStartSampleOptNb, pEnv->m_pConstVar);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
-	TRACE(_T("StartSample\n"));
 }
 // ADC停止采集命令
 void OnADCStopSample(m_oEnvironmentStruct* pEnv)
@@ -289,27 +288,20 @@ void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	pEnv->m_pADCSetThread->m_bADCStartSample = false;
 	pEnv->m_pADCSetThread->m_bADCStopSample = true;
+	// 重置ADC停止采集命令成功的标志位
+	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStopSampleOptNb, pEnv->m_pConstVar);
 	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = false;
-	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
-	// 重置ADC停止采集命令成功的标志位
-	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStopSampleOptNb, pEnv->m_pConstVar);
-	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_uiCounter = 0;
-	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
+	// 时统设置线程开始工作
+	pEnv->m_pTimeDelayThread->m_pThread->m_bWork = true;
 	// 清空尾包时刻查询帧接收缓冲区
 	OnClearSocketRcvBuf(pEnv->m_pTailTimeFrame->m_oTailTimeFrameSocket, pEnv->m_pConstVar->m_iRcvFrameSize);
 	// 清空时统设置应答帧接收缓冲区
 	OnClearSocketRcvBuf(pEnv->m_pTimeDelayFrame->m_oTimeDelayFrameSocket, pEnv->m_pConstVar->m_iRcvFrameSize);
-	
-	// 时统设置线程开始工作
-	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
-	pEnv->m_pTimeDelayThread->m_pThread->m_bWork = true;
 	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
-
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStopSample", "停止ADC数据采集");
-	TRACE(_T("StopSample\n"));
 }
 
 // 输出接收和发送帧的统计结果

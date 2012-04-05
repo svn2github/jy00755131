@@ -102,8 +102,12 @@ void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				}
 				else
 				{
+					EnterCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+					EnterCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个IP地址设置应答帧
 					ProcIPSetReturnFrameOne(pIPSetFrameThread);
+					LeaveCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
+					LeaveCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -219,34 +223,27 @@ DWORD WINAPI RunIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	{
 		return 1;
 	}
-	bool bClose = false;
-	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
-		bClose = pIPSetFrameThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
-		if (bClose == true)
+		if (pIPSetFrameThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 			break;
 		}
-		EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
-		bWork = pIPSetFrameThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
-		if (bWork == true)
+		if (pIPSetFrameThread->m_pThread->m_bWork == true)
 		{
 			// 处理IP地址设置应答帧
 			ProcIPSetReturnFrame(pIPSetFrameThread);
 			// 按照IP地址设置索引发送IP地址设置帧
 			ProcIPSetFrame(pIPSetFrameThread);
 		}
-		EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
-		bClose = pIPSetFrameThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
-		if (bClose == true)
+		if (pIPSetFrameThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 			break;
 		}
+		LeaveCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 		WaitIPSetFrameThread(pIPSetFrameThread);
 	}
 	EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);

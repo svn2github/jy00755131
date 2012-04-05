@@ -305,8 +305,10 @@ void ProcADCDataRecFrame(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				}
 				else
 				{
+					EnterCriticalSection(&pADCDataRecThread->m_pInstrumentList->m_oSecInstrumentList);
 					// 处理单个ADC数据帧
 					ProcADCDataRecFrameOne(pADCDataRecThread);
+					LeaveCriticalSection(&pADCDataRecThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -373,34 +375,27 @@ DWORD WINAPI RunADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	{
 		return 1;
 	}
-	bool bClose = false;
-	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
-		bClose = pADCDataRecThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
-		if (bClose == true)
+		if (pADCDataRecThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 			break;
 		}
-		EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
-		bWork = pADCDataRecThread->m_pThread->m_bWork;
-		LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
-		if (bWork == true)
+		if (pADCDataRecThread->m_pThread->m_bWork == true)
 		{
 			// 处理ADC数据接收帧
 			ProcADCDataRecFrame(pADCDataRecThread);
 			// 处理ADC数据重发
 			ProcADCRetransmission(pADCDataRecThread);
 		}
-		EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
-		bClose = pADCDataRecThread->m_pThread->m_bClose;
-		LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
-		if (bClose == true)
+		if (pADCDataRecThread->m_pThread->m_bClose == true)
 		{
+			LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 			break;
 		}
+		LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 		WaitADCDataRecThread(pADCDataRecThread);
 	}
 	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
