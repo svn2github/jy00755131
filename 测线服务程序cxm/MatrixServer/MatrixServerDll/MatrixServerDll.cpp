@@ -81,7 +81,6 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 	// 创建施工任务数据文件夹
 	ConvertCStrToStr(str2, &pOptTask->m_SaveLogFilePath);
 	// @@@@参与施工任务的采集站排序后加入施工任务的仪器索引表
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	for (iter = pInstrumentList->m_oIPInstrumentMap.begin(); 
 		iter != pInstrumentList->m_oIPInstrumentMap.end(); iter++)
 	{
@@ -94,7 +93,6 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 			pOptTask->m_olsOptInstrument.push_back(oOptInstrument);
 		}
 	}
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	pOptTask->m_olsOptInstrument.sort();
 	for (list_iter = pOptTask->m_olsOptInstrument.begin();
 		list_iter != pOptTask->m_olsOptInstrument.end();
@@ -189,7 +187,6 @@ void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt,
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 仪器路由地址索引表
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	for (iter = pRoutList->m_oRoutMap.begin(); iter != pRoutList->m_oRoutMap.end(); iter++)
@@ -200,7 +197,6 @@ void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt,
 			OnResetADCSetLableByRout(iter->second, iOpt, pConstVar);
 		}
 	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 按照路由地址重置ADC参数设置标志位
 void OnResetADCSetLableBySN(unsigned int uiSN, int iDirection, int iOpt, m_oEnvironmentStruct* pEnv)
@@ -334,7 +330,6 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 	// 接收到误码查询帧数
 	int iErrorCodeReturnNum = 0;
 
-	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	for (iter = pEnv->m_pInstrumentList->m_oIPInstrumentMap.begin();
 		iter != pEnv->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
 	{
@@ -384,7 +379,6 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 		// 命令错误计数
 		iErrorCodeCmdNum += pInstrument->m_iFDUErrorCodeCmdCount + pInstrument->m_iLAUXErrorCodeCmdCount;
 	}
-	LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	// 尾包时刻
 	str.Format(_T("尾包时刻查询仪器的总数%d， 应答帧总数%d"), iTailTimeQueryNum, iTailTimeReturnNum);
 	ConvertCStrToStr(str, &strConv);

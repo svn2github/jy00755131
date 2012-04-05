@@ -202,9 +202,7 @@ void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection,
 	// 更新路由对象的路由时间
 	UpdateRoutTime(pRout);
 	// 路由对象加入路由索引表
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	AddRout(pRout->m_uiRoutIP, pRout,&pRoutList->m_oRoutMap);
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 处理单个首包帧
 void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
@@ -227,7 +225,6 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	uiTimeHeadFrame = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiTimeHeadFrame;
 	uiRoutIP = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP;
 	LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
-	EnterCriticalSection(&pHeadFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 	// 判断仪器SN是否在SN索引表中
 	if(TRUE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
 	{
@@ -251,7 +248,6 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 				strFrameData, ErrorType, IDS_ERR_EXPIREDHEADFRAME);
 			return;
 		}
-		EnterCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
 		if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
 			&pHeadFrameThread->m_pRoutList->m_oRoutMap))
 		{
@@ -268,7 +264,6 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 			AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
 				strFrameData, ErrorType, IDS_ERR_ROUT_NOTEXIT);
 		}
-		LeaveCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
 		// 如果仪器在其路由方向上位置稳定次数超过设定次数
 		// 则将该仪器加入IP地址设置队列
 		if (pInstrument->m_iHeadFrameStableNum >= pHeadFrameThread->m_pThread->m_pConstVar->m_iHeadFrameStableTimes)
@@ -305,7 +300,6 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		}
 		else
 		{
-			EnterCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
 			if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP,
 				&pHeadFrameThread->m_pRoutList->m_oRoutMap))
 			{
@@ -324,7 +318,6 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 				AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
 					strFrameData, ErrorType, IDS_ERR_ROUT_NOTEXIT);
 			}
-			LeaveCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
 		}
 
 		if ((pInstrument->m_iInstrumentType == pHeadFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
@@ -352,7 +345,6 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		pInstrument->m_iLineIndex, pInstrument->m_iPointIndex);
 	ConvertCStrToStr(str, &strConv);
 	AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", strConv);
-	LeaveCriticalSection(&pHeadFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理首包帧
 void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThread)

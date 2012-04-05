@@ -232,40 +232,40 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		if (iSampleRate == 250)
 		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 0x43;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 0x56;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 0x13;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 67;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 86;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 19;
 		}
 		else if (iSampleRate == 500)
 		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 0x4b;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 0xa7;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 0x09;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 75;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = -89;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 9;
 		}
 		else if (iSampleRate == 1000)
 		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 0x53;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 0xd3;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 0x04;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 83;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = -45;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 4;
 		}
 		else if (iSampleRate == 2000)
 		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 0x5b;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 0x69;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 0x02;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 91;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 105;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 2;
 		}
 		else if (iSampleRate == 4000)
 		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 0x63;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 0x34;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 0x01;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 99;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 52;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 1;
 		}
 		// 如果不在所选采样率则按照1000采样率采样
 		else
 		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 0x53;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 0xd3;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 0x04;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 83;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = -45;
+			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 4;
 		}
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCSample;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCSampleSize;
@@ -387,6 +387,69 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 	// 发送ADC参数设置帧
 	SendInstrumentADCSetFrame(pADCSetThread->m_pADCSetFrame, pADCSetThread->m_pThread->m_pConstVar);
 }
+// 手动发送ADC参数设置帧
+bool OnSetADCSetFrameByHand(unsigned int uiSN, int iDirection, bool bRout,  char* cpADCSet, 
+	int iADCSetNum, m_oEnvironmentStruct* pEnv)
+{
+	unsigned int uiDstIP = 0;
+	m_oInstrumentStruct* pInstrument = NULL;
+	m_oInstrumentStruct* pInstrumentNext = NULL;
+	if (FALSE == IfIndexExistInMap(uiSN, &pEnv->m_pInstrumentList->m_oSNInstrumentMap))
+	{
+		return false;
+	}
+	pInstrument = GetInstrumentFromMap(uiSN, &pEnv->m_pInstrumentList->m_oSNInstrumentMap);
+	if (bRout == true)
+	{
+		pInstrumentNext = GetNextInstrument(iDirection, pInstrument, pEnv->m_pConstVar);
+		if (pInstrumentNext == NULL)
+		{
+			return false;
+		}
+		uiDstIP = pInstrumentNext->m_uiBroadCastPort;
+	}
+	else
+	{
+		uiDstIP = pInstrument->m_uiIP;
+	}
+
+	EnterCriticalSection(&pEnv->m_pADCSetFrame->m_oSecADCSetFrame);
+	// 命令字个数
+	pEnv->m_pADCSetFrame->m_usCommandWordNum = 0;
+	// 按照路由的广播端口广播发送ADC参数设置命令帧
+	if (bRout == true)
+	{
+		// 目标IP地址
+		pEnv->m_pADCSetFrame->m_pCommandStructSet->m_uiDstIP = pEnv->m_pConstVar->m_uiIPBroadcastAddr;
+		// 广播端口
+		pEnv->m_pADCSetFrame->m_pCommandStructSet->m_uiBroadCastPortSeted = uiDstIP;
+		// 查询命令字内容
+		// 广播端口
+		pEnv->m_pADCSetFrame->m_cpCommandWord[pEnv->m_pADCSetFrame->m_usCommandWordNum] = pEnv->m_pConstVar->m_cCmdBroadCastPortSeted;
+		pEnv->m_pADCSetFrame->m_usCommandWordNum++;
+	}
+	// 按照IP地址发送ADC参数设置命令帧
+	else
+	{
+		// 目标IP地址
+		pEnv->m_pADCSetFrame->m_pCommandStructSet->m_uiDstIP = uiDstIP;
+	}
+
+	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+	pEnv->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pEnv->m_pConstVar->m_usSendSetCmd;
+	// ADC设置命令
+	pEnv->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = cpADCSet;
+	pEnv->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = iADCSetNum;
+	pEnv->m_pADCSetFrame->m_cpCommandWord[pEnv->m_pADCSetFrame->m_usCommandWordNum] = pEnv->m_pConstVar->m_cCmdADCSet;
+	pEnv->m_pADCSetFrame->m_usCommandWordNum++;
+
+	MakeInstrumentFrame(pEnv->m_pADCSetFrame->m_pCommandStructSet, pEnv->m_pConstVar, pEnv->m_pADCSetFrame->m_cpSndFrameData, 
+		pEnv->m_pADCSetFrame->m_cpCommandWord, pEnv->m_pADCSetFrame->m_usCommandWordNum);
+	LeaveCriticalSection(&pEnv->m_pADCSetFrame->m_oSecADCSetFrame);
+	// 发送ADC参数设置帧
+	SendInstrumentADCSetFrame(pEnv->m_pADCSetFrame, pEnv->m_pConstVar);
+	return true;
+}
 // 发送ADC命令设置帧
 void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 {
@@ -398,7 +461,6 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 	hash_map<unsigned int, m_oInstrumentStruct*> ::iterator iter2;
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentNext = NULL;
-	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	for (iter = pADCSetThread->m_pRoutList->m_oADCSetRoutMap.begin();
 		iter != pADCSetThread->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
 	{
@@ -422,8 +484,7 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 			LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		}
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
-	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
+
 	for (iter2 = pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.begin();
 		iter2 != pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.end(); iter2++)
 	{
@@ -435,7 +496,6 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 		pADCSetThread->m_uiADCSetNum++;
 		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理ADC参数设置应答帧
 void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
@@ -457,7 +517,6 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	// 仪器在索引表中
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pADCSetThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -482,7 +541,6 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ProcADCSetReturnFrameOne",
 			strFrameData, ErrorType, IDS_ERR_IPMAP_NOTEXIT);
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 输出接收和发送帧的统计结果
 void OnOutPutADCDataRecResult(m_oADCSetThreadStruct* pADCSetThread)
@@ -502,7 +560,6 @@ void OnOutPutADCDataRecResult(m_oADCSetThreadStruct* pADCSetThread)
 	int iADCDataActualRecFrameNum = 0;
 	// 重发查询帧得到的应答帧数
 	int iADCDataRetransmissionFrameNum = 0;
-	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	for (iter = pADCSetThread->m_pInstrumentList->m_oIPInstrumentMap.begin();
 		iter != pADCSetThread->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
 	{
@@ -522,7 +579,6 @@ void OnOutPutADCDataRecResult(m_oADCSetThreadStruct* pADCSetThread)
 			iADCDataRetransmissionFrameNum += pInstrument->m_uiADCDataRetransmissionFrameNum;
 		}
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	// ADC数据接收帧结果统计
 	str.Format(_T("应收ADC数据帧数%d， 实际接收帧数%d（含重发帧 %d），丢失帧数%d"), iADCDataShouldRecFrameNum, 
 		iADCDataActualRecFrameNum, iADCDataRetransmissionFrameNum, 
@@ -589,8 +645,6 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
-	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	for (iter = pADCSetThread->m_pRoutList->m_oADCSetRoutMap.begin();
 		iter != pADCSetThread->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
 	{
@@ -641,7 +695,6 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 			iter->second->m_bADCSetRout = bADCSetRoutReturn;
 		}
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	for (iter2 = pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.begin();
 		iter2 != pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.end(); iter2++)
 	{
@@ -666,7 +719,6 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 			}
 		}
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	return bReturn;
 }
 // 处理ADC参数设置应答帧
@@ -711,9 +763,6 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 					ProcADCSetReturnFrameOne(pADCSetThread);
 					LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 					LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
-					EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-					pADCSetThread->m_uiADCSetReturnNum++;
-					LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 				}	
 			}		
 		}		
@@ -852,7 +901,6 @@ bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread,
 	pADCSetThread->m_uiLocalSysTime = 0;
 	pADCSetThread->m_uiTBTimeOld = 0;
 	pADCSetThread->m_uiADCSetNum = 0;
-	pADCSetThread->m_uiADCSetReturnNum = 0;
 	pADCSetThread->m_iSampleRate = 1000;
 	if (false == OnInitThread(pADCSetThread->m_pThread, pLogOutPut, pConstVar))
 	{

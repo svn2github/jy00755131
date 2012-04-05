@@ -64,7 +64,6 @@ void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout,
 	}
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	pInstrument = pRout->m_pHead;
 	do 
 	{
@@ -81,7 +80,6 @@ void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout,
 			pRoutList->m_olsTimeDelayTemp.push_back(pInstrumentNext->m_uiRoutIPRight);
 		}
 	} while (pInstrumentNext != pRout->m_pTail);
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 得到时统任务
 void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
@@ -100,7 +98,6 @@ void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar
 	unsigned int uiRoutIP = 0;
 	CString str = _T("");
 	string strConv = "";
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	while(false == pRoutList->m_olsTimeDelayTemp.empty())
 	{
 		uiRoutIP = *pRoutList->m_olsTimeDelayTemp.begin();
@@ -137,7 +134,6 @@ void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar
 			}
 		}
 	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 生成时统任务队列
 void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
@@ -152,7 +148,6 @@ void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pCon
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 清空任务队列
 	pRoutList->m_olsTimeDelayTaskQueue.clear();
 	pRoutList->m_olsTimeDelayTemp.clear();
@@ -161,7 +156,6 @@ void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pCon
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GenTimeDelayTaskQueue", "当前系统稳定，生成时统任务队列");
 	// 得到时统任务
 	GetTimeDelayTask(pRoutList, pConstVar);
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 判断路由方向上是否有采集站
 void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread, 
@@ -181,8 +175,6 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 	bADCStartSample = pADCSetThread->m_bADCStartSample;
 	bADCStopSample = pADCSetThread->m_bADCStopSample;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
-	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	pInstrument = pRout->m_pHead;
 	do 
 	{
@@ -276,8 +268,6 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 	{
 		DeleteRout(pRout->m_uiRoutIP, &pADCSetThread->m_pRoutList->m_oADCSetRoutMap);
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
-	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 生成ADC参数设置任务队列
 void GetADCTaskQueue(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
@@ -288,7 +278,6 @@ void GetADCTaskQueue(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 	}
 	// 仪器路由地址索引表
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
-	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	for (iter = pADCSetThread->m_pRoutList->m_oRoutMap.begin(); 
 		iter != pADCSetThread->m_pRoutList->m_oRoutMap.end(); iter++)
 	{
@@ -298,7 +287,6 @@ void GetADCTaskQueue(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 			GetADCTaskQueueByRout(pADCSetThread, iter->second, iOpt);
 		}
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 }
 // 自动开始ADC参数设置
 void OnADCCmdAuto(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
@@ -310,8 +298,6 @@ void OnADCCmdAuto(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 	// 生成ADC参数设置任务队列
 	GetADCTaskQueue(pADCSetThread, iOpt);
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
-	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	if ((false == pADCSetThread->m_pRoutList->m_oADCSetRoutMap.empty())
 		|| (false == pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.empty()))
 	{
@@ -332,8 +318,6 @@ void OnADCCmdAuto(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 		// ADC参数设置线程开始工作
 		pADCSetThread->m_pThread->m_bWork = true;
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
-	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 }
 // ADC参数设置
@@ -377,6 +361,7 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 	hash_map<unsigned int, m_oRoutStruct*>::iterator  iter;
 	CString str = _T("");
 	string strConv = "";
+	EnterCriticalSection(&pMonitorThread->m_pInstrumentList->m_oSecInstrumentList);
 	EnterCriticalSection(&pMonitorThread->m_pRoutList->m_oSecRoutList);
 	// 删除过期仪器，将过期路由加入路由删除索引表
 	for(iter = pMonitorThread->m_pRoutList->m_oRoutMap.begin();
@@ -431,6 +416,7 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 		DeleteRout(iter->first, &pMonitorThread->m_pRoutList->m_oRoutDeleteMap);
 	}
 	LeaveCriticalSection(&pMonitorThread->m_pRoutList->m_oSecRoutList);
+	LeaveCriticalSection(&pMonitorThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 检查时统设置应答是否接收完全
 bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout, 
@@ -497,7 +483,6 @@ bool CheckTimeDelayReturn(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	}
 	// hash_map迭代器
 	hash_map<unsigned int, m_oRoutStruct*>::iterator  iter;
-	EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 	for(iter = pTimeDelayThread->m_pRoutList->m_oRoutMap.begin(); 
 		iter != pTimeDelayThread->m_pRoutList->m_oRoutMap.end(); iter++)
 	{
@@ -506,7 +491,6 @@ bool CheckTimeDelayReturn(m_oTimeDelayThreadStruct* pTimeDelayThread)
 			return false;
 		}
 	}
-	LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 	return true;
 }
 // 监视时统
@@ -521,21 +505,18 @@ void MonitorTimeDelay(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	unsigned int uiLineChangeTime = 0;
 	bool bLineStableChange = false;
 	uiTimeNow = GetTickCount();
+	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
+	EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 	uiLineChangeTime = pTimeDelayThread->m_pInstrumentList->m_uiLineChangeTime;
 	bLineStableChange = pTimeDelayThread->m_pInstrumentList->m_bLineStableChange;
-	LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
-	// 时统设置线程开始工作
-	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	// 判断系统稳定
 	if (uiTimeNow > (uiLineChangeTime + pTimeDelayThread->m_pThread->m_pConstVar->m_iLineSysStableTime))
 	{
 		// 测网状态由不稳定变为稳定
 		if (bLineStableChange == false)
 		{
-			EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 			pTimeDelayThread->m_pInstrumentList->m_bLineStableChange = true;
-			LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 			// 生成时统任务队列
 			GenTimeDelayTaskQueue(pTimeDelayThread->m_pRoutList, pTimeDelayThread->m_pThread->m_pConstVar);
 			// 清空尾包时刻查询帧接收缓冲区
@@ -545,6 +526,7 @@ void MonitorTimeDelay(m_oTimeDelayThreadStruct* pTimeDelayThread)
 			OnClearSocketRcvBuf(pTimeDelayThread->m_pTimeDelayFrame->m_oTimeDelayFrameSocket, 
 				pTimeDelayThread->m_pThread->m_pConstVar->m_iRcvFrameSize);
 			pTimeDelayThread->m_uiCounter = 0;
+			// 时统设置线程开始工作
 			pTimeDelayThread->m_pThread->m_bWork = true;
 		}
 		else
@@ -564,11 +546,11 @@ void MonitorTimeDelay(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	{
 		// 时统设置线程停止工作
 		pTimeDelayThread->m_pThread->m_bWork = false;
-		EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 		// 测网状态为不稳定
 		pTimeDelayThread->m_pInstrumentList->m_bLineStableChange = false;
-		LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 	}
+	LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
+	LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 	LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 }
 // 监视仪器的ADC参数设置
@@ -582,10 +564,10 @@ void MonitorADCSet(m_oADCSetThreadStruct* pADCSetThread)
 	unsigned int uiTimeNow = 0;
 	unsigned int uiLineChangeTime = 0;
 	uiTimeNow = GetTickCount();
-	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
-	uiLineChangeTime = pADCSetThread->m_pInstrumentList->m_uiLineChangeTime;
-	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
+	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
+	uiLineChangeTime = pADCSetThread->m_pInstrumentList->m_uiLineChangeTime;
 	// 判断系统稳定
 	if (uiTimeNow > (uiLineChangeTime + pADCSetThread->m_pThread->m_pConstVar->m_iLineSysStableTime))
 	{
@@ -605,6 +587,8 @@ void MonitorADCSet(m_oADCSetThreadStruct* pADCSetThread)
 			OnADCStopSampleAuto(pADCSetThread);
 		}
 	}
+	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
+	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 }
 // 监视仪器的误码
@@ -618,10 +602,9 @@ void MonitorErrorCode(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	unsigned int uiTimeNow = 0;
 	unsigned int uiLineChangeTime = 0;
 	uiTimeNow = GetTickCount();
+	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	EnterCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 	uiLineChangeTime = pErrorCodeThread->m_pInstrumentList->m_uiLineChangeTime;
-	LeaveCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
-	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	// 判断系统稳定
 	if (uiTimeNow > (uiLineChangeTime + pErrorCodeThread->m_pThread->m_pConstVar->m_iLineSysStableTime))
 	{
@@ -633,6 +616,7 @@ void MonitorErrorCode(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		// 误码查询线程停止工作
 		pErrorCodeThread->m_pThread->m_bWork = false;
 	}
+	LeaveCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 	LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 }
 // 处理路由监视
@@ -669,12 +653,8 @@ DWORD WINAPI RunMonitorThread(m_oMonitorThreadStruct* pMonitorThread)
 		}
 		if (pMonitorThread->m_pThread->m_bWork == true)
 		{
-			EnterCriticalSection(&pMonitorThread->m_pInstrumentList->m_oSecInstrumentList);
-			EnterCriticalSection(&pMonitorThread->m_pRoutList->m_oSecRoutList);
 			// 处理路由监视
 			ProcMonitor(pMonitorThread);
-			LeaveCriticalSection(&pMonitorThread->m_pRoutList->m_oSecRoutList);
-			LeaveCriticalSection(&pMonitorThread->m_pInstrumentList->m_oSecInstrumentList);
 		}
 		if (pMonitorThread->m_pThread->m_bClose == true)
 		{

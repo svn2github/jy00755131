@@ -52,9 +52,7 @@ void OnSetADCSetByHand(m_oInstrumentListStruct* pInstrumentList)
 	{
 		return;
 	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	pInstrumentList->m_bSetByHand = true;
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 }
 // 初始化仪器队列结构体
 void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar)
@@ -152,7 +150,6 @@ m_oInstrumentStruct* GetFreeInstrument(m_oInstrumentListStruct* pInstrumentList)
 	}
 	m_oInstrumentStruct* pInstrument = NULL;
 	list <m_oInstrumentStruct*>::iterator iter;
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	if(pInstrumentList->m_uiCountFree > 0)	//有空闲仪器
 	{
 		// 从空闲队列中得到一个仪器
@@ -162,7 +159,6 @@ m_oInstrumentStruct* GetFreeInstrument(m_oInstrumentListStruct* pInstrumentList)
 		pInstrument->m_bInUsed = true;	// 设置仪器为使用中
 		pInstrumentList->m_uiCountFree--;	// 空闲仪器总数减1
 	}
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	return pInstrument;
 }
 // 增加一个空闲仪器
@@ -172,13 +168,11 @@ void AddFreeInstrument(m_oInstrumentStruct* pInstrument, m_oInstrumentListStruct
 	{
 		return;
 	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	//初始化仪器
 	OnInstrumentReset(pInstrument, pInstrumentList->m_bSetByHand);
 	//加入空闲队列
 	pInstrumentList->m_olsInstrumentFree.push_back(pInstrument);
 	pInstrumentList->m_uiCountFree++;	// 空闲仪器总数加1
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 }
 // 更新上次测网系统变化时刻
 void UpdateLineChangeTime(m_oInstrumentListStruct* pInstrumentList)
@@ -187,8 +181,6 @@ void UpdateLineChangeTime(m_oInstrumentListStruct* pInstrumentList)
 	{
 		return;
 	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	// 上次测网系统变化时刻
 	pInstrumentList->m_uiLineChangeTime = GetTickCount();
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 }

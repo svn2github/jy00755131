@@ -109,14 +109,11 @@ void DeleteRout(unsigned int uiIndex,
 bool GetRoutByRoutIP(unsigned int uiRoutIP, 
 	m_oRoutListStruct* pRoutList, m_oRoutStruct** ppRout)
 {
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 在路由索引中找到该路由
 	if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pRoutList->m_oRoutMap))
 	{
 		*ppRout = GetRout(uiRoutIP, &pRoutList->m_oRoutMap);
-		LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 		return true;
 	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 	return false;
 }

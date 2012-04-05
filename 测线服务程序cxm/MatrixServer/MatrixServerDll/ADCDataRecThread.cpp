@@ -122,7 +122,6 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	uiADCDataFrameSysTimeNow = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_uiADCSampleSysTime;
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
-	EnterCriticalSection(&pADCDataRecThread->m_pInstrumentList->m_oSecInstrumentList);
 	// 仪器在索引表中
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pADCDataRecThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -269,7 +268,6 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		ConvertCStrToStr(strOut, &strConv);
 		AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", strConv);
 	}
-	LeaveCriticalSection(&pADCDataRecThread->m_pInstrumentList->m_oSecInstrumentList);
 	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 }
 // 处理ADC数据接收帧

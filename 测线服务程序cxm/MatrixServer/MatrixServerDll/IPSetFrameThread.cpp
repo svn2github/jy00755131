@@ -32,7 +32,6 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	uiIPInstrument = pIPSetFrameThread->m_pIPSetFrame->m_pCommandStructReturn->m_uiInstrumentIP;
 	usCommand = pIPSetFrameThread->m_pIPSetFrame->m_pCommandStructReturn->m_usCommand;
 	LeaveCriticalSection(&pIPSetFrameThread->m_pIPSetFrame->m_oSecIPSetFrame);
-	EnterCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 	// 仪器在索引表中
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap))
 	{
@@ -41,10 +40,8 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 		DeleteInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap);
 		// 将仪器加入IP地址索引表
 		pInstrument->m_bIPSetOK = true;
-		EnterCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
 		pRout = GetRout(pInstrument->m_uiRoutIP, &pIPSetFrameThread->m_pRoutList->m_oRoutMap);
 		pRout->m_uiInstrumentNum++;
-		LeaveCriticalSection(&pIPSetFrameThread->m_pRoutList->m_oSecRoutList);
 		AddInstrumentToMap(uiIPInstrument, pInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oIPInstrumentMap);
 		if (usCommand == pIPSetFrameThread->m_pThread->m_pConstVar->m_usSendSetCmd)
 		{
@@ -67,7 +64,6 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetReturnFrameOne", 
 			strFrameData, ErrorType, IDS_ERR_IPSETMAP_NOTEXIT);
 	}
-	LeaveCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理IP地址设置应答帧
 void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
@@ -122,7 +118,6 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	}
 	CString str = _T("");
 	string strConv = "";
-	EnterCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 	// hash_map迭代器
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator  iter;
 	// IP地址设置索引不为空
@@ -181,7 +176,6 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			}
 		}
 	}
-	LeaveCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 线程等待函数
 void WaitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)

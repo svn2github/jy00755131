@@ -640,26 +640,15 @@ bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct
 		}
 		else if (pCommandWord[i] == pConstVar->m_cCmdADCSet)
 		{
-			if (pCommand->m_iADCSetNum == iFramePacketSize4B)
-			{
-				memcpy(&pFrameData[iPos], &pCommand->m_cpADCSet[0], iFramePacketSize4B);
-				iPos += iFramePacketSize4B;
-			}
-			else
-			{
-				memcpy(&pFrameData[iPos], &pCommand->m_cpADCSet[0], iFramePacketSize4B);
-				iPos += iFramePacketSize4B;
-				for (int j = iFramePacketSize4B; j < pCommand->m_iADCSetNum; j += iFramePacketSize4B)
-				{
-					memcpy(&pFrameData[iPos], &pConstVar->m_cCmdADCSet, iFrameCmdSize1B);
-					iPos += iFrameCmdSize1B;
-					memcpy(&pFrameData[iPos], &pCommand->m_cpADCSet[j], iFramePacketSize4B);
-					iPos += iFramePacketSize4B;
-				}
-			}
-			memcpy(&pFrameData[iPos], &pCommand->m_cpADCSet[pCommand->m_iADCSetNum], iFramePacketSize4B);
+			memcpy(&pFrameData[iPos], &pCommand->m_cpADCSet[0], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
-			pCommand->m_iADCSetNum += iFramePacketSize4B;
+			for (int j = iFramePacketSize4B; j < pCommand->m_iADCSetNum; j += iFramePacketSize4B)
+			{
+				memcpy(&pFrameData[iPos], &pConstVar->m_cCmdADCSet, iFrameCmdSize1B);
+				iPos += iFrameCmdSize1B;
+				memcpy(&pFrameData[iPos], &pCommand->m_cpADCSet[j], iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
+			}
 		}
 		else if (pCommandWord[i] == pConstVar->m_cCmdNetTime)
 		{

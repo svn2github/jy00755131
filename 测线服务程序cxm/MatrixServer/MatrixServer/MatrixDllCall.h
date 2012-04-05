@@ -43,6 +43,9 @@ public:
 	void Dll_OpenLAUXRoutPower_ByHand(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet);
 	// DLL得到路由方向上仪器个数
 	unsigned int Dll_GetRoutInstrumentNum(unsigned int uiSN, int iDirection);
+	// DLL手动发送ADC参数设置帧
+	void Dll_OnSetADCSetFrameByHand(unsigned int uiSN, int iDirection, bool bRout, 
+		char* cpADCSet, int iADCSetNum);
 	// DLL得到采样数据处理的回调函数
 	void Dll_GetProSampleData_CallBack(void);
 };

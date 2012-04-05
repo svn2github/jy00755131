@@ -82,10 +82,8 @@ void FreeRoutFromMap(unsigned int uiRoutIP, m_oRoutListStruct* pRoutList)
 	}
 	m_oRoutStruct* pRout = NULL;
 	CString str = _T("");
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	pRout = GetRout(uiRoutIP, &pRoutList->m_oRoutMap);
 	AddRout(uiRoutIP, pRout, &pRoutList->m_oRoutDeleteMap);
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 回收一个仪器
 void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument, 
@@ -105,7 +103,6 @@ void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 	}
 	CString str = _T("");
 	string strConv = "";
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	// 从SN索引表中删除该仪器指针
 	DeleteInstrumentFromMap(pInstrument->m_uiSN, &pInstrumentList->m_oSNInstrumentMap);
 	// 从IP地址设置索引表中删除该仪器指针
@@ -114,7 +111,6 @@ void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oIPInstrumentMap);
 	// 从ADC参数设置索引表中删除该仪器指针
 	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oADCSetInstrumentMap);
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	str.Format(_T("删除仪器的SN = 0x%x，路由 = 0x%x"), pInstrument->m_uiSN, pInstrument->m_uiRoutIP);
 	ConvertCStrToStr(str, &strConv);
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "FreeInstrumentFromMap", strConv);
@@ -208,8 +204,6 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	uiRoutIP = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiRoutIP;
 	LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包"), uiSN, uiRoutIP);
-	EnterCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);
-	EnterCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
 	// 判断仪器SN是否在SN索引表中
 	if(TRUE == IfIndexExistInMap(uiSN, &pTailFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
 	{
@@ -279,8 +273,6 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, 
 			"ProcTailFrameOne", strConv);
 	}
-	LeaveCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
-	LeaveCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理尾包帧
 void ProcTailFrame(m_oTailFrameThreadStruct* pTailFrameThread)

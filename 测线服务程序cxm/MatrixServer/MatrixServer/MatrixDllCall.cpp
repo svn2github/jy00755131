@@ -32,6 +32,9 @@ typedef bool (*On_GetRoutInstrumentNum)(unsigned int uiSN, int iDirection,
 // 采样数据回调函数
 typedef void (*Get_ProSampleDateCallBack)(m_oADCDataRecThreadStruct* pADCDataRecThread, 
 	ProSampleDateCallBack pCallBack);
+// 手动发送ADC参数设置帧
+typedef bool (*On_SetADCSetFrameByHand)(unsigned int uiSN, int iDirection, bool bRout, 
+	char* cpADCSet, int iADCSetNum, m_oEnvironmentStruct* pEnv);
 void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int _iSize, unsigned int _uiSN)
 {
 
@@ -376,6 +379,27 @@ unsigned int CMatrixDllCall::Dll_GetRoutInstrumentNum(unsigned int uiSN, int iDi
 	return uiInstrumentNum;
 }
 
+// DLL手动发送ADC参数设置帧
+void CMatrixDllCall::Dll_OnSetADCSetFrameByHand(unsigned int uiSN, int iDirection, bool bRout, 
+	char* cpADCSet, int iADCSetNum)
+{
+	On_SetADCSetFrameByHand Dll_On_SetADCSetFrameByHand = NULL;
+	Dll_On_SetADCSetFrameByHand = (On_SetADCSetFrameByHand)GetProcAddress(m_hDllMod, "OnSetADCSetFrameByHand");
+	if (!Dll_On_SetADCSetFrameByHand)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		if (false == (*Dll_On_SetADCSetFrameByHand)(uiSN, iDirection, bRout, cpADCSet, iADCSetNum, m_pEnv))
+		{
+			AfxMessageBox(_T("该参数未成功发送！"));
+		}
+	}
+}
 // DLL得到采样数据处理的回调函数
 void CMatrixDllCall::Dll_GetProSampleData_CallBack(void)
 {

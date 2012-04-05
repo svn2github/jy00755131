@@ -1213,8 +1213,6 @@ typedef struct ADCSetThread_Struct
 	unsigned int m_uiTBTimeOld;
 	// ADC参数设置仪器个数
 	unsigned int m_uiADCSetNum;
-	// ADC参数设置应答仪器个数
-	unsigned int m_uiADCSetReturnNum;
 	// 采样率
 	int m_iSampleRate;
 	// 从XML文件中解析得到的信息
@@ -2071,6 +2069,9 @@ MatrixServerDll_API m_oADCSetThreadStruct* OnCreateADCSetThread(void);
 // 发送ADC命令设置帧
 MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout, 
 	unsigned int uiDstIP);
+// 手动发送ADC参数设置帧
+MatrixServerDll_API bool OnSetADCSetFrameByHand(unsigned int uiSN, int iDirection, bool bRout, 
+	char* cpADCSet, int iADCSetNum, m_oEnvironmentStruct* pEnv);
 // 发送ADC命令设置帧
 MatrixServerDll_API void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread);
 // 处理ADC参数设置应答帧

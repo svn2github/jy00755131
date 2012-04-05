@@ -79,7 +79,6 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	cFDUErrorCodeDataCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeDataCount;
 	cFDUErrorCodeCmdCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeCmdCount;
 	LeaveCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
-	EnterCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 	// 仪器在索引表中
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pErrorCodeThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -226,7 +225,6 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "ProcErrorCodeReturnFrameOne",
 			strFrameData, ErrorType, IDS_ERR_IPSETMAP_NOTEXIT);
 	}
-	LeaveCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理误码查询应答帧
 void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
@@ -286,7 +284,6 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	CString str = _T("");
 	string strConv = "";
-	EnterCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
 	for (iter = pErrorCodeThread->m_pRoutList->m_oRoutMap.begin();
 		iter != pErrorCodeThread->m_pRoutList->m_oRoutMap.end();
 		iter++)
@@ -312,7 +309,6 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);
 		}
 	}
-	LeaveCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
 }
 // 线程函数
 DWORD WINAPI RunErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)

@@ -265,30 +265,25 @@ bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 	unsigned int& uiRoutIP)
 {
 	m_oInstrumentStruct* pInstrument = NULL;
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	if (TRUE == IfIndexExistInMap(uiSN, &pInstrumentList->m_oSNInstrumentMap))
 	{
 		pInstrument = GetInstrumentFromMap(uiSN, &pInstrumentList->m_oSNInstrumentMap);
 		if (iDirection == pConstVar->m_iDirectionLeft)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIPLeft;
-			LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 			return true;
 		}
 		else if (iDirection == pConstVar->m_iDirectionRight)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIPRight;
-			LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 			return true;
 		}
 		else if (iDirection == pConstVar->m_iDirectionCenter)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIP;
-			LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 			return true;
 		}
 	}
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	return false;
 }
 /**
