@@ -174,13 +174,16 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		{
 			pRout->m_pTail = NULL;
 		}
+		if (pInstrumentDelete->m_bIPSetOK == true)
+		{
+			pRout->m_uiInstrumentNum--;
+		}
 		// 回收一个仪器
 		FreeInstrumentFromMap(pInstrumentDelete, pInstrumentList, pRoutList, pConstVar);
 		if (pRout->m_olsRoutInstrument.size() > 0)
 		{
 			pRout->m_olsRoutInstrument.pop_back();
 		}
-		pRout->m_uiInstrumentNum--;
 	}
 }
 // 处理单个尾包帧
@@ -209,6 +212,15 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	{
 		// 在索引表中则找到该仪器,得到该仪器指针
 		pInstrument = GetInstrumentFromMap(uiSN, &pTailFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
+		// 仪器设置IP成功且路由地址发生变化
+		if ((pInstrument->m_bIPSetOK == true) && (pInstrument->m_uiRoutIP != uiRoutIP))
+		{
+			GetFrameInfo(pTailFrameThread->m_pTailFrame->m_cpRcvFrameData,
+				pTailFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+			AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne",
+				strFrameData, ErrorType, IDS_ERR_ROUT_CHANGE);
+			return;
+		}
 		// 尾包计数器加一
 		pInstrument->m_iTailFrameCount++;
 		// 		// 更新尾包仪器的尾包时刻

@@ -13,19 +13,16 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="整理">
-      <UniqueIdentifier>{73a3fedc-48b0-4fc4-a67d-806b3829e662}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="整理\杂项">
-      <UniqueIdentifier>{7644f085-e7e8-42ec-be9e-ac5e016ffff2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="整理\杂项\XML">
-      <UniqueIdentifier>{9a59ad32-1f15-453d-b4be-b2c8353cf61a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="整理\帧">
+    <Filter Include="帧">
       <UniqueIdentifier>{f1120f52-afc2-4c9a-a73f-36d20c55510c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="整理\线程">
+    <Filter Include="杂项">
+      <UniqueIdentifier>{7644f085-e7e8-42ec-be9e-ac5e016ffff2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="杂项\XML">
+      <UniqueIdentifier>{9a59ad32-1f15-453d-b4be-b2c8353cf61a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="线程">
       <UniqueIdentifier>{19b019a2-2c7f-441b-81db-d57f447203e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -47,19 +44,19 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CXMLDOMNodeList.h">
-      <Filter>整理\杂项\XML</Filter>
+      <Filter>杂项\XML</Filter>
     </ClInclude>
     <ClInclude Include="CXMLDOMDocument.h">
-      <Filter>整理\杂项\XML</Filter>
+      <Filter>杂项\XML</Filter>
     </ClInclude>
     <ClInclude Include="CXMLDOMElement.h">
-      <Filter>整理\杂项\XML</Filter>
+      <Filter>杂项\XML</Filter>
     </ClInclude>
     <ClInclude Include="CXMLDOMNode.h">
-      <Filter>整理\杂项\XML</Filter>
+      <Filter>杂项\XML</Filter>
     </ClInclude>
     <ClInclude Include="XMLDOMTool.h">
-      <Filter>整理\杂项\XML</Filter>
+      <Filter>杂项\XML</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -70,109 +67,109 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="XMLDOMTool.cpp">
-      <Filter>整理\杂项\XML</Filter>
+      <Filter>杂项\XML</Filter>
     </ClCompile>
     <ClCompile Include="xml.cpp">
-      <Filter>整理\杂项\XML</Filter>
+      <Filter>杂项\XML</Filter>
     </ClCompile>
     <ClCompile Include="PerformanceFunc.cpp">
-      <Filter>整理\杂项</Filter>
+      <Filter>杂项</Filter>
     </ClCompile>
     <ClCompile Include="ConstVar.cpp">
-      <Filter>整理\杂项</Filter>
+      <Filter>杂项</Filter>
     </ClCompile>
     <ClCompile Include="LogOutPut.cpp">
-      <Filter>整理\杂项</Filter>
+      <Filter>杂项</Filter>
     </ClCompile>
     <ClCompile Include="ADCDataFrame.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="TimeDelayFrame.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="ADCSetFrame.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="ErrorCodeFrame.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="HeadFrame.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="HeartBeatFrame.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="Instrument.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="InstrumentList.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="IPSetFrame.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="Rout.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="RoutList.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="TailFrame.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="TailTimeFrame.cpp">
-      <Filter>整理\帧</Filter>
+      <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="ADCDataBuf.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="TimeDelayThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="ADCDataBufArray.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="ADCDataRecThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="ADCDataSaveThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="ADCLostFrame.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="ADCSetThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="ErrorCodeThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="HeadFrameThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="HeartBeatThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="IPSetFrameThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="LogOutPutThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="MonitorThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="OptTask.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="OptTaskArray.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="TailFrameThread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
     <ClCompile Include="Thread.cpp">
-      <Filter>整理\线程</Filter>
+      <Filter>线程</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

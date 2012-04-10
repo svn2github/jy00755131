@@ -21,8 +21,14 @@
 
 // 应答命令位（区别应答，进行与操作判别）
 #define CmdReturnBit						(0x0001 << 15)
+// 命令类型为设置命令
+#define CmdTypeSet							0x01
+// 命令类型为应答
+#define CmdTypeReturn						0x02
 // TCP/IP帧长限制
 #define FrameSizeLimit						1400
+// 帧内容限制
+#define FrameInfoSizeLimit					(FrameSizeLimit - 34)
 // 帧头
 #define FrameHead1							0xaa
 // 帧头
@@ -197,12 +203,14 @@
 /************************************************************************/
 typedef struct CommFrame_Struct
 {
-	// 帧头
-	char m_cFrameHead[4];
-	// 从帧长之后到帧尾（包含帧尾）为帧内容总长度，需要小于帧长限制
-	unsigned short m_usFrameLength;
+// 	// 帧头
+// 	char m_cFrameHead[4];
+// 	// 从帧长之后到帧尾（包含帧尾）为帧内容总长度，需要小于帧长限制
+// 	unsigned short m_usFrameLength;
 	/** 帧命令字、时间戳、包流水号均相同，
 	则认为是同一帧*/
+	// 帧命令类型，为1则为命令，为3则为应答
+	char m_cCmdType;
 	// 帧命令字，表明帧的功能
 	unsigned short m_usCmd;
 	// 服务端时间戳
@@ -222,11 +230,12 @@ typedef struct CommFrame_Struct
 	// 帧内容长度 = 帧内容总长度 – 2 – 4 – 4 – 4 - 1；
 	/** FieldOn命令会应答4个字节表明客户端FieldOn需要等待的时间，
 	以秒为单位为0则执行，否则等待)。*/
+	unsigned short m_usFrameInfoSize;
 	// 帧内容指针，如果为查询命令则帧内容的前两个字节分别定义行号和区域号
-	char* m_pcFrameInfo;
-	// 帧尾
-	char m_cFrameTail;
-}m_oCommFrameStruct;
+	char m_pcFrameInfo[FrameInfoSizeLimit];
+// 	// 帧尾
+// 	char m_cFrameTail;
+}m_oCommFrameStruct, *m_oCommFrameStructPtr;
 // SURVEY SETUP结构体
 // Survey
 typedef struct Survey_Struct

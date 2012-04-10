@@ -105,7 +105,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h" />
+    <ClInclude Include="ClientRecFrame.h" />
     <ClInclude Include="Com.h" />
+    <ClInclude Include="ComClient.h" />
+    <ClInclude Include="CommProtocol.h" />
+    <ClInclude Include="ComServer.h" />
     <ClInclude Include="ConnectClients.h" />
     <ClInclude Include="CXMLDOMDocument.h" />
     <ClInclude Include="CXMLDOMElement.h" />
@@ -123,7 +127,10 @@
     <ClInclude Include="XMLDOMTool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ClientRecFrame.cpp" />
     <ClCompile Include="Com.cpp" />
+    <ClCompile Include="ComClient.cpp" />
+    <ClCompile Include="ComServer.cpp" />
     <ClCompile Include="ConnectClients.cpp" />
     <ClCompile Include="MatrixDllCall.cpp" />
     <ClCompile Include="MatrixServer.cpp" />

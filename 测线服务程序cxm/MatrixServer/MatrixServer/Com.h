@@ -1,6 +1,7 @@
 #pragma once
-#include "ThreadComm.h"
-#include "ThreadSend.h"
+#include "ComServer.h"
+// #include "ThreadComm.h"
+// #include "ThreadSend.h"
 
 class CCom
 {
@@ -8,10 +9,12 @@ public:
 	CCom(void);
 	~CCom(void);
 public:
-	// 网络连接和接收线程
-	CThreadComm m_oThreadComm;
-	// 网络发送线程
-	CThreadSend m_oThreadSend;
+	// 服务端CAsyncSocket
+	CComServer m_oServerAsyncSocket;
+// 	// 网络连接和接收线程
+// 	CThreadComm m_oThreadComm;
+// 	// 网络发送线程
+// 	CThreadSend m_oThreadSend;
 public:
 	// 初始化
 	void OnInit(void);

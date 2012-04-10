@@ -75,6 +75,18 @@
     <ClInclude Include="ThreadComm.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ComClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ComServer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommProtocol.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientRecFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MatrixServer.cpp">
@@ -102,6 +114,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ThreadComm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ComClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ComServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientRecFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
