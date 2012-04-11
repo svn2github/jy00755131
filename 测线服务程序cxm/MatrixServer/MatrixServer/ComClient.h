@@ -1,37 +1,27 @@
 #pragma once
 #include "ClientRecFrame.h"
-#include <hash_map>
-using stdext::hash_map;
-#define RecBufSize	819200
+#include "ClientRecThread.h"
+#include "ClientSocket.h"
 
 // CComClient 命令目标
 
-class CComClient : public CAsyncSocket
+class CComClient
 {
 public:
 	CComClient();
 	virtual ~CComClient();
-	virtual void OnReceive(int nErrorCode);
-	virtual void OnSend(int nErrorCode);
-	virtual void OnClose(int nErrorCode);
 public:
-	// 客户端连接索引指针
-	hash_map<SOCKET, CComClient*>* m_pComClientMap;
-	// 客户端接收帧成员类
+	// 接收客户端帧成员类
 	CClientRecFrame m_oClientRecFrame;
-	// 接收缓冲区大小
-	char m_cRecBuf[RecBufSize];
-	// 接收点坐标
-	int m_iPosRec;
-	// 处理点坐标
-	int m_iPosProc;
-	// 帧内容长度
-	unsigned short m_usFrameInfoSize;
+	// 接收客户端帧的处理线程成员类
+	CClientRecThread m_oClientRecThread;
+	// 接收客户端通讯成员类
+	CClientSocket m_oClientSocket;
 public:
 	// 创建一个客户端连接信息
-	void CreateSocketInformation();
+	void OnInit();
 	// 释放一个客户端连接信息
-	void FreeSocketInformation();
+	void OnClose();
 };
 
 

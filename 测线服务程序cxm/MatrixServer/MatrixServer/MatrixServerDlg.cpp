@@ -216,7 +216,7 @@ void CMatrixServerDlg::OnBnClickedBnStartsampleByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LAUXSN), 
-		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 2, 4000);
+		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 2, 1000);
 }
 
 

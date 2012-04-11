@@ -1213,8 +1213,6 @@ typedef struct ADCSetThread_Struct
 	unsigned int m_uiTBTimeOld;
 	// ADC参数设置仪器个数
 	unsigned int m_uiADCSetNum;
-	// 采样率
-	int m_iSampleRate;
 	// 从XML文件中解析得到的信息
 	m_oInstrumentCommInfoStruct* m_pCommInfo;
 	// 输出日志指针
@@ -2246,7 +2244,7 @@ MatrixServerDll_API void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iO
 // ADC参数设置
 MatrixServerDll_API void OnADCSet(m_oEnvironmentStruct* pEnv);
 // ADC开始采集命令
-MatrixServerDll_API void OnADCStartSample(m_oEnvironmentStruct* pEnv, int iSampleRate = 1000);
+MatrixServerDll_API void OnADCStartSample(m_oEnvironmentStruct* pEnv);
 // ADC停止采集命令
 MatrixServerDll_API void OnADCStopSample(m_oEnvironmentStruct* pEnv);
 // 输出接收和发送帧的统计结果

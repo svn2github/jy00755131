@@ -1,8 +1,6 @@
 #pragma once
 #include "ComClient.h"
 
-
-#define ConnectClientMaxNum		5
 // CComServer ÃüÁîÄ¿±ê
 
 class CComServer : public CAsyncSocket

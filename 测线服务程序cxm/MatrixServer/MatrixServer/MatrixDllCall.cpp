@@ -14,7 +14,7 @@ typedef void (*On_Stop)(m_oEnvironmentStruct* pEnv);
 // 关闭实例
 typedef void (*Close_Instance)(m_oEnvironmentStruct* pEnv);
 // 开始采样
-typedef void (*On_StartSample_All)(m_oEnvironmentStruct* pEnv, int iSampleRate);
+typedef void (*On_StartSample_All)(m_oEnvironmentStruct* pEnv);
 // 停止采样
 typedef void (*On_StopSample_All)(m_oEnvironmentStruct* pEnv);
 // AD参数设置
@@ -135,8 +135,74 @@ void CMatrixDllCall::Dll_StartSample(int iSampleRate)
 	}
 	else
 	{
+		EnterCriticalSection(&m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+// 		// 经过高通滤波器
+// 		if (iSampleRate == 250)
+// 		{
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 67;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = 86;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 19;
+// 		}
+// 		else if (iSampleRate == 500)
+// 		{
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 75;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = -89;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 9;
+// 		}
+// 		else if (iSampleRate == 1000)
+// 		{
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 83;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = -45;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 4;
+// 		}
+// 		else if (iSampleRate == 2000)
+// 		{
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 91;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = 105;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 2;
+// 		}
+// 		else if (iSampleRate == 4000)
+// 		{
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 99;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = 52;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 1;
+// 		}
+// 		// 如果不在所选采样率则按照1000采样率采样
+// 		else
+// 		{
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 83;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = -45;
+// 			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 4;
+// 		}
+		// 不经过高通滤波
+		if (iSampleRate == 250)
+		{
+			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 66;
+		}
+		else if (iSampleRate == 500)
+		{
+			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 74;
+		}
+		else if (iSampleRate == 1000)
+		{
+			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 82;
+		}
+		else if (iSampleRate == 2000)
+		{
+			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 90;
+		}
+		else if (iSampleRate == 4000)
+		{
+			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 98;
+		}
+		// 如果不在所选采样率则按照1000采样率采样
+		else
+		{
+			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 82;
+		}
+		LeaveCriticalSection(&m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
 		// call the function
-		(*Dll_On_StartSample)(m_pEnv, iSampleRate);
+		(*Dll_On_StartSample)(m_pEnv);
 	}
 }
 
@@ -286,8 +352,73 @@ void CMatrixDllCall::Dll_ADCSetPart(unsigned int uiSN, int iRoutDirection, int i
 		}
 		else if (iOpt == 2)
 		{
+			EnterCriticalSection(&m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+// 			// 经过高通滤波器
+// 			if (iSampleRate == 250)
+// 			{
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 67;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = 86;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 19;
+// 			}
+// 			else if (iSampleRate == 500)
+// 			{
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 75;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = -89;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 9;
+// 			}
+// 			else if (iSampleRate == 1000)
+// 			{
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 83;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = -45;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 4;
+// 			}
+// 			else if (iSampleRate == 2000)
+// 			{
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 91;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = 105;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 2;
+// 			}
+// 			else if (iSampleRate == 4000)
+// 			{
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 99;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = 52;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 1;
+// 			}
+// 			// 如果不在所选采样率则按照1000采样率采样
+// 			else
+// 			{
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 83;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[6] = -45;
+// 				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[7] = 4;
+// 			}
+			// 不经过高通滤波
+			if (iSampleRate == 250)
+			{
+				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 66;
+			}
+			else if (iSampleRate == 500)
+			{
+				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 74;
+			}
+			else if (iSampleRate == 1000)
+			{
+				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 82;
+			}
+			else if (iSampleRate == 2000)
+			{
+				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 90;
+			}
+			else if (iSampleRate == 4000)
+			{
+				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 98;
+			}
+			// 如果不在所选采样率则按照1000采样率采样
+			else
+			{
+				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 82;
+			}
+			LeaveCriticalSection(&m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
 			EnterCriticalSection(&m_pEnv->m_pADCSetThread->m_oSecADCSetThread);
-			m_pEnv->m_pADCSetThread->m_iSampleRate = iSampleRate;
 			m_pEnv->m_pADCSetThread->m_bADCStartSample = true;
 			m_pEnv->m_pADCSetThread->m_bADCStopSample = false;
 			LeaveCriticalSection(&m_pEnv->m_pADCSetThread->m_oSecADCSetThread);

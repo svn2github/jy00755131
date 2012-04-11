@@ -63,18 +63,6 @@
     <ClInclude Include="Com.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadSend.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ConnectClients.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientInfo.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadComm.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ComClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -85,6 +73,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ClientRecFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientRecThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSocket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientFrame.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,18 +101,6 @@
     <ClCompile Include="Com.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ThreadSend.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ConnectClients.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientInfo.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadComm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ComClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -123,6 +108,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ClientRecFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientRecThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

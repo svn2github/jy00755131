@@ -25,10 +25,10 @@ void CComServer::OnAccept(int nErrorCode)
 	// TODO: 在此添加专用代码和/或调用基类
 	CComClient* pComClient = NULL;
 	pComClient = new CComClient;
-	if (CAsyncSocket::Accept(*pComClient))
+	if (CAsyncSocket::Accept(pComClient->m_oClientSocket))
 	{
-		pComClient->m_pComClientMap = &m_oComClientMap;
-		pComClient->CreateSocketInformation();
+		pComClient->m_oClientSocket.m_pComClientMap = &m_oComClientMap;
+		pComClient->OnInit();
 	}
 	else
 	{
@@ -50,7 +50,7 @@ void CComServer::OnInit(unsigned int uiSocketPort, int iSocketType, LPCTSTR lpsz
 		PostQuitMessage(0);
 		return;
 	}
-	CAsyncSocket::Listen(ConnectClientMaxNum);
+	CAsyncSocket::Listen(ListenClientMaxNum);
 	m_oComClientMap.clear();
 }
 
@@ -59,10 +59,11 @@ void CComServer::OnInit(unsigned int uiSocketPort, int iSocketType, LPCTSTR lpsz
 void CComServer::OnClose(void)
 {
 	hash_map<SOCKET, CComClient*>::iterator iter;
-	for (iter = m_oComClientMap.begin(); iter != m_oComClientMap.end();)
+	int iSize = m_oComClientMap.size();
+	for (int i=0; i<iSize; i++)
 	{
-		delete iter->second;
-		m_oComClientMap.erase(iter++);
+		iter = m_oComClientMap.begin();
+		iter->second->OnClose();
 	}
-	CAsyncSocket::Close();
+	Close();
 }

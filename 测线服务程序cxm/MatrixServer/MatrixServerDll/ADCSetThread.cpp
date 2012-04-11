@@ -29,12 +29,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 	unsigned int uiADCSetOperationNb = 0;
 	unsigned int uiLocalSysTime = 0;
 	unsigned int uiTBTimeOld = 0;
-	int iSampleRate = 0;
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
 	uiLocalSysTime = pADCSetThread->m_uiLocalSysTime;
 	uiTBTimeOld = pADCSetThread->m_uiTBTimeOld;
-	iSampleRate = pADCSetThread->m_iSampleRate;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 
 	EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
@@ -230,43 +228,6 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 设置ADC数据采样率等参数
 		// @@@需要界面设置采样率等参数，暂选为1K采样率
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		if (iSampleRate == 250)
-		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 67;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 86;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 19;
-		}
-		else if (iSampleRate == 500)
-		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 75;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = -89;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 9;
-		}
-		else if (iSampleRate == 1000)
-		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 83;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = -45;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 4;
-		}
-		else if (iSampleRate == 2000)
-		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 91;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 105;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 2;
-		}
-		else if (iSampleRate == 4000)
-		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 99;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = 52;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 1;
-		}
-		// 如果不在所选采样率则按照1000采样率采样
-		else
-		{
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[4] = 83;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[6] = -45;
-			pADCSetThread->m_pCommInfo->m_cpSetADCSample[7] = 4;
-		}
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCSample;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCSampleSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
@@ -901,7 +862,6 @@ bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread,
 	pADCSetThread->m_uiLocalSysTime = 0;
 	pADCSetThread->m_uiTBTimeOld = 0;
 	pADCSetThread->m_uiADCSetNum = 0;
-	pADCSetThread->m_iSampleRate = 1000;
 	if (false == OnInitThread(pADCSetThread->m_pThread, pLogOutPut, pConstVar))
 	{
 		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);

@@ -1,3 +1,6 @@
+
+#ifndef _CommProtocol_H
+#define _CommProtocol_H
 /************************************************************************/
 /* 常量设置                                                             */
 /************************************************************************/
@@ -11,6 +14,20 @@
 #define DataBytes							3
 // 数据表网格大小
 #define DataTableWindowSize					338
+// C/S接收缓冲区大小
+#define ServerRecBufferSize					8192000
+// C/S发送缓冲区大小
+#define ServerSndBufferSize					8192000
+// 最多连接的客户端个数
+#define ListenClientMaxNum					5
+// 网络接收缓冲区大小
+#define ServerRecBufSize					8192000
+// 最大接收帧结构体数
+#define FrameStructNumMax				5800
+// 线程关闭的等待时间
+#define CloseClientRecThreadTimes			500
+// 线程执行的间隔时间
+#define RunClientRecThreadTimes				100
 
 /************************************************************************/
 /* 命令字和通讯协议                                                     */
@@ -27,8 +44,16 @@
 #define CmdTypeReturn						0x02
 // TCP/IP帧长限制
 #define FrameSizeLimit						1400
+// 帧头长度
+#define FrameHeadSize						4
+// 帧长长度
+#define FrameLengthSize						2
+// 帧头信息长度
+#define FrameHeadInfoSize					27
+// 帧尾长度
+#define FrameTailSize						1
 // 帧内容限制
-#define FrameInfoSizeLimit					(FrameSizeLimit - 34)
+#define FrameInfoSizeLimit					(FrameSizeLimit-FrameHeadSize-FrameLengthSize-FrameHeadInfoSize-FrameTailSize)
 // 帧头
 #define FrameHead1							0xaa
 // 帧头
@@ -546,3 +571,5 @@ typedef struct InstrumentNet_Struct
 	/** 是否哑道*/
 	bool m_bMute;
 }m_oInstrumentNetStruct;
+
+#endif

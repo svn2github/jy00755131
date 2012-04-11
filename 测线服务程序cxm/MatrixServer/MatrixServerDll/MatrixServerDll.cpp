@@ -239,7 +239,7 @@ void OnADCSet(m_oEnvironmentStruct* pEnv)
 	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCSetOptNb, pEnv->m_pConstVar);
 }
 // ADC开始采集命令
-void OnADCStartSample(m_oEnvironmentStruct* pEnv, int iSampleRate)
+void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 {
 	if (pEnv == NULL)
 	{
@@ -252,7 +252,6 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv, int iSampleRate)
 	// 产生一个施工任务
 	//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
 	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
-	pEnv->m_pADCSetThread->m_iSampleRate = iSampleRate;
 	pEnv->m_pADCSetThread->m_bADCStartSample = true;
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
 	// 重置ADC开始采集命令成功的标志位

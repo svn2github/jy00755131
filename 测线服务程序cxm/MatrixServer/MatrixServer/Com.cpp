@@ -19,20 +19,12 @@ void CCom::OnInit(void)
 	OnInitSocketLib();
 	// 初始化服务端AsyncSocket
 	m_oServerAsyncSocket.OnInit();
-// 	// 初始化网络连接和接收线程
-// 	m_oThreadComm.OnInit();
-// 	// 初始化网络发送线程
-// 	m_oThreadSend.OnInit();
 }
 
 
 // 关闭
 void CCom::OnClose(void)
 {
-// 	// 关闭网络连接和接收线程
-// 	m_oThreadComm.OnClose();
-// 	// 关闭网络发送线程
-// 	m_oThreadSend.OnClose();
 	// 关闭服务端AsyncSocket
 	m_oServerAsyncSocket.OnClose();
 	// 释放套接字库

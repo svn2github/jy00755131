@@ -230,15 +230,6 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	{
 		// 在索引表中则找到该仪器,得到该仪器指针
 		pInstrument = GetInstrumentFromMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
-		// 判断首包时刻是否发生变化
-		if (pInstrument->m_uiTimeHeadFrame != uiTimeHeadFrame)
-		{
-			GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
-				pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
-			AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
-				strFrameData, ErrorType, IDS_ERR_HEADFRAMETIME);
-			pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
-		}
 		// 判断仪器是否已经设置IP
 		if (pInstrument->m_bIPSetOK == true)
 		{
@@ -247,6 +238,15 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 			AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
 				strFrameData, ErrorType, IDS_ERR_EXPIREDHEADFRAME);
 			return;
+		}
+		// 判断首包时刻是否发生变化
+		if (pInstrument->m_uiTimeHeadFrame != uiTimeHeadFrame)
+		{
+			GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
+				pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+			AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
+				strFrameData, ErrorType, IDS_ERR_HEADFRAMETIME);
+			pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
 		}
 		if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
 			&pHeadFrameThread->m_pRoutList->m_oRoutMap))
