@@ -497,6 +497,11 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 						ConvertCStrToStr(str, &strConv);
 						AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "RunTimeDelayThread", 
 							strConv, ErrorType, IDS_ERR_ROUT_NOTEXIT);
+						// 删除该路由时统任务
+						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
+						pTimeDelayThread->m_uiCounter = 0;
+						LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+						continue;
 					}
 					// 处理尾包时刻查询
 					ProcTailTimeFrame(pRout, pTimeDelayThread);

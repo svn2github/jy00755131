@@ -560,32 +560,20 @@ void OnADCSetNextOpt(m_oADCSetThreadStruct* pADCSetThread)
 	pADCSetThread->m_uiADCSetOperationNb++;
 	pADCSetThread->m_uiCounter = 0;
 	// 完成ADC参数设置
-	if (pADCSetThread->m_uiADCSetOperationNb == 12)
-	{
-		pADCSetThread->m_uiADCSetOperationNb = 0;
-		// ADC参数设置线程停止工作
-		pADCSetThread->m_pThread->m_bWork = false;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		return;
-	}
 	// 完成ADC开始数据采集
-	else if (pADCSetThread->m_uiADCSetOperationNb == 19)
-	{
-		pADCSetThread->m_uiADCSetOperationNb = 0;
-		// ADC参数设置线程停止工作
-		pADCSetThread->m_pThread->m_bWork = false;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		return;
-	}
 	// 完成ADC停止数据采集
-	else if (pADCSetThread->m_uiADCSetOperationNb == 23)
+	if ((pADCSetThread->m_uiADCSetOperationNb == 12)
+		|| (pADCSetThread->m_uiADCSetOperationNb == 19)
+		|| (pADCSetThread->m_uiADCSetOperationNb == 23))
 	{
 		pADCSetThread->m_uiADCSetOperationNb = 0;
 		// ADC参数设置线程停止工作
 		pADCSetThread->m_pThread->m_bWork = false;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		OnOutPutADCDataRecResult(pADCSetThread);
-		return;
+		// 完成ADC停止数据采集
+		if (pADCSetThread->m_uiADCSetOperationNb == 23)
+		{
+			OnOutPutADCDataRecResult(pADCSetThread);
+		}
 	}
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 }

@@ -256,6 +256,16 @@ bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand,
 	// 命令号 1-设置命令应答；2-查询命令应答；3-AD采样数据重发
 	memcpy(&pCommand->m_usCommand, &pFrameData[iPos], iFramePacketSize2B);
 	iPos += iFramePacketSize2B;
+	// 如果帧命令号不属于设置、查询和AD数据则返回
+	if (!((pCommand->m_usCommand == pConstVar->m_usSendSetCmd)
+		|| (pCommand->m_usCommand == pConstVar->m_usSendQueryCmd)
+		|| (pCommand->m_usCommand == pConstVar->m_usSendADCCmd)))
+	{
+		GetFrameInfo(pFrameData, pConstVar->m_iRcvFrameSize, &strFrameData);
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", 
+			strFrameData, ErrorType, IDS_ERR_CHECKFRAMECMD);
+		return false;
+	}
 	// 如果为ADC采样数据帧
 	if (pCommand->m_usCommand == pConstVar->m_usSendADCCmd)
 	{

@@ -186,7 +186,7 @@ void CMatrixServerDlg::OnBnClickedButtonStartsampleAll()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL开始AD数据采集
-	m_oMatrixDllCall.Dll_StartSample(4000);
+	m_oMatrixDllCall.Dll_StartSample(1000);
 }
 void CMatrixServerDlg::OnBnClickedButtonStopsampleAll()
 {

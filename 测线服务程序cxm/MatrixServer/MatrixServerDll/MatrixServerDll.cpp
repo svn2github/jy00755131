@@ -102,8 +102,6 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 		uiLineNb++;
 	}
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
-	// 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
-	// 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 }
 // 释放一个施工任务
 void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray)
@@ -245,12 +243,6 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	{
 		return;
 	}
-	// @@@@调试用
-	// 产生一个施工任务
-	GenOneOptTask(1, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray,
-		pEnv->m_pInstrumentList, pEnv->m_pConstVar);
-	// 产生一个施工任务
-	//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
 	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	pEnv->m_pADCSetThread->m_bADCStartSample = true;
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
@@ -265,6 +257,12 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
 	// 清空丢帧索引
 	pEnv->m_pADCDataRecThread->m_oADCLostFrameMap.clear();
+	// @@@@调试用
+	// 产生一个施工任务
+	GenOneOptTask(1, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray,
+		pEnv->m_pInstrumentList, pEnv->m_pConstVar);
+	// 产生一个施工任务
+	//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
 	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
 }

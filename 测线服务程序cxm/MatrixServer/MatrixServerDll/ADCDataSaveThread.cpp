@@ -182,7 +182,8 @@ void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf,
 		fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
 	}
 	// 记录文件中每个设备的最后一个数据帧时将SN写入左侧信息区
-	if ((uiFrameInFileNb + 1) == static_cast<unsigned int>(pConstVar->m_iADCFrameSaveInOneFileNum))
+/*	if ((uiFrameInFileNb + 1) == static_cast<unsigned int>(pConstVar->m_iADCFrameSaveInOneFileNum))*/
+	if (uiFrameInFileNb == 0)
 	{
 		lOffSet = uiLineLength * uiLineNb;
 		fseek(pFile, lOffSet, SEEK_SET);

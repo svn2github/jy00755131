@@ -150,6 +150,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
 					uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
 			}
+			LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 			return;
 		}
 		// 		// µ÷ÊÔÓÃ
@@ -165,6 +166,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 					pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 					strFrameData, ErrorType, IDS_ERR_FRAMEPOINT_LIMITOVER);
+				LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+				return;
 			}
 			if (usADCDataFramePointNow < pInstrument->m_usADCDataFramePoint)
 			{
@@ -195,6 +198,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				ConvertCStrToStr(str, &strConv);
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
 					strConv, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
+				LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+				return;
 			}
 			else
 			{
