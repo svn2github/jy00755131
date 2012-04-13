@@ -147,28 +147,30 @@ void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, m_oConstVarStruct*
 		return;
 	}
 	m_oInstrumentStruct* pInstrument = NULL;
-	m_oInstrumentStruct* pInstrumentNext = NULL;
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
-		if (pInstrumentNext->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
+		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
+		if (pInstrument == NULL)
+		{
+			break;
+		}
+		if (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
 		{
 			if (iOpt == pConstVar->m_iADCSetOptNb)
 			{
-				pInstrumentNext->m_bADCSet = false;
+				pInstrument->m_bADCSet = false;
 			}
 			else if (iOpt == pConstVar->m_iADCStartSampleOptNb)
 			{
-				pInstrumentNext->m_bADCStartSample = false;
+				pInstrument->m_bADCStartSample = false;
 			}
 			else if (iOpt == pConstVar->m_iADCStopSampleOptNb)
 			{
-				pInstrumentNext->m_bADCStopSample = false;
+				pInstrument->m_bADCStopSample = false;
 			}
 		}
-		pInstrument = pInstrumentNext;
-	} while (pInstrumentNext != pRout->m_pTail);
+	} while (pInstrument != pRout->m_pTail);
 
 }
 // 重置ADC参数设置标志位
@@ -537,6 +539,8 @@ void OnInit(m_oEnvironmentStruct* pEnv, char* pcXMLFilePath, char* pcINIFilePath
 	OnInitConstVar(pEnv->m_pConstVar, pcINIFilePath, pEnv->m_pLogOutPutOpt);
 	// 初始化仪器通讯信息结构体
 	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo, pcXMLFilePath , pEnv->m_pLogOutPutOpt);
+	// 释放套接字库
+	OnCloseSocketLib(pEnv->m_pLogOutPutOpt);
 	// 初始化套接字库
 	OnInitSocketLib(pEnv->m_pLogOutPutOpt);
 	// 初始化日志输出线程

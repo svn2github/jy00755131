@@ -292,7 +292,7 @@ void CMatrixDllCall::OnInit(CString strPath)
 	// DLL创建实例
 	Dll_Create_Instance();
 	// DLL手动设置AD
-//	Dll_ADCSet_ByHand();
+	Dll_ADCSet_ByHand();
 	// DLL得到采样数据处理的回调函数
 	Dll_GetProSampleData_CallBack();
 	// DLL初始化实例

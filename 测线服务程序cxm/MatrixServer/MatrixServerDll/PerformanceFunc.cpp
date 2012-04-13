@@ -971,6 +971,7 @@ bool OnGetRoutInstrumentNum(unsigned int uiSN, int iDirection,
 {
 	m_oRoutStruct* pRout = NULL;
 	unsigned int uiRoutIP = 0;
+	m_oInstrumentStruct* pInstrument = NULL;
 	if (false == GetRoutIPBySn(uiSN, iDirection, pEnv->m_pInstrumentList, 
 		pEnv->m_pConstVar, uiRoutIP))
 	{
@@ -980,6 +981,28 @@ bool OnGetRoutInstrumentNum(unsigned int uiSN, int iDirection,
 	{
 		return false;
 	}
-	uiInstrumentNum = pRout->m_uiInstrumentNum;
+	uiInstrumentNum = 0;
+	pInstrument = pRout->m_pHead;
+	if ((pInstrument->m_bIPSetOK) && (iDirection == pEnv->m_pConstVar->m_iDirectionCenter))
+	{
+		uiInstrumentNum = 1;
+		return true;
+	}
+	if (pRout->m_pTail == NULL)
+	{
+		return true;
+	}
+	while(pInstrument != pRout->m_pTail)
+	{
+		pInstrument = GetNextInstrument(iDirection, pInstrument, pEnv->m_pConstVar);
+		if (pInstrument == NULL)
+		{
+			break;
+		}
+		if (pInstrument->m_bTimeSetOK == true)
+		{
+			uiInstrumentNum++;
+		}
+	}
 	return true;
 }

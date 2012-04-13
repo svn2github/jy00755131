@@ -2010,6 +2010,10 @@ MatrixServerDll_API void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 // 删除该路由方向指定仪器之后的仪器
 MatrixServerDll_API void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument, m_oRoutStruct* pRout, 
 	m_oInstrumentListStruct* pInstrumentList, m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar);
+// 在路由方向上删除该仪器之后的全部仪器
+MatrixServerDll_API void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument, m_oRoutStruct* pRout, 
+	m_oInstrumentListStruct* pInstrumentList, m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar,
+	m_oLogOutPutStruct* pLogOutPut);
 // 处理单个尾包帧
 MatrixServerDll_API void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread);
 // 处理尾包帧

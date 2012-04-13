@@ -401,10 +401,8 @@ DWORD WINAPI RunADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 		WaitADCDataRecThread(pADCDataRecThread);
 	}
-	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pADCDataRecThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	return 1;
 }
 // 初始化ADC数据接收线程
@@ -468,16 +466,15 @@ bool OnCloseADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	// 清空丢帧索引
 	pADCDataRecThread->m_oADCLostFrameMap.clear();
+	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	if (false == OnCloseThread(pADCDataRecThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "OnCloseADCDataRecThread", 
 			"ADC数据接收线程强制关闭", WarningType);
-		LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "OnCloseADCDataRecThread", 
 		"ADC数据接收线程成功关闭");
-	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	return true;
 }
 // 释放ADC数据接收线程

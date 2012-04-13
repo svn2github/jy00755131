@@ -453,10 +453,8 @@ DWORD WINAPI RunHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		WaitHeadFrameThread(pHeadFrameThread);
 	}
-	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pHeadFrameThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	return 1;
 }
 // 初始化首包接收线程
@@ -513,17 +511,14 @@ bool OnCloseHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	{
 		return false;
 	}
-	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	if (false == OnCloseThread(pHeadFrameThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, 
 			"OnCloseHeadFrameThread", "首包线程强制关闭", WarningType);
-		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, 
 		"OnCloseHeadFrameThread", "首包线程成功关闭");
-	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	return true;
 }
 // 释放首包接收线程

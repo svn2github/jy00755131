@@ -76,10 +76,8 @@ DWORD WINAPI RunLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		WaitLogOutPutThread(pLogOutPutThread);
 	}
-	EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pLogOutPutThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	return 1;
 }
 // 初始化日志输出线程
@@ -137,17 +135,14 @@ bool OnCloseLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 	{
 		return false;
 	}
-	EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	if (false == OnCloseThread(pLogOutPutThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, "OnCloseLogOutPutThread", 
 			"日志输出线程强制关闭", WarningType);
-		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, "OnCloseLogOutPutThread", 
 		"日志输出线程成功关闭");
-	LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	return true;
 }
 // 释放日志输出线程

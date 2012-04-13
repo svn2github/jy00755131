@@ -62,20 +62,22 @@ void PrepareTailTimeFrame(m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
 		return;
 	}
 
-	m_oInstrumentStruct* pInstrumentNext = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
 	pInstrument = pRout->m_pHead;
 	pInstrument->m_bTailTimeQueryOK = false;
 	pInstrument->m_iTailTimeQueryCount++;
 	do 
 	{
-		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
-		pInstrument = pInstrumentNext;
+		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
+		if (pInstrument == NULL)
+		{
+			break;
+		}
 		/** 尾包时刻查询计数*/
-		pInstrumentNext->m_iTailTimeQueryCount++;
+		pInstrument->m_iTailTimeQueryCount++;
 		/** 尾包时刻查询是否成功*/
-		pInstrumentNext->m_bTailTimeQueryOK = false;
-	} while (pInstrumentNext != pRout->m_pTail);
+		pInstrument->m_bTailTimeQueryOK = false;
+	} while (pInstrument != pRout->m_pTail);
 }
 // 处理尾包时刻查询
 void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDelayThread)
@@ -240,7 +242,6 @@ bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDe
 	{
 		return false;
 	}
-	m_oInstrumentStruct* pInstrumentNext = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
 	string strConv = "";
@@ -256,11 +257,14 @@ bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDe
 	}
 	do 
 	{
-		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
+		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
 			pTimeDelayThread->m_pThread->m_pConstVar);
-		pInstrument = pInstrumentNext;
+		if (pInstrument == NULL)
+		{
+			break;
+		}
 		/** 尾包时刻查询是否成功*/
-		if (pInstrumentNext->m_bTailTimeQueryOK == false)
+		if (pInstrument->m_bTailTimeQueryOK == false)
 		{
 			str.Format(_T("路由IP = 0x%x的仪器的尾包时刻查询接收不完全"), pRout->m_uiRoutIP);
 			ConvertCStrToStr(str, &strConv);
@@ -268,7 +272,7 @@ bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDe
 				strConv, WarningType);
 			return false;
 		}
-	} while (pInstrumentNext != pRout->m_pTail);
+	} while (pInstrument != pRout->m_pTail);
 	str.Format(_T("路由IP = 0x%x的仪器的尾包时刻查询接收完全"), pRout->m_uiRoutIP);
 	ConvertCStrToStr(str, &strConv);
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "CheckTailTimeReturn", 
@@ -299,6 +303,10 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 	{
 		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
 			pTimeDelayThread->m_pThread->m_pConstVar);
+		if (pInstrumentNext == NULL)
+		{
+			break;
+		}
 		// 仪器类型为LCI或交叉站
 		if ((pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
 			|| (pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
@@ -548,10 +556,8 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		WaitTimeDelayThread(pTimeDelayThread);
 	}
-	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pTimeDelayThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	return 1;
 }
 // 初始化时统设置线程
@@ -612,17 +618,14 @@ bool OnCloseTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	{
 		return false;
 	}
-	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	if (false == OnCloseThread(pTimeDelayThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "OnCloseTimeDelayThread", 
 			"时统设置线程强制关闭", WarningType);
-		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "OnCloseTimeDelayThread", 
 		"时统设置线程成功关闭");
-	LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	return true;
 }
 // 释放时统设置线程

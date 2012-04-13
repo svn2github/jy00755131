@@ -282,10 +282,8 @@ DWORD WINAPI RunADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread
 		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 		WaitADCDataSaveThread(pADCDataSaveThread);
 	}
-	EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pADCDataSaveThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	return 1;
 }
 // 初始化施工放炮数据存储线程
@@ -341,17 +339,14 @@ bool OnCloseADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 	{
 		return false;
 	}
-	EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	if (false == OnCloseThread(pADCDataSaveThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pADCDataSaveThread->m_pThread->m_pLogOutPut, "OnCloseADCDataSaveThread", 
 			"ADC数据存储线程强制关闭", WarningType);
-		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pADCDataSaveThread->m_pThread->m_pLogOutPut, "OnCloseADCDataSaveThread", 
 		"ADC数据存储线程成功关闭");
-	LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	return true;
 }
 // 释放施工放炮数据存储线程

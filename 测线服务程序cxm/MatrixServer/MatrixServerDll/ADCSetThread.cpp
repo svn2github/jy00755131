@@ -421,7 +421,6 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	hash_map<unsigned int, m_oInstrumentStruct*> ::iterator iter2;
 	m_oInstrumentStruct* pInstrument = NULL;
-	m_oInstrumentStruct* pInstrumentNext = NULL;
 	for (iter = pADCSetThread->m_pRoutList->m_oADCSetRoutMap.begin();
 		iter != pADCSetThread->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
 	{
@@ -433,10 +432,13 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 			pInstrument = iter->second->m_pHead;
 			do 
 			{
-				pInstrumentNext = GetNextInstrument(iter->second->m_iRoutDirection, 
+				pInstrument = GetNextInstrument(iter->second->m_iRoutDirection, 
 					pInstrument, pADCSetThread->m_pThread->m_pConstVar);
-				pInstrumentNext->m_bADCSetReturn = false;
-				pInstrument = pInstrumentNext;
+				if (pInstrument == NULL)
+				{
+					break;
+				}
+				pInstrument->m_bADCSetReturn = false;
 			} while (pInstrument != iter->second->m_pTail);
 			// 选择ADC参数设置命令
 			OnSelectADCSetCmd(pADCSetThread, true, iter->second->m_pTail->m_uiBroadCastPort);
@@ -587,7 +589,6 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	hash_map<unsigned int, m_oInstrumentStruct*> ::iterator iter2;
 	m_oInstrumentStruct* pInstrument = NULL;
-	m_oInstrumentStruct* pInstrumentNext = NULL;
 	bool bADCSetRoutReturn = true;
 	bool bReturn = true;
 	unsigned int uiADCSetOperationNb = 0;
@@ -603,17 +604,21 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 			pInstrument = iter->second->m_pHead;
 			do 
 			{
-				pInstrumentNext = GetNextInstrument(iter->second->m_iRoutDirection, 
+				pInstrument = GetNextInstrument(iter->second->m_iRoutDirection, 
 					pInstrument, pADCSetThread->m_pThread->m_pConstVar);
-				if (pInstrumentNext->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+				if (pInstrument == NULL)
 				{
-					if (false == pInstrumentNext->m_bADCSetReturn)
+					break;
+				}
+				if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+				{
+					if (false == pInstrument->m_bADCSetReturn)
 					{
 						// 找不到则插入索引表
 						// 仪器索引表中已经有的路由不再广播发送ADC参数设置
-						if (FALSE == IfIndexExistInMap(pInstrumentNext->m_uiIP, &pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap))
+						if (FALSE == IfIndexExistInMap(pInstrument->m_uiIP, &pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap))
 						{
-							AddInstrumentToMap(pInstrumentNext->m_uiIP, pInstrumentNext, 
+							AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
 								&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 						}
 						bReturn = false;
@@ -623,22 +628,21 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 					{
 						if (uiADCSetOperationNb == 11)
 						{
-							pInstrumentNext->m_bADCSet = true;
+							pInstrument->m_bADCSet = true;
 						}
 						else if (uiADCSetOperationNb == 18)
 						{
-							pInstrumentNext->m_bADCStartSample = true;
+							pInstrument->m_bADCStartSample = true;
 						}
 						else if (uiADCSetOperationNb == 22)
 						{
-							pInstrumentNext->m_bADCStopSample = true;
+							pInstrument->m_bADCStopSample = true;
 						}
 						// 如果在索引表中找到该仪器则删除
-						DeleteInstrumentFromMap(pInstrumentNext->m_uiIP, 
+						DeleteInstrumentFromMap(pInstrument->m_uiIP, 
 							&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 					}
 				}
-				pInstrument = pInstrumentNext;
 			} while (pInstrument != iter->second->m_pTail);
 			iter->second->m_bADCSetReturn = bADCSetRoutReturn;
 			iter->second->m_bADCSetRout = bADCSetRoutReturn;
@@ -830,9 +834,7 @@ DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 		WaitADCSetThread(pADCSetThread);
 	}
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
-	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	SetEvent(pADCSetThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	return 1;
 }
 // 初始化ADC参数设置线程
@@ -897,17 +899,14 @@ bool OnCloseADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 	{
 		return false;
 	}
-	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	if (false == OnCloseThread(pADCSetThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnCloseADCSetThread", 
 			"ADC参数设置线程强制关闭", WarningType);
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnCloseADCSetThread", 
 		"ADC参数设置线程成功关闭");
-	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	return true;
 }
 // 释放ADC参数设置线程

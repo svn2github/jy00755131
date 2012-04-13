@@ -74,10 +74,8 @@ DWORD WINAPI RunHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		WaitHeartBeatThread(pHeartBeatThread);
 	}
-	EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pHeartBeatThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	return 1;
 }
 // 初始化心跳线程
@@ -131,17 +129,14 @@ bool OnCloseHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 	{
 		return false;
 	}
-	EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	if(false == OnCloseThread(pHeartBeatThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, "OnCloseHeartBeatThread", 
 			"心跳线程强制关闭", WarningType);
-		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, "OnCloseHeartBeatThread", 
 		"心跳线程成功关闭");
-	LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	return true;
 }
 // 释放心跳线程

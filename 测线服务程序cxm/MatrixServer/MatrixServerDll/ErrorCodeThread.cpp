@@ -281,7 +281,6 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	m_oRoutStruct* pRout = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
-	m_oInstrumentStruct* pInstrumentNext = NULL;
 	CString str = _T("");
 	string strConv = "";
 	for (iter = pErrorCodeThread->m_pRoutList->m_oRoutMap.begin();
@@ -294,11 +293,14 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			pInstrument = pRout->m_pHead;
 			do 
 			{
-				pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
+				pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
 					pErrorCodeThread->m_pThread->m_pConstVar);
-				pInstrumentNext->m_uiErrorCodeQueryNum++;
-				pInstrument = pInstrumentNext;
-			} while (pInstrumentNext != pRout->m_pTail);
+				if (pInstrument == NULL)
+				{
+					break;
+				}
+				pInstrument->m_uiErrorCodeQueryNum++;
+			} while (pInstrument != pRout->m_pTail);
 			// 广播发送误码查询帧
 			MakeInstrumentErrorCodeQueryFrame(pErrorCodeThread->m_pErrorCodeFrame,
 				pErrorCodeThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiBroadCastPort);
@@ -340,10 +342,8 @@ DWORD WINAPI RunErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 		WaitErrorCodeThread(pErrorCodeThread);
 	}
-	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pErrorCodeThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	return 1;
 }
 // 初始化误码查询线程
@@ -401,17 +401,14 @@ bool OnCloseErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	{
 		return false;
 	}
-	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	if (false == OnCloseThread(pErrorCodeThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "OnCloseErrorCodeThread", 
 			"误码查询线程强制关闭", WarningType);
-		LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "OnCloseErrorCodeThread", 
 		"误码查询线程成功关闭");
-	LeaveCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	return true;
 }
 // 释放误码查询线程

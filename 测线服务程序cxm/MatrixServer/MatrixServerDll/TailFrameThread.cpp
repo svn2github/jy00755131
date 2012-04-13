@@ -186,6 +186,44 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		}
 	}
 }
+// 在路由方向上删除该仪器之后的全部仪器
+void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument, 
+	m_oRoutStruct* pRout, 
+	m_oInstrumentListStruct* pInstrumentList, 
+	m_oRoutListStruct* pRoutList, 
+	m_oConstVarStruct* pConstVar,
+	m_oLogOutPutStruct* pLogOutPut)
+{
+	hash_map <unsigned int, m_oRoutStruct*>  ::iterator iter;
+	CString str = _T("");
+	string strConv = "";
+	if (pRout->m_pTail == NULL)
+	{
+		return;
+	}
+	DeleteInstrumentAlongRout(pInstrument, pRout, pInstrumentList, pRoutList, pConstVar);
+	while(true)
+	{
+		if (pRoutList->m_oRoutDeleteMap.empty() == true)
+		{
+			break;
+		}
+		iter = pRoutList->m_oRoutDeleteMap.begin();
+		DeleteInstrumentAlongRout(iter->second->m_pHead, iter->second, 
+			pInstrumentList, pRoutList, pConstVar);
+		// 路由索引表回收路由
+		DeleteRout(iter->first, &pRoutList->m_oRoutMap);
+		str.Format(_T("回收路由IP = 0x%x的过期路由"), iter->first);
+		ConvertCStrToStr(str, &strConv);
+		AddMsgToLogOutPutList(pLogOutPut, "DeleteAllInstrumentAlongRout", strConv);
+		// 将过期路由回收到空闲路由队列
+		AddFreeRout(iter->second, pRoutList);
+		// 路由删除索引表回收路由
+		DeleteRout(iter->first, &pRoutList->m_oRoutDeleteMap);
+		// ADC参数设置索引表回收路由
+		DeleteRout(iter->first, &pRoutList->m_oADCSetRoutMap);
+	}
+}
 // 处理单个尾包帧
 void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 {
@@ -196,7 +234,6 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	// 新仪器指针为空
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oRoutStruct* pRout = NULL;
-	hash_map <unsigned int, m_oRoutStruct*>  ::iterator iter;
 	CString str = _T("");
 	string strFrameData = "";
 	string strConv = "";
@@ -240,34 +277,10 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 			// 判断尾包计数器达到设定值则删除相同路由之后的仪器
 			if (pInstrument->m_iTailFrameCount > pTailFrameThread->m_pThread->m_pConstVar->m_iTailFrameStableTimes)
 			{
-				if (pRout->m_pTail != NULL)
-				{
-					DeleteInstrumentAlongRout(pInstrument, pRout, pTailFrameThread->m_pInstrumentList, 
-						pTailFrameThread->m_pRoutList, pTailFrameThread->m_pThread->m_pConstVar);
-					while(true)
-					{
-						if (pTailFrameThread->m_pRoutList->m_oRoutDeleteMap.empty() == true)
-						{
-							break;
-						}
-						iter = pTailFrameThread->m_pRoutList->m_oRoutDeleteMap.begin();
-						DeleteInstrumentAlongRout(iter->second->m_pHead, iter->second, 
-							pTailFrameThread->m_pInstrumentList, pTailFrameThread->m_pRoutList, 
-							pTailFrameThread->m_pThread->m_pConstVar);
-						// 路由索引表回收路由
-						DeleteRout(iter->first, &pTailFrameThread->m_pRoutList->m_oRoutMap);
-						str.Format(_T("回收路由IP = 0x%x的过期路由"), iter->first);
-						ConvertCStrToStr(str, &strConv);
-						AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, 
-							"ProcTailFrameOne", strConv);
-						// 将过期路由回收到空闲路由队列
-						AddFreeRout(iter->second, pTailFrameThread->m_pRoutList);
-						// 路由删除索引表回收路由
-						DeleteRout(iter->first, &pTailFrameThread->m_pRoutList->m_oRoutDeleteMap);
-						// ADC参数设置索引表回收路由
-						DeleteRout(iter->first, &pTailFrameThread->m_pRoutList->m_oADCSetRoutMap);
-					}
-				}
+				// 在路由方向上删除该仪器之后的全部仪器
+				DeleteAllInstrumentAlongRout(pInstrument, pRout, pTailFrameThread->m_pInstrumentList, 
+					pTailFrameThread->m_pRoutList, pTailFrameThread->m_pThread->m_pConstVar, 
+					pTailFrameThread->m_pThread->m_pLogOutPut);
 				pInstrument->m_iTailFrameCount = 0;
 			}
 		}
@@ -358,10 +371,8 @@ DWORD WINAPI RunTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 		WaitTailFrameThread(pTailFrameThread);
 	}
-	EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pTailFrameThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	return 1;
 }
 // 初始化尾包接收线程
@@ -418,17 +429,14 @@ bool OnCloseTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 	{
 		return false;
 	}
-	EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	if (false == OnCloseThread(pTailFrameThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "OnCloseTailFrameThread", 
 			"尾包接收线程强制关闭", WarningType);
-		LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "OnCloseTailFrameThread", 
 		"尾包接收线程成功关闭");
-	LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	return true;
 }
 // 释放尾包接收线程

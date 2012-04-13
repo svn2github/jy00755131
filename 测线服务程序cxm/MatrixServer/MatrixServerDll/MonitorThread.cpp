@@ -62,24 +62,26 @@ void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout,
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
-	m_oInstrumentStruct* pInstrumentNext = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
-		pInstrument = pInstrumentNext;
+		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
+		if (pInstrument == NULL)
+		{
+			break;
+		}
 		// 如果仪器为交叉站
-		if ((pInstrumentNext->m_iInstrumentType == pConstVar->m_iInstrumentTypeLCI)
-			|| (pInstrumentNext->m_iInstrumentType == pConstVar->m_iInstrumentTypeLAUX))
+		if ((pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLCI)
+			|| (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLAUX))
 		{
 			// 将仪器四个方向的路由加入临时队列
-			pRoutList->m_olsTimeDelayTemp.push_back(pInstrumentNext->m_uiRoutIPTop);
-			pRoutList->m_olsTimeDelayTemp.push_back(pInstrumentNext->m_uiRoutIPDown);
-			pRoutList->m_olsTimeDelayTemp.push_back(pInstrumentNext->m_uiRoutIPLeft);
-			pRoutList->m_olsTimeDelayTemp.push_back(pInstrumentNext->m_uiRoutIPRight);
+			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPTop);
+			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPDown);
+			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPLeft);
+			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPRight);
 		}
-	} while (pInstrumentNext != pRout->m_pTail);
+	} while (pInstrument != pRout->m_pTail);
 }
 // 得到时统任务
 void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
@@ -166,7 +168,6 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 		return;
 	}
 	m_oInstrumentStruct* pInstrument = NULL;
-	m_oInstrumentStruct* pInstrumentNext = NULL;
 	bool bRoutADCSet = true;
 	bool bADCSet = true;
 	bool bADCStartSample = false;
@@ -178,13 +179,17 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
+		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
 			pADCSetThread->m_pThread->m_pConstVar);
-		if (pInstrumentNext->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+		if (pInstrument == NULL)
+		{
+			break;
+		}
+		if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
 		{
 			if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
 			{
-				if (false == pInstrumentNext->m_bADCSet)
+				if (false == pInstrument->m_bADCSet)
 				{
 					bADCSet = false;
 				}
@@ -196,21 +201,21 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb)
 			{
 				if ((true == bADCStartSample)
-					&& (false == pInstrumentNext->m_bADCStartSample))
+					&& (false == pInstrument->m_bADCStartSample))
 				{
 					bADCSet = false;
 					// 实际接收ADC数据帧数
-					pInstrumentNext->m_uiADCDataActualRecFrameNum = 0;
+					pInstrument->m_uiADCDataActualRecFrameNum = 0;
 					// 重发查询帧得到的应答帧数
-					pInstrumentNext->m_uiADCDataRetransmissionFrameNum = 0;
+					pInstrument->m_uiADCDataRetransmissionFrameNum = 0;
 					// 应该接收ADC数据帧数（含丢帧）
-					pInstrumentNext->m_uiADCDataShouldRecFrameNum = 0;
+					pInstrument->m_uiADCDataShouldRecFrameNum = 0;
 					// ADC数据帧的指针偏移量
-					pInstrumentNext->m_usADCDataFramePoint = 0;
+					pInstrument->m_usADCDataFramePoint = 0;
 					// ADC数据帧发送时的本地时间
-					pInstrumentNext->m_uiADCDataFrameSysTime = 0;
+					pInstrument->m_uiADCDataFrameSysTime = 0;
 					// ADC数据帧起始帧数
-					pInstrumentNext->m_iADCDataFrameStartNum = 0;
+					pInstrument->m_iADCDataFrameStartNum = 0;
 				}
 				else
 				{
@@ -220,7 +225,7 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb)
 			{
 				if ((true == bADCStopSample)
-					&& (false == pInstrumentNext->m_bADCStopSample))
+					&& (false == pInstrument->m_bADCStopSample))
 				{
 					bADCSet = false;
 				}
@@ -231,19 +236,18 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			}
 			if (bADCSet == false)
 			{
-				pInstrumentNext->m_bADCSetReturn = false;
-				AddInstrumentToMap(pInstrumentNext->m_uiIP, pInstrumentNext, 
+				pInstrument->m_bADCSetReturn = false;
+				AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
 					&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
 			else
 			{
-				DeleteInstrumentFromMap(pInstrumentNext->m_uiIP, 
+				DeleteInstrumentFromMap(pInstrument->m_uiIP, 
 					&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 				bRoutADCSet = false;
 			}
 		}
-		pInstrument = pInstrumentNext;
-	} while (pInstrumentNext != pRout->m_pTail);
+	} while (pInstrument != pRout->m_pTail);
 	if (bRoutADCSet == true)
 	{
 		// 将路由加入索引
@@ -254,15 +258,18 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 		pInstrument = pRout->m_pHead;
 		do 
 		{
-			pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
+			pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
 				pADCSetThread->m_pThread->m_pConstVar);
-			if (pInstrumentNext->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+			if (pInstrument == NULL)
 			{
-				DeleteInstrumentFromMap(pInstrumentNext->m_uiIP, 
+				break;
+			}
+			if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+			{
+				DeleteInstrumentFromMap(pInstrument->m_uiIP, 
 					&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
-			pInstrument = pInstrumentNext;
-		} while (pInstrumentNext != pRout->m_pTail);
+		} while (pInstrument != pRout->m_pTail);
 	}
 	else
 	{
@@ -430,19 +437,21 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 	{
 		return true;
 	}
-	m_oInstrumentStruct* pInstrumentNext = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
 	string strConv = "";
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
+		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
 			pTimeDelayThread->m_pThread->m_pConstVar);
-		pInstrument = pInstrumentNext;
+		if (pInstrument == NULL)
+		{
+			break;
+		}
 		if (bSample == true)
 		{
-			if (pInstrumentNext->m_iTimeSetReturnCount == 0)
+			if (pInstrument->m_iTimeSetReturnCount == 0)
 			{
 				str.Format(_T("数据采样过程中，路由IP = 0x%x的仪器的没有全部实现时统"), 
 					pRout->m_uiRoutIP);
@@ -455,7 +464,7 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 		else
 		{
 			/** 时统设置是否成功*/
-			if (pInstrumentNext->m_bTimeSetOK == false)
+			if (pInstrument->m_bTimeSetOK == false)
 			{
 				str.Format(_T("路由IP = 0x%x的仪器的时统设置应答接收不完全"), pRout->m_uiRoutIP);
 				ConvertCStrToStr(str,&strConv);
@@ -464,7 +473,7 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 				return false;
 			}
 		}
-	} while (pInstrumentNext != pRout->m_pTail);
+	} while (pInstrument != pRout->m_pTail);
 	if (bSample == false)
 	{
 		str.Format(_T("路由IP = 0x%x的仪器的时统设置应答接收完全"), pRout->m_uiRoutIP);
@@ -568,9 +577,9 @@ void MonitorADCSet(m_oADCSetThreadStruct* pADCSetThread)
 	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	uiLineChangeTime = pADCSetThread->m_pInstrumentList->m_uiLineChangeTime;
-	// 判断系统稳定
-	if (uiTimeNow > (uiLineChangeTime + pADCSetThread->m_pThread->m_pConstVar->m_iLineSysStableTime))
-	{
+// 	// 判断系统稳定
+// 	if (uiTimeNow > (uiLineChangeTime + pADCSetThread->m_pThread->m_pConstVar->m_iLineSysStableTime))
+// 	{
 		// 自动进行未完成的ADC参数设置
 		if (pADCSetThread->m_uiADCSetOperationNb == 0)
 		{
@@ -586,7 +595,7 @@ void MonitorADCSet(m_oADCSetThreadStruct* pADCSetThread)
 		{
 			OnADCStopSampleAuto(pADCSetThread);
 		}
-	}
+//	}
 	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
@@ -664,10 +673,8 @@ DWORD WINAPI RunMonitorThread(m_oMonitorThreadStruct* pMonitorThread)
 		LeaveCriticalSection(&pMonitorThread->m_oSecMonitorThread);
 		WaitMonitorThread(pMonitorThread);
 	}
-	EnterCriticalSection(&pMonitorThread->m_oSecMonitorThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pMonitorThread->m_pThread->m_hThreadClose);
-	LeaveCriticalSection(&pMonitorThread->m_oSecMonitorThread);
 	return 1;
 }
 // 初始化路由监视线程
@@ -726,17 +733,14 @@ bool OnCloseMonitorThread(m_oMonitorThreadStruct* pMonitorThread)
 	{
 		return false;
 	}
-	EnterCriticalSection(&pMonitorThread->m_oSecMonitorThread);
 	if (false == OnCloseThread(pMonitorThread->m_pThread))
 	{
 		AddMsgToLogOutPutList(pMonitorThread->m_pThread->m_pLogOutPut, "OnCloseMonitorThread", 
 			"路由监视线程强制关闭", WarningType);
-		LeaveCriticalSection(&pMonitorThread->m_oSecMonitorThread);
 		return false;
 	}
 	AddMsgToLogOutPutList(pMonitorThread->m_pThread->m_pLogOutPut, "OnCloseMonitorThread", 
 		"路由监视线程成功关闭");
-	LeaveCriticalSection(&pMonitorThread->m_oSecMonitorThread);
 	return true;
 }
 // 释放路由监视线程
