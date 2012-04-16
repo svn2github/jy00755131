@@ -2,11 +2,11 @@
 #include "CommProtocol.h"
 #include <list>
 using std::list;
-class CClientFrame
+class CClientCommFrame
 {
 public:
-	CClientFrame(void);
-	~CClientFrame(void);
+	CClientCommFrame(void);
+	~CClientCommFrame(void);
 public:
 	// 空闲的接收帧结构体数
 	unsigned int m_uiCountFree;

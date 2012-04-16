@@ -60,15 +60,6 @@
     <ClInclude Include="MatrixDllCall.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Com.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ComClient.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ComServer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CommProtocol.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -81,7 +72,25 @@
     <ClInclude Include="ClientSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ClientFrame.h">
+    <ClInclude Include="ClientSndFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Comm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommServer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientCommThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientCommFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSndThread.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -98,15 +107,6 @@
     <ClCompile Include="MatrixDllCall.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Com.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ComClient.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ComServer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ClientRecFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -117,6 +117,24 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ClientFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSndFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Comm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientCommThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSndThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

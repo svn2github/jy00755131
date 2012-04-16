@@ -1,10 +1,7 @@
 #pragma once
-#include "CommProtocol.h"
-#include "ClientFrame.h"
-#include <list>
-using std::list;
+#include "ClientCommFrame.h"
 
-class CClientRecFrame : public CClientFrame
+class CClientRecFrame : public CClientCommFrame
 {
 public:
 	CClientRecFrame(void);

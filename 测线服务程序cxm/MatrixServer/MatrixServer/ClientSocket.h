@@ -4,7 +4,7 @@
 using stdext::hash_map;
 
 // CClientSocket 命令目标
-class CComClient;
+class CCommClient;
 class CClientSocket : public CAsyncSocket
 {
 public:
@@ -15,7 +15,7 @@ public:
 	virtual void OnClose(int nErrorCode);
 public:
 	// 连接客户端索引指针
-	hash_map<SOCKET, CComClient*>* m_pComClientMap;
+	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
 	// 接收缓冲区大小
 	char m_cRecBuf[ServerRecBufSize];
 	// 接收点坐标
@@ -25,9 +25,9 @@ public:
 	// 帧内容长度
 	unsigned short m_usFrameInfoSize;
 	// 连接客户端类指针
-	CComClient* m_pComClient;
+	CCommClient* m_pComClient;
 	// 初始化
-	void OnInit(CComClient* pComClient, int iSndBufferSize, int iRcvBufferSize);
+	void OnInit(CCommClient* pComClient, int iSndBufferSize, int iRcvBufferSize);
 	// 关闭
 	void OnClose(void);
 };

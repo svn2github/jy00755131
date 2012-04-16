@@ -1,29 +1,30 @@
 #include "StdAfx.h"
-#include "Com.h"
+#include "Comm.h"
 
 
-CCom::CCom(void)
+CComm::CComm(void)
 {
 }
 
 
-CCom::~CCom(void)
+CComm::~CComm(void)
 {
 }
 
 
 // 初始化
-void CCom::OnInit(void)
+void CComm::OnInit(void)
 {
 	// 初始化套接字库
 	OnInitSocketLib();
 	// 初始化服务端AsyncSocket
 	m_oServerAsyncSocket.OnInit();
+
 }
 
 
 // 关闭
-void CCom::OnClose(void)
+void CComm::OnClose(void)
 {
 	// 关闭服务端AsyncSocket
 	m_oServerAsyncSocket.OnClose();
@@ -32,7 +33,7 @@ void CCom::OnClose(void)
 }
 
 // 初始化套接字库
-void CCom::OnInitSocketLib(void)
+void CComm::OnInitSocketLib(void)
 {
 	WSADATA wsaData;
 	CString str = _T("");
@@ -44,7 +45,7 @@ void CCom::OnInitSocketLib(void)
 	}
 }
 // 释放套接字库
-void CCom::OnCloseSocketLib(void)
+void CComm::OnCloseSocketLib(void)
 {
 	CString str = _T("");
 	// 释放套接字库

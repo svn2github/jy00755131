@@ -105,13 +105,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h" />
-    <ClInclude Include="ClientFrame.h" />
+    <ClInclude Include="ClientCommThread.h" />
+    <ClInclude Include="ClientCommFrame.h" />
     <ClInclude Include="ClientRecFrame.h" />
+    <ClInclude Include="ClientSndFrame.h" />
+    <ClInclude Include="ClientSndThread.h" />
     <ClInclude Include="ClientSocket.h" />
-    <ClInclude Include="Com.h" />
-    <ClInclude Include="ComClient.h" />
+    <ClInclude Include="Comm.h" />
+    <ClInclude Include="CommClient.h" />
     <ClInclude Include="CommProtocol.h" />
-    <ClInclude Include="ComServer.h" />
+    <ClInclude Include="CommServer.h" />
     <ClInclude Include="CXMLDOMDocument.h" />
     <ClInclude Include="CXMLDOMElement.h" />
     <ClInclude Include="CXMLDOMNode.h" />
@@ -126,12 +129,15 @@
     <ClInclude Include="XMLDOMTool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ClientCommThread.cpp" />
     <ClCompile Include="ClientFrame.cpp" />
     <ClCompile Include="ClientRecFrame.cpp" />
+    <ClCompile Include="ClientSndFrame.cpp" />
+    <ClCompile Include="ClientSndThread.cpp" />
     <ClCompile Include="ClientSocket.cpp" />
-    <ClCompile Include="Com.cpp" />
-    <ClCompile Include="ComClient.cpp" />
-    <ClCompile Include="ComServer.cpp" />
+    <ClCompile Include="Comm.cpp" />
+    <ClCompile Include="CommClient.cpp" />
+    <ClCompile Include="CommServer.cpp" />
     <ClCompile Include="MatrixDllCall.cpp" />
     <ClCompile Include="MatrixServer.cpp" />
     <ClCompile Include="MatrixServerDlg.cpp" />

@@ -3,34 +3,39 @@
 
 #include "stdafx.h"
 #include "MatrixServer.h"
-#include "ComClient.h"
+#include "CommClient.h"
 
 
 // CComClient
 
-CComClient::CComClient()
+CCommClient::CCommClient()
 {
 }
 
-CComClient::~CComClient()
+CCommClient::~CCommClient()
 {
 }
 
 // 创建一个客户端连接信息
-void CComClient::OnInit(void)
+void CCommClient::OnInit(void)
 {
-	m_oClientSocket.OnInit(this, 1000, 1000);
+	m_oClientSocket.OnInit(this, 1024000, 1024000);
 	m_oClientRecFrame.OnInit();
 	m_oClientRecThread.m_pClientRecFrame = &m_oClientRecFrame;
 	m_oClientRecThread.OnInit();
+	m_oClientSndThread.m_pClientSndFrame = &m_oClientSndFrame;
+	m_oClientSndThread.OnInit();
+	m_oClientSndFrame.OnInit();
 }
 
 // 释放一个客户端连接信息
-void CComClient::OnClose(void)
+void CCommClient::OnClose(void)
 {
 	m_oClientSocket.OnClose();
 	m_oClientRecFrame.OnClose();
 	m_oClientRecThread.OnClose();
+	m_oClientSndFrame.OnClose();
+	m_oClientSndThread.OnClose();
 	delete this;
 }
 

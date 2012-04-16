@@ -283,6 +283,7 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
 	string strConv = "";
+	EnterCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
 	for (iter = pErrorCodeThread->m_pRoutList->m_oRoutMap.begin();
 		iter != pErrorCodeThread->m_pRoutList->m_oRoutMap.end();
 		iter++)
@@ -311,6 +312,7 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);
 		}
 	}
+	LeaveCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
 }
 // Ïß³Ìº¯Êý
 DWORD WINAPI RunErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)

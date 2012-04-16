@@ -486,6 +486,8 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		}
 		if (pTimeDelayThread->m_pThread->m_bWork == true)
 		{
+			EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
+			EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 			if (pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.size() > 0)
 			{
 				pTimeDelayThread->m_uiCounter++;
@@ -508,6 +510,8 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 						// 删除该路由时统任务
 						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
 						pTimeDelayThread->m_uiCounter = 0;
+						LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
+						LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 						LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 						continue;
 					}
@@ -547,6 +551,8 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 					pTimeDelayThread->m_uiCounter = 0;
 				}
 			}
+			LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
+			LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 		}
 		if (pTimeDelayThread->m_pThread->m_bClose == true)
 		{

@@ -737,6 +737,8 @@ bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct
 SOCKET CreateInstrumentSocket(unsigned short usPort, unsigned int uiIP, m_oLogOutPutStruct* pLogOutPut)
 {
 	SOCKET oSocket = INVALID_SOCKET;
+	CString str = _T("");
+	string strConv = "";
 	sockaddr_in oAddr;
 	// 填充套接字地址结构
 	oSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -749,6 +751,9 @@ SOCKET CreateInstrumentSocket(unsigned short usPort, unsigned int uiIP, m_oLogOu
 	{
 		AddMsgToLogOutPutList(pLogOutPut, "CreateInstrumentSocket", "bind", 
 			ErrorType, WSAGetLastError());
+		str.Format(_T("bind端口 = %d, IP = %d"), usPort, uiIP);
+		ConvertCStrToStr(str, &strConv);
+		AddMsgToLogOutPutList(pLogOutPut, "CreateInstrumentSocket", strConv);
 	}
 	else
 	{

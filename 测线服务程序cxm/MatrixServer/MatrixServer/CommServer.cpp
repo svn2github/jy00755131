@@ -3,16 +3,16 @@
 
 #include "stdafx.h"
 #include "MatrixServer.h"
-#include "ComServer.h"
+#include "CommServer.h"
 
 
 // CComServer
 
-CComServer::CComServer()
+CCommServer::CCommServer()
 {
 }
 
-CComServer::~CComServer()
+CCommServer::~CCommServer()
 {
 }
 
@@ -20,11 +20,11 @@ CComServer::~CComServer()
 // CComServer 成员函数
 
 
-void CComServer::OnAccept(int nErrorCode)
+void CCommServer::OnAccept(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	CComClient* pComClient = NULL;
-	pComClient = new CComClient;
+	CCommClient* pComClient = NULL;
+	pComClient = new CCommClient;
 	if (CAsyncSocket::Accept(pComClient->m_oClientSocket))
 	{
 		pComClient->m_oClientSocket.m_pComClientMap = &m_oComClientMap;
@@ -39,7 +39,7 @@ void CComServer::OnAccept(int nErrorCode)
 
 
 // 初始化
-void CComServer::OnInit(unsigned int uiSocketPort, int iSocketType, LPCTSTR lpszSocketAddress)
+void CCommServer::OnInit(unsigned int uiSocketPort, int iSocketType, LPCTSTR lpszSocketAddress)
 {
 	BOOL bFlag = FALSE;
 	bFlag = CAsyncSocket::Create(uiSocketPort, iSocketType, 
@@ -56,9 +56,9 @@ void CComServer::OnInit(unsigned int uiSocketPort, int iSocketType, LPCTSTR lpsz
 
 
 // 关闭
-void CComServer::OnClose(void)
+void CCommServer::OnClose(void)
 {
-	hash_map<SOCKET, CComClient*>::iterator iter;
+	hash_map<SOCKET, CCommClient*>::iterator iter;
 	int iSize = m_oComClientMap.size();
 	for (int i=0; i<iSize; i++)
 	{

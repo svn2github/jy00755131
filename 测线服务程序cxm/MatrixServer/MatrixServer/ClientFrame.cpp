@@ -1,23 +1,23 @@
 #include "StdAfx.h"
-#include "ClientFrame.h"
+#include "ClientCommFrame.h"
 
 
-CClientFrame::CClientFrame(void)
+CClientCommFrame::CClientCommFrame(void)
 {
 }
 
 
-CClientFrame::~CClientFrame(void)
+CClientCommFrame::~CClientCommFrame(void)
 {
 }
 
 // 重置接收帧结构体
-void CClientFrame::OnResetRecFrameStruct(m_oCommFrameStructPtr pFrameStruct)
+void CClientCommFrame::OnResetRecFrameStruct(m_oCommFrameStructPtr pFrameStruct)
 {
 	memset(pFrameStruct, 0, sizeof(m_oCommFrameStruct));
 }
 // 初始化
-void CClientFrame::OnInit(void)
+void CClientCommFrame::OnInit(void)
 {
 	m_uiCountFree = FrameStructNumMax;
 	m_olsCommFrameFree.clear();
@@ -35,7 +35,7 @@ void CClientFrame::OnInit(void)
 }
 
 // 得到一个空闲接收帧结构体
-m_oCommFrameStructPtr CClientFrame::GetFreeRecFrameStruct(void)
+m_oCommFrameStructPtr CClientCommFrame::GetFreeRecFrameStruct(void)
 {
 	m_oCommFrameStructPtr pFrameStruct = NULL;
 	list <m_oCommFrameStructPtr>::iterator iter;
@@ -54,7 +54,7 @@ m_oCommFrameStructPtr CClientFrame::GetFreeRecFrameStruct(void)
 	return pFrameStruct;
 }
 // 增加一个空闲接收帧结构体
-void CClientFrame::AddFreeRecFrameStruct(m_oCommFrameStructPtr pFrameStruct)
+void CClientCommFrame::AddFreeRecFrameStruct(m_oCommFrameStructPtr pFrameStruct)
 {
 	//初始化接收帧结构体
 	OnResetRecFrameStruct(pFrameStruct);
@@ -63,7 +63,7 @@ void CClientFrame::AddFreeRecFrameStruct(m_oCommFrameStructPtr pFrameStruct)
 	m_uiCountFree++;	// 空闲接收帧结构体总数加1
 }
 // 关闭
-void CClientFrame::OnClose(void)
+void CClientCommFrame::OnClose(void)
 {
 	m_olsCommFrameFree.clear();
 	EnterCriticalSection(&m_oSecClientFrame);

@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MatrixServer.h"
 #include "ClientSocket.h"
-#include "ComClient.h"
+#include "CommClient.h"
 
 // CClientSocket
 
@@ -169,10 +169,10 @@ void CClientSocket::OnClose(int nErrorCode)
 }
 
 // ³õÊ¼»¯
-void CClientSocket::OnInit(CComClient* pComClient,int iSndBufferSize, int iRcvBufferSize)
+void CClientSocket::OnInit(CCommClient* pComClient,int iSndBufferSize, int iRcvBufferSize)
 {
 	m_pComClient = pComClient;
-	m_pComClientMap->insert(hash_map<SOCKET, CComClient*>::value_type (m_hSocket, pComClient));
+	m_pComClientMap->insert(hash_map<SOCKET, CCommClient*>::value_type (m_hSocket, pComClient));
 	if (SOCKET_ERROR == setsockopt(m_hSocket, SOL_SOCKET, SO_SNDBUF,  
 		reinterpret_cast<const char *>(&iSndBufferSize), sizeof(int)))
 	{
@@ -189,7 +189,7 @@ void CClientSocket::OnInit(CComClient* pComClient,int iSndBufferSize, int iRcvBu
 // ¹Ø±Õ
 void CClientSocket::OnClose(void)
 {
-	hash_map<SOCKET, CComClient*>::iterator iter;
+	hash_map<SOCKET, CCommClient*>::iterator iter;
 	iter = m_pComClientMap->find(m_hSocket);
 	if (iter != m_pComClientMap->end())
 	{

@@ -1,17 +1,17 @@
 #pragma once
-#include "ComClient.h"
+#include "CommClient.h"
 
 // CComServer 命令目标
 
-class CComServer : public CAsyncSocket
+class CCommServer : public CAsyncSocket
 {
 public:
-	CComServer();
-	virtual ~CComServer();
+	CCommServer();
+	virtual ~CCommServer();
 	virtual void OnAccept(int nErrorCode);
 public:
 	// 客户端连接索引
-	hash_map<SOCKET, CComClient*> m_oComClientMap;
+	hash_map<SOCKET, CCommClient*> m_oComClientMap;
 public:
 	// 初始化
 	void OnInit(unsigned int uiSocketPort = 8080, int iSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);

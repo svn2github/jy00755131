@@ -4,7 +4,7 @@
 
 #pragma once
 #include "MatrixDllCall.h"
-#include "Com.h"
+#include "Comm.h"
 
 // CMatrixServerDlg 对话框
 class CMatrixServerDlg : public CDialogEx
@@ -34,7 +34,7 @@ public:
 	// DLL函数调用类成员
 	CMatrixDllCall m_oMatrixDllCall;
 	// 与客户端通讯类成员
-	CCom m_oCom;
+	CComm m_oCom;
 public:
 	afx_msg void OnBnClickedBnStart();
 	afx_msg void OnBnClickedBnStop();

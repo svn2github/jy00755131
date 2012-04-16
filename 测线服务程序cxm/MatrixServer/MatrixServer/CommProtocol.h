@@ -23,11 +23,11 @@
 // 网络接收缓冲区大小
 #define ServerRecBufSize					8192000
 // 最大接收帧结构体数
-#define FrameStructNumMax				5800
+#define FrameStructNumMax					5800
 // 线程关闭的等待时间
-#define CloseClientRecThreadTimes			500
+#define CloseClientCommThreadTimes			500
 // 线程执行的间隔时间
-#define RunClientRecThreadTimes				100
+#define RunClientCommThreadTimes			100
 
 /************************************************************************/
 /* 命令字和通讯协议                                                     */

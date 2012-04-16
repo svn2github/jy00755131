@@ -172,6 +172,8 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 	bool bADCSet = true;
 	bool bADCStartSample = false;
 	bool bADCStopSample = false;
+	CString str = _T("");
+	string strConv = "";
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	bADCStartSample = pADCSetThread->m_bADCStartSample;
 	bADCStopSample = pADCSetThread->m_bADCStopSample;
@@ -236,12 +238,18 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			}
 			if (bADCSet == false)
 			{
+// 				str.Format(_T("将仪器IP = 0x%x 加入ADC参数设置任务索引表中"), pInstrument->m_uiIP);
+// 				ConvertCStrToStr(str, &strConv);
+// 				AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 				pInstrument->m_bADCSetReturn = false;
 				AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
 					&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
 			else
 			{
+// 				str.Format(_T("将仪器IP = 0x%x 从ADC参数设置任务索引表中删除"), pInstrument->m_uiIP);
+// 				ConvertCStrToStr(str, &strConv);
+// 				AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 				DeleteInstrumentFromMap(pInstrument->m_uiIP, 
 					&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 				bRoutADCSet = false;
@@ -253,7 +261,11 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 		// 将路由加入索引
 		pRout->m_bADCSetReturn = false;
 		pRout->m_bADCSetRout = true;
+		str.Format(_T("将路由IP = 0x%x 加入ADC参数设置任务索引表"), pRout->m_uiRoutIP);
+		ConvertCStrToStr(str, &strConv);
+		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 		AddRout(pRout->m_uiRoutIP, pRout, &pADCSetThread->m_pRoutList->m_oADCSetRoutMap);
+
 		// 从仪器索引表删除该路由的仪器
 		pInstrument = pRout->m_pHead;
 		do 
@@ -266,6 +278,9 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			}
 			if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
 			{
+// 				str.Format(_T("将仪器IP = 0x%x 从ADC参数设置任务索引表中删除"), pInstrument->m_uiIP);
+// 				ConvertCStrToStr(str, &strConv);
+// 				AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 				DeleteInstrumentFromMap(pInstrument->m_uiIP, 
 					&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
@@ -273,6 +288,9 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 	}
 	else
 	{
+// 		str.Format(_T("将路由IP = 0x%x 从ADC参数设置任务索引表中删除"), pRout->m_uiRoutIP);
+// 		ConvertCStrToStr(str, &strConv);
+// 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 		DeleteRout(pRout->m_uiRoutIP, &pADCSetThread->m_pRoutList->m_oADCSetRoutMap);
 	}
 }
@@ -289,7 +307,8 @@ void GetADCTaskQueue(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 		iter != pADCSetThread->m_pRoutList->m_oRoutMap.end(); iter++)
 	{
 		// 将路由索引表中的大线方向路由加入到ADC参数设置任务索引
-		if (iter->second->m_bRoutLaux == false)
+		if ((iter->second->m_bRoutLaux == false)
+			&& (iter->second->m_pTail != NULL)) 
 		{
 			GetADCTaskQueueByRout(pADCSetThread, iter->second, iOpt);
 		}

@@ -421,6 +421,7 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	hash_map<unsigned int, m_oInstrumentStruct*> ::iterator iter2;
 	m_oInstrumentStruct* pInstrument = NULL;
+	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	for (iter = pADCSetThread->m_pRoutList->m_oADCSetRoutMap.begin();
 		iter != pADCSetThread->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
 	{
@@ -440,14 +441,16 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 				}
 				pInstrument->m_bADCSetReturn = false;
 			} while (pInstrument != iter->second->m_pTail);
+			if (iter->second->m_pTail == NULL)
+			{
+				break;
+			}
 			// 选择ADC参数设置命令
 			OnSelectADCSetCmd(pADCSetThread, true, iter->second->m_pTail->m_uiBroadCastPort);
-			EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-			pADCSetThread->m_uiADCSetNum += iter->second->m_uiInstrumentNum;
-			LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		}
 	}
-
+	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
+	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	for (iter2 = pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.begin();
 		iter2 != pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.end(); iter2++)
 	{
@@ -455,10 +458,8 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 		iter2->second->m_bADCSetReturn = false;
 		// 选择ADC参数设置命令
 		OnSelectADCSetCmd(pADCSetThread, false, iter2->second->m_uiIP);
-		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		pADCSetThread->m_uiADCSetNum++;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	}
+	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理ADC参数设置应答帧
 void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
@@ -851,7 +852,6 @@ bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread,
 	pADCSetThread->m_bADCStopSample = false;
 	pADCSetThread->m_uiLocalSysTime = 0;
 	pADCSetThread->m_uiTBTimeOld = 0;
-	pADCSetThread->m_uiADCSetNum = 0;
 	if (false == OnInitThread(pADCSetThread->m_pThread, pLogOutPut, pConstVar))
 	{
 		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);

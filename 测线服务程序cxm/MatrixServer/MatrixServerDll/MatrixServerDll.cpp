@@ -217,16 +217,27 @@ void OnResetADCSetLableBySN(unsigned int uiSN, int iDirection, int iOpt, m_oEnvi
 	}
 	m_oRoutStruct* pRout = NULL;
 	unsigned int uiRoutIP = 0;
+	CString str = _T("");
+	string strConv = "";
+	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	if (false == GetRoutIPBySn(uiSN, iDirection, pEnv->m_pInstrumentList, 
 		pEnv->m_pConstVar, uiRoutIP))
 	{
+		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 		return;
 	}
+	LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+	EnterCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
 	if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pRoutList, &pRout))
 	{
+		LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
 		return;
 	}
+	str.Format(_T("重置路由IP = 0x%x 仪器的ADC参数设置标志位"), uiRoutIP);
+	ConvertCStrToStr(str, &strConv);
+	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnResetADCSetLableBySN", strConv);
 	OnResetADCSetLableByRout(pRout, iOpt, pEnv->m_pConstVar);
+	LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
 }
 // ADC参数设置
 void OnADCSet(m_oEnvironmentStruct* pEnv)

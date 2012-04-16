@@ -1211,8 +1211,6 @@ typedef struct ADCSetThread_Struct
 	unsigned int m_uiLocalSysTime;
 	// 上一次开始采样的采样时间
 	unsigned int m_uiTBTimeOld;
-	// ADC参数设置仪器个数
-	unsigned int m_uiADCSetNum;
 	// 从XML文件中解析得到的信息
 	m_oInstrumentCommInfoStruct* m_pCommInfo;
 	// 输出日志指针

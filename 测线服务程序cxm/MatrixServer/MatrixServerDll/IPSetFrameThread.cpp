@@ -180,6 +180,7 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	string strConv = "";
 	// hash_map迭代器
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator  iter;
+	EnterCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 	// IP地址设置索引不为空
 	if (false == pIPSetFrameThread->m_pInstrumentList->m_oIPSetMap.empty())
 	{
@@ -236,6 +237,7 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			}
 		}
 	}
+	LeaveCriticalSection(&pIPSetFrameThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 线程等待函数
 void WaitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)

@@ -3,12 +3,8 @@
 
 
 CClientRecThread::CClientRecThread(void)
-	: m_dwThreadID(0)
-	, m_hThread(INVALID_HANDLE_VALUE)
-	, m_hThreadClose(INVALID_HANDLE_VALUE)
-	, m_hThreadRun(INVALID_HANDLE_VALUE)
-	, m_pClientRecFrame(NULL)
 {
+	m_pClientRecFrame = NULL;
 }
 
 
@@ -16,62 +12,8 @@ CClientRecThread::~CClientRecThread(void)
 {
 }
 
-// 线程函数
-DWORD WINAPI RunThread(CClientRecThread* pClientRecThread)
-{
-	return pClientRecThread->ThreadRunFunc();
-}
-// 初始化
-void CClientRecThread::OnInit(void)
-{
-	m_hThreadClose = CreateEvent(false, false, NULL, NULL);
-	m_hThreadRun = CreateEvent(false, false, NULL, NULL);
-	ResetEvent(m_hThreadClose);
-	ResetEvent(m_hThreadRun);
-	m_hThread = CreateThread((LPSECURITY_ATTRIBUTES)NULL, 
-		0,
-		(LPTHREAD_START_ROUTINE)RunThread,
-		this, 
-		0, 
-		&m_dwThreadID);
-}
-
-
-// 关闭
-void CClientRecThread::OnClose(void)
-{
-	if (m_hThread == INVALID_HANDLE_VALUE)
-	{
-		return;
-	}
-	SetEvent(m_hThreadRun);
-	if (WaitForSingleObject(m_hThreadClose, CloseClientRecThreadTimes) != WAIT_OBJECT_0)
-	{
-		TerminateThread(m_hThread, 0);
-	}
-	CloseHandle(m_hThread);
-	CloseHandle(m_hThreadRun);
-	CloseHandle(m_hThreadClose);
-}
-
-
-// 线程函数
-DWORD CClientRecThread::ThreadRunFunc(void)
-{
-	while (1)
-	{
-		OnProcRecFrame();
-		if(WaitForSingleObject(m_hThreadRun, RunClientRecThreadTimes) == WAIT_OBJECT_0) 
-		{
-			break;
-		}
-	}
-	SetEvent(m_hThreadClose);
-	return 1;
-}
-
-// 处理接收帧
-void CClientRecThread::OnProcRecFrame(void)
+// 处理函数
+void CClientRecThread::OnProc(void)
 {
 	int iFrameNum = 0;
 	m_oCommFrameStructPtr ptrFrame = NULL;

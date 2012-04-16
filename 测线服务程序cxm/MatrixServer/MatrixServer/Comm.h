@@ -1,14 +1,14 @@
 #pragma once
-#include "ComServer.h"
+#include "CommServer.h"
 
-class CCom
+class CComm
 {
 public:
-	CCom(void);
-	~CCom(void);
+	CComm(void);
+	~CComm(void);
 public:
 	// 服务端CAsyncSocket
-	CComServer m_oServerAsyncSocket;
+	CCommServer m_oServerAsyncSocket;
 public:
 	// 初始化
 	void OnInit(void);
