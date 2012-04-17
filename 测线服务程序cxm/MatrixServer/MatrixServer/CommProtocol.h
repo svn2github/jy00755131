@@ -64,6 +64,8 @@
 #define FrameHead4							0x55
 // 帧尾
 #define FrameTail							0xff
+// 帧命令执行结果-等待执行
+#define CmdResultWait						0x00
 // 帧命令执行结果-执行成功
 #define CmdResultSuccess					0x01
 // 帧命令执行结果-执行失败

@@ -22,10 +22,12 @@ void CCommClient::OnInit(void)
 	m_oClientSocket.OnInit(this, 1024000, 1024000);
 	m_oClientRecFrame.OnInit();
 	m_oClientRecThread.m_pClientRecFrame = &m_oClientRecFrame;
+	m_oClientRecThread.m_pClientSndFrame = &m_oClientSndFrame;
 	m_oClientRecThread.OnInit();
-	m_oClientSndThread.m_pClientSndFrame = &m_oClientSndFrame;
-	m_oClientSndThread.OnInit();
 	m_oClientSndFrame.OnInit();
+	m_oClientSndThread.m_pClientSndFrame = &m_oClientSndFrame;
+	m_oClientSndThread.m_pClientSocket = &m_oClientSocket;
+	m_oClientSndThread.OnInit();
 }
 
 // 释放一个客户端连接信息

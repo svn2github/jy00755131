@@ -17,7 +17,7 @@ void CClientRecFrame::PhraseFrame(char* cpFrame, unsigned short usSize)
 	int iPos = 0;
 	unsigned short usCmd = 0;
 	m_oCommFrameStructPtr pFrameStruct = NULL;
-	pFrameStruct = GetFreeRecFrameStruct();
+	pFrameStruct = GetFreeFrameStruct();
 	// Ö¡ÄÚÈÝ³¤¶È
 	pFrameStruct->m_usFrameInfoSize = usSize;
 	memcpy(&usCmd, &cpFrame[iPos], 2);

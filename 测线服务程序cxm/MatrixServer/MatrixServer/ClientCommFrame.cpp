@@ -4,6 +4,8 @@
 
 CClientCommFrame::CClientCommFrame(void)
 {
+	m_uiPacketIndex = 0;
+	m_uiCmdIndex = 0;
 }
 
 
@@ -12,7 +14,7 @@ CClientCommFrame::~CClientCommFrame(void)
 }
 
 // 重置接收帧结构体
-void CClientCommFrame::OnResetRecFrameStruct(m_oCommFrameStructPtr pFrameStruct)
+void CClientCommFrame::OnResetFrameStruct(m_oCommFrameStructPtr pFrameStruct)
 {
 	memset(pFrameStruct, 0, sizeof(m_oCommFrameStruct));
 }
@@ -28,14 +30,14 @@ void CClientCommFrame::OnInit(void)
 	for(unsigned int i = 0; i < FrameStructNumMax; i++)
 	{
 		// 重置接收帧结构体
-		OnResetRecFrameStruct(&m_oCommFrameArray[i]);
+		OnResetFrameStruct(&m_oCommFrameArray[i]);
 		// 仪器加在空闲接收帧结构体队列尾部
 		m_olsCommFrameFree.push_back(&m_oCommFrameArray[i]);
 	}
 }
 
 // 得到一个空闲接收帧结构体
-m_oCommFrameStructPtr CClientCommFrame::GetFreeRecFrameStruct(void)
+m_oCommFrameStructPtr CClientCommFrame::GetFreeFrameStruct(void)
 {
 	m_oCommFrameStructPtr pFrameStruct = NULL;
 	list <m_oCommFrameStructPtr>::iterator iter;
@@ -54,10 +56,10 @@ m_oCommFrameStructPtr CClientCommFrame::GetFreeRecFrameStruct(void)
 	return pFrameStruct;
 }
 // 增加一个空闲接收帧结构体
-void CClientCommFrame::AddFreeRecFrameStruct(m_oCommFrameStructPtr pFrameStruct)
+void CClientCommFrame::AddFreeFrameStruct(m_oCommFrameStructPtr pFrameStruct)
 {
 	//初始化接收帧结构体
-	OnResetRecFrameStruct(pFrameStruct);
+	OnResetFrameStruct(pFrameStruct);
 	//加入空闲队列
 	m_olsCommFrameFree.push_back(pFrameStruct);
 	m_uiCountFree++;	// 空闲接收帧结构体总数加1

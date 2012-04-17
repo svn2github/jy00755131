@@ -187,6 +187,11 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 		{
 			break;
 		}
+		if (pInstrument->m_bIPSetOK == false)
+		{
+			bRoutADCSet = false;
+			break;
+		}
 		if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
 		{
 			if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
@@ -238,18 +243,12 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			}
 			if (bADCSet == false)
 			{
-// 				str.Format(_T("将仪器IP = 0x%x 加入ADC参数设置任务索引表中"), pInstrument->m_uiIP);
-// 				ConvertCStrToStr(str, &strConv);
-// 				AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 				pInstrument->m_bADCSetReturn = false;
 				AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
 					&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
 			else
 			{
-// 				str.Format(_T("将仪器IP = 0x%x 从ADC参数设置任务索引表中删除"), pInstrument->m_uiIP);
-// 				ConvertCStrToStr(str, &strConv);
-// 				AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 				DeleteInstrumentFromMap(pInstrument->m_uiIP, 
 					&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 				bRoutADCSet = false;
@@ -276,11 +275,12 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			{
 				break;
 			}
+			if (pInstrument->m_bIPSetOK == false)
+			{
+				break;
+			}
 			if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
 			{
-// 				str.Format(_T("将仪器IP = 0x%x 从ADC参数设置任务索引表中删除"), pInstrument->m_uiIP);
-// 				ConvertCStrToStr(str, &strConv);
-// 				AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 				DeleteInstrumentFromMap(pInstrument->m_uiIP, 
 					&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
@@ -288,9 +288,6 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 	}
 	else
 	{
-// 		str.Format(_T("将路由IP = 0x%x 从ADC参数设置任务索引表中删除"), pRout->m_uiRoutIP);
-// 		ConvertCStrToStr(str, &strConv);
-// 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 		DeleteRout(pRout->m_uiRoutIP, &pADCSetThread->m_pRoutList->m_oADCSetRoutMap);
 	}
 }
@@ -387,6 +384,8 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 	hash_map<unsigned int, m_oRoutStruct*>::iterator  iter;
 	CString str = _T("");
 	string strConv = "";
+	unsigned int uiRoutIP = 0;
+	m_oRoutStruct* pRoutDelete = NULL;
 	EnterCriticalSection(&pMonitorThread->m_pInstrumentList->m_oSecInstrumentList);
 	EnterCriticalSection(&pMonitorThread->m_pRoutList->m_oSecRoutList);
 	// 删除过期仪器，将过期路由加入路由删除索引表
@@ -427,19 +426,21 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 			break;
 		}
 		iter = pMonitorThread->m_pRoutList->m_oRoutDeleteMap.begin();
-		DeleteInstrumentAlongRout(iter->second->m_pHead, iter->second, pMonitorThread->m_pInstrumentList, 
+		uiRoutIP = iter->first;
+		pRoutDelete = iter->second;
+		DeleteInstrumentAlongRout(pRoutDelete->m_pHead, pRoutDelete, pMonitorThread->m_pInstrumentList, 
 			pMonitorThread->m_pRoutList, pMonitorThread->m_pThread->m_pConstVar);
 		// 路由索引表回收路由
-		DeleteRout(iter->first, &pMonitorThread->m_pRoutList->m_oRoutMap);
-		str.Format(_T("回收路由IP = 0x%x的过期路由"), iter->first);
+		DeleteRout(uiRoutIP, &pMonitorThread->m_pRoutList->m_oRoutMap);
+		str.Format(_T("回收路由IP = 0x%x的过期路由"), uiRoutIP);
 		ConvertCStrToStr(str, &strConv);
 		AddMsgToLogOutPutList(pMonitorThread->m_pThread->m_pLogOutPut, "ProcMonitor", strConv);
-		// 将过期路由回收到空闲路由队列
-		AddFreeRout(iter->second, pMonitorThread->m_pRoutList);
 		// ADC参数设置索引表回收路由
-		DeleteRout(iter->first, &pMonitorThread->m_pRoutList->m_oADCSetRoutMap);
+		DeleteRout(uiRoutIP, &pMonitorThread->m_pRoutList->m_oADCSetRoutMap);
 		// 路由删除索引表回收路由
-		DeleteRout(iter->first, &pMonitorThread->m_pRoutList->m_oRoutDeleteMap);
+		DeleteRout(uiRoutIP, &pMonitorThread->m_pRoutList->m_oRoutDeleteMap);
+		// 将过期路由回收到空闲路由队列
+		AddFreeRout(pRoutDelete, pMonitorThread->m_pRoutList);
 	}
 	LeaveCriticalSection(&pMonitorThread->m_pRoutList->m_oSecRoutList);
 	LeaveCriticalSection(&pMonitorThread->m_pInstrumentList->m_oSecInstrumentList);

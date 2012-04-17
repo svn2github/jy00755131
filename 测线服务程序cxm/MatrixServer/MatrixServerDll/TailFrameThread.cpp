@@ -197,6 +197,8 @@ void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 	hash_map <unsigned int, m_oRoutStruct*>  ::iterator iter;
 	CString str = _T("");
 	string strConv = "";
+	unsigned int uiRoutIP = 0;
+	m_oRoutStruct* pRoutDelete = NULL;
 	if (pRout->m_pTail == NULL)
 	{
 		return;
@@ -209,19 +211,21 @@ void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 			break;
 		}
 		iter = pRoutList->m_oRoutDeleteMap.begin();
-		DeleteInstrumentAlongRout(iter->second->m_pHead, iter->second, 
+		uiRoutIP = iter->first;
+		pRoutDelete = iter->second;
+		DeleteInstrumentAlongRout(pRoutDelete->m_pHead, pRoutDelete, 
 			pInstrumentList, pRoutList, pConstVar);
 		// 路由索引表回收路由
-		DeleteRout(iter->first, &pRoutList->m_oRoutMap);
-		str.Format(_T("回收路由IP = 0x%x的过期路由"), iter->first);
+		DeleteRout(uiRoutIP, &pRoutList->m_oRoutMap);
+		str.Format(_T("回收路由IP = 0x%x的过期路由"), uiRoutIP);
 		ConvertCStrToStr(str, &strConv);
 		AddMsgToLogOutPutList(pLogOutPut, "DeleteAllInstrumentAlongRout", strConv);
-		// 将过期路由回收到空闲路由队列
-		AddFreeRout(iter->second, pRoutList);
-		// 路由删除索引表回收路由
-		DeleteRout(iter->first, &pRoutList->m_oRoutDeleteMap);
 		// ADC参数设置索引表回收路由
-		DeleteRout(iter->first, &pRoutList->m_oADCSetRoutMap);
+		DeleteRout(uiRoutIP, &pRoutList->m_oADCSetRoutMap);
+		// 路由删除索引表回收路由
+		DeleteRout(uiRoutIP, &pRoutList->m_oRoutDeleteMap);
+		// 将过期路由回收到空闲路由队列
+		AddFreeRout(pRoutDelete, pRoutList);
 	}
 }
 // 处理单个尾包帧

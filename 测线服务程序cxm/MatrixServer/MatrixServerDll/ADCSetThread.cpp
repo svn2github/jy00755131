@@ -611,6 +611,10 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 				{
 					break;
 				}
+				if (pInstrument->m_bIPSetOK == false)
+				{
+					break;
+				}
 				if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
 				{
 					if (false == pInstrument->m_bADCSetReturn)

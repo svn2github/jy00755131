@@ -30,6 +30,8 @@ public:
 	void OnInit(CCommClient* pComClient, int iSndBufferSize, int iRcvBufferSize);
 	// 关闭
 	void OnClose(void);
+	// 处理接收帧
+	void OnProcRec(int iSize);
 };
 
 

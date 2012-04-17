@@ -550,8 +550,6 @@ void OnInit(m_oEnvironmentStruct* pEnv, char* pcXMLFilePath, char* pcINIFilePath
 	OnInitConstVar(pEnv->m_pConstVar, pcINIFilePath, pEnv->m_pLogOutPutOpt);
 	// 初始化仪器通讯信息结构体
 	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo, pcXMLFilePath , pEnv->m_pLogOutPutOpt);
-	// 释放套接字库
-	OnCloseSocketLib(pEnv->m_pLogOutPutOpt);
 	// 初始化套接字库
 	OnInitSocketLib(pEnv->m_pLogOutPutOpt);
 	// 初始化日志输出线程

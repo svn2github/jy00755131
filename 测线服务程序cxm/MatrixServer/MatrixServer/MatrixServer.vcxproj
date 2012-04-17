@@ -130,7 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientCommThread.cpp" />
-    <ClCompile Include="ClientFrame.cpp" />
+    <ClCompile Include="ClientCommFrame.cpp" />
     <ClCompile Include="ClientRecFrame.cpp" />
     <ClCompile Include="ClientSndFrame.cpp" />
     <ClCompile Include="ClientSndThread.cpp" />

@@ -18,16 +18,20 @@ public:
 	list<m_oCommFrameStructPtr> m_olsCommFrameFree;
 	// 等待处理帧结构体
 	list<m_oCommFrameStructPtr> m_olsCommWorkFrame;
+	// 包的流水号
+	unsigned int m_uiPacketIndex;
+	// 命令流水号
+	unsigned int m_uiCmdIndex;
 public:
 	// 重置接收帧结构体
-	void OnResetRecFrameStruct(m_oCommFrameStructPtr pFrameStruct);
+	void OnResetFrameStruct(m_oCommFrameStructPtr pFrameStruct);
 	// 初始化
 	void OnInit(void);
 	// 关闭
 	void OnClose(void);
 	// 得到一个空闲接收帧结构体
-	m_oCommFrameStructPtr GetFreeRecFrameStruct(void);
+	m_oCommFrameStructPtr GetFreeFrameStruct(void);
 	// 增加一个空闲接收帧结构体
-	void AddFreeRecFrameStruct(m_oCommFrameStructPtr pFrameStruct);
+	void AddFreeFrameStruct(m_oCommFrameStructPtr pFrameStruct);
 };
 

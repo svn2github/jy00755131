@@ -751,7 +751,7 @@ SOCKET CreateInstrumentSocket(unsigned short usPort, unsigned int uiIP, m_oLogOu
 	{
 		AddMsgToLogOutPutList(pLogOutPut, "CreateInstrumentSocket", "bind", 
 			ErrorType, WSAGetLastError());
-		str.Format(_T("bind¶Ë¿Ú = %d, IP = %d"), usPort, uiIP);
+		str.Format(_T("bind¶Ë¿Ú = %ud, IP = %ud"), usPort, uiIP);
 		ConvertCStrToStr(str, &strConv);
 		AddMsgToLogOutPutList(pLogOutPut, "CreateInstrumentSocket", strConv);
 	}

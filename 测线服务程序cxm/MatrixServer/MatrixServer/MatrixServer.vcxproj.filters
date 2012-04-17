@@ -116,9 +116,6 @@
     <ClCompile Include="ClientSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ClientFrame.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ClientSndFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -135,6 +132,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ClientSndThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientCommFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

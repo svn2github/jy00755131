@@ -5,6 +5,7 @@
 CClientRecThread::CClientRecThread(void)
 {
 	m_pClientRecFrame = NULL;
+	m_pClientSndFrame = NULL;
 }
 
 
@@ -26,11 +27,14 @@ void CClientRecThread::OnProc(void)
 		if (ptrFrame->m_cCmdType == CmdTypeSet)
 		{
 			// 将帧内容加入待处理任务中
+
+			// 发送应答帧
+			m_pClientSndFrame->MakeReturnFrame(ptrFrame);
 		}
 		// 如果为应答帧
 		else if (ptrFrame->m_cCmdType == CmdTypeReturn)
 		{
-			// 在已发送帧索引中找到该帧
+			// 在已发送帧索引中找到该帧并删除
 		}
 		m_pClientRecFrame->m_olsCommWorkFrame.pop_front();
 	}
