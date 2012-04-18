@@ -37,6 +37,7 @@ void CClientRecThread::OnProc(void)
 			// 在已发送帧索引中找到该帧并删除
 		}
 		m_pClientRecFrame->m_olsCommWorkFrame.pop_front();
+		m_pClientRecFrame->AddFreeFrameStruct(ptrFrame);
 	}
 	LeaveCriticalSection(&m_pClientRecFrame->m_oSecClientFrame);
 }

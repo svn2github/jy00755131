@@ -174,10 +174,8 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 	bool bADCStopSample = false;
 	CString str = _T("");
 	string strConv = "";
-	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	bADCStartSample = pADCSetThread->m_bADCStartSample;
 	bADCStopSample = pADCSetThread->m_bADCStopSample;
-	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	pInstrument = pRout->m_pHead;
 	do 
 	{
@@ -320,7 +318,6 @@ void OnADCCmdAuto(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 	}
 	// 生成ADC参数设置任务队列
 	GetADCTaskQueue(pADCSetThread, iOpt);
-	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	if ((false == pADCSetThread->m_pRoutList->m_oADCSetRoutMap.empty())
 		|| (false == pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.empty()))
 	{
@@ -341,7 +338,6 @@ void OnADCCmdAuto(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 		// ADC参数设置线程开始工作
 		pADCSetThread->m_pThread->m_bWork = true;
 	}
-	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 }
 // ADC参数设置
 void OnADCSetAuto(m_oADCSetThreadStruct* pADCSetThread)
@@ -597,9 +593,9 @@ void MonitorADCSet(m_oADCSetThreadStruct* pADCSetThread)
 	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	uiLineChangeTime = pADCSetThread->m_pInstrumentList->m_uiLineChangeTime;
-// 	// 判断系统稳定
-// 	if (uiTimeNow > (uiLineChangeTime + pADCSetThread->m_pThread->m_pConstVar->m_iLineSysStableTime))
-// 	{
+	// 判断系统稳定
+	if (uiTimeNow > (uiLineChangeTime + pADCSetThread->m_pThread->m_pConstVar->m_iLineSysStableTime))
+	{
 		// 自动进行未完成的ADC参数设置
 		if (pADCSetThread->m_uiADCSetOperationNb == 0)
 		{
@@ -615,7 +611,7 @@ void MonitorADCSet(m_oADCSetThreadStruct* pADCSetThread)
 		{
 			OnADCStopSampleAuto(pADCSetThread);
 		}
-//	}
+	}
 	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
@@ -660,8 +656,11 @@ void ProcMonitor(m_oMonitorThreadStruct* pMonitorThread)
 	MonitorRoutAndInstrument(pMonitorThread);
 	// 系统稳定且不进行ADC数据采集时进行时统
 	MonitorTimeDelay(pMonitorThread->m_pTimeDelayThread);
- 	// 系统稳定则对仪器进行ADC参数设置
- 	MonitorADCSet(pMonitorThread->m_pADCSetThread);
+	if (pMonitorThread->m_pInstrumentList->m_bSetByHand == false)
+	{
+		// 系统稳定则对仪器进行ADC参数设置
+		MonitorADCSet(pMonitorThread->m_pADCSetThread);
+	}
 	// 系统稳定则进行误码查询
 	MonitorErrorCode(pMonitorThread->m_pErrorCodeThread);
 }

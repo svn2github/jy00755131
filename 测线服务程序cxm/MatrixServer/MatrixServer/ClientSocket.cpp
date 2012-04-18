@@ -158,15 +158,6 @@ void CClientSocket::OnReceive(int nErrorCode)
 	CAsyncSocket::OnReceive(nErrorCode);
 }
 
-
-void CClientSocket::OnSend(int nErrorCode)
-{
-	// TODO: 在此添加专用代码和/或调用基类
-
-	CAsyncSocket::OnSend(nErrorCode);
-}
-
-
 void CClientSocket::OnClose(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类

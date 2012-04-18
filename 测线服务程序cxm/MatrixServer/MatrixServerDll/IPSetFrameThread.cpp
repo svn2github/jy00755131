@@ -22,12 +22,14 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	}
 	unsigned int uiIPInstrument = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
+	m_oInstrumentStruct* pInstrumentDelete = NULL;
 	m_oRoutStruct* pRout = NULL;
 	unsigned short usCommand = 0;
 	char cLAUXRoutOpenSet = 0;
 	CString str = _T("");
 	string strFrameData = "";
 	string strConv = "";
+	list<m_oInstrumentStruct*>::iterator iter;
 	// 得到仪器IP
 	EnterCriticalSection(&pIPSetFrameThread->m_pIPSetFrame->m_oSecIPSetFrame);
 	uiIPInstrument = pIPSetFrameThread->m_pIPSetFrame->m_pCommandStructReturn->m_uiSrcIP;
@@ -88,6 +90,22 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				DeleteAllInstrumentAlongRout(pInstrument, pRout, pIPSetFrameThread->m_pInstrumentList, 
 					pIPSetFrameThread->m_pRoutList, pIPSetFrameThread->m_pThread->m_pConstVar,
 					pIPSetFrameThread->m_pThread->m_pLogOutPut);
+				// 删除除LCI以外的其它仪器
+				for (iter = pRout->m_olsRoutInstrument.begin(); iter != pRout->m_olsRoutInstrument.end();)
+				{
+					pInstrumentDelete = *iter;
+					if ((pInstrumentDelete->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
+						|| (pInstrumentDelete->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
+					{
+						iter++;
+					}
+					else
+					{
+						FreeInstrumentFromMap(pInstrumentDelete, pIPSetFrameThread->m_pInstrumentList, pIPSetFrameThread->m_pRoutList,
+							pIPSetFrameThread->m_pThread->m_pConstVar);
+						pRout->m_olsRoutInstrument.erase(iter++);
+					}
+				}
 			}
 			// 关闭交叉线B电源
 			if (cLAUXRoutOpenSet & (0x01 << 6))
@@ -99,6 +117,22 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				DeleteAllInstrumentAlongRout(pInstrument, pRout, pIPSetFrameThread->m_pInstrumentList, 
 					pIPSetFrameThread->m_pRoutList, pIPSetFrameThread->m_pThread->m_pConstVar,
 					pIPSetFrameThread->m_pThread->m_pLogOutPut);
+				// 删除除LCI以外的其它仪器
+				for (iter = pRout->m_olsRoutInstrument.begin(); iter != pRout->m_olsRoutInstrument.end();)
+				{
+					pInstrumentDelete = *iter;
+					if ((pInstrumentDelete->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
+						|| (pInstrumentDelete->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
+					{
+						iter++;
+					}
+					else
+					{
+						FreeInstrumentFromMap(pInstrumentDelete, pIPSetFrameThread->m_pInstrumentList, pIPSetFrameThread->m_pRoutList,
+							pIPSetFrameThread->m_pThread->m_pConstVar);
+						pRout->m_olsRoutInstrument.erase(iter++);
+					}
+				}
 			}
 			// 关闭大线A电源
 			if (cLAUXRoutOpenSet & (0x01 << 5))
@@ -110,6 +144,22 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				DeleteAllInstrumentAlongRout(pInstrument, pRout, pIPSetFrameThread->m_pInstrumentList, 
 					pIPSetFrameThread->m_pRoutList, pIPSetFrameThread->m_pThread->m_pConstVar,
 					pIPSetFrameThread->m_pThread->m_pLogOutPut);
+				// 删除除LCI以外的其它仪器
+				for (iter = pRout->m_olsRoutInstrument.begin(); iter != pRout->m_olsRoutInstrument.end();)
+				{
+					pInstrumentDelete = *iter;
+					if ((pInstrumentDelete->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
+						|| (pInstrumentDelete->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
+					{
+						iter++;
+					}
+					else
+					{
+						FreeInstrumentFromMap(pInstrumentDelete, pIPSetFrameThread->m_pInstrumentList, pIPSetFrameThread->m_pRoutList,
+							pIPSetFrameThread->m_pThread->m_pConstVar);
+						pRout->m_olsRoutInstrument.erase(iter++);
+					}
+				}
 			}
 			// 关闭大线B电源
 			if (cLAUXRoutOpenSet & (0x01 << 4))
@@ -121,6 +171,22 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				DeleteAllInstrumentAlongRout(pInstrument, pRout, pIPSetFrameThread->m_pInstrumentList, 
 					pIPSetFrameThread->m_pRoutList, pIPSetFrameThread->m_pThread->m_pConstVar,
 					pIPSetFrameThread->m_pThread->m_pLogOutPut);
+				// 删除除LCI以外的其它仪器
+				for (iter = pRout->m_olsRoutInstrument.begin(); iter != pRout->m_olsRoutInstrument.end();)
+				{
+					pInstrumentDelete = *iter;
+					if ((pInstrumentDelete->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
+						|| (pInstrumentDelete->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
+					{
+						iter++;
+					}
+					else
+					{
+						FreeInstrumentFromMap(pInstrumentDelete, pIPSetFrameThread->m_pInstrumentList, pIPSetFrameThread->m_pRoutList,
+							pIPSetFrameThread->m_pThread->m_pConstVar);
+						pRout->m_olsRoutInstrument.erase(iter++);
+					}
+				}
 			}
 		}
 	}

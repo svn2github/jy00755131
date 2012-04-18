@@ -19,14 +19,14 @@ CCommClient::~CCommClient()
 // 创建一个客户端连接信息
 void CCommClient::OnInit(void)
 {
-	m_oClientSocket.OnInit(this, 1024000, 1024000);
+	m_oClientSocket.OnInit(this, ServerSndBufferSize, ServerRecBufferSize);
 	m_oClientRecFrame.OnInit();
 	m_oClientRecThread.m_pClientRecFrame = &m_oClientRecFrame;
 	m_oClientRecThread.m_pClientSndFrame = &m_oClientSndFrame;
 	m_oClientRecThread.OnInit();
 	m_oClientSndFrame.OnInit();
+	m_oClientSndFrame.m_pClientSocket = &m_oClientSocket;
 	m_oClientSndThread.m_pClientSndFrame = &m_oClientSndFrame;
-	m_oClientSndThread.m_pClientSocket = &m_oClientSocket;
 	m_oClientSndThread.OnInit();
 }
 

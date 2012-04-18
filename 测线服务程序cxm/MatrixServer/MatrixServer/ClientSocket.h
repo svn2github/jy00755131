@@ -11,13 +11,14 @@ public:
 	CClientSocket();
 	virtual ~CClientSocket();
 	virtual void OnReceive(int nErrorCode);
-	virtual void OnSend(int nErrorCode);
 	virtual void OnClose(int nErrorCode);
 public:
 	// 连接客户端索引指针
 	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
-	// 接收缓冲区大小
+	// 接收缓冲区
 	char m_cRecBuf[ServerRecBufSize];
+	// 发送缓冲区
+	char m_cSndBuf[FrameSizeLimit];
 	// 接收点坐标
 	int m_iPosRec;
 	// 处理点坐标

@@ -29,12 +29,12 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 	unsigned int uiADCSetOperationNb = 0;
 	unsigned int uiLocalSysTime = 0;
 	unsigned int uiTBTimeOld = 0;
-	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+	str.Format(_T("Now操作序号为 %d"), 1234);
+	ConvertCStrToStr(str, &strConv);
+	AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnSelectADCSetCmd", strConv);
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
 	uiLocalSysTime = pADCSetThread->m_uiLocalSysTime;
 	uiTBTimeOld = pADCSetThread->m_uiTBTimeOld;
-	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-
 	EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	// 查询命令字个数
 	pADCSetThread->m_pADCSetFrame->m_usCommandWordNum = 0;
@@ -272,10 +272,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		{
 			uiLocalSysTime -= uiTemp;
 		}
-		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		pADCSetThread->m_uiTBTimeOld = uiLocalSysTime;
 		pADCSetThread->m_uiLocalSysTime = uiLocalSysTime;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBHigh = 
 			pADCSetThread->m_pThread->m_pConstVar->m_uiTBSleepTimeHigh + uiLocalSysTime;
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdTBHigh;
@@ -478,9 +476,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	uiIPInstrument = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiSrcIP;
 	LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
-	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
-	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	// 仪器在索引表中
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pADCSetThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -488,12 +484,10 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 		pInstrument->m_bADCSetReturn = true;
 		if (uiADCSetOperationNb == 17)
 		{
-			EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 			EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 			pADCSetThread->m_uiLocalSysTime = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiSysTime;
 			LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 			str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x"), uiIPInstrument, pADCSetThread->m_uiLocalSysTime);
-			LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 			ConvertCStrToStr(str, &strConv);
 			AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ProcADCSetReturnFrameOne", strConv);
 		}
@@ -558,7 +552,6 @@ void OnADCSetNextOpt(m_oADCSetThreadStruct* pADCSetThread)
 	{
 		return;
 	}
-	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	// 执行下一步ADC命令发送并开启应答监视定时器
 	pADCSetThread->m_uiADCSetOperationNb++;
 	pADCSetThread->m_uiCounter = 0;
@@ -578,7 +571,6 @@ void OnADCSetNextOpt(m_oADCSetThreadStruct* pADCSetThread)
 			OnOutPutADCDataRecResult(pADCSetThread);
 		}
 	}
-	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 }
 // 判断ADC参数设置应答是否接收完全
 bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
@@ -593,9 +585,7 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 	bool bADCSetRoutReturn = true;
 	bool bReturn = true;
 	unsigned int uiADCSetOperationNb = 0;
-	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
-	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	for (iter = pADCSetThread->m_pRoutList->m_oADCSetRoutMap.begin();
 		iter != pADCSetThread->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
 	{
@@ -725,9 +715,7 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 			}		
 		}		
 	}
-	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
-	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	// 判断ADC参数设置应答是否接收完全
 	if (true == CheckADCSetReturnFrame(pADCSetThread))
 	{

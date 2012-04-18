@@ -121,7 +121,6 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	// 得到本地系统时间
 	uiADCDataFrameSysTimeNow = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_uiADCSampleSysTime;
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
-	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	// 仪器在索引表中
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pADCDataRecThread->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -150,7 +149,6 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
 					uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
 			}
-			LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 			return;
 		}
 		// 		// 调试用
@@ -166,7 +164,6 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 					pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 					strFrameData, ErrorType, IDS_ERR_FRAMEPOINT_LIMITOVER);
-				LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 				return;
 			}
 			if (usADCDataFramePointNow < pInstrument->m_usADCDataFramePoint)
@@ -198,7 +195,6 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				ConvertCStrToStr(str, &strConv);
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
 					strConv, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
-				LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 				return;
 			}
 			else
@@ -273,7 +269,6 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		ConvertCStrToStr(strOut, &strConv);
 		AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", strConv);
 	}
-	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 }
 // 处理ADC数据接收帧
 void ProcADCDataRecFrame(m_oADCDataRecThreadStruct* pADCDataRecThread)

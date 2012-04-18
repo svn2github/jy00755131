@@ -296,9 +296,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 	string strConv = "";
 	bool bADCStartSample = false;
 	pInstrument = pRout->m_pHead;
-	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	bADCStartSample = pTimeDelayThread->m_bADCStartSample;
-	LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	do 
 	{
 		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 

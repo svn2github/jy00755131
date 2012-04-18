@@ -262,6 +262,10 @@ typedef struct CommFrame_Struct
 	char m_pcFrameInfo[FrameInfoSizeLimit];
 // 	// 帧尾
 // 	char m_cFrameTail;
+	// 超时计数
+	unsigned int m_uiTimeOutCount;
+	// 发送次数计数
+	unsigned int m_uiSndCount;
 }m_oCommFrameStruct, *m_oCommFrameStructPtr;
 // SURVEY SETUP结构体
 // Survey
