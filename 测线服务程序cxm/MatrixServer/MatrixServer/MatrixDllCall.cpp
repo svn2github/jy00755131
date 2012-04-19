@@ -22,7 +22,9 @@ typedef void (*On_ADCSet_All)(m_oEnvironmentStruct* pEnv);
 // ADC参数设置改为手动设置
 typedef void (*On_ADCSet_ByHand)(m_oInstrumentListStruct* pInstrumentList);
 // 按照路由地址重置ADC参数设置标志位
-typedef void (*On_ADCSet_Part)(unsigned int uiSN, int iRoutDirection, int iOpt, m_oEnvironmentStruct* pEnv);
+typedef void (*On_ADCSet_Part)(unsigned int uiSN, int iRoutDirection, int iOpt, m_oEnvironmentStruct* pEnv, bool bOnly, bool bRout);
+// ADC参数设置线程开始工作
+typedef void (*On_ADCSetThread_Work)(int iOpt, m_oADCSetThreadStruct* pADCSetThread);
 // 打开交叉站某一路由方向的电源
 typedef bool (*On_OpenLAUXRoutPower)(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet, 
 	m_oEnvironmentStruct* pEnv);
@@ -292,7 +294,7 @@ void CMatrixDllCall::OnInit(CString strPath)
 	// DLL创建实例
 	Dll_Create_Instance();
 	// DLL手动设置AD
-	Dll_ADCSet_ByHand();
+//	Dll_ADCSet_ByHand();
 	// DLL得到采样数据处理的回调函数
 	Dll_GetProSampleData_CallBack();
 	// DLL初始化实例
@@ -330,14 +332,30 @@ void CMatrixDllCall::Dll_ADCSet(void)
 	}
 }
 
-
+// ADC参数设置线程开始工作
+void CMatrixDllCall::Dll_ADCSetThreadWork(int iOpt)
+{
+	On_ADCSetThread_Work Dll_On_ADCSetThread_Work = NULL;
+	Dll_On_ADCSetThread_Work = (On_ADCSetThread_Work)GetProcAddress(m_hDllMod, "OnADCSetThreadWork");
+	if (!Dll_On_ADCSetThread_Work)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_On_ADCSetThread_Work)(iOpt, m_pEnv->m_pADCSetThread);
+	}
+}
 
 // DLL按照路由地址设置部分ADC参数, 路由方向为1上、2下、3左、4右
 void CMatrixDllCall::Dll_ADCSetPart(unsigned int uiSN, int iRoutDirection, int iOpt, int iSampleRate)
 {
 	int iOperation = 0;
 	On_ADCSet_Part Dll_On_ADCSet_Part = NULL;
-	Dll_On_ADCSet_Part = (On_ADCSet_Part)GetProcAddress(m_hDllMod, "OnResetADCSetLableBySN");
+	Dll_On_ADCSet_Part = (On_ADCSet_Part)GetProcAddress(m_hDllMod, "OnSetADCByLAUXSN");
 	if (!Dll_On_ADCSet_Part)
 	{
 		// handle the error
@@ -443,7 +461,8 @@ void CMatrixDllCall::Dll_ADCSetPart(unsigned int uiSN, int iRoutDirection, int i
 			return;
 		}
 		// call the function
-		(*Dll_On_ADCSet_Part)(uiSN, iRoutDirection, iOperation, m_pEnv);
+		(*Dll_On_ADCSet_Part)(uiSN, iRoutDirection, iOperation, m_pEnv, true, true);
+		Dll_ADCSetThreadWork(iOperation);
 	}
 }
 

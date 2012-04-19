@@ -128,7 +128,40 @@ void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray)
 	DeleteOptTaskFromMap(uiIndex, &pOptTaskArray->m_oOptTaskWorkMap);
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 }
-
+// 按SN重置ADC参数设置标志位
+m_oInstrumentStruct* OnResetADCSetLableBySN(unsigned int uiSN, int iOpt, m_oInstrumentListStruct* pInstrumentList,
+	m_oConstVarStruct* pConstVar)
+{
+	if (pInstrumentList == NULL)
+	{
+		return NULL;
+	}
+	if (pConstVar == NULL)
+	{
+		return NULL;
+	}
+	m_oInstrumentStruct* pInstrument = NULL;
+	if (TRUE == IfIndexExistInMap(uiSN, &pInstrumentList->m_oSNInstrumentMap))
+	{
+		pInstrument = GetInstrumentFromMap(uiSN, &pInstrumentList->m_oSNInstrumentMap);
+		if (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
+		{
+			if (iOpt == pConstVar->m_iADCSetOptNb)
+			{
+				pInstrument->m_bADCSet = false;
+			}
+			else if (iOpt == pConstVar->m_iADCStartSampleOptNb)
+			{
+				pInstrument->m_bADCStartSample = false;
+			}
+			else if (iOpt == pConstVar->m_iADCStopSampleOptNb)
+			{
+				pInstrument->m_bADCStopSample = false;
+			}
+		}
+	}
+	return pInstrument;
+}
 // 按路由重置ADC参数设置标志位
 void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, m_oConstVarStruct* pConstVar)
 {
@@ -199,118 +232,58 @@ void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt,
 	}
 }
 // 按照路由地址重置ADC参数设置标志位
-void OnResetADCSetLableBySN(unsigned int uiSN, int iDirection, int iOpt, m_oEnvironmentStruct* pEnv)
+void OnSetADCByLAUXSN(unsigned int uiSN, int iDirection, int iOpt, 
+	m_oEnvironmentStruct* pEnv, bool bOnly, bool bRout)
 {
 	if (pEnv == NULL)
 	{
 		return;
 	}
-	if (pEnv->m_pConstVar == NULL)
-	{
-		return;
-	}
-	if (pEnv->m_pRoutList == NULL)
-	{
-		AddMsgToLogOutPutList(pEnv->m_pConstVar->m_pLogOutPut, "OnResetADCSetLableBySN", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
 	m_oRoutStruct* pRout = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
 	unsigned int uiRoutIP = 0;
-	CString str = _T("");
-	string strConv = "";
-	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-	if (false == GetRoutIPBySn(uiSN, iDirection, pEnv->m_pInstrumentList, 
-		pEnv->m_pConstVar, uiRoutIP))
+	if (bOnly == true)
 	{
+		OnClearADCSetMap(pEnv->m_pADCSetThread);
+	}
+	// 按照路由设置
+	if (bRout == true)
+	{
+		EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+		if (false == GetRoutIPBySn(uiSN, iDirection, pEnv->m_pInstrumentList, 
+			pEnv->m_pConstVar, uiRoutIP))
+		{
+			LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+			return;
+		}
 		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-		return;
-	}
-	pEnv->m_pInstrumentList->m_oADCSetInstrumentMap.clear();
-	LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-	EnterCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
-	if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pRoutList, &pRout))
-	{
+		EnterCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+		if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pRoutList, &pRout))
+		{
+			LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+			return;
+		}
 		LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
-		return;
+		EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
+		EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+		EnterCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+		OnResetADCSetLableByRout(pRout, iOpt, pEnv->m_pConstVar);
+		GetADCTaskQueueByRout(pEnv->m_pADCSetThread, pRout, iOpt);
+		LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+		LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	}
-	// 加入ADC参数设置任务队列
-	pRout->m_bADCSetRout = true;
-	str.Format(_T("将路由IP = 0x%x 加入ADC参数设置任务索引表"), uiRoutIP);
-	ConvertCStrToStr(str, &strConv);
-	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "GetADCTaskQueueByRout", strConv);
-	pEnv->m_pRoutList->m_oADCSetRoutMap.clear();
-	AddRout(uiRoutIP, pRout, &pEnv->m_pRoutList->m_oADCSetRoutMap);
-	OnResetADCSetLableByRout(pRout, iOpt, pEnv->m_pConstVar);
-	LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+	// 按照SN设置单个仪器的ADC
+	else
+	{
+		EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
+		EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+		pInstrument = OnResetADCSetLableBySN(uiSN, iOpt, pEnv->m_pInstrumentList, pEnv->m_pConstVar);
+		GetADCTaskQueueBySN(pEnv->m_pADCSetThread, pInstrument, iOpt);
+		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+		LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
+	}
 
-	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
-	pInstrument = pRout->m_pHead;
-	do 
-	{
-		pInstrument = GetNextInstrument(iDirection, pInstrument, pEnv->m_pConstVar);
-		if (pInstrument == NULL)
-		{
-			break;
-		}
-		if (pInstrument->m_iInstrumentType == pEnv->m_pConstVar->m_iInstrumentTypeFDU)
-		{
-			if (iOpt == pEnv->m_pConstVar->m_iADCSetOptNb)
-			{
-				if (false == pInstrument->m_bADCSet)
-				{
-					pInstrument->m_bADCSetReturn = false;
-				}
-			}
-			else if (iOpt == pEnv->m_pConstVar->m_iADCStartSampleOptNb)
-			{
-				if ((true == pEnv->m_pADCSetThread->m_bADCStartSample)
-					&& (false == pInstrument->m_bADCStartSample))
-				{
-					pInstrument->m_bADCSetReturn = false;
-					// 实际接收ADC数据帧数
-					pInstrument->m_uiADCDataActualRecFrameNum = 0;
-					// 重发查询帧得到的应答帧数
-					pInstrument->m_uiADCDataRetransmissionFrameNum = 0;
-					// 应该接收ADC数据帧数（含丢帧）
-					pInstrument->m_uiADCDataShouldRecFrameNum = 0;
-					// ADC数据帧的指针偏移量
-					pInstrument->m_usADCDataFramePoint = 0;
-					// ADC数据帧发送时的本地时间
-					pInstrument->m_uiADCDataFrameSysTime = 0;
-					// ADC数据帧起始帧数
-					pInstrument->m_iADCDataFrameStartNum = 0;
-				}
-			}
-			else if (iOpt == pEnv->m_pConstVar->m_iADCStopSampleOptNb)
-			{
-				if ((true == pEnv->m_pADCSetThread->m_bADCStopSample)
-					&& (false == pInstrument->m_bADCStopSample))
-				{
-					pInstrument->m_bADCSetReturn = false;
-				}
-			}
-		}
-	} while (pInstrument != pRout->m_pTail);
-
-	// 进行ADC参数设置
-	pEnv->m_pADCSetThread->m_uiCounter = 0;
-	if (iOpt == pEnv->m_pConstVar->m_iADCSetOptNb)
-	{
-		pEnv->m_pADCSetThread->m_uiADCSetOperationNb = 1;
-	}
-	else if (iOpt == pEnv->m_pConstVar->m_iADCStartSampleOptNb)
-	{
-		pEnv->m_pADCSetThread->m_uiADCSetOperationNb = 12;
-	}
-	else if (iOpt == pEnv->m_pConstVar->m_iADCStopSampleOptNb)
-	{
-		pEnv->m_pADCSetThread->m_uiADCSetOperationNb = 19;
-	}
-	// ADC参数设置线程开始工作
-	pEnv->m_pADCSetThread->m_pThread->m_bWork = true;
-	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 }
 // ADC参数设置
 void OnADCSet(m_oEnvironmentStruct* pEnv)

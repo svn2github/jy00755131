@@ -159,6 +159,109 @@ void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pCon
 	// 得到时统任务
 	GetTimeDelayTask(pRoutList, pConstVar);
 }
+// ADC参数设置线程开始工作
+void OnADCSetThreadWork(int iOpt, m_oADCSetThreadStruct* pADCSetThread)
+{
+	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+	if ((false == pADCSetThread->m_pRoutList->m_oADCSetRoutMap.empty())
+		|| (false == pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.empty()))
+	{
+		// 进行ADC参数设置
+		pADCSetThread->m_uiCounter = 0;
+		if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
+		{
+			pADCSetThread->m_uiADCSetOperationNb = 1;
+		}
+		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb)
+		{
+			pADCSetThread->m_uiADCSetOperationNb = 12;
+		}
+		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb)
+		{
+			pADCSetThread->m_uiADCSetOperationNb = 19;
+		}
+		// ADC参数设置线程开始工作
+		pADCSetThread->m_pThread->m_bWork = true;
+	}
+	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+}
+// 清除ADC参数设置任务索引
+void OnClearADCSetMap(m_oADCSetThreadStruct* pADCSetThread)
+{
+	if (pADCSetThread == NULL)
+	{
+		return;
+	}
+	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
+	pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.clear();
+	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
+	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
+	pADCSetThread->m_pRoutList->m_oADCSetRoutMap.clear();
+	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
+}
+// 将仪器加入ADC参数设置索引表
+void GetADCTaskQueueBySN(m_oADCSetThreadStruct* pADCSetThread, 
+	m_oInstrumentStruct* pInstrument, int iOpt)
+{
+	if (pADCSetThread == NULL)
+	{
+		return;
+	}
+	if (pInstrument == NULL)
+	{
+		return;
+	}
+	CString str = _T("");
+	string strConv = "";
+	bool bAdd = false;
+	if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+	{
+		if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
+		{
+			if (false == pInstrument->m_bADCSet)
+			{
+				bAdd = true;
+			}
+		}
+		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb)
+		{
+			if ((true == pADCSetThread->m_bADCStartSample)
+				&& (false == pInstrument->m_bADCStartSample))
+			{
+				// 实际接收ADC数据帧数
+				pInstrument->m_uiADCDataActualRecFrameNum = 0;
+				// 重发查询帧得到的应答帧数
+				pInstrument->m_uiADCDataRetransmissionFrameNum = 0;
+				// 应该接收ADC数据帧数（含丢帧）
+				pInstrument->m_uiADCDataShouldRecFrameNum = 0;
+				// ADC数据帧的指针偏移量
+				pInstrument->m_usADCDataFramePoint = 0;
+				// ADC数据帧发送时的本地时间
+				pInstrument->m_uiADCDataFrameSysTime = 0;
+				// ADC数据帧起始帧数
+				pInstrument->m_iADCDataFrameStartNum = 0;
+				bAdd = true;
+			}
+		}
+		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb)
+		{
+			if ((true == pADCSetThread->m_bADCStopSample)
+				&& (false == pInstrument->m_bADCStopSample))
+			{
+				bAdd = true;
+			}
+		}
+	}
+	if (bAdd == true)
+	{
+		pInstrument->m_bADCSetReturn = false;
+		AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
+			&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
+		str.Format(_T("将仪器SN = 0x%x 加入ADC参数设置任务索引表"), pInstrument->m_uiSN);
+		ConvertCStrToStr(str, &strConv);
+		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueBySN", strConv);
+	}
+}
 // 判断路由方向上是否有采集站
 void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread, 
 	m_oRoutStruct* pRout, int iOpt)
@@ -183,11 +286,6 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			pADCSetThread->m_pThread->m_pConstVar);
 		if (pInstrument == NULL)
 		{
-			break;
-		}
-		if (pInstrument->m_bIPSetOK == false)
-		{
-			bRoutADCSet = false;
 			break;
 		}
 		if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
@@ -273,10 +371,6 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			{
 				break;
 			}
-			if (pInstrument->m_bIPSetOK == false)
-			{
-				break;
-			}
 			if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
 			{
 				DeleteInstrumentFromMap(pInstrument->m_uiIP, 
@@ -318,26 +412,7 @@ void OnADCCmdAuto(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 	}
 	// 生成ADC参数设置任务队列
 	GetADCTaskQueue(pADCSetThread, iOpt);
-	if ((false == pADCSetThread->m_pRoutList->m_oADCSetRoutMap.empty())
-		|| (false == pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.empty()))
-	{
-		// 进行ADC参数设置
-		pADCSetThread->m_uiCounter = 0;
-		if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
-		{
-			pADCSetThread->m_uiADCSetOperationNb = 1;
-		}
-		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb)
-		{
-			pADCSetThread->m_uiADCSetOperationNb = 12;
-		}
-		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb)
-		{
-			pADCSetThread->m_uiADCSetOperationNb = 19;
-		}
-		// ADC参数设置线程开始工作
-		pADCSetThread->m_pThread->m_bWork = true;
-	}
+	OnADCSetThreadWork(iOpt, pADCSetThread);
 }
 // ADC参数设置
 void OnADCSetAuto(m_oADCSetThreadStruct* pADCSetThread)

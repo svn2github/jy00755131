@@ -2133,6 +2133,13 @@ MatrixServerDll_API void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout,
 MatrixServerDll_API void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar);
 // 生成时统任务队列
 MatrixServerDll_API void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar);
+// ADC参数设置线程开始工作
+MatrixServerDll_API void OnADCSetThreadWork(int iOpt, m_oADCSetThreadStruct* pADCSetThread);
+// 清除ADC参数设置任务索引
+MatrixServerDll_API void OnClearADCSetMap(m_oADCSetThreadStruct* pADCSetThread);
+// 将仪器加入ADC参数设置索引表
+MatrixServerDll_API void GetADCTaskQueueBySN(m_oADCSetThreadStruct* pADCSetThread, 
+	m_oInstrumentStruct* pInstrument, int iOpt);
 // 判断路由方向上是否有采集站
 MatrixServerDll_API void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread, 
 	m_oRoutStruct* pRout, int iOpt);
@@ -2234,12 +2241,15 @@ MatrixServerDll_API void GenOneOptTask(unsigned int uiIndex, unsigned int uiStar
 // 释放一个施工任务
 MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, 
 	m_oOptTaskArrayStruct* pOptTaskArray);
+// 按SN重置ADC参数设置标志位
+MatrixServerDll_API m_oInstrumentStruct* OnResetADCSetLableBySN(unsigned int uiSN, int iOpt, 
+	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar);
 // 按路由重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, 
 	m_oConstVarStruct* pConstVar);
 // 按照路由地址重置ADC参数设置标志位
-MatrixServerDll_API void OnResetADCSetLableBySN(unsigned int uiSN, int iDirection, int iOpt, 
-	m_oEnvironmentStruct* pEnv);
+MatrixServerDll_API void OnSetADCByLAUXSN(unsigned int uiSN, int iDirection, int iOpt, 
+	m_oEnvironmentStruct* pEnv, bool bOnly = true, bool bRout = true);
 // 重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt, 
 	m_oConstVarStruct* pConstVar);

@@ -226,55 +226,7 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	uiRoutIP = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP;
 	LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 	// 判断仪器SN是否在SN索引表中
-	if(TRUE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
-	{
-		// 在索引表中则找到该仪器,得到该仪器指针
-		pInstrument = GetInstrumentFromMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
-		// 判断仪器是否已经设置IP
-		if (pInstrument->m_bIPSetOK == true)
-		{
-			GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
-				pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
-			AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
-				strFrameData, ErrorType, IDS_ERR_EXPIREDHEADFRAME);
-			return;
-		}
-		// 判断首包时刻是否发生变化
-		if (pInstrument->m_uiTimeHeadFrame != uiTimeHeadFrame)
-		{
-			GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
-				pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
-			AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
-				strFrameData, ErrorType, IDS_ERR_HEADFRAMETIME);
-			pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
-		}
-		if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
-			&pHeadFrameThread->m_pRoutList->m_oRoutMap))
-		{
-			pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pRoutList->m_oRoutMap);
-			// 更新路由对象的路由时间
-			UpdateRoutTime(pRout);
-			// 仪器位置按照首包时刻排序
-			InstrumentLocationSort(pInstrument, pRout, pHeadFrameThread->m_pThread->m_pConstVar);
-		}
-		else
-		{
-			GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
-				pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
-			AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
-				strFrameData, ErrorType, IDS_ERR_ROUT_NOTEXIT);
-		}
-		// 如果仪器在其路由方向上位置稳定次数超过设定次数
-		// 则将该仪器加入IP地址设置队列
-		if (pInstrument->m_iHeadFrameStableNum >= pHeadFrameThread->m_pThread->m_pConstVar->m_iHeadFrameStableTimes)
-		{
-			if (FALSE == IfIndexExistInMap(pInstrument->m_uiIP, &pHeadFrameThread->m_pInstrumentList->m_oIPSetMap))
-			{
-				AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, &pHeadFrameThread->m_pInstrumentList->m_oIPSetMap);
-			}
-		}
-	}
-	else
+	if(FALSE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
 	{
 		int iDirection = 0;
 		// 得到新仪器
@@ -304,19 +256,9 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 				&pHeadFrameThread->m_pRoutList->m_oRoutMap))
 			{
 				pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pRoutList->m_oRoutMap);
-				// 更新路由对象的路由时间
-				UpdateRoutTime(pRout);
 				pInstrument->m_iRoutDirection = pRout->m_iRoutDirection;
 				// 把仪器加入路由仪器队列
 				pRout->m_olsRoutInstrument.push_back(pInstrument);
-			}
-			else
-			{
-				// 路由IP不在索引中
-				GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
-					pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
-				AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
-					strFrameData, ErrorType, IDS_ERR_ROUT_NOTEXIT);
 			}
 		}
 
@@ -339,6 +281,52 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		pInstrument->m_uiBroadCastPort = pHeadFrameThread->m_pThread->m_pConstVar->m_iBroadcastPortStart + pInstrument->m_uiRoutIP;
 		// 新仪器加入SN索引表
 		AddInstrumentToMap(pInstrument->m_uiSN, pInstrument, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
+	}
+
+	// 在索引表中则找到该仪器,得到该仪器指针
+	pInstrument = GetInstrumentFromMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
+	// 判断仪器是否已经设置IP
+	if (pInstrument->m_bIPSetOK == true)
+	{
+		GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
+			pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
+			strFrameData, ErrorType, IDS_ERR_EXPIREDHEADFRAME);
+		return;
+	}
+	// 判断首包时刻是否发生变化
+	if (pInstrument->m_uiTimeHeadFrame != uiTimeHeadFrame)
+	{
+		GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
+			pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
+			strFrameData, ErrorType, IDS_ERR_HEADFRAMETIME);
+		pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
+	}
+	if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
+		&pHeadFrameThread->m_pRoutList->m_oRoutMap))
+	{
+		pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pRoutList->m_oRoutMap);
+		// 更新路由对象的路由时间
+		UpdateRoutTime(pRout);
+		// 仪器位置按照首包时刻排序
+		InstrumentLocationSort(pInstrument, pRout, pHeadFrameThread->m_pThread->m_pConstVar);
+	}
+	else
+	{
+		GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
+			pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
+			strFrameData, ErrorType, IDS_ERR_ROUT_NOTEXIT);
+	}
+	// 如果仪器在其路由方向上位置稳定次数超过设定次数
+	// 则将该仪器加入IP地址设置队列
+	if (pInstrument->m_iHeadFrameStableNum >= pHeadFrameThread->m_pThread->m_pConstVar->m_iHeadFrameStableTimes)
+	{
+		if (FALSE == IfIndexExistInMap(pInstrument->m_uiIP, &pHeadFrameThread->m_pInstrumentList->m_oIPSetMap))
+		{
+			AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, &pHeadFrameThread->m_pInstrumentList->m_oIPSetMap);
+		}
 	}
 	str.Format(_T("接收到SN = 0x%x的仪器首包帧，首包时刻 = 0x%x，路由IP = 0x%x, 测线号 = %d，测点序号 = %d"), 
 		pInstrument->m_uiSN, pInstrument->m_uiTimeHeadFrame, pInstrument->m_uiRoutIP, 

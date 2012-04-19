@@ -158,7 +158,6 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 	// 前一个仪器指针为路由尾仪器
 	m_oInstrumentStruct* pInstrumentPrevious = pRout->m_pTail;
 	m_oInstrumentStruct* pInstrumentDelete = NULL;
-	list<m_oInstrumentStruct*>::iterator iter;
 	CString str = _T("");
 	while (pInstrument != pInstrumentPrevious)
 	{
@@ -181,16 +180,10 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		}
 		// 回收一个仪器
 		FreeInstrumentFromMap(pInstrumentDelete, pInstrumentList, pRoutList, pConstVar);
-		for (iter = pRout->m_olsRoutInstrument.begin(); iter != pRout->m_olsRoutInstrument.end();)
+		// 回收一个仪器
+		if (pRout->m_olsRoutInstrument.size() > 0)
 		{
-			if ((*iter)->m_uiSN == pInstrumentDelete->m_uiSN)
-			{
-				pRout->m_olsRoutInstrument.erase(iter++);
-			}
-			else
-			{
-				iter++;
-			}
+			pRout->m_olsRoutInstrument.pop_back();
 		}
 	}
 }

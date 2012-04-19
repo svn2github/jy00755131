@@ -48,5 +48,7 @@ public:
 		char* cpADCSet, int iADCSetNum);
 	// DLL得到采样数据处理的回调函数
 	void Dll_GetProSampleData_CallBack(void);
+	// ADC参数设置线程开始工作
+	void Dll_ADCSetThreadWork(int iOpt);
 };
 

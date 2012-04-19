@@ -82,7 +82,7 @@ void PrepareTailTimeFrame(m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
 // 处理尾包时刻查询
 void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDelayThread)
 {
-	if ((pTimeDelayThread == NULL) || (pRout == NULL))
+	if ((pTimeDelayThread == NULL) || (pRout == NULL) || (pRout->m_pTail == NULL))
 	{
 		return;
 	}
