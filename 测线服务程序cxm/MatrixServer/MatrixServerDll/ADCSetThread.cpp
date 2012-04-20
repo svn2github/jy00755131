@@ -347,17 +347,20 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 	SendInstrumentADCSetFrame(pADCSetThread->m_pADCSetFrame, pADCSetThread->m_pThread->m_pConstVar);
 }
 // 手动发送ADC参数设置帧
-bool OnSetADCSetFrameByHand(unsigned int uiSN, int iDirection, bool bRout,  char* cpADCSet, 
+bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, bool bRout,  char* cpADCSet, 
 	int iADCSetNum, m_oEnvironmentStruct* pEnv)
 {
 	unsigned int uiDstIP = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentNext = NULL;
-	if (FALSE == IfIndexExistInMap(uiSN, &pEnv->m_pInstrumentList->m_oSNInstrumentMap))
+	m_oInstrumentLocationStruct Location;
+	Location.m_iLineIndex = iLineIndex;
+	Location.m_iPointIndex = iPointIndex;
+	if (FALSE == IfLocationExistInMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
 		return false;
 	}
-	pInstrument = GetInstrumentFromMap(uiSN, &pEnv->m_pInstrumentList->m_oSNInstrumentMap);
+	pInstrument = GetInstrumentFromLocationMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (bRout == true)
 	{
 		pInstrumentNext = GetNextInstrument(iDirection, pInstrument, pEnv->m_pConstVar);
@@ -611,11 +614,8 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 					{
 						// 找不到则插入索引表
 						// 仪器索引表中已经有的路由不再广播发送ADC参数设置
-						if (FALSE == IfIndexExistInMap(pInstrument->m_uiIP, &pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap))
-						{
-							AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
-								&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
-						}
+						AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
+							&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 						bReturn = false;
 						bADCSetRoutReturn = false;
 					}

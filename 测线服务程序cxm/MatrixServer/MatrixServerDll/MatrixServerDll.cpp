@@ -129,38 +129,36 @@ void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray)
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 }
 // 按SN重置ADC参数设置标志位
-m_oInstrumentStruct* OnResetADCSetLableBySN(unsigned int uiSN, int iOpt, m_oInstrumentListStruct* pInstrumentList,
-	m_oConstVarStruct* pConstVar)
+void OnResetADCSetLableBySN(m_oInstrumentStruct* pInstrument, int iOpt, 
+	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar)
 {
+	if (pInstrument == NULL)
+	{
+		return;
+	}
 	if (pInstrumentList == NULL)
 	{
-		return NULL;
+		return;
 	}
 	if (pConstVar == NULL)
 	{
-		return NULL;
+		return;
 	}
-	m_oInstrumentStruct* pInstrument = NULL;
-	if (TRUE == IfIndexExistInMap(uiSN, &pInstrumentList->m_oSNInstrumentMap))
+	if (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
 	{
-		pInstrument = GetInstrumentFromMap(uiSN, &pInstrumentList->m_oSNInstrumentMap);
-		if (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
+		if (iOpt == pConstVar->m_iADCSetOptNb)
 		{
-			if (iOpt == pConstVar->m_iADCSetOptNb)
-			{
-				pInstrument->m_bADCSet = false;
-			}
-			else if (iOpt == pConstVar->m_iADCStartSampleOptNb)
-			{
-				pInstrument->m_bADCStartSample = false;
-			}
-			else if (iOpt == pConstVar->m_iADCStopSampleOptNb)
-			{
-				pInstrument->m_bADCStopSample = false;
-			}
+			pInstrument->m_bADCSet = false;
+		}
+		else if (iOpt == pConstVar->m_iADCStartSampleOptNb)
+		{
+			pInstrument->m_bADCStartSample = false;
+		}
+		else if (iOpt == pConstVar->m_iADCStopSampleOptNb)
+		{
+			pInstrument->m_bADCStopSample = false;
 		}
 	}
-	return pInstrument;
 }
 // 按路由重置ADC参数设置标志位
 void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, m_oConstVarStruct* pConstVar)
@@ -232,7 +230,7 @@ void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt,
 	}
 }
 // 按照路由地址重置ADC参数设置标志位
-void OnSetADCByLAUXSN(unsigned int uiSN, int iDirection, int iOpt, 
+void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt, 
 	m_oEnvironmentStruct* pEnv, bool bOnly, bool bRout)
 {
 	if (pEnv == NULL)
@@ -242,15 +240,26 @@ void OnSetADCByLAUXSN(unsigned int uiSN, int iDirection, int iOpt,
 	m_oRoutStruct* pRout = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
 	unsigned int uiRoutIP = 0;
+	m_oInstrumentLocationStruct Location;
+	Location.m_iLineIndex = iLineIndex;
+	Location.m_iPointIndex = iPointIndex;
 	if (bOnly == true)
 	{
 		OnClearADCSetMap(pEnv->m_pADCSetThread);
 	}
+	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+	pInstrument = GetInstrumentFromLocationMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+	if (pInstrument == NULL)
+	{
+		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+		return;
+	}
+	LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	// 按照路由设置
 	if (bRout == true)
 	{
 		EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-		if (false == GetRoutIPBySn(uiSN, iDirection, pEnv->m_pInstrumentList, 
+		if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pInstrumentList, 
 			pEnv->m_pConstVar, uiRoutIP))
 		{
 			LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
@@ -278,7 +287,7 @@ void OnSetADCByLAUXSN(unsigned int uiSN, int iDirection, int iOpt,
 	{
 		EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 		EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-		pInstrument = OnResetADCSetLableBySN(uiSN, iOpt, pEnv->m_pInstrumentList, pEnv->m_pConstVar);
+		OnResetADCSetLableBySN(pInstrument, iOpt, pEnv->m_pInstrumentList, pEnv->m_pConstVar);
 		GetADCTaskQueueBySN(pEnv->m_pADCSetThread, pInstrument, iOpt);
 		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 		LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);

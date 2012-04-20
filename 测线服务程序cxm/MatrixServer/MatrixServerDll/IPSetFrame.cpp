@@ -206,14 +206,18 @@ void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
 // 打开交叉站某一路由方向的电源
-bool OpenLAUXRoutPower(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet, m_oEnvironmentStruct* pEnv)
+bool OpenLAUXRoutPower(int iLineIndex, int iPointIndex, unsigned char ucLAUXRoutOpenSet, 
+	m_oEnvironmentStruct* pEnv)
 {
 	m_oInstrumentStruct* pInstrument = NULL;
-	if (FALSE == IfIndexExistInMap(uiSN, &pEnv->m_pInstrumentList->m_oSNInstrumentMap))
+	m_oInstrumentLocationStruct Location;
+	Location.m_iLineIndex = iLineIndex;
+	Location.m_iPointIndex = iPointIndex;
+	if (FALSE == IfLocationExistInMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
 		return false;
 	}
-	pInstrument = GetInstrumentFromMap(uiSN, &pEnv->m_pInstrumentList->m_oSNInstrumentMap);
+	pInstrument = GetInstrumentFromLocationMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (pInstrument->m_bIPSetOK == false)
 	{
 		return false;

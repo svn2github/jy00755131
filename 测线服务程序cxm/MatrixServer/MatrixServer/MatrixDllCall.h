@@ -5,7 +5,7 @@ class CMatrixDllCall
 public:
 	CMatrixDllCall(void);
 	~CMatrixDllCall(void);
-protected:
+public:
 	HMODULE m_hDllMod;
 	m_oEnvironmentStruct* m_pEnv;
 public:
@@ -36,19 +36,22 @@ public:
 	// Dll_开始AD参数设置
 	void Dll_ADCSet(void);
 	// DLL按照路由地址设置部分ADC参数
-	void Dll_ADCSetPart(unsigned int uiSN, int iRoutDirection, int iOpt, int iSampleRate = 0);
+	void Dll_ADCSetPart(int iLineIndex, int iPointIndex, int iRoutDirection, int iOpt, 
+		int iSampleRate = 0, bool bOnly = true, bool bRout = true);
 	// DLL手动设置ADC参数
 	void Dll_ADCSet_ByHand(void);
 	// DLL手动打开交叉站某一路由方向的电源
-	void Dll_OpenLAUXRoutPower_ByHand(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet);
+	void Dll_OpenLAUXRoutPower_ByHand(int iLineIndex, int iPointIndex, unsigned char ucLAUXRoutOpenSet);
 	// DLL得到路由方向上仪器个数
-	unsigned int Dll_GetRoutInstrumentNum(unsigned int uiSN, int iDirection);
+	unsigned int Dll_GetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection);
 	// DLL手动发送ADC参数设置帧
-	void Dll_OnSetADCSetFrameByHand(unsigned int uiSN, int iDirection, bool bRout, 
+	void Dll_OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, bool bRout, 
 		char* cpADCSet, int iADCSetNum);
 	// DLL得到采样数据处理的回调函数
 	void Dll_GetProSampleData_CallBack(void);
 	// ADC参数设置线程开始工作
 	void Dll_ADCSetThreadWork(int iOpt);
+	// 通过位置得到设备指针
+	m_oInstrumentStruct* Dll_GetInstrumentByLocation(int iLineIndex, int iPointIndex);
 };
 

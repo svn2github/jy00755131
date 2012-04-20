@@ -29,6 +29,8 @@ void OnResetInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	pInstrumentList->m_oIPSetMap.clear();
 	// 清空未完成ADC参数设置的仪器队列
 	pInstrumentList->m_oADCSetInstrumentMap.clear();
+	// 清空仪器位置索引表
+	pInstrumentList->m_oInstrumentLocationMap.clear();
 	// 测网系统发生变化的时间
 	pInstrumentList->m_uiLineChangeTime = 0;
 	// 测网状态为不稳定
@@ -76,8 +78,11 @@ void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarS
 	pInstrumentList->m_olsInstrumentFree.clear();
 	// 清空IP地址设置仪器索引表
 	pInstrumentList->m_oIPSetMap.clear();
-	// 清空未完成ADC参数设置的仪器队列
+	// 清空未完成ADC参数设置的仪器索引
 	pInstrumentList->m_oADCSetInstrumentMap.clear();
+	// 清空仪器位置索引表
+	pInstrumentList->m_oInstrumentLocationMap.clear();
+
 	// 测网系统发生变化的时间
 	pInstrumentList->m_uiLineChangeTime = 0;
 	// 测网状态为不稳定
@@ -123,6 +128,8 @@ void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	pInstrumentList->m_oIPSetMap.clear();
 	// 清空未完成ADC参数设置的仪器队列
 	pInstrumentList->m_oADCSetInstrumentMap.clear();
+	// 清空仪器位置索引表
+	pInstrumentList->m_oInstrumentLocationMap.clear();
 	// 删除仪器数组
 	if (pInstrumentList->m_pArrayInstrument != NULL)
 	{

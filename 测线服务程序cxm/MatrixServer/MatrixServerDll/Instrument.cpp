@@ -191,7 +191,7 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 	// ADC数据帧起始帧数
 	pInstrument->m_iADCDataFrameStartNum = 0;
 }
-// 判断仪器索引号是否已加入索引表
+// 判断索引号是否已加入索引表
 BOOL IfIndexExistInMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
@@ -212,7 +212,7 @@ BOOL IfIndexExistInMap(unsigned int uiIndex,
 	}
 	return bResult;
 }
-// 增加一个IP地址设置仪器
+// 增加对象到索引表
 void AddInstrumentToMap(unsigned int uiIndex, m_oInstrumentStruct* pInstrument, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
@@ -259,6 +259,80 @@ BOOL DeleteInstrumentFromMap(unsigned int uiIndex,
 	}
 	return bResult;
 }
+
+// 判断仪器位置索引号是否已加入索引表
+BOOL IfLocationExistInMap(m_oInstrumentLocationStruct Location, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return FALSE;
+	}
+	BOOL bResult = FALSE;
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
+	iter = pMap->find(Location);
+	if (iter != pMap->end())
+	{
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
+// 增加对象到索引表
+void AddLocationToMap(m_oInstrumentLocationStruct Location, m_oInstrumentStruct* pInstrument, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	if ((pInstrument == NULL) || (pMap == NULL))
+	{
+		return;
+	}
+	if (false == IfLocationExistInMap(Location, pMap))
+	{
+		pMap->insert(map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::value_type (Location, pInstrument));
+	}
+}
+// 根据输入索引号，由索引表得到仪器指针
+m_oInstrumentStruct* GetInstrumentFromLocationMap(m_oInstrumentLocationStruct Location, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return NULL;
+	}
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
+	iter = pMap->find(Location);
+	if (iter == pMap->end())
+	{
+		return NULL;
+	}
+	return iter->second;
+}
+// 从索引表删除索引号指向的仪器指针
+BOOL DeleteInstrumentFromLocationMap(m_oInstrumentLocationStruct Location, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return FALSE;
+	}
+	BOOL bResult = FALSE;
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
+	iter = pMap->find(Location);
+	if (iter != pMap->end())
+	{
+		pMap->erase(iter);
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
+
 // 得到仪器在某一方向上的路由IP
 bool GetRoutIPBySn(unsigned int uiSN, int iDirection, 
 	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar,
@@ -271,18 +345,28 @@ bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 		if (iDirection == pConstVar->m_iDirectionLeft)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIPLeft;
-			return true;
 		}
 		else if (iDirection == pConstVar->m_iDirectionRight)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIPRight;
-			return true;
+		}
+		else if (iDirection == pConstVar->m_iDirectionTop)
+		{
+			uiRoutIP = pInstrument->m_uiRoutIPTop;
+		}
+		else if (iDirection == pConstVar->m_iDirectionDown)
+		{
+			uiRoutIP = pInstrument->m_uiRoutIPDown;
 		}
 		else if (iDirection == pConstVar->m_iDirectionCenter)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIP;
-			return true;
 		}
+		else
+		{
+			return false;
+		}
+		return true;
 	}
 	return false;
 }

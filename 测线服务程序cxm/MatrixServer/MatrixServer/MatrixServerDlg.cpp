@@ -72,6 +72,7 @@ BEGIN_MESSAGE_MAP(CMatrixServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BN_STOPSAMPLE_BYROUT, &CMatrixServerDlg::OnBnClickedBnStopsampleByrout)
 	ON_BN_CLICKED(IDC_BTN_OPENROUTPOWER, &CMatrixServerDlg::OnBnClickedBtnOpenroutpower)
 	ON_BN_CLICKED(IDC_BTN_GETROUTINSTRUMENTNUM, &CMatrixServerDlg::OnBnClickedBtnGetroutinstrumentnum)
+	ON_BN_CLICKED(IDC_BTN_GETSNBYLOCATION, &CMatrixServerDlg::OnBnClickedBtnGetsnbylocation)
 END_MESSAGE_MAP()
 
 
@@ -207,7 +208,7 @@ void CMatrixServerDlg::OnBnClickedBnAdcsetAll()
 void CMatrixServerDlg::OnBnClickedBnAdcsetByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LAUXSN), 
+	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LINEINDEX), GetDlgItemInt(IDC_EDIT_POINTINDEX), 
 		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 1);
 }
 
@@ -215,7 +216,7 @@ void CMatrixServerDlg::OnBnClickedBnAdcsetByrout()
 void CMatrixServerDlg::OnBnClickedBnStartsampleByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LAUXSN), 
+	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LINEINDEX), GetDlgItemInt(IDC_EDIT_POINTINDEX), 
 		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 2, 1000);
 }
 
@@ -223,7 +224,7 @@ void CMatrixServerDlg::OnBnClickedBnStartsampleByrout()
 void CMatrixServerDlg::OnBnClickedBnStopsampleByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LAUXSN), 
+	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LINEINDEX), GetDlgItemInt(IDC_EDIT_POINTINDEX), 
 		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 3);
 }
 
@@ -231,8 +232,8 @@ void CMatrixServerDlg::OnBnClickedBnStopsampleByrout()
 void CMatrixServerDlg::OnBnClickedBtnOpenroutpower()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_oMatrixDllCall.Dll_OpenLAUXRoutPower_ByHand(GetDlgItemInt(IDC_EDIT_LAUXSN), 
-		static_cast<unsigned char>(GetDlgItemInt(IDC_EDIT_OPENROUTPOWER)));
+	m_oMatrixDllCall.Dll_OpenLAUXRoutPower_ByHand(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
+		GetDlgItemInt(IDC_EDIT_POINTINDEX), static_cast<unsigned char>(GetDlgItemInt(IDC_EDIT_OPENROUTPOWER)));
 }
 
 
@@ -240,9 +241,28 @@ void CMatrixServerDlg::OnBnClickedBtnGetroutinstrumentnum()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	
-	unsigned int uiInstrumentNum = m_oMatrixDllCall.Dll_GetRoutInstrumentNum(GetDlgItemInt(IDC_EDIT_LAUXSN), 
-		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION));
+	unsigned int uiInstrumentNum = m_oMatrixDllCall.Dll_GetRoutInstrumentNum(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
+		GetDlgItemInt(IDC_EDIT_POINTINDEX), GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION));
 	CString str = _T("");
 	str.Format(_T("该方向仪器个数为%d"), uiInstrumentNum);
 	AfxMessageBox(str);
+}
+
+
+void CMatrixServerDlg::OnBnClickedBtnGetsnbylocation()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_oInstrumentStruct* pInstrument = NULL;
+	CString str = _T("");
+	pInstrument = m_oMatrixDllCall.Dll_GetInstrumentByLocation(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
+		GetDlgItemInt(IDC_EDIT_POINTINDEX));
+	if (pInstrument == NULL)
+	{
+		AfxMessageBox(_T("暂未找到仪器！"));
+	}
+	else
+	{
+		str.Format(_T("仪器SN = 0x%x"), pInstrument->m_uiSN);
+		AfxMessageBox(str);
+	}
 }

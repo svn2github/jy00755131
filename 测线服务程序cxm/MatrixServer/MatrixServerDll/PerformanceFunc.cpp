@@ -971,27 +971,27 @@ void OnClearSocketRcvBuf(SOCKET oSocket, int iRcvFrameSize)
 	delete[] pcRcvFrameData;
 }
 // 得到路由方向上仪器个数
-bool OnGetRoutInstrumentNum(unsigned int uiSN, int iDirection, 
+bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection, 
 	m_oEnvironmentStruct* pEnv, unsigned int& uiInstrumentNum)
 {
 	m_oRoutStruct* pRout = NULL;
 	unsigned int uiRoutIP = 0;
-// 	CString str = _T("");
-// 	string strConv = "";
+	m_oInstrumentLocationStruct Location;
 	m_oInstrumentStruct* pInstrument = NULL;
-	if (false == GetRoutIPBySn(uiSN, iDirection, pEnv->m_pInstrumentList, 
+	Location.m_iLineIndex = iLineIndex;
+	Location.m_iPointIndex = iPointIndex;
+	if (false == IfLocationExistInMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
+	{
+		return false;
+	}
+	pInstrument = GetInstrumentFromLocationMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+	if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pInstrumentList, 
 		pEnv->m_pConstVar, uiRoutIP))
 	{
-// 		str.Format(_T("SN = 0x%x, 方向为 %d找不到路由IP"), uiSN, iDirection);
-// 		ConvertCStrToStr(str, &strConv);
-// 		AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnGetRoutInstrumentNum", strConv);
 		return false;
 	}
 	if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pRoutList, &pRout))
 	{
-// 		str.Format(_T("路由IP = %d找不到路由"), uiRoutIP);
-// 		ConvertCStrToStr(str, &strConv);
-// 		AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnGetRoutInstrumentNum", strConv);
 		return false;
 	}
 	uiInstrumentNum = 0;
@@ -999,12 +999,10 @@ bool OnGetRoutInstrumentNum(unsigned int uiSN, int iDirection,
 	if ((pInstrument->m_bIPSetOK) && (iDirection == pEnv->m_pConstVar->m_iDirectionCenter))
 	{
 		uiInstrumentNum = 1;
-/*		AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnGetRoutInstrumentNum", "LCI分配IP");*/
 		return true;
 	}
 	if (pRout->m_pTail == NULL)
 	{
-/*		AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnGetRoutInstrumentNum", "路由尾为空");*/
 		return true;
 	}
 	while(pInstrument != pRout->m_pTail)
@@ -1019,8 +1017,5 @@ bool OnGetRoutInstrumentNum(unsigned int uiSN, int iDirection,
 			uiInstrumentNum++;
 		}
 	}
-// 	str.Format(_T("路由方向已时统仪器个数为 %d"), uiInstrumentNum);
-// 	ConvertCStrToStr(str, &strConv);
-// 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnGetRoutInstrumentNum", strConv);
 	return true;
 }

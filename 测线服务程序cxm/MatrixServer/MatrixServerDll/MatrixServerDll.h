@@ -853,6 +853,30 @@ typedef struct Instrument_Struct
 	int m_iADCDataFrameStartNum;
 }m_oInstrumentStruct;
 
+// 仪器位置点结构体
+typedef struct InstrumentLocation_Struct
+{
+	// 线号
+	int m_iLineIndex;
+	// 点号
+	int m_iPointIndex;
+	bool operator == (const InstrumentLocation_Struct& rhs) const
+	{
+		return ((m_iLineIndex == rhs.m_iLineIndex) && (m_iPointIndex == rhs.m_iPointIndex));
+	}
+	bool operator < (const InstrumentLocation_Struct& rhs) const
+	{
+		if (m_iLineIndex == rhs.m_iLineIndex)
+		{
+			return (m_iPointIndex < rhs.m_iPointIndex);
+		}
+		else
+		{
+			return (m_iLineIndex < rhs.m_iLineIndex);
+		}
+	}
+}m_oInstrumentLocationStruct;
+
 // 仪器队列
 typedef struct InstrumentList_Struct
 {
@@ -868,8 +892,10 @@ typedef struct InstrumentList_Struct
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oSNInstrumentMap;
 	// 仪器IP地址索引表
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPInstrumentMap;
-	// 未完成ADC参数设置的仪器队列
+	// 未完成ADC参数设置的仪器索引
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oADCSetInstrumentMap;
+	// 仪器位置索引表
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*> m_oInstrumentLocationMap;
 	// 测网系统发生变化的时间
 	unsigned int m_uiLineChangeTime;
 	// 测网状态由不稳定变为稳定
@@ -1417,7 +1443,7 @@ MatrixServerDll_API void OnCloseSocket(SOCKET oSocket);
 // 清空接收缓冲区
 MatrixServerDll_API void OnClearSocketRcvBuf(SOCKET oSocket, int iRcvFrameSize);
 // 得到路由方向上仪器个数
-MatrixServerDll_API bool OnGetRoutInstrumentNum(unsigned int uiSN, int iDirection, 
+MatrixServerDll_API bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection, 
 	m_oEnvironmentStruct* pEnv, unsigned int& uiInstrumentNum);
 
 /************************************************************************/
@@ -1545,7 +1571,7 @@ MatrixServerDll_API void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIP
 MatrixServerDll_API bool ParseInstrumentIPSetReturnFrame(m_oIPSetFrameStruct* pIPSetFrame, 
 	m_oConstVarStruct* pConstVar);
 // 打开交叉站某一路由方向的电源
-MatrixServerDll_API bool OpenLAUXRoutPower(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet, 
+MatrixServerDll_API bool OpenLAUXRoutPower(int iLineIndex, int iPointIndex, unsigned char ucLAUXRoutOpenSet, 
 	m_oEnvironmentStruct* pEnv);
 // 生成IP地址查询帧
 MatrixServerDll_API void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame, 
@@ -1719,24 +1745,39 @@ MatrixServerDll_API m_oInstrumentStruct* GetInstrumentFromMap(unsigned int uiInd
 // 从索引表删除索引号指向的仪器指针
 MatrixServerDll_API BOOL DeleteInstrumentFromMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap);
+// 判断仪器位置索引号是否已加入索引表
+MatrixServerDll_API BOOL IfLocationExistInMap(m_oInstrumentLocationStruct Location, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+// 增加对象到索引表
+MatrixServerDll_API void AddLocationToMap(m_oInstrumentLocationStruct Location, 
+	m_oInstrumentStruct* pInstrument, map<m_oInstrumentLocationStruct, 
+	m_oInstrumentStruct*>* pMap);
+// 根据输入索引号，由索引表得到仪器指针
+MatrixServerDll_API m_oInstrumentStruct* GetInstrumentFromLocationMap(m_oInstrumentLocationStruct Location, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+// 从索引表删除索引号指向的仪器指针
+MatrixServerDll_API BOOL DeleteInstrumentFromLocationMap(m_oInstrumentLocationStruct Location, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 // 得到仪器在某一方向上的路由IP
 MatrixServerDll_API bool GetRoutIPBySn(unsigned int uiSN, int iDirection, 
 	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar, 
 	unsigned int& uiRoutIP);
+
 /**
 * 根据链接方向，得到连接的下一个仪器
-	* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
+* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
 */
 MatrixServerDll_API m_oInstrumentStruct* GetNextInstrument(int iRoutDirection, 
 m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
 /**
 * 根据链接方向，得到连接的前一个仪器
-	* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
+* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的前一个仪器不存在
 */
 MatrixServerDll_API m_oInstrumentStruct* GetPreviousInstrument(int iRoutDirection, 
 m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
+
 
 
 /************************************************************************/
@@ -2070,7 +2111,7 @@ MatrixServerDll_API m_oADCSetThreadStruct* OnCreateADCSetThread(void);
 MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout, 
 	unsigned int uiDstIP);
 // 手动发送ADC参数设置帧
-MatrixServerDll_API bool OnSetADCSetFrameByHand(unsigned int uiSN, int iDirection, bool bRout, 
+MatrixServerDll_API bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, bool bRout, 
 	char* cpADCSet, int iADCSetNum, m_oEnvironmentStruct* pEnv);
 // 发送ADC命令设置帧
 MatrixServerDll_API void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread);
@@ -2242,13 +2283,13 @@ MatrixServerDll_API void GenOneOptTask(unsigned int uiIndex, unsigned int uiStar
 MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, 
 	m_oOptTaskArrayStruct* pOptTaskArray);
 // 按SN重置ADC参数设置标志位
-MatrixServerDll_API m_oInstrumentStruct* OnResetADCSetLableBySN(unsigned int uiSN, int iOpt, 
+MatrixServerDll_API void OnResetADCSetLableBySN(m_oInstrumentStruct* pInstrument, int iOpt, 
 	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar);
 // 按路由重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, 
 	m_oConstVarStruct* pConstVar);
 // 按照路由地址重置ADC参数设置标志位
-MatrixServerDll_API void OnSetADCByLAUXSN(unsigned int uiSN, int iDirection, int iOpt, 
+MatrixServerDll_API void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt, 
 	m_oEnvironmentStruct* pEnv, bool bOnly = true, bool bRout = true);
 // 重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt, 

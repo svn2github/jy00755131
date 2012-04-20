@@ -22,21 +22,25 @@ typedef void (*On_ADCSet_All)(m_oEnvironmentStruct* pEnv);
 // ADC参数设置改为手动设置
 typedef void (*On_ADCSet_ByHand)(m_oInstrumentListStruct* pInstrumentList);
 // 按照路由地址重置ADC参数设置标志位
-typedef void (*On_ADCSet_Part)(unsigned int uiSN, int iRoutDirection, int iOpt, m_oEnvironmentStruct* pEnv, bool bOnly, bool bRout);
+typedef void (*On_ADCSet_Part)(int iLineIndex, int iPointIndex, int iRoutDirection, 
+	int iOpt, m_oEnvironmentStruct* pEnv, bool bOnly, bool bRout);
 // ADC参数设置线程开始工作
 typedef void (*On_ADCSetThread_Work)(int iOpt, m_oADCSetThreadStruct* pADCSetThread);
 // 打开交叉站某一路由方向的电源
-typedef bool (*On_OpenLAUXRoutPower)(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet, 
+typedef bool (*On_OpenLAUXRoutPower)(int iLineIndex, int iPointIndex, unsigned char ucLAUXRoutOpenSet, 
 	m_oEnvironmentStruct* pEnv);
 // 得到路由方向上仪器个数
-typedef bool (*On_GetRoutInstrumentNum)(unsigned int uiSN, int iDirection, 
+typedef bool (*On_GetRoutInstrumentNum)(int iLineIndex, int iPointIndex, int iDirection, 
 	m_oEnvironmentStruct* pEnv, unsigned int& uiInstrumentNum);
 // 采样数据回调函数
 typedef void (*Get_ProSampleDateCallBack)(m_oADCDataRecThreadStruct* pADCDataRecThread, 
 	ProSampleDateCallBack pCallBack);
 // 手动发送ADC参数设置帧
-typedef bool (*On_SetADCSetFrameByHand)(unsigned int uiSN, int iDirection, bool bRout, 
+typedef bool (*On_SetADCSetFrameByHand)(int iLineIndex, int iPointIndex, int iDirection, bool bRout, 
 	char* cpADCSet, int iADCSetNum, m_oEnvironmentStruct* pEnv);
+// 通过位置得到设备指针
+typedef m_oInstrumentStruct* (*Get_InstrumentByLocation)(m_oInstrumentLocationStruct Location, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int _iSize, unsigned int _uiSN)
 {
 
@@ -351,7 +355,8 @@ void CMatrixDllCall::Dll_ADCSetThreadWork(int iOpt)
 }
 
 // DLL按照路由地址设置部分ADC参数, 路由方向为1上、2下、3左、4右
-void CMatrixDllCall::Dll_ADCSetPart(unsigned int uiSN, int iRoutDirection, int iOpt, int iSampleRate)
+void CMatrixDllCall::Dll_ADCSetPart(int iLineIndex, int iPointIndex, int iRoutDirection, int iOpt, 
+	int iSampleRate, bool bOnly, bool bRout)
 {
 	int iOperation = 0;
 	On_ADCSet_Part Dll_On_ADCSet_Part = NULL;
@@ -461,7 +466,7 @@ void CMatrixDllCall::Dll_ADCSetPart(unsigned int uiSN, int iRoutDirection, int i
 			return;
 		}
 		// call the function
-		(*Dll_On_ADCSet_Part)(uiSN, iRoutDirection, iOperation, m_pEnv, true, true);
+		(*Dll_On_ADCSet_Part)(iLineIndex, iPointIndex, iRoutDirection, iOperation, m_pEnv, bOnly, bRout);
 		Dll_ADCSetThreadWork(iOperation);
 	}
 }
@@ -486,7 +491,7 @@ void CMatrixDllCall::Dll_ADCSet_ByHand(void)
 }
 
 // DLL手动打开交叉站某一路由方向的电源，方向为1上、2下、3左、4右
-void CMatrixDllCall::Dll_OpenLAUXRoutPower_ByHand(unsigned int uiSN, unsigned char ucLAUXRoutOpenSet)
+void CMatrixDllCall::Dll_OpenLAUXRoutPower_ByHand(int iLineIndex, int iPointIndex, unsigned char ucLAUXRoutOpenSet)
 {
 	On_OpenLAUXRoutPower Dll_On_OpenLAUXRoutPower = NULL;
 	Dll_On_OpenLAUXRoutPower = (On_OpenLAUXRoutPower)GetProcAddress(m_hDllMod, "OpenLAUXRoutPower");
@@ -499,7 +504,7 @@ void CMatrixDllCall::Dll_OpenLAUXRoutPower_ByHand(unsigned int uiSN, unsigned ch
 	else
 	{
 		// call the function
-		if (false == (*Dll_On_OpenLAUXRoutPower)(uiSN, ucLAUXRoutOpenSet, m_pEnv))
+		if (false == (*Dll_On_OpenLAUXRoutPower)(iLineIndex, iPointIndex, ucLAUXRoutOpenSet, m_pEnv))
 		{
 			AfxMessageBox(_T("该仪器路由开关没有成功打开！"));
 		}
@@ -507,7 +512,7 @@ void CMatrixDllCall::Dll_OpenLAUXRoutPower_ByHand(unsigned int uiSN, unsigned ch
 }
 
 // DLL得到路由方向上仪器个数
-unsigned int CMatrixDllCall::Dll_GetRoutInstrumentNum(unsigned int uiSN, int iDirection)
+unsigned int CMatrixDllCall::Dll_GetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection)
 {
 	On_GetRoutInstrumentNum Dll_On_GetRoutInstrumentNum = NULL;
 	unsigned int uiInstrumentNum = 0;
@@ -521,7 +526,7 @@ unsigned int CMatrixDllCall::Dll_GetRoutInstrumentNum(unsigned int uiSN, int iDi
 	else
 	{
 		// call the function
-		if (false == (*Dll_On_GetRoutInstrumentNum)(uiSN, iDirection, m_pEnv, uiInstrumentNum))
+		if (false == (*Dll_On_GetRoutInstrumentNum)(iLineIndex, iPointIndex, iDirection, m_pEnv, uiInstrumentNum))
 		{
 			AfxMessageBox(_T("该仪器路由开关没有成功打开！"));
 		}
@@ -530,7 +535,7 @@ unsigned int CMatrixDllCall::Dll_GetRoutInstrumentNum(unsigned int uiSN, int iDi
 }
 
 // DLL手动发送ADC参数设置帧
-void CMatrixDllCall::Dll_OnSetADCSetFrameByHand(unsigned int uiSN, int iDirection, bool bRout, 
+void CMatrixDllCall::Dll_OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, bool bRout, 
 	char* cpADCSet, int iADCSetNum)
 {
 	On_SetADCSetFrameByHand Dll_On_SetADCSetFrameByHand = NULL;
@@ -544,7 +549,7 @@ void CMatrixDllCall::Dll_OnSetADCSetFrameByHand(unsigned int uiSN, int iDirectio
 	else
 	{
 		// call the function
-		if (false == (*Dll_On_SetADCSetFrameByHand)(uiSN, iDirection, bRout, cpADCSet, iADCSetNum, m_pEnv))
+		if (false == (*Dll_On_SetADCSetFrameByHand)(iLineIndex, iPointIndex, iDirection, bRout, cpADCSet, iADCSetNum, m_pEnv))
 		{
 			AfxMessageBox(_T("该参数未成功发送！"));
 		}
@@ -566,4 +571,28 @@ void CMatrixDllCall::Dll_GetProSampleData_CallBack(void)
 		// call the function
 		(*Dll_On_GetProSampleDataCallBack)(m_pEnv->m_pADCDataRecThread, ProSampleDate);
 	}
+}
+// 通过位置得到设备指针
+m_oInstrumentStruct* CMatrixDllCall::Dll_GetInstrumentByLocation(int iLineIndex, int iPointIndex)
+{
+	m_oInstrumentStruct* pInstrument = NULL;
+	m_oInstrumentLocationStruct Location;
+	Location.m_iLineIndex = iLineIndex;
+	Location.m_iPointIndex = iPointIndex;
+	Get_InstrumentByLocation Dll_Get_InstrumentByLocation = NULL;
+	Dll_Get_InstrumentByLocation = (Get_InstrumentByLocation)GetProcAddress(m_hDllMod, "GetInstrumentFromLocationMap");
+	if (!Dll_Get_InstrumentByLocation)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		EnterCriticalSection(&m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
+		// call the function
+		pInstrument = (*Dll_Get_InstrumentByLocation)(Location, &m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+		LeaveCriticalSection(&m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
+	}
+	return pInstrument;
 }
