@@ -7,7 +7,7 @@ public:
 	CClientSndFrame(void);
 	~CClientSndFrame(void);
 public:
-	// 
+	// 客户端Socket类指针
 	CClientSocket* m_pClientSocket;
 public:
 	// 生成应答帧

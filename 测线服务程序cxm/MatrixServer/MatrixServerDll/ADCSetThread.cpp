@@ -353,14 +353,11 @@ bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, boo
 	unsigned int uiDstIP = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentNext = NULL;
-	m_oInstrumentLocationStruct Location;
-	Location.m_iLineIndex = iLineIndex;
-	Location.m_iPointIndex = iPointIndex;
-	if (FALSE == IfLocationExistInMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
+	if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
 		return false;
 	}
-	pInstrument = GetInstrumentFromLocationMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (bRout == true)
 	{
 		pInstrumentNext = GetNextInstrument(iDirection, pInstrument, pEnv->m_pConstVar);

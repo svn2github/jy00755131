@@ -976,15 +976,12 @@ bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection,
 {
 	m_oRoutStruct* pRout = NULL;
 	unsigned int uiRoutIP = 0;
-	m_oInstrumentLocationStruct Location;
 	m_oInstrumentStruct* pInstrument = NULL;
-	Location.m_iLineIndex = iLineIndex;
-	Location.m_iPointIndex = iPointIndex;
-	if (false == IfLocationExistInMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
+	if (false == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
 		return false;
 	}
-	pInstrument = GetInstrumentFromLocationMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pInstrumentList, 
 		pEnv->m_pConstVar, uiRoutIP))
 	{

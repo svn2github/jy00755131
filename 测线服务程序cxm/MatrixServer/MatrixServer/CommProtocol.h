@@ -37,7 +37,7 @@
 // 查询仪器列表某个区域（4个字节的行号和4个字节的区域序号）
 
 // 应答命令位（区别应答，进行与操作判别）
-#define CmdReturnBit						(0x0001 << 15)
+#define CmdReturnBit						(1 << 15)
 // 命令类型为设置命令
 #define CmdTypeSet							0x01
 // 命令类型为应答

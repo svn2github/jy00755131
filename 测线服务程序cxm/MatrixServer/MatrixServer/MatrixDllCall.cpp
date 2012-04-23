@@ -39,8 +39,8 @@ typedef void (*Get_ProSampleDateCallBack)(m_oADCDataRecThreadStruct* pADCDataRec
 typedef bool (*On_SetADCSetFrameByHand)(int iLineIndex, int iPointIndex, int iDirection, bool bRout, 
 	char* cpADCSet, int iADCSetNum, m_oEnvironmentStruct* pEnv);
 // 通过位置得到设备指针
-typedef m_oInstrumentStruct* (*Get_InstrumentByLocation)(m_oInstrumentLocationStruct Location, 
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+typedef unsigned int (*Get_InstrumentSnByLocation)(int iLineIndex, int iPointIndex, 
+	m_oInstrumentListStruct* pInstrumentList);
 void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int _iSize, unsigned int _uiSN)
 {
 
@@ -572,16 +572,13 @@ void CMatrixDllCall::Dll_GetProSampleData_CallBack(void)
 		(*Dll_On_GetProSampleDataCallBack)(m_pEnv->m_pADCDataRecThread, ProSampleDate);
 	}
 }
-// 通过位置得到设备指针
-m_oInstrumentStruct* CMatrixDllCall::Dll_GetInstrumentByLocation(int iLineIndex, int iPointIndex)
+// 通过位置得到设备SN
+unsigned int CMatrixDllCall::Dll_GetInstrumentSnByLocation(int iLineIndex, int iPointIndex)
 {
-	m_oInstrumentStruct* pInstrument = NULL;
-	m_oInstrumentLocationStruct Location;
-	Location.m_iLineIndex = iLineIndex;
-	Location.m_iPointIndex = iPointIndex;
-	Get_InstrumentByLocation Dll_Get_InstrumentByLocation = NULL;
-	Dll_Get_InstrumentByLocation = (Get_InstrumentByLocation)GetProcAddress(m_hDllMod, "GetInstrumentFromLocationMap");
-	if (!Dll_Get_InstrumentByLocation)
+	unsigned int uiSn = 0;
+	Get_InstrumentSnByLocation Dll_Get_InstrumentSnByLocation = NULL;
+	Dll_Get_InstrumentSnByLocation = (Get_InstrumentSnByLocation)GetProcAddress(m_hDllMod, "GetInstrumentSnFromLocationMap");
+	if (!Dll_Get_InstrumentSnByLocation)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -591,8 +588,8 @@ m_oInstrumentStruct* CMatrixDllCall::Dll_GetInstrumentByLocation(int iLineIndex,
 	{
 		EnterCriticalSection(&m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
 		// call the function
-		pInstrument = (*Dll_Get_InstrumentByLocation)(Location, &m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+		uiSn = (*Dll_Get_InstrumentSnByLocation)(iLineIndex, iPointIndex, m_pEnv->m_pInstrumentList);
 		LeaveCriticalSection(&m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	}
-	return pInstrument;
+	return uiSn;
 }

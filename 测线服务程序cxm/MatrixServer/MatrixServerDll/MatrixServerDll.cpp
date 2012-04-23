@@ -240,15 +240,12 @@ void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt,
 	m_oRoutStruct* pRout = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
 	unsigned int uiRoutIP = 0;
-	m_oInstrumentLocationStruct Location;
-	Location.m_iLineIndex = iLineIndex;
-	Location.m_iPointIndex = iPointIndex;
 	if (bOnly == true)
 	{
 		OnClearADCSetMap(pEnv->m_pADCSetThread);
 	}
 	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-	pInstrument = GetInstrumentFromLocationMap(Location, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (pInstrument == NULL)
 	{
 		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);

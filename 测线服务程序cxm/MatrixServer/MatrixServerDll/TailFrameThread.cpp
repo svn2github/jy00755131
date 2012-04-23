@@ -103,7 +103,6 @@ void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 	}
 	CString str = _T("");
 	string strConv = "";
-	m_oInstrumentLocationStruct Location;
 	// 从SN索引表中删除该仪器指针
 	DeleteInstrumentFromMap(pInstrument->m_uiSN, &pInstrumentList->m_oSNInstrumentMap);
 	// 从IP地址设置索引表中删除该仪器指针
@@ -113,9 +112,8 @@ void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 	// 从ADC参数设置索引表中删除该仪器指针
 	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oADCSetInstrumentMap);
 	// 从仪器位置索引表中删除该仪器指针
-	Location.m_iLineIndex = pInstrument->m_iLineIndex;
-	Location.m_iPointIndex = pInstrument->m_iPointIndex;
-	DeleteInstrumentFromLocationMap(Location, &pInstrumentList->m_oInstrumentLocationMap);
+	DeleteInstrumentFromLocationMap(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
+		&pInstrumentList->m_oInstrumentLocationMap);
 	str.Format(_T("删除仪器的SN = 0x%x，路由 = 0x%x"), pInstrument->m_uiSN, pInstrument->m_uiRoutIP);
 	ConvertCStrToStr(str, &strConv);
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "FreeInstrumentFromMap", strConv);

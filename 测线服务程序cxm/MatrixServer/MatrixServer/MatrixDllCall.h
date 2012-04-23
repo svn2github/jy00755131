@@ -52,6 +52,6 @@ public:
 	// ADC参数设置线程开始工作
 	void Dll_ADCSetThreadWork(int iOpt);
 	// 通过位置得到设备指针
-	m_oInstrumentStruct* Dll_GetInstrumentByLocation(int iLineIndex, int iPointIndex);
+	unsigned int Dll_GetInstrumentSnByLocation(int iLineIndex, int iPointIndex);
 };
 

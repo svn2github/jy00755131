@@ -111,7 +111,7 @@ void CClientSocket::OnProcRec(int iSize)
 				{
 					// Ö¡½âÎö
 					m_pComClient->m_oClientRecFrame.PhraseFrame(m_cRecBuf + (i + m_iPosRec + FrameTailSize - m_usFrameInfoSize), 
-						m_usFrameInfoSize - FrameTailSize);
+						m_usFrameInfoSize - FrameTailSize - FrameHeadInfoSize);
 					i++;
 				}
 				m_iPosProc = 0;

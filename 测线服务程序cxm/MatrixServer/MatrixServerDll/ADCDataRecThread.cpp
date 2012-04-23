@@ -105,7 +105,6 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	int iADCDataInOneFrameNum = 0;
 	int iADCFrameSaveInOneFileNum = 0;
 	unsigned short usADCFramePointLimit = 0;
-	m_oADCLostFrameKeyStruct oLostFrameKey;
 	ADCLostFrame_Struct* pADCLostFrame = NULL;
 	// 帧序号
 	unsigned int uiFrameNb = 0;
@@ -126,11 +125,9 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	{
 		pInstrument = GetInstrumentFromMap(uiIPInstrument, 
 			&pADCDataRecThread->m_pInstrumentList->m_oIPInstrumentMap);
-		// 判断是否为重发帧
-		oLostFrameKey.m_uiIP = uiIPInstrument;
-		oLostFrameKey.m_usADCFramePointNb = usADCDataFramePointNow;
 		// 在丢帧索引表中找到
-		if (TRUE == IfIndexExistInADCFrameLostMap(oLostFrameKey, &pADCDataRecThread->m_oADCLostFrameMap))
+		if (TRUE == IfIndexExistInADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
+			&pADCDataRecThread->m_oADCLostFrameMap))
 		{
 			str.Format(_T("收到SN = 0x%x，IP地址 = 0x%x的ADC数据重发帧，指针偏移量 = %d"), 
 				pInstrument->m_uiSN, pInstrument->m_uiIP, usADCDataFramePointNow);
@@ -138,7 +135,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 				strConv);
 
-			pADCLostFrame = GetFromADCFrameLostMap(oLostFrameKey, &pADCDataRecThread->m_oADCLostFrameMap);
+			pADCLostFrame = GetFromADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
+				&pADCDataRecThread->m_oADCLostFrameMap);
 			if (pADCLostFrame->m_bReturnOk == false)
 			{
 				pInstrument->m_uiADCDataActualRecFrameNum++;
@@ -214,14 +212,13 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 					// 加入到丢帧索引表
 					for (unsigned int i=0; i<uiLostFrameNum; i++)
 					{
-						m_oADCLostFrameKeyStruct Key;
 						m_oADCLostFrameStruct ADCLostFrame;
-						Key.m_uiIP = pInstrument->m_uiIP;
-						Key.m_usADCFramePointNb = static_cast<unsigned short>(pInstrument->m_usADCDataFramePoint 
+						unsigned int uiIP = pInstrument->m_uiIP;
+						unsigned short usADCFramePointNb = static_cast<unsigned short>(pInstrument->m_usADCDataFramePoint 
 							+ (i + 1) * iADCDataInOneFrameNum);
-						if (Key.m_usADCFramePointNb >= usADCFramePointLimit)
+						if (usADCFramePointNb >= usADCFramePointLimit)
 						{
-							Key.m_usADCFramePointNb = Key.m_usADCFramePointNb - usADCFramePointLimit;
+							usADCFramePointNb = usADCFramePointNb - usADCFramePointLimit;
 						}
 						ADCLostFrame.m_uiCount = 0;
 						ADCLostFrame.m_bReturnOk = false;
@@ -229,7 +226,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 							+ pInstrument->m_iADCDataFrameStartNum;
 						// @@@@1K采样率的时间差为288
 						ADCLostFrame.m_uiSysTime = pInstrument->m_uiADCDataFrameSysTime + (i + 1) * 288;
-						AddToADCFrameLostMap(Key, ADCLostFrame, &pADCDataRecThread->m_oADCLostFrameMap);
+						AddToADCFrameLostMap(uiIP, usADCFramePointNb, ADCLostFrame, &pADCDataRecThread->m_oADCLostFrameMap);
 						pInstrument->m_uiADCDataShouldRecFrameNum++;
 						// 在丢帧的位置写当前帧的内容
 						AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex,

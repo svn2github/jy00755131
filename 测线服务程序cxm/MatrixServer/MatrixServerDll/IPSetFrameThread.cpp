@@ -24,7 +24,6 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oRoutStruct* pRout = NULL;
 	unsigned short usCommand = 0;
-	m_oInstrumentLocationStruct Location;
 	char cLAUXRoutOpenSet = 0;
 	CString str = _T("");
 	string strFrameData = "";
@@ -51,9 +50,8 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			pRout->m_uiInstrumentNum++;
 		}
 		// 加入仪器位置索引表
-		Location.m_iLineIndex = pInstrument->m_iLineIndex;
-		Location.m_iPointIndex = pInstrument->m_iPointIndex;
-		AddLocationToMap(Location, pInstrument, &pIPSetFrameThread->m_pInstrumentList->m_oInstrumentLocationMap);
+		AddLocationToMap(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, pInstrument, 
+			&pIPSetFrameThread->m_pInstrumentList->m_oInstrumentLocationMap);
 		if (usCommand == pIPSetFrameThread->m_pThread->m_pConstVar->m_usSendSetCmd)
 		{
 			str.Format(_T("接收到SN = 0x%x，IP地址 = 0x%x仪器的IP地址设置应答"), 

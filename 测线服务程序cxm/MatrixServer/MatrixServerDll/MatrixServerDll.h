@@ -856,10 +856,14 @@ typedef struct Instrument_Struct
 // 仪器位置点结构体
 typedef struct InstrumentLocation_Struct
 {
-	// 线号
-	int m_iLineIndex;
-	// 点号
-	int m_iPointIndex;
+	InstrumentLocation_Struct(int iLineIndex, int iPointIndex)
+	{
+		this->m_iLineIndex = iLineIndex;
+		this->m_iPointIndex = iPointIndex;
+	}
+	~InstrumentLocation_Struct()
+	{
+	}
 	bool operator == (const InstrumentLocation_Struct& rhs) const
 	{
 		return ((m_iLineIndex == rhs.m_iLineIndex) && (m_iPointIndex == rhs.m_iPointIndex));
@@ -875,6 +879,10 @@ typedef struct InstrumentLocation_Struct
 			return (m_iLineIndex < rhs.m_iLineIndex);
 		}
 	}
+	// 线号
+	int m_iLineIndex;
+	// 点号
+	int m_iPointIndex;
 }m_oInstrumentLocationStruct;
 
 // 仪器队列
@@ -999,10 +1007,14 @@ typedef struct ADCDataBufArray_Struct
 // 丢失帧IP地址和偏移量结构体
 typedef struct ADCLostFrameKey_Struct
 {
-	// 丢帧的指针偏移量
-	unsigned short m_usADCFramePointNb;
-	// 丢帧的IP地址
-	unsigned int m_uiIP;
+	ADCLostFrameKey_Struct(unsigned int uiIP, unsigned short usADCFramePointNb)
+	{
+		this->m_uiIP = uiIP;
+		this->m_usADCFramePointNb = usADCFramePointNb;
+	}
+	~ADCLostFrameKey_Struct()
+	{
+	}
 	bool operator == (const ADCLostFrameKey_Struct& rhs) const
 	{
 		return ((m_uiIP == rhs.m_uiIP) && (m_usADCFramePointNb == rhs.m_usADCFramePointNb));
@@ -1018,6 +1030,10 @@ typedef struct ADCLostFrameKey_Struct
 			return (m_uiIP < rhs.m_uiIP);
 		}
 	}
+	// 丢帧的指针偏移量
+	unsigned short m_usADCFramePointNb;
+	// 丢帧的IP地址
+	unsigned int m_uiIP;
 }m_oADCLostFrameKeyStruct;
 
 // 丢失帧结构体
@@ -1746,17 +1762,20 @@ MatrixServerDll_API m_oInstrumentStruct* GetInstrumentFromMap(unsigned int uiInd
 MatrixServerDll_API BOOL DeleteInstrumentFromMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap);
 // 判断仪器位置索引号是否已加入索引表
-MatrixServerDll_API BOOL IfLocationExistInMap(m_oInstrumentLocationStruct Location, 
+MatrixServerDll_API BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 // 增加对象到索引表
-MatrixServerDll_API void AddLocationToMap(m_oInstrumentLocationStruct Location, 
+MatrixServerDll_API void AddLocationToMap(int iLineIndex, int iPointIndex, 
 	m_oInstrumentStruct* pInstrument, map<m_oInstrumentLocationStruct, 
 	m_oInstrumentStruct*>* pMap);
 // 根据输入索引号，由索引表得到仪器指针
-MatrixServerDll_API m_oInstrumentStruct* GetInstrumentFromLocationMap(m_oInstrumentLocationStruct Location, 
+MatrixServerDll_API m_oInstrumentStruct* GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+// 根据仪器的位置得到仪器的SN号
+MatrixServerDll_API unsigned int GetInstrumentSnFromLocationMap(int iLineIndex, int iPointIndex, 
+	m_oInstrumentListStruct* pInstrumentList);
 // 从索引表删除索引号指向的仪器指针
-MatrixServerDll_API BOOL DeleteInstrumentFromLocationMap(m_oInstrumentLocationStruct Location, 
+MatrixServerDll_API BOOL DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 // 得到仪器在某一方向上的路由IP
 MatrixServerDll_API bool GetRoutIPBySn(unsigned int uiSN, int iDirection, 
@@ -1876,13 +1895,13 @@ MatrixServerDll_API void AddFreeADCDataBuf(m_oADCDataBufStruct* pADCDataBuf,
 /* 丢失帧结构体                                                         */
 /************************************************************************/
 // 判断索引号是否已加入索引表
-MatrixServerDll_API BOOL IfIndexExistInADCFrameLostMap(m_oADCLostFrameKeyStruct Key, 
+MatrixServerDll_API BOOL IfIndexExistInADCFrameLostMap(unsigned int uiIP, unsigned short usFramePointNb,
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap);
 // 增加到索引
-MatrixServerDll_API void AddToADCFrameLostMap(m_oADCLostFrameKeyStruct Key, 
+MatrixServerDll_API void AddToADCFrameLostMap(unsigned int uiIP, unsigned short usFramePointNb, 
 	m_oADCLostFrameStruct oLostFrame, map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap);
 // 根据输入索引号，由索引表得到仪器指针
-MatrixServerDll_API ADCLostFrame_Struct* GetFromADCFrameLostMap(m_oADCLostFrameKeyStruct Key, 
+MatrixServerDll_API m_oADCLostFrameStruct* GetFromADCFrameLostMap(unsigned int uiIP, unsigned short usFramePointNb, 
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap);
 
 /************************************************************************/

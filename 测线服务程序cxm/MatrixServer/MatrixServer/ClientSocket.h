@@ -3,7 +3,7 @@
 #include <hash_map>
 using stdext::hash_map;
 
-// CClientSocket 命令目标
+// 客户端Socket类
 class CCommClient;
 class CClientSocket : public CAsyncSocket
 {

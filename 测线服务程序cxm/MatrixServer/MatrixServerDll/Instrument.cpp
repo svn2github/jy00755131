@@ -261,7 +261,7 @@ BOOL DeleteInstrumentFromMap(unsigned int uiIndex,
 }
 
 // 判断仪器位置索引号是否已加入索引表
-BOOL IfLocationExistInMap(m_oInstrumentLocationStruct Location, 
+BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
 {
 	if (pMap == NULL)
@@ -269,6 +269,7 @@ BOOL IfLocationExistInMap(m_oInstrumentLocationStruct Location,
 		return FALSE;
 	}
 	BOOL bResult = FALSE;
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(Location);
 	if (iter != pMap->end())
@@ -282,26 +283,28 @@ BOOL IfLocationExistInMap(m_oInstrumentLocationStruct Location,
 	return bResult;
 }
 // 增加对象到索引表
-void AddLocationToMap(m_oInstrumentLocationStruct Location, m_oInstrumentStruct* pInstrument, 
+void AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
 {
 	if ((pInstrument == NULL) || (pMap == NULL))
 	{
 		return;
 	}
-	if (false == IfLocationExistInMap(Location, pMap))
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
+	if (false == IfLocationExistInMap(iLineIndex, iPointIndex, pMap))
 	{
 		pMap->insert(map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::value_type (Location, pInstrument));
 	}
 }
 // 根据输入索引号，由索引表得到仪器指针
-m_oInstrumentStruct* GetInstrumentFromLocationMap(m_oInstrumentLocationStruct Location, 
+m_oInstrumentStruct* GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
 {
 	if (pMap == NULL)
 	{
 		return NULL;
 	}
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(Location);
 	if (iter == pMap->end())
@@ -310,8 +313,25 @@ m_oInstrumentStruct* GetInstrumentFromLocationMap(m_oInstrumentLocationStruct Lo
 	}
 	return iter->second;
 }
+// 根据仪器的位置得到仪器的SN号
+unsigned int GetInstrumentSnFromLocationMap(int iLineIndex, int iPointIndex, 
+	m_oInstrumentListStruct* pInstrumentList)
+{
+	if (pInstrumentList == NULL)
+	{
+		return NULL;
+	}
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
+	iter = pInstrumentList->m_oInstrumentLocationMap.find(Location);
+	if (iter == pInstrumentList->m_oInstrumentLocationMap.end())
+	{
+		return NULL;
+	}
+	return iter->second->m_uiSN;
+}
 // 从索引表删除索引号指向的仪器指针
-BOOL DeleteInstrumentFromLocationMap(m_oInstrumentLocationStruct Location, 
+BOOL DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
 {
 	if (pMap == NULL)
@@ -319,6 +339,7 @@ BOOL DeleteInstrumentFromLocationMap(m_oInstrumentLocationStruct Location,
 		return FALSE;
 	}
 	BOOL bResult = FALSE;
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(Location);
 	if (iter != pMap->end())

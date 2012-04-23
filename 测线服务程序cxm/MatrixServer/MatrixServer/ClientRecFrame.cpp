@@ -17,6 +17,7 @@ void CClientRecFrame::PhraseFrame(char* cpFrame, unsigned short usSize)
 	int iPos = 0;
 	unsigned short usCmd = 0;
 	m_oCommFrameStructPtr pFrameStruct = NULL;
+	EnterCriticalSection(&m_oSecClientFrame);
 	pFrameStruct = GetFreeFrameStruct();
 	// 帧内容长度
 	pFrameStruct->m_usFrameInfoSize = usSize;
@@ -32,7 +33,7 @@ void CClientRecFrame::PhraseFrame(char* cpFrame, unsigned short usSize)
 		pFrameStruct->m_cCmdType = CmdTypeSet;
 	}
 	// 帧命令字，表明帧的功能
-	pFrameStruct->m_usCmd = usCmd & (!CmdReturnBit);
+	pFrameStruct->m_usCmd = usCmd & (~CmdReturnBit);
 	// 服务端时间戳
 	memcpy(&pFrameStruct->m_uiServerTimeStep, &cpFrame[iPos], 4);
 	iPos += 4;
@@ -55,9 +56,8 @@ void CClientRecFrame::PhraseFrame(char* cpFrame, unsigned short usSize)
 	memcpy(&pFrameStruct->m_cResult, &cpFrame[iPos], 1);
 	iPos += 1;
 	// 帧内容,如果为查询命令则帧内容的前两个字节分别定义行号和区域号
-	memcpy(&pFrameStruct->m_pcFrameInfo, &cpFrame[iPos], usSize - FrameHeadInfoSize);
+	memcpy(&pFrameStruct->m_pcFrameInfo, &cpFrame[iPos], usSize);
 	iPos += FrameHeadInfoSize;
-	EnterCriticalSection(&m_oSecClientFrame);
 	m_olsCommWorkFrame.push_back(pFrameStruct);
 	LeaveCriticalSection(&m_oSecClientFrame);
 }
