@@ -39,5 +39,6 @@ void CClientSndThread::OnProc(void)
 			m_pClientSndFrame->AddFreeFrameStruct(ptrFrame);
 		}
 	}
+	m_pClientSndFrame->OnReSendFrame();
 	LeaveCriticalSection(&m_pClientSndFrame->m_oSecClientFrame);
 }

@@ -69,9 +69,6 @@
     <ClCompile Include="XMLDOMTool.cpp">
       <Filter>杂项\XML</Filter>
     </ClCompile>
-    <ClCompile Include="xml.cpp">
-      <Filter>杂项\XML</Filter>
-    </ClCompile>
     <ClCompile Include="PerformanceFunc.cpp">
       <Filter>杂项</Filter>
     </ClCompile>
@@ -170,6 +167,9 @@
     </ClCompile>
     <ClCompile Include="Thread.cpp">
       <Filter>线程</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.cpp">
+      <Filter>杂项\XML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

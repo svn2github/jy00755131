@@ -22,7 +22,7 @@ using stdext::hash_map;
 *	if using C++ Compiler to compile the file, adopting C linkage mode
 	*/
 #ifdef __cplusplus
-extern "C" {
+	extern "C" {
 #endif
 
 	// according to the control macro, deciding whether export or import functions
@@ -54,8 +54,8 @@ extern "C" {
 #define OutPutLogFileInfoNumLimit	5000
 	// 日志输出类型
 	enum{LogType, WarningType, ErrorType, ExpandType};
-// 日志文件类型
-enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
+	// 日志文件类型
+	enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
 // INI文件读取关键字缓冲区大小
 #define INIFileStrBufSize			256
 typedef int (WINAPI *PFCALLBACK)(int Param1,int Param2) ;
@@ -89,6 +89,8 @@ typedef struct LogOutPut_Struct
 // 暂不支持在程序中修改（可能会出现内存冲突的情况）
 typedef struct ConstVar_Struct
 {
+	// INI文件路径
+	string m_strINIFilePath;
 	//____常量设置____
 	// 仪器设备个数
 	unsigned int m_iInstrumentNum;
@@ -295,19 +297,19 @@ typedef struct ConstVar_Struct
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
 
-// 从XML文件中解析得到的信息
-typedef struct InstrumentCommInfo_Struct
+// 从XML文件中解析得到IP地址设置数据
+typedef struct XMLIPSetupData_Struct
 {
-	// 资源同步对象
-	CRITICAL_SECTION m_oSecCommInfo;
-	/** XMLDOM文件对象*/
-	CXMLDOMDocument m_oXMLDOMDocument;
 	// 源地址
 	unsigned int m_uiSrcIP;
 	// LCI的IP地址
 	unsigned int m_uiAimIP;
 	// 自动数据返回地址
 	unsigned int m_uiADCDataReturnAddr;
+}m_oXMLIPSetupDataStruct;
+// 从XML文件中解析得到端口设置数据
+typedef struct XMLPortSetupData_Struct
+{
 	// LCI接收的端口号
 	unsigned short m_usAimPort;
 	// 心跳帧返回端口
@@ -328,8 +330,10 @@ typedef struct InstrumentCommInfo_Struct
 	unsigned short m_usErrorCodeReturnPort;
 	// ADC数据返回端口
 	unsigned short m_usADCDataReturnPort;
-
-	//____ADC参数设置____
+}m_oXMLPortSetupDataStruct;
+// 从XML文件中解析得到ADC参数设置信息
+typedef struct XMLADCSetupData_Struct
+{
 	// ADC设置正弦波命令大小
 	int m_iSetADCSetSineSize;
 	// ADC设置正弦波命令
@@ -374,6 +378,339 @@ typedef struct InstrumentCommInfo_Struct
 	int m_iSetADCReadContinuousSize;
 	// ADC设置连续采样
 	char* m_cpSetADCReadContinuous;
+}m_oXMLADCSetupDataStruct;
+
+// SURVEY SETUP结构体
+// Survey
+typedef struct Survey_Struct
+{
+	// 测线号
+	unsigned int m_uiLine;
+	// 长度
+	unsigned short m_usReceiverSectionSize;
+	// 接收区域+检波器类型，如100-103p1
+	char* m_pcReceiverSection;
+}m_oSurveyStruct;
+// Point Code
+typedef struct PointCode_Struct
+{
+	// 点代码编号
+	unsigned int m_uiNb;
+	// 长度
+	unsigned short m_usLabelSize;
+	// 标签，如PointCode1
+	char* m_pcLabel;
+	// 长度
+	unsigned short m_usSensorTypeSize;
+	// 检波器类型，如s1+cs
+	char* m_pcSensorType;
+}m_oPointCodeStruct;
+// Sensor
+typedef struct Sensor_Struct
+{
+	// 检波器号
+	unsigned int m_uiNb;
+	// 长度
+	unsigned short m_usLabelSize;
+	// 标签，如Sensor1
+	char* m_pcLabel;
+	// 检波器阻抗的下限
+	float m_fContinuityMin;
+	// 检波器阻抗的上限
+	float m_fContinuityMax;
+	// 最大陆上检波器倾斜度百分比
+	float m_fTilt;
+	// 最大RMS噪声电平
+	float m_fNoise;
+	// 漏电测试测量地震道与地面之间的整个漏电电阻
+	float m_fLeakage;
+	// SEGD编码
+	unsigned int m_uiSEGDCode;
+}m_oSensorStruct;
+// LAYOUT SETUP
+// Marker
+typedef struct Marker_Struct
+{
+	// 仪器类型，1-交叉站，2-电源站，3-采集站
+	unsigned int m_uiBoxType;
+	// 仪器SN
+	unsigned int m_uiSN;
+	// 测线号
+	unsigned int m_uiLineName;
+	// 测点号
+	unsigned int m_uiPointNb;
+	// 测道号
+	unsigned int m_uiChannelNb;
+	// 标记点增量
+	unsigned int m_uiMarkerIncr;
+	// 翻转标记，0-不翻转，1-翻转
+	unsigned int m_uiReversed;
+}m_oMarkerStruct;
+// Aux
+typedef struct Aux_Struct
+{
+	// 索引号，与Instrument测试中的Auxiliary Descr对应
+	unsigned int m_uiNb;
+	// 长度
+	unsigned short m_usLabelSize;
+	// 标签，如pilot
+	char* m_pcLabel;
+	// 仪器类型，1-交叉站，2-电源站，3-采集站
+	unsigned int m_uiBoxType;
+	// 仪器SN
+	unsigned int m_uiSN;
+	// 测道号
+	unsigned int m_uiChannelNb;
+	// 增益，1600mv或400mv
+	unsigned int m_uiGain;
+	// DPG编号
+	unsigned int m_uiDpgNb;
+	// 长度
+	unsigned short m_usCommentsSize;
+	// 注释，如Comments1
+	char* m_pcComments;
+}m_oAuxStruct;
+// Detour
+typedef struct Detour_Struct
+{
+	// 低端仪器类型，1-交叉站，2-电源站，3-采集站
+	unsigned int m_uiLowBoxType;
+	// 低端仪器SN
+	unsigned int m_uiLowSN;
+	// 低端测道号
+	unsigned int m_uiLowChanNb;
+	// 高端仪器类型，1-交叉站，2-电源站，3-采集站
+	unsigned int m_uiHighBoxType;
+	// 高端仪器SN
+	unsigned int m_uiHighSN;
+	// 高端测道号
+	unsigned int m_uiHighChanNb;
+	// 停止标记，0-继续标记，1-停止标记
+	unsigned int m_uiStopMarking;
+}m_oDetourStruct;
+// Mute
+typedef struct Mute_Struct
+{
+	// 测线号
+	unsigned int m_uiLineName;
+	// 测点号
+	unsigned int m_uiPointNb;
+}m_oMuteStruct;
+// BlastMachine
+typedef struct BlastMachine_Struct
+{
+	// 索引号
+	unsigned int m_uiNb;
+	// 长度
+	unsigned short m_usLabelSize;
+	// 标签，如pilot
+	char* m_pcLabel;
+	// 仪器类型，1-交叉站，2-电源站，3-采集站
+	unsigned int m_uiBoxType;
+	// 仪器SN
+	unsigned int m_uiSN;
+	// 测道号
+	unsigned int m_uiChannelNb;
+	// 增益，1600mv或400mv
+	unsigned int m_uiGain;
+	// DPG编号
+	unsigned int m_uiDpgNb;
+	// 长度
+	unsigned short m_usCommentsSize;
+	// 注释，如Comments1
+	char* m_pcComments;
+}m_oBlastMachineStruct;
+// Spread Type Setup
+// Absolute
+typedef struct Absolute_Struct
+{
+	// 索引号
+	unsigned int m_uiNb;
+	// 长度
+	unsigned short m_usLabelSize;
+	// 标签，如Absolute1
+	char* m_pcLabel;
+	// 长度
+	unsigned short m_usAbsoluteSpreadSize;
+	// 绝对排列，如1:1-127（测线名：起始测点号-终止测点号）
+	char* m_pcAbsoluteSpread;
+}m_oAbsoluteStruct;
+// Generic
+typedef struct Generic_Struct
+{
+	// 索引号
+	unsigned int m_uiNb;
+	// 长度
+	unsigned short m_usLabelSize;
+	// 标签，如Generic1
+	char* m_pcLabel;
+	// 长度
+	unsigned short m_usLineSize;
+	// 普通测线类型，如50（g1+g2）（50对地震道，第一个地震道增益为0Db,第二个为12dB）
+	char* m_pcLine;
+	// 长度
+	unsigned short m_usSpreadSize;
+	// 普通排列，如10(l1+ls)（10对测线，第一条测线为Line中定义的l1类型，第二条被跳过）
+	char* m_pcSpread;
+}m_oGenericStruct;
+// Look
+typedef struct Look_Struct
+{
+	// 自动查看是否连接了新设备，1-自动查看，2-手动查看
+	unsigned int m_uiAutoLook;
+	// 检波器电阻测试，1-测试，2-不测试
+	unsigned int m_uiResistance;
+	// 检波器倾斜度测试，1-测试，2-不测试
+	unsigned int m_uiTilt;
+	// 检波器漏电测试，1-测试，2-不测试
+	unsigned int m_uiLeakage;
+}m_oLookStruct;
+// Form Line
+typedef struct FormLine_Struct
+{
+	// 索引号
+	unsigned int m_uiNb;
+	// 仪器类型，1-交叉站，2-电源站，3-采集站
+	unsigned int m_uiBoxType;
+	// 仪器SN
+	unsigned int m_uiSN;
+}m_oFormLineStruct;
+// Instrument Sensor Test base
+typedef struct Instrument_SensorTestBase_Struct
+{
+	unsigned int m_uiNb;	//索引号（只读）
+	unsigned short m_usDescrSize; //m_pcDescr 大小
+	char* m_pcDescr; //测试类型描述，如INSTRUMENT NOISE（只读）
+	unsigned int m_uiTestType;//测试类型代码（只读）
+	unsigned int m_uiADC;//0-Close，1-Inner，2-Out	
+	unsigned int m_uiGain;//增益，1600mv或400mv
+	unsigned int m_uiDAC;//0-Close（关闭），1-Inner（连接到内部测试网络），2-Out（连接到检波器的电路输入端）	
+	unsigned int m_uifilter;//滤波器类型，1-0.8LIN，2-0.8MIN
+	unsigned int m_uiSampingRate; //（us）采样率
+	unsigned int m_uiSampingLength;//（ms）采样长度
+}m_oInstrumentTestBaseStruct, m_oSensorTestBaseStruct;
+//Instrument Limit
+typedef struct Instrument_SensorTestLimit_Struct
+{
+	unsigned int m_uiNb; //索引号（只读）
+	unsigned short m_usDescrSize; //m_pcDescr 大小
+	char* m_pcDescr; //测试类型描述，如INSTRUMENT NOISE（只读）
+	unsigned int m_uiUnitSize; //	单位 size
+	char* m_pcUnit;//	单位（只读），如%
+	unsigned int m_uiTestType;//测试类型代码（只读）
+	float m_fLimit;//极限值
+}m_oInstrumentTestLimitStruct, m_oSensorTestLimitStruct;
+// Instrument Test
+typedef struct InstrumentTest_Struct
+{
+	unsigned int m_uiNb; //索引号（只读）
+	unsigned int m_uiTestType;//测试类型代码（只读）
+	unsigned int m_uiGain;//增益，1600mv或400mv
+	unsigned m_uiRecordLength; //记录时长
+	unsigned m_uiRecorded; //是否记录测试数据，0-不记录，1-记录
+	unsigned short m_usAuxiliaryDescrSize; //辅助道描述 大小
+	char* m_pcAuxiliaryDescr; //辅助道描述，如a1-a3
+	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
+	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
+}m_oInstrumentTestStruct;
+// Sensor Test
+typedef struct SensorTest_Struct
+{
+	unsigned int m_uiNb; //索引号（只读）
+	unsigned int m_uiTestType;//测试类型代码（只读）
+	unsigned m_uiRecorded; //是否记录测试数据，0-不记录，1-记录
+	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
+	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
+}m_oSensorTestStruct;
+// Multple Test
+typedef struct MultpleTest_Struct
+{
+	unsigned int m_uiNb; //索引号（只读）
+	unsigned m_uiTestNameSize;
+	char* m_pcTestName;//测试项目名称，如Test1
+	unsigned short m_usAuxiliaryDescrSize; //辅助道描述 大小
+	char* m_pcAuxiliaryDescr; //辅助道描述，如a1-a3
+	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
+	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
+
+	unsigned int m_uiDelayBetweenTest;//(ms)每次测试之间的间隔
+	unsigned int m_uiRecordResults;//	是否记录测试数据，0-不记录，1-记录
+	unsigned int m_uiRecordLength; //(ms)测试记录时长
+	unsigned int m_uiTestFileNb;//文件编号
+	unsigned int m_uiLineNb;//测线号
+	unsigned int m_uiTestType;//测试类型代码
+	unsigned int m_uiGain;//增益，1600mv或400mv
+	unsigned int m_uiLoopLineNb;//需要重复进行的测线索引号
+	unsigned int m_uiNbLoops;//输入循环次数
+}m_oMultpleTestStruct;
+// SeisMonitor
+typedef struct SeisMonitorTest_Struct
+{
+	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
+	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
+}m_oSeisMonitorStruct;
+// 从XML文件中解析得到的信息
+typedef struct InstrumentCommInfo_Struct
+{
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecCommInfo;
+	/** XMLDOM文件对象*/
+	CXMLDOMDocument m_oXMLDOMDocument;
+	// 从XML文件中解析得到IP地址设置数据
+	m_oXMLIPSetupDataStruct m_oXMLIPSetupData;
+	// 从XML文件中解析得到端口设置数据
+	m_oXMLPortSetupDataStruct m_oXMLPortSetupData;
+	// 从XML文件中解析得到ADC参数设置信息
+	m_oXMLADCSetupDataStruct m_oXMLADCSetupData;
+	// 从Line的配置文件中解析得到的信息队列
+	// Survey
+	list<m_oSurveyStruct> m_olsSurveyStruct;
+	// Point Code
+	list<m_oPointCodeStruct> m_olsPointCodeStruct;
+	// Sensor
+	list<m_oSensorStruct> m_olsSensorStruct;
+	// LAYOUT SETUP
+	// Marker
+	list<m_oMarkerStruct> m_olsMarkerStruct;
+	// Aux
+	list<m_oAuxStruct> m_olsAuxStruct;
+	// Detour
+	list<m_oDetourStruct> m_olsDetourStruct;
+	// Mute
+	list<m_oMuteStruct> m_olsMuteStruct;
+	// BlastMachine
+	list<m_oBlastMachineStruct> m_olsBlastMachineStruct;
+	// Spread Type Setup
+	// Absolute
+	list<m_oAbsoluteStruct> m_olsAbsoluteStruct;
+	// Generic
+	list<m_oGenericStruct> m_olsGenericStruct;
+	// Look
+	list<m_oLookStruct> m_olsLookStruct;
+	// Form Line
+	list<m_oFormLineStruct> m_olsFormLineStruct;
+	// Instrument Test base
+	list<m_oInstrumentTestBaseStruct> m_olsInstrumentTestBaseStruct;
+	// Sensor Test base
+	list<m_oSensorTestBaseStruct> m_olsSensorTestBaseStruct;
+	// Instrument Limit
+	list<m_oInstrumentTestLimitStruct> m_olsInstrumentTestLimitStruct;
+	// Sensor Limit
+	list<m_oSensorTestLimitStruct> m_olsSensorTestLimitStruct;
+	// Instrument Test
+	list<m_oInstrumentTestStruct> m_olsInstrumentTestStruct;
+	// Sensor Test
+	list<m_oSensorTestStruct> m_olsSensorTestStruct;
+	// Multple Test
+	list<m_oMultpleTestStruct> m_olsMultpleTestStruct;
+	// SeisMonitor
+	list<m_oSeisMonitorStruct> m_olsSeisMonitorStruct;
+	// Dll的XML配置文件路径
+	string m_strDllXMLFilePath;
+	// 测线XML配置文件路径
+	string m_strLineXMLFilePath;
+	// 施工XML配置文件路径
+	string m_strOptXMLFilePath;
 	// 输出日志指针
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oInstrumentCommInfoStruct;
@@ -1493,10 +1830,10 @@ MatrixServerDll_API void OnFreeLogOutPut(m_oLogOutPutStruct* pLogOutPut);
 // 创建常量信息结构体
 MatrixServerDll_API m_oConstVarStruct* OnCreateConstVar(void);
 // 载入INI文件
-MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath);
+MatrixServerDll_API void LoadIniFile(m_oConstVarStruct* pConstVar);
 // 初始化常量信息结构体
 MatrixServerDll_API void OnInitConstVar(m_oConstVarStruct* pConstVar, 
-	string strINIFilePath, m_oLogOutPutStruct* pLogOutPut = NULL);
+	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 关闭常量信息结构体
 MatrixServerDll_API void OnCloseConstVar(m_oConstVarStruct* pConstVar);
 // 释放常量信息结构体
@@ -1507,8 +1844,10 @@ MatrixServerDll_API void OnFreeConstVar(m_oConstVarStruct* pConstVar);
 /************************************************************************/
 // 创建仪器通讯信息结构体
 MatrixServerDll_API m_oInstrumentCommInfoStruct* OnCreateInstrumentCommInfo(void);
+// 初始化ADC参数设置信息结构体
+MatrixServerDll_API void OnInitXMLADCSetupData(m_oXMLADCSetupDataStruct* pXMLADCSetupData);
 // 打开程序配置文件
-MatrixServerDll_API BOOL OpenAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInfo,
+MatrixServerDll_API BOOL OpenAppXMLFile(m_oInstrumentCommInfoStruct* pCommInfo,
 	string strXMLFilePath);
 //加载IP地址设置数据
 MatrixServerDll_API void LoadIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
@@ -1517,13 +1856,14 @@ MatrixServerDll_API void LoadPortSetupData(m_oInstrumentCommInfoStruct* pCommInf
 //加载ADC参数设置数据
 MatrixServerDll_API void LoadADCSetData(m_oInstrumentCommInfoStruct* pCommInfo);
 //加载测线服务器程序设置数据
-MatrixServerDll_API void LoadLineServerAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo,
-	string strXMLFilePath);
+MatrixServerDll_API void LoadServerAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 初始化仪器通讯信息结构体
 MatrixServerDll_API void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo, 
-	string strXMLFilePath, m_oLogOutPutStruct* pLogOutPut = NULL);
+	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 关闭程序配置文件
-MatrixServerDll_API void CloseAppIniXMLFile(m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void CloseAppXMLFile(m_oInstrumentCommInfoStruct* pCommInfo);
+// 释放ADC参数设置信息结构体缓冲区
+MatrixServerDll_API void OnFreeXMLADCSetupData(m_oXMLADCSetupDataStruct* pXMLADCSetupData);
 // 释放仪器通讯信息结构体
 MatrixServerDll_API void OnFreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo);
 
@@ -1563,14 +1903,14 @@ MatrixServerDll_API void OnCloseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFra
 MatrixServerDll_API void OnFreeInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame);
 // 创建并设置首包端口
 MatrixServerDll_API void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame, 
-	m_oLogOutPutStruct* pLogOutPut = NULL);
+		m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析首包帧
 MatrixServerDll_API bool ParseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
 	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* IP地址设置帧                                                         */
-/************************************************************************/
+	/************************************************************************/
 // 创建IP地址设置帧信息结构体
 MatrixServerDll_API m_oIPSetFrameStruct* OnCreateInstrumentIPSetFrame(void);
 // 初始化IP地址设置
@@ -1785,7 +2125,7 @@ MatrixServerDll_API bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 /**
 * 根据链接方向，得到连接的下一个仪器
 * @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
-* @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
+	* @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
 */
 MatrixServerDll_API m_oInstrumentStruct* GetNextInstrument(int iRoutDirection, 
 m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
@@ -2324,8 +2664,7 @@ MatrixServerDll_API void OnOutPutResult(m_oEnvironmentStruct* pEnv);
 // 创建实例，并返回实例指针
 MatrixServerDll_API m_oEnvironmentStruct* OnCreateInstance(void);
 // 初始化实例
-MatrixServerDll_API void OnInit(m_oEnvironmentStruct* pEnv, 
-	char* pcXMLFilePath, char* pcINIFilePath);
+MatrixServerDll_API void OnInit(m_oEnvironmentStruct* pEnv);
 // 关闭
 MatrixServerDll_API void OnClose(m_oEnvironmentStruct* pEnv);
 // 工作

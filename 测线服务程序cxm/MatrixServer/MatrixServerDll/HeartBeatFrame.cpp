@@ -34,13 +34,13 @@ void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame,
 	}
 	pHeartBeatFrame->m_pCommandStruct = new m_oInstrumentCommandStruct;
 	// 源地址
-	pHeartBeatFrame->m_pCommandStruct->m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	pHeartBeatFrame->m_pCommandStruct->m_uiSrcIP = pCommInfo->m_oXMLIPSetupData.m_uiSrcIP;
 	// 目的地址
-	pHeartBeatFrame->m_pCommandStruct->m_uiAimIP = pCommInfo->m_uiAimIP;
+	pHeartBeatFrame->m_pCommandStruct->m_uiAimIP = pCommInfo->m_oXMLIPSetupData.m_uiAimIP;
 	// 目标IP地址端口号
-	pHeartBeatFrame->m_pCommandStruct->m_usAimPort = pCommInfo->m_usAimPort;
+	pHeartBeatFrame->m_pCommandStruct->m_usAimPort = pCommInfo->m_oXMLPortSetupData.m_usAimPort;
 	// 心跳返回端口
-	pHeartBeatFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_usHeartBeatReturnPort;
+	pHeartBeatFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_oXMLPortSetupData.m_usHeartBeatReturnPort;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pHeartBeatFrame->m_pCommandStruct->m_usCommand = pConstVar->m_usSendQueryCmd;

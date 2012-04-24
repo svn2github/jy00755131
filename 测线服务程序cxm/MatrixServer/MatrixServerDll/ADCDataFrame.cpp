@@ -34,17 +34,17 @@ void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	}
 	pADCDataFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
-	pADCDataFrame->m_pCommandStructSet->m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	pADCDataFrame->m_pCommandStructSet->m_uiSrcIP = pCommInfo->m_oXMLIPSetupData.m_uiSrcIP;
 	// 目的地址
-	pADCDataFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_uiAimIP;
+	pADCDataFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_oXMLIPSetupData.m_uiAimIP;
 	// 目标IP地址端口号
-	pADCDataFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_usAimPort;
+	pADCDataFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_oXMLPortSetupData.m_usAimPort;
 	// ADC数据帧发送缓冲区帧数设定为仪器个数
 	pADCDataFrame->m_uiSndBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iSndFrameSize;
 	// ADC数据帧接收缓冲区帧数设定为仪器个数
 	pADCDataFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// ADC数据帧返回端口
-	pADCDataFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_usADCDataReturnPort;
+	pADCDataFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_oXMLPortSetupData.m_usADCDataReturnPort;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pADCDataFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendADCCmd;

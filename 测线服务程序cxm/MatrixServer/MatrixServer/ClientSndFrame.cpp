@@ -1,15 +1,17 @@
 #include "StdAfx.h"
 #include "ClientSndFrame.h"
-
+#include "CommClient.h"
 
 CClientSndFrame::CClientSndFrame(void)
 {
 	m_pClientSocket = NULL;
+	m_oSndFrameMap.clear();
 }
 
 
 CClientSndFrame::~CClientSndFrame(void)
 {
+	m_oSndFrameMap.clear();
 }
 
 
@@ -27,19 +29,48 @@ void CClientSndFrame::MakeReturnFrame(m_oCommFrameStructPtr ptrFrame)
 	pFrameStruct->m_uiCmdIndex = ptrFrame->m_uiCmdIndex;
 	pFrameStruct->m_uiFrameNum = ptrFrame->m_uiFrameNum;
 	pFrameStruct->m_uiFrameIndex = ptrFrame->m_uiFrameIndex;
-	// 接收到的帧序号为任务帧的最后一帧
-	if (ptrFrame->m_uiFrameIndex == ptrFrame->m_uiFrameNum)
-	{
-		pFrameStruct->m_cResult = CmdResultSuccess;
-	}
-	else
-	{
-		pFrameStruct->m_cResult = CmdResultWait;
-	}
 	pFrameStruct->m_usFrameInfoSize = ptrFrame->m_usFrameInfoSize;
 	memcpy(&pFrameStruct->m_pcFrameInfo, &ptrFrame->m_pcFrameInfo, 
 		pFrameStruct->m_usFrameInfoSize);
 	m_olsCommWorkFrame.push_back(pFrameStruct);
+	LeaveCriticalSection(&m_oSecClientFrame);
+}
+// 生成设置帧
+void CClientSndFrame::MakeSetFrame(unsigned short usCmd, char* pChar, unsigned int uiSize)
+{
+	m_oCommFrameStructPtr pFrameStruct = NULL;
+	unsigned int uiFrameNum = 0;
+	uiFrameNum = uiSize / FrameInfoSizeLimit;
+	if (uiSize % FrameInfoSizeLimit != 0)
+	{
+		uiFrameNum++;
+	}
+	EnterCriticalSection(&m_oSecClientFrame);
+	m_uiCmdIndex++;
+	for (unsigned int i=0; i<uiFrameNum; i++)
+	{
+		pFrameStruct = GetFreeFrameStruct();
+		pFrameStruct->m_cCmdType = CmdTypeSet;
+		pFrameStruct->m_usCmd = usCmd;
+		pFrameStruct->m_uiServerTimeStep = GetTickCount();
+		pFrameStruct->m_uiClientTimeStep = 0;
+		m_uiPacketIndex++;
+		pFrameStruct->m_uiPacketIndex = m_uiPacketIndex;
+		pFrameStruct->m_uiCmdIndex = m_uiCmdIndex;
+		pFrameStruct->m_uiFrameNum = uiFrameNum;
+		pFrameStruct->m_uiFrameIndex = i + 1;
+		if (uiFrameNum == (i + 1))
+		{
+			pFrameStruct->m_usFrameInfoSize = (unsigned short)(uiSize - i * FrameInfoSizeLimit);
+		}
+		else
+		{
+			pFrameStruct->m_usFrameInfoSize = FrameInfoSizeLimit;
+		}
+		memcpy(&pFrameStruct->m_pcFrameInfo, &pChar[i * FrameInfoSizeLimit], 
+			pFrameStruct->m_usFrameInfoSize);
+		m_olsCommWorkFrame.push_back(pFrameStruct);
+	}
 	LeaveCriticalSection(&m_oSecClientFrame);
 }
 // 生成发送帧
@@ -97,4 +128,117 @@ void CClientSndFrame::MakeSendFrame(m_oCommFrameStructPtr ptrFrame)
 	iPos++;
 	m_pClientSocket->Send(pChar, 
 		ptrFrame->m_usFrameInfoSize + FrameHeadSize + FrameLengthSize + FrameTailSize + FrameHeadInfoSize);
+}
+
+
+// 重发过期帧
+void CClientSndFrame::OnReSendFrame(void)
+{
+	map<m_oSndFrameKey, m_oCommFrameStructPtr>::iterator iter;
+	bool bClose = false;
+	for (iter = m_oSndFrameMap.begin(); iter != m_oSndFrameMap.end(); iter++)
+	{
+		// 超过重发次数则跳出循环并关闭该客户端连接
+		if (iter->second->m_uiSndCount > SndFrameMaxNum)
+		{
+			bClose = true;
+			break;
+		}
+		else
+		{
+			// 超过延时时间则重发该帧
+			if (iter->second->m_uiTimeOutCount > SndFrameWaitTimes)
+			{
+				iter->second->m_uiTimeOutCount = 0;
+				iter->second->m_uiSndCount++;
+				MakeSendFrame(iter->second);
+			}
+			else
+			{
+				iter->second->m_uiTimeOutCount++;
+			}
+		}
+	}
+	if (bClose == true)
+	{
+		m_pClientSocket->m_pComClient->OnClose();
+	}
+}
+
+// 判断索引号是否已加入索引表
+BOOL CClientSndFrame::IfFramePtrExistInSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
+	unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return FALSE;
+	}
+	BOOL bResult = FALSE;
+	m_oSndFrameKey Key(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex);
+	map<m_oSndFrameKey, m_oCommFrameStructPtr>::iterator iter;
+	iter = pMap->find(Key);
+	if (iter != pMap->end())
+	{
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
+// 增加对象到索引表
+void CClientSndFrame::AddFramePtrToSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
+	unsigned int m_uiPacketIndex, m_oCommFrameStructPtr pFrameStruct, 
+	map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap)
+{
+	if ((pFrameStruct == NULL) || (pMap == NULL))
+	{
+		return;
+	}
+	m_oSndFrameKey Key(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex);
+	if (false == IfFramePtrExistInSndMap(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex, pMap))
+	{
+		pMap->insert(map<m_oSndFrameKey, m_oCommFrameStructPtr>::value_type (Key, pFrameStruct));
+	}
+}
+// 根据输入索引号，由索引表得到指针
+m_oCommFrameStructPtr CClientSndFrame::GetFramePtrFromSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
+	unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return NULL;
+	}
+	m_oSndFrameKey Key(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex);
+	map<m_oSndFrameKey, m_oCommFrameStructPtr>::iterator iter;
+	iter = pMap->find(Key);
+	if (iter == pMap->end())
+	{
+		return NULL;
+	}
+	return iter->second;
+}
+// 从索引表删除索引号指向的仪器指针
+BOOL CClientSndFrame::DeleteFramePtrFromSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
+	unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return FALSE;
+	}
+	BOOL bResult = FALSE;
+	m_oSndFrameKey Key(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex);
+	map<m_oSndFrameKey, m_oCommFrameStructPtr>::iterator iter;
+	iter = pMap->find(Key);
+	if (iter != pMap->end())
+	{
+		pMap->erase(iter);
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
 }

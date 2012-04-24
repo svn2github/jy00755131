@@ -6,7 +6,7 @@ typedef m_oEnvironmentStruct* (*Create_Instance)(void);
 // 释放实例资源
 typedef void (*Free_Instance)(m_oEnvironmentStruct* pEnv);
 // 初始化实例
-typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv, char* pcXMLFilePath, char* pcINIFilePath);
+typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv);
 // Field On
 typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
 // Field Off
@@ -87,8 +87,10 @@ void CMatrixDllCall::Dll_Init_Instance(void)
 	}
 	else
 	{
+		m_pEnv->m_pInstrumentCommInfo->m_strDllXMLFilePath = "..\\parameter\\MatrixLineApp.XML";
+		m_pEnv->m_pConstVar->m_strINIFilePath = "..\\parameter\\MatrixServerDLL.ini";
 		// call the function
-		(*Dll_On_Init)(m_pEnv, "..\\parameter\\MatrixLineApp.XML", "..\\parameter\\MatrixServerDLL.ini");
+		(*Dll_On_Init)(m_pEnv);
 	}
 }
 
@@ -183,28 +185,28 @@ void CMatrixDllCall::Dll_StartSample(int iSampleRate)
 		// 不经过高通滤波
 		if (iSampleRate == 250)
 		{
-			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 66;
+			m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 66;
 		}
 		else if (iSampleRate == 500)
 		{
-			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 74;
+			m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 74;
 		}
 		else if (iSampleRate == 1000)
 		{
-			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 82;
+			m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
 		}
 		else if (iSampleRate == 2000)
 		{
-			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 90;
+			m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 90;
 		}
 		else if (iSampleRate == 4000)
 		{
-			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 98;
+			m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 98;
 		}
 		// 如果不在所选采样率则按照1000采样率采样
 		else
 		{
-			m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 82;
+			m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
 		}
 		LeaveCriticalSection(&m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
 		// call the function
@@ -417,28 +419,28 @@ void CMatrixDllCall::Dll_ADCSetPart(int iLineIndex, int iPointIndex, int iRoutDi
 			// 不经过高通滤波
 			if (iSampleRate == 250)
 			{
-				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 66;
+				m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 66;
 			}
 			else if (iSampleRate == 500)
 			{
-				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 74;
+				m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 74;
 			}
 			else if (iSampleRate == 1000)
 			{
-				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 82;
+				m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
 			}
 			else if (iSampleRate == 2000)
 			{
-				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 90;
+				m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 90;
 			}
 			else if (iSampleRate == 4000)
 			{
-				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 98;
+				m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 98;
 			}
 			// 如果不在所选采样率则按照1000采样率采样
 			else
 			{
-				m_pEnv->m_pInstrumentCommInfo->m_cpSetADCSample[4] = 82;
+				m_pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
 			}
 			LeaveCriticalSection(&m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
 			EnterCriticalSection(&m_pEnv->m_pADCSetThread->m_oSecADCSetThread);

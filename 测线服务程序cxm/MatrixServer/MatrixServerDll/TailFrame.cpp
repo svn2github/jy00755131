@@ -33,13 +33,13 @@ void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFrame,
 	}
 	pTailFrame->m_pCommandStruct = new m_oInstrumentCommandStruct;
 	// 源地址
-	pTailFrame->m_pCommandStruct->m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	pTailFrame->m_pCommandStruct->m_uiSrcIP = pCommInfo->m_oXMLIPSetupData.m_uiSrcIP;
 	// 目的地址
-	pTailFrame->m_pCommandStruct->m_uiAimIP = pCommInfo->m_uiAimIP;
+	pTailFrame->m_pCommandStruct->m_uiAimIP = pCommInfo->m_oXMLIPSetupData.m_uiAimIP;
 	// 尾包接收缓冲区帧数设定为仪器个数
 	pTailFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// 接收端口
-	pTailFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_usTailFramePort;
+	pTailFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_oXMLPortSetupData.m_usTailFramePort;
 	// 重置帧内容解析变量
 	ResetInstrumentFramePacket(pTailFrame->m_pCommandStruct);
 	// 清空接收帧缓冲区

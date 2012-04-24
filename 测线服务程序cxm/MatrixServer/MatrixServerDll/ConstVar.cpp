@@ -8,10 +8,11 @@ m_oConstVarStruct* OnCreateConstVar(void)
 	pConstVar = new m_oConstVarStruct;
 	pConstVar->m_cpFrameHeadCheck = NULL;
 	pConstVar->m_pLogOutPut = NULL;
+	pConstVar->m_strINIFilePath = "";
 	return pConstVar;
 }
 // 载入INI文件
-void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
+void LoadIniFile(m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -22,7 +23,7 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 	CString strValue = _T("");
 	CString strFilePath	= _T("");
 	wchar_t strBuff[INIFileStrBufSize];
-	strFilePath = strINIFilePath.c_str();
+	strFilePath = pConstVar->m_strINIFilePath.c_str();
 	if (false == IfFileExist(strFilePath))
 	{
 		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "LoadIniFile", "", 
@@ -336,14 +337,14 @@ void LoadIniFile(m_oConstVarStruct* pConstVar, string strINIFilePath)
 	}
 }
 // 初始化常量信息结构体
-void OnInitConstVar(m_oConstVarStruct* pConstVar, string strINIFilePath, m_oLogOutPutStruct* pLogOutPut)
+void OnInitConstVar(m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut)
 {
 	if (pConstVar == NULL)
 	{
 		return;
 	}
 	pConstVar->m_pLogOutPut = pLogOutPut;
-	LoadIniFile(pConstVar, strINIFilePath);
+	LoadIniFile(pConstVar);
 }
 // 关闭常量信息结构体
 void OnCloseConstVar(m_oConstVarStruct* pConstVar)

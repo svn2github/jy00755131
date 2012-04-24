@@ -36,17 +36,17 @@ void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	}
 	pErrorCodeFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
-	pErrorCodeFrame->m_pCommandStructSet->m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	pErrorCodeFrame->m_pCommandStructSet->m_uiSrcIP = pCommInfo->m_oXMLIPSetupData.m_uiSrcIP;
 	// 目的地址
-	pErrorCodeFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_uiAimIP;
+	pErrorCodeFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_oXMLIPSetupData.m_uiAimIP;
 	// 目标IP地址端口号
-	pErrorCodeFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_usAimPort;
+	pErrorCodeFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_oXMLPortSetupData.m_usAimPort;
 	// 误码查询发送缓冲区帧数设定为仪器个数
 	pErrorCodeFrame->m_uiSndBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iSndFrameSize;
 	// 误码查询应答接收缓冲区帧数设定为仪器个数
 	pErrorCodeFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// 误码查询返回端口
-	pErrorCodeFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_usErrorCodeReturnPort;
+	pErrorCodeFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_oXMLPortSetupData.m_usErrorCodeReturnPort;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pErrorCodeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;

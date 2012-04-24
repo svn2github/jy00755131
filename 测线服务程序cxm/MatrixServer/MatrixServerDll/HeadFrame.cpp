@@ -33,13 +33,13 @@ void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame,
 	}
 	pHeadFrame->m_pCommandStruct = new m_oInstrumentCommandStruct;
 	// 源地址
-	pHeadFrame->m_pCommandStruct->m_uiSrcIP = pCommInfo->m_uiSrcIP;
+	pHeadFrame->m_pCommandStruct->m_uiSrcIP = pCommInfo->m_oXMLIPSetupData.m_uiSrcIP;
 	// 目的地址
-	pHeadFrame->m_pCommandStruct->m_uiAimIP = pCommInfo->m_uiAimIP;
+	pHeadFrame->m_pCommandStruct->m_uiAimIP = pCommInfo->m_oXMLIPSetupData.m_uiAimIP;
 	// 首包接收缓冲区帧数设定为仪器个数
 	pHeadFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// 接收端口
-	pHeadFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_usHeadFramePort;
+	pHeadFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_oXMLPortSetupData.m_usHeadFramePort;
 	// 重置帧内容解析变量
 	ResetInstrumentFramePacket(pHeadFrame->m_pCommandStruct);
 	// 清空接收帧缓冲区

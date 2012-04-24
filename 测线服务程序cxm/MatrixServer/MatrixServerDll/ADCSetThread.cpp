@@ -82,8 +82,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置正弦波命令
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCSetSine;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCSetSineSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSetSine;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCSetSineSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -93,8 +93,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCStopSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -104,8 +104,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB电源低位
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCOpenTBPowerLow;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCOpenTBPowerLowSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCOpenTBPowerLow;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCOpenTBPowerLowSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -115,8 +115,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB电源高位
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCOpenTBPowerHigh;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCOpenTBPowerHighSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCOpenTBPowerHigh;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCOpenTBPowerHighSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -126,8 +126,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB开关低位
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCOpenSwitchTBLow;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCOpenSwitchTBLowSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCOpenSwitchTBLow;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCOpenSwitchTBLowSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -137,8 +137,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB开关高位
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCOpenSwitchTBHigh;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCOpenSwitchTBHighSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCOpenSwitchTBHigh;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCOpenSwitchTBHighSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -148,8 +148,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCStopSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -159,8 +159,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置写寄存器
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCRegisterWrite;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCRegisterWriteSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCRegisterWrite;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCRegisterWriteSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -170,8 +170,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置读寄存器
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCRegisterRead;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCRegisterReadSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCRegisterRead;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCRegisterReadSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -195,8 +195,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB开关
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCTBSwitchOpen;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCTBSwitchOpenSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCTBSwitchOpen;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCTBSwitchOpenSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -206,8 +206,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCStopSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -228,8 +228,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 设置ADC数据采样率等参数
 		// @@@需要界面设置采样率等参数，暂选为1K采样率
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCSampleSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -239,8 +239,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置连续采样命令
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCReadContinuous;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCReadContinuousSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCReadContinuous;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCReadContinuousSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -296,8 +296,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCStopSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -307,8 +307,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCStopSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
@@ -318,8 +318,8 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_iSetADCStopSampleSize;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;

@@ -27,6 +27,7 @@ public:
 	unsigned short m_usFrameInfoSize;
 	// 连接客户端类指针
 	CCommClient* m_pComClient;
+public:
 	// 初始化
 	void OnInit(CCommClient* pComClient, int iSndBufferSize, int iRcvBufferSize);
 	// 关闭
