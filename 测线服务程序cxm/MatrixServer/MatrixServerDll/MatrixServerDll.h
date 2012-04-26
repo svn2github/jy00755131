@@ -380,9 +380,9 @@ typedef struct XMLADCSetupData_Struct
 	char* m_cpSetADCReadContinuous;
 }m_oXMLADCSetupDataStruct;
 
-// SURVEY SETUP结构体
-// Survey
-typedef struct Survey_Struct
+// Survery SETUP结构体
+// Survery
+typedef struct Survery_Struct
 {
 	// 测线号
 	unsigned int m_uiLine;
@@ -390,7 +390,7 @@ typedef struct Survey_Struct
 	unsigned short m_usReceiverSectionSize;
 	// 接收区域+检波器类型，如100-103p1
 	char* m_pcReceiverSection;
-}m_oSurveyStruct;
+}m_oSurveryStruct;
 // Point Code
 typedef struct PointCode_Struct
 {
@@ -649,22 +649,12 @@ typedef struct SeisMonitorTest_Struct
 	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
 	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
 }m_oSeisMonitorStruct;
-// 从XML文件中解析得到的信息
-typedef struct InstrumentCommInfo_Struct
+// 测线客户端信息
+typedef struct LineSetupData_Struct
 {
-	// 资源同步对象
-	CRITICAL_SECTION m_oSecCommInfo;
-	/** XMLDOM文件对象*/
-	CXMLDOMDocument m_oXMLDOMDocument;
-	// 从XML文件中解析得到IP地址设置数据
-	m_oXMLIPSetupDataStruct m_oXMLIPSetupData;
-	// 从XML文件中解析得到端口设置数据
-	m_oXMLPortSetupDataStruct m_oXMLPortSetupData;
-	// 从XML文件中解析得到ADC参数设置信息
-	m_oXMLADCSetupDataStruct m_oXMLADCSetupData;
 	// 从Line的配置文件中解析得到的信息队列
-	// Survey
-	list<m_oSurveyStruct> m_olsSurveyStruct;
+	// Survery
+	list<m_oSurveryStruct> m_olsSurveryStruct;
 	// Point Code
 	list<m_oPointCodeStruct> m_olsPointCodeStruct;
 	// Sensor
@@ -681,8 +671,8 @@ typedef struct InstrumentCommInfo_Struct
 	// BlastMachine
 	list<m_oBlastMachineStruct> m_olsBlastMachineStruct;
 	// Spread Type Setup
-	// Absolute
-	list<m_oAbsoluteStruct> m_olsAbsoluteStruct;
+	// 绝对排列和炮点的索引
+	map<unsigned int, list<m_oAbsoluteStruct>> m_oAbsoluteStructMap;
 	// Generic
 	list<m_oGenericStruct> m_olsGenericStruct;
 	// Look
@@ -705,6 +695,22 @@ typedef struct InstrumentCommInfo_Struct
 	list<m_oMultpleTestStruct> m_olsMultpleTestStruct;
 	// SeisMonitor
 	list<m_oSeisMonitorStruct> m_olsSeisMonitorStruct;
+}m_oLineSetupDataStruct;
+// 从XML文件中解析得到的信息
+typedef struct InstrumentCommInfo_Struct
+{
+	// 资源同步对象
+	CRITICAL_SECTION m_oSecCommInfo;
+	/** XMLDOM文件对象*/
+	CXMLDOMDocument m_oXMLDOMDocument;
+	// 从XML文件中解析得到IP地址设置数据
+	m_oXMLIPSetupDataStruct m_oXMLIPSetupData;
+	// 从XML文件中解析得到端口设置数据
+	m_oXMLPortSetupDataStruct m_oXMLPortSetupData;
+	// 从XML文件中解析得到ADC参数设置信息
+	m_oXMLADCSetupDataStruct m_oXMLADCSetupData;
+	// 测线客户端信息
+	m_oLineSetupDataStruct m_oLineSetupData;
 	// Dll的XML配置文件路径
 	string m_strDllXMLFilePath;
 	// 测线XML配置文件路径
@@ -1845,25 +1851,109 @@ MatrixServerDll_API void OnFreeConstVar(m_oConstVarStruct* pConstVar);
 // 创建仪器通讯信息结构体
 MatrixServerDll_API m_oInstrumentCommInfoStruct* OnCreateInstrumentCommInfo(void);
 // 初始化ADC参数设置信息结构体
-MatrixServerDll_API void OnInitXMLADCSetupData(m_oXMLADCSetupDataStruct* pXMLADCSetupData);
+MatrixServerDll_API void OnInitXMLADCSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Survery
+MatrixServerDll_API void OnResetSurveryList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Point Code
+MatrixServerDll_API void OnResetPointCodeList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Sensor
+MatrixServerDll_API void OnResetSensorList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Marker
+MatrixServerDll_API void OnResetMarkerList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Aux
+MatrixServerDll_API void OnResetAuxList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Detour
+MatrixServerDll_API void OnResetDetourList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Mute
+MatrixServerDll_API void OnResetMuteList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置BlastMachine
+MatrixServerDll_API void OnResetBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Absolute
+MatrixServerDll_API void OnResetAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置测线客户端信息
+MatrixServerDll_API void OnResetLineSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 打开程序配置文件
 MatrixServerDll_API BOOL OpenAppXMLFile(m_oInstrumentCommInfoStruct* pCommInfo,
 	string strXMLFilePath);
 //加载IP地址设置数据
-MatrixServerDll_API void LoadIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void LoadServerIP(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载IP地址设置数据
+MatrixServerDll_API void LoadServerIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 //加载端口设置数据
-MatrixServerDll_API void LoadPortSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void LoadServerPort(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载端口设置数据
+MatrixServerDll_API void LoadServerPortSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 //加载ADC参数设置数据
-MatrixServerDll_API void LoadADCSetData(m_oInstrumentCommInfoStruct* pCommInfo);
-//加载测线服务器程序设置数据
+MatrixServerDll_API void LoadServerADCSet(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载ADC参数设置数据
+MatrixServerDll_API void LoadServerADCSetSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载服务端程序设置数据
 MatrixServerDll_API void LoadServerAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Survery设置数据
+MatrixServerDll_API void LoadSurvery(m_oSurveryStruct* pSurveryStruct,CXMLDOMElement* pElement);
+//加载Survery设置队列数据
+MatrixServerDll_API void LoadSurveryList(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Survery设置数据
+MatrixServerDll_API void LoadSurverySetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Point Code设置数据
+MatrixServerDll_API void LoadPointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement);
+//加载Point Code设置队列数据
+MatrixServerDll_API void LoadPointCodeList(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Point Code设置数据
+MatrixServerDll_API void LoadPointCodeSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Sensor设置数据
+MatrixServerDll_API void LoadSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement);
+//加载Sensor设置队列数据
+MatrixServerDll_API void LoadSensorList(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Sensor设置数据
+MatrixServerDll_API void LoadSensorSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Marker设置数据
+MatrixServerDll_API void LoadMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElement* pElement);
+//加载Marker设置队列数据
+MatrixServerDll_API void LoadMarkerList(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Marker设置数据
+MatrixServerDll_API void LoadMarkerSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Aux设置数据
+MatrixServerDll_API void LoadAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement);
+//加载Aux设置队列数据
+MatrixServerDll_API void LoadAuxList(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Aux设置数据
+MatrixServerDll_API void LoadAuxSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Detour设置数据
+MatrixServerDll_API void LoadDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElement* pElement);
+//加载Detour设置队列数据
+MatrixServerDll_API void LoadDetourList(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Detour设置数据
+MatrixServerDll_API void LoadDetourSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Mute设置数据
+MatrixServerDll_API void LoadMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pElement);
+//加载Mute设置队列数据
+MatrixServerDll_API void LoadMuteList(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Mute设置数据
+MatrixServerDll_API void LoadMuteSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载BlastMachine设置数据
+MatrixServerDll_API void LoadBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement* pElement);
+//加载BlastMachine设置队列数据
+MatrixServerDll_API void LoadBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载BlastMachine设置数据
+MatrixServerDll_API void LoadBlastMachineSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Absolute设置数据
+MatrixServerDll_API void LoadAbsolute(m_oAbsoluteStruct* pAbsoluteStruct,CXMLDOMElement* pElement);
+//加载Absolute设置队列数据
+MatrixServerDll_API void LoadAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Absolute设置索引数据
+MatrixServerDll_API void LoadAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载Absolute设置数据
+MatrixServerDll_API void LoadAbsoluteSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+//加载测线客户端程序设置数据
+MatrixServerDll_API void LoadLineAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 初始化仪器通讯信息结构体
 MatrixServerDll_API void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 关闭程序配置文件
 MatrixServerDll_API void CloseAppXMLFile(m_oInstrumentCommInfoStruct* pCommInfo);
 // 释放ADC参数设置信息结构体缓冲区
-MatrixServerDll_API void OnFreeXMLADCSetupData(m_oXMLADCSetupDataStruct* pXMLADCSetupData);
+MatrixServerDll_API void OnFreeXMLADCSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 释放仪器通讯信息结构体
 MatrixServerDll_API void OnFreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo);
 

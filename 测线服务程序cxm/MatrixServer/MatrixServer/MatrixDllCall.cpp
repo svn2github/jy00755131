@@ -87,8 +87,6 @@ void CMatrixDllCall::Dll_Init_Instance(void)
 	}
 	else
 	{
-		m_pEnv->m_pInstrumentCommInfo->m_strDllXMLFilePath = "..\\parameter\\MatrixLineApp.XML";
-		m_pEnv->m_pConstVar->m_strINIFilePath = "..\\parameter\\MatrixServerDLL.ini";
 		// call the function
 		(*Dll_On_Init)(m_pEnv);
 	}
