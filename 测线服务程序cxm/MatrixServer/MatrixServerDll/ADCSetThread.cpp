@@ -29,9 +29,6 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 	unsigned int uiADCSetOperationNb = 0;
 	unsigned int uiLocalSysTime = 0;
 	unsigned int uiTBTimeOld = 0;
-	str.Format(_T("Now²Ù×÷ÐòºÅÎª %d"), 1234);
-	ConvertCStrToStr(str, &strConv);
-	AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnSelectADCSetCmd", strConv);
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
 	uiLocalSysTime = pADCSetThread->m_uiLocalSysTime;
 	uiTBTimeOld = pADCSetThread->m_uiTBTimeOld;
