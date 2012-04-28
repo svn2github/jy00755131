@@ -629,27 +629,34 @@ typedef struct SensorTest_Struct
 	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
 	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
 }m_oSensorTestStruct;
-// Multple Test
-typedef struct MultpleTest_Struct
+// Multiple Test
+typedef struct MultipleTestKey_Struct
 {
 	unsigned int m_uiNb; //索引号（只读）
-	unsigned m_uiTestNameSize;
+	unsigned short m_usTestNameSize;
 	char* m_pcTestName;//测试项目名称，如Test1
 	unsigned short m_usAuxiliaryDescrSize; //辅助道描述 大小
 	char* m_pcAuxiliaryDescr; //辅助道描述，如a1-a3
 	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
 	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
-
 	unsigned int m_uiDelayBetweenTest;//(ms)每次测试之间的间隔
 	unsigned int m_uiRecordResults;//	是否记录测试数据，0-不记录，1-记录
 	unsigned int m_uiRecordLength; //(ms)测试记录时长
 	unsigned int m_uiTestFileNb;//文件编号
+	bool operator < (const MultipleTestKey_Struct& rhs) const
+	{
+		return (m_uiNb < rhs.m_uiNb);
+	}
+}m_oMultipleTestKeyStruct;
+// Test Task
+typedef struct MultipleTestTask_Struct
+{
 	unsigned int m_uiLineNb;//测线号
 	unsigned int m_uiTestType;//测试类型代码
 	unsigned int m_uiGain;//增益，1600mv或400mv
 	unsigned int m_uiLoopLineNb;//需要重复进行的测线索引号
 	unsigned int m_uiNbLoops;//输入循环次数
-}m_oMultpleTestStruct;
+}m_oMultipleTestTaskStruct;
 // SeisMonitor
 typedef struct SeisMonitorTest_Struct
 {
@@ -700,10 +707,10 @@ typedef struct LineSetupData_Struct
 	list<m_oInstrumentTestStruct> m_olsInstrumentTestStruct;
 	// Sensor Test
 	list<m_oSensorTestStruct> m_olsSensorTestStruct;
-	// Multple Test
-	list<m_oMultpleTestStruct> m_olsMultpleTestStruct;
+	// Multiple Test
+	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>> m_oMultpleTestStructMap;
 	// SeisMonitor
-	list<m_oSeisMonitorStruct> m_olsSeisMonitorStruct;
+	m_oSeisMonitorStruct m_oSeisMonitor;
 }m_oLineSetupDataStruct;
 // 从XML文件中解析得到的信息
 typedef struct InstrumentCommInfo_Struct
@@ -1887,6 +1894,14 @@ MatrixServerDll_API void OnResetFormLineList(m_oInstrumentCommInfoStruct* pCommI
 MatrixServerDll_API void OnResetInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
 // 重置Instrument_SensorTestLimit
 MatrixServerDll_API void OnResetInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Instrument Test
+MatrixServerDll_API void OnResetInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Sensor Test
+MatrixServerDll_API void OnResetSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Multiple Test
+MatrixServerDll_API void OnResetMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置SeisMonitor
+MatrixServerDll_API void OnResetSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo);
 // 重置测线客户端信息
 MatrixServerDll_API void OnResetLineSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 打开程序配置文件
@@ -1957,9 +1972,9 @@ MatrixServerDll_API void LoadBlastMachineSetupData(m_oInstrumentCommInfoStruct* 
 // 加载Absolute设置数据
 MatrixServerDll_API void LoadAbsolute(m_oAbsoluteStruct* pAbsoluteStruct,CXMLDOMElement* pElement);
 // 加载Absolute设置队列数据
-MatrixServerDll_API void LoadAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void LoadAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pElement);
 // 加载Absolute设置索引数据
-MatrixServerDll_API void LoadAbsoluteMap(unsigned int uiSpreadSelect, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void LoadAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Absolute设置数据
 MatrixServerDll_API void LoadAbsoluteSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Generic设置数据
@@ -1995,11 +2010,29 @@ MatrixServerDll_API void LoadInstrument_SensorTestLimitList(bool bInstrument, m_
 // 加载Instrument_SensorTestLimit设置数据
 MatrixServerDll_API void LoadInstrument_SensorTestLimitSetupData(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument Test设置数据
-MatrixServerDll_API void LoadInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct,CXMLDOMElement* pElement);
+MatrixServerDll_API void LoadInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct, CXMLDOMElement* pElement);
 // 加载Instrument Test设置队列数据
 MatrixServerDll_API void LoadInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument Test设置数据
 MatrixServerDll_API void LoadInstrumentTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载Sensor Test设置数据
+MatrixServerDll_API void LoadSensorTest(m_oSensorTestStruct* pSensorTestStruct, CXMLDOMElement* pElement);
+// 加载Sensor Test设置队列数据
+MatrixServerDll_API void LoadSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载Sensor Test设置数据
+MatrixServerDll_API void LoadSensorTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载Multiple Test设置数据
+MatrixServerDll_API void LoadMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDOMElement* pElement);
+// 加载Multiple Test设置队列数据
+MatrixServerDll_API void LoadMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pElement);
+// 加载Multiple Test设置索引数据
+MatrixServerDll_API void LoadMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载Multiple Test设置数据
+MatrixServerDll_API void LoadMultipleTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载SeisMonitor设置数据
+MatrixServerDll_API void LoadSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载SeisMonitor设置数据
+MatrixServerDll_API void LoadSeisMonitorSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 
 // 加载测线客户端程序设置数据
 MatrixServerDll_API void LoadLineAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
