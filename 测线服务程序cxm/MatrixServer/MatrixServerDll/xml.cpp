@@ -455,17 +455,17 @@ void LoadServerIP(m_oInstrumentCommInfoStruct* pCommInfo)
 		// 和现场仪器通讯的本机IP地址
 		strKey = _T("IPForInstrument");
 		csSrcIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
-		ConvertCStrToStr(csSrcIP, &strConv);
+		strConv = (CStringA)csSrcIP;
 		pCommInfo->m_oXMLIPSetupData.m_uiSrcIP = inet_addr(strConv.c_str());
 		// LCI的IP地址
 		strKey = _T("IPLCI");
 		csDstIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
-		ConvertCStrToStr(csDstIP, &strConv);
+		strConv = (CStringA)csDstIP;
 		pCommInfo->m_oXMLIPSetupData.m_uiAimIP = inet_addr(strConv.c_str());
 		// ADC数据返回地址
 		strKey = _T("IPForADCData");
 		csDstIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
-		ConvertCStrToStr(csDstIP, &strConv);
+		strConv = (CStringA)csDstIP;
 		pCommInfo->m_oXMLIPSetupData.m_uiADCDataReturnAddr = inet_addr(strConv.c_str());
 	}
 	catch (CMemoryException* e)
@@ -709,7 +709,7 @@ void LoadSurvery(m_oSurveryStruct* pSurveryStruct,CXMLDOMElement* pElement)
 		pSurveryStruct->m_uiLine = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "ReceiverSection";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pSurveryStruct->m_usReceiverSectionSize = (unsigned short)strConv.size();
 		pSurveryStruct->m_pcReceiverSection = new char[pSurveryStruct->m_usReceiverSectionSize];
 		memcpy(pSurveryStruct->m_pcReceiverSection, strConv.c_str(), pSurveryStruct->m_usReceiverSectionSize);
@@ -813,13 +813,13 @@ void LoadPointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement
 		pPointCodeStruct->m_uiNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Label";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pPointCodeStruct->m_usLabelSize = (unsigned short)strConv.size();
 		pPointCodeStruct->m_pcLabel = new char[pPointCodeStruct->m_usLabelSize];
 		memcpy(pPointCodeStruct->m_pcLabel, strConv.c_str(), pPointCodeStruct->m_usLabelSize);
 		strKey = "SensorType";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pPointCodeStruct->m_usSensorTypeSize = (unsigned short)strConv.size();
 		pPointCodeStruct->m_pcSensorType = new char[pPointCodeStruct->m_usSensorTypeSize];
 		memcpy(pPointCodeStruct->m_pcSensorType, strConv.c_str(), pPointCodeStruct->m_usSensorTypeSize);
@@ -923,7 +923,7 @@ void LoadSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement)
 		pSensorStruct->m_uiNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Label";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pSensorStruct->m_usLabelSize = (unsigned short)strConv.size();
 		pSensorStruct->m_pcLabel = new char[pSensorStruct->m_usLabelSize];
 		memcpy(pSensorStruct->m_pcLabel, strConv.c_str(), pSensorStruct->m_usLabelSize);
@@ -1149,7 +1149,7 @@ void LoadAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement)
 		pAuxStruct->m_uiNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Label";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pAuxStruct->m_usLabelSize = (unsigned short)strConv.size();
 		pAuxStruct->m_pcLabel = new char[pAuxStruct->m_usLabelSize];
 		memcpy(pAuxStruct->m_pcLabel, strConv.c_str(), pAuxStruct->m_usLabelSize);
@@ -1165,7 +1165,7 @@ void LoadAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement)
 		pAuxStruct->m_uiDpgNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Comments";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pAuxStruct->m_usCommentsSize = (unsigned short)strConv.size();
 		pAuxStruct->m_pcComments = new char[pAuxStruct->m_usCommentsSize];
 		memcpy(pAuxStruct->m_pcComments, strConv.c_str(), pAuxStruct->m_usCommentsSize);
@@ -1479,7 +1479,7 @@ void LoadBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement*
 		pBlastMachineStruct->m_uiNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Label";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pBlastMachineStruct->m_usLabelSize = (unsigned short)strConv.size();
 		pBlastMachineStruct->m_pcLabel = new char[pBlastMachineStruct->m_usLabelSize];
 		memcpy(pBlastMachineStruct->m_pcLabel, strConv.c_str(), pBlastMachineStruct->m_usLabelSize);
@@ -1495,7 +1495,7 @@ void LoadBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement*
 		pBlastMachineStruct->m_uiDpgNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Comments";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pBlastMachineStruct->m_usCommentsSize = (unsigned short)strConv.size();
 		pBlastMachineStruct->m_pcComments = new char[pBlastMachineStruct->m_usCommentsSize];
 		memcpy(pBlastMachineStruct->m_pcComments, strConv.c_str(), pBlastMachineStruct->m_usCommentsSize);
@@ -1599,13 +1599,13 @@ void LoadAbsolute(m_oAbsoluteStruct* pAbsoluteStruct,CXMLDOMElement* pElement)
 		pAbsoluteStruct->m_uiNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Label";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pAbsoluteStruct->m_usLabelSize = (unsigned short)strConv.size();
 		pAbsoluteStruct->m_pcLabel = new char[pAbsoluteStruct->m_usLabelSize];
 		memcpy(pAbsoluteStruct->m_pcLabel, strConv.c_str(), pAbsoluteStruct->m_usLabelSize);
 		strKey = "Spread";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pAbsoluteStruct->m_usAbsoluteSpreadSize = (unsigned short)strConv.size();
 		pAbsoluteStruct->m_pcAbsoluteSpread = new char[pAbsoluteStruct->m_usAbsoluteSpreadSize];
 		memcpy(pAbsoluteStruct->m_pcAbsoluteSpread, strConv.c_str(), pAbsoluteStruct->m_usAbsoluteSpreadSize);
@@ -1761,19 +1761,19 @@ void LoadGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMElement* pElement)
 		pGenericStruct->m_uiNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Label";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pGenericStruct->m_usLabelSize = (unsigned short)strConv.size();
 		pGenericStruct->m_pcLabel = new char[pGenericStruct->m_usLabelSize];
 		memcpy(pGenericStruct->m_pcLabel, strConv.c_str(), pGenericStruct->m_usLabelSize);
 		strKey = "Line";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pGenericStruct->m_usLineSize = (unsigned short)strConv.size();
 		pGenericStruct->m_pcLine = new char[pGenericStruct->m_usLineSize];
 		memcpy(pGenericStruct->m_pcLine, strConv.c_str(), pGenericStruct->m_usLineSize);
 		strKey = "Spread";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pGenericStruct->m_usSpreadSize = (unsigned short)strConv.size();
 		pGenericStruct->m_pcSpread = new char[pGenericStruct->m_usSpreadSize];
 		memcpy(pGenericStruct->m_pcSpread, strConv.c_str(), pGenericStruct->m_usSpreadSize);
@@ -2098,7 +2098,7 @@ void LoadInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument
 		pInstrument_SensorTestBaseStruct->m_uiNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Descr";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pInstrument_SensorTestBaseStruct->m_usDescrSize = (unsigned short)strConv.size();
 		pInstrument_SensorTestBaseStruct->m_pcDescr = new char[pInstrument_SensorTestBaseStruct->m_usDescrSize];
 		memcpy(pInstrument_SensorTestBaseStruct->m_pcDescr, strConv.c_str(), pInstrument_SensorTestBaseStruct->m_usDescrSize);
@@ -2230,13 +2230,13 @@ void LoadInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrume
 		pInstrument_SensorTestLimitStruct->m_uiNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "Descr";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pInstrument_SensorTestLimitStruct->m_usDescrSize = (unsigned short)strConv.size();
 		pInstrument_SensorTestLimitStruct->m_pcDescr = new char[pInstrument_SensorTestLimitStruct->m_usDescrSize];
 		memcpy(pInstrument_SensorTestLimitStruct->m_pcDescr, strConv.c_str(), pInstrument_SensorTestLimitStruct->m_usDescrSize);
 		strKey = "Unit";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pInstrument_SensorTestLimitStruct->m_uiUnitSize = (unsigned short)strConv.size();
 		pInstrument_SensorTestLimitStruct->m_pcUnit = new char[pInstrument_SensorTestLimitStruct->m_uiUnitSize];
 		memcpy(pInstrument_SensorTestLimitStruct->m_pcUnit, strConv.c_str(), pInstrument_SensorTestLimitStruct->m_uiUnitSize);
@@ -2368,13 +2368,13 @@ void LoadInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct,CXMLDOMEl
 		pInstrumentTestStruct->m_uiRecorded = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "AuxiliaryDescr";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pInstrumentTestStruct->m_usAuxiliaryDescrSize = (unsigned short)strConv.size();
 		pInstrumentTestStruct->m_pcAuxiliaryDescr = new char[pInstrumentTestStruct->m_usAuxiliaryDescrSize];
 		memcpy(pInstrumentTestStruct->m_pcAuxiliaryDescr, strConv.c_str(), pInstrumentTestStruct->m_usAuxiliaryDescrSize);
 		strKey = "AbsoluteSpread";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pInstrumentTestStruct->m_usAbsoluteSpreadSize = (unsigned short)strConv.size();
 		pInstrumentTestStruct->m_pcAbsoluteSpread = new char[pInstrumentTestStruct->m_usAbsoluteSpreadSize];
 		memcpy(pInstrumentTestStruct->m_pcAbsoluteSpread, strConv.c_str(), pInstrumentTestStruct->m_usAbsoluteSpreadSize);
@@ -2482,7 +2482,7 @@ void LoadSensorTest(m_oSensorTestStruct* pSensorTestStruct,CXMLDOMElement* pElem
 		pSensorTestStruct->m_uiRecorded = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "AbsoluteSpread";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pSensorTestStruct->m_usAbsoluteSpreadSize = (unsigned short)strConv.size();
 		pSensorTestStruct->m_pcAbsoluteSpread = new char[pSensorTestStruct->m_usAbsoluteSpreadSize];
 		memcpy(pSensorTestStruct->m_pcAbsoluteSpread, strConv.c_str(), pSensorTestStruct->m_usAbsoluteSpreadSize);
@@ -2631,19 +2631,19 @@ void LoadMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement
 		oMultipleTestKeyStruct.m_uiNb = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "TestName";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		oMultipleTestKeyStruct.m_usTestNameSize = (unsigned short)strConv.size();
 		oMultipleTestKeyStruct.m_pcTestName = new char[oMultipleTestKeyStruct.m_usTestNameSize];
 		memcpy(oMultipleTestKeyStruct.m_pcTestName, strConv.c_str(), oMultipleTestKeyStruct.m_usTestNameSize);
 		strKey = "AuxiliaryDescr";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		oMultipleTestKeyStruct.m_usAuxiliaryDescrSize = (unsigned short)strConv.size();
 		oMultipleTestKeyStruct.m_pcAuxiliaryDescr = new char[oMultipleTestKeyStruct.m_usAuxiliaryDescrSize];
 		memcpy(oMultipleTestKeyStruct.m_pcAuxiliaryDescr, strConv.c_str(), oMultipleTestKeyStruct.m_usAuxiliaryDescrSize);
 		strKey = "AbsoluteSpread";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		oMultipleTestKeyStruct.m_usAbsoluteSpreadSize = (unsigned short)strConv.size();
 		oMultipleTestKeyStruct.m_pcAbsoluteSpread = new char[oMultipleTestKeyStruct.m_usAbsoluteSpreadSize];
 		memcpy(oMultipleTestKeyStruct.m_pcAbsoluteSpread, strConv.c_str(), oMultipleTestKeyStruct.m_usAbsoluteSpreadSize);
@@ -2784,7 +2784,7 @@ void LoadSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
 
 		strKey = "AbsoluteSpread";
 		str = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
-		strConv = (CStringA)str;
+		strConv = (CStringA)str;;
 		pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize = (unsigned short)strConv.size();
 		pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread = new char[pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize];
 		memcpy(pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread, strConv.c_str(), 

@@ -115,7 +115,7 @@ void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 	DeleteInstrumentFromLocationMap(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
 		&pInstrumentList->m_oInstrumentLocationMap);
 	str.Format(_T("删除仪器的SN = 0x%x，路由 = 0x%x"), pInstrument->m_uiSN, pInstrument->m_uiRoutIP);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "FreeInstrumentFromMap", strConv);
 
 	// 删除仪器的类型为LCI或交叉站
@@ -222,7 +222,7 @@ void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		// 路由索引表回收路由
 		DeleteRout(uiRoutIP, &pRoutList->m_oRoutMap);
 		str.Format(_T("回收路由IP = 0x%x的过期路由"), uiRoutIP);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pLogOutPut, "DeleteAllInstrumentAlongRout", strConv);
 		// ADC参数设置索引表回收路由
 		DeleteRout(uiRoutIP, &pRoutList->m_oADCSetRoutMap);
@@ -273,7 +273,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		// 在路由索引表中找到该尾包所在的路由
 		if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pRoutList->m_oRoutMap))
 		{
-			ConvertCStrToStr(str, &strConv);
+			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", 
 				strConv);
 			// 由路由IP得到路由对象
@@ -302,7 +302,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	}
 	else
 	{
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, 
 			"ProcTailFrameOne", strConv);
 	}

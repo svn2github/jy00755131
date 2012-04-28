@@ -79,7 +79,7 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 	// 创建施工任务数据文件夹
 	CreateDirectory(str2, NULL);
 	// 创建施工任务数据文件夹
-	ConvertCStrToStr(str2, &pOptTask->m_SaveLogFilePath);
+	pOptTask->m_SaveLogFilePath = (CStringA)str2;
 	// @@@@参与施工任务的采集站排序后加入施工任务的仪器索引表
 	for (iter = pInstrumentList->m_oIPInstrumentMap.begin(); 
 		iter != pInstrumentList->m_oIPInstrumentMap.end(); iter++)
@@ -401,7 +401,7 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 			pInstrument->m_uiSN, pInstrument->m_uiIP, pInstrument->m_iTailTimeQueryCount, 
 			pInstrument->m_iTailTimeReturnCount, pInstrument->m_iTimeSetCount, 
 			pInstrument->m_iTimeSetReturnCount);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pEnv->m_pLogOutPutTimeDelay, "", strConv);
 		iTailTimeQueryNum += pInstrument->m_iTailTimeQueryCount;
 		iTailTimeReturnNum += pInstrument->m_iTailTimeReturnCount;
@@ -428,7 +428,7 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 				pInstrument->m_iFDUErrorCodeCmdCount);
 			strOut += str;
 		}
-		ConvertCStrToStr(strOut, &strConv);
+		strConv = (CStringA)strOut;
 		AddMsgToLogOutPutList(pEnv->m_pLogOutPutErrorCode, "", strConv);
 		iErrorCodeQueryNum += pInstrument->m_uiErrorCodeQueryNum;
 		iErrorCodeReturnNum += pInstrument->m_uiErrorCodeReturnNum;
@@ -443,19 +443,19 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 	}
 	// 尾包时刻
 	str.Format(_T("尾包时刻查询仪器的总数%d， 应答帧总数%d"), iTailTimeQueryNum, iTailTimeReturnNum);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnClose", strConv);
 	// 时统
 	str.Format(_T("时统设置仪器的总数%d， 应答帧总数%d"), iTimeDelaySetNum, iTimeDelayReturnNum);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnClose", strConv);
 	// 误码查询
 	str.Format(_T("误码查询仪器的总数%d， 应答帧总数%d"), iErrorCodeQueryNum, iErrorCodeReturnNum);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnClose", strConv);
 	// 误码查询结果统计
 	str.Format(_T("数据误码总数%d， 命令误码总数%d"), iErrorCodeDataNum, iErrorCodeCmdNum);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnClose", strConv);
 }
 // 创建实例，并返回实例指针
@@ -577,27 +577,27 @@ void OnInit(m_oEnvironmentStruct* pEnv)
 
 	// 初始化操作日志输出结构体
 	CreateDirectory(strPath + SysOptLogFolderPath, NULL);
-	ConvertCStrToStr(strPath + SysOptLogFolderPath, &pEnv->m_pLogOutPutOpt->m_SaveLogFilePath);
+	pEnv->m_pLogOutPutOpt->m_SaveLogFilePath = (CStringA)(strPath + SysOptLogFolderPath);
 	pEnv->m_pLogOutPutOpt->m_cLogFileType = OptLogType;
 	OnInitLogOutPut(pEnv->m_pLogOutPutOpt);
 	// 初始化时统日志输出结构体
 	CreateDirectory(strPath + TimeDelayLogFolderPath, NULL);
-	ConvertCStrToStr(strPath + TimeDelayLogFolderPath, &pEnv->m_pLogOutPutTimeDelay->m_SaveLogFilePath);
+	pEnv->m_pLogOutPutTimeDelay->m_SaveLogFilePath = (CStringA)(strPath + TimeDelayLogFolderPath);
 	pEnv->m_pLogOutPutTimeDelay->m_cLogFileType = TimeDelayLogType;
 	OnInitLogOutPut(pEnv->m_pLogOutPutTimeDelay);
 	// 初始化误码查询日志输出结构体
 	CreateDirectory(strPath + ErrorCodeLogFolderPath, NULL);
-	ConvertCStrToStr(strPath + ErrorCodeLogFolderPath, &pEnv->m_pLogOutPutErrorCode->m_SaveLogFilePath);
+	pEnv->m_pLogOutPutErrorCode->m_SaveLogFilePath = (CStringA)(strPath + ErrorCodeLogFolderPath);
 	pEnv->m_pLogOutPutErrorCode->m_cLogFileType = ErrorCodeLogType;
 	OnInitLogOutPut(pEnv->m_pLogOutPutErrorCode);
 	// 初始化ADC数据帧时间日志输出结构体
 	CreateDirectory(strPath + ADCFrameTimeLogFolderPath, NULL);
-	ConvertCStrToStr(strPath + ADCFrameTimeLogFolderPath, &pEnv->m_pLogOutPutADCFrameTime->m_SaveLogFilePath);
+	pEnv->m_pLogOutPutADCFrameTime->m_SaveLogFilePath = (CStringA)(strPath + ADCFrameTimeLogFolderPath);
 	pEnv->m_pLogOutPutADCFrameTime->m_cLogFileType = ADCFrameTimeLogType;
 	OnInitLogOutPut(pEnv->m_pLogOutPutADCFrameTime);
 	// 创建ADC数据存储文件夹
 	CreateDirectory(strPath + ADCDataLogFolderPath, NULL);
-	ConvertCStrToStr(strPath + ADCDataLogFolderPath, &pEnv->m_pOptTaskArray->m_SaveLogFolderPath);
+	pEnv->m_pOptTaskArray->m_SaveLogFolderPath = (CStringA)(strPath + ADCDataLogFolderPath);
 	// 初始化常量信息结构体
 	OnInitConstVar(pEnv->m_pConstVar, pEnv->m_pLogOutPutOpt);
 	// 初始化仪器通讯信息结构体

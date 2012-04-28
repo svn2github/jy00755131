@@ -1,33 +1,6 @@
 #include "stdafx.h"
 #include "MatrixServerDll.h"
 
-// 宽字节字符串转换为多字节字符串
-string WideCharToMultiChar(wstring str)
-{
-	string return_value;
-	//获取缓冲区的大小，并申请空间，缓冲区大小是按字节计算的
-	LPCWSTR lpWideCharStr = str.c_str();
-	int iWideCharSize = (int)str.size();
-	int len = WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, iWideCharSize, 
-		NULL, 0, NULL, NULL);
-	char *buffer = new char[len+1];
-	WideCharToMultiByte(CP_ACP, 0, lpWideCharStr, iWideCharSize, 
-		buffer, len, NULL, NULL);
-	buffer[len] = '\0';
-	//删除缓冲区并返回值
-	return_value.append(buffer);
-	delete []buffer;
-	return return_value;
-}
-// CString转换为String
-void ConvertCStrToStr(CString str, string* strConv)
-{
-	CStringW strw;
-	wstring wstr;
-	strw = str;
-	wstr = strw;
-	*strConv = WideCharToMultiChar(wstr);
-}
 // 得到帧的帧内容
 void GetFrameInfo(char* pFrameData, int iSize, string* strFrameData)
 {
@@ -41,7 +14,7 @@ void GetFrameInfo(char* pFrameData, int iSize, string* strFrameData)
 	for (int i=0; i<iSize; i++)
 	{
 		cstr.Format(_T("%02x"), (unsigned char)pFrameData[i]);
-		ConvertCStrToStr(cstr, &strConv);
+		strConv = (CStringA)cstr;
 		*strFrameData += strConv;
 		*strFrameData += ' ';
 	}
@@ -752,7 +725,7 @@ SOCKET CreateInstrumentSocket(unsigned short usPort, unsigned int uiIP, m_oLogOu
 		AddMsgToLogOutPutList(pLogOutPut, "CreateInstrumentSocket", "bind", 
 			ErrorType, WSAGetLastError());
 		str.Format(_T("bind端口 = 0x%x, IP = 0x%x"), usPort, uiIP);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pLogOutPut, "CreateInstrumentSocket", strConv);
 	}
 	else

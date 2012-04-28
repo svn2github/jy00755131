@@ -1762,10 +1762,6 @@ typedef struct Environment_Struct
 /************************************************************************/
 /* 功能函数                                                             */
 /************************************************************************/
-// 宽字节字符串转换为多字节字符串
-// MatrixServerDll_API string WideCharToMultiChar(wstring str);
-// CString转换为String
-MatrixServerDll_API void ConvertCStrToStr(CString str, string* strConv);
 // 得到帧的帧内容
 MatrixServerDll_API void GetFrameInfo(char* pFrameData, int iSize, string* strFrameData);
 // 从CString转换为char数组

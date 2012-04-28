@@ -215,7 +215,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		pInstrument->m_uiErrorCodeReturnNum++;
 		str.Format(_T("接收帧数=%d"), pInstrument->m_uiErrorCodeReturnNum);
 		strOutPut += str;
-		ConvertCStrToStr(strOutPut, &strConv);
+		strConv = (CStringA)strOutPut;
 		AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);
 	}
 	else
@@ -308,7 +308,7 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			SendInstrumentErrorCodeFrame(pErrorCodeThread->m_pErrorCodeFrame,
 				pErrorCodeThread->m_pThread->m_pConstVar);
 			str.Format(_T("向路由IP = 0x%x广播发送误码查询帧"), pRout->m_uiRoutIP);
-			ConvertCStrToStr(str, &strConv);
+			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);
 		}
 	}

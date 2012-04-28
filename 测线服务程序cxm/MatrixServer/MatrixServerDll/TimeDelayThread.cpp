@@ -96,7 +96,7 @@ void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDela
 	SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
 		pTimeDelayThread->m_pThread->m_pConstVar);
 	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送尾包时刻查询帧"), pRout->m_pHead->m_uiIP);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
 	// 广播查询路由仪器的尾包时刻
 	MakeInstrumentTailTimeQueryFramebyBroadCast(pTimeDelayThread->m_pTailTimeFrame,
@@ -104,7 +104,7 @@ void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDela
 	SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
 		pTimeDelayThread->m_pThread->m_pConstVar);
 	str.Format(_T("向广播端口 = 0x%x 的仪器广播发送尾包时刻查询帧"), pRout->m_pTail->m_uiBroadCastPort);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
 }
 // 处理单个尾包时刻查询应答帧
@@ -180,7 +180,7 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 		pInstrument->m_usSendTime = usTailSndTime;
 		str.Format(_T("尾包发送时刻 = 0x%x"), pInstrument->m_usSendTime);
 		strOutPut += str;
-		ConvertCStrToStr(strOutPut, &strConv);
+		strConv = (CStringA)strOutPut;
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
 	}
 	else
@@ -250,7 +250,7 @@ bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDe
 	{
 		str.Format(_T("没有收到路由IP = 0x%x的路由头仪器IP = 0x%x的尾包时刻查询帧"), 
 			pRout->m_uiRoutIP, pInstrument->m_uiIP);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTailTimeReturn", 
 			strConv, WarningType);
 		return false;
@@ -267,14 +267,14 @@ bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDe
 		if (pInstrument->m_bTailTimeQueryOK == false)
 		{
 			str.Format(_T("路由IP = 0x%x的仪器的尾包时刻查询接收不完全"), pRout->m_uiRoutIP);
-			ConvertCStrToStr(str, &strConv);
+			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTailTimeReturn", 
 				strConv, WarningType);
 			return false;
 		}
 	} while (pInstrument != pRout->m_pTail);
 	str.Format(_T("路由IP = 0x%x的仪器的尾包时刻查询接收完全"), pRout->m_uiRoutIP);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "CheckTailTimeReturn", 
 		strConv);
 	return true;
@@ -361,7 +361,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 				str.Format(_T("发送时统设置帧时统修正高位为 0x%x，时统修正低位为 0x%x"), 
 					pInstrumentNext->m_uiTimeHigh, pInstrumentNext->m_uiTimeLow);
 				strOutPut += str;
-				ConvertCStrToStr(strOutPut, &strConv);
+				strConv = (CStringA)strOutPut;
 				AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
 			}
 		}
@@ -377,7 +377,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 			str.Format(_T("发送时统设置帧时统修正高位为 0x%x，时统修正低位为 0x%x"), 
 				pInstrumentNext->m_uiTimeHigh, pInstrumentNext->m_uiTimeLow);
 			strOutPut += str;
-			ConvertCStrToStr(strOutPut, &strConv);
+			strConv = (CStringA)strOutPut;
 			AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
 		}
 		pInstrument = pInstrumentNext;
@@ -407,7 +407,7 @@ void ProcTimeDelayReturnFrameOne(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		pInstrument->m_bTimeSetOK = true;
 		pInstrument->m_iTimeSetReturnCount++;
 		str.Format(_T("接收到IP地址 = 0x%x 仪器的时统设置应答帧"), pInstrument->m_uiIP);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
 	}
 	else
@@ -502,7 +502,7 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 					else
 					{
 						str.Format(_T("路由IP = 0x%x"), pRout->m_uiRoutIP);
-						ConvertCStrToStr(str, &strConv);
+						strConv = (CStringA)str;
 						AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "RunTimeDelayThread", 
 							strConv, ErrorType, IDS_ERR_ROUT_NOTEXIT);
 						// 删除该路由时统任务

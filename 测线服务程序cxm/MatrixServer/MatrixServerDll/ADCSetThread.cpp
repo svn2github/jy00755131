@@ -48,7 +48,7 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		str.Format(_T("向广播端口 = 0x%x 的仪器广播发送ADC参数设置帧，命令序号 = %d"), 
 			uiDstIP, uiADCSetOperationNb);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnSelectADCSetCmd", strConv);
 	}
 	// 按照IP地址发送ADC参数设置命令帧
@@ -58,7 +58,7 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiDstIP = uiDstIP;
 		str.Format(_T("向IP地址 = 0x%x 的仪器发送ADC参数设置帧，命令序号 = %d"), 
 			uiDstIP, uiADCSetOperationNb);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnSelectADCSetCmd", strConv);
 	}
 	// 1~11为ADC参数设置命令，12~18为ADC开始采样命令，19~22为ADC停止采样命令
@@ -285,7 +285,7 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		str.Format(_T("ADC开始采样：TB时间高位 = 0x%x，TB时间低位 = 0x%x"), 
 			pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBHigh, 
 			pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBLow);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnSelectADCSetCmd", strConv);
 		break;
 	case 19:
@@ -485,7 +485,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 			pADCSetThread->m_uiLocalSysTime = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiSysTime;
 			LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 			str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x"), uiIPInstrument, pADCSetThread->m_uiLocalSysTime);
-			ConvertCStrToStr(str, &strConv);
+			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ProcADCSetReturnFrameOne", strConv);
 		}
 	}
@@ -527,7 +527,7 @@ void OnOutPutADCDataRecResult(m_oADCSetThreadStruct* pADCSetThread)
 				pInstrument->m_uiADCDataActualRecFrameNum, 
 				pInstrument->m_uiADCDataRetransmissionFrameNum,
 				pInstrument->m_uiADCDataShouldRecFrameNum - pInstrument->m_uiADCDataActualRecFrameNum);
-			ConvertCStrToStr(str, &strConv);
+			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pADCSetThread->m_pLogOutPutADCFrameTime, "", strConv);
 			iADCDataActualRecFrameNum += pInstrument->m_uiADCDataActualRecFrameNum;
 			iADCDataShouldRecFrameNum += pInstrument->m_uiADCDataShouldRecFrameNum;
@@ -538,7 +538,7 @@ void OnOutPutADCDataRecResult(m_oADCSetThreadStruct* pADCSetThread)
 	str.Format(_T("应收ADC数据帧数%d， 实际接收帧数%d（含重发帧 %d），丢失帧数%d"), iADCDataShouldRecFrameNum, 
 		iADCDataActualRecFrameNum, iADCDataRetransmissionFrameNum, 
 		iADCDataShouldRecFrameNum - iADCDataActualRecFrameNum);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "OnOutPutADCDataRecResult", strConv);
 	pADCSetThread->m_pLogOutPutADCFrameTime->m_uiLogInfoCount = OutPutLogFileInfoNumLimit;
 }
@@ -714,7 +714,7 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 	if (true == CheckADCSetReturnFrame(pADCSetThread))
 	{
 		str.Format(_T("ADC参数设置命令 %d 应答接收完全"), uiADCSetOperationNb);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "CheckADCSetReturnFrame", 
 			strConv);
 		// 命令应答接收完全后的操作
@@ -723,7 +723,7 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 	else
 	{
 		str.Format(_T("ADC参数设置命令 %d 应答接收不完全"), uiADCSetOperationNb);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "CheckADCSetReturnFrame", 
 			strConv, WarningType);
 	}

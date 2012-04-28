@@ -28,7 +28,7 @@ int OpenLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 	str = pLogOutPut->m_SaveLogFilePath.c_str();
 	strPath = str + strPath;
 	pLogOutPut->m_uiLogInfoCount = 0;
-	ConvertCStrToStr(strPath, &strConv);
+	strConv = (CStringA)strPath;
 	err = fopen_s(&pLogOutPut->m_pFile, strConv.c_str(), 
 		"wt+, ccs=UNICODE");
 	LeaveCriticalSection(&pLogOutPut->m_oSecLogFile);
@@ -74,7 +74,7 @@ void AddMsgToLogOutPutList(m_oLogOutPutStruct* pLogOutPut, string pFuncName,
 		strOutPut += _T("ExpandType\t");
 	}
 	strOutPut += strTime;
-	ConvertCStrToStr(strOutPut, &str);
+	str = (CStringA)strOutPut;
 	if (pFuncName.empty() == false)
 	{
 		strTemp = "程序运行到函数：";

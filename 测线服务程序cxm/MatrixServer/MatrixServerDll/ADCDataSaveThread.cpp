@@ -98,7 +98,7 @@ void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf,
 	if (false == IfFileExist(strPath))
 	{
 		pOptTask->m_pPreviousFile = pOptTask->m_pFile;
-		ConvertCStrToStr(strPath, &strConv);
+		strConv = (CStringA)strPath;
 		err = fopen_s(&pOptTask->m_pFile, strConv.c_str(), "w+t, ccs=UNICODE");
 		if (pOptTask->m_pFile == NULL)
 		{
@@ -116,7 +116,7 @@ void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf,
 		// 第一行
 		str.Format(_T("施工任务数据存储从 %d 帧开始"), pOptTask->m_uiStartFrame);
 		fseek(pOptTask->m_pFile, 0, SEEK_SET);
-		ConvertCStrToStr(str, &strOut);
+		strOut = (CStringA)str;
 		strOutSize = strOut.length();
 		fwrite(strOut.c_str(), sizeof(char), strOutSize, pOptTask->m_pFile);
 		// 第三行左侧信息
@@ -169,7 +169,7 @@ void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf,
 		lOffSet = uiLineLength * (pConstVar->m_iADCSaveHeadLineNum - 1) + uiRowNb;
 		fseek(pFile, lOffSet, SEEK_SET);
 		str.Format(_T("%*d "), pConstVar->m_iADCSaveDataBytes, pADCDataBuf->m_uiSysTime);
-		ConvertCStrToStr(str, &strOut);
+		strOut = (CStringA)str;
 		for (int i=0; i<(pConstVar->m_iADCDataInOneFrameNum - 1); i++)
 		{
 			for (int j=0; j<pConstVar->m_iADCSaveDataBytes; j++)
@@ -188,7 +188,7 @@ void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf,
 		lOffSet = uiLineLength * uiLineNb;
 		fseek(pFile, lOffSet, SEEK_SET);
 		str.Format(_T("SN=0x%x "), pADCDataBuf->m_uiSN);
-		ConvertCStrToStr(str, &strOut);
+		strOut = (CStringA)str;
 		strOutSize = strOut.length();
 		fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
 	}

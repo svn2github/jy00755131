@@ -131,7 +131,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		{
 			str.Format(_T("收到SN = 0x%x，IP地址 = 0x%x的ADC数据重发帧，指针偏移量 = %d"), 
 				pInstrument->m_uiSN, pInstrument->m_uiIP, usADCDataFramePointNow);
-			ConvertCStrToStr(str, &strConv);
+			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 				strConv);
 
@@ -190,7 +190,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 					strFrameData, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
 				str.Format(_T("指针偏移量出错，偏移量差值为%d"), uiADCDataFramePointMove);
-				ConvertCStrToStr(str, &strConv);
+				strConv = (CStringA)str;
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
 					strConv, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
 				return;
@@ -235,7 +235,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 					}
 					str.Format(_T("仪器SN = 0x%x，IP = 0x%x，丢失帧数为%d"), pInstrument->m_uiSN, 
 						pInstrument->m_uiIP, uiLostFrameNum);
-					ConvertCStrToStr(str, &strConv);
+					strConv = (CStringA)str;
 					AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne",
 						strConv, WarningType);
 					AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
@@ -263,7 +263,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		str.Format(_T("应收帧数为 %d, 起始的帧数为%d"), 
 			pInstrument->m_uiADCDataShouldRecFrameNum, pInstrument->m_iADCDataFrameStartNum);
 		strOut += str;
-		ConvertCStrToStr(strOut, &strConv);
+		strConv = (CStringA)strOut;
 		AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", strConv);
 	}
 }
@@ -337,7 +337,7 @@ void ProcADCRetransmission(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				pADCDataRecThread->m_pThread->m_pConstVar);
 			str.Format(_T("向仪器IP = 0x%x的仪器发送ADC数据重发帧，重发的指针偏移量 = %d"), iter->first.m_uiIP,
 				iter->first.m_usADCFramePointNb);
-			ConvertCStrToStr(str, &strConv);
+			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCRetransmission", 
 				strConv);
 			iter++;
@@ -351,7 +351,7 @@ void ProcADCRetransmission(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				// 没有收到重发帧
 				str.Format(_T("仪器IP = 0x%x的仪器没有收到ADC数据重发帧应答，重发的指针偏移量 = %d"), 
 					iter->first.m_uiIP, iter->first.m_usADCFramePointNb);
-				ConvertCStrToStr(str, &strConv);
+				strConv = (CStringA)str;
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCRetransmission", 
 					strConv);
 			}

@@ -117,7 +117,7 @@ void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar
 					// 将该路由IP加入任务队列
 					pRoutList->m_olsTimeDelayTaskQueue.push_back(uiRoutIP);
 					str.Format(_T("将路由IP = 0x%x 加入时统任务队列"), uiRoutIP);
-					ConvertCStrToStr(str, &strConv);
+					strConv = (CStringA)str;
 					AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetTimeDelayTask", strConv);
 				}
 				// 沿着路由方向得到时统任务
@@ -130,7 +130,7 @@ void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar
 			if (uiRoutIP != 0)
 			{
 				str.Format(_T("路由IP = 0x%x"), uiRoutIP);
-				ConvertCStrToStr(str, &strConv);
+				strConv = (CStringA)str;
 				AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetTimeDelayTask", strConv,
 					ErrorType, IDS_ERR_ROUT_NOTEXIT);
 			}
@@ -258,7 +258,7 @@ void GetADCTaskQueueBySN(m_oADCSetThreadStruct* pADCSetThread,
 		AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
 			&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
 		str.Format(_T("将仪器SN = 0x%x 加入ADC参数设置任务索引表"), pInstrument->m_uiSN);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueBySN", strConv);
 	}
 }
@@ -357,7 +357,7 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 		pRout->m_bADCSetReturn = false;
 		pRout->m_bADCSetRout = true;
 		str.Format(_T("将路由IP = 0x%x 加入ADC参数设置任务索引表"), pRout->m_uiRoutIP);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
 		AddRout(pRout->m_uiRoutIP, pRout, &pADCSetThread->m_pRoutList->m_oADCSetRoutMap);
 
@@ -467,7 +467,7 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 			&& (iter->second->m_pTail != NULL))
 		{
 			str.Format(_T("路由IP = 0x%x的路由时间过期，删除该路由方向上的仪器"), iter->second->m_uiRoutIP);
-			ConvertCStrToStr(str, &strConv);
+			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pMonitorThread->m_pThread->m_pLogOutPut, "ProcMonitor", strConv);
 			// 如果路由尾仪器为LCI则表明要删除的是LCI本身
 			if (iter->second->m_pTail->m_iInstrumentType == pMonitorThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
@@ -504,7 +504,7 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 		// 路由索引表回收路由
 		DeleteRout(uiRoutIP, &pMonitorThread->m_pRoutList->m_oRoutMap);
 		str.Format(_T("回收路由IP = 0x%x的过期路由"), uiRoutIP);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pMonitorThread->m_pThread->m_pLogOutPut, "ProcMonitor", strConv);
 		// ADC参数设置索引表回收路由
 		DeleteRout(uiRoutIP, &pMonitorThread->m_pRoutList->m_oADCSetRoutMap);
@@ -546,7 +546,7 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 			{
 				str.Format(_T("数据采样过程中，路由IP = 0x%x的仪器的没有全部实现时统"), 
 					pRout->m_uiRoutIP);
-				ConvertCStrToStr(str, &strConv);
+				strConv = (CStringA)str;
 				AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, 
 					"CheckTimeDelayReturnByRout", strConv, WarningType);
 				return false;
@@ -558,7 +558,7 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 			if (pInstrument->m_bTimeSetOK == false)
 			{
 				str.Format(_T("路由IP = 0x%x的仪器的时统设置应答接收不完全"), pRout->m_uiRoutIP);
-				ConvertCStrToStr(str,&strConv);
+				strConv = (CStringA)str;
 				AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, 
 					"CheckTimeDelayReturnByRout", strConv);
 				return false;
@@ -568,7 +568,7 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 	if (bSample == false)
 	{
 		str.Format(_T("路由IP = 0x%x的仪器的时统设置应答接收完全"), pRout->m_uiRoutIP);
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, 
 			"CheckTimeDelayReturnByRout", strConv);
 	}

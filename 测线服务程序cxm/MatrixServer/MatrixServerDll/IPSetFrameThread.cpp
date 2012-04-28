@@ -62,7 +62,7 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			str.Format(_T("接收到SN = 0x%x，IP地址 = 0x%x仪器的IP地址查询应答"), 
 				pInstrument->m_uiSN, uiIPInstrument);
 		}
-		ConvertCStrToStr(str, &strConv);
+		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetReturnFrameOne", 
 			strConv);
 	}
@@ -232,7 +232,7 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				str.Format(_T("仪器SN = 0x%x，IP地址 = 0x%x 的仪器发送IP地址设置帧超过指定次数"), 
 					iter->second->m_uiSN, iter->second->m_uiIP);
 				// 加入错误日志
-				ConvertCStrToStr(str, &strConv);
+				strConv = (CStringA)str;
 				AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetFrame",
 					strConv, WarningType);
 				iter->second->m_iIPSetCount = 0;

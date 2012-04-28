@@ -201,7 +201,7 @@ void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame,
 		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
 	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送IP地址查询帧"), 
 		pIPSetFrame->m_pCommandStructSet->m_uiDstIP);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentIPQueryFrame", strConv);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
@@ -318,7 +318,7 @@ void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
 	str.Format(_T("向仪器SN = 0x%x，IP地址 = 0x%x 的仪器发送IP地址设置帧"), 
 		pIPSetFrame->m_pCommandStructSet->m_uiSN, pIPSetFrame->m_pCommandStructSet->m_uiInstrumentIP);
-	ConvertCStrToStr(str, &strConv);
+	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentIPSetFrame", strConv);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
