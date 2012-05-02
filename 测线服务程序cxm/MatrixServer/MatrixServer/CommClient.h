@@ -4,7 +4,7 @@
 #include "ClientSndFrame.h"
 #include "ClientSndThread.h"
 #include "ClientSocket.h"
-
+#include "MatrixDllCall.h"
 // CComClient 命令目标
 
 class CCommClient
@@ -23,6 +23,8 @@ public:
 	CClientSndThread m_oClientSndThread;
 	// 接收客户端通讯成员类
 	CClientSocket m_oClientSocket;
+	// DLL函数调用类成员
+	CMatrixDllCall* m_pMatrixDllCall;
 public:
 	// 创建一个客户端连接信息
 	void OnInit();

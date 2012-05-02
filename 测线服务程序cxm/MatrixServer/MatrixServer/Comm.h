@@ -1,6 +1,6 @@
 #pragma once
 #include "CommServer.h"
-
+#include "MatrixDllCall.h"
 class CComm
 {
 public:
@@ -9,6 +9,8 @@ public:
 public:
 	// 服务端CAsyncSocket
 	CCommServer m_oServerAsyncSocket;
+	// DLL函数调用类成员
+	CMatrixDllCall* m_pMatrixDllCall;
 public:
 	// 初始化
 	void OnInit(void);

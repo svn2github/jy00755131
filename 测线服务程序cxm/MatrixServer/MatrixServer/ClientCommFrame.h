@@ -24,8 +24,6 @@ public:
 	unsigned int m_uiCmdIndex;
 	// 数据处理缓冲区
 	char m_cProcBuf[ProcBufferSize];
-	// 需要数据处理的字节数
-	unsigned int m_uiProcBufSize;
 public:
 	// 重置接收帧结构体
 	void OnResetFrameStruct(m_oCommFrameStructPtr pFrameStruct);

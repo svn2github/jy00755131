@@ -74,6 +74,5 @@ void CClientCommFrame::OnClose(void)
 // 重置数据处理缓冲区
 void CClientCommFrame::OnResetProcBuf(void)
 {
-	m_uiProcBufSize = 0;
 	memset(m_cProcBuf, 0, ProcBufferSize);
 }

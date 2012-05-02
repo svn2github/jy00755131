@@ -4,6 +4,7 @@
 
 CComm::CComm(void)
 {
+	m_pMatrixDllCall = NULL;
 }
 
 
@@ -17,6 +18,7 @@ void CComm::OnInit(void)
 {
 	// 初始化套接字库
 	OnInitSocketLib();
+	m_oServerAsyncSocket.m_pMatrixDllCall = m_pMatrixDllCall;
 	// 初始化服务端AsyncSocket
 	m_oServerAsyncSocket.OnInit();
 

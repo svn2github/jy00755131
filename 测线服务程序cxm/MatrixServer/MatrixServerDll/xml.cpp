@@ -2237,9 +2237,9 @@ void LoadInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrume
 		strKey = "Unit";
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
 		strConv = (CStringA)str;;
-		pInstrument_SensorTestLimitStruct->m_uiUnitSize = (unsigned short)strConv.size();
-		pInstrument_SensorTestLimitStruct->m_pcUnit = new char[pInstrument_SensorTestLimitStruct->m_uiUnitSize];
-		memcpy(pInstrument_SensorTestLimitStruct->m_pcUnit, strConv.c_str(), pInstrument_SensorTestLimitStruct->m_uiUnitSize);
+		pInstrument_SensorTestLimitStruct->m_usUnitSize = (unsigned short)strConv.size();
+		pInstrument_SensorTestLimitStruct->m_pcUnit = new char[pInstrument_SensorTestLimitStruct->m_usUnitSize];
+		memcpy(pInstrument_SensorTestLimitStruct->m_pcUnit, strConv.c_str(), pInstrument_SensorTestLimitStruct->m_usUnitSize);
 		strKey = "TestAim";
 		pInstrument_SensorTestLimitStruct->m_uiTestAim = CXMLDOMTool::GetElementAttributeUnsignedInt(pElement, strKey);
 		strKey = "TestType";

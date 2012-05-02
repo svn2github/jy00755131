@@ -34,6 +34,8 @@
 #define SndFrameMaxNum						3
 // 数据处理缓冲区打小
 #define ProcBufferSize						80000
+// 两次FieldOn时间间隔
+#define FieldOnWaitForTime					120000
 /************************************************************************/
 /* 命令字和通讯协议                                                     */
 /************************************************************************/
@@ -104,6 +106,8 @@
 #define CmdQueryInstrumentInfo				0x0007
 // 查询全部仪器的全部信息（应答帧内容为仪器结构体）
 #define CmdQueryInstrumentInfoAll			0x0008
+// Field On需要等待的时间
+#define CmdFieldOnWaitTime					0x0009
 
 // 查询 SurveyXML 文件信息（帧内容为空）
 #define CmdQuerySurveyXMLInfo				0x1001
@@ -181,6 +185,14 @@
 #define CmdQuerySeisMonitorTestXMLInfo		0x1025
 // 设置 SeisMonitorTest XML文件信息（帧内容为信息结构体）
 #define CmdSetSeisMonitorTestXMLInfo		0x1026
+// 查询 LAULeakage XML文件信息（帧内容为空）
+#define CmdQueryLAULeakageXMLInfo			0x1027
+// 设置 LAULeakage XML文件信息（帧内容为信息结构体）
+#define CmdSetLAULeakageXMLInfo				0x1028
+// 查询 FormLine XML文件信息（帧内容为空）
+#define CmdQueryFormLineXMLInfo				0x1029
+// 设置 FormLine XML文件信息（帧内容为信息结构体）
+#define CmdSetFormLineXMLInfo				0x102a
 
 // 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）
 #define CmdQueryInstrNoiseTestArea			0x2001

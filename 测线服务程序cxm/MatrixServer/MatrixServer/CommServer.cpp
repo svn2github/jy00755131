@@ -10,6 +10,7 @@
 
 CCommServer::CCommServer()
 {
+	m_pMatrixDllCall = NULL;
 }
 
 CCommServer::~CCommServer()
@@ -28,6 +29,7 @@ void CCommServer::OnAccept(int nErrorCode)
 	if (CAsyncSocket::Accept(pComClient->m_oClientSocket))
 	{
 		pComClient->m_oClientSocket.m_pComClientMap = &m_oComClientMap;
+		pComClient->m_pMatrixDllCall = m_pMatrixDllCall;
 		pComClient->OnInit();
 	}
 	else

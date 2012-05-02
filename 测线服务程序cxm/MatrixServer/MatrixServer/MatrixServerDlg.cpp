@@ -111,7 +111,13 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	// 初始化动态链接库
 	m_oMatrixDllCall.OnInit(_T("MatrixServerDll.dll"));
 	// 初始化与客户端通讯连接
+	m_oCom.m_pMatrixDllCall = &m_oMatrixDllCall;
 	m_oCom.OnInit();
+	GetDlgItem(IDC_BN_START)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BN_STOP)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BN_ADCSET_ALL)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BN_STARTSAMPLE_ALL)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(FALSE);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -165,13 +171,32 @@ void CMatrixServerDlg::OnBnClickedBnStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL开始工作
-	m_oMatrixDllCall.Dll_Work();
+	unsigned int uiFieldOnWaitTime = m_oMatrixDllCall.Dll_Work();
+	CString str = _T("");
+	if (uiFieldOnWaitTime == 0)
+	{
+		GetDlgItem(IDC_BN_START)->EnableWindow(FALSE);
+		GetDlgItem(IDC_BN_STOP)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BN_ADCSET_ALL)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BN_STARTSAMPLE_ALL)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(TRUE);
+	}
+	else
+	{
+		str.Format(_T("距离FieldOn还需等待 %d 分 %d 秒！"), uiFieldOnWaitTime/60000, (uiFieldOnWaitTime%60000)/1000);
+		AfxMessageBox(str);
+	}
 }
 void CMatrixServerDlg::OnBnClickedBnStop()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL停止工作
 	m_oMatrixDllCall.Dll_Stop();
+	GetDlgItem(IDC_BN_START)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BN_STOP)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BN_ADCSET_ALL)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BN_STARTSAMPLE_ALL)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(FALSE);
 }
 void CMatrixServerDlg::OnDestroy()
 {

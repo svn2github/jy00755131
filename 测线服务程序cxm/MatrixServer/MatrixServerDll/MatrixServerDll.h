@@ -601,7 +601,7 @@ typedef struct Instrument_SensorTestLimit_Struct
 	unsigned int m_uiNb; //索引号（只读）
 	unsigned short m_usDescrSize; //m_pcDescr 大小
 	char* m_pcDescr; //测试类型描述，如INSTRUMENT NOISE（只读）
-	unsigned int m_uiUnitSize; //	单位 size
+	unsigned short m_usUnitSize; //	单位 size
 	char* m_pcUnit;//	单位（只读），如%
 	unsigned int m_uiTestAim;
 	unsigned int m_uiTestType;//测试类型代码（只读）

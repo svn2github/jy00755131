@@ -10,6 +10,7 @@
 
 CCommClient::CCommClient()
 {
+	m_pMatrixDllCall = NULL;
 }
 
 CCommClient::~CCommClient()
@@ -23,6 +24,7 @@ void CCommClient::OnInit(void)
 	m_oClientRecFrame.OnInit();
 	m_oClientRecThread.m_pClientRecFrame = &m_oClientRecFrame;
 	m_oClientRecThread.m_pClientSndFrame = &m_oClientSndFrame;
+	m_oClientRecThread.m_pMatrixDllCall = m_pMatrixDllCall;
 	m_oClientRecThread.OnInit();
 	m_oClientSndFrame.OnInit();
 	m_oClientSndFrame.m_pClientSocket = &m_oClientSocket;

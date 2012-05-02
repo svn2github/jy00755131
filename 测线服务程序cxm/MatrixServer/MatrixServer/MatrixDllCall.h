@@ -1,5 +1,6 @@
 #pragma once
 #include "..\\MatrixServerDll\\MatrixServerDll.h"
+#include "CommProtocol.h"
 class CMatrixDllCall
 {
 public:
@@ -8,6 +9,12 @@ public:
 public:
 	HMODULE m_hDllMod;
 	m_oEnvironmentStruct* m_pEnv;
+	// Field On
+	bool m_bFieldOn;
+	// Field Off
+	bool m_bFieldOff;
+	// 上次Field On的时间
+	unsigned int m_uiFieldOnTimeOld;
 public:
 	// DLL创建实例
 	void Dll_Create_Instance(void);
@@ -22,7 +29,7 @@ public:
 	// DLL停止AD数据采集
 	void Dll_StopSample(void);
 	// DLL开始工作
-	void Dll_Work(void);
+	int Dll_Work(void);
 	// DLL停止工作
 	void Dll_Stop(void);
 	// 载入MatrixServerDll动态链接库
@@ -53,5 +60,43 @@ public:
 	void Dll_ADCSetThreadWork(int iOpt);
 	// 通过位置得到设备指针
 	unsigned int Dll_GetInstrumentSnByLocation(int iLineIndex, int iPointIndex);
+	// 加载Survery设置数据
+	void Dll_LoadSurverySetupData(void);
+	// 加载Point Code设置数据
+	void Dll_LoadPointCodeSetupData(void);
+	// 加载Sensor设置数据
+	void Dll_LoadSensorSetupData(void);
+	// 加载Marker设置数据
+	void Dll_LoadMarkerSetupData(void);
+	// 加载Aux设置数据
+	void Dll_LoadAuxSetupData(void);
+	// 加载Detour设置数据
+	void Dll_LoadDetourSetupData(void);
+	// 加载Mute设置数据
+	void Dll_LoadMuteSetupData(void);
+	// 加载BlastMachine设置数据
+	void Dll_LoadBlastMachineSetupData(void);
+	// 加载Absolute设置数据
+	void Dll_LoadAbsoluteSetupData(void);
+	// 加载Generic设置数据
+	void Dll_LoadGenericSetupData(void);
+	// 加载Look设置数据
+	void Dll_LoadLookSetupData(void);
+	// 加载LAULeakage设置数据
+	void Dll_LoadLAULeakageSetupData(void);
+	// 加载FormLine设置数据
+	void Dll_LoadFormLineSetupData(void);
+	// 加载Instrument_SensorTestBase设置数据
+	void Dll_LoadInstrument_SensorTestBaseSetupData(bool bInstrument);
+	// 加载Instrument_SensorTestLimit设置数据
+	void Dll_LoadInstrument_SensorTestLimitSetupData(bool bInstrument);
+	// 加载Instrument Test设置数据
+	void Dll_LoadInstrumentTestSetupData(void);
+	// 加载Sensor Test设置数据
+	void Dll_LoadSensorTestSetupData(void);
+	// 加载Multiple Test设置数据
+	void Dll_LoadMultipleTestSetupData(void);
+	// 加载SeisMonitor设置数据
+	void Dll_LoadSeisMonitorSetupData(void);
 };
 
