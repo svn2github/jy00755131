@@ -171,6 +171,12 @@
     <ClCompile Include="xml.cpp">
       <Filter>杂项\XML</Filter>
     </ClCompile>
+    <ClCompile Include="LineClientXML.cpp">
+      <Filter>杂项\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerXML.cpp">
+      <Filter>杂项\XML</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MatrixServerDll.rc">

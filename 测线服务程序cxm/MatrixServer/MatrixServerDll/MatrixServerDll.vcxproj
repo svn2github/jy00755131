@@ -114,6 +114,7 @@
     <ClCompile Include="InstrumentList.cpp" />
     <ClCompile Include="IPSetFrame.cpp" />
     <ClCompile Include="IPSetFrameThread.cpp" />
+    <ClCompile Include="LineClientXML.cpp" />
     <ClCompile Include="LogOutPut.cpp" />
     <ClCompile Include="LogOutPutThread.cpp" />
     <ClCompile Include="MatrixServerDll.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="PerformanceFunc.cpp" />
     <ClCompile Include="Rout.cpp" />
     <ClCompile Include="RoutList.cpp" />
+    <ClCompile Include="ServerXML.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
