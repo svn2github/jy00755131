@@ -584,6 +584,7 @@ typedef struct FormLine_Struct
 // Instrument Sensor Test base
 typedef struct Instrument_SensorTestBase_Struct
 {
+	unsigned int m_uiTestAim;
 	unsigned int m_uiNb;	//索引号（只读）
 	unsigned short m_usDescrSize; //m_pcDescr 大小
 	char* m_pcDescr; //测试类型描述，如INSTRUMENT NOISE（只读）
@@ -1931,6 +1932,8 @@ MatrixServerDll_API void SaveSurvery(m_oSurveryStruct* pSurveryStruct,CXMLDOMEle
 MatrixServerDll_API void SaveSurveryList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存Survery设置数据
 MatrixServerDll_API void SaveSurverySetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Survery设置数据
+MatrixServerDll_API void SetSurverySetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Point Code设置数据
 MatrixServerDll_API void LoadPointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement);
 // 加载Point Code设置队列数据
@@ -1943,6 +1946,8 @@ MatrixServerDll_API void SavePointCode(m_oPointCodeStruct* pPointCodeStruct,CXML
 MatrixServerDll_API void SavePointCodeList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存Point Code设置数据
 MatrixServerDll_API void SavePointCodeSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Point Code设置数据
+MatrixServerDll_API void SetPointCodeSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Sensor设置数据
 MatrixServerDll_API void LoadSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement);
 // 加载Sensor设置队列数据
@@ -1955,6 +1960,8 @@ MatrixServerDll_API void SaveSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElemen
 MatrixServerDll_API void SaveSensorList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存Sensor设置数据
 MatrixServerDll_API void SaveSensorSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Sensor设置数据
+MatrixServerDll_API void SetSensorSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Marker设置数据
 MatrixServerDll_API void LoadMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElement* pElement);
 // 加载Marker设置队列数据
@@ -1967,6 +1974,8 @@ MatrixServerDll_API void SaveMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElemen
 MatrixServerDll_API void SaveMarkerList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存Marker设置数据
 MatrixServerDll_API void SaveMarkerSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Marker设置数据
+MatrixServerDll_API void SetMarkerSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Aux设置数据
 MatrixServerDll_API void LoadAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement);
 // 加载Aux设置队列数据
@@ -1979,6 +1988,8 @@ MatrixServerDll_API void SaveAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pEleme
 MatrixServerDll_API void SaveAuxList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存Aux设置数据
 MatrixServerDll_API void SaveAuxSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Aux设置数据
+MatrixServerDll_API void SetAuxSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Detour设置数据
 MatrixServerDll_API void LoadDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElement* pElement);
 // 加载Detour设置队列数据
@@ -1991,6 +2002,8 @@ MatrixServerDll_API void SaveDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElemen
 MatrixServerDll_API void SaveDetourList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存Detour设置数据
 MatrixServerDll_API void SaveDetourSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Detour设置数据
+MatrixServerDll_API void SetDetourSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Mute设置数据
 MatrixServerDll_API void LoadMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pElement);
 // 加载Mute设置队列数据
@@ -2003,6 +2016,8 @@ MatrixServerDll_API void SaveMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pEl
 MatrixServerDll_API void SaveMuteList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存Mute设置数据
 MatrixServerDll_API void SaveMuteSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Mute设置数据
+MatrixServerDll_API void SetMuteSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载BlastMachine设置数据
 MatrixServerDll_API void LoadBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement* pElement);
 // 加载BlastMachine设置队列数据
@@ -2015,6 +2030,8 @@ MatrixServerDll_API void SaveBlastMachine(m_oBlastMachineStruct* pBlastMachineSt
 MatrixServerDll_API void SaveBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存BlastMachine设置数据
 MatrixServerDll_API void SaveBlastMachineSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置BlastMachine设置数据
+MatrixServerDll_API void SetBlastMachineSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Absolute设置数据
 MatrixServerDll_API void LoadAbsolute(m_oAbsoluteStruct* pAbsoluteStruct,CXMLDOMElement* pElement);
 // 加载Absolute设置队列数据
@@ -2023,6 +2040,17 @@ MatrixServerDll_API void LoadAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo
 MatrixServerDll_API void LoadAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Absolute设置数据
 MatrixServerDll_API void LoadAbsoluteSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Absolute设置数据
+MatrixServerDll_API void SaveAbsolute(m_oAbsoluteStruct* pAbsoluteStruct, CXMLDOMElement* pElement);
+// 保存Absolute设置队列数据
+MatrixServerDll_API void SaveAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pElement, 
+	map<unsigned int, list<m_oAbsoluteStruct>>::iterator iter, unsigned int uiTabCount);
+// 保存Absolute设置索引数据
+MatrixServerDll_API void SaveAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Absolute设置数据
+MatrixServerDll_API void SaveAbsoluteSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Absolute设置数据
+MatrixServerDll_API void SetAbsoluteSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Generic设置数据
 MatrixServerDll_API void LoadGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMElement* pElement);
 // 加载Generic设置队列数据
@@ -2035,6 +2063,8 @@ MatrixServerDll_API void SaveGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMEle
 MatrixServerDll_API void SaveGenericList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存Generic设置数据
 MatrixServerDll_API void SaveGenericSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Generic设置数据
+MatrixServerDll_API void SetGenericSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Look设置数据
 MatrixServerDll_API void LoadLook(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Look设置数据
@@ -2043,6 +2073,8 @@ MatrixServerDll_API void LoadLookSetupData(m_oInstrumentCommInfoStruct* pCommInf
 MatrixServerDll_API void SaveLook(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存Look设置数据
 MatrixServerDll_API void SaveLookSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Look设置数据
+MatrixServerDll_API void SetLookSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载LAULeakage设置数据
 MatrixServerDll_API void LoadLAULeakage(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载LAULeakage设置数据
@@ -2051,6 +2083,8 @@ MatrixServerDll_API void LoadLAULeakageSetupData(m_oInstrumentCommInfoStruct* pC
 MatrixServerDll_API void SaveLAULeakage(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存LAULeakage设置数据
 MatrixServerDll_API void SaveLAULeakageSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置LAULeakage设置数据
+MatrixServerDll_API void SetLAULeakageSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载FormLine设置数据
 MatrixServerDll_API void LoadFormLine(m_oFormLineStruct* pFormLineStruct,CXMLDOMElement* pElement);
 // 加载FormLine设置队列数据
@@ -2063,30 +2097,64 @@ MatrixServerDll_API void SaveFormLine(m_oFormLineStruct* pFormLineStruct,CXMLDOM
 MatrixServerDll_API void SaveFormLineList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存FormLine设置数据
 MatrixServerDll_API void SaveFormLineSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置FormLine设置数据
+MatrixServerDll_API void SetFormLineSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument_SensorTestBase设置数据
 MatrixServerDll_API void LoadInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument_SensorTestBaseStruct,CXMLDOMElement* pElement);
 // 加载Instrument_SensorTestBase设置队列数据
 MatrixServerDll_API void LoadInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument_SensorTestBase设置数据
 MatrixServerDll_API void LoadInstrument_SensorTestBaseSetupData(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Instrument_SensorTestBase设置数据
+MatrixServerDll_API void SaveInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument_SensorTestBaseStruct,CXMLDOMElement* pElement);
+// 保存Instrument_SensorTestBase设置队列数据
+MatrixServerDll_API void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Instrument_SensorTestBase设置数据
+MatrixServerDll_API void SaveInstrument_SensorTestBaseSetupData(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Instrument_SensorTestBase设置数据
+MatrixServerDll_API void SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument_SensorTestLimit设置数据
 MatrixServerDll_API void LoadInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrument_SensorTestLimitStruct,CXMLDOMElement* pElement);
 // 加载Instrument_SensorTestLimit设置队列数据
 MatrixServerDll_API void LoadInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument_SensorTestLimit设置数据
 MatrixServerDll_API void LoadInstrument_SensorTestLimitSetupData(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Instrument_SensorTestLimit设置数据
+MatrixServerDll_API void SaveInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrument_SensorTestLimitStruct,CXMLDOMElement* pElement);
+// 保存Instrument_SensorTestLimit设置队列数据
+MatrixServerDll_API void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Instrument_SensorTestLimit设置数据
+MatrixServerDll_API void SaveInstrument_SensorTestLimitSetupData(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Instrument_SensorTestLimit设置数据
+MatrixServerDll_API void SetInstrument_SensorTestLimitSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument Test设置数据
 MatrixServerDll_API void LoadInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct, CXMLDOMElement* pElement);
 // 加载Instrument Test设置队列数据
 MatrixServerDll_API void LoadInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument Test设置数据
 MatrixServerDll_API void LoadInstrumentTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Instrument Test设置数据
+MatrixServerDll_API void SaveInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct, CXMLDOMElement* pElement);
+// 保存Instrument Test设置队列数据
+MatrixServerDll_API void SaveInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Instrument Test设置数据
+MatrixServerDll_API void SaveInstrumentTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Instrument Test设置数据
+MatrixServerDll_API void SetInstrumentTestSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Sensor Test设置数据
 MatrixServerDll_API void LoadSensorTest(m_oSensorTestStruct* pSensorTestStruct, CXMLDOMElement* pElement);
 // 加载Sensor Test设置队列数据
 MatrixServerDll_API void LoadSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Sensor Test设置数据
 MatrixServerDll_API void LoadSensorTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Sensor Test设置数据
+MatrixServerDll_API void SaveSensorTest(m_oSensorTestStruct* pSensorTestStruct, CXMLDOMElement* pElement);
+// 保存Sensor Test设置队列数据
+MatrixServerDll_API void SaveSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Sensor Test设置数据
+MatrixServerDll_API void SaveSensorTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Sensor Test设置数据
+MatrixServerDll_API void SetSensorTestSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Multiple Test设置数据
 MatrixServerDll_API void LoadMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDOMElement* pElement);
 // 加载Multiple Test设置队列数据
@@ -2095,10 +2163,27 @@ MatrixServerDll_API void LoadMultipleTestList(m_oInstrumentCommInfoStruct* pComm
 MatrixServerDll_API void LoadMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Multiple Test设置数据
 MatrixServerDll_API void LoadMultipleTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Multiple Test设置数据
+MatrixServerDll_API void SaveMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDOMElement* pElement);
+// 保存Multiple Test设置队列数据
+MatrixServerDll_API void SaveMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pElement, 
+	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::iterator iter, unsigned int uiTabCount);
+// 保存Multiple Test设置索引数据
+MatrixServerDll_API void SaveMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Multiple Test设置数据
+MatrixServerDll_API void SaveMultipleTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Multiple Test设置数据
+MatrixServerDll_API void SetMultipleTestSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载SeisMonitor设置数据
 MatrixServerDll_API void LoadSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载SeisMonitor设置数据
 MatrixServerDll_API void LoadSeisMonitorSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存SeisMonitor设置数据
+MatrixServerDll_API void SaveSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存SeisMonitor设置数据
+MatrixServerDll_API void SaveSeisMonitorSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置SeisMonitor设置数据
+MatrixServerDll_API void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 
 // 加载测线客户端程序设置数据
 MatrixServerDll_API void LoadLineAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
