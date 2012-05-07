@@ -80,6 +80,45 @@ typedef void (*Load_SensorTestSetupData)(m_oInstrumentCommInfoStruct* pCommInfo)
 typedef void (*Load_MultipleTestSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载SeisMonitor设置数据
 typedef void (*Load_SeisMonitorSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+// 写入配置文件
+// 设置Survery设置数据
+typedef void (*Set_SurverySetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Point Code设置数据
+typedef void (*Set_PointCodeSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Sensor设置数据
+typedef void (*Set_SensorSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Marker设置数据
+typedef void (*Set_MarkerSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Aux设置数据
+typedef void (*Set_AuxSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Detour设置数据
+typedef void (*Set_DetourSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Mute设置数据
+typedef void (*Set_MuteSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置BlastMachine设置数据
+typedef void (*Set_BlastMachineSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Absolute设置数据
+typedef void (*Set_AbsoluteSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Generic设置数据
+typedef void (*Set_GenericSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Look设置数据
+typedef void (*Set_LookSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置LAULeakage设置数据
+typedef void (*Set_LAULeakageSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置FormLine设置数据
+typedef void (*Set_FormLineSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Instrument_SensorTestBase设置数据
+typedef void (*Set_Instrument_SensorTestBaseSetupData)(char* pChar, unsigned int uiSize, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Instrument_SensorTestLimit设置数据
+typedef void (*Set_Instrument_SensorTestLimitSetupData)(char* pChar, unsigned int uiSize, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Instrument Test设置数据
+typedef void (*Set_InstrumentTestSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Sensor Test设置数据
+typedef void (*Set_SensorTestSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Multiple Test设置数据
+typedef void (*Set_MultipleTestSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置SeisMonitor设置数据
+typedef void (*Set_SeisMonitorSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int _iSize, unsigned int _uiSN)
 {
 
@@ -956,5 +995,328 @@ void CMatrixDllCall::Dll_LoadSeisMonitorSetupData(void)
 	{
 		// call the function
 		(*Dll_Load_SeisMonitorSetupData)(m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Survery设置数据
+void CMatrixDllCall::Dll_SetSurverySetupData(char* pChar, unsigned int uiSize)
+{
+	Set_SurverySetupData Dll_Set_SurverySetupData = NULL;
+	Dll_Set_SurverySetupData = (Set_SurverySetupData)GetProcAddress(m_hDllMod, "SetSurverySetupData");
+	if (!Dll_Set_SurverySetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_SurverySetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Point Code设置数据
+void CMatrixDllCall::Dll_SetPointCodeSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_PointCodeSetupData Dll_Set_PointCodeSetupData = NULL;
+	Dll_Set_PointCodeSetupData = (Set_PointCodeSetupData)GetProcAddress(m_hDllMod, "SetPointCodeSetupData");
+	if (!Dll_Set_PointCodeSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_PointCodeSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Sensor设置数据
+void CMatrixDllCall::Dll_SetSensorSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_SensorSetupData Dll_Set_SensorSetupData = NULL;
+	Dll_Set_SensorSetupData = (Set_SensorSetupData)GetProcAddress(m_hDllMod, "SetSensorSetupData");
+	if (!Dll_Set_SensorSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_SensorSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Marker设置数据
+void CMatrixDllCall::Dll_SetMarkerSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_MarkerSetupData Dll_Set_MarkerSetupData = NULL;
+	Dll_Set_MarkerSetupData = (Set_MarkerSetupData)GetProcAddress(m_hDllMod, "SetMarkerSetupData");
+	if (!Dll_Set_MarkerSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_MarkerSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Aux设置数据
+void CMatrixDllCall::Dll_SetAuxSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_AuxSetupData Dll_Set_AuxSetupData = NULL;
+	Dll_Set_AuxSetupData = (Set_AuxSetupData)GetProcAddress(m_hDllMod, "SetAuxSetupData");
+	if (!Dll_Set_AuxSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_AuxSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Detour设置数据
+void CMatrixDllCall::Dll_SetDetourSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_DetourSetupData Dll_Set_DetourSetupData = NULL;
+	Dll_Set_DetourSetupData = (Set_DetourSetupData)GetProcAddress(m_hDllMod, "SetDetourSetupData");
+	if (!Dll_Set_DetourSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_DetourSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Mute设置数据
+void CMatrixDllCall::Dll_SetMuteSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_MuteSetupData Dll_Set_MuteSetupData = NULL;
+	Dll_Set_MuteSetupData = (Set_MuteSetupData)GetProcAddress(m_hDllMod, "SetMuteSetupData");
+	if (!Dll_Set_MuteSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_MuteSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置BlastMachine设置数据
+void CMatrixDllCall::Dll_SetBlastMachineSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_BlastMachineSetupData Dll_Set_BlastMachineSetupData = NULL;
+	Dll_Set_BlastMachineSetupData = (Set_BlastMachineSetupData)GetProcAddress(m_hDllMod, "SetBlastMachineSetupData");
+	if (!Dll_Set_BlastMachineSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_BlastMachineSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Absolute设置数据
+void CMatrixDllCall::Dll_SetAbsoluteSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_AbsoluteSetupData Dll_Set_AbsoluteSetupData = NULL;
+	Dll_Set_AbsoluteSetupData = (Set_AbsoluteSetupData)GetProcAddress(m_hDllMod, "SetAbsoluteSetupData");
+	if (!Dll_Set_AbsoluteSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_AbsoluteSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Generic设置数据
+void CMatrixDllCall::Dll_SetGenericSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_GenericSetupData Dll_Set_GenericSetupData = NULL;
+	Dll_Set_GenericSetupData = (Set_GenericSetupData)GetProcAddress(m_hDllMod, "SetGenericSetupData");
+	if (!Dll_Set_GenericSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_GenericSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Look设置数据
+void CMatrixDllCall::Dll_SetLookSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_LookSetupData Dll_Set_LookSetupData = NULL;
+	Dll_Set_LookSetupData = (Set_LookSetupData)GetProcAddress(m_hDllMod, "SetLookSetupData");
+	if (!Dll_Set_LookSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_LookSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置LAULeakage设置数据
+void CMatrixDllCall::Dll_SetLAULeakageSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_LAULeakageSetupData Dll_Set_LAULeakageSetupData = NULL;
+	Dll_Set_LAULeakageSetupData = (Set_LAULeakageSetupData)GetProcAddress(m_hDllMod, "SetLAULeakageSetupData");
+	if (!Dll_Set_LAULeakageSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_LAULeakageSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置FormLine设置数据
+void CMatrixDllCall::Dll_SetFormLineSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_FormLineSetupData Dll_Set_FormLineSetupData = NULL;
+	Dll_Set_FormLineSetupData = (Set_FormLineSetupData)GetProcAddress(m_hDllMod, "SetFormLineSetupData");
+	if (!Dll_Set_FormLineSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_FormLineSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Instrument_SensorTestBase设置数据
+void CMatrixDllCall::Dll_SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, bool bInstrument)
+{
+	Set_Instrument_SensorTestBaseSetupData Dll_Set_Instrument_SensorTestBaseSetupData = NULL;
+	Dll_Set_Instrument_SensorTestBaseSetupData = (Set_Instrument_SensorTestBaseSetupData)GetProcAddress(m_hDllMod, "SetInstrument_SensorTestBaseSetupData");
+	if (!Dll_Set_Instrument_SensorTestBaseSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_Instrument_SensorTestBaseSetupData)(pChar, uiSize, bInstrument, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Instrument_SensorTestLimit设置数据
+void CMatrixDllCall::Dll_SetInstrument_SensorTestLimitSetupData(char* pChar, unsigned int uiSize, bool bInstrument)
+{
+	Set_Instrument_SensorTestLimitSetupData Dll_Set_Instrument_SensorTestLimitSetupData = NULL;
+	Dll_Set_Instrument_SensorTestLimitSetupData = (Set_Instrument_SensorTestLimitSetupData)GetProcAddress(m_hDllMod, "SetInstrument_SensorTestLimitSetupData");
+	if (!Dll_Set_Instrument_SensorTestLimitSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_Instrument_SensorTestLimitSetupData)(pChar, uiSize, bInstrument, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Instrument Test设置数据
+void CMatrixDllCall::Dll_SetInstrumentTestSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_InstrumentTestSetupData Dll_Set_InstrumentTestSetupData = NULL;
+	Dll_Set_InstrumentTestSetupData = (Set_InstrumentTestSetupData)GetProcAddress(m_hDllMod, "SetInstrumentTestSetupData");
+	if (!Dll_Set_InstrumentTestSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_InstrumentTestSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Sensor Test设置数据
+void CMatrixDllCall::Dll_SetSensorTestSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_SensorTestSetupData Dll_Set_SensorTestSetupData = NULL;
+	Dll_Set_SensorTestSetupData = (Set_SensorTestSetupData)GetProcAddress(m_hDllMod, "SetSensorTestSetupData");
+	if (!Dll_Set_SensorTestSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_SensorTestSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置Multiple Test设置数据
+void CMatrixDllCall::Dll_SetMultipleTestSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_MultipleTestSetupData Dll_Set_MultipleTestSetupData = NULL;
+	Dll_Set_MultipleTestSetupData = (Set_MultipleTestSetupData)GetProcAddress(m_hDllMod, "SetMultipleTestSetupData");
+	if (!Dll_Set_MultipleTestSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_MultipleTestSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 设置SeisMonitor设置数据
+void CMatrixDllCall::Dll_SetSeisMonitorSetupData(char* pChar, unsigned int uiSize)
+{
+	Set_SeisMonitorSetupData Dll_Set_SeisMonitorSetupData = NULL;
+	Dll_Set_SeisMonitorSetupData = (Set_SeisMonitorSetupData)GetProcAddress(m_hDllMod, "SetSeisMonitorSetupData");
+	if (!Dll_Set_SeisMonitorSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Set_SeisMonitorSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
 	}
 }

@@ -40,7 +40,7 @@
 /* 命令字和通讯协议                                                     */
 /************************************************************************/
 // 查询某个区域客户端只需发送行号和区域号
-// 服务端则在区域号和行号后再加入仪器或数值
+// 服务端则在区域号和行号后再加入仪器SN或数值
 // 查询仪器列表某个区域（4个字节的行号和4个字节的区域序号）
 
 // 应答命令位（区别应答，进行与操作判别）
@@ -94,20 +94,18 @@
 #define CmdClientConnect					0x0001
 // 客户端心跳命令（帧内容为空）
 #define CmdSetHeartBeat						0x0002
-// 查询整个仪器表（帧内容为行号+区域号+仪器SN，SN = 0表明无仪器）
-#define CmdQueryWholeTable					0x0003
 // 发送Update Table（帧内容为行号+区域号+仪器SN，SN = 0表明无仪器）
-#define CmdSendUpdateTable					0x0004
-// 上电（命令字后帧内容为空，返回值为执行FieldOn剩余时间，为0表示无需等待）
-#define CmdSetFieldOn						0x0005
+#define CmdQueryUpdateTable					0x0003
+// 上电（命令字后帧内容为空）
+#define CmdSetFieldOn						0x0004
 // 断电（命令字后帧内容为空）
-#define CmdSetFieldOff						0x0006
+#define CmdSetFieldOff						0x0005
 // 查询所选仪器全部信息（帧内容为仪器SN，每4个字节一个仪器）
-#define CmdQueryInstrumentInfo				0x0007
+#define CmdQueryInstrumentInfo				0x0006
 // 查询全部仪器的全部信息（应答帧内容为仪器结构体）
-#define CmdQueryInstrumentInfoAll			0x0008
-// Field On需要等待的时间
-#define CmdFieldOnWaitTime					0x0009
+#define CmdQueryInstrumentInfoAll			0x0007
+// Field On需要等待的时间（帧内容为执行FieldOn剩余时间，为0表示无需等待）
+#define CmdFieldOnWaitTime					0x0008
 
 // 查询 SurveyXML 文件信息（帧内容为空）
 #define CmdQuerySurveyXMLInfo				0x1001

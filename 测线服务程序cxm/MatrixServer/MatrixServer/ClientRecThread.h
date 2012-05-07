@@ -3,6 +3,10 @@
 #include "ClientSndFrame.h"
 #include "ClientCommThread.h"
 #include "MatrixDllCall.h"
+#include <hash_map>
+#include <map>
+using std::map;
+using std::hash_map;
 // 接收来自客户端的帧线程
 class CClientRecThread : public CClientCommThread
 {
@@ -16,8 +20,39 @@ public:
 	CClientSndFrame* m_pClientSndFrame;
 	// DLL函数调用类成员
 	CMatrixDllCall* m_pMatrixDllCall;
+	// 接收区域——行数
+	unsigned int m_uiRowNum;
+	// 接收区域——列数
+	unsigned int m_uiColumnNum;
 	// 连接验证
 	bool m_bCheckConnected;
+	// 客户端设备位置索引表
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*> m_oInstrumentWholeTableMap;
+	// 仪器区域结构体
+	typedef struct AreaStruct
+	{
+		// 线号，从1开始
+		unsigned int m_uiLineNb;
+		// 区域号，从1开始
+		unsigned int m_uiAreaNb;
+		bool operator == (const AreaStruct& rhs) const
+		{
+			return ((m_uiLineNb == rhs.m_uiLineNb) && (m_uiAreaNb == rhs.m_uiAreaNb));
+		}
+		bool operator < (const AreaStruct& rhs) const
+		{
+			if (m_uiLineNb == rhs.m_uiLineNb)
+			{
+				return (m_uiAreaNb < rhs.m_uiAreaNb);
+			}
+			else
+			{
+				return (m_uiLineNb < rhs.m_uiLineNb);
+			}
+		}
+	}m_oAreaStruct;
+	// 客户端设备更新区域索引表
+	map<m_oAreaStruct, m_oAreaStruct> m_oInstrumentUpdateArea;
 public:
  	// 处理函数
  	void OnProc(void);
@@ -25,6 +60,8 @@ public:
 	void SaveRecFrameToTask(m_oCommFrameStructPtr ptrFrame);
 	// 处理接收命令函数
 	void OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize);
+	// 处理仪器设备表更新
+	void OnProcInstrumentTableUpdate(void);
 	// 处理上电
 	void OnProcSetFieldOn(void);
 	// 处理断电
@@ -71,5 +108,19 @@ public:
 	void OnProcQueryLAULeakageXMLInfo(unsigned short usCmd);
 	// 查询 FormLine XML文件信息
 	void OnProcQueryFormLineXMLInfo(unsigned short usCmd);
+	// 由线号和点号得到区域位置
+	void GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct);
+	// 判断仪器位置索引号是否已加入索引表
+	BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex, 
+		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+	// 增加对象到索引表
+	void AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
+		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+	// 判断仪器更新区域是否已加入索引表
+	BOOL IfAreaExistInMap(m_oAreaStruct* pAreaStruct, 
+		map<m_oAreaStruct, m_oAreaStruct>* pMap);
+	// 增加对象到索引表
+	void AddAreaToMap(int iLineIndex, int iPointIndex, 
+		map<m_oAreaStruct, m_oAreaStruct>* pMap);
 };
 

@@ -8,11 +8,17 @@ CClientRecThread::CClientRecThread(void)
 	m_pClientSndFrame = NULL;
 	m_pMatrixDllCall = NULL;
 	m_bCheckConnected = false;
+	m_oInstrumentWholeTableMap.clear();
+	m_oInstrumentUpdateArea.clear();
+	m_uiRowNum = 3;
+	m_uiColumnNum = 500;
 }
 
 
 CClientRecThread::~CClientRecThread(void)
 {
+	m_oInstrumentWholeTableMap.clear();
+	m_oInstrumentUpdateArea.clear();
 }
 
 // 处理函数
@@ -107,6 +113,10 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 		}
 		switch (usCmd)
 		{
+		// 客户端心跳命令（帧内容为空）
+		case CmdSetHeartBeat:
+			OnProcInstrumentTableUpdate();
+			break;
 		// 上电（命令字后帧内容为空，返回值为执行FieldOn剩余时间，为0表示无需等待）
 		case CmdSetFieldOn:
 			OnProcSetFieldOn();
@@ -115,95 +125,291 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 		case CmdSetFieldOff:
 			OnProcSetFieldOff();
 			break;
+
 		// 查询 SurveyXML 文件信息（帧内容为空）
 		case CmdQuerySurveyXMLInfo:
 			OnProcQuerySurveyXMLInfo(usCmd);
+			break;
+		// 设置 SurveyXML 文件信息（帧内容为信息结构体）
+		case CmdSetSurveyXMLInfo:
+			m_pMatrixDllCall->Dll_SetSurverySetupData(pChar, uiSize);
 			break;
 		// 查询 PointCode XML文件信息（帧内容为空）
 		case CmdQueryPointCodeXMLInfo:
 			OnProcQueryPointCodeXMLInfo(usCmd);
 			break;
+		// 设置 PointCode XML文件信息（帧内容为信息结构体）
+		case CmdSetPointCodeXMLInfo:
+			m_pMatrixDllCall->Dll_SetPointCodeSetupData(pChar, uiSize);
+			break;
 		// 查询 Sensor XML文件信息（帧内容为空）
 		case CmdQuerySensorXMLInfo:
 			OnProcQuerySensorXMLInfo(usCmd);
+			break;
+		// 设置 Sensor XML文件信息（帧内容为信息结构体）
+		case CmdSetSensorXMLInfo:
+			m_pMatrixDllCall->Dll_SetSensorSetupData(pChar, uiSize);
 			break;
 		// 查询 Marker XML文件信息（帧内容为空）
 		case CmdQueryMarkerXMLInfo:
 			OnProcQueryMarkerXMLInfo(usCmd);
 			break;
+		// 设置 Marker XML文件信息（帧内容为信息结构体）
+		case CmdSetMarkerXMLInfo:
+			m_pMatrixDllCall->Dll_SetMarkerSetupData(pChar, uiSize);
+			break;
 		// 查询 Aux XML文件信息（帧内容为空）
 		case CmdQueryAuxXMLInfo:
 			OnProcQueryAuxXMLInfo(usCmd);
+			break;
+		// 设置 Aux XML文件信息（帧内容为信息结构体）
+		case CmdSetAuxXMLInfo:
+			m_pMatrixDllCall->Dll_SetAuxSetupData(pChar, uiSize);
 			break;
 		// 查询 Detour XML文件信息（帧内容为空）
 		case CmdQueryDetourXMLInfo:
 			OnProcQueryDetourXMLInfo(usCmd);
 			break;
+		// 设置 Detour XML文件信息（帧内容为信息结构体）
+		case CmdSetDetourXMLInfo:
+			m_pMatrixDllCall->Dll_SetDetourSetupData(pChar, uiSize);
+			break;
 		// 查询 Mute XML文件信息（帧内容为空）
 		case CmdQueryMuteXMLInfo:
 			OnProcQueryMuteXMLInfo(usCmd);
+			break;
+		// 设置 Mute XML文件信息（帧内容为信息结构体）
+		case CmdSetMuteXMLInfo:
+			m_pMatrixDllCall->Dll_SetMuteSetupData(pChar, uiSize);
 			break;
 		// 查询 BlastMachine XML文件信息（帧内容为空）
 		case CmdQueryBlastMachineXMLInfo:
 			OnProcQueryBlastMachineXMLInfo(usCmd);
 			break;
+		// 设置 BlastMachine XML文件信息（帧内容为信息结构体）
+		case CmdSetBlastMachineXMLInfo:
+			m_pMatrixDllCall->Dll_SetBlastMachineSetupData(pChar, uiSize);
+			break;
 		// 查询 Absolute XML文件信息（帧内容为空）
 		case CmdQueryAbsoluteXMLInfo:
 			OnProcQueryAbsoluteXMLInfo(usCmd);
 			break;
+		// 设置 Absolute XML文件信息（帧内容为信息结构体）
+		case CmdSetAbsoluteXMLInfo:
+			m_pMatrixDllCall->Dll_SetAbsoluteSetupData(pChar, uiSize);
+			break; 
 		// 查询 Generic XML文件信息（帧内容为空）
 		case CmdQueryGenericXMLInfo:
 			OnProcQueryGenericXMLInfo(usCmd);
+			break;
+		// 设置 Generic XML文件信息（帧内容为信息结构体）
+		case CmdSetGenericXMLInfo:
+			m_pMatrixDllCall->Dll_SetGenericSetupData(pChar, uiSize);
 			break;
 		// 查询 Look XML文件信息（帧内容为空）
 		case CmdQueryLookXMLInfo:
 			OnProcQueryLookXMLInfo(usCmd);
 			break;
+		// 设置 Look XML文件信息（帧内容为信息结构体）
+		case CmdSetLookXMLInfo:
+			m_pMatrixDllCall->Dll_SetLookSetupData(pChar, uiSize);
+			break;
 		// 查询 InstrumentTestBase XML文件信息（帧内容为空）
 		case CmdQueryInstrumentTestBaseXMLInfo:
 			OnProcQueryInstrumentTestBaseXMLInfo(usCmd);
+			break;
+		// 设置 InstrumentTestBase XML文件信息（帧内容为信息结构体）
+		case CmdSetInstrumentTestBaseXMLInfo:
+			m_pMatrixDllCall->Dll_SetInstrument_SensorTestBaseSetupData(pChar, uiSize, true);
 			break;
 		// 查询 SensorTestBase XML文件信息（帧内容为空）
 		case CmdQuerySensorTestBaseXMLInfo:
 			OnProcQuerySensorTestBaseXMLInfo(usCmd);
 			break;
+			// 设置 SensorTestBase XML文件信息（帧内容为信息结构体）
+		case CmdSetSensorTestBaseXMLInfo:
+			m_pMatrixDllCall->Dll_SetInstrument_SensorTestBaseSetupData(pChar, uiSize, false);
+			break;
 		// 查询 InstrumentTestLimit XML文件信息（帧内容为空）
 		case CmdQueryInstrumentTestLimitXMLInfo:
 			OnProcQueryInstrumentTestLimitXMLInfo(usCmd);
+			break;
+		// 设置 InstrumentTestLimit XML文件信息（帧内容为信息结构体）
+		case CmdSetInstrumentTestLimitXMLInfo:
+			m_pMatrixDllCall->Dll_SetInstrument_SensorTestLimitSetupData(pChar, uiSize, true);
 			break;
 		// 查询 SensorTestLimit XML文件信息（帧内容为空）
 		case CmdQuerySensorTestLimitXMLInfo:
 			OnProcQuerySensorTestLimitXMLInfo(usCmd);
 			break;
+		// 设置 SensorTestLimit XML文件信息（帧内容为信息结构体）
+		case CmdSetSensorTestLimitXMLInfo:
+			m_pMatrixDllCall->Dll_SetInstrument_SensorTestLimitSetupData(pChar, uiSize, false);
+			break;
 		// 查询 InstrumentTest XML文件信息（帧内容为空）
 		case CmdQueryInstrumentTestXMLInfo:
 			OnProcQueryInstrumentTestXMLInfo(usCmd);
+			break;
+		// 设置 InstrumentTest XML文件信息（帧内容为信息结构体）
+		case CmdSetInstrumentTestXMLInfo:
+			m_pMatrixDllCall->Dll_SetInstrumentTestSetupData(pChar, uiSize);
 			break;
 		// 查询 SensorTest XML文件信息（帧内容为空）
 		case CmdQuerySensorTestXMLInfo:
 			OnProcQuerySensorTestXMLInfo(usCmd);
 			break;
+		// SensorTest XML文件信息（帧内容为信息结构体）
+		case CmdSetSensorTestXMLInfo:
+			m_pMatrixDllCall->Dll_SetSensorSetupData(pChar, uiSize);
+			break;
 		// 查询 MultipleTest XML文件信息（帧内容为空）
 		case CmdQueryMultipleTestXMLInfo:
 			OnProcQueryMultipleTestXMLInfo(usCmd);
+			break;
+		// 设置 MultipleTest XML文件信息（帧内容为信息结构体）
+		case CmdSetMultipleTestXMLInfo:
+			m_pMatrixDllCall->Dll_SetMultipleTestSetupData(pChar, uiSize);
 			break;
 		// 查询 SeisMonitorTest XML文件信息（帧内容为空）
 		case CmdQuerySeisMonitorTestXMLInfo:
 			OnProcQuerySeisMonitorTestXMLInfo(usCmd);
 			break;
+		// 设置 SeisMonitorTest XML文件信息（帧内容为信息结构体）
+		case CmdSetSeisMonitorTestXMLInfo:
+			m_pMatrixDllCall->Dll_SetSeisMonitorSetupData(pChar, uiSize);
+			break;
 		// 查询 LAULeakage XML文件信息（帧内容为空）
 		case CmdQueryLAULeakageXMLInfo:
 			OnProcQueryLAULeakageXMLInfo(usCmd);
 			break;
+		// 设置 LAULeakage XML文件信息（帧内容为信息结构体）
+		case CmdSetLAULeakageXMLInfo:
+			m_pMatrixDllCall->Dll_SetLAULeakageSetupData(pChar, uiSize);
+			break;
 		// 查询 FormLine XML文件信息（帧内容为空）
 		case CmdQueryFormLineXMLInfo:
 			OnProcQueryFormLineXMLInfo(usCmd);
+			break;
+		// 设置 FormLine XML文件信息（帧内容为信息结构体）
+		case CmdSetFormLineXMLInfo:
+			m_pMatrixDllCall->Dll_SetFormLineSetupData(pChar, uiSize);
 			break;
 		default:
 			break;
 		}
 	}
 }
+// 判断仪器位置索引号是否已加入索引表
+BOOL CClientRecThread::IfLocationExistInMap(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return FALSE;
+	}
+	BOOL bResult = FALSE;
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
+	iter = pMap->find(Location);
+	if (iter != pMap->end())
+	{
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
+// 增加对象到索引表
+void CClientRecThread::AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	if ((pInstrument == NULL) || (pMap == NULL))
+	{
+		return;
+	}
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
+	if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, pMap))
+	{
+		pMap->insert(map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::value_type (Location, pInstrument));
+	}
+}
+// 由线号和点号得到区域位置
+void CClientRecThread::GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct)
+{
+	pAreaStruct->m_uiLineNb = m_uiRowNum + iLineIndex;
+	pAreaStruct->m_uiAreaNb = m_uiColumnNum + iPointIndex;
+	if ((pAreaStruct->m_uiAreaNb % InstrumentTableWindowSize) == 0)
+	{
+		pAreaStruct->m_uiAreaNb /= InstrumentTableWindowSize;
+	}
+	else
+	{
+		pAreaStruct->m_uiAreaNb /= InstrumentTableWindowSize;
+		pAreaStruct->m_uiAreaNb += 1;
+	}
+}
+// 判断仪器更新区域是否已加入索引表
+BOOL CClientRecThread::IfAreaExistInMap(m_oAreaStruct* pAreaStruct,
+	map<m_oAreaStruct, m_oAreaStruct>* pMap)
+{
+	if ((pMap == NULL) || (pAreaStruct == NULL))
+	{
+		return FALSE;
+	}
+	BOOL bResult = FALSE;
+	map<m_oAreaStruct, m_oAreaStruct>::iterator iter;
+	iter = pMap->find(*pAreaStruct);
+	if (iter != pMap->end())
+	{
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
+// 增加对象到索引表
+void CClientRecThread::AddAreaToMap(int iLineIndex, int iPointIndex, 
+	map<m_oAreaStruct, m_oAreaStruct>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return;
+	}
+	m_oAreaStruct oAreaStruct;
+	GetAreaFromPoint(iLineIndex, iPointIndex, &oAreaStruct);
+	if (FALSE == IfAreaExistInMap(&oAreaStruct, pMap))
+	{
+		pMap->insert(map<m_oAreaStruct, m_oAreaStruct>::value_type (oAreaStruct, oAreaStruct));
+	}
+}
+// 处理仪器设备表更新
+void CClientRecThread::OnProcInstrumentTableUpdate(void)
+{
+	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iterIP;
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
+ 	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
+	for (iterIP = m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oIPInstrumentMap.begin();
+		iterIP != m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oIPInstrumentMap.end();
+		iterIP++)
+	{
+		// 客户端仪器索引表中找不到该设备
+		if (FALSE == IfLocationExistInMap(iterIP->second->m_iLineIndex, iterIP->second->m_iPointIndex, &m_oInstrumentWholeTableMap))
+		{
+			AddLocationToMap(iterIP->second->m_iLineIndex, iterIP->second->m_iPointIndex, iterIP->second, &m_oInstrumentWholeTableMap);
+			// 增加对象到索引表
+			AddAreaToMap(iterIP->second->m_iLineIndex, iterIP->second->m_iPointIndex, &m_oInstrumentUpdateArea);
+		}
+	}
+	for (iter = m_oInstrumentWholeTableMap.begin(); iter != m_oInstrumentWholeTableMap.end(); iter++)
+	{
+	}
+	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
+}
+
 
 // 处理上电
 void CClientRecThread::OnProcSetFieldOn(void)

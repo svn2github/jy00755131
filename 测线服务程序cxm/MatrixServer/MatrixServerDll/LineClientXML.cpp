@@ -5706,6 +5706,7 @@ void SaveSeisMonitorSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
 {
 	unsigned int uiPos = 0;
+	OnResetSeisMonitor(pCommInfo);
 	while(uiPos < uiSize)
 	{
 		memcpy(&pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize, &pChar[uiPos], 2);
