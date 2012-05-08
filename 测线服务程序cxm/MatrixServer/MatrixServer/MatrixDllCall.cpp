@@ -38,9 +38,18 @@ typedef void (*Get_ProSampleDateCallBack)(m_oADCDataRecThreadStruct* pADCDataRec
 // 手动发送ADC参数设置帧
 typedef bool (*On_SetADCSetFrameByHand)(int iLineIndex, int iPointIndex, int iDirection, bool bRout, 
 	char* cpADCSet, int iADCSetNum, m_oEnvironmentStruct* pEnv);
-// 通过位置得到设备指针
-typedef unsigned int (*Get_InstrumentSnByLocation)(int iLineIndex, int iPointIndex, 
-	m_oInstrumentListStruct* pInstrumentList);
+// 判断仪器位置索引号是否已加入索引表
+typedef BOOL (*IfLocation_ExistInMap)(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+// 增加对象到索引表
+typedef void (*Add_LocationToMap)(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+// 根据输入索引号，由索引表得到仪器指针
+typedef m_oInstrumentStruct* (*Get_InstrumentFromLocationMap)(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+// 从索引表删除索引号指向的仪器指针
+typedef BOOL (*Delete_InstrumentFromLocationMap)(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 // 载入配置文件
 // 加载Survery设置数据
 typedef void (*Load_SurverySetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
@@ -651,13 +660,14 @@ void CMatrixDllCall::Dll_GetProSampleData_CallBack(void)
 		(*Dll_On_GetProSampleDataCallBack)(m_pEnv->m_pADCDataRecThread, ProSampleDate);
 	}
 }
-// 通过位置得到设备SN
-unsigned int CMatrixDllCall::Dll_GetInstrumentSnByLocation(int iLineIndex, int iPointIndex)
+// 判断仪器位置索引号是否已加入索引表
+BOOL CMatrixDllCall::Dll_IfLocationExistInMap(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
 {
-	unsigned int uiSn = 0;
-	Get_InstrumentSnByLocation Dll_Get_InstrumentSnByLocation = NULL;
-	Dll_Get_InstrumentSnByLocation = (Get_InstrumentSnByLocation)GetProcAddress(m_hDllMod, "GetInstrumentSnFromLocationMap");
-	if (!Dll_Get_InstrumentSnByLocation)
+	BOOL bReturn = FALSE;
+	IfLocation_ExistInMap Dll_IfLocation_ExistInMap = NULL;
+	Dll_IfLocation_ExistInMap = (IfLocation_ExistInMap)GetProcAddress(m_hDllMod, "IfLocationExistInMap");
+	if (!Dll_IfLocation_ExistInMap)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -665,12 +675,68 @@ unsigned int CMatrixDllCall::Dll_GetInstrumentSnByLocation(int iLineIndex, int i
 	}
 	else
 	{
-		EnterCriticalSection(&m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
 		// call the function
-		uiSn = (*Dll_Get_InstrumentSnByLocation)(iLineIndex, iPointIndex, m_pEnv->m_pInstrumentList);
-		LeaveCriticalSection(&m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
+		bReturn = (*Dll_IfLocation_ExistInMap)(iLineIndex, iPointIndex, pMap);
 	}
-	return uiSn;
+	return bReturn;
+}
+// 增加对象到索引表
+void CMatrixDllCall::Dll_AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	Add_LocationToMap Dll_Add_LocationToMap = NULL;
+	Dll_Add_LocationToMap = (Add_LocationToMap)GetProcAddress(m_hDllMod, "AddLocationToMap");
+	if (!Dll_Add_LocationToMap)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Add_LocationToMap)(iLineIndex, iPointIndex, pInstrument, pMap);
+	}
+}
+// 根据输入索引号，由索引表得到仪器指针
+m_oInstrumentStruct* CMatrixDllCall::Dll_GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	m_oInstrumentStruct* pInstrument = NULL;
+	Get_InstrumentFromLocationMap Dll_Get_InstrumentFromLocationMap = NULL;
+	Dll_Get_InstrumentFromLocationMap = (Get_InstrumentFromLocationMap)GetProcAddress(m_hDllMod, "GetInstrumentFromLocationMap");
+	if (!Dll_Get_InstrumentFromLocationMap)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		pInstrument = (*Dll_Get_InstrumentFromLocationMap)(iLineIndex, iPointIndex, pMap);
+	}
+	return pInstrument;
+}
+// 从索引表删除索引号指向的仪器指针
+BOOL CMatrixDllCall::Dll_DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	BOOL bReturn = FALSE;
+	Delete_InstrumentFromLocationMap Dll_Delete_InstrumentFromLocationMap = NULL;
+	Dll_Delete_InstrumentFromLocationMap = (Delete_InstrumentFromLocationMap)GetProcAddress(m_hDllMod, "DeleteInstrumentFromLocationMap");
+	if (!Dll_Delete_InstrumentFromLocationMap)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		bReturn = (*Dll_Delete_InstrumentFromLocationMap)(iLineIndex, iPointIndex, pMap);
+	}
+	return bReturn;
 }
 // 加载Survery设置数据
 void CMatrixDllCall::Dll_LoadSurverySetupData(void)
@@ -1320,3 +1386,4 @@ void CMatrixDllCall::Dll_SetSeisMonitorSetupData(char* pChar, unsigned int uiSiz
 		(*Dll_Set_SeisMonitorSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
+

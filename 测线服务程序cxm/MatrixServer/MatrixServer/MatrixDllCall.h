@@ -58,8 +58,18 @@ public:
 	void Dll_GetProSampleData_CallBack(void);
 	// ADC参数设置线程开始工作
 	void Dll_ADCSetThreadWork(int iOpt);
-	// 通过位置得到设备指针
-	unsigned int Dll_GetInstrumentSnByLocation(int iLineIndex, int iPointIndex);
+	// 判断仪器位置索引号是否已加入索引表
+	BOOL Dll_IfLocationExistInMap(int iLineIndex, int iPointIndex, 
+		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+	// 增加对象到索引表
+	void Dll_AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
+		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+	// 根据输入索引号，由索引表得到仪器指针
+	m_oInstrumentStruct* Dll_GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
+		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+	// 从索引表删除索引号指向的仪器指针
+	BOOL Dll_DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
+		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 	// 加载Survery设置数据
 	void Dll_LoadSurverySetupData(void);
 	// 加载Point Code设置数据
@@ -136,5 +146,6 @@ public:
 	void Dll_SetMultipleTestSetupData(char* pChar, unsigned int uiSize);
 	// 设置SeisMonitor设置数据
 	void Dll_SetSeisMonitorSetupData(char* pChar, unsigned int uiSize);
+
 };
 

@@ -313,23 +313,6 @@ m_oInstrumentStruct* GetInstrumentFromLocationMap(int iLineIndex, int iPointInde
 	}
 	return iter->second;
 }
-// 根据仪器的位置得到仪器的SN号
-unsigned int GetInstrumentSnFromLocationMap(int iLineIndex, int iPointIndex, 
-	m_oInstrumentListStruct* pInstrumentList)
-{
-	if (pInstrumentList == NULL)
-	{
-		return NULL;
-	}
-	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
-	iter = pInstrumentList->m_oInstrumentLocationMap.find(Location);
-	if (iter == pInstrumentList->m_oInstrumentLocationMap.end())
-	{
-		return NULL;
-	}
-	return iter->second->m_uiSN;
-}
 // 从索引表删除索引号指向的仪器指针
 BOOL DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)

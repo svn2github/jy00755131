@@ -2443,9 +2443,6 @@ MatrixServerDll_API void AddLocationToMap(int iLineIndex, int iPointIndex,
 // 根据输入索引号，由索引表得到仪器指针
 MatrixServerDll_API m_oInstrumentStruct* GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-// 根据仪器的位置得到仪器的SN号
-MatrixServerDll_API unsigned int GetInstrumentSnFromLocationMap(int iLineIndex, int iPointIndex, 
-	m_oInstrumentListStruct* pInstrumentList);
 // 从索引表删除索引号指向的仪器指针
 MatrixServerDll_API BOOL DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);

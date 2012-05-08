@@ -277,17 +277,17 @@ void CMatrixServerDlg::OnBnClickedBtnGetroutinstrumentnum()
 void CMatrixServerDlg::OnBnClickedBtnGetsnbylocation()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	unsigned int uiSn = 0;
+	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
-	uiSn = m_oMatrixDllCall.Dll_GetInstrumentSnByLocation(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
-		GetDlgItemInt(IDC_EDIT_POINTINDEX));
-	if (uiSn == 0)
+	pInstrument = m_oMatrixDllCall.Dll_GetInstrumentFromLocationMap(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
+		GetDlgItemInt(IDC_EDIT_POINTINDEX), &m_oMatrixDllCall.m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+	if (pInstrument == NULL)
 	{
 		AfxMessageBox(_T("暂未找到仪器！"));
 	}
 	else
 	{
-		str.Format(_T("仪器SN = 0x%x"), uiSn);
+		str.Format(_T("仪器SN = 0x%x"), pInstrument->m_uiSN);
 		AfxMessageBox(str);
 	}
 }

@@ -110,17 +110,19 @@ public:
 	void OnProcQueryFormLineXMLInfo(unsigned short usCmd);
 	// 由线号和点号得到区域位置
 	void GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct);
-	// 判断仪器位置索引号是否已加入索引表
-	BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex, 
-		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-	// 增加对象到索引表
-	void AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
-		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+	// 由区域号得到线号及点号范围
+	void GetPointRangeFromArea(int* iLineIndex, int* iPointMinIndex, int* iPointMaxIndex, m_oAreaStruct* pAreaStruct);
 	// 判断仪器更新区域是否已加入索引表
 	BOOL IfAreaExistInMap(m_oAreaStruct* pAreaStruct, 
 		map<m_oAreaStruct, m_oAreaStruct>* pMap);
 	// 增加对象到索引表
 	void AddAreaToMap(int iLineIndex, int iPointIndex, 
 		map<m_oAreaStruct, m_oAreaStruct>* pMap);
+	// 处理仪器信息查询
+	void OnProcQueryInstrumentInfo(char* pChar, unsigned int uiSize);
+	// 按区域查询仪器信息
+	unsigned int QueryInstrumentInfoByArea(m_oAreaStruct* pArea, unsigned int uiStartPos);
+	// 处理全部仪器信息查询
+	void OnProcQueryInstrumentInfoAll(void);
 };
 

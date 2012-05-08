@@ -94,18 +94,20 @@
 #define CmdClientConnect					0x0001
 // 客户端心跳命令（帧内容为空）
 #define CmdSetHeartBeat						0x0002
-// 发送Update Table（帧内容为行号+区域号+仪器SN，SN = 0表明无仪器）
-#define CmdQueryUpdateTable					0x0003
+// 查询Whole Table（帧内容为行号+区域号+仪器SN，SN = 0表明无仪器）
+#define CmdQueryWholeTable					0x0003
+// 查询Update Table（帧内容为行号+区域号+仪器SN，SN = 0表明无仪器）
+#define CmdQueryUpdateTable					0x0004
 // 上电（命令字后帧内容为空）
-#define CmdSetFieldOn						0x0004
+#define CmdSetFieldOn						0x0005
 // 断电（命令字后帧内容为空）
-#define CmdSetFieldOff						0x0005
-// 查询所选仪器全部信息（帧内容为仪器SN，每4个字节一个仪器）
-#define CmdQueryInstrumentInfo				0x0006
+#define CmdSetFieldOff						0x0006
+// 查询所选仪器全部信息（帧内容为行号+区域号）
+#define CmdQueryInstrumentInfo				0x0007
 // 查询全部仪器的全部信息（应答帧内容为仪器结构体）
-#define CmdQueryInstrumentInfoAll			0x0007
+#define CmdQueryInstrumentInfoAll			0x0008
 // Field On需要等待的时间（帧内容为执行FieldOn剩余时间，为0表示无需等待）
-#define CmdFieldOnWaitTime					0x0008
+#define CmdFieldOnWaitTime					0x0009
 
 // 查询 SurveyXML 文件信息（帧内容为空）
 #define CmdQuerySurveyXMLInfo				0x1001

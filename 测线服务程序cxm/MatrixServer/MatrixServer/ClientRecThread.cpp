@@ -117,6 +117,11 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 		case CmdSetHeartBeat:
 			OnProcInstrumentTableUpdate();
 			break;
+		case CmdQueryWholeTable:
+			m_oInstrumentWholeTableMap.clear();
+			m_oInstrumentUpdateArea.clear();
+			OnProcInstrumentTableUpdate();
+			break;
 		// 上电（命令字后帧内容为空，返回值为执行FieldOn剩余时间，为0表示无需等待）
 		case CmdSetFieldOn:
 			OnProcSetFieldOn();
@@ -125,7 +130,14 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 		case CmdSetFieldOff:
 			OnProcSetFieldOff();
 			break;
+		// 查询所选仪器全部信息（帧内容为仪器SN，每4个字节一个仪器）
+		case CmdQueryInstrumentInfo:
 
+			break;
+		// 查询全部仪器的全部信息（应答帧内容为仪器结构体）
+		case CmdQueryInstrumentInfoAll:
+
+			break;
 		// 查询 SurveyXML 文件信息（帧内容为空）
 		case CmdQuerySurveyXMLInfo:
 			OnProcQuerySurveyXMLInfo(usCmd);
@@ -299,42 +311,6 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 		}
 	}
 }
-// 判断仪器位置索引号是否已加入索引表
-BOOL CClientRecThread::IfLocationExistInMap(int iLineIndex, int iPointIndex, 
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
-{
-	if (pMap == NULL)
-	{
-		return FALSE;
-	}
-	BOOL bResult = FALSE;
-	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
-	iter = pMap->find(Location);
-	if (iter != pMap->end())
-	{
-		bResult = TRUE;
-	}
-	else
-	{
-		bResult = FALSE;
-	}
-	return bResult;
-}
-// 增加对象到索引表
-void CClientRecThread::AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
-{
-	if ((pInstrument == NULL) || (pMap == NULL))
-	{
-		return;
-	}
-	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
-	if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, pMap))
-	{
-		pMap->insert(map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::value_type (Location, pInstrument));
-	}
-}
 // 由线号和点号得到区域位置
 void CClientRecThread::GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct)
 {
@@ -349,6 +325,13 @@ void CClientRecThread::GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oArea
 		pAreaStruct->m_uiAreaNb /= InstrumentTableWindowSize;
 		pAreaStruct->m_uiAreaNb += 1;
 	}
+}
+// 由区域号得到线号及点号范围
+void CClientRecThread::GetPointRangeFromArea(int* iLineIndex, int* iPointMinIndex, int* iPointMaxIndex, m_oAreaStruct* pAreaStruct)
+{
+	*iLineIndex = (int)pAreaStruct->m_uiLineNb - m_uiRowNum;
+	*iPointMinIndex = ((int)pAreaStruct->m_uiAreaNb - 1) * InstrumentTableWindowSize + 1 - m_uiColumnNum;
+	*iPointMaxIndex = ((int)pAreaStruct->m_uiAreaNb) * InstrumentTableWindowSize - m_uiColumnNum;
 }
 // 判断仪器更新区域是否已加入索引表
 BOOL CClientRecThread::IfAreaExistInMap(m_oAreaStruct* pAreaStruct,
@@ -389,25 +372,84 @@ void CClientRecThread::AddAreaToMap(int iLineIndex, int iPointIndex,
 // 处理仪器设备表更新
 void CClientRecThread::OnProcInstrumentTableUpdate(void)
 {
-	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iterIP;
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iterLocation;
+	map<m_oAreaStruct, m_oAreaStruct>::iterator iterArea;
+	int iLineIndex = 0;
+	int iPointMinIndex = 0;
+	int iPointMaxIndex = 0;
+	int iPos = 0;
+	m_oInstrumentStruct* pInstrument = NULL;
  	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
-	for (iterIP = m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oIPInstrumentMap.begin();
-		iterIP != m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oIPInstrumentMap.end();
-		iterIP++)
+	// 将SN索引表与客户端的仪器位置索引表相对照
+	for (iterLocation = m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap.begin();
+		iterLocation != m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap.end(); iterLocation++)
 	{
 		// 客户端仪器索引表中找不到该设备
-		if (FALSE == IfLocationExistInMap(iterIP->second->m_iLineIndex, iterIP->second->m_iPointIndex, &m_oInstrumentWholeTableMap))
+		if (FALSE == m_pMatrixDllCall->Dll_IfLocationExistInMap(iterLocation->first.m_iLineIndex, 
+			iterLocation->first.m_iPointIndex, &m_oInstrumentWholeTableMap))
 		{
-			AddLocationToMap(iterIP->second->m_iLineIndex, iterIP->second->m_iPointIndex, iterIP->second, &m_oInstrumentWholeTableMap);
+			m_pMatrixDllCall->Dll_AddLocationToMap(iterLocation->first.m_iLineIndex, 
+				iterLocation->first.m_iPointIndex, iterLocation->second, &m_oInstrumentWholeTableMap);
 			// 增加对象到索引表
-			AddAreaToMap(iterIP->second->m_iLineIndex, iterIP->second->m_iPointIndex, &m_oInstrumentUpdateArea);
+			AddAreaToMap(iterLocation->first.m_iLineIndex, 
+				iterLocation->first.m_iPointIndex, &m_oInstrumentUpdateArea);
+		}
+		else
+		{
+			pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iterLocation->first.m_iLineIndex,
+				iterLocation->first.m_iPointIndex, &m_oInstrumentWholeTableMap);
+			if (pInstrument->m_uiSN != iterLocation->second->m_uiSN)
+			{
+				pInstrument = iterLocation->second;
+				// 增加对象到索引表
+				AddAreaToMap(iterLocation->first.m_iLineIndex, iterLocation->first.m_iPointIndex, &m_oInstrumentUpdateArea);
+			}
 		}
 	}
-	for (iter = m_oInstrumentWholeTableMap.begin(); iter != m_oInstrumentWholeTableMap.end(); iter++)
+	// 将客户端的仪器位置索引表与SN索引表相对照
+	for (iterLocation = m_oInstrumentWholeTableMap.begin(); iterLocation != m_oInstrumentWholeTableMap.end();)
 	{
+		// 仪器IP地址索引表找不到该设备
+		if (FALSE == m_pMatrixDllCall->Dll_IfLocationExistInMap(iterLocation->first.m_iLineIndex, 
+			iterLocation->first.m_iPointIndex, &m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
+		{
+			// 增加对象到索引表
+			AddAreaToMap(iterLocation->first.m_iLineIndex, iterLocation->first.m_iPointIndex, &m_oInstrumentUpdateArea);
+			m_oInstrumentWholeTableMap.erase(iterLocation++);
+		}
+		else
+		{
+			pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iterLocation->first.m_iLineIndex, 
+				iterLocation->first.m_iPointIndex, &m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+			// SN不同则删除该仪器
+			if (pInstrument->m_uiSN != iterLocation->second->m_uiSN)
+			{
+				iterLocation->second = pInstrument;
+			}
+			iterLocation++;
+		}
 	}
 	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
+	// 对照后客户端仪器索引表与服务端仪器SN索引表一致，将变化区域发送到客户端
+	for (iterArea = m_oInstrumentUpdateArea.begin(); iterArea != m_oInstrumentUpdateArea.end(); iterArea++)
+	{
+		// 由区域号得到线号及点号范围
+		GetPointRangeFromArea(&iLineIndex, &iPointMinIndex, &iPointMaxIndex, &iterArea->second);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterArea->second.m_uiLineNb, 4);
+		iPos += 4;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterArea->second.m_uiAreaNb, 4);
+		iPos += 4;
+		for (int i = iPointMinIndex; i <= iPointMaxIndex; i++)
+		{
+			pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iLineIndex, i, &m_oInstrumentWholeTableMap);
+			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &pInstrument->m_uiSN, 4);
+			iPos += 4;
+		}
+	}
+	if (iPos > 0)
+	{
+		m_pClientSndFrame->MakeSetFrame(CmdQueryUpdateTable, m_pClientSndFrame->m_cProcBuf, iPos);
+	}
 }
 
 
@@ -1013,4 +1055,87 @@ void CClientRecThread::OnProcQueryFormLineXMLInfo(unsigned short usCmd)
 		iPos += 4;
 	}
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
+}
+
+
+// 处理仪器信息查询
+void CClientRecThread::OnProcQueryInstrumentInfo(char* pChar, unsigned int uiSize)
+{
+	unsigned int uiPos = 0;
+	m_oAreaStruct oAreaStruct;
+	while(uiPos < uiSize)
+	{
+		memcpy(&oAreaStruct.m_uiLineNb, &pChar[uiPos], 4);
+		uiPos += 4;
+		memcpy(&oAreaStruct.m_uiAreaNb, &pChar[uiPos], 4);
+		uiPos += 4;
+		uiPos = QueryInstrumentInfoByArea(&oAreaStruct, uiPos);
+	}
+	m_pClientSndFrame->MakeSetFrame(CmdQueryInstrumentInfo, m_pClientSndFrame->m_cProcBuf, uiPos);
+}
+
+
+// 按区域查询仪器信息
+unsigned int CClientRecThread::QueryInstrumentInfoByArea(m_oAreaStruct* pArea, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	m_oInstrumentStruct* pInstrument = NULL;
+	int iLineIndex = 0;
+	int iPointMinIndex = 0;
+	int iPointMaxIndex = 0;
+	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
+	// 由区域号得到线号及点号范围
+	GetPointRangeFromArea(&iLineIndex, &iPointMinIndex, &iPointMaxIndex, pArea);
+	for (int i = iPointMinIndex; i <= iPointMaxIndex; i++)
+	{
+		pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iLineIndex, i, 
+			&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+		if (pInstrument != NULL)
+		{
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiSN, 4);
+			uiPos += 4;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_iLineIndex, 4);
+			uiPos += 4;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_iPointIndex, 4);
+			uiPos += 4;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiLineNb, 4);
+			uiPos += 4;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiPointNb, 4);
+			uiPos += 4;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bJumpedChannel, 1);
+			uiPos += 1;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bSensor, 1);
+			uiPos += 1;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bAux, 1);
+			uiPos += 1;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bBlastMachine, 1);
+			uiPos += 1;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetour, 1);
+			uiPos += 1;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetourMarkerLow, 1);
+			uiPos += 1;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetourMarkerHigh, 1);
+			uiPos += 1;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bStopMarking, 1);
+			uiPos += 1;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bMarker, 1);
+			uiPos += 1;
+			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bMute, 1);
+			uiPos += 1;
+		}
+		else
+		{
+			memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 30);
+			uiPos += 30;
+		}
+	}
+	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
+	return uiPos;
+}
+
+
+// 处理全部仪器信息查询
+void CClientRecThread::OnProcQueryInstrumentInfoAll(void)
+{
+
 }
