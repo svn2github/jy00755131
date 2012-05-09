@@ -146,6 +146,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				uiFrameNb = pADCLostFrame->m_uiFrameNb;
 				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
 					uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
+				memcpy(&pInstrument->m_iADCData, 
+					pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData, sizeof(int));
 			}
 			return;
 		}
@@ -232,6 +234,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 						AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex,
 							ADCLostFrame.m_uiFrameNb, pInstrument->m_uiSN, ADCLostFrame.m_uiSysTime, 
 							pADCDataRecThread);
+						memcpy(&pInstrument->m_iADCData, 
+							pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData, sizeof(int));
 					}
 					str.Format(_T("ÒÇÆ÷SN = 0x%x£¬IP = 0x%x£¬¶ªÊ§Ö¡ÊýÎª%d"), pInstrument->m_uiSN, 
 						pInstrument->m_uiIP, uiLostFrameNum);
@@ -244,6 +248,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum;
 				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
 					uiFrameNb, pInstrument->m_uiSN, uiADCDataFrameSysTimeNow, pADCDataRecThread);
+				memcpy(&pInstrument->m_iADCData, 
+					pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData, sizeof(int));
 			}
 		}
 

@@ -11,9 +11,9 @@
 // 测试结果位数
 #define TestResultBytes						1
 // 网络传输的数据位数
-#define DataBytes							3
+#define TestDataBytes						4
 // 数据表网格大小
-#define DataTableWindowSize					338
+#define DataTableWindowSize					270
 // C/S接收缓冲区大小
 #define ServerRecBufferSize					8192000
 // C/S发送缓冲区大小
@@ -40,7 +40,7 @@
 /* 命令字和通讯协议                                                     */
 /************************************************************************/
 // 查询某个区域客户端只需发送行号和区域号
-// 服务端则在区域号和行号后再加入仪器SN或数值
+// 服务端则在区域号和行号后再加入仪器SN或数值（数值后跟测试结果）
 // 查询仪器列表某个区域（4个字节的行号和4个字节的区域序号）
 
 // 应答命令位（区别应答，进行与操作判别）

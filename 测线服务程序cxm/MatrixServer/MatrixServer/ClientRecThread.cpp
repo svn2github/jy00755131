@@ -1,8 +1,19 @@
 #include "StdAfx.h"
 #include "ClientRecThread.h"
 
-
 CClientRecThread::CClientRecThread(void)
+	: m_fInstrumentNoiseLimit(0)
+	, m_fInstrumentDistortionLimit(0)
+	, m_fInstrumentCrosstalkLimit(0)
+	, m_fInstrumentGainPhaseLimit(0)
+	, m_fInstrumentCMRRLimit(0)
+	, m_fSensorResistanceLimitMin(0)
+	, m_fSensorResistanceLimitMax(0)
+	, m_fSensorLeakageLimit(0)
+	, m_fSensorNoiseLimit(0)
+	, m_fSensorTiltLimit(0)
+	, m_fSensorTiltModelLimit(0)
+	, m_fSeisMonitorLimit(0)
 {
 	m_pClientRecFrame = NULL;
 	m_pClientSndFrame = NULL;
@@ -10,7 +21,7 @@ CClientRecThread::CClientRecThread(void)
 	m_bCheckConnected = false;
 	m_oInstrumentWholeTableMap.clear();
 	m_oInstrumentUpdateArea.clear();
-	m_uiRowNum = 3;
+	m_uiLineNum = 3;
 	m_uiColumnNum = 500;
 }
 
@@ -130,14 +141,15 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 		case CmdSetFieldOff:
 			OnProcSetFieldOff();
 			break;
-		// 查询所选仪器全部信息（帧内容为仪器SN，每4个字节一个仪器）
+		// 查询所选仪器全部信息（帧内容为行号+区域号）
 		case CmdQueryInstrumentInfo:
-
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrumentInfoByArea);
 			break;
 		// 查询全部仪器的全部信息（应答帧内容为仪器结构体）
 		case CmdQueryInstrumentInfoAll:
-
+			OnProcQueryInfoAll(&CClientRecThread::QueryInstrumentInfoByArea);
 			break;
+
 		// 查询 SurveyXML 文件信息（帧内容为空）
 		case CmdQuerySurveyXMLInfo:
 			OnProcQuerySurveyXMLInfo(usCmd);
@@ -306,6 +318,95 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 		case CmdSetFormLineXMLInfo:
 			m_pMatrixDllCall->Dll_SetFormLineSetupData(pChar, uiSize);
 			break;
+
+		// 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQueryInstrNoiseTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrNoiseTestByArea);
+			break;
+		// 查询全部仪器的仪器噪声测试数据和测试结果（帧内容为空）
+		case CmdQueryInstrNoiseTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QueryInstrNoiseTestByArea);
+			break;
+		// 查询所选区域仪器失真测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQueryInstrDistortionTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrDistortionTestByArea);
+			break;
+		// 查询全部仪器失真测试数据和测试结果（帧内容为空）
+		case CmdQueryInstrDistortionTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QueryInstrDistortionTestByArea);
+			break;
+		// 查询所选区域仪器串扰测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQueryInstrCrosstalkTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrCrosstalkTestByArea);
+			break;
+		// 查询全部仪器串扰测试数据和测试结果（帧内容为空）
+		case CmdQueryInstrCrosstalkTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QueryInstrCrosstalkTestByArea);
+			break;
+		// 查询所选区域仪器共模抑制比测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQueryInstrCMRRTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrCMRRTestByArea);
+			break;
+		// 查询全部仪器共模抑制比测试数据和测试结果（帧内容为空）
+		case CmdQueryInstrCMRRTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QueryInstrCMRRTestByArea);
+			break;
+		// 查询所选区域仪器增益相位测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQueryInstrGainPhaseTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrGainPhaseTestByArea);
+			break;
+		// 查询全部仪器增益相位测试数据和测试结果（帧内容为空）
+		case CmdQueryInstrGainPhaseTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QueryInstrGainPhaseTestByArea);
+			break;
+		// 查询所选区域检波器阻抗测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQuerySensorResistanceTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorResistanceTestByArea);
+			break;
+		// 查询全部检波器阻抗测试数据和测试结果（帧内容为空）
+		case CmdQuerySensorResistanceTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QuerySensorResistanceTestByArea);
+			break;
+		// 查询所选区域检波器漏电测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQuerySensorLeakageTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorLeakageTestByArea);
+			break;
+		// 查询全部检波器漏电测试数据和测试结果（帧内容为空）
+		case CmdQuerySensorLeakageTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QuerySensorLeakageTestByArea);
+			break;
+		// 查询所选区域检波器噪声测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQuerySensorNoiseTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorNoiseTestByArea);
+			break;
+		// 查询全部检波器噪声测试数据和测试结果（帧内容为空）
+		case CmdQuerySensorNoiseTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QuerySensorNoiseTestByArea);
+			break;
+		// 查询所选区域检波器倾斜度测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQuerySensorTiltTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorTiltTestByArea);
+			break;
+		// 查询全部检波器倾斜度测试数据和测试结果（帧内容为空）
+		case CmdQuerySensorTiltTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QuerySensorTiltTestByArea);
+			break;
+		// 查询所选区域检波器倾斜度模式测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQuerySensorTiltModelTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorTiltModelTestByArea);
+			break;
+		// 查询全部检波器倾斜度模式测试数据和测试结果（帧内容为空）
+		case CmdQuerySensorTiltModelTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QuerySensorTiltModelTestByArea);
+			break;
+		// 查询所选区域地震监测测试数据和测试结果（帧内容为行号+区域号）
+		case CmdQuerySeisMonitorTestArea:
+			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySeisMonitorTestByArea);
+			break;
+		// 查询全部地震监测测试数据和测试结果（帧内容为空）
+		case CmdQuerySeisMonitorTestAll:
+			OnProcQueryInfoAll(&CClientRecThread::QuerySeisMonitorTestByArea);
+			break;
 		default:
 			break;
 		}
@@ -314,7 +415,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 // 由线号和点号得到区域位置
 void CClientRecThread::GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct)
 {
-	pAreaStruct->m_uiLineNb = m_uiRowNum + iLineIndex;
+	pAreaStruct->m_uiLineNb = m_uiLineNum + iLineIndex;
 	pAreaStruct->m_uiAreaNb = m_uiColumnNum + iPointIndex;
 	if ((pAreaStruct->m_uiAreaNb % InstrumentTableWindowSize) == 0)
 	{
@@ -329,7 +430,7 @@ void CClientRecThread::GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oArea
 // 由区域号得到线号及点号范围
 void CClientRecThread::GetPointRangeFromArea(int* iLineIndex, int* iPointMinIndex, int* iPointMaxIndex, m_oAreaStruct* pAreaStruct)
 {
-	*iLineIndex = (int)pAreaStruct->m_uiLineNb - m_uiRowNum;
+	*iLineIndex = (int)pAreaStruct->m_uiLineNb - m_uiLineNum;
 	*iPointMinIndex = ((int)pAreaStruct->m_uiAreaNb - 1) * InstrumentTableWindowSize + 1 - m_uiColumnNum;
 	*iPointMaxIndex = ((int)pAreaStruct->m_uiAreaNb) * InstrumentTableWindowSize - m_uiColumnNum;
 }
@@ -442,7 +543,14 @@ void CClientRecThread::OnProcInstrumentTableUpdate(void)
 		for (int i = iPointMinIndex; i <= iPointMaxIndex; i++)
 		{
 			pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iLineIndex, i, &m_oInstrumentWholeTableMap);
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &pInstrument->m_uiSN, 4);
+			if (pInstrument != NULL)
+			{
+				memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &pInstrument->m_uiSN, 4);
+			}
+			else
+			{
+				memset(&m_pClientSndFrame->m_cProcBuf[iPos], 0, 4);
+			}
 			iPos += 4;
 		}
 	}
@@ -1059,7 +1167,8 @@ void CClientRecThread::OnProcQueryFormLineXMLInfo(unsigned short usCmd)
 
 
 // 处理仪器信息查询
-void CClientRecThread::OnProcQueryInstrumentInfo(char* pChar, unsigned int uiSize)
+void CClientRecThread::OnProcQueryByArea(char* pChar, unsigned int uiSize, 
+	unsigned int(CClientRecThread::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos))
 {
 	unsigned int uiPos = 0;
 	m_oAreaStruct oAreaStruct;
@@ -1069,73 +1178,517 @@ void CClientRecThread::OnProcQueryInstrumentInfo(char* pChar, unsigned int uiSiz
 		uiPos += 4;
 		memcpy(&oAreaStruct.m_uiAreaNb, &pChar[uiPos], 4);
 		uiPos += 4;
-		uiPos = QueryInstrumentInfoByArea(&oAreaStruct, uiPos);
+		uiPos = QueryByArea(&oAreaStruct, uiPos, ptrFun);
 	}
 	m_pClientSndFrame->MakeSetFrame(CmdQueryInstrumentInfo, m_pClientSndFrame->m_cProcBuf, uiPos);
 }
 
 
+// 处理全部信息查询
+void CClientRecThread::OnProcQueryInfoAll(unsigned int(CClientRecThread::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos))
+{
+	int iLineNum = 0;
+	int iColumn = 0;
+	int iAreaNum = 0;
+	int iPos = 0;
+	iLineNum = m_uiLineNum * 2 - 1;
+	iColumn = m_uiColumnNum * 2 - 1;
+	iAreaNum = iColumn / InstrumentTableWindowSize;
+	if ((iColumn % InstrumentTableWindowSize) != 0)
+	{
+		iAreaNum += 1;
+	}
+	if ((iAreaNum < 1) || (iLineNum < 1))
+	{
+		return;
+	}
+	char* pChar = new char[iLineNum * iAreaNum * 8];
+	for (int i=1; i<= iLineNum; i++)
+	{
+		for (int j=1; j<=iAreaNum; j++)
+		{
+			memcpy(&pChar[iPos], &i, 4);
+			iPos += 4;
+			memcpy(&pChar[iPos], &j, 4);
+			iPos += 4;
+		}
+	}
+	OnProcQueryByArea(pChar, iPos, ptrFun);
+	delete[] pChar;
+}
+
+
 // 按区域查询仪器信息
-unsigned int CClientRecThread::QueryInstrumentInfoByArea(m_oAreaStruct* pArea, unsigned int uiStartPos)
+unsigned int CClientRecThread::QueryByArea(m_oAreaStruct* pArea, unsigned int uiStartPos, 
+	unsigned int(CClientRecThread::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos))
 {
 	unsigned int uiPos = uiStartPos;
 	m_oInstrumentStruct* pInstrument = NULL;
 	int iLineIndex = 0;
 	int iPointMinIndex = 0;
 	int iPointMaxIndex = 0;
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	// 由区域号得到线号及点号范围
 	GetPointRangeFromArea(&iLineIndex, &iPointMinIndex, &iPointMaxIndex, pArea);
+	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	for (int i = iPointMinIndex; i <= iPointMaxIndex; i++)
 	{
 		pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iLineIndex, i, 
 			&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
-		if (pInstrument != NULL)
-		{
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiSN, 4);
-			uiPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_iLineIndex, 4);
-			uiPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_iPointIndex, 4);
-			uiPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiLineNb, 4);
-			uiPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiPointNb, 4);
-			uiPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bJumpedChannel, 1);
-			uiPos += 1;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bSensor, 1);
-			uiPos += 1;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bAux, 1);
-			uiPos += 1;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bBlastMachine, 1);
-			uiPos += 1;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetour, 1);
-			uiPos += 1;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetourMarkerLow, 1);
-			uiPos += 1;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetourMarkerHigh, 1);
-			uiPos += 1;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bStopMarking, 1);
-			uiPos += 1;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bMarker, 1);
-			uiPos += 1;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bMute, 1);
-			uiPos += 1;
-		}
-		else
-		{
-			memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 30);
-			uiPos += 30;
-		}
+		uiPos = (this->*ptrFun)(pInstrument, uiPos);
 	}
 	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	return uiPos;
 }
 
 
-// 处理全部仪器信息查询
-void CClientRecThread::OnProcQueryInstrumentInfoAll(void)
+// 按区域查询仪器信息
+unsigned int CClientRecThread::QueryInstrumentInfoByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
 {
+	unsigned int uiPos = uiStartPos;
+	if (pInstrument != NULL)
+	{
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiSN, 4);
+		uiPos += 4;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_iLineIndex, 4);
+		uiPos += 4;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_iPointIndex, 4);
+		uiPos += 4;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiLineNb, 4);
+		uiPos += 4;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiPointNb, 4);
+		uiPos += 4;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bJumpedChannel, 1);
+		uiPos += 1;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bSensor, 1);
+		uiPos += 1;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bAux, 1);
+		uiPos += 1;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bBlastMachine, 1);
+		uiPos += 1;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetour, 1);
+		uiPos += 1;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetourMarkerLow, 1);
+		uiPos += 1;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetourMarkerHigh, 1);
+		uiPos += 1;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bStopMarking, 1);
+		uiPos += 1;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bMarker, 1);
+		uiPos += 1;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bMute, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 30);
+		uiPos += 30;
+	}
+	return uiPos;
+}
 
+
+// 查询所选区域仪器噪声测试数据和测试结果
+unsigned int CClientRecThread::QueryInstrNoiseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fInstrumentNoiseLimit) || (fData < -m_fInstrumentNoiseLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域仪器失真测试数据和测试结果
+unsigned int CClientRecThread::QueryInstrDistortionTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fInstrumentDistortionLimit) || (fData < -m_fInstrumentDistortionLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域仪器串扰测试数据和测试结果
+unsigned int CClientRecThread::QueryInstrCrosstalkTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fInstrumentCrosstalkLimit) || (fData < -m_fInstrumentCrosstalkLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域仪器共模抑制比测试数据和测试结果
+unsigned int CClientRecThread::QueryInstrCMRRTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fInstrumentCMRRLimit) || (fData < -m_fInstrumentCMRRLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域仪器增益相位测试数据和测试结果
+unsigned int CClientRecThread::QueryInstrGainPhaseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fInstrumentGainPhaseLimit) || (fData < -m_fInstrumentGainPhaseLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域检波器阻抗测试数据和测试结果
+unsigned int CClientRecThread::QuerySensorResistanceTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fSensorResistanceLimitMax) || (fData < m_fSensorResistanceLimitMin))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域检波器漏电测试数据和测试结果
+unsigned int CClientRecThread::QuerySensorLeakageTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fSensorLeakageLimit) || (fData < -m_fSensorLeakageLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域检波器噪声测试数据和测试结果
+unsigned int CClientRecThread::QuerySensorNoiseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fSensorNoiseLimit) || (fData < -m_fSensorNoiseLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域检波器倾斜度测试数据和测试结果
+unsigned int CClientRecThread::QuerySensorTiltTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fSensorTiltLimit) || (fData < -m_fSensorTiltLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域检波器倾斜度模式测试数据和测试结果
+unsigned int CClientRecThread::QuerySensorTiltModelTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fSensorTiltModelLimit) || (fData < -m_fSensorTiltModelLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
+}
+
+
+// 查询所选区域地震监测测试数据和测试结果
+unsigned int CClientRecThread::QuerySeisMonitorTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos)
+{
+	unsigned int uiPos = uiStartPos;
+	float fData = 0.0;
+	char cResult = 0;
+	if (pInstrument != NULL)
+	{
+		// 数据处理
+		//		fData = pInstrument->m_iADCData;
+
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
+		uiPos += 4;
+		// 处理结果
+		if ((fData > m_fSeisMonitorLimit) || (fData < -m_fSeisMonitorLimit))
+		{
+			cResult = TestResultFailure;
+		}
+		else
+		{
+			cResult = TestResultQualified;
+		}
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	else
+	{
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
+		cResult = TestResultNull;
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &cResult, 1);
+		uiPos += 1;
+	}
+	return uiPos;
 }

@@ -1205,6 +1205,8 @@ typedef struct Instrument_Struct
 	unsigned int m_uiADCDataRetransmissionFrameNum;
 	// 应该接收ADC数据帧数（含丢帧）
 	unsigned int m_uiADCDataShouldRecFrameNum;
+	// ADC采样数据（取每帧的第一个数据用于计算）
+	int m_iADCData;
 	// ADC数据帧的指针偏移量
 	unsigned short m_usADCDataFramePoint;
 	// ADC数据帧发送时的本地时间
