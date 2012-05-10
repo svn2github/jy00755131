@@ -54,13 +54,13 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			&pIPSetFrameThread->m_pInstrumentList->m_oInstrumentLocationMap);
 		if (usCommand == pIPSetFrameThread->m_pThread->m_pConstVar->m_usSendSetCmd)
 		{
-			str.Format(_T("接收到SN = 0x%x，IP地址 = 0x%x仪器的IP地址设置应答"), 
-				pInstrument->m_uiSN, uiIPInstrument);
+			str.Format(_T("接收到SN = 0x%x，IP地址 = 0x%x仪器的IP地址设置应答, 仪器软件版本 = 0x%x"), 
+				pInstrument->m_uiSN, uiIPInstrument, pInstrument->m_uiVersion);
 		}
 		else if (usCommand == pIPSetFrameThread->m_pThread->m_pConstVar->m_usSendQueryCmd)
 		{
-			str.Format(_T("接收到SN = 0x%x，IP地址 = 0x%x仪器的IP地址查询应答"), 
-				pInstrument->m_uiSN, uiIPInstrument);
+			str.Format(_T("接收到SN = 0x%x，IP地址 = 0x%x仪器的IP地址查询应答, 仪器软件版本 = 0x%x"), 
+				pInstrument->m_uiSN, uiIPInstrument, pInstrument->m_uiVersion);
 		}
 		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, "ProcIPSetReturnFrameOne", 

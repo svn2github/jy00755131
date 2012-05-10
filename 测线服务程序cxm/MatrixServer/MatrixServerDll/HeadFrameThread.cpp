@@ -220,10 +220,12 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	unsigned int uiSN = 0;
 	unsigned int uiTimeHeadFrame = 0;
 	unsigned int uiRoutIP = 0;
+	unsigned int uiVersion = 0;
 	EnterCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 	uiSN = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiSN;
 	uiTimeHeadFrame = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiTimeHeadFrame;
 	uiRoutIP = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP;
+	uiVersion = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiVersion;
 	LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 	// 判断仪器SN是否在SN索引表中
 	if(FALSE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
@@ -239,6 +241,8 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		pInstrument->m_uiRoutIP = uiRoutIP;
 		// 设置新仪器的首包时刻
 		pInstrument->m_uiTimeHeadFrame = uiTimeHeadFrame;
+		// 仪器软件版本号
+		pInstrument->m_uiVersion = uiVersion;
 		// 设置新仪器的仪器类型
 		// 路由地址为0为LCI
 		if (pInstrument->m_uiRoutIP == 0)
@@ -285,6 +289,7 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 
 	// 在索引表中则找到该仪器,得到该仪器指针
 	pInstrument = GetInstrumentFromMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
+
 	// 判断仪器是否已经设置IP
 	if (pInstrument->m_bIPSetOK == true)
 	{

@@ -48,6 +48,8 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 
 	// 首包时刻
 	pInstrument->m_uiTimeHeadFrame = 0;
+	// 仪器软件版本号
+	pInstrument->m_uiVersion = 0;
 	// 	// 尾包时刻
 	// 	pInstrument->m_uiTailSysTime = 0;
 	// 尾包计数

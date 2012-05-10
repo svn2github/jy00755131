@@ -277,6 +277,9 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("CmdLAUXRoutOpenSet");		// 路由开关
 		pConstVar->m_cCmdLAUXRoutOpenSet = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
+		strSectionKey=_T("CmdVersion");				// 仪器软件版本
+		pConstVar->m_cCmdVersion = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+
 		strSectionKey=_T("CmdTailRecSndTimeLow");	// 尾包接收\发送时刻低位
 		pConstVar->m_cCmdTailRecSndTime = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 

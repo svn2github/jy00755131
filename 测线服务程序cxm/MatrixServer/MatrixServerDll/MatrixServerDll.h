@@ -258,6 +258,8 @@ typedef struct ConstVar_Struct
 	char m_cCmdLAUXRoutOpenQuery;
 	// 路由开关
 	char m_cCmdLAUXRoutOpenSet;
+	// 仪器设备版本
+	char m_cCmdVersion;
 	// 尾包接收\发送时刻低位
 	char m_cCmdTailRecSndTime;
 	// 广播命令等待端口匹配
@@ -800,6 +802,8 @@ typedef struct InstrumentCommand_Struct
 	// 由高位到低位分别控制开交叉线A、开交叉线B、开大线A、开大线B
 	// =0为开，=1为关
 	char m_cLAUXRoutOpenSet;
+	// 硬件设备软件版本号
+	unsigned int m_uiVersion;
 	// 尾包接收时刻，低14位有效
 	unsigned short m_usTailRecTime;
 	// 尾包发送时刻//交叉站尾包发送时刻，低14位有效
@@ -1078,6 +1082,8 @@ typedef struct Instrument_Struct
 	Instrument_Struct* m_pInstrumentRight;
 	/** 首包时刻*/
 	unsigned int m_uiTimeHeadFrame;
+	/** 仪器软件版本号*/
+	unsigned int m_uiVersion;
 	/** 尾包计数*/
 	int m_iTailFrameCount;
 	/** 仪器时延*/

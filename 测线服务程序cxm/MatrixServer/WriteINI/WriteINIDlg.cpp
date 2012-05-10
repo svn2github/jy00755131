@@ -484,6 +484,10 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("15");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("CmdVersion");				// 仪器软件版本
+	strValue = _T("17");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSectionKey=_T("CmdTailRecSndTimeLow");	// 尾包接收\发送时刻低位
 	strValue = _T("22");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);

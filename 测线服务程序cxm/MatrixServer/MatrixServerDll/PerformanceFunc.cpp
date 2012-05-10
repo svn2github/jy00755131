@@ -118,6 +118,8 @@ bool ResetInstrumentFramePacket(m_oInstrumentCommandStruct* pCommand)
 	pCommand->m_cCtrlStatus = 0;
 	// TB时刻高位
 	pCommand->m_uiTBHigh = 0;
+	// 硬件设备软件版本号
+	pCommand->m_uiVersion = 0;
 	// TB时刻低位
 	pCommand->m_usTBLow = 0;
 	// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
@@ -352,6 +354,11 @@ bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand,
 		else if (byCommandWord == pConstVar->m_cCmdLAUXRoutOpenSet)
 		{
 			memcpy(&pCommand->m_cLAUXRoutOpenSet, &pFrameData[iPos], iFramePacketSize1B);
+			iPos += iFramePacketSize4B;
+		}
+		else if (byCommandWord == pConstVar->m_cCmdVersion)
+		{
+			memcpy(&pCommand->m_uiVersion, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_cCmdTailRecSndTime)
