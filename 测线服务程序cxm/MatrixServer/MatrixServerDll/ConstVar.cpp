@@ -176,6 +176,9 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("TBSleepTimeLow");				// TB设置延时低位
 		pConstVar->m_usTBSleepTimeLow = static_cast<unsigned short>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
+		strSectionKey=_T("FieldOnWaitTimeLimit");		// FieldOn与上一次FieldOff的时间间隔
+		pConstVar->m_uiFieldOnWaitTimeLimit = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
 		//读取ini文件中相应字段的内容
 		strSection = _T("帧格式设置");			// 获取当前区域
 		strSectionKey=_T("FrameHeadSize");		// 帧头长度

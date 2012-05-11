@@ -356,6 +356,10 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("250");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("FieldOnWaitTimeLimit");		// FieldOn与上一次FieldOff的时间间隔
+	strValue = _T("120");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSection = _T("帧格式设置");			// 获取当前区域
 
 	strSectionKey=_T("FrameHeadSize");		// 帧头长度

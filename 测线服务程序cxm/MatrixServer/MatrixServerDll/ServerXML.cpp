@@ -289,7 +289,96 @@ void LoadServerADCSet(m_oInstrumentCommInfoStruct* pCommInfo)
 	}
 	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
 }
+// 加载服务端参数设置数据
+void LoadServerParameter(m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
+	CString strKey;
+	CString str = _T("");
+	CXMLDOMNodeList oNodeList;
+	CXMLDOMElement oElement;
+	LPDISPATCH lpDispatch;
+	int nYear,nMonth,nDay,nHour,nMin,nSec;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	try
+	{
+		// 找到参数设置区
+		strKey = _T("LineServerAppParameterSetup");
+		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		oNodeList.AttachDispatch(lpDispatch);
+		// 找到入口
+		lpDispatch = oNodeList.get_item(0);
+		oElement.AttachDispatch(lpDispatch);
 
+		strKey = _T("FieldOffTime");
+		str = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
+		_stscanf_s(str, _T("%d.%d.%d %d:%d:%d"), &nYear, &nMonth, &nDay, &nHour, &nMin, &nSec);
+		CTime time(nYear, nMonth, nDay, nHour, nMin, nSec);
+		pCommInfo->m_oXMLParameterSetupData.m_oTimeFieldOff = time;
+	}
+	catch (CMemoryException* e)
+	{
+		e->ReportError(MB_OK, IDS_ERR_MEMORY_EXCEPTION);
+	}
+	catch (CFileException* e)
+	{
+		e->ReportError(MB_OK, IDS_ERR_FILE_EXCEPTION);
+	}
+	catch (CException* e)
+	{
+		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+// 保存服务端参数设置数据
+void SaveServerParameter(m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
+	CString strKey;
+	CString str = _T("");
+	CXMLDOMNodeList oNodeList;
+	CXMLDOMElement oElement;
+	LPDISPATCH lpDispatch;
+	COleVariant oVariant;
+	CTime time;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	try
+	{
+		// 找到参数设置区
+		strKey = _T("LineServerAppParameterSetup");
+		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		oNodeList.AttachDispatch(lpDispatch);
+		// 找到入口
+		lpDispatch = oNodeList.get_item(0);
+		oElement.AttachDispatch(lpDispatch);
+
+		strKey = _T("FieldOffTime");
+		time = pCommInfo->m_oXMLParameterSetupData.m_oTimeFieldOff;
+		str.Format(_T("%d.%d.%d %d:%d:%d"), time.GetYear(), time.GetMonth(), time.GetDay(),
+			time.GetHour(), time.GetMinute(), time.GetSecond());
+		oVariant = str;
+		oElement.setAttribute(strKey, oVariant);
+	}
+	catch (CMemoryException* e)
+	{
+		e->ReportError(MB_OK, IDS_ERR_MEMORY_EXCEPTION);
+	}
+	catch (CFileException* e)
+	{
+		e->ReportError(MB_OK, IDS_ERR_FILE_EXCEPTION);
+	}
+	catch (CException* e)
+	{
+		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
 // 加载IP地址设置数据
 void LoadServerIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 {
@@ -340,6 +429,45 @@ void LoadServerADCSetSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 		// 加载ADC参数设置数据
 		LoadServerADCSet(pCommInfo);
 	}
+	// 关闭程序配置文件
+	CloseAppXMLFile(pCommInfo);
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+// 加载服务器端参数设置数据
+void LoadServerParameterSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	// 打开程序配置文件
+	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strDllXMLFilePath))
+	{
+		// 加载服务端参数设置数据
+		LoadServerParameter(pCommInfo);
+	}
+	// 关闭程序配置文件
+	CloseAppXMLFile(pCommInfo);
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+// 保存服务器端参数设置数据
+void SaveServerParameterSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	if (pCommInfo == NULL)
+	{
+		return;
+	}
+	COleVariant oVariant;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	// 打开程序配置文件
+	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strDllXMLFilePath))
+	{
+		// 保存服务器端参数设置数据
+		SaveServerParameter(pCommInfo);
+	}
+	oVariant = (CString)(pCommInfo->m_strDllXMLFilePath.c_str());
+	pCommInfo->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
 	CloseAppXMLFile(pCommInfo);
 	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);

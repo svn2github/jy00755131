@@ -553,6 +553,10 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 	pEnv->m_pADCDataRecThread = OnCreateADCDataRecThread();
 	// 创建ADC数据存储线程
 	pEnv->m_pADCDataSaveThread = OnCreateADCDataSaveThread();
+	// Field On
+	pEnv->m_bFieldOn = false;
+	// Field Off
+	pEnv->m_bFieldOff = true;
 	return pEnv;
 }
 // 初始化实例
@@ -830,12 +834,36 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 	OnCloseLogOutPut(pEnv->m_pLogOutPutADCFrameTime);
 }
 // 工作
-void OnWork(m_oEnvironmentStruct* pEnv)
+unsigned int OnWork(m_oEnvironmentStruct* pEnv)
 {
 	if (pEnv == NULL)
 	{
-		return;
+		return 0;
 	}
+	if (pEnv->m_bFieldOn == true)
+	{
+		return 0;
+	}
+	CTime timeFieldOn = CTime::GetCurrentTime();
+	CTime timeFieldOff;
+	CTimeSpan timeWait;
+	int nDays, nHours, nMins, nSecs;
+	// 从配置文件中读出上一次FieldOff时间
+	LoadServerParameterSetupData(pEnv->m_pInstrumentCommInfo);
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	timeFieldOff = pEnv->m_pInstrumentCommInfo->m_oXMLParameterSetupData.m_oTimeFieldOff;
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	nDays = pEnv->m_pConstVar->m_uiFieldOnWaitTimeLimit / (24 * 3600);
+	nHours = pEnv->m_pConstVar->m_uiFieldOnWaitTimeLimit / 3600;
+	nMins = pEnv->m_pConstVar->m_uiFieldOnWaitTimeLimit / 60;
+	nSecs = pEnv->m_pConstVar->m_uiFieldOnWaitTimeLimit % 60;
+	timeFieldOff += CTimeSpan(nDays, nHours, nMins, nSecs);
+	if (timeFieldOn < timeFieldOff)
+	{
+		timeWait = timeFieldOff - timeFieldOn;
+		return (unsigned int)timeWait.GetTotalSeconds();
+	}
+	pEnv->m_bFieldOn = true;
 	// 重置仪器队列结构体
 	OnResetInstrumentList(pEnv->m_pInstrumentList);
 	// 重置路由队列结构体
@@ -889,6 +917,8 @@ void OnWork(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pADCDataSaveThread->m_pThread->m_bWork = true;
 	LeaveCriticalSection(&pEnv->m_pADCDataSaveThread->m_oSecADCDataSaveThread);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnWork", "开始工作");
+	pEnv->m_bFieldOff = false;
+	return 0;
 }
 // 停止
 void OnStop(m_oEnvironmentStruct* pEnv)
@@ -897,6 +927,17 @@ void OnStop(m_oEnvironmentStruct* pEnv)
 	{
 		return;
 	}
+	if (pEnv->m_bFieldOff == true)
+	{
+		return;
+	}
+	// 将FieldOff时间写入配置文件
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	pEnv->m_pInstrumentCommInfo->m_oXMLParameterSetupData.m_oTimeFieldOff = CTime::GetCurrentTime();
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	SaveServerParameterSetupData(pEnv->m_pInstrumentCommInfo);
+
+	pEnv->m_bFieldOff = true;
 	// 日志输出线程停止工作
 	EnterCriticalSection(&pEnv->m_pLogOutPutThread->m_oSecLogOutPutThread);
 	pEnv->m_pLogOutPutThread->m_pThread->m_bWork = false;
@@ -944,6 +985,7 @@ void OnStop(m_oEnvironmentStruct* pEnv)
 	// 关闭施工数据文件
 	CloseAllADCDataSaveInFile(pEnv->m_pOptTaskArray);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnStop", "停止工作");
+	pEnv->m_bFieldOn = false;
 }
 // 释放实例资源
 void OnFreeInstance(m_oEnvironmentStruct* pEnv)

@@ -287,6 +287,8 @@ typedef struct ConstVar_Struct
 	unsigned int m_uiTBSleepTimeHigh;
 	// TB设置延时低位
 	unsigned short m_usTBSleepTimeLow;
+	// FieldOn与上一次FieldOff的时间间隔
+	unsigned int m_uiFieldOnWaitTimeLimit;
 	// TB控制，0x0001 启动TB进行ADC数据采集
 	unsigned short m_usCmdTBCtrlStartSample;
 	// 0x0002 无需TB开关控制ADC数据采集命令
@@ -381,7 +383,11 @@ typedef struct XMLADCSetupData_Struct
 	// ADC设置连续采样
 	char* m_cpSetADCReadContinuous;
 }m_oXMLADCSetupDataStruct;
-
+// 从XML文件中得到的服务端参数信息
+typedef struct XMLParameterSetupData_Struct
+{
+	CTime m_oTimeFieldOff;
+}m_oXMLParameterSetupDataStruct;
 // Survery SETUP结构体
 // Survery
 typedef struct Survery_Struct
@@ -728,6 +734,8 @@ typedef struct InstrumentCommInfo_Struct
 	m_oXMLPortSetupDataStruct m_oXMLPortSetupData;
 	// 从XML文件中解析得到ADC参数设置信息
 	m_oXMLADCSetupDataStruct m_oXMLADCSetupData;
+	// 从XML文件中解析得到的服务端参数信息
+	m_oXMLParameterSetupDataStruct m_oXMLParameterSetupData;
 	// 测线客户端信息
 	m_oLineSetupDataStruct m_oLineSetupData;
 	// Dll的XML配置文件路径
@@ -1765,6 +1773,10 @@ typedef struct Environment_Struct
 	m_oADCDataRecThreadStruct* m_pADCDataRecThread;
 	// 施工放炮数据存储线程
 	m_oADCDataSaveThreadStruct* m_pADCDataSaveThread;
+	// Field On
+	bool m_bFieldOn;
+	// Field Off
+	bool m_bFieldOff;
 }m_oEnvironmentStruct;
 
 // functions declarations
@@ -1926,6 +1938,14 @@ MatrixServerDll_API void LoadServerPortSetupData(m_oInstrumentCommInfoStruct* pC
 MatrixServerDll_API void LoadServerADCSet(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载ADC参数设置数据
 MatrixServerDll_API void LoadServerADCSetSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载服务端参数设置数据
+MatrixServerDll_API void LoadServerParameter(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存服务端参数设置数据
+MatrixServerDll_API void SaveServerParameter(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载服务器端参数设置数据
+MatrixServerDll_API void LoadServerParameterSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存服务器端参数设置数据
+MatrixServerDll_API void SaveServerParameterSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载服务端程序设置数据
 MatrixServerDll_API void LoadServerAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Survery设置数据
@@ -3005,7 +3025,7 @@ MatrixServerDll_API void OnInit(m_oEnvironmentStruct* pEnv);
 // 关闭
 MatrixServerDll_API void OnClose(m_oEnvironmentStruct* pEnv);
 // 工作
-MatrixServerDll_API void OnWork(m_oEnvironmentStruct* pEnv);
+MatrixServerDll_API unsigned int OnWork(m_oEnvironmentStruct* pEnv);
 // 停止
 MatrixServerDll_API void OnStop(m_oEnvironmentStruct* pEnv);
 // 释放实例资源

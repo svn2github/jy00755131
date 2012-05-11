@@ -183,7 +183,7 @@ void CMatrixServerDlg::OnBnClickedBnStart()
 	}
 	else
 	{
-		str.Format(_T("距离FieldOn还需等待 %d 分 %d 秒！"), uiFieldOnWaitTime/60000, (uiFieldOnWaitTime%60000)/1000);
+		str.Format(_T("距离FieldOn还需等待 %d 分 %d 秒！"), uiFieldOnWaitTime/60, uiFieldOnWaitTime%60);
 		AfxMessageBox(str);
 	}
 }

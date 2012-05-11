@@ -8,7 +8,7 @@ typedef void (*Free_Instance)(m_oEnvironmentStruct* pEnv);
 // 初始化实例
 typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv);
 // Field On
-typedef void (*On_Work)(m_oEnvironmentStruct* pEnv);
+typedef unsigned int (*On_Work)(m_oEnvironmentStruct* pEnv);
 // Field Off
 typedef void (*On_Stop)(m_oEnvironmentStruct* pEnv);
 // 关闭实例
@@ -135,11 +135,6 @@ void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int
 
 CMatrixDllCall::CMatrixDllCall(void)
 {
-	// Field On
-	m_bFieldOn = false;
-	// Field Off
-	m_bFieldOff = true;
-	m_uiFieldOnTimeOld = 0;
 }
 
 
@@ -316,22 +311,8 @@ void CMatrixDllCall::Dll_StopSample(void)
 	}
 }
 // DLL开始工作
-int CMatrixDllCall::Dll_Work(void)
+unsigned int CMatrixDllCall::Dll_Work(void)
 {
-	if (m_bFieldOn == true)
-	{
-		return 0;
-	}
-	unsigned int uiFieldOnTimeNow = 0;
-	uiFieldOnTimeNow = GetTickCount();
-	if (uiFieldOnTimeNow >= (m_uiFieldOnTimeOld + FieldOnWaitForTime))
-	{
-		m_uiFieldOnTimeOld = uiFieldOnTimeNow;
-	}
-	else
-	{
-		return (m_uiFieldOnTimeOld + FieldOnWaitForTime - uiFieldOnTimeNow);
-	}
 	On_Work Dll_On_Work = NULL;
 	Dll_On_Work = (On_Work)GetProcAddress(m_hDllMod, "OnWork");
 	if (!Dll_On_Work)
@@ -343,19 +324,13 @@ int CMatrixDllCall::Dll_Work(void)
 	else
 	{
 		// call the function
-		(*Dll_On_Work)(m_pEnv);
-		m_bFieldOn = true;
-		m_bFieldOff = false;
+		return (*Dll_On_Work)(m_pEnv);
 	}
 	return 0;
 }
 // DLL停止工作
 void CMatrixDllCall::Dll_Stop(void)
 {
-	if (m_bFieldOff == true)
-	{
-		return;
-	}
 	On_Stop Dll_On_Stop = NULL;
 	Dll_On_Stop = (On_Stop)GetProcAddress(m_hDllMod, "OnStop");
 	if (!Dll_On_Stop)
@@ -368,8 +343,6 @@ void CMatrixDllCall::Dll_Stop(void)
 	{
 		// call the function
 		(*Dll_On_Stop)(m_pEnv);
-		m_bFieldOn = false;
-		m_bFieldOff = true;
 	}
 }
 // 载入MatrixServerDll动态链接库

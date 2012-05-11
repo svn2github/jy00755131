@@ -9,12 +9,6 @@ public:
 public:
 	HMODULE m_hDllMod;
 	m_oEnvironmentStruct* m_pEnv;
-	// Field On
-	bool m_bFieldOn;
-	// Field Off
-	bool m_bFieldOff;
-	// 上次Field On的时间
-	unsigned int m_uiFieldOnTimeOld;
 public:
 	// DLL创建实例
 	void Dll_Create_Instance(void);
@@ -29,7 +23,7 @@ public:
 	// DLL停止AD数据采集
 	void Dll_StopSample(void);
 	// DLL开始工作
-	int Dll_Work(void);
+	unsigned int Dll_Work(void);
 	// DLL停止工作
 	void Dll_Stop(void);
 	// 载入MatrixServerDll动态链接库
