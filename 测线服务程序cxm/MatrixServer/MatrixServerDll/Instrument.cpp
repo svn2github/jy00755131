@@ -187,7 +187,7 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 	// 应该接收ADC数据帧数（含丢帧）
 	pInstrument->m_uiADCDataShouldRecFrameNum = 0;
 	// ADC采样数据（取每帧的第一个数据用于计算）
-	pInstrument->m_iADCData = 0;
+	pInstrument->m_olsADCDataSave.clear();
 	// ADC数据帧的指针偏移量
 	pInstrument->m_usADCDataFramePoint = 0;
 	// ADC数据帧发送时的本地时间

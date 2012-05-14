@@ -360,6 +360,11 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("120");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("SaveTestDataNum");			// 存储用于测试计算的数据个数
+	strValue = _T("20");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+
 	strSection = _T("帧格式设置");			// 获取当前区域
 
 	strSectionKey=_T("FrameHeadSize");		// 帧头长度

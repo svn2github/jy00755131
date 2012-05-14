@@ -104,6 +104,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	unsigned int uiLostFrameNum = 0;
 	int iADCDataInOneFrameNum = 0;
 	int iADCFrameSaveInOneFileNum = 0;
+	int iTestADCData = 0;
 	unsigned short usADCFramePointLimit = 0;
 	ADCLostFrame_Struct* pADCLostFrame = NULL;
 	// Ö¡ÐòºÅ
@@ -146,8 +147,13 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				uiFrameNb = pADCLostFrame->m_uiFrameNb;
 				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
 					uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
-				memcpy(&pInstrument->m_iADCData, 
+				memcpy(&iTestADCData, 
 					pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData, sizeof(int));
+				if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
+				{
+					pInstrument->m_olsADCDataSave.pop_front();
+				}
+				pInstrument->m_olsADCDataSave.push_back(iTestADCData);
 			}
 			return;
 		}
@@ -234,8 +240,13 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 						AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex,
 							ADCLostFrame.m_uiFrameNb, pInstrument->m_uiSN, ADCLostFrame.m_uiSysTime, 
 							pADCDataRecThread);
-						memcpy(&pInstrument->m_iADCData, 
+						memcpy(&iTestADCData, 
 							pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData, sizeof(int));
+						if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
+						{
+							pInstrument->m_olsADCDataSave.pop_front();
+						}
+						pInstrument->m_olsADCDataSave.push_back(iTestADCData);
 					}
 					str.Format(_T("ÒÇÆ÷SN = 0x%x£¬IP = 0x%x£¬¶ªÊ§Ö¡ÊýÎª%d"), pInstrument->m_uiSN, 
 						pInstrument->m_uiIP, uiLostFrameNum);
@@ -248,8 +259,13 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum;
 				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
 					uiFrameNb, pInstrument->m_uiSN, uiADCDataFrameSysTimeNow, pADCDataRecThread);
-				memcpy(&pInstrument->m_iADCData, 
+				memcpy(&iTestADCData, 
 					pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData, sizeof(int));
+				if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
+				{
+					pInstrument->m_olsADCDataSave.pop_front();
+				}
+				pInstrument->m_olsADCDataSave.push_back(iTestADCData);
 			}
 		}
 

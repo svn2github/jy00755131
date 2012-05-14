@@ -11,7 +11,6 @@
 #include <list>
 #include <map>
 #include <hash_map>
-
 using std::list;
 using std::string;
 using std::wstring;
@@ -25,40 +24,40 @@ using stdext::hash_map;
 	extern "C" {
 #endif
 
-	// according to the control macro, deciding whether export or import functions
+		// according to the control macro, deciding whether export or import functions
 #ifdef MATRIXSERVERDLL_EXPORTS
 #define MatrixServerDll_API __declspec(dllexport)
 #else
 #define MatrixServerDll_API __declspec(dllimport)
 #endif
 
-	// Macro definitions declarations
-	// 日志文件夹
+		// Macro definitions declarations
+		// 日志文件夹
 #define LogFolderPath				_T("..\\Log")
-	// 系统日志文件夹（包含操作、警告、错误）
+		// 系统日志文件夹（包含操作、警告、错误）
 #define SysOptLogFolderPath			_T("\\系统运行日志")
-	// 时统日志文件夹（包含尾包时刻查询及时统设置应答及结果统计）
+		// 时统日志文件夹（包含尾包时刻查询及时统设置应答及结果统计）
 #define TimeDelayLogFolderPath		_T("\\时统日志")
-	// 误码查询日志文件夹（包含误码查询应答及结果统计）
+		// 误码查询日志文件夹（包含误码查询应答及结果统计）
 #define ErrorCodeLogFolderPath		_T("\\误码查询日志")
-	// 帧时间和偏移量日志（包含丢帧、重发帧及失效帧结果统计）
+		// 帧时间和偏移量日志（包含丢帧、重发帧及失效帧结果统计）
 #define ADCFrameTimeLogFolderPath	_T("\\采样数据帧时间及偏移量")
-	// ADC数据帧
+		// ADC数据帧
 #define ADCDataLogFolderPath		_T("\\采样数据")
 
-	// 输出选择:Debug输出则为0，Release输出则为1
+		// 输出选择:Debug输出则为0，Release输出则为1
 #define OutPutSelect				0
-	// 输出错误日志上限
+		// 输出错误日志上限
 #define OutPutLogErrorLimit			100
-	// 日志文件单个文件输出信息条数
+		// 日志文件单个文件输出信息条数
 #define OutPutLogFileInfoNumLimit	5000
-	// 日志输出类型
-	enum{LogType, WarningType, ErrorType, ExpandType};
+		// 日志输出类型
+		enum{LogType, WarningType, ErrorType, ExpandType};
 	// 日志文件类型
 	enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
-// INI文件读取关键字缓冲区大小
+	// INI文件读取关键字缓冲区大小
 #define INIFileStrBufSize			256
-typedef int (WINAPI *PFCALLBACK)(int Param1,int Param2) ;
+	typedef int (WINAPI *PFCALLBACK)(int Param1,int Param2) ;
 typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex, int *_piData,
 	int _iSize, unsigned int _uiSN);
 
@@ -191,6 +190,8 @@ typedef struct ConstVar_Struct
 	int m_iADCSaveDataIntervalBytes;
 	// 设备ADC数据缓冲区大小
 	int m_iADCDataBufSize;
+	// 存储用于测试计算的数据个数
+	unsigned int m_uiSaveTestDataNum;
 
 	//____帧格式设置____
 	// 帧头长度
@@ -1220,7 +1221,7 @@ typedef struct Instrument_Struct
 	// 应该接收ADC数据帧数（含丢帧）
 	unsigned int m_uiADCDataShouldRecFrameNum;
 	// ADC采样数据（取每帧的第一个数据用于计算）
-	int m_iADCData;
+	list<int> m_olsADCDataSave;
 	// ADC数据帧的指针偏移量
 	unsigned short m_usADCDataFramePoint;
 	// ADC数据帧发送时的本地时间
@@ -2263,14 +2264,14 @@ MatrixServerDll_API void OnCloseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFra
 MatrixServerDll_API void OnFreeInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame);
 // 创建并设置首包端口
 MatrixServerDll_API void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame, 
-		m_oLogOutPutStruct* pLogOutPut = NULL);
+	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析首包帧
 MatrixServerDll_API bool ParseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
 	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* IP地址设置帧                                                         */
-	/************************************************************************/
+/************************************************************************/
 // 创建IP地址设置帧信息结构体
 MatrixServerDll_API m_oIPSetFrameStruct* OnCreateInstrumentIPSetFrame(void);
 // 初始化IP地址设置
@@ -2481,14 +2482,14 @@ MatrixServerDll_API bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 
 /**
 * 根据链接方向，得到连接的下一个仪器
-* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
-	* @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
-*/
+	* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
+* @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
+	*/
 MatrixServerDll_API m_oInstrumentStruct* GetNextInstrument(int iRoutDirection, 
 m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
 /**
 * 根据链接方向，得到连接的前一个仪器
-* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
+	* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的前一个仪器不存在
 */
 MatrixServerDll_API m_oInstrumentStruct* GetPreviousInstrument(int iRoutDirection, 
@@ -2703,7 +2704,7 @@ MatrixServerDll_API void InstrumentLocationSort(m_oInstrumentStruct* pInstrument
 /**
 * 设置交叉站某个方向的路由
 	* @param CInstrument* &pInstrument 仪器指针
-* @param unsigned int uiRoutDirection 路由方向
+	* @param unsigned int uiRoutDirection 路由方向
 * @return void
 */
 MatrixServerDll_API void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection, 

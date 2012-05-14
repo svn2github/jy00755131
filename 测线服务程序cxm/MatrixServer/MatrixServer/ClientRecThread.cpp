@@ -321,90 +321,112 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 
 		// 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrNoiseTestArea:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrNoiseTestByArea);
 			break;
 		// 查询全部仪器的仪器噪声测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrNoiseTestAll:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrNoiseTestByArea);
 			break;
 		// 查询所选区域仪器失真测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrDistortionTestArea:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrDistortionTestByArea);
 			break;
 		// 查询全部仪器失真测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrDistortionTestAll:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrDistortionTestByArea);
 			break;
 		// 查询所选区域仪器串扰测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrCrosstalkTestArea:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrCrosstalkTestByArea);
 			break;
 		// 查询全部仪器串扰测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrCrosstalkTestAll:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrCrosstalkTestByArea);
 			break;
 		// 查询所选区域仪器共模抑制比测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrCMRRTestArea:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrCMRRTestByArea);
 			break;
 		// 查询全部仪器共模抑制比测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrCMRRTestAll:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrCMRRTestByArea);
 			break;
 		// 查询所选区域仪器增益相位测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrGainPhaseTestArea:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrGainPhaseTestByArea);
 			break;
 		// 查询全部仪器增益相位测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrGainPhaseTestAll:
+			GetTestDataLimitFromXML(true);
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrGainPhaseTestByArea);
 			break;
 		// 查询所选区域检波器阻抗测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorResistanceTestArea:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorResistanceTestByArea);
 			break;
 		// 查询全部检波器阻抗测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorResistanceTestAll:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorResistanceTestByArea);
 			break;
 		// 查询所选区域检波器漏电测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorLeakageTestArea:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorLeakageTestByArea);
 			break;
 		// 查询全部检波器漏电测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorLeakageTestAll:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorLeakageTestByArea);
 			break;
 		// 查询所选区域检波器噪声测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorNoiseTestArea:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorNoiseTestByArea);
 			break;
 		// 查询全部检波器噪声测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorNoiseTestAll:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorNoiseTestByArea);
 			break;
 		// 查询所选区域检波器倾斜度测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorTiltTestArea:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorTiltTestByArea);
 			break;
 		// 查询全部检波器倾斜度测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorTiltTestAll:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorTiltTestByArea);
 			break;
 		// 查询所选区域检波器倾斜度模式测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorTiltModelTestArea:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorTiltModelTestByArea);
 			break;
 		// 查询全部检波器倾斜度模式测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorTiltModelTestAll:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorTiltModelTestByArea);
 			break;
 		// 查询所选区域地震监测测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySeisMonitorTestArea:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySeisMonitorTestByArea);
 			break;
 		// 查询全部地震监测测试数据和测试结果（帧内容为空）
 		case CmdQuerySeisMonitorTestAll:
+			GetTestDataLimitFromXML(false);
 			OnProcQueryInfoAll(&CClientRecThread::QuerySeisMonitorTestByArea);
 			break;
 		default:
@@ -1296,8 +1318,8 @@ unsigned int CClientRecThread::QueryInstrNoiseTestByArea(m_oInstrumentStruct* pI
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-//		fData = pInstrument->m_iADCData;
-
+		fData = (float)CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
 		// 处理结果
@@ -1555,8 +1577,8 @@ unsigned int CClientRecThread::QuerySensorNoiseTestByArea(m_oInstrumentStruct* p
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
-
+		fData = (float)CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
 		// 处理结果
@@ -1691,4 +1713,101 @@ unsigned int CClientRecThread::QuerySeisMonitorTestByArea(m_oInstrumentStruct* p
 		uiPos += 1;
 	}
 	return uiPos;
+}
+
+
+// 从XML配置文件得到测试数据限制值
+void CClientRecThread::GetTestDataLimitFromXML(bool bInstrument)
+{
+	list<m_oInstrumentTestLimitStruct>::iterator iter;
+	m_pMatrixDllCall->Dll_LoadInstrument_SensorTestLimitSetupData(bInstrument);
+	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	if (bInstrument == true)
+	{
+		for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.begin();
+			iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.end();
+			iter++)
+		{
+			if (0 == strcmp(iter->m_pcDescr, "Noise"))
+			{
+				m_fInstrumentNoiseLimit = iter->m_fLimit;
+			}
+			else if (0 == strcmp(iter->m_pcDescr, "Distortion"))
+			{
+				m_fInstrumentDistortionLimit = iter->m_fLimit;
+			}
+			else if (0 == strcmp(iter->m_pcDescr, "Crosstalk"))
+			{
+				m_fInstrumentCrosstalkLimit = iter->m_fLimit;
+			}
+			else if (0 == strcmp(iter->m_pcDescr, "GainPhase"))
+			{
+				m_fInstrumentGainPhaseLimit = iter->m_fLimit;
+			}
+			else if (0 == strcmp(iter->m_pcDescr, "CMRR"))
+			{
+				m_fInstrumentCMRRLimit = iter->m_fLimit;
+			}
+		}
+	}
+	else
+	{
+		for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.begin();
+			iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.end();
+			iter++)
+		{
+			if (0 == strcmp(iter->m_pcDescr, "ResistanceMin"))
+			{
+				m_fSensorResistanceLimitMin = iter->m_fLimit;
+			}
+			else if (0 == strcmp(iter->m_pcDescr, "ResistanceMax"))
+			{
+				m_fSensorResistanceLimitMax = iter->m_fLimit;
+			}
+			else if (0 == strcmp(iter->m_pcDescr, "Leakage"))
+			{
+				m_fSensorLeakageLimit = iter->m_fLimit;
+			}
+			else if (0 == strcmp(iter->m_pcDescr, "Noise"))
+			{
+				m_fSensorNoiseLimit = iter->m_fLimit;
+			}
+			else if (0 == strcmp(iter->m_pcDescr, "Tilt"))
+			{
+				m_fSensorTiltLimit = iter->m_fLimit;
+			}
+			else if (0 == strcmp(iter->m_pcDescr, "Tilt Model"))
+			{
+				m_fSensorTiltModelLimit = iter->m_fLimit;
+			}	
+			else if (0 == strcmp(iter->m_pcDescr, "Seismonitor"))
+			{
+				m_fSeisMonitorLimit = iter->m_fLimit;
+			}
+		}
+	}
+	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+}
+
+
+// 计算测试数据的算术均方根
+double CClientRecThread::CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument)
+{
+	double dbData = 0.0;
+	double dbAvg = 0.0;
+	list<int>::iterator iter;
+	for (iter = pInstrument->m_olsADCDataSave.begin();
+		iter != pInstrument->m_olsADCDataSave.end(); iter++)
+	{
+		dbAvg += *iter;
+	}
+	dbAvg /= pInstrument->m_olsADCDataSave.size();
+	for (iter = pInstrument->m_olsADCDataSave.begin();
+		iter != pInstrument->m_olsADCDataSave.end(); iter++)
+	{
+		dbData += pow((*iter - dbAvg), 2);
+	}
+	dbData /= pInstrument->m_olsADCDataSave.size();
+	dbData = pow(dbData, 0.5);
+	return dbData;
 }

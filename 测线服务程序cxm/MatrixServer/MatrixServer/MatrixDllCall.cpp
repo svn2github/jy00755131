@@ -1359,4 +1359,3 @@ void CMatrixDllCall::Dll_SetSeisMonitorSetupData(char* pChar, unsigned int uiSiz
 		(*Dll_Set_SeisMonitorSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
-

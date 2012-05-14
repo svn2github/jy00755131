@@ -1843,12 +1843,11 @@
 				<Record TestAim="2" Nb="5" Descr="SENSOR TILT MODEL" TestType="21" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="250" SamplingLength="2048"/>
 				<Record TestAim="2" Nb="6" Descr="SENSOR SEISMONITOR" TestType="22" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="250" SamplingLength="2048"/>
 			</SensorTestBase>
-			<InstrumentTestLimit Count="6" TabCount="4">
+			<InstrumentTestLimit Count="5" TabCount="4">
 				<Record TestAim="1" Nb="400" Descr="Noise" Unit="uv" TestType="4" Limit="50"/>
 				<Record TestAim="1" Nb="500" Descr="Distortion" Unit="%" TestType="5" Limit="12"/>
 				<Record TestAim="1" Nb="700" Descr="Crosstalk" Unit="%" TestType="7" Limit="50"/>
-				<Record TestAim="1" Nb="600" Descr="Gain" Unit="%" TestType="6" Limit="14"/>
-				<Record TestAim="1" Nb="610" Descr="Phase" Unit="%" TestType="6" Limit="15"/>
+				<Record TestAim="1" Nb="600" Descr="GainPhase" Unit="%" TestType="6" Limit="14"/>
 				<Record TestAim="1" Nb="800" Descr="CMRR" Unit="%" TestType="8" Limit="50"/>
 			</InstrumentTestLimit>
 			<SensorTestLimit Count="7" TabCount="4">

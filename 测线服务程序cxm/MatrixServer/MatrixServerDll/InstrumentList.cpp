@@ -42,6 +42,7 @@ void OnResetInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	{
 		// 重置仪器
 		OnInstrumentReset(&pInstrumentList->m_pArrayInstrument[i], pInstrumentList->m_bSetByHand);
+		
 		// 仪器加在空闲仪器队列尾部
 		pInstrumentList->m_olsInstrumentFree.push_back(&pInstrumentList->m_pArrayInstrument[i]);
 	}
@@ -103,6 +104,7 @@ void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarS
 		pInstrumentList->m_pArrayInstrument[i].m_uiIndex = i;
 		pInstrumentList->m_pArrayInstrument[i].m_uiIP = pConstVar->m_iIPSetAddrStart 
 			+ i * pConstVar->m_iIPSetAddrInterval;
+		pInstrumentList->m_pArrayInstrument[i].m_olsADCDataSave.resize(pConstVar->m_uiSaveTestDataNum);
 		// 重置仪器
 		OnInstrumentReset(&pInstrumentList->m_pArrayInstrument[i], pInstrumentList->m_bSetByHand);
 		// 仪器加在空闲仪器队列尾部
@@ -133,6 +135,11 @@ void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	// 删除仪器数组
 	if (pInstrumentList->m_pArrayInstrument != NULL)
 	{
+		for(unsigned int i = 0; i < pInstrumentList->m_uiCountAll; i++)
+		{
+			// 仪器在仪器数组中的位置
+			pInstrumentList->m_pArrayInstrument[i].m_olsADCDataSave.clear();
+		}
 		delete[] pInstrumentList->m_pArrayInstrument;
 		pInstrumentList->m_pArrayInstrument = NULL;
 	}

@@ -175,5 +175,9 @@ public:
 	// 查询所选区域地震监测测试数据和测试结果
 	unsigned int QuerySeisMonitorTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
 
+	// 从XML配置文件得到测试数据限制值
+	void GetTestDataLimitFromXML(bool bInstrument);
+	// 计算测试数据的算术均方根
+	double CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument);
 };
 

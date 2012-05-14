@@ -140,6 +140,5 @@ public:
 	void Dll_SetMultipleTestSetupData(char* pChar, unsigned int uiSize);
 	// 设置SeisMonitor设置数据
 	void Dll_SetSeisMonitorSetupData(char* pChar, unsigned int uiSize);
-
 };
 

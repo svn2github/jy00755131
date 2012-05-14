@@ -170,6 +170,9 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("ADCDataBufSize");		// 设备ADC数据缓冲区大小
 		pConstVar->m_iADCDataBufSize = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
+		strSectionKey=_T("SaveTestDataNum");			// 存储用于测试计算的数据个数
+		pConstVar->m_uiSaveTestDataNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
 		strSectionKey=_T("TBSleepTimeHigh");			// TB设置延时高位
 		pConstVar->m_uiTBSleepTimeHigh = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
