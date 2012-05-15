@@ -559,14 +559,14 @@ void OnADCSetNextOpt(m_oADCSetThreadStruct* pADCSetThread)
 		|| (pADCSetThread->m_uiADCSetOperationNb == 19)
 		|| (pADCSetThread->m_uiADCSetOperationNb == 23))
 	{
-		pADCSetThread->m_uiADCSetOperationNb = 0;
-		// ADC参数设置线程停止工作
-		pADCSetThread->m_pThread->m_bWork = false;
 		// 完成ADC停止数据采集
 		if (pADCSetThread->m_uiADCSetOperationNb == 23)
 		{
 			OnOutPutADCDataRecResult(pADCSetThread);
 		}
+		pADCSetThread->m_uiADCSetOperationNb = 0;
+		// ADC参数设置线程停止工作
+		pADCSetThread->m_pThread->m_bWork = false;
 	}
 }
 // 判断ADC参数设置应答是否接收完全

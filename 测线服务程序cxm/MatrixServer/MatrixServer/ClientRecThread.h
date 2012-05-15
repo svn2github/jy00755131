@@ -179,5 +179,7 @@ public:
 	void GetTestDataLimitFromXML(bool bInstrument);
 	// 计算测试数据的算术均方根
 	double CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument);
+	// 处理查询接收区域命令
+	void OnProcQueryRevSection(void);
 };
 

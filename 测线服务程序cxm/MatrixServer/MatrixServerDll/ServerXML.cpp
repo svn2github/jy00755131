@@ -481,6 +481,8 @@ void LoadServerAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	LoadServerPortSetupData(pCommInfo);
 	// 加载ADC参数设置数据
 	LoadServerADCSetSetupData(pCommInfo);
+	// 加载服务器端参数设置数据
+	LoadServerParameterSetupData(pCommInfo);
 }
 // 释放服务端参数设置信息结构体缓冲区
 void OnFreeServerXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo)

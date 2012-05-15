@@ -6,9 +6,9 @@ void OnInitLineClientXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 {
 	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread = NULL;
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置测线客户端信息
 	OnResetLineClientXMLSetupData(pCommInfo);
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
 }
 // 重置Survery
 void OnResetSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
@@ -195,6 +195,7 @@ void OnResetInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInf
 {
 	list<Instrument_SensorTestBase_Struct>::iterator iter;
 	list<Instrument_SensorTestBase_Struct>* pList = NULL;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	if (bInstrument == true)
 	{
 		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct;
@@ -203,7 +204,6 @@ void OnResetInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInf
 	{
 		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	for (iter = pList->begin(); iter != pList->end(); iter++)
 	{
 		if (iter->m_pcDescr != NULL)
@@ -219,6 +219,7 @@ void OnResetInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommIn
 {
 	list<Instrument_SensorTestLimit_Struct>::iterator iter;
 	list<Instrument_SensorTestLimit_Struct>* pList = NULL;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	if (bInstrument == true)
 	{
 		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct;
@@ -227,7 +228,6 @@ void OnResetInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommIn
 	{
 		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	for (iter = pList->begin(); iter != pList->end(); iter++)
 	{
 		if (iter->m_pcDescr != NULL)
@@ -455,9 +455,9 @@ void LoadSurverySetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Survery
 	OnResetSurveryList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -715,9 +715,9 @@ void LoadPointCodeSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Point Code
 	OnResetPointCodeList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -991,9 +991,9 @@ void LoadSensorSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Sensor
 	OnResetSensorList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -1281,9 +1281,9 @@ void LoadMarkerSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Marker
 	OnResetMarkerList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -1571,9 +1571,9 @@ void LoadAuxSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Aux
 	OnResetAuxList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -1866,9 +1866,9 @@ void LoadDetourSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Detour
 	OnResetDetourList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -2136,9 +2136,9 @@ void LoadMuteSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Mute
 	OnResetMuteList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -2401,9 +2401,9 @@ void LoadBlastMachineSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置BlastMachine
 	OnResetBlastMachineList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -2748,9 +2748,9 @@ void LoadAbsoluteSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Absolute
 	OnResetAbsoluteMap(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -3111,9 +3111,9 @@ void LoadGenericSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Generic
 	OnResetGenericList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -3432,6 +3432,7 @@ void SaveLookSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 void SetLookSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
 {
 	unsigned int uiPos = 0;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	while(uiPos < uiSize)
 	{
 		memcpy(&pCommInfo->m_oLineSetupData.m_oLook.m_uiAutoLook, &pChar[uiPos], 4);
@@ -3443,6 +3444,7 @@ void SetLookSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStr
 		memcpy(&pCommInfo->m_oLineSetupData.m_oLook.m_uiLeakage, &pChar[uiPos], 4);
 		uiPos += 4;
 	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
 	SaveLookSetupData(pCommInfo);
 }
 // 加载LAULeakage设置数据
@@ -3568,11 +3570,13 @@ void SaveLAULeakageSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 void SetLAULeakageSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
 {
 	unsigned int uiPos = 0;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	while(uiPos < uiSize)
 	{
 		memcpy(&pCommInfo->m_oLineSetupData.m_oLAULeakage.m_uiLimit, &pChar[uiPos], 4);
 		uiPos += 4;
 	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
 	SaveLAULeakageSetupData(pCommInfo);
 }
 // 加载FormLine设置数据
@@ -3662,9 +3666,9 @@ void LoadFormLineSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置FormLine
 	OnResetFormLineList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -3947,9 +3951,9 @@ void LoadInstrument_SensorTestBaseSetupData(bool bInstrument, m_oInstrumentCommI
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Instrument_SensorTestBase
 	OnResetInstrument_SensorTestBaseList(bInstrument, pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -4303,9 +4307,9 @@ void LoadInstrument_SensorTestLimitSetupData(bool bInstrument, m_oInstrumentComm
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Instrument_SensorTestLimit
 	OnResetInstrument_SensorTestLimitList(bInstrument, pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -4633,9 +4637,9 @@ void LoadInstrumentTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Instrument Test
 	OnResetInstrumentTestList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -4921,9 +4925,9 @@ void LoadSensorTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Sensor Test
 	OnResetSensorTestList(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -5265,9 +5269,9 @@ void LoadMultipleTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置Multiple Test
 	OnResetMultipleTestMap(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -5623,9 +5627,9 @@ void LoadSeisMonitorSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		return;
 	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 重置SeisMonitor
 	OnResetSeisMonitor(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
 	{
@@ -5707,6 +5711,7 @@ void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oInstrumentComm
 {
 	unsigned int uiPos = 0;
 	OnResetSeisMonitor(pCommInfo);
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	while(uiPos < uiSize)
 	{
 		memcpy(&pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize, &pChar[uiPos], 2);
@@ -5716,6 +5721,7 @@ void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oInstrumentComm
 			pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize);
 		uiPos += pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize;
 	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
 	SaveSeisMonitorSetupData(pCommInfo);
 }
 // 加载测线客户端程序设置数据

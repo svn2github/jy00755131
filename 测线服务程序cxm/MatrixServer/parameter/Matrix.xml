@@ -1845,10 +1845,10 @@
 			</SensorTestBase>
 			<InstrumentTestLimit Count="5" TabCount="4">
 				<Record TestAim="1" Nb="400" Descr="Noise" Unit="uv" TestType="4" Limit="50"/>
-				<Record TestAim="1" Nb="500" Descr="Distortion" Unit="%" TestType="5" Limit="12"/>
-				<Record TestAim="1" Nb="700" Descr="Crosstalk" Unit="%" TestType="7" Limit="50"/>
+				<Record TestAim="1" Nb="500" Descr="Distortion" Unit="dB" TestType="5" Limit="12"/>
+				<Record TestAim="1" Nb="700" Descr="Crosstalk" Unit="dB" TestType="7" Limit="50"/>
 				<Record TestAim="1" Nb="600" Descr="GainPhase" Unit="%" TestType="6" Limit="14"/>
-				<Record TestAim="1" Nb="800" Descr="CMRR" Unit="%" TestType="8" Limit="50"/>
+				<Record TestAim="1" Nb="800" Descr="CMRR" Unit="dB" TestType="8" Limit="50"/>
 			</InstrumentTestLimit>
 			<SensorTestLimit Count="7" TabCount="4">
 				<Record TestAim="2" Nb="1500" Descr="ResistanceMin" Unit="ohms" TestType="15" Limit="90"/>
@@ -1857,7 +1857,7 @@
 				<Record TestAim="2" Nb="100" Descr="Noise" Unit="uv" TestType="1" Limit="50"/>
 				<Record TestAim="2" Nb="2000" Descr="Tilt" Unit="%" TestType="20" Limit="14"/>
 				<Record TestAim="2" Nb="2100" Descr="Tilt Model" Unit="%" TestType="21" Limit="15"/>
-				<Record TestAim="2" Nb="2200" Descr="Seismonitor" Unit="db" TestType="22" Limit="-66"/>
+				<Record TestAim="2" Nb="2200" Descr="Seismonitor" Unit="dB" TestType="22" Limit="-66"/>
 			</SensorTestLimit>
 			<InstrumentTest Count="7" TabCount="4">
 				<Record TestNb="1" Recorded="1" RecordLength="10000" AuxiliaryDescr="all" AbsoluteSpread="1:10-23" TestType="4" Gain="400"/>

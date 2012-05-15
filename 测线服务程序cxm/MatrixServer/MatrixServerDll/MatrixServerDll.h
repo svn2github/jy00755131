@@ -3001,7 +3001,7 @@ MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex,
 	m_oOptTaskArrayStruct* pOptTaskArray);
 // 按SN重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLableBySN(m_oInstrumentStruct* pInstrument, int iOpt, 
-	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar);
+	m_oConstVarStruct* pConstVar);
 // 按路由重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, 
 	m_oConstVarStruct* pConstVar);

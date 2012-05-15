@@ -201,33 +201,38 @@ void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame,
 		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
 	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送IP地址查询帧"), 
 		pIPSetFrame->m_pCommandStructSet->m_uiDstIP);
+	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentIPQueryFrame", strConv);
-	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
 // 打开交叉站某一路由方向的电源
 bool OpenLAUXRoutPower(int iLineIndex, int iPointIndex, unsigned char ucLAUXRoutOpenSet, 
 	m_oEnvironmentStruct* pEnv)
 {
 	m_oInstrumentStruct* pInstrument = NULL;
+	unsigned int uiIP = 0;
+	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
+		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 		return false;
 	}
 	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (pInstrument->m_bIPSetOK == false)
 	{
+		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 		return false;
 	}
 	pInstrument->m_ucLAUXRoutOpenSet = ucLAUXRoutOpenSet;
-
+	uiIP = pInstrument->m_uiIP;
+	LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
 	// 仪器IP地址
-	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_uiDstIP = pInstrument->m_uiIP;
+	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_uiDstIP = uiIP;
 	// 设置命令
 	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_usCommand = pEnv->m_pConstVar->m_usSendSetCmd;
 	// 路由开关打开
-	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_cLAUXRoutOpenSet = pInstrument->m_ucLAUXRoutOpenSet;
+	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_cLAUXRoutOpenSet = ucLAUXRoutOpenSet;
 	// 命令字内容
 	pEnv->m_pIPSetFrame->m_cpCommandWord[0] = pEnv->m_pConstVar->m_cCmdLAUXRoutOpenSet;
 	// 命令字个数
