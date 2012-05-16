@@ -10,7 +10,7 @@ m_oADCDataRecThreadStruct* OnCreateADCDataRecThread(void)
 	pADCDataRecThread->m_pLogOutPutADCFrameTime = NULL;
 	pADCDataRecThread->m_pADCDataBufArray = NULL;
 	pADCDataRecThread->m_pADCDataFrame = NULL;
-	pADCDataRecThread->m_pInstrumentList = NULL;
+	pADCDataRecThread->m_pLineList = NULL;
 	InitializeCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	return pADCDataRecThread;
 }
@@ -67,22 +67,22 @@ void AddToADCDataWriteFileList(int iLineIndex, int iPointIndex, unsigned int uiF
 		return;
 	}
 	m_oADCDataBufStruct* pADCDataBuf = NULL;
-	EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
-	EnterCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 	pADCDataBuf = GetFreeADCDataBuf(pADCDataRecThread->m_pADCDataBufArray);
 	pADCDataBuf->m_uiFrameNb = uiFrameNb;
 	pADCDataBuf->m_uiSN = uiSN;
 	pADCDataBuf->m_uiSysTime = uiSysTime;
+	EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 	memcpy(pADCDataBuf->m_pADCDataBuf, pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
 		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * sizeof(int));
-	pADCDataRecThread->m_pADCDataBufArray->m_olsADCDataToWrite.push_back(pADCDataBuf);
 	// ADC数据处理的回调函数
 	(*pADCDataRecThread->m_oProSampleDataCallBack)(iLineIndex, iPointIndex, 
 		pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
 		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum,
 		uiSN);
-	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+	EnterCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+	pADCDataRecThread->m_pADCDataBufArray->m_olsADCDataToWrite.push_back(pADCDataBuf);
+	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 }
 // 处理单个ADC数据帧
 void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
@@ -104,11 +104,12 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	unsigned int uiLostFrameNum = 0;
 	int iADCDataInOneFrameNum = 0;
 	int iADCFrameSaveInOneFileNum = 0;
-	int iTestADCData = 0;
 	unsigned short usADCFramePointLimit = 0;
 	ADCLostFrame_Struct* pADCLostFrame = NULL;
 	// 帧序号
 	unsigned int uiFrameNb = 0;
+	// 测试数据
+	int iTestData = 0;
 
 	iADCDataInOneFrameNum = pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum;
 	usADCFramePointLimit = pADCDataRecThread->m_pThread->m_pConstVar->m_usADCFramePointLimit;
@@ -120,174 +121,187 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	usADCDataFramePointNow = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_usADCDataPoint;
 	// 得到本地系统时间
 	uiADCDataFrameSysTimeNow = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_uiADCSampleSysTime;
+	// 测试数据
+	iTestData = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData[0];
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
-	// 仪器在索引表中
-	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pADCDataRecThread->m_pInstrumentList->m_oIPInstrumentMap))
+	// 仪器不在索引表中
+	if (FALSE == IfIndexExistInMap(uiIPInstrument, &pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap))
 	{
-		pInstrument = GetInstrumentFromMap(uiIPInstrument, 
-			&pADCDataRecThread->m_pInstrumentList->m_oIPInstrumentMap);
-		// 在丢帧索引表中找到
-		if (TRUE == IfIndexExistInADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
-			&pADCDataRecThread->m_oADCLostFrameMap))
-		{
-			str.Format(_T("收到SN = 0x%x，IP地址 = 0x%x的ADC数据重发帧，指针偏移量 = %d"), 
-				pInstrument->m_uiSN, pInstrument->m_uiIP, usADCDataFramePointNow);
-			strConv = (CStringA)str;
-			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
-				strConv);
+		str.Format(_T("收到IP地址 = 0x%x的ADC数据帧"), uiIPInstrument);
+		strConv = (CStringA)str;
+		AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
+			strConv, ErrorType, IDS_ERR_IPMAP_NOTEXIT);
+		return;
+	}
+	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
+		&pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
+	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+	// 在丢帧索引表中找到
+	if (TRUE == IfIndexExistInADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
+		&pADCDataRecThread->m_oADCLostFrameMap))
+	{
+		str.Format(_T("收到SN = 0x%x，IP地址 = 0x%x的ADC数据重发帧，指针偏移量 = %d"), 
+			pInstrument->m_uiSN, pInstrument->m_uiIP, usADCDataFramePointNow);
+		strConv = (CStringA)str;
+		AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
+			strConv);
 
-			pADCLostFrame = GetFromADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
-				&pADCDataRecThread->m_oADCLostFrameMap);
-			if (pADCLostFrame->m_bReturnOk == false)
+		pADCLostFrame = GetFromADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
+			&pADCDataRecThread->m_oADCLostFrameMap);
+		LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+		if (pADCLostFrame->m_bReturnOk == false)
+		{
+			pInstrument->m_uiADCDataActualRecFrameNum++;
+			pInstrument->m_uiADCDataRetransmissionFrameNum++;
+			pADCLostFrame->m_bReturnOk = true;
+			// 将该应答帧数据写入文件
+			uiFrameNb = pADCLostFrame->m_uiFrameNb;
+			AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
+				uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
+			if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
 			{
-				pInstrument->m_uiADCDataActualRecFrameNum++;
-				pInstrument->m_uiADCDataRetransmissionFrameNum++;
-				pADCLostFrame->m_bReturnOk = true;
-				// 将该应答帧数据写入文件
-				uiFrameNb = pADCLostFrame->m_uiFrameNb;
-				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
-					uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
-				memcpy(&iTestADCData, 
-					pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData, sizeof(int));
-				if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
-				{
-					pInstrument->m_olsADCDataSave.pop_front();
-				}
-				pInstrument->m_olsADCDataSave.push_back(iTestADCData);
+				pInstrument->m_olsADCDataSave.pop_front();
 			}
+			pInstrument->m_olsADCDataSave.push_back(iTestData);
+		}
+		return;
+	}
+	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+	// 		// 调试用
+	// 		if (usADCDataFramePointNow == 288)
+	// 		{
+	// 			return;
+	// 		}
+	if (pInstrument->m_uiADCDataActualRecFrameNum > 0)
+	{
+		if (usADCDataFramePointNow > usADCFramePointLimit)
+		{
+			EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+			GetFrameInfo(pADCDataRecThread->m_pADCDataFrame->m_cpRcvFrameData, 
+				pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+			LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
+				strFrameData, ErrorType, IDS_ERR_FRAMEPOINT_LIMITOVER);
 			return;
 		}
-		// 		// 调试用
-		// 		if (usADCDataFramePointNow == 288)
-		// 		{
-		// 			return;
-		// 		}
-		if (pInstrument->m_uiADCDataActualRecFrameNum > 0)
+		if (usADCDataFramePointNow < pInstrument->m_usADCDataFramePoint)
 		{
-			if (usADCDataFramePointNow > usADCFramePointLimit)
-			{
-				GetFrameInfo(pADCDataRecThread->m_pADCDataFrame->m_cpRcvFrameData, 
-					pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
-				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
-					strFrameData, ErrorType, IDS_ERR_FRAMEPOINT_LIMITOVER);
-				return;
-			}
-			if (usADCDataFramePointNow < pInstrument->m_usADCDataFramePoint)
-			{
-				uiADCDataFramePointMove = usADCFramePointLimit - pInstrument->m_usADCDataFramePoint 
-					+ usADCDataFramePointNow;
-			}
-			else
-			{
-				uiADCDataFramePointMove = usADCDataFramePointNow - pInstrument->m_usADCDataFramePoint;
-			}
-
-			if (uiADCDataFrameSysTimeNow < pInstrument->m_uiADCDataFrameSysTime)
-			{
-				uiADCDataFrameSysTimeMove = 0xffffffff - pInstrument->m_uiADCDataFrameSysTime 
-					+ uiADCDataFrameSysTimeNow;
-			}
-			else
-			{
-				uiADCDataFrameSysTimeMove = uiADCDataFrameSysTimeNow - pInstrument->m_uiADCDataFrameSysTime;
-			}
-			if (uiADCDataFramePointMove % iADCDataInOneFrameNum != 0)
-			{
-				GetFrameInfo(pADCDataRecThread->m_pADCDataFrame->m_cpRcvFrameData,
-					pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
-				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
-					strFrameData, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
-				str.Format(_T("指针偏移量出错，偏移量差值为%d"), uiADCDataFramePointMove);
-				strConv = (CStringA)str;
-				AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
-					strConv, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
-				return;
-			}
-			else
-			{
-				if (uiADCDataFrameSysTimeNow != pADCDataRecThread->m_uiADCDataFrameSysTime)
-				{
-					pADCDataRecThread->m_iADCFrameCount++;
-				}
-				if (pInstrument->m_uiADCDataActualRecFrameNum == 1)
-				{
-					pInstrument->m_iADCDataFrameStartNum = pADCDataRecThread->m_iADCFrameCount - 1 - 1;
-				}
-
-				uiLostFrameNum = uiADCDataFramePointMove / iADCDataInOneFrameNum - 1;
-				if (uiLostFrameNum > 0)
-				{
-					// 加入到丢帧索引表
-					for (unsigned int i=0; i<uiLostFrameNum; i++)
-					{
-						m_oADCLostFrameStruct ADCLostFrame;
-						unsigned int uiIP = pInstrument->m_uiIP;
-						unsigned short usADCFramePointNb = static_cast<unsigned short>(pInstrument->m_usADCDataFramePoint 
-							+ (i + 1) * iADCDataInOneFrameNum);
-						if (usADCFramePointNb >= usADCFramePointLimit)
-						{
-							usADCFramePointNb = usADCFramePointNb - usADCFramePointLimit;
-						}
-						ADCLostFrame.m_uiCount = 0;
-						ADCLostFrame.m_bReturnOk = false;
-						ADCLostFrame.m_uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum 
-							+ pInstrument->m_iADCDataFrameStartNum;
-						// @@@@1K采样率的时间差为288
-						ADCLostFrame.m_uiSysTime = pInstrument->m_uiADCDataFrameSysTime + (i + 1) * 288;
-						AddToADCFrameLostMap(uiIP, usADCFramePointNb, ADCLostFrame, &pADCDataRecThread->m_oADCLostFrameMap);
-						pInstrument->m_uiADCDataShouldRecFrameNum++;
-						// 在丢帧的位置写当前帧的内容
-						AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex,
-							ADCLostFrame.m_uiFrameNb, pInstrument->m_uiSN, ADCLostFrame.m_uiSysTime, 
-							pADCDataRecThread);
-						memcpy(&iTestADCData, 
-							pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData, sizeof(int));
-						if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
-						{
-							pInstrument->m_olsADCDataSave.pop_front();
-						}
-						pInstrument->m_olsADCDataSave.push_back(iTestADCData);
-					}
-					str.Format(_T("仪器SN = 0x%x，IP = 0x%x，丢失帧数为%d"), pInstrument->m_uiSN, 
-						pInstrument->m_uiIP, uiLostFrameNum);
-					strConv = (CStringA)str;
-					AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne",
-						strConv, WarningType);
-					AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
-						strConv, WarningType);
-				}
-				uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum;
-				AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
-					uiFrameNb, pInstrument->m_uiSN, uiADCDataFrameSysTimeNow, pADCDataRecThread);
-				memcpy(&iTestADCData, 
-					pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData, sizeof(int));
-				if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
-				{
-					pInstrument->m_olsADCDataSave.pop_front();
-				}
-				pInstrument->m_olsADCDataSave.push_back(iTestADCData);
-			}
+			uiADCDataFramePointMove = usADCFramePointLimit - pInstrument->m_usADCDataFramePoint 
+				+ usADCDataFramePointNow;
+		}
+		else
+		{
+			uiADCDataFramePointMove = usADCDataFramePointNow - pInstrument->m_usADCDataFramePoint;
 		}
 
-		pADCDataRecThread->m_uiADCDataFrameSysTime = uiADCDataFrameSysTimeNow;
-		pInstrument->m_uiADCDataActualRecFrameNum++;
-		pInstrument->m_uiADCDataShouldRecFrameNum++;
-		pInstrument->m_usADCDataFramePoint = usADCDataFramePointNow;
-		pInstrument->m_uiADCDataFrameSysTime = uiADCDataFrameSysTimeNow;
-		str.Format(_T("仪器SN = 0x%x，IP = 0x%x；"), pInstrument->m_uiSN, pInstrument->m_uiIP);
-		strOut += str;
-		str.Format(_T("接收帧的指针偏移量为 %d，差值为 %d；"), 
-			pInstrument->m_usADCDataFramePoint, uiADCDataFramePointMove);
-		strOut += str;
-		str.Format(_T("本地时间为 %d，差值为%d；"), 
-			pInstrument->m_uiADCDataFrameSysTime, uiADCDataFrameSysTimeMove);
-		strOut += str;
-		str.Format(_T("应收帧数为 %d, 起始的帧数为%d"), 
-			pInstrument->m_uiADCDataShouldRecFrameNum, pInstrument->m_iADCDataFrameStartNum);
-		strOut += str;
-		strConv = (CStringA)strOut;
-		AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", strConv);
+		if (uiADCDataFrameSysTimeNow < pInstrument->m_uiADCDataFrameSysTime)
+		{
+			uiADCDataFrameSysTimeMove = 0xffffffff - pInstrument->m_uiADCDataFrameSysTime 
+				+ uiADCDataFrameSysTimeNow;
+		}
+		else
+		{
+			uiADCDataFrameSysTimeMove = uiADCDataFrameSysTimeNow - pInstrument->m_uiADCDataFrameSysTime;
+		}
+		if (uiADCDataFramePointMove % iADCDataInOneFrameNum != 0)
+		{
+			EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+			GetFrameInfo(pADCDataRecThread->m_pADCDataFrame->m_cpRcvFrameData,
+				pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+			LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
+				strFrameData, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
+			str.Format(_T("指针偏移量出错，偏移量差值为%d"), uiADCDataFramePointMove);
+			strConv = (CStringA)str;
+			AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
+				strConv, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
+			return;
+		}
+		else
+		{
+			EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+			if (uiADCDataFrameSysTimeNow != pADCDataRecThread->m_uiADCDataFrameSysTime)
+			{
+				pADCDataRecThread->m_iADCFrameCount++;
+			}
+			if (pInstrument->m_uiADCDataActualRecFrameNum == 1)
+			{
+				pInstrument->m_iADCDataFrameStartNum = pADCDataRecThread->m_iADCFrameCount - 1 - 1;
+			}
+			LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+
+			uiLostFrameNum = uiADCDataFramePointMove / iADCDataInOneFrameNum - 1;
+			if (uiLostFrameNum > 0)
+			{
+				// 加入到丢帧索引表
+				for (unsigned int i=0; i<uiLostFrameNum; i++)
+				{
+					m_oADCLostFrameStruct ADCLostFrame;
+					unsigned int uiIP = pInstrument->m_uiIP;
+					unsigned short usADCFramePointNb = static_cast<unsigned short>(pInstrument->m_usADCDataFramePoint 
+						+ (i + 1) * iADCDataInOneFrameNum);
+					if (usADCFramePointNb >= usADCFramePointLimit)
+					{
+						usADCFramePointNb = usADCFramePointNb - usADCFramePointLimit;
+					}
+					ADCLostFrame.m_uiCount = 0;
+					ADCLostFrame.m_bReturnOk = false;
+					ADCLostFrame.m_uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum 
+						+ pInstrument->m_iADCDataFrameStartNum;
+					// @@@@1K采样率的时间差为288
+					ADCLostFrame.m_uiSysTime = pInstrument->m_uiADCDataFrameSysTime + (i + 1) * 288;
+					EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+					AddToADCFrameLostMap(uiIP, usADCFramePointNb, ADCLostFrame, &pADCDataRecThread->m_oADCLostFrameMap);
+					LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+					pInstrument->m_uiADCDataShouldRecFrameNum++;
+					// 在丢帧的位置写当前帧的内容
+					AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex,
+						ADCLostFrame.m_uiFrameNb, pInstrument->m_uiSN, ADCLostFrame.m_uiSysTime, 
+						pADCDataRecThread);
+					if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
+					{
+						pInstrument->m_olsADCDataSave.pop_front();
+					}
+					pInstrument->m_olsADCDataSave.push_back(iTestData);
+				}
+				str.Format(_T("仪器SN = 0x%x，IP = 0x%x，丢失帧数为%d"), pInstrument->m_uiSN, 
+					pInstrument->m_uiIP, uiLostFrameNum);
+				strConv = (CStringA)str;
+				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne",
+					strConv, WarningType);
+				AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
+					strConv, WarningType);
+			}
+			uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum;
+			AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
+				uiFrameNb, pInstrument->m_uiSN, uiADCDataFrameSysTimeNow, pADCDataRecThread);
+			if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
+			{
+				pInstrument->m_olsADCDataSave.pop_front();
+			}
+			pInstrument->m_olsADCDataSave.push_back(iTestData);
+		}
 	}
+	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+	pADCDataRecThread->m_uiADCDataFrameSysTime = uiADCDataFrameSysTimeNow;
+	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+	pInstrument->m_uiADCDataActualRecFrameNum++;
+	pInstrument->m_uiADCDataShouldRecFrameNum++;
+	pInstrument->m_usADCDataFramePoint = usADCDataFramePointNow;
+	pInstrument->m_uiADCDataFrameSysTime = uiADCDataFrameSysTimeNow;
+	str.Format(_T("仪器SN = 0x%x，IP = 0x%x；"), pInstrument->m_uiSN, pInstrument->m_uiIP);
+	strOut += str;
+	str.Format(_T("接收帧的指针偏移量为 %d，差值为 %d；"), 
+		pInstrument->m_usADCDataFramePoint, uiADCDataFramePointMove);
+	strOut += str;
+	str.Format(_T("本地时间为 %d，差值为%d；"), 
+		pInstrument->m_uiADCDataFrameSysTime, uiADCDataFrameSysTimeMove);
+	strOut += str;
+	str.Format(_T("应收帧数为 %d, 起始的帧数为%d"), 
+		pInstrument->m_uiADCDataShouldRecFrameNum, pInstrument->m_iADCDataFrameStartNum);
+	strOut += str;
+	strConv = (CStringA)strOut;
+	AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", strConv);
 }
 // 处理ADC数据接收帧
 void ProcADCDataRecFrame(m_oADCDataRecThreadStruct* pADCDataRecThread)
@@ -299,35 +313,38 @@ void ProcADCDataRecFrame(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	// 帧数量设置为0
 	int iFrameCount = 0;
 	// 得到首包接收网络端口帧数量
+	EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 	iFrameCount = GetFrameCount(pADCDataRecThread->m_pADCDataFrame->m_oADCDataFrameSocket,
 		pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, 
 		pADCDataRecThread->m_pThread->m_pLogOutPut);
+	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 	// 判断帧数量是否大于0
 	if(iFrameCount > 0)
 	{
 		// 循环处理每1帧
 		for(int i = 0; i < iFrameCount; i++)
 		{
+			EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 			// 得到帧数据
-			if (true == GetFrameData(pADCDataRecThread->m_pADCDataFrame->m_oADCDataFrameSocket,
+			if (false == GetFrameData(pADCDataRecThread->m_pADCDataFrame->m_oADCDataFrameSocket,
 				pADCDataRecThread->m_pADCDataFrame->m_cpRcvFrameData, 
 				pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, 
 				pADCDataRecThread->m_pThread->m_pLogOutPut))
 			{
-				if (false == ParseInstrumentADCDataRecFrame(pADCDataRecThread->m_pADCDataFrame, 
+				LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+				continue;
+			}
+			if (false == ParseInstrumentADCDataRecFrame(pADCDataRecThread->m_pADCDataFrame, 
 					pADCDataRecThread->m_pThread->m_pConstVar))
-				{
-					AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ParseInstrumentADCDataRecFrame",
-						"", ErrorType, IDS_ERR_PARSE_ADCDATARECFRAME);
-				}
-				else
-				{
-					EnterCriticalSection(&pADCDataRecThread->m_pInstrumentList->m_oSecInstrumentList);
-					// 处理单个ADC数据帧
-					ProcADCDataRecFrameOne(pADCDataRecThread);
-					LeaveCriticalSection(&pADCDataRecThread->m_pInstrumentList->m_oSecInstrumentList);
-				}	
-			}		
+			{
+				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ParseInstrumentADCDataRecFrame",
+					"", ErrorType, IDS_ERR_PARSE_ADCDATARECFRAME);
+				LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+				continue;
+			}
+			LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+			// 处理单个ADC数据帧
+			ProcADCDataRecFrameOne(pADCDataRecThread);
 		}		
 	}
 }
@@ -467,7 +484,7 @@ bool OnInit_ADCDataRecThread(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pADCDataRecThread->m_pLogOutPutADCFrameTime = pEnv->m_pLogOutPutADCFrameTime;
 	pEnv->m_pADCDataRecThread->m_pADCDataBufArray = pEnv->m_pADCDataBufArray;
 	pEnv->m_pADCDataRecThread->m_pADCDataFrame = pEnv->m_pADCDataFrame;
-	pEnv->m_pADCDataRecThread->m_pInstrumentList = pEnv->m_pInstrumentList;
+	pEnv->m_pADCDataRecThread->m_pLineList = pEnv->m_pLineList;
 	return OnInitADCDataRecThread(pEnv->m_pADCDataRecThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
 }
 // 关闭ADC数据接收线程

@@ -9,8 +9,7 @@ m_oErrorCodeThreadStruct* OnCreateErrorCodeThread(void)
 	pErrorCodeThread->m_pThread = new m_oThreadStruct;
 	pErrorCodeThread->m_pLogOutPutErrorCode = NULL;
 	pErrorCodeThread->m_pErrorCodeFrame = NULL;
-	pErrorCodeThread->m_pRoutList = NULL;
-	pErrorCodeThread->m_pInstrumentList = NULL;
+	pErrorCodeThread->m_pLineList = NULL;
 	InitializeCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	return pErrorCodeThread;
 }
@@ -80,10 +79,10 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	cFDUErrorCodeCmdCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeCmdCount;
 	LeaveCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
 	// 仪器在索引表中
-	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pErrorCodeThread->m_pInstrumentList->m_oIPInstrumentMap))
+	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap))
 	{
 		pInstrument = GetInstrumentFromMap(uiIPInstrument, 
-			&pErrorCodeThread->m_pInstrumentList->m_oIPInstrumentMap);
+			&pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 		str.Format(_T("仪器SN = 0x%x，IP = 0x%x；"), pInstrument->m_uiSN, pInstrument->m_uiIP);
 		strOutPut += str;
 		// 仪器类型为LCI或者交叉站
@@ -260,12 +259,8 @@ void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 				}
 				else
 				{
-					EnterCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
-					EnterCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个IP地址设置应答帧
 					ProcErrorCodeReturnFrameOne(pErrorCodeThread);
-					LeaveCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
-					LeaveCriticalSection(&pErrorCodeThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -283,9 +278,8 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
 	string strConv = "";
-	EnterCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
-	for (iter = pErrorCodeThread->m_pRoutList->m_oRoutMap.begin();
-		iter != pErrorCodeThread->m_pRoutList->m_oRoutMap.end();
+	for (iter = pErrorCodeThread->m_pLineList->m_pRoutList->m_oRoutMap.begin();
+		iter != pErrorCodeThread->m_pLineList->m_pRoutList->m_oRoutMap.end();
 		iter++)
 	{
 		pRout = iter->second;
@@ -312,7 +306,6 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);
 		}
 	}
-	LeaveCriticalSection(&pErrorCodeThread->m_pRoutList->m_oSecRoutList);
 }
 // 线程函数
 DWORD WINAPI RunErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
@@ -392,8 +385,7 @@ bool OnInit_ErrorCodeThread(m_oEnvironmentStruct* pEnv)
 	}
 	pEnv->m_pErrorCodeThread->m_pLogOutPutErrorCode = pEnv->m_pLogOutPutErrorCode;
 	pEnv->m_pErrorCodeThread->m_pErrorCodeFrame = pEnv->m_pErrorCodeFrame;
-	pEnv->m_pErrorCodeThread->m_pRoutList = pEnv->m_pRoutList;
-	pEnv->m_pErrorCodeThread->m_pInstrumentList = pEnv->m_pInstrumentList;
+	pEnv->m_pErrorCodeThread->m_pLineList = pEnv->m_pLineList;
 	return OnInitErrorCodeThread(pEnv->m_pErrorCodeThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
 }
 // 关闭误码查询线程

@@ -6,7 +6,6 @@ m_oRoutListStruct* OnCreateRoutList(void)
 {
 	m_oRoutListStruct* pRoutList = NULL;
 	pRoutList = new m_oRoutListStruct;
-	InitializeCriticalSection(&pRoutList->m_oSecRoutList);
 	pRoutList->m_pArrayRout = NULL;
 	return pRoutList;
 }
@@ -17,7 +16,6 @@ void OnResetRoutList(m_oRoutListStruct* pRoutList)
 	{
 		return;
 	}
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 清空路由地址索引
 	pRoutList->m_oRoutMap.clear();
 	// 清空需要删除的路由地址索引
@@ -39,7 +37,6 @@ void OnResetRoutList(m_oRoutListStruct* pRoutList)
 		// 路由加在空闲路由队列尾部
 		pRoutList->m_olsRoutFree.push_back(&pRoutList->m_pArrayRout[i]);
 	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 初始化路由队列结构体
 void OnInitRoutList(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
@@ -54,7 +51,6 @@ void OnInitRoutList(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 清空路由地址索引
 	pRoutList->m_oRoutMap.clear();
 	// 清空需要删除的路由地址索引
@@ -90,7 +86,6 @@ void OnInitRoutList(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
 		// 路由加在空闲路由队列尾部
 		pRoutList->m_olsRoutFree.push_back(&pRoutList->m_pArrayRout[i]);
 	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 关闭路由队列结构体
 void OnCloseRoutList(m_oRoutListStruct* pRoutList)
@@ -99,7 +94,6 @@ void OnCloseRoutList(m_oRoutListStruct* pRoutList)
 	{
 		return;
 	}
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 清空路由地址索引
 	pRoutList->m_oRoutMap.clear();
 	// 清空需要删除的路由地址索引
@@ -117,7 +111,6 @@ void OnCloseRoutList(m_oRoutListStruct* pRoutList)
 		delete[] pRoutList->m_pArrayRout;
 		pRoutList->m_pArrayRout = NULL;
 	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }
 // 释放路由队列结构体
 void OnFreeRoutList(m_oRoutListStruct* pRoutList)
@@ -126,7 +119,6 @@ void OnFreeRoutList(m_oRoutListStruct* pRoutList)
 	{
 		return;
 	}
-	DeleteCriticalSection(&pRoutList->m_oSecRoutList);
 	delete pRoutList;
 }
 
@@ -139,7 +131,6 @@ m_oRoutStruct* GetFreeRout(m_oRoutListStruct* pRoutList)
 	}
 	m_oRoutStruct* pRout = NULL;
 	list <m_oRoutStruct*>::iterator iter;
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	if(pRoutList->m_uiCountFree > 0)	//有空闲路由
 	{
 		// 从空闲路由队列头部得到一个空闲路由
@@ -151,7 +142,6 @@ m_oRoutStruct* GetFreeRout(m_oRoutListStruct* pRoutList)
 		// 空闲路由计数减1
 		pRoutList->m_uiCountFree--;
 	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 	return pRout;
 }
 // 增加一个空闲路由
@@ -161,12 +151,10 @@ void AddFreeRout(m_oRoutStruct* pRout, m_oRoutListStruct* pRoutList)
 	{
 		return;
 	}
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	//初始化路由
 	OnRoutReset(pRout);
 	//加入空闲队列
 	pRoutList->m_olsRoutFree.push_back(pRout);
 	// 空闲路由计数加1
 	pRoutList->m_uiCountFree++;
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 }

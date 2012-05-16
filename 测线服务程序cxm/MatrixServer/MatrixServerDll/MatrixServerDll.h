@@ -1262,17 +1262,16 @@ typedef struct InstrumentLocation_Struct
 	int m_iPointIndex;
 }m_oInstrumentLocationStruct;
 
+
 // 仪器队列
 typedef struct InstrumentList_Struct
 {
-	// 仪器队列资源同步对象
-	CRITICAL_SECTION m_oSecInstrumentList;
 	/** 仪器数组指针*/
 	m_oInstrumentStruct* m_pArrayInstrument;
 	/** 空闲仪器队列*/
 	list<m_oInstrumentStruct*> m_olsInstrumentFree;
 	/** 设置IP地址的仪器队列*/
-	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPSetMap;
+	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPSetInstrumentMap;
 	// 仪器SN索引表
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oSNInstrumentMap;
 	// 仪器IP地址索引表
@@ -1325,8 +1324,6 @@ typedef struct Rout_Struct
 // 路由队列结构体
 typedef struct RoutList_Struct
 {
-	// 路由队列资源同步对象
-	CRITICAL_SECTION m_oSecRoutList;
 	/** 路由数组指针*/
 	m_oRoutStruct* m_pArrayRout;
 	/** 空闲路由队列*/
@@ -1347,6 +1344,16 @@ typedef struct RoutList_Struct
 	unsigned int m_uiCountFree;
 }m_oRoutListStruct;
 
+// 测线队列结构体
+typedef struct LineList_Struct
+{
+	// 测线队列资源同步对象
+	CRITICAL_SECTION m_oSecLineList;
+	// 仪器队列结构体指针
+	m_oInstrumentListStruct* m_pInstrumentList;
+	// 路由队列结构体
+	m_oRoutListStruct* m_pRoutList;
+}m_oLineListStruct;
 // 数据存储缓冲区结构体
 typedef struct ADCDataBuf_Struct
 {
@@ -1546,10 +1553,8 @@ typedef struct HeadFrameThread_Struct
 	m_oThreadStruct* m_pThread;
 	// 首包帧指针
 	m_oHeadFrameStruct* m_pHeadFrame;
-	// 仪器队列结构体指针
-	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由队列结构体指针
-	m_oRoutListStruct* m_pRoutList;
+	// 测线队列结构体指针
+	m_oLineListStruct* m_pLineList;
 }m_oHeadFrameThreadStruct;
 
 // IP地址设置线程
@@ -1561,10 +1566,8 @@ typedef struct IPSetFrameThread_Struct
 	m_oThreadStruct* m_pThread;
 	// IP地址设置帧指针
 	m_oIPSetFrameStruct* m_pIPSetFrame;
-	// 仪器队列结构体指针
-	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由队列结构体指针
-	m_oRoutListStruct* m_pRoutList;
+	// 测线队列结构体指针
+	m_oLineListStruct* m_pLineList;
 }m_oIPSetFrameThreadStruct;
 
 // 尾包线程
@@ -1577,9 +1580,7 @@ typedef struct TailFrameThread_Struct
 	// 尾包帧指针
 	m_oTailFrameStruct* m_pTailFrame;
 	// 仪器队列结构体指针
-	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由队列结构体指针
-	m_oRoutListStruct* m_pRoutList;
+	m_oLineListStruct* m_pLineList;
 }m_oTailFrameThreadStruct;
 
 // 时统线程
@@ -1593,10 +1594,8 @@ typedef struct TimeDelayThread_Struct
 	m_oTailTimeFrameStruct* m_pTailTimeFrame;
 	// 时统设置帧指针
 	m_oTimeDelayFrameStruct* m_pTimeDelayFrame;
-	// 仪器队列结构体指针
-	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由队列结构体指针
-	m_oRoutListStruct* m_pRoutList;
+	// 测线队列结构体指针
+	m_oLineListStruct* m_pLineList;
 	// ADC开始数据采集标志位
 	bool m_bADCStartSample;
 	// 计数器
@@ -1614,10 +1613,8 @@ typedef struct ADCSetThread_Struct
 	m_oThreadStruct* m_pThread;
 	// ADC参数设置帧指针
 	m_oADCSetFrameStruct* m_pADCSetFrame;
-	// 仪器队列结构体指针
-	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由队列结构体指针
-	m_oRoutListStruct* m_pRoutList;
+	// 测线队列结构体指针
+	m_oLineListStruct* m_pLineList;
 	// ADC命令设置序号
 	unsigned int m_uiADCSetOperationNb;
 	// 计数器
@@ -1645,10 +1642,8 @@ typedef struct ErrorCodeThread_Struct
 	m_oThreadStruct* m_pThread;
 	// 误码查询帧指针
 	m_oErrorCodeFrameStruct* m_pErrorCodeFrame;
-	// 仪器队列结构体指针
-	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由队列结构体指针
-	m_oRoutListStruct* m_pRoutList;
+	// 测线队列结构体指针
+	m_oLineListStruct* m_pLineList;
 	// 误码查询日志指针
 	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
 }m_oErrorCodeThreadStruct;
@@ -1660,10 +1655,8 @@ typedef struct MonitorThread_Struct
 	CRITICAL_SECTION m_oSecMonitorThread;
 	// 线程结构体指针
 	m_oThreadStruct* m_pThread;
-	// 仪器队列结构体指针
-	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由队列结构体指针
-	m_oRoutListStruct* m_pRoutList;
+	// 测线队列结构体指针
+	m_oLineListStruct* m_pLineList;
 	// 时统线程指针
 	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
 	// ADC参数设置线程
@@ -1681,8 +1674,8 @@ typedef struct ADCDataRecThread_Struct
 	m_oThreadStruct* m_pThread;
 	// 误码查询帧指针
 	m_oADCDataFrameStruct* m_pADCDataFrame;
-	// 仪器队列结构体指针
-	m_oInstrumentListStruct* m_pInstrumentList;
+	// 测线队列结构体指针
+	m_oLineListStruct* m_pLineList;
 	// 误码查询日志指针
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
 	// 数据存储缓冲区结构体指针
@@ -1743,10 +1736,8 @@ typedef struct Environment_Struct
 	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
 	// 帧时间和偏移量日志输出结构
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
-	// 仪器队列结构
-	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由对列结构
-	m_oRoutListStruct* m_pRoutList;
+	// 测线队列结构体
+	m_oLineListStruct* m_pLineList;
 	// 数据存储缓冲区结构体指针
 	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
 	// 施工任务数组结构体指针
@@ -2563,6 +2554,19 @@ MatrixServerDll_API m_oRoutStruct* GetFreeRout(m_oRoutListStruct* pRoutList);
 // 增加一个空闲路由
 MatrixServerDll_API void AddFreeRout(m_oRoutStruct* pRout, m_oRoutListStruct* pRoutList);
 
+/************************************************************************/
+/* 测线队列                                                             */
+/************************************************************************/
+// 创建测线队列结构体
+MatrixServerDll_API m_oLineListStruct* OnCreateLineList(void);
+// 重置测线队列结构体
+MatrixServerDll_API void OnResetLineList(m_oLineListStruct* pLineList);
+// 初始化测线队列结构体
+MatrixServerDll_API void OnInitLineList(m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar);
+// 关闭测线队列结构体
+MatrixServerDll_API void OnCloseLineList(m_oLineListStruct* pLineList);
+// 释放测线队列结构体
+MatrixServerDll_API void OnFreeLineList(m_oLineListStruct* pLineList);
 /************************************************************************/
 /* ADC数据存储缓冲                                                      */
 /************************************************************************/

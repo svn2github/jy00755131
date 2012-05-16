@@ -8,8 +8,7 @@ m_oTimeDelayThreadStruct* OnCreateTimeDelayThread(void)
 	pTimeDelayThread = new m_oTimeDelayThreadStruct;
 	pTimeDelayThread->m_pThread = new m_oThreadStruct;
 	pTimeDelayThread->m_pLogOutPutTimeDelay = NULL;
-	pTimeDelayThread->m_pInstrumentList = NULL;
-	pTimeDelayThread->m_pRoutList = NULL;
+	pTimeDelayThread->m_pLineList = NULL;
 	pTimeDelayThread->m_pTailTimeFrame = NULL;
 	pTimeDelayThread->m_pTimeDelayFrame = NULL;
 	InitializeCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
@@ -137,9 +136,9 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	usTailSndTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTime;
 	LeaveCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
 	// 判断仪器IP是否在SN索引表中
-	if (TRUE == IfIndexExistInMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap))
+	if (TRUE == IfIndexExistInMap(uiSrcIP, &pTimeDelayThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap))
 	{
-		pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap);
+		pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 		// @@@@@@@暂不判断尾包时刻过期的情况
 		// 接收到尾包时刻查询应答标志位设为true
 		pInstrument->m_bTailTimeQueryOK = true;
@@ -224,12 +223,8 @@ void ProcTailTimeReturnFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTi
 				}
 				else
 				{
-					EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
-					EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个尾包时刻查询应答帧
 					ProcTailTimeReturnFrameOne(pRout, pTimeDelayThread);
-					LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
-					LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -400,9 +395,9 @@ void ProcTimeDelayReturnFrameOne(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	uiSrcIP = pTimeDelayThread->m_pTimeDelayFrame->m_pCommandStructReturn->m_uiSrcIP;
 	LeaveCriticalSection(&pTimeDelayThread->m_pTimeDelayFrame->m_oSecTimeDelayFrame);
 	// 判断仪器IP是否在SN索引表中
-	if (TRUE == IfIndexExistInMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap))
+	if (TRUE == IfIndexExistInMap(uiSrcIP, &pTimeDelayThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap))
 	{
-		pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pInstrumentList->m_oIPInstrumentMap);
+		pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 		// 接收到时统设置应答标志位
 		pInstrument->m_bTimeSetOK = true;
 		pInstrument->m_iTimeSetReturnCount++;
@@ -452,12 +447,8 @@ void ProcTimeDelayReturnFrame(m_oTimeDelayThreadStruct* pTimeDelayThread)
 				}
 				else
 				{
-					EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
-					EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个时统设置应答帧
 					ProcTimeDelayReturnFrameOne(pTimeDelayThread);
-					LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
-					LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -484,20 +475,18 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		}
 		if (pTimeDelayThread->m_pThread->m_bWork == true)
 		{
-			EnterCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
-			EnterCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
-			if (pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.size() > 0)
+			if (pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.size() > 0)
 			{
 				pTimeDelayThread->m_uiCounter++;
 				if (pTimeDelayThread->m_uiCounter == 1)
 				{
 					// 得到时统队列头的路由IP地址作为当前任务处理的路由IP
-					uiProcRoutIP = *pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.begin();
+					uiProcRoutIP = *pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.begin();
 					// 当前操作的路由IP在路由索引表中
-					if (TRUE == IfIndexExistInRoutMap(uiProcRoutIP, &pTimeDelayThread->m_pRoutList->m_oRoutMap))
+					if (TRUE == IfIndexExistInRoutMap(uiProcRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap))
 					{
 						// 得到当前操作的路由指针
-						pRout = GetRout(uiProcRoutIP, &pTimeDelayThread->m_pRoutList->m_oRoutMap);
+						pRout = GetRout(uiProcRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap);
 					}
 					else
 					{
@@ -506,10 +495,8 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 						AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "RunTimeDelayThread", 
 							strConv, ErrorType, IDS_ERR_ROUT_NOTEXIT);
 						// 删除该路由时统任务
-						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
+						pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
 						pTimeDelayThread->m_uiCounter = 0;
-						LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
-						LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 						LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 						continue;
 					}
@@ -540,8 +527,8 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 					if (true == CheckTimeDelayReturnByRout(pRout, pTimeDelayThread, false))
 					{
 						// 时统任务移到队列尾
-						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
-						pTimeDelayThread->m_pRoutList->m_olsTimeDelayTaskQueue.push_back(uiProcRoutIP);
+						pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
+						pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.push_back(uiProcRoutIP);
 					}
 				}
 				else if (pTimeDelayThread->m_uiCounter == 15)
@@ -549,8 +536,6 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 					pTimeDelayThread->m_uiCounter = 0;
 				}
 			}
-			LeaveCriticalSection(&pTimeDelayThread->m_pRoutList->m_oSecRoutList);
-			LeaveCriticalSection(&pTimeDelayThread->m_pInstrumentList->m_oSecInstrumentList);
 		}
 		if (pTimeDelayThread->m_pThread->m_bClose == true)
 		{
@@ -611,8 +596,7 @@ bool OnInit_TimeDelayThread(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pTimeDelayThread->m_pLogOutPutTimeDelay = pEnv->m_pLogOutPutTimeDelay;
 	pEnv->m_pTimeDelayThread->m_pTailTimeFrame = pEnv->m_pTailTimeFrame;
 	pEnv->m_pTimeDelayThread->m_pTimeDelayFrame = pEnv->m_pTimeDelayFrame;
-	pEnv->m_pTimeDelayThread->m_pInstrumentList = pEnv->m_pInstrumentList;
-	pEnv->m_pTimeDelayThread->m_pRoutList = pEnv->m_pRoutList;
+	pEnv->m_pTimeDelayThread->m_pLineList = pEnv->m_pLineList;
 	return OnInitTimeDelayThread(pEnv->m_pTimeDelayThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
 }
 // 关闭时统设置线程

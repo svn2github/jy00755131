@@ -199,9 +199,8 @@ void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	pIPSetFrame->m_usCommandWordNum = 1;
 	MakeInstrumentFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_cpSndFrameData, 
 		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
-	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送IP地址查询帧"), 
-		pIPSetFrame->m_pCommandStructSet->m_uiDstIP);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
+	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送IP地址查询帧"), uiInstrumentIP);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentIPQueryFrame", strConv);
 }
@@ -211,21 +210,21 @@ bool OpenLAUXRoutPower(int iLineIndex, int iPointIndex, unsigned char ucLAUXRout
 {
 	m_oInstrumentStruct* pInstrument = NULL;
 	unsigned int uiIP = 0;
-	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-	if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
+
+	if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
-		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+
 		return false;
 	}
-	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (pInstrument->m_bIPSetOK == false)
 	{
-		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+
 		return false;
 	}
 	pInstrument->m_ucLAUXRoutOpenSet = ucLAUXRoutOpenSet;
 	uiIP = pInstrument->m_uiIP;
-	LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+	
 	EnterCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
 	// 仪器IP地址
 	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_uiDstIP = uiIP;
@@ -321,11 +320,11 @@ void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
 	MakeInstrumentFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_cpSndFrameData, 
 		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
+	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	str.Format(_T("向仪器SN = 0x%x，IP地址 = 0x%x 的仪器发送IP地址设置帧"), 
-		pIPSetFrame->m_pCommandStructSet->m_uiSN, pIPSetFrame->m_pCommandStructSet->m_uiInstrumentIP);
+		pInstrument->m_uiSN, pInstrument->m_uiIP);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentIPSetFrame", strConv);
-	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
 // 发送IP地址设置帧
 void SendInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, m_oConstVarStruct* pConstVar)

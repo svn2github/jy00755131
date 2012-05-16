@@ -110,13 +110,11 @@ bool GetRoutByRoutIP(unsigned int uiRoutIP,
 	m_oRoutListStruct* pRoutList, m_oRoutStruct** ppRout)
 {
 	bool bReturn = false;
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
 	// 在路由索引中找到该路由
 	if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pRoutList->m_oRoutMap))
 	{
 		*ppRout = GetRout(uiRoutIP, &pRoutList->m_oRoutMap);
 		bReturn = true;
 	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
 	return bReturn;
 }

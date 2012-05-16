@@ -81,7 +81,7 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 	// 创建施工任务数据文件夹
 	pOptTask->m_SaveLogFilePath = (CStringA)str2;
 	// @@@@参与施工任务的采集站排序后加入施工任务的仪器索引表
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	for (iter = pInstrumentList->m_oIPInstrumentMap.begin(); 
 		iter != pInstrumentList->m_oIPInstrumentMap.end(); iter++)
 	{
@@ -94,7 +94,7 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 			pOptTask->m_olsOptInstrument.push_back(oOptInstrument);
 		}
 	}
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	pOptTask->m_olsOptInstrument.sort();
 	for (list_iter = pOptTask->m_olsOptInstrument.begin();
 		list_iter != pOptTask->m_olsOptInstrument.end();
@@ -198,14 +198,14 @@ void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, m_oConstVarStruct*
 
 }
 // 重置ADC参数设置标志位
-void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt, 
+void OnResetADCSetLable(m_oLineListStruct* pLineList, int iOpt, 
 	m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
 		return;
 	}
-	if (pRoutList == NULL)
+	if (pLineList == NULL)
 	{
 		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnResetADCSetLable", "",
 			ErrorType, IDS_ERR_PTRISNULL);
@@ -213,8 +213,8 @@ void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt,
 	}
 	// 仪器路由地址索引表
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
-	EnterCriticalSection(&pRoutList->m_oSecRoutList);
-	for (iter = pRoutList->m_oRoutMap.begin(); iter != pRoutList->m_oRoutMap.end(); iter++)
+	EnterCriticalSection(&pLineList->m_oSecLineList);
+	for (iter = pLineList->m_pRoutList->m_oRoutMap.begin(); iter != pLineList->m_pRoutList->m_oRoutMap.end(); iter++)
 	{
 		// 将路由索引表中的大线方向路由加入到ADC参数设置任务索引
 		if (iter->second->m_bRoutLaux == false)
@@ -222,7 +222,7 @@ void OnResetADCSetLable(m_oRoutListStruct* pRoutList, int iOpt,
 			OnResetADCSetLableByRout(iter->second, iOpt, pConstVar);
 		}
 	}
-	LeaveCriticalSection(&pRoutList->m_oSecRoutList);
+	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 按照路由地址重置ADC参数设置标志位
 void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt, 
@@ -239,32 +239,29 @@ void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt,
 	{
 		OnClearADCSetMap(pEnv->m_pADCSetThread);
 	}
-	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+	EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
+	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
+	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	if (pInstrument == NULL)
 	{
-		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 		return;
 	}
-	LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
 	// 按照路由设置
 	if (bRout == true)
 	{
-		EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-		if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pInstrumentList, 
+		EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
+		if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pLineList->m_pInstrumentList, 
 			pEnv->m_pConstVar, uiRoutIP))
 		{
-			LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+			LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 			return;
 		}
-		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-		EnterCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
-		if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pRoutList, &pRout))
+		if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pLineList->m_pRoutList, &pRout))
 		{
-			LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+			LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 			return;
 		}
-		LeaveCriticalSection(&pEnv->m_pRoutList->m_oSecRoutList);
+		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		OnResetADCSetLableByRout(pRout, iOpt, pEnv->m_pConstVar);
 		GetADCTaskQueueByRout(pEnv->m_pADCSetThread, pRout, iOpt);
 	}
@@ -274,7 +271,6 @@ void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt,
 		OnResetADCSetLableBySN(pInstrument, iOpt, pEnv->m_pConstVar);
 		GetADCTaskQueueBySN(pEnv->m_pADCSetThread, pInstrument, iOpt);
 	}
-
 }
 // ADC参数设置
 void OnADCSet(m_oEnvironmentStruct* pEnv)
@@ -284,7 +280,7 @@ void OnADCSet(m_oEnvironmentStruct* pEnv)
 		return;
 	}
 	// 重置ADC参数设置成功的标志位
-	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCSetOptNb, pEnv->m_pConstVar);
+	OnResetADCSetLable(pEnv->m_pLineList, pEnv->m_pConstVar->m_iADCSetOptNb, pEnv->m_pConstVar);
 }
 // ADC开始采集命令
 void OnADCStartSample(m_oEnvironmentStruct* pEnv)
@@ -298,7 +294,7 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
 	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	// 重置ADC开始采集命令成功的标志位
-	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStartSampleOptNb, pEnv->m_pConstVar);
+	OnResetADCSetLable(pEnv->m_pLineList, pEnv->m_pConstVar->m_iADCStartSampleOptNb, pEnv->m_pConstVar);
 	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
 	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
@@ -309,8 +305,8 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pADCDataRecThread->m_oADCLostFrameMap.clear();
 	// @@@@调试用
 	// 产生一个施工任务
-	GenOneOptTask(1, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray,
-		pEnv->m_pInstrumentList, pEnv->m_pConstVar);
+	GenOneOptTask(1, 0, pEnv->m_pOptTaskArray,
+		pEnv->m_pLineList->m_pInstrumentList, pEnv->m_pConstVar);
 	// 产生一个施工任务
 	//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
 	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
@@ -333,7 +329,7 @@ void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pADCSetThread->m_bADCStopSample = true;
 	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	// 重置ADC停止采集命令成功的标志位
-	OnResetADCSetLable(pEnv->m_pRoutList, pEnv->m_pConstVar->m_iADCStopSampleOptNb, pEnv->m_pConstVar);
+	OnResetADCSetLable(pEnv->m_pLineList, pEnv->m_pConstVar->m_iADCStopSampleOptNb, pEnv->m_pConstVar);
 	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = false;
 	pEnv->m_pTimeDelayThread->m_uiCounter = 0;
@@ -380,9 +376,9 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 	int iErrorCodeQueryNum = 0;
 	// 接收到误码查询帧数
 	int iErrorCodeReturnNum = 0;
-	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-	for (iter = pEnv->m_pInstrumentList->m_oIPInstrumentMap.begin();
-		iter != pEnv->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
+
+	for (iter = pEnv->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.begin();
+		iter != pEnv->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
 	{
 		pInstrument = iter->second;
 		// 尾包时刻查询和时统
@@ -430,7 +426,7 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 		// 命令错误计数
 		iErrorCodeCmdNum += pInstrument->m_iFDUErrorCodeCmdCount + pInstrument->m_iLAUXErrorCodeCmdCount;
 	}
-	LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+	
 	// 尾包时刻
 	str.Format(_T("尾包时刻查询仪器的总数%d， 应答帧总数%d"), iTailTimeQueryNum, iTailTimeReturnNum);
 	strConv = (CStringA)str;
@@ -467,8 +463,7 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 	pEnv->m_pLogOutPutTimeDelay = NULL;
 	pEnv->m_pLogOutPutErrorCode = NULL;
 	pEnv->m_pLogOutPutADCFrameTime = NULL;
-	pEnv->m_pInstrumentList = NULL;
-	pEnv->m_pRoutList = NULL;
+	pEnv->m_pLineList = NULL;
 	pEnv->m_pADCDataBufArray = NULL;
 	pEnv->m_pOptTaskArray = NULL;
 	pEnv->m_pLogOutPutThread = NULL;
@@ -512,10 +507,8 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 	pEnv->m_pErrorCodeFrame = OnCreateInstrumentErrorCodeFrame();
 	// 创建ADC数据帧信息结构体
 	pEnv->m_pADCDataFrame = OnCreateInstrumentADCDataFrame();
-	// 创建仪器队列结构体
-	pEnv->m_pInstrumentList = OnCreateInstrumentList();
-	// 创建路由队列结构体
-	pEnv->m_pRoutList = OnCreateRoutList();
+	// 创建测线队列结构体
+	pEnv->m_pLineList = OnCreateLineList();
 	// 创建数据存储缓冲区结构体
 	pEnv->m_pADCDataBufArray = OnCreateADCDataBufArray();
 	// 创建施工任务数组结构体
@@ -649,10 +642,8 @@ void OnInit(m_oEnvironmentStruct* pEnv)
 	OnInitInstrumentErrorCodeFrame(pEnv->m_pErrorCodeFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化ADC数据帧
 	OnInitInstrumentADCDataFrame(pEnv->m_pADCDataFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
-	// 初始化仪器队列结构体
-	OnInitInstrumentList(pEnv->m_pInstrumentList, pEnv->m_pConstVar);
-	// 初始化路由队列结构体
-	OnInitRoutList(pEnv->m_pRoutList, pEnv->m_pConstVar);
+	// 初始化测线队列结构体
+	OnInitLineList(pEnv->m_pLineList, pEnv->m_pConstVar);
 	// 初始化数据存储缓冲区结构体
 	OnInitADCDataBufArray(pEnv->m_pADCDataBufArray, pEnv->m_pConstVar);
 	// 初始化施工任务数组结构体
@@ -813,10 +804,8 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 	OnCloseInstrumentErrorCodeFrame(pEnv->m_pErrorCodeFrame);
 	// 释放ADC数据帧资源
 	OnCloseInstrumentADCDataFrame(pEnv->m_pADCDataFrame);
-	// 释放仪器队列资源
-	OnCloseInstrumentList(pEnv->m_pInstrumentList);
-	// 释放路由队列资源
-	OnCloseRoutList(pEnv->m_pRoutList);
+	// 释放测线队列资源
+	OnCloseLineList(pEnv->m_pLineList);
 	// 关闭施工数据文件
 	CloseAllADCDataSaveInFile(pEnv->m_pOptTaskArray);
 	// 关闭数据存储缓冲区结构体
@@ -864,10 +853,8 @@ unsigned int OnWork(m_oEnvironmentStruct* pEnv)
 		return (unsigned int)timeWait.GetTotalSeconds();
 	}
 	pEnv->m_bFieldOn = true;
-	// 重置仪器队列结构体
-	OnResetInstrumentList(pEnv->m_pInstrumentList);
-	// 重置路由队列结构体
-	OnResetRoutList(pEnv->m_pRoutList);
+	// 重置测线队列结构体
+	OnResetLineList(pEnv->m_pLineList);
 	// 重置数据存储缓冲区结构体
 	OnResetADCDataBufArray(pEnv->m_pADCDataBufArray);
 	// 重置施工任务数组结构体
@@ -1036,10 +1023,8 @@ void OnFreeInstance(m_oEnvironmentStruct* pEnv)
 	OnFreeInstrumentErrorCodeFrame(pEnv->m_pErrorCodeFrame);
 	// 释放ADC数据帧结构体资源
 	OnFreeInstrumentADCDataFrame(pEnv->m_pADCDataFrame);
-	// 释放仪器队列结构体资源
-	OnFreeInstrumentList(pEnv->m_pInstrumentList);
-	// 释放路由队列结构体资源
-	OnFreeRoutList(pEnv->m_pRoutList);
+	// 释放测线队列结构体资源
+	OnFreeLineList(pEnv->m_pLineList);
 	// 释放数据存储缓冲区结构体
 	OnFreeADCDataBufArray(pEnv->m_pADCDataBufArray);
 	// 释放数据存储缓冲区结构体

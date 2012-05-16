@@ -957,21 +957,21 @@ bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection,
 	m_oRoutStruct* pRout = NULL;
 	unsigned int uiRoutIP = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
-	EnterCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-	if (false == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
+
+	if (false == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
-		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+
 		return false;
 	}
-	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
-	if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pInstrumentList, 
+	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
+	if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pLineList->m_pInstrumentList, 
 		pEnv->m_pConstVar, uiRoutIP))
 	{
-		LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
+
 		return false;
 	}
-	LeaveCriticalSection(&pEnv->m_pInstrumentList->m_oSecInstrumentList);
-	if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pRoutList, &pRout))
+	
+	if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pLineList->m_pRoutList, &pRout))
 	{
 		return false;
 	}

@@ -7,8 +7,7 @@ m_oTailFrameThreadStruct* OnCreateTailFrameThread(void)
 	m_oTailFrameThreadStruct* pTailFrameThread = NULL;
 	pTailFrameThread = new m_oTailFrameThreadStruct;
 	pTailFrameThread->m_pThread = new m_oThreadStruct;
-	pTailFrameThread->m_pInstrumentList = NULL;
-	pTailFrameThread->m_pRoutList = NULL;
+	pTailFrameThread->m_pLineList = NULL;
 	pTailFrameThread->m_pTailFrame = NULL;
 	InitializeCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	return pTailFrameThread;
@@ -106,7 +105,7 @@ void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 	// 从SN索引表中删除该仪器指针
 	DeleteInstrumentFromMap(pInstrument->m_uiSN, &pInstrumentList->m_oSNInstrumentMap);
 	// 从IP地址设置索引表中删除该仪器指针
-	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oIPSetMap);
+	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oIPSetInstrumentMap);
 	// 从IP地址索引表中删除该仪器指针
 	DeleteInstrumentFromMap(pInstrument->m_uiIP, &pInstrumentList->m_oIPInstrumentMap);
 	// 从ADC参数设置索引表中删除该仪器指针
@@ -253,10 +252,10 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包"), uiSN, uiRoutIP);
 	// 判断仪器SN是否在SN索引表中
-	if(TRUE == IfIndexExistInMap(uiSN, &pTailFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
+	if(TRUE == IfIndexExistInMap(uiSN, &pTailFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap))
 	{
 		// 在索引表中则找到该仪器,得到该仪器指针
-		pInstrument = GetInstrumentFromMap(uiSN, &pTailFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
+		pInstrument = GetInstrumentFromMap(uiSN, &pTailFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap);
 		// 仪器设置IP成功且路由地址发生变化
 		if ((pInstrument->m_bIPSetOK == true) && (pInstrument->m_uiRoutIP != uiRoutIP))
 		{
@@ -271,13 +270,13 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		// 		// 更新尾包仪器的尾包时刻
 		// 		pInstrument->m_uiTailSysTime = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTime;
 		// 在路由索引表中找到该尾包所在的路由
-		if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pRoutList->m_oRoutMap))
+		if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 		{
 			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", 
 				strConv);
 			// 由路由IP得到路由对象
-			pRout = GetRout(uiRoutIP, &pTailFrameThread->m_pRoutList->m_oRoutMap);
+			pRout = GetRout(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 			// 更新路由对象的路由时间
 			UpdateRoutTime(pRout);
 			// 清除与该仪器路由方向相同的之前仪器的尾包计数
@@ -286,8 +285,8 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 			if (pInstrument->m_iTailFrameCount > pTailFrameThread->m_pThread->m_pConstVar->m_iTailFrameStableTimes)
 			{
 				// 在路由方向上删除该仪器之后的全部仪器
-				DeleteAllInstrumentAlongRout(pInstrument, pRout, pTailFrameThread->m_pInstrumentList, 
-					pTailFrameThread->m_pRoutList, pTailFrameThread->m_pThread->m_pConstVar, 
+				DeleteAllInstrumentAlongRout(pInstrument, pRout, pTailFrameThread->m_pLineList->m_pInstrumentList, 
+					pTailFrameThread->m_pLineList->m_pRoutList, pTailFrameThread->m_pThread->m_pConstVar, 
 					pTailFrameThread->m_pThread->m_pLogOutPut);
 				pInstrument->m_iTailFrameCount = 0;
 			}
@@ -340,12 +339,8 @@ void ProcTailFrame(m_oTailFrameThreadStruct* pTailFrameThread)
 				}
 				else
 				{
-					EnterCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);
-					EnterCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个尾包帧
-					ProcTailFrameOne(pTailFrameThread);
-					LeaveCriticalSection(&pTailFrameThread->m_pRoutList->m_oSecRoutList);
-					LeaveCriticalSection(&pTailFrameThread->m_pInstrumentList->m_oSecInstrumentList);	
+					ProcTailFrameOne(pTailFrameThread);	
 				}	
 			}		
 		}		
@@ -426,8 +421,7 @@ bool OnInit_TailFrameThread(m_oEnvironmentStruct* pEnv)
 		return false;
 	}
 	pEnv->m_pTailFrameThread->m_pTailFrame = pEnv->m_pTailFrame;
-	pEnv->m_pTailFrameThread->m_pInstrumentList = pEnv->m_pInstrumentList;
-	pEnv->m_pTailFrameThread->m_pRoutList = pEnv->m_pRoutList;
+	pEnv->m_pTailFrameThread->m_pLineList = pEnv->m_pLineList;
 	return OnInitTailFrameThread(pEnv->m_pTailFrameThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
 }
 // 关闭尾包接收线程

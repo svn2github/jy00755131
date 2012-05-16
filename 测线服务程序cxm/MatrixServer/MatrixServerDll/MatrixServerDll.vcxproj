@@ -115,6 +115,7 @@
     <ClCompile Include="IPSetFrame.cpp" />
     <ClCompile Include="IPSetFrameThread.cpp" />
     <ClCompile Include="LineClientXML.cpp" />
+    <ClCompile Include="LineList.cpp" />
     <ClCompile Include="LogOutPut.cpp" />
     <ClCompile Include="LogOutPutThread.cpp" />
     <ClCompile Include="MatrixServerDll.cpp" />

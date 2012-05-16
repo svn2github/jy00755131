@@ -347,6 +347,7 @@ bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 	unsigned int& uiRoutIP)
 {
 	m_oInstrumentStruct* pInstrument = NULL;
+	
 	if (TRUE == IfIndexExistInMap(uiSN, &pInstrumentList->m_oSNInstrumentMap))
 	{
 		pInstrument = GetInstrumentFromMap(uiSN, &pInstrumentList->m_oSNInstrumentMap);
@@ -372,10 +373,13 @@ bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 		}
 		else
 		{
+			
 			return false;
 		}
+		
 		return true;
 	}
+	
 	return false;
 }
 /**

@@ -8,8 +8,7 @@ m_oHeadFrameThreadStruct* OnCreateHeadFrameThread(void)
 	pHeadFrameThread = new m_oHeadFrameThreadStruct;
 	pHeadFrameThread->m_pThread = new m_oThreadStruct;
 	pHeadFrameThread->m_pHeadFrame = NULL;
-	pHeadFrameThread->m_pInstrumentList = NULL;
-	pHeadFrameThread->m_pRoutList = NULL;
+	pHeadFrameThread->m_pLineList = NULL;
 	InitializeCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	return pHeadFrameThread;
 }
@@ -228,11 +227,11 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	uiVersion = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiVersion;
 	LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 	// 判断仪器SN是否在SN索引表中
-	if(FALSE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap))
+	if(FALSE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap))
 	{
 		int iDirection = 0;
 		// 得到新仪器
-		pInstrument = GetFreeInstrument(pHeadFrameThread->m_pInstrumentList);
+		pInstrument = GetFreeInstrument(pHeadFrameThread->m_pLineList->m_pInstrumentList);
 		//设置新仪器的SN
 		pInstrument->m_uiSN = uiSN;
 		// 仪器类型
@@ -252,14 +251,14 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 			// 得到空闲路由对象
 			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionCenter;
 			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, 
-				pHeadFrameThread->m_pRoutList);
+				pHeadFrameThread->m_pLineList->m_pRoutList);
 		}
 		else
 		{
 			if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP,
-				&pHeadFrameThread->m_pRoutList->m_oRoutMap))
+				&pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 			{
-				pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pRoutList->m_oRoutMap);
+				pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 				pInstrument->m_iRoutDirection = pRout->m_iRoutDirection;
 				// 把仪器加入路由仪器队列
 				pRout->m_olsRoutInstrument.push_back(pInstrument);
@@ -271,24 +270,24 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		{
 			// 设置交叉站路由
 			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionTop;
-			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pRoutList);
+			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pLineList->m_pRoutList);
 			// 设置交叉站路由
 			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionDown;
-			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pRoutList);
+			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pLineList->m_pRoutList);
 			// 设置交叉站路由
 			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionLeft;
-			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pRoutList);
+			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pLineList->m_pRoutList);
 			// 设置交叉站路由
 			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionRight;
-			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pRoutList);
+			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pLineList->m_pRoutList);
 		}
 		pInstrument->m_uiBroadCastPort = pHeadFrameThread->m_pThread->m_pConstVar->m_iBroadcastPortStart + pInstrument->m_uiRoutIP;
 		// 新仪器加入SN索引表
-		AddInstrumentToMap(pInstrument->m_uiSN, pInstrument, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
+		AddInstrumentToMap(pInstrument->m_uiSN, pInstrument, &pHeadFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap);
 	}
 
 	// 在索引表中则找到该仪器,得到该仪器指针
-	pInstrument = GetInstrumentFromMap(uiSN, &pHeadFrameThread->m_pInstrumentList->m_oSNInstrumentMap);
+	pInstrument = GetInstrumentFromMap(uiSN, &pHeadFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap);
 
 	// 判断仪器是否已经设置IP
 	if (pInstrument->m_bIPSetOK == true)
@@ -309,9 +308,9 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
 	}
 	if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
-		&pHeadFrameThread->m_pRoutList->m_oRoutMap))
+		&pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 	{
-		pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pRoutList->m_oRoutMap);
+		pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 		// 更新路由对象的路由时间
 		UpdateRoutTime(pRout);
 		// 仪器位置按照首包时刻排序
@@ -328,7 +327,7 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	// 则将该仪器加入IP地址设置队列
 	if (pInstrument->m_iHeadFrameStableNum >= pHeadFrameThread->m_pThread->m_pConstVar->m_iHeadFrameStableTimes)
 	{
-		AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, &pHeadFrameThread->m_pInstrumentList->m_oIPSetMap);
+		AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, &pHeadFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap);
 	}
 	str.Format(_T("接收到SN = 0x%x的仪器首包帧，首包时刻 = 0x%x，路由IP = 0x%x, 测线号 = %d，测点序号 = %d"), 
 		pInstrument->m_uiSN, pInstrument->m_uiTimeHeadFrame, pInstrument->m_uiRoutIP, 
@@ -369,14 +368,10 @@ void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThread)
 				}
 				else
 				{
-					EnterCriticalSection(&pHeadFrameThread->m_pInstrumentList->m_oSecInstrumentList);
-					EnterCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个首包帧
 					ProcHeadFrameOne(pHeadFrameThread);
 					// 系统发生变化的时间
-					UpdateLineChangeTime(pHeadFrameThread->m_pInstrumentList);
-					LeaveCriticalSection(&pHeadFrameThread->m_pRoutList->m_oSecRoutList);
-					LeaveCriticalSection(&pHeadFrameThread->m_pInstrumentList->m_oSecInstrumentList);
+					UpdateLineChangeTime(pHeadFrameThread->m_pLineList->m_pInstrumentList);
 				}	
 			}		
 		}		
@@ -490,8 +485,7 @@ bool OnInit_HeadFrameThread(m_oEnvironmentStruct* pEnv)
 		return false;
 	}
 	pEnv->m_pHeadFrameThread->m_pHeadFrame = pEnv->m_pHeadFrame;
-	pEnv->m_pHeadFrameThread->m_pInstrumentList = pEnv->m_pInstrumentList;
-	pEnv->m_pHeadFrameThread->m_pRoutList = pEnv->m_pRoutList;
+	pEnv->m_pHeadFrameThread->m_pLineList = pEnv->m_pLineList;
 	return OnInitHeadFrameThread(pEnv->m_pHeadFrameThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
 }
 // 关闭首包接收线程

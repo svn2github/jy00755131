@@ -280,7 +280,7 @@ void CMatrixServerDlg::OnBnClickedBtnGetsnbylocation()
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
 	pInstrument = m_oMatrixDllCall.Dll_GetInstrumentFromLocationMap(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
-		GetDlgItemInt(IDC_EDIT_POINTINDEX), &m_oMatrixDllCall.m_pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+		GetDlgItemInt(IDC_EDIT_POINTINDEX), &m_oMatrixDllCall.m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (pInstrument == NULL)
 	{
 		AfxMessageBox(_T("ÔÝÎ´ÕÒµ½ÒÇÆ÷£¡"));

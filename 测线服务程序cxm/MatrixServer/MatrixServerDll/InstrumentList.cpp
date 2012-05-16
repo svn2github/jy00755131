@@ -6,7 +6,6 @@ m_oInstrumentListStruct* OnCreateInstrumentList(void)
 {
 	m_oInstrumentListStruct* pInstrumentList = NULL;
 	pInstrumentList = new m_oInstrumentListStruct;
-	InitializeCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	pInstrumentList->m_pArrayInstrument = NULL;
 	pInstrumentList->m_bSetByHand = false;
 	return pInstrumentList;
@@ -18,7 +17,7 @@ void OnResetInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	{
 		return;
 	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	// 清空SN仪器索引表
 	pInstrumentList->m_oSNInstrumentMap.clear();
 	// 清空IP地址仪器索引表
@@ -26,7 +25,7 @@ void OnResetInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	// 清空空闲仪器队列
 	pInstrumentList->m_olsInstrumentFree.clear();
 	// 清空IP地址设置仪器索引表
-	pInstrumentList->m_oIPSetMap.clear();
+	pInstrumentList->m_oIPSetInstrumentMap.clear();
 	// 清空未完成ADC参数设置的仪器队列
 	pInstrumentList->m_oADCSetInstrumentMap.clear();
 	// 清空仪器位置索引表
@@ -46,7 +45,7 @@ void OnResetInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 		// 仪器加在空闲仪器队列尾部
 		pInstrumentList->m_olsInstrumentFree.push_back(&pInstrumentList->m_pArrayInstrument[i]);
 	}
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 }
 // ADC参数设置改为手动设置
 void OnSetADCSetByHand(m_oInstrumentListStruct* pInstrumentList)
@@ -55,9 +54,9 @@ void OnSetADCSetByHand(m_oInstrumentListStruct* pInstrumentList)
 	{
 		return;
 	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	pInstrumentList->m_bSetByHand = true;
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 }
 // 初始化仪器队列结构体
 void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar)
@@ -72,7 +71,7 @@ void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarS
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	// 清空SN仪器索引表
 	pInstrumentList->m_oSNInstrumentMap.clear();
 	// 清空IP地址仪器索引表
@@ -80,7 +79,7 @@ void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarS
 	// 清空空闲仪器队列
 	pInstrumentList->m_olsInstrumentFree.clear();
 	// 清空IP地址设置仪器索引表
-	pInstrumentList->m_oIPSetMap.clear();
+	pInstrumentList->m_oIPSetInstrumentMap.clear();
 	// 清空未完成ADC参数设置的仪器索引
 	pInstrumentList->m_oADCSetInstrumentMap.clear();
 	// 清空仪器位置索引表
@@ -112,7 +111,7 @@ void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarS
 		// 仪器加在空闲仪器队列尾部
 		pInstrumentList->m_olsInstrumentFree.push_back(&pInstrumentList->m_pArrayInstrument[i]);
 	}
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 }
 // 关闭仪器队列结构体
 void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
@@ -121,7 +120,7 @@ void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	{
 		return;
 	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	// 清空SN仪器索引表
 	pInstrumentList->m_oSNInstrumentMap.clear();
 	// 清空IP地址仪器索引表
@@ -129,7 +128,7 @@ void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	// 清空空闲仪器队列
 	pInstrumentList->m_olsInstrumentFree.clear();
 	// 清空IP地址设置仪器索引表
-	pInstrumentList->m_oIPSetMap.clear();
+	pInstrumentList->m_oIPSetInstrumentMap.clear();
 	// 清空未完成ADC参数设置的仪器队列
 	pInstrumentList->m_oADCSetInstrumentMap.clear();
 	// 清空仪器位置索引表
@@ -145,7 +144,7 @@ void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 		delete[] pInstrumentList->m_pArrayInstrument;
 		pInstrumentList->m_pArrayInstrument = NULL;
 	}
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 }
 // 释放仪器队列结构体
 void OnFreeInstrumentList(m_oInstrumentListStruct* pInstrumentList)
@@ -154,7 +153,6 @@ void OnFreeInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	{
 		return;
 	}
-	DeleteCriticalSection(&pInstrumentList->m_oSecInstrumentList);
 	delete pInstrumentList;
 }
 // 得到一个空闲仪器
@@ -166,7 +164,7 @@ m_oInstrumentStruct* GetFreeInstrument(m_oInstrumentListStruct* pInstrumentList)
 	}
 	m_oInstrumentStruct* pInstrument = NULL;
 	list <m_oInstrumentStruct*>::iterator iter;
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	if(pInstrumentList->m_uiCountFree > 0)	//有空闲仪器
 	{
 		// 从空闲队列中得到一个仪器
@@ -176,7 +174,7 @@ m_oInstrumentStruct* GetFreeInstrument(m_oInstrumentListStruct* pInstrumentList)
 		pInstrument->m_bInUsed = true;	// 设置仪器为使用中
 		pInstrumentList->m_uiCountFree--;	// 空闲仪器总数减1
 	}
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	return pInstrument;
 }
 // 增加一个空闲仪器
@@ -186,13 +184,13 @@ void AddFreeInstrument(m_oInstrumentStruct* pInstrument, m_oInstrumentListStruct
 	{
 		return;
 	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	//初始化仪器
 	OnInstrumentReset(pInstrument, pInstrumentList->m_bSetByHand);
 	//加入空闲队列
 	pInstrumentList->m_olsInstrumentFree.push_back(pInstrument);
 	pInstrumentList->m_uiCountFree++;	// 空闲仪器总数加1
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 }
 // 更新上次测网系统变化时刻
 void UpdateLineChangeTime(m_oInstrumentListStruct* pInstrumentList)
@@ -201,8 +199,8 @@ void UpdateLineChangeTime(m_oInstrumentListStruct* pInstrumentList)
 	{
 		return;
 	}
-	EnterCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 	// 上次测网系统变化时刻
 	pInstrumentList->m_uiLineChangeTime = GetTickCount();
-	LeaveCriticalSection(&pInstrumentList->m_oSecInstrumentList);
+	
 }

@@ -8,8 +8,7 @@ m_oADCSetThreadStruct* OnCreateADCSetThread(void)
 	pADCSetThread = new m_oADCSetThreadStruct;
 	pADCSetThread->m_pThread = new m_oThreadStruct;
 	pADCSetThread->m_pADCSetFrame = NULL;
-	pADCSetThread->m_pInstrumentList = NULL;
-	pADCSetThread->m_pRoutList = NULL;
+	pADCSetThread->m_pLineList = NULL;
 	pADCSetThread->m_pCommInfo = NULL;
 	pADCSetThread->m_pLogOutPutADCFrameTime = NULL;
 	InitializeCriticalSection(&pADCSetThread->m_oSecADCSetThread);
@@ -350,11 +349,11 @@ bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, boo
 	unsigned int uiDstIP = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentNext = NULL;
-	if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap))
+	if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
 		return false;
 	}
-	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pInstrumentList->m_oInstrumentLocationMap);
+	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (bRout == true)
 	{
 		pInstrumentNext = GetNextInstrument(iDirection, pInstrument, pEnv->m_pConstVar);
@@ -416,9 +415,8 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	hash_map<unsigned int, m_oInstrumentStruct*> ::iterator iter2;
 	m_oInstrumentStruct* pInstrument = NULL;
-	EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
-	for (iter = pADCSetThread->m_pRoutList->m_oADCSetRoutMap.begin();
-		iter != pADCSetThread->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
+	for (iter = pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap.begin();
+		iter != pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
 	{
 		iter->second->m_bADCSetReturn = false;
 		// 如果需要按照路由设置
@@ -444,17 +442,14 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 			OnSelectADCSetCmd(pADCSetThread, true, iter->second->m_pTail->m_uiBroadCastPort);
 		}
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
-	EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
-	for (iter2 = pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.begin();
-		iter2 != pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.end(); iter2++)
+	for (iter2 = pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap.begin();
+		iter2 != pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap.end(); iter2++)
 	{
 		// 重置ADC参数设置应答标志位
 		iter2->second->m_bADCSetReturn = false;
 		// 选择ADC参数设置命令
 		OnSelectADCSetCmd(pADCSetThread, false, iter2->second->m_uiIP);
 	}
-	LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 }
 // 处理ADC参数设置应答帧
 void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
@@ -475,9 +470,9 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
 	// 仪器在索引表中
-	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pADCSetThread->m_pInstrumentList->m_oIPInstrumentMap))
+	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pADCSetThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap))
 	{
-		pInstrument = GetInstrumentFromMap(uiIPInstrument, &pADCSetThread->m_pInstrumentList->m_oIPInstrumentMap);
+		pInstrument = GetInstrumentFromMap(uiIPInstrument, &pADCSetThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 		pInstrument->m_bADCSetReturn = true;
 		if (uiADCSetOperationNb == 17)
 		{
@@ -515,8 +510,8 @@ void OnOutPutADCDataRecResult(m_oADCSetThreadStruct* pADCSetThread)
 	int iADCDataActualRecFrameNum = 0;
 	// 重发查询帧得到的应答帧数
 	int iADCDataRetransmissionFrameNum = 0;
-	for (iter = pADCSetThread->m_pInstrumentList->m_oIPInstrumentMap.begin();
-		iter != pADCSetThread->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
+	for (iter = pADCSetThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.begin();
+		iter != pADCSetThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
 	{
 		pInstrument = iter->second;
 		// 仪器类型为采集站
@@ -583,8 +578,8 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 	bool bReturn = true;
 	unsigned int uiADCSetOperationNb = 0;
 	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
-	for (iter = pADCSetThread->m_pRoutList->m_oADCSetRoutMap.begin();
-		iter != pADCSetThread->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
+	for (iter = pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap.begin();
+		iter != pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
 	{
 		if (false == iter->second->m_bADCSetReturn)
 		{
@@ -609,7 +604,7 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 						// 找不到则插入索引表
 						// 仪器索引表中已经有的路由不再广播发送ADC参数设置
 						AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
-							&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
+							&pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
 						bReturn = false;
 						bADCSetRoutReturn = false;
 					}
@@ -629,7 +624,7 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 						}
 						// 如果在索引表中找到该仪器则删除
 						DeleteInstrumentFromMap(pInstrument->m_uiIP, 
-							&pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap);
+							&pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
 					}
 				}
 			} while (pInstrument != iter->second->m_pTail);
@@ -637,8 +632,8 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 			iter->second->m_bADCSetRout = bADCSetRoutReturn;
 		}
 	}
-	for (iter2 = pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.begin();
-		iter2 != pADCSetThread->m_pInstrumentList->m_oADCSetInstrumentMap.end(); iter2++)
+	for (iter2 = pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap.begin();
+		iter2 != pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap.end(); iter2++)
 	{
 		if (false == iter2->second->m_bADCSetReturn)
 		{
@@ -699,12 +694,8 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 				}
 				else
 				{
-					EnterCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
-					EnterCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
 					// 处理单个ADC参数设置应答帧
 					ProcADCSetReturnFrameOne(pADCSetThread);
-					LeaveCriticalSection(&pADCSetThread->m_pRoutList->m_oSecRoutList);
-					LeaveCriticalSection(&pADCSetThread->m_pInstrumentList->m_oSecInstrumentList);
 				}	
 			}		
 		}		
@@ -872,8 +863,7 @@ bool OnInit_ADCSetThread(m_oEnvironmentStruct* pEnv)
 		return false;
 	}
 	pEnv->m_pADCSetThread->m_pADCSetFrame = pEnv->m_pADCSetFrame;
-	pEnv->m_pADCSetThread->m_pInstrumentList = pEnv->m_pInstrumentList;
-	pEnv->m_pADCSetThread->m_pRoutList = pEnv->m_pRoutList;
+	pEnv->m_pADCSetThread->m_pLineList = pEnv->m_pLineList;
 	pEnv->m_pADCSetThread->m_pLogOutPutADCFrameTime = pEnv->m_pLogOutPutADCFrameTime;
 	pEnv->m_pADCSetThread->m_pCommInfo = pEnv->m_pInstrumentCommInfo;
 	return OnInitADCSetThread(pEnv->m_pADCSetThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
