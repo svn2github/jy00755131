@@ -549,8 +549,10 @@ void CMatrixDllCall::Dll_ADCSet_ByHand(void)
 	}
 	else
 	{
+		EnterCriticalSection(&m_pEnv->m_pLineList->m_oSecLineList);
 		// call the function
 		(*Dll_On_ADCSetByHand)(m_pEnv->m_pLineList->m_pInstrumentList);
+		LeaveCriticalSection(&m_pEnv->m_pLineList->m_oSecLineList);
 	}
 }
 // DLL手动打开交叉站某一路由方向的电源，方向为1上、2下、3左、4右

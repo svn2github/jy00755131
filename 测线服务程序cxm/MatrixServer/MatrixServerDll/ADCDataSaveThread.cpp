@@ -261,29 +261,36 @@ DWORD WINAPI RunADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread
 	{
 		return 1;
 	}
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
-		if (pADCDataSaveThread->m_pThread->m_bClose == true)
+		bClose = pADCDataSaveThread->m_pThread->m_bClose;
+		bWork = pADCDataSaveThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 			break;
 		}
-		if (pADCDataSaveThread->m_pThread->m_bWork == true)
+		if (bWork == true)
 		{
 			// 保存ADC数据到施工文件
 			ProcADCDataSaveInFile(pADCDataSaveThread);
 		}
-		if (pADCDataSaveThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
+		bClose = pADCDataSaveThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 			break;
 		}
-		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 		WaitADCDataSaveThread(pADCDataSaveThread);
 	}
+	EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pADCDataSaveThread->m_pThread->m_hThreadClose);
+	LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	return 1;
 }
 // 初始化施工放炮数据存储线程
@@ -311,14 +318,14 @@ bool OnInitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread,
 		&pADCDataSaveThread->m_pThread->m_dwThreadID);
 	if (pADCDataSaveThread->m_pThread->m_hThread == NULL)
 	{
+		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 		AddMsgToLogOutPutList(pADCDataSaveThread->m_pThread->m_pLogOutPut, "OnInitADCDataSaveThread", 
 			"pADCDataSaveThread->m_pThread->m_hThread", ErrorType, IDS_ERR_CREATE_THREAD);
-		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 		return false;
 	}
+	LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	AddMsgToLogOutPutList(pADCDataSaveThread->m_pThread->m_pLogOutPut, "OnInitADCDataSaveThread", 
 		"ADC数据存储线程创建成功");
-	LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	return true;
 }
 // 初始化施工放炮数据存储线程
@@ -339,12 +346,15 @@ bool OnCloseADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 	{
 		return false;
 	}
+	EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	if (false == OnCloseThread(pADCDataSaveThread->m_pThread))
 	{
+		LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 		AddMsgToLogOutPutList(pADCDataSaveThread->m_pThread->m_pLogOutPut, "OnCloseADCDataSaveThread", 
 			"ADC数据存储线程强制关闭", WarningType);
 		return false;
 	}
+	LeaveCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	AddMsgToLogOutPutList(pADCDataSaveThread->m_pThread->m_pLogOutPut, "OnCloseADCDataSaveThread", 
 		"ADC数据存储线程成功关闭");
 	return true;

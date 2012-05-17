@@ -195,32 +195,29 @@ void OnClearADCSetMap(m_oADCSetThreadStruct* pADCSetThread)
 	pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap.clear();
 }
 // 将仪器加入ADC参数设置索引表
-void GetADCTaskQueueBySN(m_oADCSetThreadStruct* pADCSetThread, 
-	m_oInstrumentStruct* pInstrument, int iOpt)
+void GetADCTaskQueueBySN(bool bADCStartSample, bool bADCStopSample, m_oLineListStruct* pLineList, 
+	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument, int iOpt)
 {
-	if (pADCSetThread == NULL)
-	{
-		return;
-	}
-	if (pInstrument == NULL)
+	if ((pLineList == NULL) || (pConstVar == NULL) || (pInstrument == NULL))
 	{
 		return;
 	}
 	CString str = _T("");
 	string strConv = "";
 	bool bAdd = false;
-	if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+	EnterCriticalSection(&pLineList->m_oSecLineList);
+	if (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
 	{
-		if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
+		if (iOpt == pConstVar->m_iADCSetOptNb)
 		{
 			if (false == pInstrument->m_bADCSet)
 			{
 				bAdd = true;
 			}
 		}
-		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb)
+		else if (iOpt == pConstVar->m_iADCStartSampleOptNb)
 		{
-			if ((true == pADCSetThread->m_bADCStartSample)
+			if ((true == bADCStartSample)
 				&& (false == pInstrument->m_bADCStartSample))
 			{
 				// 实际接收ADC数据帧数
@@ -238,9 +235,9 @@ void GetADCTaskQueueBySN(m_oADCSetThreadStruct* pADCSetThread,
 				bAdd = true;
 			}
 		}
-		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb)
+		else if (iOpt == pConstVar->m_iADCStopSampleOptNb)
 		{
-			if ((true == pADCSetThread->m_bADCStopSample)
+			if ((true == bADCStopSample)
 				&& (false == pInstrument->m_bADCStopSample))
 			{
 				bAdd = true;
@@ -251,41 +248,41 @@ void GetADCTaskQueueBySN(m_oADCSetThreadStruct* pADCSetThread,
 	{
 		pInstrument->m_bADCSetReturn = false;
 		AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
-			&pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
+			&pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
 		str.Format(_T("将仪器SN = 0x%x 加入ADC参数设置任务索引表"), pInstrument->m_uiSN);
+	}
+	LeaveCriticalSection(&pLineList->m_oSecLineList);
+	if (bAdd == true)
+	{
 		strConv = (CStringA)str;
-		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueBySN", strConv);
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetADCTaskQueueBySN", strConv);
 	}
 }
 // 判断路由方向上是否有采集站
-void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread, 
-	m_oRoutStruct* pRout, int iOpt)
+void GetADCTaskQueueByRout(bool bADCStartSample, bool bADCStopSample, m_oLineListStruct* pLineList, 
+	m_oConstVarStruct* pConstVar, m_oRoutStruct* pRout, int iOpt)
 {
-	if ((pADCSetThread == NULL) || (pRout == NULL) || (pRout->m_pTail == NULL))
+	if ((pLineList == NULL) || (pConstVar == NULL)|| (pRout == NULL) || (pRout->m_pTail == NULL))
 	{
 		return;
 	}
 	m_oInstrumentStruct* pInstrument = NULL;
 	bool bRoutADCSet = true;
 	bool bADCSet = true;
-	bool bADCStartSample = false;
-	bool bADCStopSample = false;
 	CString str = _T("");
 	string strConv = "";
-	bADCStartSample = pADCSetThread->m_bADCStartSample;
-	bADCStopSample = pADCSetThread->m_bADCStopSample;
+	EnterCriticalSection(&pLineList->m_oSecLineList);
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
-			pADCSetThread->m_pThread->m_pConstVar);
+		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
 		}
-		if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+		if (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
 		{
-			if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
+			if (iOpt == pConstVar->m_iADCSetOptNb)
 			{
 				if (false == pInstrument->m_bADCSet)
 				{
@@ -296,7 +293,7 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 					bADCSet = true;
 				}
 			}
-			else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb)
+			else if (iOpt == pConstVar->m_iADCStartSampleOptNb)
 			{
 				if ((true == bADCStartSample)
 					&& (false == pInstrument->m_bADCStartSample))
@@ -320,7 +317,7 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 					bADCSet = true;
 				}
 			}
-			else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb)
+			else if (iOpt == pConstVar->m_iADCStopSampleOptNb)
 			{
 				if ((true == bADCStopSample)
 					&& (false == pInstrument->m_bADCStopSample))
@@ -336,12 +333,12 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 			{
 				pInstrument->m_bADCSetReturn = false;
 				AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, 
-					&pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
+					&pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
 			else
 			{
 				DeleteInstrumentFromMap(pInstrument->m_uiIP, 
-					&pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
+					&pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
 				bRoutADCSet = false;
 			}
 		}
@@ -353,30 +350,30 @@ void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread,
 		pRout->m_bADCSetRout = true;
 		str.Format(_T("将路由IP = 0x%x 加入ADC参数设置任务索引表"), pRout->m_uiRoutIP);
 		strConv = (CStringA)str;
-		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
-		AddRout(pRout->m_uiRoutIP, pRout, &pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap);
+		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetADCTaskQueueByRout", strConv);
+		AddRout(pRout->m_uiRoutIP, pRout, &pLineList->m_pRoutList->m_oADCSetRoutMap);
 
 		// 从仪器索引表删除该路由的仪器
 		pInstrument = pRout->m_pHead;
 		do 
 		{
-			pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
-				pADCSetThread->m_pThread->m_pConstVar);
+			pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
 			if (pInstrument == NULL)
 			{
 				break;
 			}
-			if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+			if (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
 			{
 				DeleteInstrumentFromMap(pInstrument->m_uiIP, 
-					&pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
+					&pLineList->m_pInstrumentList->m_oADCSetInstrumentMap);
 			}
 		} while (pInstrument != pRout->m_pTail);
 	}
 	else
 	{
-		DeleteRout(pRout->m_uiRoutIP, &pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap);
+		DeleteRout(pRout->m_uiRoutIP, &pLineList->m_pRoutList->m_oADCSetRoutMap);
 	}
+	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 生成ADC参数设置任务队列
 void GetADCTaskQueue(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
@@ -385,8 +382,15 @@ void GetADCTaskQueue(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 	{
 		return;
 	}
+	bool bStartSample = false;
+	bool bStopSample = false;
 	// 仪器路由地址索引表
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
+	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+	bStartSample = pADCSetThread->m_bADCStartSample;
+	bStopSample = pADCSetThread->m_bADCStopSample;
+	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+	EnterCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 	for (iter = pADCSetThread->m_pLineList->m_pRoutList->m_oRoutMap.begin(); 
 		iter != pADCSetThread->m_pLineList->m_pRoutList->m_oRoutMap.end(); iter++)
 	{
@@ -394,9 +398,11 @@ void GetADCTaskQueue(m_oADCSetThreadStruct* pADCSetThread, int iOpt)
 		if ((iter->second->m_bRoutLaux == false)
 			&& (iter->second->m_pTail != NULL)) 
 		{
-			GetADCTaskQueueByRout(pADCSetThread, iter->second, iOpt);
+			GetADCTaskQueueByRout(bStartSample, bStopSample, 
+				pADCSetThread->m_pLineList, pADCSetThread->m_pThread->m_pConstVar, iter->second, iOpt);
 		}
 	}
+	LeaveCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 }
 // 自动开始ADC参数设置
 void OnADCCmdAuto(m_oADCSetThreadStruct* pADCSetThread, int iOpt)

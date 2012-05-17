@@ -279,15 +279,22 @@ void CMatrixServerDlg::OnBnClickedBtnGetsnbylocation()
 	// TODO: 在此添加控件通知处理程序代码
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
+	bool bFind = false;
+	EnterCriticalSection(&m_oMatrixDllCall.m_pEnv->m_pLineList->m_oSecLineList);
 	pInstrument = m_oMatrixDllCall.Dll_GetInstrumentFromLocationMap(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
 		GetDlgItemInt(IDC_EDIT_POINTINDEX), &m_oMatrixDllCall.m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
-	if (pInstrument == NULL)
+	if (pInstrument != NULL)
+	{
+		str.Format(_T("仪器SN = 0x%x"), pInstrument->m_uiSN);
+		bFind = true;
+	}
+	LeaveCriticalSection(&m_oMatrixDllCall.m_pEnv->m_pLineList->m_oSecLineList);
+	if (bFind == false)
 	{
 		AfxMessageBox(_T("暂未找到仪器！"));
 	}
 	else
 	{
-		str.Format(_T("仪器SN = 0x%x"), pInstrument->m_uiSN);
 		AfxMessageBox(str);
 	}
 }

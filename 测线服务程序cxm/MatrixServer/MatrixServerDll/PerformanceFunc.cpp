@@ -957,22 +957,23 @@ bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection,
 	m_oRoutStruct* pRout = NULL;
 	unsigned int uiRoutIP = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
-
+	EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	if (false == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
-
+		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		return false;
 	}
 	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pLineList->m_pInstrumentList, 
 		pEnv->m_pConstVar, uiRoutIP))
 	{
-
+		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		return false;
 	}
 	
 	if (false == GetRoutByRoutIP(uiRoutIP, pEnv->m_pLineList->m_pRoutList, &pRout))
 	{
+		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		return false;
 	}
 	uiInstrumentNum = 0;
@@ -980,10 +981,12 @@ bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection,
 	if ((pInstrument->m_bIPSetOK) && (iDirection == pEnv->m_pConstVar->m_iDirectionCenter))
 	{
 		uiInstrumentNum = 1;
+		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		return true;
 	}
 	if (pRout->m_pTail == NULL)
 	{
+		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		return true;
 	}
 	while(pInstrument != pRout->m_pTail)
@@ -998,5 +1001,6 @@ bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection,
 			uiInstrumentNum++;
 		}
 	}
+	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	return true;
 }

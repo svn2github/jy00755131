@@ -44,14 +44,14 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 }
 // 产生一个施工任务
 void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame, 
-	m_oOptTaskArrayStruct* pOptTaskArray, m_oInstrumentListStruct* pInstrumentList,
+	m_oOptTaskArrayStruct* pOptTaskArray, m_oLineListStruct* pLineList,
 	m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
 		return;
 	}
-	if ((pOptTaskArray == NULL) || (pInstrumentList == NULL))
+	if ((pOptTaskArray == NULL) || (pLineList == NULL))
 	{
 		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GenOneOptTask", "",
 			ErrorType, IDS_ERR_PTRISNULL);
@@ -63,6 +63,7 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 	unsigned int uiLineNb = 0;
 	hash_map <unsigned int, m_oInstrumentStruct*>::iterator iter;
 	list<m_oOptInstrumentStruct>::iterator list_iter;
+	list<m_oOptInstrumentStruct> oOptInstrumentList;
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	pOptTaskArray->m_uiADCDataFolderNb++;
 	// 得到一个空闲施工任务
@@ -80,10 +81,13 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 	CreateDirectory(str2, NULL);
 	// 创建施工任务数据文件夹
 	pOptTask->m_SaveLogFilePath = (CStringA)str2;
-	// @@@@参与施工任务的采集站排序后加入施工任务的仪器索引表
+	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	
-	for (iter = pInstrumentList->m_oIPInstrumentMap.begin(); 
-		iter != pInstrumentList->m_oIPInstrumentMap.end(); iter++)
+	// @@@@参与施工任务的采集站排序后加入施工任务的仪器索引表
+	oOptInstrumentList.clear();
+	EnterCriticalSection(&pLineList->m_oSecLineList);
+	for (iter = pLineList->m_pInstrumentList->m_oIPInstrumentMap.begin(); 
+		iter != pLineList->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
 	{
 		if (iter->second->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
 		{
@@ -91,10 +95,17 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 			oOptInstrument.m_uiSN = iter->second->m_uiSN;
 			oOptInstrument.m_iLineIndex = iter->second->m_iLineIndex;
 			oOptInstrument.m_iPointIndex = iter->second->m_iPointIndex;
-			pOptTask->m_olsOptInstrument.push_back(oOptInstrument);
+			oOptInstrumentList.push_back(oOptInstrument);
 		}
 	}
-	
+	LeaveCriticalSection(&pLineList->m_oSecLineList);
+	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
+	for (list_iter = oOptInstrumentList.begin();
+		list_iter != oOptInstrumentList.end();
+		list_iter++)
+	{
+		pOptTask->m_olsOptInstrument.push_back(*list_iter);
+	}
 	pOptTask->m_olsOptInstrument.sort();
 	for (list_iter = pOptTask->m_olsOptInstrument.begin();
 		list_iter != pOptTask->m_olsOptInstrument.end();
@@ -104,6 +115,7 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 		uiLineNb++;
 	}
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
+	oOptInstrumentList.clear();
 }
 // 释放一个施工任务
 void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray)
@@ -235,21 +247,27 @@ void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt,
 	m_oRoutStruct* pRout = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
 	unsigned int uiRoutIP = 0;
+	bool bStartSample = false;
+	bool bStopSample = false;
 	if (bOnly == true)
 	{
 		OnClearADCSetMap(pEnv->m_pADCSetThread);
 	}
+	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
+	bStartSample = pEnv->m_pADCSetThread->m_bADCStartSample;
+	bStopSample = pEnv->m_pADCSetThread->m_bADCStopSample;
+	LeaveCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
-	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
-	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
+	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, 
+		&pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (pInstrument == NULL)
 	{
+		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		return;
 	}
 	// 按照路由设置
 	if (bRout == true)
 	{
-		EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pLineList->m_pInstrumentList, 
 			pEnv->m_pConstVar, uiRoutIP))
 		{
@@ -261,16 +279,16 @@ void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt,
 			LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 			return;
 		}
-		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		OnResetADCSetLableByRout(pRout, iOpt, pEnv->m_pConstVar);
-		GetADCTaskQueueByRout(pEnv->m_pADCSetThread, pRout, iOpt);
+		GetADCTaskQueueByRout(bStartSample, bStopSample, pEnv->m_pLineList, pEnv->m_pConstVar, pRout, iOpt);
 	}
 	// 按照SN设置单个仪器的ADC
 	else
 	{
 		OnResetADCSetLableBySN(pInstrument, iOpt, pEnv->m_pConstVar);
-		GetADCTaskQueueBySN(pEnv->m_pADCSetThread, pInstrument, iOpt);
+		GetADCTaskQueueBySN(bStartSample, bStopSample, pEnv->m_pLineList, pEnv->m_pConstVar, pInstrument, iOpt);
 	}
+	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 }
 // ADC参数设置
 void OnADCSet(m_oEnvironmentStruct* pEnv)
@@ -301,15 +319,14 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	pEnv->m_pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
 	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
+	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
+	EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	// 清空丢帧索引
-	pEnv->m_pADCDataRecThread->m_oADCLostFrameMap.clear();
+	pEnv->m_pLineList->m_pInstrumentList->m_oADCLostFrameMap.clear();
+	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	// @@@@调试用
 	// 产生一个施工任务
-	GenOneOptTask(1, 0, pEnv->m_pOptTaskArray,
-		pEnv->m_pLineList->m_pInstrumentList, pEnv->m_pConstVar);
-	// 产生一个施工任务
-	//	GenOneOptTask(2, pEnv->m_pADCDataRecThread->m_iADCFrameCount, pEnv->m_pOptTaskArray);
-	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
+	GenOneOptTask(1, 0, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
 }
 // ADC停止采集命令
@@ -322,8 +339,6 @@ void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 	// @@@@调试用
 	// 释放一个施工任务
 	FreeOneOptTask(1, pEnv->m_pOptTaskArray);
-	// 释放一个施工任务
-	//	FreeOneOptTask(2, pEnv->m_pOptTaskArray);
 	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	pEnv->m_pADCSetThread->m_bADCStartSample = false;
 	pEnv->m_pADCSetThread->m_bADCStopSample = true;
@@ -356,7 +371,8 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 	}
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	CString str = _T("");
-	CString strOut = _T("");
+	CString strOutTime = _T("");
+	CString strOutError = _T("");
 	string strConv = "";
 	m_oInstrumentStruct* pInstrument = NULL;
 	// 尾包查询帧查询的仪器计数
@@ -376,18 +392,17 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 	int iErrorCodeQueryNum = 0;
 	// 接收到误码查询帧数
 	int iErrorCodeReturnNum = 0;
-
+	EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	for (iter = pEnv->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.begin();
 		iter != pEnv->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
 	{
 		pInstrument = iter->second;
 		// 尾包时刻查询和时统
-		str.Format(_T("仪器SN = 0x%x，仪器IP = 0x%x，发送尾包时刻查询帧次数 %d，应答次数 %d，发送时统次数 %d，应答次数%d"),
+		str.Format(_T("仪器SN = 0x%x，仪器IP = 0x%x，发送尾包时刻查询帧次数 %d，应答次数 %d，发送时统次数 %d，应答次数%d/n"),
 			pInstrument->m_uiSN, pInstrument->m_uiIP, pInstrument->m_iTailTimeQueryCount, 
 			pInstrument->m_iTailTimeReturnCount, pInstrument->m_iTimeSetCount, 
 			pInstrument->m_iTimeSetReturnCount);
-		strConv = (CStringA)str;
-		AddMsgToLogOutPutList(pEnv->m_pLogOutPutTimeDelay, "", strConv);
+		strOutTime += str;
 		iTailTimeQueryNum += pInstrument->m_iTailTimeQueryCount;
 		iTailTimeReturnNum += pInstrument->m_iTailTimeReturnCount;
 		iTimeDelaySetNum += pInstrument->m_iTimeSetCount;
@@ -397,24 +412,22 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 		str.Format(_T("仪器SN = 0x%x，仪器IP = 0x%x，发送误码查询帧数 %d，应答次数 %d；"),
 			pInstrument->m_uiSN, pInstrument->m_uiIP, pInstrument->m_uiErrorCodeQueryNum, 
 			pInstrument->m_uiErrorCodeReturnNum);
-		strOut = str;
+		strOutError += str;
 		if ((pInstrument->m_iInstrumentType == pEnv->m_pConstVar->m_iInstrumentTypeLCI)
 			|| (pInstrument->m_iInstrumentType == pEnv->m_pConstVar->m_iInstrumentTypeLAUX))
 		{
-			str.Format(_T("大线A数据误码 = %d，大线B数据误码 = %d，交叉线A数据误码 = %d，交叉线B数据误码 = %d，命令误码 = %d"), 
+			str.Format(_T("大线A数据误码 = %d，大线B数据误码 = %d，交叉线A数据误码 = %d，交叉线B数据误码 = %d，命令误码 = %d/n"), 
 				pInstrument->m_iLAUXErrorCodeDataLineACount, pInstrument->m_iLAUXErrorCodeDataLineBCount, 
 				pInstrument->m_iLAUXErrorCodeDataLAUXLineACount, pInstrument->m_iLAUXErrorCodeDataLAUXLineBCount,
 				pInstrument->m_iLAUXErrorCodeCmdCount);
-			strOut += str;
+			strOutError += str;
 		}
 		else
 		{
-			str.Format(_T("数据误码 = %d，命令误码 = %d"), pInstrument->m_iFDUErrorCodeDataCount, 
+			str.Format(_T("数据误码 = %d，命令误码 = %d/n"), pInstrument->m_iFDUErrorCodeDataCount, 
 				pInstrument->m_iFDUErrorCodeCmdCount);
-			strOut += str;
+			strOutError += str;
 		}
-		strConv = (CStringA)strOut;
-		AddMsgToLogOutPutList(pEnv->m_pLogOutPutErrorCode, "", strConv);
 		iErrorCodeQueryNum += pInstrument->m_uiErrorCodeQueryNum;
 		iErrorCodeReturnNum += pInstrument->m_uiErrorCodeReturnNum;
 		// 网络数据错误计数
@@ -426,7 +439,13 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 		// 命令错误计数
 		iErrorCodeCmdNum += pInstrument->m_iFDUErrorCodeCmdCount + pInstrument->m_iLAUXErrorCodeCmdCount;
 	}
-	
+	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
+	// 尾包时刻查询和时统
+	strConv = (CStringA)strOutTime;
+	AddMsgToLogOutPutList(pEnv->m_pLogOutPutTimeDelay, "", strConv);
+	// 误码查询
+	strConv = (CStringA)strOutError;
+	AddMsgToLogOutPutList(pEnv->m_pLogOutPutErrorCode, "", strConv);
 	// 尾包时刻
 	str.Format(_T("尾包时刻查询仪器的总数%d， 应答帧总数%d"), iTailTimeQueryNum, iTailTimeReturnNum);
 	strConv = (CStringA)str;

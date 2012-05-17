@@ -1262,6 +1262,50 @@ typedef struct InstrumentLocation_Struct
 	int m_iPointIndex;
 }m_oInstrumentLocationStruct;
 
+// 丢失帧IP地址和偏移量结构体
+typedef struct ADCLostFrameKey_Struct
+{
+	ADCLostFrameKey_Struct(unsigned int uiIP, unsigned short usADCFramePointNb)
+	{
+		this->m_uiIP = uiIP;
+		this->m_usADCFramePointNb = usADCFramePointNb;
+	}
+	~ADCLostFrameKey_Struct()
+	{
+	}
+	bool operator == (const ADCLostFrameKey_Struct& rhs) const
+	{
+		return ((m_uiIP == rhs.m_uiIP) && (m_usADCFramePointNb == rhs.m_usADCFramePointNb));
+	}
+	bool operator < (const ADCLostFrameKey_Struct& rhs) const
+	{
+		if (m_uiIP == rhs.m_uiIP)
+		{
+			return (m_usADCFramePointNb < rhs.m_usADCFramePointNb);
+		}
+		else
+		{
+			return (m_uiIP < rhs.m_uiIP);
+		}
+	}
+	// 丢帧的指针偏移量
+	unsigned short m_usADCFramePointNb;
+	// 丢帧的IP地址
+	unsigned int m_uiIP;
+}m_oADCLostFrameKeyStruct;
+
+// 丢失帧结构体
+typedef struct ADCLostFrame_Struct
+{
+	// 丢失帧重发次数
+	unsigned int m_uiCount;
+	// 丢帧在文件内的帧序号，从0开始
+	unsigned int m_uiFrameNb;
+	// 丢失帧的本地时间
+	unsigned int m_uiSysTime;
+	// 是否已经收到应答
+	bool m_bReturnOk;
+}m_oADCLostFrameStruct;
 
 // 仪器队列
 typedef struct InstrumentList_Struct
@@ -1280,6 +1324,8 @@ typedef struct InstrumentList_Struct
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oADCSetInstrumentMap;
 	// 仪器位置索引表
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*> m_oInstrumentLocationMap;
+	// 丢帧索引表
+	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct> m_oADCLostFrameMap;
 	// 测网系统发生变化的时间
 	unsigned int m_uiLineChangeTime;
 	// 测网状态由不稳定变为稳定
@@ -1387,51 +1433,6 @@ typedef struct ADCDataBufArray_Struct
 	/** 空闲缓冲区数量*/
 	unsigned int m_uiCountFree;
 }m_oADCDataBufArrayStruct;
-
-// 丢失帧IP地址和偏移量结构体
-typedef struct ADCLostFrameKey_Struct
-{
-	ADCLostFrameKey_Struct(unsigned int uiIP, unsigned short usADCFramePointNb)
-	{
-		this->m_uiIP = uiIP;
-		this->m_usADCFramePointNb = usADCFramePointNb;
-	}
-	~ADCLostFrameKey_Struct()
-	{
-	}
-	bool operator == (const ADCLostFrameKey_Struct& rhs) const
-	{
-		return ((m_uiIP == rhs.m_uiIP) && (m_usADCFramePointNb == rhs.m_usADCFramePointNb));
-	}
-	bool operator < (const ADCLostFrameKey_Struct& rhs) const
-	{
-		if (m_uiIP == rhs.m_uiIP)
-		{
-			return (m_usADCFramePointNb < rhs.m_usADCFramePointNb);
-		}
-		else
-		{
-			return (m_uiIP < rhs.m_uiIP);
-		}
-	}
-	// 丢帧的指针偏移量
-	unsigned short m_usADCFramePointNb;
-	// 丢帧的IP地址
-	unsigned int m_uiIP;
-}m_oADCLostFrameKeyStruct;
-
-// 丢失帧结构体
-typedef struct ADCLostFrame_Struct
-{
-	// 丢失帧重发次数
-	unsigned int m_uiCount;
-	// 丢帧在文件内的帧序号，从0开始
-	unsigned int m_uiFrameNb;
-	// 丢失帧的本地时间
-	unsigned int m_uiSysTime;
-	// 是否已经收到应答
-	bool m_bReturnOk;
-}m_oADCLostFrameStruct;
 
 // 参与施工的仪器结构体
 typedef struct OptInstrument_Struct
@@ -1684,8 +1685,6 @@ typedef struct ADCDataRecThread_Struct
 	unsigned int m_uiADCDataFrameSysTime;
 	// 存文件数据帧数计数
 	int m_iADCFrameCount;
-	// 丢帧索引表
-	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct> m_oADCLostFrameMap;
 	// 采样数据回调函数
 	ProSampleDateCallBack m_oProSampleDataCallBack;
 }m_oADCDataRecThreadStruct;
@@ -2900,11 +2899,11 @@ MatrixServerDll_API void OnADCSetThreadWork(int iOpt, m_oADCSetThreadStruct* pAD
 // 清除ADC参数设置任务索引
 MatrixServerDll_API void OnClearADCSetMap(m_oADCSetThreadStruct* pADCSetThread);
 // 将仪器加入ADC参数设置索引表
-MatrixServerDll_API void GetADCTaskQueueBySN(m_oADCSetThreadStruct* pADCSetThread, 
-	m_oInstrumentStruct* pInstrument, int iOpt);
+MatrixServerDll_API void GetADCTaskQueueBySN(bool bADCStartSample, bool bADCStopSample, 
+	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument, int iOpt);
 // 判断路由方向上是否有采集站
-MatrixServerDll_API void GetADCTaskQueueByRout(m_oADCSetThreadStruct* pADCSetThread, 
-	m_oRoutStruct* pRout, int iOpt);
+MatrixServerDll_API void GetADCTaskQueueByRout(bool bADCStartSample, bool bADCStopSample, 
+	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar, m_oRoutStruct* pRout, int iOpt);
 // 生成ADC参数设置任务队列
 MatrixServerDll_API void GetADCTaskQueue(m_oADCSetThreadStruct* pADCSetThread, int iOpt);
 // 自动开始ADC参数设置
@@ -2998,7 +2997,7 @@ MatrixServerDll_API void OnFreeADCDataSaveThread(m_oADCDataSaveThreadStruct* pAD
 /************************************************************************/
 // 产生一个施工任务
 MatrixServerDll_API void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame, 
-	m_oOptTaskArrayStruct* pOptTaskArray, m_oInstrumentListStruct* pInstrumentList,
+	m_oOptTaskArrayStruct* pOptTaskArray, m_oLineListStruct* pLineList,
 	m_oConstVarStruct* pConstVar);
 // 释放一个施工任务
 MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, 
