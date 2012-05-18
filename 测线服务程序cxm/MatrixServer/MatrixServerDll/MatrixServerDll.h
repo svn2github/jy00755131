@@ -1326,10 +1326,6 @@ typedef struct InstrumentList_Struct
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*> m_oInstrumentLocationMap;
 	// 丢帧索引表
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct> m_oADCLostFrameMap;
-	// 测网系统发生变化的时间
-	unsigned int m_uiLineChangeTime;
-	// 测网状态由不稳定变为稳定
-	bool m_bLineStableChange;
 	/** 仪器总数*/
 	unsigned int m_uiCountAll;
 	/** 空闲仪器数量*/
@@ -1399,6 +1395,10 @@ typedef struct LineList_Struct
 	m_oInstrumentListStruct* m_pInstrumentList;
 	// 路由队列结构体
 	m_oRoutListStruct* m_pRoutList;
+	// 测网状态由不稳定变为稳定
+	bool m_bLineStableChange;
+	// 测网系统发生变化的时间
+	unsigned int m_uiLineChangeTime;
 }m_oLineListStruct;
 // 数据存储缓冲区结构体
 typedef struct ADCDataBuf_Struct
@@ -2509,7 +2509,7 @@ MatrixServerDll_API m_oInstrumentStruct* GetFreeInstrument(m_oInstrumentListStru
 MatrixServerDll_API void AddFreeInstrument(m_oInstrumentStruct* pInstrument, 
 	m_oInstrumentListStruct* pInstrumentList);
 // 更新上次测网系统变化时刻
-MatrixServerDll_API void UpdateLineChangeTime(m_oInstrumentListStruct* pInstrumentList);
+MatrixServerDll_API void UpdateLineChangeTime(m_oLineListStruct* pLineList);
 
 /************************************************************************/
 /* 路由结构体                                                           */
@@ -2765,14 +2765,13 @@ MatrixServerDll_API void OnClearSameRoutTailCount(m_oInstrumentStruct* pInstrume
 MatrixServerDll_API void FreeRoutFromMap(unsigned int uiRoutIP, m_oRoutListStruct* pRoutList);
 // 回收一个仪器
 MatrixServerDll_API void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument, 
-	m_oInstrumentListStruct* pInstrumentList, m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar);
+	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar);
 // 删除该路由方向指定仪器之后的仪器
 MatrixServerDll_API void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument, m_oRoutStruct* pRout, 
-	m_oInstrumentListStruct* pInstrumentList, m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar);
+	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar);
 // 在路由方向上删除该仪器之后的全部仪器
 MatrixServerDll_API void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument, m_oRoutStruct* pRout, 
-	m_oInstrumentListStruct* pInstrumentList, m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar,
-	m_oLogOutPutStruct* pLogOutPut);
+	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut);
 // 处理单个尾包帧
 MatrixServerDll_API void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread);
 // 处理尾包帧
@@ -2897,7 +2896,7 @@ MatrixServerDll_API void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_o
 // ADC参数设置线程开始工作
 MatrixServerDll_API void OnADCSetThreadWork(int iOpt, m_oADCSetThreadStruct* pADCSetThread);
 // 清除ADC参数设置任务索引
-MatrixServerDll_API void OnClearADCSetMap(m_oADCSetThreadStruct* pADCSetThread);
+MatrixServerDll_API void OnClearADCSetMap(m_oLineListStruct* pLineList);
 // 将仪器加入ADC参数设置索引表
 MatrixServerDll_API void GetADCTaskQueueBySN(bool bADCStartSample, bool bADCStopSample, 
 	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument, int iOpt);

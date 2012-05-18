@@ -23,6 +23,10 @@ void OnResetLineList(m_oLineListStruct* pLineList)
 	OnResetInstrumentList(pLineList->m_pInstrumentList);
 	// 重置路由队列
 	OnResetRoutList(pLineList->m_pRoutList);
+	// 测网状态为不稳定
+	pLineList->m_bLineStableChange = false;
+	// 测网系统发生变化的时间
+	pLineList->m_uiLineChangeTime = 0;
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 初始化测线队列结构体
@@ -43,6 +47,10 @@ void OnInitLineList(m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
 	OnInitInstrumentList(pLineList->m_pInstrumentList, pConstVar);
 	// 初始化路由队列结构体
 	OnInitRoutList(pLineList->m_pRoutList, pConstVar);
+	// 测网状态为不稳定
+	pLineList->m_bLineStableChange = false;
+	// 测网系统发生变化的时间
+	pLineList->m_uiLineChangeTime = 0;
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 关闭测线队列结构体

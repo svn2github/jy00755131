@@ -32,10 +32,7 @@ void OnResetInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	pInstrumentList->m_oInstrumentLocationMap.clear();
 	// 清空丢帧索引
 	pInstrumentList->m_oADCLostFrameMap.clear();
-	// 测网系统发生变化的时间
-	pInstrumentList->m_uiLineChangeTime = 0;
-	// 测网状态为不稳定
-	pInstrumentList->m_bLineStableChange = false;
+
 
 	// 空闲仪器数量
 	pInstrumentList->m_uiCountFree = pInstrumentList->m_uiCountAll;
@@ -58,7 +55,6 @@ void OnSetADCSetByHand(m_oInstrumentListStruct* pInstrumentList)
 	}
 	
 	pInstrumentList->m_bSetByHand = true;
-	
 }
 // 初始化仪器队列结构体
 void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar)
@@ -89,10 +85,7 @@ void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarS
 	// 清空丢帧索引
 	pInstrumentList->m_oADCLostFrameMap.clear();
 
-	// 测网系统发生变化的时间
-	pInstrumentList->m_uiLineChangeTime = 0;
-	// 测网状态为不稳定
-	pInstrumentList->m_bLineStableChange = false;
+
 	// 仪器队列中仪器个数
 	pInstrumentList->m_uiCountAll = pConstVar->m_iInstrumentNum;
 	// 生成仪器数组
@@ -199,14 +192,14 @@ void AddFreeInstrument(m_oInstrumentStruct* pInstrument, m_oInstrumentListStruct
 	
 }
 // 更新上次测网系统变化时刻
-void UpdateLineChangeTime(m_oInstrumentListStruct* pInstrumentList)
+void UpdateLineChangeTime(m_oLineListStruct* pLineList)
 {
-	if (pInstrumentList == NULL)
+	if (pLineList == NULL)
 	{
 		return;
 	}
-	
+	EnterCriticalSection(&pLineList->m_oSecLineList);
 	// 上次测网系统变化时刻
-	pInstrumentList->m_uiLineChangeTime = GetTickCount();
-	
+	pLineList->m_uiLineChangeTime = GetTickCount();
+	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }

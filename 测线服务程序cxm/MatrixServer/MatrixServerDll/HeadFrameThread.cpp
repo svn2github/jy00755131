@@ -226,6 +226,7 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	uiRoutIP = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP;
 	uiVersion = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiVersion;
 	LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
+	EnterCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
 	// 判断仪器SN是否在SN索引表中
 	if(FALSE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap))
 	{
@@ -292,8 +293,11 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	// 判断仪器是否已经设置IP
 	if (pInstrument->m_bIPSetOK == true)
 	{
+		LeaveCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
+		EnterCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 		GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
 			pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+		LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
 			strFrameData, ErrorType, IDS_ERR_EXPIREDHEADFRAME);
 		return;
@@ -301,10 +305,14 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	// 判断首包时刻是否发生变化
 	if (pInstrument->m_uiTimeHeadFrame != uiTimeHeadFrame)
 	{
+		LeaveCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
+		EnterCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 		GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
 			pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+		LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
 			strFrameData, ErrorType, IDS_ERR_HEADFRAMETIME);
+		EnterCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
 		pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
 	}
 	if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
@@ -318,10 +326,14 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	}
 	else
 	{
+		LeaveCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
+		EnterCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 		GetFrameInfo(pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
 			pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+		LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", 
 			strFrameData, ErrorType, IDS_ERR_ROUT_NOTEXIT);
+		return;
 	}
 	// 如果仪器在其路由方向上位置稳定次数超过设定次数
 	// 则将该仪器加入IP地址设置队列
@@ -332,6 +344,7 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	str.Format(_T("接收到SN = 0x%x的仪器首包帧，首包时刻 = 0x%x，路由IP = 0x%x, 测线号 = %d，测点序号 = %d"), 
 		pInstrument->m_uiSN, pInstrument->m_uiTimeHeadFrame, pInstrument->m_uiRoutIP, 
 		pInstrument->m_iLineIndex, pInstrument->m_iPointIndex);
+	LeaveCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", strConv);
 }
@@ -344,36 +357,40 @@ void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	}
 	// 帧数量设置为0
 	int iFrameCount = 0;
+	EnterCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 	// 得到首包接收网络端口帧数量
 	iFrameCount = GetFrameCount(pHeadFrameThread->m_pHeadFrame->m_oHeadFrameSocket,
 		pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, 
 		pHeadFrameThread->m_pThread->m_pLogOutPut);
+	LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 	// 判断帧数量是否大于0
 	if(iFrameCount > 0)
 	{
 		// 循环处理每1帧
 		for(int i = 0; i < iFrameCount; i++)
 		{
+			EnterCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 			// 得到帧数据
-			if (true == GetFrameData(pHeadFrameThread->m_pHeadFrame->m_oHeadFrameSocket,
+			if (false == GetFrameData(pHeadFrameThread->m_pHeadFrame->m_oHeadFrameSocket,
 				pHeadFrameThread->m_pHeadFrame->m_cpRcvFrameData, 
 				pHeadFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, 
 				pHeadFrameThread->m_pThread->m_pLogOutPut))
 			{
-				if (false == ParseInstrumentHeadFrame(pHeadFrameThread->m_pHeadFrame, 
-					pHeadFrameThread->m_pThread->m_pConstVar))
-				{
-					AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ParseInstrumentHeadFrame", 
-						"", ErrorType, IDS_ERR_PARSE_HEADFRAME);
-				}
-				else
-				{
-					// 处理单个首包帧
-					ProcHeadFrameOne(pHeadFrameThread);
-					// 系统发生变化的时间
-					UpdateLineChangeTime(pHeadFrameThread->m_pLineList->m_pInstrumentList);
-				}	
-			}		
+				LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
+				continue;
+			}
+			LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
+			if (false == ParseInstrumentHeadFrame(pHeadFrameThread->m_pHeadFrame, 
+				pHeadFrameThread->m_pThread->m_pConstVar))
+			{
+				AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ParseInstrumentHeadFrame", 
+					"", ErrorType, IDS_ERR_PARSE_HEADFRAME);
+				continue;
+			}
+			// 处理单个首包帧
+			ProcHeadFrameOne(pHeadFrameThread);
+			// 系统发生变化的时间
+			UpdateLineChangeTime(pHeadFrameThread->m_pLineList);	
 		}		
 	}
 }
@@ -417,29 +434,36 @@ DWORD WINAPI RunHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	{
 		return 1;
 	}
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
-		if (pHeadFrameThread->m_pThread->m_bClose == true)
+		bClose = pHeadFrameThread->m_pThread->m_bClose;
+		bWork = pHeadFrameThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 			break;
 		}
-		if (pHeadFrameThread->m_pThread->m_bWork == true)
+		if (bWork == true)
 		{
 			// 处理首包帧
 			ProcHeadFrame(pHeadFrameThread);
 		}
-		if (pHeadFrameThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
+		bClose = pHeadFrameThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 			break;
 		}
-		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		WaitHeadFrameThread(pHeadFrameThread);
 	}
+	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pHeadFrameThread->m_pThread->m_hThreadClose);
+	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	return 1;
 }
 // 初始化首包接收线程
@@ -467,14 +491,14 @@ bool OnInitHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread,
 		&pHeadFrameThread->m_pThread->m_dwThreadID);
 	if (pHeadFrameThread->m_pThread->m_hThread == NULL)
 	{
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "OnInitHeadFrameThread", 
 			"pHeadFrameThread->m_pThread->m_hThread", ErrorType, IDS_ERR_CREATE_THREAD);
-		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		return false;
 	}
+	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "OnInitHeadFrameThread", 
 		"首包接收线程创建成功");
-	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	return true;
 }
 // 初始化首包接收线程
@@ -495,12 +519,15 @@ bool OnCloseHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	{
 		return false;
 	}
+	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	if (false == OnCloseThread(pHeadFrameThread->m_pThread))
 	{
+		LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 		AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, 
 			"OnCloseHeadFrameThread", "首包线程强制关闭", WarningType);
 		return false;
 	}
+	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, 
 		"OnCloseHeadFrameThread", "首包线程成功关闭");
 	return true;

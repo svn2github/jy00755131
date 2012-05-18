@@ -251,7 +251,7 @@ void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt,
 	bool bStopSample = false;
 	if (bOnly == true)
 	{
-		OnClearADCSetMap(pEnv->m_pADCSetThread);
+		OnClearADCSetMap(pEnv->m_pLineList);
 	}
 	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	bStartSample = pEnv->m_pADCSetThread->m_bADCStartSample;
@@ -371,7 +371,6 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 	}
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	CString str = _T("");
-	CString strOutTime = _T("");
 	CString strOutError = _T("");
 	string strConv = "";
 	m_oInstrumentStruct* pInstrument = NULL;
@@ -398,11 +397,13 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 	{
 		pInstrument = iter->second;
 		// 尾包时刻查询和时统
-		str.Format(_T("仪器SN = 0x%x，仪器IP = 0x%x，发送尾包时刻查询帧次数 %d，应答次数 %d，发送时统次数 %d，应答次数%d/n"),
+		str.Format(_T("仪器SN = 0x%x，仪器IP = 0x%x，发送尾包时刻查询帧次数 %d，应答次数 %d，发送时统次数 %d，应答次数%d"),
 			pInstrument->m_uiSN, pInstrument->m_uiIP, pInstrument->m_iTailTimeQueryCount, 
 			pInstrument->m_iTailTimeReturnCount, pInstrument->m_iTimeSetCount, 
 			pInstrument->m_iTimeSetReturnCount);
-		strOutTime += str;
+		// 尾包时刻查询和时统
+		strConv = (CStringA)str;
+		AddMsgToLogOutPutList(pEnv->m_pLogOutPutTimeDelay, "", strConv);
 		iTailTimeQueryNum += pInstrument->m_iTailTimeQueryCount;
 		iTailTimeReturnNum += pInstrument->m_iTailTimeReturnCount;
 		iTimeDelaySetNum += pInstrument->m_iTimeSetCount;
@@ -412,11 +413,11 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 		str.Format(_T("仪器SN = 0x%x，仪器IP = 0x%x，发送误码查询帧数 %d，应答次数 %d；"),
 			pInstrument->m_uiSN, pInstrument->m_uiIP, pInstrument->m_uiErrorCodeQueryNum, 
 			pInstrument->m_uiErrorCodeReturnNum);
-		strOutError += str;
+		strOutError = str;
 		if ((pInstrument->m_iInstrumentType == pEnv->m_pConstVar->m_iInstrumentTypeLCI)
 			|| (pInstrument->m_iInstrumentType == pEnv->m_pConstVar->m_iInstrumentTypeLAUX))
 		{
-			str.Format(_T("大线A数据误码 = %d，大线B数据误码 = %d，交叉线A数据误码 = %d，交叉线B数据误码 = %d，命令误码 = %d/n"), 
+			str.Format(_T("大线A数据误码 = %d，大线B数据误码 = %d，交叉线A数据误码 = %d，交叉线B数据误码 = %d，命令误码 = %d"), 
 				pInstrument->m_iLAUXErrorCodeDataLineACount, pInstrument->m_iLAUXErrorCodeDataLineBCount, 
 				pInstrument->m_iLAUXErrorCodeDataLAUXLineACount, pInstrument->m_iLAUXErrorCodeDataLAUXLineBCount,
 				pInstrument->m_iLAUXErrorCodeCmdCount);
@@ -424,10 +425,13 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 		}
 		else
 		{
-			str.Format(_T("数据误码 = %d，命令误码 = %d/n"), pInstrument->m_iFDUErrorCodeDataCount, 
+			str.Format(_T("数据误码 = %d，命令误码 = %d"), pInstrument->m_iFDUErrorCodeDataCount, 
 				pInstrument->m_iFDUErrorCodeCmdCount);
 			strOutError += str;
 		}
+		// 误码查询
+		strConv = (CStringA)strOutError;
+		AddMsgToLogOutPutList(pEnv->m_pLogOutPutErrorCode, "", strConv);
 		iErrorCodeQueryNum += pInstrument->m_uiErrorCodeQueryNum;
 		iErrorCodeReturnNum += pInstrument->m_uiErrorCodeReturnNum;
 		// 网络数据错误计数
@@ -440,12 +444,6 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 		iErrorCodeCmdNum += pInstrument->m_iFDUErrorCodeCmdCount + pInstrument->m_iLAUXErrorCodeCmdCount;
 	}
 	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
-	// 尾包时刻查询和时统
-	strConv = (CStringA)strOutTime;
-	AddMsgToLogOutPutList(pEnv->m_pLogOutPutTimeDelay, "", strConv);
-	// 误码查询
-	strConv = (CStringA)strOutError;
-	AddMsgToLogOutPutList(pEnv->m_pLogOutPutErrorCode, "", strConv);
 	// 尾包时刻
 	str.Format(_T("尾包时刻查询仪器的总数%d， 应答帧总数%d"), iTailTimeQueryNum, iTailTimeReturnNum);
 	strConv = (CStringA)str;

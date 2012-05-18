@@ -6,8 +6,8 @@ m_oOptTaskArrayStruct* OnCreateOptTaskArray(void)
 {
 	m_oOptTaskArrayStruct* pOptTaskArray = NULL;
 	pOptTaskArray = new m_oOptTaskArrayStruct;
-	InitializeCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	pOptTaskArray->m_pArrayOptTask = NULL;
+	InitializeCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	return pOptTaskArray;
 }
 // 重置施工任务数组结构体

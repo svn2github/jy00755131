@@ -819,6 +819,9 @@ DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 			{
 				// 根据ADC参数设置任务队列发送参数设置帧
 				uiCounter++;
+				EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+				pADCSetThread->m_uiCounter = uiCounter;
+				LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 				if (uiCounter == 1)
 				{
 					OnSendADCSetCmd(pADCSetThread);
@@ -846,12 +849,14 @@ DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 				else
 				{
 					uiCounter = 0;
+					EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+					pADCSetThread->m_uiCounter = uiCounter;
+					LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 				}
 			}
 		}
 		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		bClose = pADCSetThread->m_pThread->m_bClose;
-		pADCSetThread->m_uiCounter = uiCounter;
 		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		if (bClose == true)
 		{

@@ -53,31 +53,38 @@ DWORD WINAPI RunLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 	{
 		return 0;
 	}
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
-		if (pLogOutPutThread->m_pThread->m_bClose == true)
+		bClose = pLogOutPutThread->m_pThread->m_bClose;
+		bWork = pLogOutPutThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 			break;
 		}
-		if (pLogOutPutThread->m_pThread->m_bWork == true)
+		if (bWork == true)
 		{
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pThread->m_pLogOutPut);
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pLogOutPutTimeDelay);
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pLogOutPutErrorCode);
 			WriteLogOutPutListToFile(pLogOutPutThread->m_pLogOutPutADCFrameTime);
-		}	
-		if (pLogOutPutThread->m_pThread->m_bClose == true)
+		}
+		EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
+		bClose = pLogOutPutThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 			break;
 		}
-		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		WaitLogOutPutThread(pLogOutPutThread);
 	}
+	EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pLogOutPutThread->m_pThread->m_hThreadClose);
+	LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	return 1;
 }
 // 初始化日志输出线程
@@ -105,14 +112,14 @@ bool OnInitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread,
 		&pLogOutPutThread->m_pThread->m_dwThreadID);
 	if (pLogOutPutThread->m_pThread->m_hThread == NULL)
 	{
+		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, "OnInitLogOutPutThread", 
 			"pLogOutPutThread->m_pThread->m_hThread", ErrorType, IDS_ERR_CREATE_THREAD);
-		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		return false;
 	}
+	LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, "OnInitLogOutPutThread", 
 		"日志输出线程创建成功");
-	LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	return true;
 }
 // 初始化日志输出线程
@@ -135,12 +142,15 @@ bool OnCloseLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 	{
 		return false;
 	}
+	EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	if (false == OnCloseThread(pLogOutPutThread->m_pThread))
 	{
+		LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 		AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, "OnCloseLogOutPutThread", 
 			"日志输出线程强制关闭", WarningType);
 		return false;
 	}
+	LeaveCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	AddMsgToLogOutPutList(pLogOutPutThread->m_pThread->m_pLogOutPut, "OnCloseLogOutPutThread", 
 		"日志输出线程成功关闭");
 	return true;

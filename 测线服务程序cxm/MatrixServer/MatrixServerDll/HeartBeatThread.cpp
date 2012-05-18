@@ -51,31 +51,38 @@ DWORD WINAPI RunHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 	{
 		return 0;
 	}
+	bool bClose = false;
+	bool bWork = false;
 	while(true)
 	{
 		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
-		if (pHeartBeatThread->m_pThread->m_bClose == true)
+		bClose = pHeartBeatThread->m_pThread->m_bClose;
+		bWork = pHeartBeatThread->m_pThread->m_bWork;
+		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 			break;
 		}
-		if (pHeartBeatThread->m_pThread->m_bWork == true)
+		if (bWork == true)
 		{
 			MakeInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
 				pHeartBeatThread->m_pThread->m_pConstVar);
 			SendInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
 				pHeartBeatThread->m_pThread->m_pConstVar);
 		}
-		if (pHeartBeatThread->m_pThread->m_bClose == true)
+		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
+		bClose = pHeartBeatThread->m_pThread->m_bClose;
+		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
+		if (bClose == true)
 		{
-			LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 			break;
 		}
-		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		WaitHeartBeatThread(pHeartBeatThread);
 	}
+	EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	// 设置事件对象为有信号状态,释放等待线程后将事件置为无信号
 	SetEvent(pHeartBeatThread->m_pThread->m_hThreadClose);
+	LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	return 1;
 }
 // 初始化心跳线程
@@ -102,14 +109,14 @@ bool OnInitHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread,
 		&pHeartBeatThread->m_pThread->m_dwThreadID);
 	if (pHeartBeatThread->m_pThread->m_hThread == NULL)
 	{
+		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, "OnInitHeartBeatThread", 
 			"pHeartBeatThread->m_pThread->m_hThread", ErrorType, IDS_ERR_CREATE_THREAD);
-		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		return false;
 	}
+	LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, "OnInitHeartBeatThread", 
 		"心跳线程创建成功");
-	LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	return true;
 }
 // 初始化心跳线程
@@ -129,12 +136,15 @@ bool OnCloseHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 	{
 		return false;
 	}
+	EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	if(false == OnCloseThread(pHeartBeatThread->m_pThread))
 	{
+		LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, "OnCloseHeartBeatThread", 
 			"心跳线程强制关闭", WarningType);
 		return false;
 	}
+	LeaveCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	AddMsgToLogOutPutList(pHeartBeatThread->m_pThread->m_pLogOutPut, "OnCloseHeartBeatThread", 
 		"心跳线程成功关闭");
 	return true;
