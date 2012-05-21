@@ -19,7 +19,7 @@ public:
 	// DLL释放实例
 	void Dll_Free_Instance(void);
 	// DLL开始AD数据采集
-	void Dll_StartSample(int iSampleRate);
+	void Dll_StartSample(int iSampleRate, bool bHPFOpen = true);
 	// DLL停止AD数据采集
 	void Dll_StopSample(void);
 	// DLL开始工作
@@ -38,7 +38,7 @@ public:
 	void Dll_ADCSet(void);
 	// DLL按照路由地址设置部分ADC参数
 	void Dll_ADCSetPart(int iLineIndex, int iPointIndex, int iRoutDirection, int iOpt, 
-		int iSampleRate = 0, bool bOnly = true, bool bRout = true);
+		int iSampleRate = 0, bool bOnly = true, bool bRout = true, bool bHPFOpen = true);
 	// DLL手动设置ADC参数
 	void Dll_ADCSet_ByHand(void);
 	// DLL手动打开交叉站某一路由方向的电源

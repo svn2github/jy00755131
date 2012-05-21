@@ -148,6 +148,18 @@ typedef struct ConstVar_Struct
 	int m_iADCStartSampleOptNb;
 	// ADC停止采集操作序号
 	int m_iADCStopSampleOptNb;
+	// ADC参数设置命令数
+	int m_iADCSetCmdNum;
+	// ADC参数设置起始命令序号
+	int m_iADCSetCmdBeginNb;
+	// ADC开始采集命令数
+	int m_iADCStartSampleCmdNum;
+	// ADC开始采集起始命令序号
+	int m_iADCStartSampleBeginNb;
+	// ADC停止采集命令数
+	int m_iADCStopSampleCmdNum;
+	// ADC停止采集起始命令序号
+	int m_iADCStopSampleBeginNb;
 	// 仪器类型-交叉站
 	int m_iInstrumentTypeLAUX;
 	// 仪器类型-电源站
@@ -383,6 +395,10 @@ typedef struct XMLADCSetupData_Struct
 	int m_iSetADCReadContinuousSize;
 	// ADC设置连续采样
 	char* m_cpSetADCReadContinuous;
+	// 采样率设置
+	int m_iSampleRate;
+	// 高通滤波器是否开启
+	bool m_bHPFOpen;
 }m_oXMLADCSetupDataStruct;
 // 从XML文件中得到的服务端参数信息
 typedef struct XMLParameterSetupData_Struct
@@ -1617,7 +1633,7 @@ typedef struct ADCSetThread_Struct
 	// 测线队列结构体指针
 	m_oLineListStruct* m_pLineList;
 	// ADC命令设置序号
-	unsigned int m_uiADCSetOperationNb;
+	int m_iADCSetOperationNb;
 	// 计数器
 	unsigned int m_uiCounter;
 	// ADC开始数据采集标志位
@@ -1681,6 +1697,8 @@ typedef struct ADCDataRecThread_Struct
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
 	// 数据存储缓冲区结构体指针
 	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
+	// 采样率设置
+	int m_iADCSampleRate;
 	// 上一帧的本地时间
 	unsigned int m_uiADCDataFrameSysTime;
 	// 存文件数据帧数计数

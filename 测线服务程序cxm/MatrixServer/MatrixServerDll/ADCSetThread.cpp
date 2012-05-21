@@ -30,7 +30,7 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 	unsigned int uiTBTimeOld = 0;
 	bool bSetLocalSysTime = false;
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
+	uiADCSetOperationNb = pADCSetThread->m_iADCSetOperationNb;
 	uiLocalSysTime = pADCSetThread->m_uiLocalSysTime;
 	uiTBTimeOld = pADCSetThread->m_uiTBTimeOld;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
@@ -225,8 +225,76 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置ADC数据采样率等参数
-		// @@@需要界面设置采样率等参数，暂选为1K采样率
 		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		// 采用高通滤波
+		if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_bHPFOpen == true)
+		{
+			if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 250)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 67;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = 86;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 19;
+			}
+			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 500)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 75;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = -89;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 9;
+			}
+			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 1000)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 83;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = -45;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 4;
+			}
+			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 2000)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 91;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = 105;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 2;
+			}
+			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 4000)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 99;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = 52;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 1;
+			}
+			else
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 83;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = -45;
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 4;
+			}
+		}
+		else
+		{
+			// 不经过高通滤波
+			if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 250)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 66;
+			}
+			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 500)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 74;
+			}
+			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 1000)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
+			}
+			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 2000)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 90;
+			}
+			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 4000)
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 98;
+			}
+			// 如果不在所选采样率则按照1000采样率采样
+			else
+			{
+				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
+			}
+		}
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample;
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCSampleSize;
 		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
@@ -485,7 +553,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	uiSysTime = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiSysTime;
 	LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
+	uiADCSetOperationNb = pADCSetThread->m_iADCSetOperationNb;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 
 	// 仪器在索引表中
@@ -570,23 +638,29 @@ void OnADCSetNextOpt(m_oADCSetThreadStruct* pADCSetThread)
 	{
 		return;
 	}
+	int iADCSetCmdNum = pADCSetThread->m_pThread->m_pConstVar->m_iADCSetCmdNum;
+	int iADCStartSampleCmdNum = pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleCmdNum;
+	int iADCStopSampleCmdNum = pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleCmdNum;
+	int iADCSetCmdBeginNb = pADCSetThread->m_pThread->m_pConstVar->m_iADCSetCmdBeginNb;
+	int iADCStartSampleCmdBeginNb = pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleBeginNb;
+	int iADCStopSampleCmdBeginNb = pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleBeginNb;
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	// 执行下一步ADC命令发送并开启应答监视定时器
-	pADCSetThread->m_uiADCSetOperationNb++;
+	pADCSetThread->m_iADCSetOperationNb++;
 	pADCSetThread->m_uiCounter = 0;
 	// 完成ADC参数设置
 	// 完成ADC开始数据采集
 	// 完成ADC停止数据采集
-	if ((pADCSetThread->m_uiADCSetOperationNb == 12)
-		|| (pADCSetThread->m_uiADCSetOperationNb == 19)
-		|| (pADCSetThread->m_uiADCSetOperationNb == 23))
+	if ((pADCSetThread->m_iADCSetOperationNb == (iADCSetCmdBeginNb + iADCSetCmdNum))
+		|| (pADCSetThread->m_iADCSetOperationNb == (iADCStartSampleCmdBeginNb + iADCStartSampleCmdNum))
+		|| (pADCSetThread->m_iADCSetOperationNb == (iADCStopSampleCmdBeginNb + iADCStopSampleCmdNum)))
 	{
 		// 完成ADC停止数据采集
-		if (pADCSetThread->m_uiADCSetOperationNb == 23)
+		if (pADCSetThread->m_iADCSetOperationNb == (iADCStopSampleCmdBeginNb + iADCStopSampleCmdNum))
 		{
 			OnOutPutADCDataRecResult(pADCSetThread);
 		}
-		pADCSetThread->m_uiADCSetOperationNb = 0;
+		pADCSetThread->m_iADCSetOperationNb = 0;
 		// ADC参数设置线程停止工作
 		pADCSetThread->m_pThread->m_bWork = false;
 	}
@@ -604,9 +678,15 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 	m_oInstrumentStruct* pInstrument = NULL;
 	bool bADCSetRoutReturn = true;
 	bool bReturn = true;
-	unsigned int uiADCSetOperationNb = 0;
+	int iADCSetOperationNb = 0;
+	int iADCSetCmdNum = pADCSetThread->m_pThread->m_pConstVar->m_iADCSetCmdNum;
+	int iADCStartSampleCmdNum = pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleCmdNum;
+	int iADCStopSampleCmdNum = pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleCmdNum;
+	int iADCSetCmdBeginNb = pADCSetThread->m_pThread->m_pConstVar->m_iADCSetCmdBeginNb;
+	int iADCStartSampleCmdBeginNb = pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleBeginNb;
+	int iADCStopSampleCmdBeginNb = pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleBeginNb;
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
+	iADCSetOperationNb = pADCSetThread->m_iADCSetOperationNb;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	EnterCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 	for (iter = pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap.begin();
@@ -641,15 +721,15 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 					}
 					else
 					{
-						if (uiADCSetOperationNb == 11)
+						if (iADCSetOperationNb == (iADCSetCmdBeginNb + iADCSetCmdNum - 1))
 						{
 							pInstrument->m_bADCSet = true;
 						}
-						else if (uiADCSetOperationNb == 18)
+						else if (iADCSetOperationNb == (iADCStartSampleCmdBeginNb + iADCStartSampleCmdNum - 1))
 						{
 							pInstrument->m_bADCStartSample = true;
 						}
-						else if (uiADCSetOperationNb == 22)
+						else if (iADCSetOperationNb == (iADCStopSampleCmdBeginNb + iADCStopSampleCmdNum - 1))
 						{
 							pInstrument->m_bADCStopSample = true;
 						}
@@ -673,15 +753,15 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 		}
 		else
 		{
-			if (uiADCSetOperationNb == 11)
+			if (iADCSetOperationNb == (iADCSetCmdBeginNb + iADCSetCmdNum - 1))
 			{
 				iter2->second->m_bADCSet = true;
 			}
-			else if (uiADCSetOperationNb == 18)
+			else if (iADCSetOperationNb == (iADCStartSampleCmdBeginNb + iADCStartSampleCmdNum - 1))
 			{
 				iter2->second->m_bADCStartSample = true;
 			}
-			else if (uiADCSetOperationNb == 22)
+			else if (iADCSetOperationNb == (iADCStopSampleCmdBeginNb + iADCStopSampleCmdNum - 1))
 			{
 				iter2->second->m_bADCStopSample = true;
 			}
@@ -737,7 +817,7 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 		}		
 	}
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
+	uiADCSetOperationNb = pADCSetThread->m_iADCSetOperationNb;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	// 判断ADC参数设置应答是否接收完全
 	if (true == CheckADCSetReturnFrame(pADCSetThread))
@@ -806,7 +886,7 @@ DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		bClose = pADCSetThread->m_pThread->m_bClose;
 		bWork = pADCSetThread->m_pThread->m_bWork;
-		uiADCSetOperationNb = pADCSetThread->m_uiADCSetOperationNb;
+		uiADCSetOperationNb = pADCSetThread->m_iADCSetOperationNb;
 		uiCounter = pADCSetThread->m_uiCounter;
 		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		if (bClose == true)
@@ -879,7 +959,7 @@ bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread,
 		return false;
 	}
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	pADCSetThread->m_uiADCSetOperationNb = 0;
+	pADCSetThread->m_iADCSetOperationNb = 0;
 	pADCSetThread->m_bADCStartSample = false;
 	pADCSetThread->m_bADCStopSample = false;
 	pADCSetThread->m_uiLocalSysTime = 0;

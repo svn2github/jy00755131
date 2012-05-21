@@ -107,6 +107,24 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("ADCStopSampleOptNb");		// ADC停止采集操作序号
 		pConstVar->m_iADCStopSampleOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
+		strSectionKey=_T("ADCSetCmdNum");			// ADC参数设置命令数
+		pConstVar->m_iADCSetCmdNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
+		strSectionKey=_T("ADCSetCmdBeginNb");		// ADC参数设置起始命令序号
+		pConstVar->m_iADCSetCmdBeginNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
+		strSectionKey=_T("ADCStartSampleCmdNum");	// ADC开始采集命令数
+		pConstVar->m_iADCStartSampleCmdNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
+		strSectionKey=_T("ADCStartSampleBeginNb");	// ADC开始采集起始命令序号
+		pConstVar->m_iADCStartSampleBeginNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
+		strSectionKey=_T("ADCStopSampleCmdNum");	// ADC停止采集命令数
+		pConstVar->m_iADCStopSampleCmdNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
+		strSectionKey=_T("ADCStopSampleBeginNb");	// ADC停止采集起始命令序号
+		pConstVar->m_iADCStopSampleBeginNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
 		strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
 		pConstVar->m_iInstrumentTypeLAUX = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 

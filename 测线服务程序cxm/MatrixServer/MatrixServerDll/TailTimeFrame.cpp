@@ -190,6 +190,7 @@ void MakeInstrumentTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
+	unsigned short usPos = 0;
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 仪器IP地址
 	pTailTimeFrame->m_pCommandStructSet->m_uiDstIP = uiInstrumentIP;
@@ -197,13 +198,16 @@ void MakeInstrumentTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame
 	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 查询命令字内容
 	// 交叉站交叉线尾包接收时刻
-	pTailTimeFrame->m_cpCommandWord[0] = pConstVar->m_cCmdLAUTailRecTimeLAUX;
+	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUTailRecTimeLAUX;
+	usPos ++;
 	// 交叉站大线尾包接收时刻
-	pTailTimeFrame->m_cpCommandWord[1] = pConstVar->m_cCmdLineTailRecTimeLAUX;
+	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLineTailRecTimeLAUX;
+	usPos ++;
 	// 尾包接收/发送时刻
-	pTailTimeFrame->m_cpCommandWord[2] = pConstVar->m_cCmdTailRecSndTime;
+	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdTailRecSndTime;
+	usPos ++;
 	// 查询命令字个数
-	pTailTimeFrame->m_usCommandWordNum = 3;
+	pTailTimeFrame->m_usCommandWordNum = usPos;
 	MakeInstrumentFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 
 		pTailTimeFrame->m_cpCommandWord, pTailTimeFrame->m_usCommandWordNum);
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
@@ -222,6 +226,7 @@ void MakeInstrumentTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTi
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
+	unsigned short usPos = 0;
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 仪器IP地址
 	pTailTimeFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_uiIPBroadcastAddr;
@@ -231,15 +236,19 @@ void MakeInstrumentTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTi
 	pTailTimeFrame->m_pCommandStructSet->m_uiBroadCastPortSeted = uiBroadCastPort;
 	// 查询命令字内容
 	// 广播端口
-	pTailTimeFrame->m_cpCommandWord[0] = pConstVar->m_cCmdBroadCastPortSeted;
+	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdBroadCastPortSeted;
+	usPos ++;
 	// 交叉站交叉线尾包接收时刻
-	pTailTimeFrame->m_cpCommandWord[1] = pConstVar->m_cCmdLAUTailRecTimeLAUX;
+	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUTailRecTimeLAUX;
+	usPos ++;
 	// 交叉站大线尾包接收时刻
-	pTailTimeFrame->m_cpCommandWord[2] = pConstVar->m_cCmdLineTailRecTimeLAUX;
+	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLineTailRecTimeLAUX;
+	usPos ++;
 	// 尾包接收/发送时刻
-	pTailTimeFrame->m_cpCommandWord[3] = pConstVar->m_cCmdTailRecSndTime;
+	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdTailRecSndTime;
+	usPos ++;
 	// 查询命令字个数
-	pTailTimeFrame->m_usCommandWordNum = 4;
+	pTailTimeFrame->m_usCommandWordNum = usPos;
 	MakeInstrumentFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 
 		pTailTimeFrame->m_cpCommandWord, pTailTimeFrame->m_usCommandWordNum);
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);

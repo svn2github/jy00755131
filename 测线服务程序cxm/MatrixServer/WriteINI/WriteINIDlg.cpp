@@ -264,6 +264,30 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("3");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("ADCSetCmdNum");			// ADC参数设置命令数
+	strValue = _T("11");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCSetCmdBeginNb");		// ADC参数设置起始命令序号
+	strValue = _T("1");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCStartSampleCmdNum");	// ADC开始采集命令数
+	strValue = _T("7");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCStartSampleBeginNb");	// ADC开始采集起始命令序号
+	strValue = _T("12");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCStopSampleCmdNum");	// ADC停止采集命令数
+	strValue = _T("4");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("ADCStopSampleBeginNb");	// ADC停止采集起始命令序号
+	strValue = _T("19");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
 	strValue = _T("1");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);

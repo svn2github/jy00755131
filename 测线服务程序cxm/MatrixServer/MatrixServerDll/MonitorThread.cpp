@@ -176,15 +176,15 @@ void OnADCSetThreadWork(int iOpt, m_oADCSetThreadStruct* pADCSetThread)
 		pADCSetThread->m_uiCounter = 0;
 		if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCSetOptNb)
 		{
-			pADCSetThread->m_uiADCSetOperationNb = 1;
+			pADCSetThread->m_iADCSetOperationNb = pADCSetThread->m_pThread->m_pConstVar->m_iADCSetCmdBeginNb;
 		}
 		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleOptNb)
 		{
-			pADCSetThread->m_uiADCSetOperationNb = 12;
+			pADCSetThread->m_iADCSetOperationNb = pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleBeginNb;
 		}
 		else if (iOpt == pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleOptNb)
 		{
-			pADCSetThread->m_uiADCSetOperationNb = 19;
+			pADCSetThread->m_iADCSetOperationNb = pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleBeginNb;
 		}
 		// ADC参数设置线程开始工作
 		pADCSetThread->m_pThread->m_bWork = true;
@@ -701,17 +701,17 @@ void MonitorADCSet(m_oADCSetThreadStruct* pADCSetThread)
 	if (uiTimeNow > (uiLineChangeTime + pADCSetThread->m_pThread->m_pConstVar->m_iLineSysStableTime))
 	{
 		// 自动进行未完成的ADC参数设置
-		if (pADCSetThread->m_uiADCSetOperationNb == 0)
+		if (pADCSetThread->m_iADCSetOperationNb == 0)
 		{
 			OnADCSetAuto(pADCSetThread);
 		}
 		// 自动进行未完成的开始ADC数据采集
-		if (pADCSetThread->m_uiADCSetOperationNb == 0)
+		if (pADCSetThread->m_iADCSetOperationNb == 0)
 		{
 			OnADCStartSampleAuto(pADCSetThread);
 		}
 		// 自动进行未完成的停止ADC数据采集
-		if (pADCSetThread->m_uiADCSetOperationNb == 0)
+		if (pADCSetThread->m_iADCSetOperationNb == 0)
 		{
 			OnADCStopSampleAuto(pADCSetThread);
 		}

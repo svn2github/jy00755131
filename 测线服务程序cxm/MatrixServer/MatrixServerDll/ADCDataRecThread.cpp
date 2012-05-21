@@ -176,11 +176,6 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		LeaveCriticalSection(&pADCDataRecThread->m_pLineList->m_oSecLineList);
 		return;
 	}
-	// 		// 调试用
-	// 		if (usADCDataFramePointNow == 288)
-	// 		{
-	// 			return;
-	// 		}
 	if (pInstrument->m_uiADCDataActualRecFrameNum > 0)
 	{
 		if (usADCDataFramePointNow > usADCFramePointLimit)
@@ -257,8 +252,9 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 					ADCLostFrame.m_bReturnOk = false;
 					ADCLostFrame.m_uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum 
 						+ pInstrument->m_iADCDataFrameStartNum;
-					// @@@@1K采样率的时间差为288
-					ADCLostFrame.m_uiSysTime = pInstrument->m_uiADCDataFrameSysTime + (i + 1) * 288;
+					// 根据采样率确定时间差
+					ADCLostFrame.m_uiSysTime = pInstrument->m_uiADCDataFrameSysTime 
+						+ (i + 1) * (4000 / pADCDataRecThread->m_iADCSampleRate) * iADCDataInOneFrameNum;
 					AddToADCFrameLostMap(uiIP, usADCFramePointNb, ADCLostFrame, &pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oADCLostFrameMap);
 					pInstrument->m_uiADCDataShouldRecFrameNum++;
 					// 在丢帧的位置写当前帧的内容
@@ -469,6 +465,7 @@ bool OnInitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread,
 	}
 	pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
 	pADCDataRecThread->m_iADCFrameCount = 0;
+	pADCDataRecThread->m_iADCSampleRate = 1000;	// 默认为1K采样率
 	// 设置事件对象为无信号状态
 	ResetEvent(pADCDataRecThread->m_pThread->m_hThreadClose);
 	// 创建线程

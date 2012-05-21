@@ -253,6 +253,7 @@ void OnSetADCByLAUXSN(int iLineIndex, int iPointIndex, int iDirection, int iOpt,
 	{
 		OnClearADCSetMap(pEnv->m_pLineList);
 	}
+
 	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	bStartSample = pEnv->m_pADCSetThread->m_bADCStartSample;
 	bStopSample = pEnv->m_pADCSetThread->m_bADCStopSample;
@@ -307,6 +308,7 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	{
 		return;
 	}
+	int iSampleRate = 0;
 	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	pEnv->m_pADCSetThread->m_bADCStartSample = true;
 	pEnv->m_pADCSetThread->m_bADCStopSample = false;
@@ -316,9 +318,13 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
 	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	iSampleRate = pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_iSampleRate;
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
 	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	pEnv->m_pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
 	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
+	pEnv->m_pADCDataRecThread->m_iADCSampleRate = iSampleRate;
 	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	// Çå¿Õ¶ªÖ¡Ë÷Òý

@@ -191,6 +191,7 @@ void MakeInstrumentDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 		return;
 	}
 	CString str = _T("");
+	unsigned short usPos = 0;
 	// 接收到时统设置应答标志位
 	pInstrument->m_bTimeSetOK = false;
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
@@ -204,11 +205,13 @@ void MakeInstrumentDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	pTimeDelayFrame->m_pCommandStructSet->m_uiLocalTimeFixedLow = pInstrument->m_uiTimeLow;
 	// 设置命令字内容
 	// 时统设置高位
-	pTimeDelayFrame->m_cpCommandWord[0] = pConstVar->m_cCmdLocalTimeFixedHigh;
+	pTimeDelayFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalTimeFixedHigh;
+	usPos ++;
 	// 时统设置低位
-	pTimeDelayFrame->m_cpCommandWord[1] = pConstVar->m_cCmdLocalTimeFixedLow;
+	pTimeDelayFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalTimeFixedLow;
+	usPos ++;
 	// 设置命令字个数
-	pTimeDelayFrame->m_usCommandWordNum = 2;
+	pTimeDelayFrame->m_usCommandWordNum = usPos;
 	MakeInstrumentFrame(pTimeDelayFrame->m_pCommandStructSet, pConstVar, pTimeDelayFrame->m_cpSndFrameData, 
 		pTimeDelayFrame->m_cpCommandWord, pTimeDelayFrame->m_usCommandWordNum);
 	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);

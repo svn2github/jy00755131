@@ -191,6 +191,7 @@ void MakeInstrumentErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 			ErrorType, IDS_ERR_PTRISNULL);
 		return;
 	}
+	unsigned short usPos = 0;
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	// 仪器IP地址
 	pErrorCodeFrame->m_pCommandStructSet->m_uiDstIP = pConstVar->m_uiIPBroadcastAddr;
@@ -200,15 +201,19 @@ void MakeInstrumentErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	pErrorCodeFrame->m_pCommandStructSet->m_uiBroadCastPortSeted = uiBroadCastPort;
 	// 查询命令字内容
 	// 广播端口
-	pErrorCodeFrame->m_cpCommandWord[0] = pConstVar->m_cCmdBroadCastPortSeted;
+	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdBroadCastPortSeted;
+	usPos ++;
 	// 交叉站交叉线尾包接收时刻
-	pErrorCodeFrame->m_cpCommandWord[1] = pConstVar->m_cCmdFDUErrorCode;
+	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdFDUErrorCode;
+	usPos ++;
 	// 交叉站大线尾包接收时刻
-	pErrorCodeFrame->m_cpCommandWord[2] = pConstVar->m_cCmdLAUXErrorCode1;
+	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXErrorCode1;
+	usPos ++;
 	// 尾包接收/发送时刻
-	pErrorCodeFrame->m_cpCommandWord[3] = pConstVar->m_cCmdLAUXErrorCode2;
+	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXErrorCode2;
+	usPos ++;
 	// 查询命令字个数
-	pErrorCodeFrame->m_usCommandWordNum = 4;
+	pErrorCodeFrame->m_usCommandWordNum = usPos;
 	MakeInstrumentFrame(pErrorCodeFrame->m_pCommandStructSet, pConstVar, 
 		pErrorCodeFrame->m_cpSndFrameData, pErrorCodeFrame->m_cpCommandWord, 
 		pErrorCodeFrame->m_usCommandWordNum);

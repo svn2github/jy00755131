@@ -208,7 +208,6 @@ bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand,
 	iADCDataSize3B = pConstVar->m_iADCDataSize3B;
 
 	// 校验帧的同步码
-	// @@@@@@@@同步头目前只有前4位有效，其余12位可能用于它用
 	if (false == CheckInstrumentFrameHead(pFrameData, pConstVar->m_cpFrameHeadCheck, 4))
 	{
 		GetFrameInfo(pFrameData, pConstVar->m_iRcvFrameSize, &strFrameData);

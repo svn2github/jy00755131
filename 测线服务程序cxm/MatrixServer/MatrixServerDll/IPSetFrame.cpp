@@ -188,15 +188,17 @@ void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	}
 	CString str = _T("");
 	string strConv = "";
+	unsigned short usPos = 0;
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	// ÒÇÆ÷IPµØÖ·
 	pIPSetFrame->m_pCommandStructSet->m_uiDstIP = uiInstrumentIP;
 	// IPµØÖ·²éÑ¯ÃüÁî
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// ²éÑ¯ÃüÁî×ÖÄÚÈÝ
-	pIPSetFrame->m_cpCommandWord[0] = pConstVar->m_cCmdLocalIPAddr;
+	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalIPAddr;
+	usPos ++;
 	// ²éÑ¯ÃüÁî×Ö¸öÊý
-	pIPSetFrame->m_usCommandWordNum = 1;
+	pIPSetFrame->m_usCommandWordNum = usPos;
 	MakeInstrumentFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_cpSndFrameData, 
 		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
@@ -210,7 +212,7 @@ bool OpenLAUXRoutPower(int iLineIndex, int iPointIndex, unsigned char ucLAUXRout
 {
 	m_oInstrumentStruct* pInstrument = NULL;
 	unsigned int uiIP = 0;
-
+	unsigned short usPos = 0;
 	if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap))
 	{
 
@@ -233,9 +235,10 @@ bool OpenLAUXRoutPower(int iLineIndex, int iPointIndex, unsigned char ucLAUXRout
 	// Â·ÓÉ¿ª¹Ø´ò¿ª
 	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_cLAUXRoutOpenSet = ucLAUXRoutOpenSet;
 	// ÃüÁî×ÖÄÚÈÝ
-	pEnv->m_pIPSetFrame->m_cpCommandWord[0] = pEnv->m_pConstVar->m_cCmdLAUXRoutOpenSet;
+	pEnv->m_pIPSetFrame->m_cpCommandWord[usPos] = pEnv->m_pConstVar->m_cCmdLAUXRoutOpenSet;
+	usPos ++;
 	// ÃüÁî×Ö¸öÊý
-	pEnv->m_pIPSetFrame->m_usCommandWordNum = 1;
+	pEnv->m_pIPSetFrame->m_usCommandWordNum = usPos;
 	MakeInstrumentFrame(pEnv->m_pIPSetFrame->m_pCommandStructSet, pEnv->m_pConstVar, pEnv->m_pIPSetFrame->m_cpSndFrameData, 
 		pEnv->m_pIPSetFrame->m_cpCommandWord, pEnv->m_pIPSetFrame->m_usCommandWordNum);
 	SendInstrumentIPSetFrame(pEnv->m_pIPSetFrame, pEnv->m_pConstVar);
@@ -258,6 +261,7 @@ void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	}
 	CString str = _T("");
 	string strConv = "";
+	unsigned short usPos = 0;
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	// ÒÇÆ÷SNºÅ
 	pIPSetFrame->m_pCommandStructSet->m_uiSN = pInstrument->m_uiSN;
@@ -283,38 +287,48 @@ void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	pIPSetFrame->m_pCommandStructSet->m_uiLocalTimeFixedLow = pInstrument->m_uiTimeLow;
 
 	// ÒÇÆ÷SNÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[0] = pConstVar->m_cCmdSn;
+	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdSn;
+	usPos ++;
 	// ÒÇÆ÷IPÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[1] = pConstVar->m_cCmdLocalIPAddr;
+	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalIPAddr;
+	usPos ++;
 	// Ê±¼äÐÞÕý¸ßÎ»ÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[2] = pConstVar->m_cCmdLocalTimeFixedHigh;
+	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalTimeFixedHigh;
+	usPos ++;
 	// Ê±¼äÐÞÕýµÍÎ»ÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[3] = pConstVar->m_cCmdLocalTimeFixedLow;
+	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalTimeFixedLow;
+	usPos ++;
 	// ÒÇÆ÷¹ã²¥¶Ë¿ÚÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[4] = pConstVar->m_cCmdBroadCastPortSet;
+	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdBroadCastPortSet;
+	usPos ++;
 
 	// Éú³ÉIPµØÖ·ÉèÖÃÖ¡
 	if((pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeFDU)
 		|| (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLAUL))
 	{
 		// ÃüÁî×Ö¸öÊý
-		pIPSetFrame->m_usCommandWordNum = 5;
+		pIPSetFrame->m_usCommandWordNum = usPos;
 	}
 	// LCIºÍ½»²æÕ¾ÐèÒªÉèÖÃÂ·ÓÉIPµØÖ·
 	else
 	{
 		// ÒÇÆ÷Â·ÓÉIPÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[5] = pConstVar->m_cCmdLAUXSetRout;
+		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXSetRout;
+		usPos ++;
 		// ÒÇÆ÷Â·ÓÉIPÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[6] = pConstVar->m_cCmdLAUXSetRout;
+		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXSetRout;
+		usPos ++;
 		// ÒÇÆ÷Â·ÓÉIPÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[7] = pConstVar->m_cCmdLAUXSetRout;
+		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXSetRout;
+		usPos ++;
 		// ÒÇÆ÷Â·ÓÉIPÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[8] = pConstVar->m_cCmdLAUXSetRout;
+		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXSetRout;
+		usPos ++;
 		// ´ò¿ªÒÇÆ÷Â·ÓÉÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[9] = pConstVar->m_cCmdLAUXRoutOpenSet;
+		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXRoutOpenSet;
+		usPos ++;
 		// ÃüÁî×Ö¸öÊý
-		pIPSetFrame->m_usCommandWordNum = 10;
+		pIPSetFrame->m_usCommandWordNum = usPos;
 	}
 	// IPµØÖ·ÉèÖÃÃüÁî
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;

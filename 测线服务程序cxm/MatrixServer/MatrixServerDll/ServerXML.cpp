@@ -16,6 +16,8 @@ void OnInitServerXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	pCommInfo->m_oXMLADCSetupData.m_cpSetADCTBSwitchOpen = NULL;
 	pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample = NULL;
 	pCommInfo->m_oXMLADCSetupData.m_cpSetADCReadContinuous = NULL;
+	pCommInfo->m_oXMLADCSetupData.m_iSampleRate = 1000;	// 默认1K采样率
+	pCommInfo->m_oXMLADCSetupData.m_bHPFOpen = true;	// 高通滤波器默认开启
 	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
 }
 
