@@ -30,6 +30,7 @@ void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame,
 	if (pHeadFrame->m_pCommandStruct != NULL)
 	{
 		delete pHeadFrame->m_pCommandStruct;
+		pHeadFrame->m_pCommandStruct = NULL;
 	}
 	pHeadFrame->m_pCommandStruct = new m_oInstrumentCommandStruct;
 	// 源地址
@@ -46,6 +47,7 @@ void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame,
 	if (pHeadFrame->m_cpRcvFrameData != NULL)
 	{
 		delete[] pHeadFrame->m_cpRcvFrameData;
+		pHeadFrame->m_cpRcvFrameData = NULL;
 	}
 	pHeadFrame->m_cpRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
 	memset(pHeadFrame->m_cpRcvFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iRcvFrameSize);
@@ -80,6 +82,7 @@ void OnFreeInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame)
 	}
 	DeleteCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	delete pHeadFrame;
+	pHeadFrame = NULL;
 }
 // 创建并设置首包端口
 void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame, m_oLogOutPutStruct* pLogOutPut)

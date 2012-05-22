@@ -33,6 +33,7 @@ void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	if (pTimeDelayFrame->m_pCommandStructSet != NULL)
 	{
 		delete pTimeDelayFrame->m_pCommandStructSet;
+		pTimeDelayFrame->m_pCommandStructSet = NULL;
 	}
 	pTimeDelayFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
@@ -56,6 +57,7 @@ void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	if (pTimeDelayFrame->m_cpSndFrameData != NULL)
 	{
 		delete[] pTimeDelayFrame->m_cpSndFrameData;
+		pTimeDelayFrame->m_cpSndFrameData = NULL;
 	}
 	pTimeDelayFrame->m_cpSndFrameData = new char[pConstVar->m_iSndFrameSize];
 	memset(pTimeDelayFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, 
@@ -64,6 +66,7 @@ void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	if (pTimeDelayFrame->m_cpCommandWord != NULL)
 	{
 		delete[] pTimeDelayFrame->m_cpCommandWord;
+		pTimeDelayFrame->m_cpCommandWord = NULL;
 	}
 	pTimeDelayFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
 	memset(pTimeDelayFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
@@ -75,6 +78,7 @@ void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	if (pTimeDelayFrame->m_pCommandStructReturn != NULL)
 	{
 		delete pTimeDelayFrame->m_pCommandStructReturn;
+		pTimeDelayFrame->m_pCommandStructReturn = NULL;
 	}
 	pTimeDelayFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
 	ResetInstrumentFramePacket(pTimeDelayFrame->m_pCommandStructReturn);
@@ -82,6 +86,7 @@ void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	if (pTimeDelayFrame->m_cpRcvFrameData != NULL)
 	{
 		delete[] pTimeDelayFrame->m_cpRcvFrameData;
+		pTimeDelayFrame->m_cpRcvFrameData = NULL;
 	}
 	pTimeDelayFrame->m_cpRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
 	memset(pTimeDelayFrame->m_cpRcvFrameData, pConstVar->m_cSndFrameBufInit, 
@@ -132,6 +137,7 @@ void OnFreeInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 	}
 	DeleteCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	delete pTimeDelayFrame;
+	pTimeDelayFrame = NULL;
 }
 // 创建并设置时统设置端口
 void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStruct* pTimeDelayFrame, m_oLogOutPutStruct* pLogOutPut)

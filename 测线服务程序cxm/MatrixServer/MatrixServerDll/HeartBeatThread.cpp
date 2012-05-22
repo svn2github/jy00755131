@@ -159,7 +159,9 @@ void OnFreeHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 	if (pHeartBeatThread->m_pThread != NULL)
 	{
 		delete pHeartBeatThread->m_pThread;
+		pHeartBeatThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	delete pHeartBeatThread;
+	pHeartBeatThread = NULL;
 }

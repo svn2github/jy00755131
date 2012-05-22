@@ -886,7 +886,9 @@ void OnFreeMonitorThread(m_oMonitorThreadStruct* pMonitorThread)
 	if (pMonitorThread->m_pThread != NULL)
 	{
 		delete pMonitorThread->m_pThread;
+		pMonitorThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pMonitorThread->m_oSecMonitorThread);
 	delete pMonitorThread;
+	pMonitorThread = NULL;
 }

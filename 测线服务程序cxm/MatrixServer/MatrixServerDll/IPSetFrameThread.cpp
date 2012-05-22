@@ -395,7 +395,9 @@ void OnFreeIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	if (pIPSetFrameThread->m_pThread != NULL)
 	{
 		delete pIPSetFrameThread->m_pThread;
+		pIPSetFrameThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 	delete pIPSetFrameThread;
+	pIPSetFrameThread = NULL;
 }

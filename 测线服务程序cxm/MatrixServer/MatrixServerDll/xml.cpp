@@ -104,5 +104,6 @@ void OnFreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
 	OnResetLineClientXMLSetupData(pCommInfo);
 	DeleteCriticalSection(&pCommInfo->m_oSecCommInfo);
 	delete pCommInfo;
+	pCommInfo = NULL;
 }
 

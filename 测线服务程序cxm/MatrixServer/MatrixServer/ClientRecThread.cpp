@@ -1280,6 +1280,7 @@ void CClientRecThread::OnProcQueryInfoAll(unsigned int(CClientRecThread::*ptrFun
 	}
 	OnProcQueryByArea(pChar, iPos, ptrFun);
 	delete[] pChar;
+	pChar = NULL;
 }
 
 

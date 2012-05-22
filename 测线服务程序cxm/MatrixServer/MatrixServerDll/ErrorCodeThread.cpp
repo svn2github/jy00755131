@@ -434,7 +434,9 @@ void OnFreeErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	if (pErrorCodeThread->m_pThread != NULL)
 	{
 		delete pErrorCodeThread->m_pThread;
+		pErrorCodeThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	delete pErrorCodeThread;
+	pErrorCodeThread = NULL;
 }

@@ -33,6 +33,7 @@ void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	if (pErrorCodeFrame->m_pCommandStructSet != NULL)
 	{
 		delete pErrorCodeFrame->m_pCommandStructSet;
+		pErrorCodeFrame->m_pCommandStructSet = NULL;
 	}
 	pErrorCodeFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
@@ -56,6 +57,7 @@ void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	if (pErrorCodeFrame->m_cpSndFrameData != NULL)
 	{
 		delete[] pErrorCodeFrame->m_cpSndFrameData;
+		pErrorCodeFrame->m_cpSndFrameData = NULL;
 	}
 	pErrorCodeFrame->m_cpSndFrameData = new char[pConstVar->m_iSndFrameSize];
 	memset(pErrorCodeFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, 
@@ -64,6 +66,7 @@ void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	if (pErrorCodeFrame->m_cpCommandWord != NULL)
 	{
 		delete[] pErrorCodeFrame->m_cpCommandWord;
+		pErrorCodeFrame->m_cpCommandWord = NULL;
 	}
 	pErrorCodeFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
 	memset(pErrorCodeFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
@@ -75,6 +78,7 @@ void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	if (pErrorCodeFrame->m_pCommandStructReturn != NULL)
 	{
 		delete pErrorCodeFrame->m_pCommandStructReturn;
+		pErrorCodeFrame->m_pCommandStructReturn = NULL;
 	}
 	pErrorCodeFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
 	ResetInstrumentFramePacket(pErrorCodeFrame->m_pCommandStructReturn);
@@ -83,6 +87,7 @@ void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	if (pErrorCodeFrame->m_cpRcvFrameData != NULL)
 	{
 		delete[] pErrorCodeFrame->m_cpRcvFrameData;
+		pErrorCodeFrame->m_cpRcvFrameData = NULL;
 	}
 	pErrorCodeFrame->m_cpRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
 	memset(pErrorCodeFrame->m_cpRcvFrameData, pConstVar->m_cSndFrameBufInit, 
@@ -133,6 +138,7 @@ void OnFreeInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame)
 	}
 	DeleteCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	delete pErrorCodeFrame;
+	pErrorCodeFrame = NULL;
 }
 // 创建并设置误码查询端口
 void OnCreateAndSetErrorCodeFrameSocket(m_oErrorCodeFrameStruct* pErrorCodeFrame, m_oLogOutPutStruct* pLogOutPut)

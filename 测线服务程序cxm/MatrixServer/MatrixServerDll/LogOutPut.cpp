@@ -218,4 +218,5 @@ void OnFreeLogOutPut(m_oLogOutPutStruct* pLogOutPut)
 	}
 	DeleteCriticalSection(&pLogOutPut->m_oSecLogFile);
 	delete pLogOutPut;
+	pLogOutPut = NULL;
 }

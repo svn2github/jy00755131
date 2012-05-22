@@ -670,7 +670,9 @@ void OnFreeTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	if (pTimeDelayThread->m_pThread != NULL)
 	{
 		delete pTimeDelayThread->m_pThread;
+		pTimeDelayThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	delete pTimeDelayThread;
+	pTimeDelayThread = NULL;
 }

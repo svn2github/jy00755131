@@ -165,7 +165,9 @@ void OnFreeLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 	if (pLogOutPutThread->m_pThread != NULL)
 	{
 		delete pLogOutPutThread->m_pThread;
+		pLogOutPutThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	delete pLogOutPutThread;
+	pLogOutPutThread = NULL;
 }

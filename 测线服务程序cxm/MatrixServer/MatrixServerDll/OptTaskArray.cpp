@@ -64,6 +64,7 @@ void OnInitOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray,
 	if (pOptTaskArray->m_pArrayOptTask != NULL)
 	{
 		delete[] pOptTaskArray->m_pArrayOptTask;
+		pOptTaskArray->m_pArrayOptTask = NULL;
 	}
 	pOptTaskArray->m_pArrayOptTask = new m_oOptTaskStruct[pOptTaskArray->m_uiCountAll];
 
@@ -108,6 +109,7 @@ void OnFreeOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray)
 	}
 	DeleteCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	delete pOptTaskArray;
+	pOptTaskArray = NULL;
 }
 // 得到一个空闲施工任务
 m_oOptTaskStruct* GetFreeOptTask(m_oOptTaskArrayStruct* pOptTaskArray)

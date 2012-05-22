@@ -25,6 +25,7 @@ void ParseCStringToArray(char** pData, int iSize, CString str)
 	if ((*pData) != NULL)
 	{
 		delete[] (*pData);
+		(*pData) = NULL;
 	}
 	*pData = new char[iSize];
 	int iDirectionOld = 0;
@@ -948,6 +949,7 @@ void OnClearSocketRcvBuf(SOCKET oSocket, int iRcvFrameSize)
 		}		
 	}
 	delete[] pcRcvFrameData;
+	pcRcvFrameData = NULL;
 }
 // 得到路由方向上仪器个数
 bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection, 

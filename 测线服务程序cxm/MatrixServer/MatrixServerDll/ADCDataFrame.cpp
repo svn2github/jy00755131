@@ -31,6 +31,7 @@ void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	if (pADCDataFrame->m_pCommandStructSet != NULL)
 	{
 		delete pADCDataFrame->m_pCommandStructSet;
+		pADCDataFrame->m_pCommandStructSet = NULL;
 	}
 	pADCDataFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
@@ -54,6 +55,7 @@ void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	if (pADCDataFrame->m_cpSndFrameData != NULL)
 	{
 		delete[] pADCDataFrame->m_cpSndFrameData;
+		pADCDataFrame->m_cpSndFrameData = NULL;
 	}
 	pADCDataFrame->m_cpSndFrameData = new char[pConstVar->m_iSndFrameSize];
 	memset(pADCDataFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iSndFrameSize);
@@ -62,6 +64,7 @@ void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	if (pADCDataFrame->m_pCommandStructReturn != NULL)
 	{
 		delete pADCDataFrame->m_pCommandStructReturn;
+		pADCDataFrame->m_pCommandStructReturn = NULL;
 	}
 	pADCDataFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
 	ResetInstrumentFramePacket(pADCDataFrame->m_pCommandStructReturn);
@@ -70,6 +73,7 @@ void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	if (pADCDataFrame->m_cpRcvFrameData != NULL)
 	{
 		delete[] pADCDataFrame->m_cpRcvFrameData;
+		pADCDataFrame->m_cpRcvFrameData = NULL;
 	}
 	pADCDataFrame->m_cpRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
 	memset(pADCDataFrame->m_cpRcvFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iRcvFrameSize);
@@ -103,6 +107,7 @@ void OnCloseInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 		if (pADCDataFrame->m_pCommandStructReturn->m_pADCData != NULL)
 		{
 			delete[] pADCDataFrame->m_pCommandStructReturn->m_pADCData;
+			pADCDataFrame->m_pCommandStructReturn->m_pADCData = NULL;
 		}
 		delete pADCDataFrame->m_pCommandStructReturn;
 		pADCDataFrame->m_pCommandStructReturn = NULL;
@@ -118,6 +123,7 @@ void OnFreeInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 	}
 	DeleteCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	delete pADCDataFrame;
+	pADCDataFrame = NULL;
 }
 // 创建并设置ADC数据帧端口
 void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, m_oLogOutPutStruct* pLogOutPut)

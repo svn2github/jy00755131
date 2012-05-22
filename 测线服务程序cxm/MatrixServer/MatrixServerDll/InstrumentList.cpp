@@ -92,6 +92,7 @@ void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarS
 	if (pInstrumentList->m_pArrayInstrument != NULL)
 	{
 		delete[] pInstrumentList->m_pArrayInstrument;
+		pInstrumentList->m_pArrayInstrument = NULL;
 	}
 	pInstrumentList->m_pArrayInstrument = new m_oInstrumentStruct[pInstrumentList->m_uiCountAll];
 	// 空闲仪器数量
@@ -153,6 +154,7 @@ void OnFreeInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 		return;
 	}
 	delete pInstrumentList;
+	pInstrumentList = NULL;
 }
 // 得到一个空闲仪器
 m_oInstrumentStruct* GetFreeInstrument(m_oInstrumentListStruct* pInstrumentList)

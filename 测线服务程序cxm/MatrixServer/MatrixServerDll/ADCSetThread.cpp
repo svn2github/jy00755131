@@ -1033,7 +1033,9 @@ void OnFreeADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 	if (pADCSetThread->m_pThread != NULL)
 	{
 		delete pADCSetThread->m_pThread;
+		pADCSetThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	delete pADCSetThread;
+	pADCSetThread = NULL;
 }

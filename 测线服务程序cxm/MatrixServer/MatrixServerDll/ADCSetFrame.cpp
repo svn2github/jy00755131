@@ -33,6 +33,7 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	if (pADCSetFrame->m_pCommandStructSet != NULL)
 	{
 		delete pADCSetFrame->m_pCommandStructSet;
+		pADCSetFrame->m_pCommandStructSet = NULL;
 	}
 	pADCSetFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
@@ -66,6 +67,7 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	if (pADCSetFrame->m_cpSndFrameData != NULL)
 	{
 		delete[] pADCSetFrame->m_cpSndFrameData;
+		pADCSetFrame->m_cpSndFrameData = NULL;
 	}
 	pADCSetFrame->m_cpSndFrameData = new char[pConstVar->m_iSndFrameSize];
 	memset(pADCSetFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iSndFrameSize);
@@ -73,6 +75,7 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	if (pADCSetFrame->m_cpCommandWord != NULL)
 	{
 		delete[] pADCSetFrame->m_cpCommandWord;
+		pADCSetFrame->m_cpCommandWord = NULL;
 	}
 	pADCSetFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
 	memset(pADCSetFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
@@ -83,6 +86,7 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	if (pADCSetFrame->m_pCommandStructReturn != NULL)
 	{
 		delete pADCSetFrame->m_pCommandStructReturn;
+		pADCSetFrame->m_pCommandStructReturn = NULL;
 	}
 	pADCSetFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
 	ResetInstrumentFramePacket(pADCSetFrame->m_pCommandStructReturn);
@@ -91,6 +95,7 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	if (pADCSetFrame->m_cpRcvFrameData != NULL)
 	{
 		delete[] pADCSetFrame->m_cpRcvFrameData;
+		pADCSetFrame->m_cpRcvFrameData = NULL;
 	}
 	pADCSetFrame->m_cpRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
 	memset(pADCSetFrame->m_cpRcvFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iRcvFrameSize);
@@ -145,6 +150,7 @@ void OnFreeInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 	}
 	DeleteCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	delete pADCSetFrame;
+	pADCSetFrame = NULL;
 }
 // 创建并设置ADC参数设置端口
 void OnCreateAndSetADCSetFrameSocket(m_oADCSetFrameStruct* pADCSetFrame, m_oLogOutPutStruct* pLogOutPut)

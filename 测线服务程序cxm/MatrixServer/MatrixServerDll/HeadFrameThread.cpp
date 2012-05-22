@@ -542,7 +542,9 @@ void OnFreeHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	if (pHeadFrameThread->m_pThread != NULL)
 	{
 		delete pHeadFrameThread->m_pThread;
+		pHeadFrameThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	delete pHeadFrameThread;
+	pHeadFrameThread = NULL;
 }

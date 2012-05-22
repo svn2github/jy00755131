@@ -33,6 +33,7 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	if (pIPSetFrame->m_pCommandStructSet != NULL)
 	{
 		delete pIPSetFrame->m_pCommandStructSet;
+		pIPSetFrame->m_pCommandStructSet = NULL;
 	}
 	pIPSetFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
@@ -56,6 +57,7 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	if (pIPSetFrame->m_cpSndFrameData != NULL)
 	{
 		delete[] pIPSetFrame->m_cpSndFrameData;
+		pIPSetFrame->m_cpSndFrameData = NULL;
 	}
 	pIPSetFrame->m_cpSndFrameData = new char[pConstVar->m_iSndFrameSize];
 	memset(pIPSetFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iSndFrameSize);
@@ -63,6 +65,7 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	if (pIPSetFrame->m_cpCommandWord != NULL)
 	{
 		delete[] pIPSetFrame->m_cpCommandWord;
+		pIPSetFrame->m_cpCommandWord = NULL;
 	}
 	pIPSetFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
 	memset(pIPSetFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
@@ -74,6 +77,7 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	if (pIPSetFrame->m_pCommandStructReturn != NULL)
 	{
 		delete pIPSetFrame->m_pCommandStructReturn;
+		pIPSetFrame->m_pCommandStructReturn = NULL;
 	}
 	pIPSetFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
 	ResetInstrumentFramePacket(pIPSetFrame->m_pCommandStructReturn);
@@ -81,6 +85,7 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	if (pIPSetFrame->m_cpRcvFrameData != NULL)
 	{
 		delete[] pIPSetFrame->m_cpRcvFrameData;
+		pIPSetFrame->m_cpRcvFrameData = NULL;
 	}
 	pIPSetFrame->m_cpRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
 	memset(pIPSetFrame->m_cpRcvFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iRcvFrameSize);
@@ -130,6 +135,7 @@ void OnFreeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
 	}
 	DeleteCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	delete pIPSetFrame;
+	pIPSetFrame = NULL;
 }
 // 创建并设置IP地址设置端口
 void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame, m_oLogOutPutStruct* pLogOutPut)

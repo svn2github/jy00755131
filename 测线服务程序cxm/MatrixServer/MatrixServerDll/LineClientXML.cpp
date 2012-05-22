@@ -22,6 +22,7 @@ void OnResetSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
 		if (iter->m_pcReceiverSection != NULL)
 		{
 			delete[] iter->m_pcReceiverSection;
+			iter->m_pcReceiverSection = NULL;
 		}
 	}
 	pCommInfo->m_oLineSetupData.m_olsSurveryStruct.clear();
@@ -39,10 +40,12 @@ void OnResetPointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
 		if (iter->m_pcLabel != NULL)
 		{
 			delete[] iter->m_pcLabel;
+			iter->m_pcLabel = NULL;
 		}
 		if (iter->m_pcSensorType != NULL)
 		{
 			delete[] iter->m_pcSensorType;
+			iter->m_pcSensorType = NULL;
 		}
 	}
 	pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.clear();
@@ -60,6 +63,7 @@ void OnResetSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
 		if (iter->m_pcLabel != NULL)
 		{
 			delete[] iter->m_pcLabel;
+			iter->m_pcLabel = NULL;
 		}
 	}
 	pCommInfo->m_oLineSetupData.m_olsSensorStruct.clear();
@@ -85,10 +89,12 @@ void OnResetAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 		if (iter->m_pcLabel != NULL)
 		{
 			delete[] iter->m_pcLabel;
+			iter->m_pcLabel = NULL;
 		}
 		if (iter->m_pcComments != NULL)
 		{
 			delete[] iter->m_pcComments;
+			iter->m_pcComments = NULL;
 		}
 	}
 	pCommInfo->m_oLineSetupData.m_olsAuxStruct.clear();
@@ -122,10 +128,12 @@ void OnResetBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
 		if (iter->m_pcLabel != NULL)
 		{
 			delete[] iter->m_pcLabel;
+			iter->m_pcLabel = NULL;
 		}
 		if (iter->m_pcComments != NULL)
 		{
 			delete[] iter->m_pcComments;
+			iter->m_pcComments = NULL;
 		}
 	}
 	pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.clear();
@@ -146,10 +154,12 @@ void OnResetAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
 			if (iter->m_pcLabel != NULL)
 			{
 				delete[] iter->m_pcLabel;
+				iter->m_pcLabel = NULL;
 			}
 			if (iter->m_pcAbsoluteSpread != NULL)
 			{
 				delete[] iter->m_pcAbsoluteSpread;
+				iter->m_pcAbsoluteSpread = NULL;
 			}
 		}
 		iterMap->second.clear();
@@ -168,14 +178,17 @@ void OnResetGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
 		if (iter->m_pcLabel != NULL)
 		{
 			delete[] iter->m_pcLabel;
+			iter->m_pcLabel = NULL;
 		}
 		if (iter->m_pcLine != NULL)
 		{
 			delete[] iter->m_pcLine;
+			iter->m_pcLine = NULL;
 		}
 		if (iter->m_pcSpread != NULL)
 		{
 			delete[] iter->m_pcSpread;
+			iter->m_pcSpread = NULL;
 		}
 	}
 	// Generic
@@ -209,6 +222,7 @@ void OnResetInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInf
 		if (iter->m_pcDescr != NULL)
 		{
 			delete[] iter->m_pcDescr;
+			iter->m_pcDescr = NULL;
 		}
 	}
 	pList->clear();
@@ -233,10 +247,12 @@ void OnResetInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommIn
 		if (iter->m_pcDescr != NULL)
 		{
 			delete[] iter->m_pcDescr;
+			iter->m_pcDescr = NULL;
 		}
 		if (iter->m_pcUnit != NULL)
 		{
 			delete[] iter->m_pcUnit;
+			iter->m_pcUnit = NULL;
 		}
 	}
 	pList->clear();
@@ -253,10 +269,12 @@ void OnResetInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 		if (iter->m_pcAbsoluteSpread != NULL)
 		{
 			delete[] iter->m_pcAbsoluteSpread;
+			iter->m_pcAbsoluteSpread = NULL;
 		}
 		if (iter->m_pcAuxiliaryDescr != NULL)
 		{
 			delete[] iter->m_pcAuxiliaryDescr;
+			iter->m_pcAuxiliaryDescr = NULL;
 		}
 	}
 	// Instrument Test
@@ -274,6 +292,7 @@ void OnResetSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 		if (iter->m_pcAbsoluteSpread != NULL)
 		{
 			delete[] iter->m_pcAbsoluteSpread;
+			iter->m_pcAbsoluteSpread = NULL;
 		}
 	}
 	// Sensor Test

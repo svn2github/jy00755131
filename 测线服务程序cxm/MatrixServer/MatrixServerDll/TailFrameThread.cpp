@@ -473,7 +473,9 @@ void OnFreeTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 	if (pTailFrameThread->m_pThread != NULL)
 	{
 		delete pTailFrameThread->m_pThread;
+		pTailFrameThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	delete pTailFrameThread;
+	pTailFrameThread = NULL;
 }

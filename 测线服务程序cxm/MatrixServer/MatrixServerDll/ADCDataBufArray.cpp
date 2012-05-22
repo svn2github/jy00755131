@@ -64,8 +64,10 @@ void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray,
 		for(unsigned int i = 0; i < pADCDataBufArray->m_uiCountAll; i++)
 		{
 			delete[] pADCDataBufArray->m_pArrayADCDataBuf[i].m_pADCDataBuf;
+			pADCDataBufArray->m_pArrayADCDataBuf[i].m_pADCDataBuf = NULL;
 		}
 		delete[] pADCDataBufArray->m_pArrayADCDataBuf;
+		pADCDataBufArray->m_pArrayADCDataBuf = NULL;
 	}
 	pADCDataBufArray->m_pArrayADCDataBuf = new m_oADCDataBufStruct[pADCDataBufArray->m_uiCountAll];
 
@@ -119,6 +121,7 @@ void OnFreeADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 	}
 	DeleteCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	delete pADCDataBufArray;
+	pADCDataBufArray = NULL;
 }
 // 得到一个空闲数据存储缓冲区
 m_oADCDataBufStruct* GetFreeADCDataBuf(m_oADCDataBufArrayStruct* pADCDataBufArray)

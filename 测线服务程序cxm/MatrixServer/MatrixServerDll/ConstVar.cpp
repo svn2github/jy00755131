@@ -394,4 +394,5 @@ void OnFreeConstVar(m_oConstVarStruct* pConstVar)
 		return;
 	}
 	delete pConstVar;
+	pConstVar = NULL;
 }

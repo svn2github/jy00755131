@@ -82,4 +82,5 @@ void OnFreeLineList(m_oLineListStruct* pLineList)
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 	DeleteCriticalSection(&pLineList->m_oSecLineList);
 	delete pLineList;
+	pLineList = NULL;
 }

@@ -30,6 +30,7 @@ void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFrame,
 	if (pTailFrame->m_pCommandStruct != NULL)
 	{
 		delete pTailFrame->m_pCommandStruct;
+		pTailFrame->m_pCommandStruct = NULL;
 	}
 	pTailFrame->m_pCommandStruct = new m_oInstrumentCommandStruct;
 	// 源地址
@@ -46,6 +47,7 @@ void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFrame,
 	if (pTailFrame->m_cpRcvFrameData != NULL)
 	{
 		delete[] pTailFrame->m_cpRcvFrameData;
+		pTailFrame->m_cpRcvFrameData = NULL;
 	}
 	pTailFrame->m_cpRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
 	memset(pTailFrame->m_cpRcvFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iRcvFrameSize);
@@ -80,6 +82,7 @@ void OnFreeInstrumentTailFrame(m_oTailFrameStruct* pTailFrame)
 	}
 	DeleteCriticalSection(&pTailFrame->m_oSecTailFrame);
 	delete pTailFrame;
+	pTailFrame = NULL;
 }
 // 创建并设置尾包端口
 void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTailFrame, m_oLogOutPutStruct* pLogOutPut)

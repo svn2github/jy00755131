@@ -369,7 +369,9 @@ void OnFreeADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 	if (pADCDataSaveThread->m_pThread != NULL)
 	{
 		delete pADCDataSaveThread->m_pThread;
+		pADCDataSaveThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	delete pADCDataSaveThread;
+	pADCDataSaveThread = NULL;
 }

@@ -33,6 +33,7 @@ void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	if (pTailTimeFrame->m_pCommandStructSet != NULL)
 	{
 		delete pTailTimeFrame->m_pCommandStructSet;
+		pTailTimeFrame->m_pCommandStructSet = NULL;
 	}
 	pTailTimeFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
@@ -56,6 +57,7 @@ void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	if (pTailTimeFrame->m_cpSndFrameData != NULL)
 	{
 		delete[] pTailTimeFrame->m_cpSndFrameData;
+		pTailTimeFrame->m_cpSndFrameData = NULL;
 	}
 	pTailTimeFrame->m_cpSndFrameData = new char[pConstVar->m_iSndFrameSize];
 	memset(pTailTimeFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, 
@@ -64,6 +66,7 @@ void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	if (pTailTimeFrame->m_cpCommandWord != NULL)
 	{
 		delete[] pTailTimeFrame->m_cpCommandWord;
+		pTailTimeFrame->m_cpCommandWord = NULL;
 	}
 	pTailTimeFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
 	memset(pTailTimeFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
@@ -75,6 +78,7 @@ void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	if (pTailTimeFrame->m_pCommandStructReturn != NULL)
 	{
 		delete pTailTimeFrame->m_pCommandStructReturn;
+		pTailTimeFrame->m_pCommandStructReturn = NULL;
 	}
 	pTailTimeFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
 	ResetInstrumentFramePacket(pTailTimeFrame->m_pCommandStructReturn);
@@ -82,6 +86,7 @@ void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	if (pTailTimeFrame->m_cpRcvFrameData != NULL)
 	{
 		delete[] pTailTimeFrame->m_cpRcvFrameData;
+		pTailTimeFrame->m_cpRcvFrameData = NULL;
 	}
 	pTailTimeFrame->m_cpRcvFrameData = new char[pConstVar->m_iRcvFrameSize];
 	memset(pTailTimeFrame->m_cpRcvFrameData, pConstVar->m_cSndFrameBufInit, 
@@ -132,6 +137,7 @@ void OnFreeInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 	}
 	DeleteCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	delete pTailTimeFrame;
+	pTailTimeFrame = NULL;
 }
 // 创建并设置尾包时刻端口
 void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruct* pTailTimeFrame, m_oLogOutPutStruct* pLogOutPut)

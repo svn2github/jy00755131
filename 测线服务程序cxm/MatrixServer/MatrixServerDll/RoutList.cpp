@@ -70,6 +70,7 @@ void OnInitRoutList(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
 	if (pRoutList->m_pArrayRout != NULL)
 	{
 		delete[] pRoutList->m_pArrayRout;
+		pRoutList->m_pArrayRout = NULL;
 	}
 	pRoutList->m_pArrayRout = new m_oRoutStruct[pRoutList->m_uiCountAll];
 
@@ -120,6 +121,7 @@ void OnFreeRoutList(m_oRoutListStruct* pRoutList)
 		return;
 	}
 	delete pRoutList;
+	pRoutList = NULL;
 }
 
 // 得到一个空闲路由

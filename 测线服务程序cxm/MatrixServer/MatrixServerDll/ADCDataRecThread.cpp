@@ -530,7 +530,9 @@ void OnFreeADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	if (pADCDataRecThread->m_pThread != NULL)
 	{
 		delete pADCDataRecThread->m_pThread;
+		pADCDataRecThread->m_pThread = NULL;
 	}
 	DeleteCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	delete pADCDataRecThread;
+	pADCDataRecThread = NULL;
 }

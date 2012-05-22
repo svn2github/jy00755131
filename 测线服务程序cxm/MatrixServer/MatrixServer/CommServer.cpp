@@ -35,6 +35,7 @@ void CCommServer::OnAccept(int nErrorCode)
 	else
 	{
 		delete pComClient;
+		pComClient = NULL;
 	}
 	CAsyncSocket::OnAccept(nErrorCode);
 }

@@ -31,6 +31,7 @@ void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame,
 	if (pHeartBeatFrame->m_pCommandStruct != NULL)
 	{
 		delete pHeartBeatFrame->m_pCommandStruct;
+		pHeartBeatFrame->m_pCommandStruct = NULL;
 	}
 	pHeartBeatFrame->m_pCommandStruct = new m_oInstrumentCommandStruct;
 	// 源地址
@@ -50,6 +51,7 @@ void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame,
 	if (pHeartBeatFrame->m_cpSndFrameData != NULL)
 	{
 		delete[] pHeartBeatFrame->m_cpSndFrameData;
+		pHeartBeatFrame->m_cpSndFrameData = NULL;
 	}
 	pHeartBeatFrame->m_cpSndFrameData = new char[pConstVar->m_iSndFrameSize];
 	memset(pHeartBeatFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, 
@@ -58,6 +60,7 @@ void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame,
 	if (pHeartBeatFrame->m_cpCommandWord != NULL)
 	{
 		delete[] pHeartBeatFrame->m_cpCommandWord;
+		pHeartBeatFrame->m_cpCommandWord = NULL;
 	}
 	pHeartBeatFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
 	memset(pHeartBeatFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
@@ -100,6 +103,7 @@ void OnFreeInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
 	}
 	DeleteCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	delete pHeartBeatFrame;
+	pHeartBeatFrame = NULL;
 }
 // 创建并设置心跳端口
 void OnCreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame, m_oLogOutPutStruct* pLogOutPut)
