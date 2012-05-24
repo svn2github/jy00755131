@@ -42,6 +42,7 @@ BEGIN
 	"#pragma code_page(936)\r\n"
 	"#include ""res\\Operation.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
 	"#include ""afxres.rc""  	// 标准组件\r\n"
+	"#include ""afxprint.rc""	// 打印/打印预览资源\r\n"
 	"#endif\r\n"
 	"\0"
 END
@@ -111,6 +112,10 @@ BEGIN
 		MENUITEM "保存(&S)\tCtrl+S",                ID_FILE_SAVE
 		MENUITEM "另存为(&A)...",                   ID_FILE_SAVE_AS
 		MENUITEM SEPARATOR
+		MENUITEM "打印(&P)...\tCtrl+P",             ID_FILE_PRINT
+		MENUITEM "打印预览(&V)",                    ID_FILE_PRINT_PREVIEW
+		MENUITEM "打印设置(&R)...",                 ID_FILE_PRINT_SETUP
+		MENUITEM SEPARATOR
 		MENUITEM "最近的文件",                      ID_FILE_MRU_FILE1,GRAYED
 		MENUITEM SEPARATOR
 		MENUITEM "退出(&X)",                        ID_APP_EXIT
@@ -139,15 +144,6 @@ END
 
 
 
-IDR_CONTEXT_MENU MENU 
-BEGIN
-    POPUP "_POPUP_"
-    BEGIN
-        MENUITEM "剪切(&T)",                    ID_EDIT_CUT
-        MENUITEM "复制(&C)",                    ID_EDIT_COPY
-        MENUITEM "粘贴(&P)",                    ID_EDIT_PASTE
-    END
-END
 
 IDR_POPUP_TOOLBAR MENU 
 BEGIN
@@ -309,6 +305,11 @@ BEGIN
 	ID_FILE_CLOSE             "关闭活动文档\n关闭"
 	ID_FILE_SAVE              "保存活动文档\n保存"
 	ID_FILE_SAVE_AS           "用新名称保存活动文档\n另存为"
+	ID_FILE_PAGE_SETUP        "更改打印选项\n页面设置"
+	ID_FILE_PRINT_SETUP       "选择打印机、打印份数及其他选项\n打印设置"
+    ID_FILE_PRINT_DIRECT    "不更改设置，直接发送文档到默认打印机\n快速打印"
+	ID_FILE_PRINT             "打印活动文档\n打印"
+	ID_FILE_PRINT_PREVIEW     "打印前预览整个页面\n打印预览"
 	ID_APP_ABOUT              "显示程序信息、版本号和版权\n关于"
 	ID_APP_EXIT               "退出应用程序；提示保存文档\n退出"
 	ID_FILE_MRU_FILE1         "打开此文档"
@@ -356,6 +357,7 @@ BEGIN
 	AFX_IDS_SCCLOSE           "关闭活动窗口并提示保存文档"
 	AFX_IDS_SCRESTORE         "将窗口恢复到正常大小"
 	AFX_IDS_SCTASKLIST        "激活任务列表"
+	AFX_IDS_PREVIEW_CLOSE     "关闭打印预览模式\n取消预览"
 END
 
 #endif
@@ -402,5 +404,6 @@ LANGUAGE 4, 2
 #pragma code_page(936)
 #include "res\\Operation.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "afxres.rc"  	// 标准组件
+#include "afxprint.rc"  // 打印/打印预览资源
 #endif
 #endif    // not APSTUDIO_INVOKED

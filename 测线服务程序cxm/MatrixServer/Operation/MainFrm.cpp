@@ -50,41 +50,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CBCGPFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
-	if (CBCGPToolBar::GetUserImages () == NULL)
-	{
-		// Load toolbar user images:
-		if (!m_UserImages.Load (_T(".\\UserImages.bmp")))
-		{
-			TRACE(_T("Failed to load user images\n"));
-		}
-		else
-		{
-			CBCGPToolBar::SetUserImages (&m_UserImages);
-		}
-	}
-
-
-	// TODO: Define your own basic commands. Be sure, that each pulldown 
-	// menu have at least one basic command.
-
-	CList<UINT, UINT>	lstBasicCommands;
-
-	lstBasicCommands.AddTail (ID_VIEW_TOOLBARS);
-	lstBasicCommands.AddTail (ID_FILE_NEW);
-	lstBasicCommands.AddTail (ID_FILE_OPEN);
-	lstBasicCommands.AddTail (ID_FILE_SAVE);
-	lstBasicCommands.AddTail (ID_FILE_PRINT);
-	lstBasicCommands.AddTail (ID_APP_EXIT);
-	lstBasicCommands.AddTail (ID_EDIT_CUT);
-	lstBasicCommands.AddTail (ID_EDIT_PASTE);
-	lstBasicCommands.AddTail (ID_EDIT_UNDO);
-	lstBasicCommands.AddTail (ID_RECORD_NEXT);
-	lstBasicCommands.AddTail (ID_RECORD_LAST);
-	lstBasicCommands.AddTail (ID_APP_ABOUT);
-	lstBasicCommands.AddTail (ID_VIEW_TOOLBAR);
-	lstBasicCommands.AddTail (ID_VIEW_CUSTOMIZE);
-
-	CBCGPToolBar::SetBasicCommands (lstBasicCommands);
 
 	// Menu will not take the focus on activation:
 	CBCGPPopupMenu::SetForceMenuFocus (FALSE);
@@ -190,12 +155,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		ID_VIEW_TOOLBARS);	// Menu items with this ID will be replaced by
 							// toolbars menu
 
-	// enable Office 2007 look:
-	CBCGPVisualManager::SetDefaultManager (RUNTIME_CLASS (CBCGPVisualManager2007));
-	// enable Office 2010 look:
-	CBCGPVisualManager::SetDefaultManager (RUNTIME_CLASS (CBCGPVisualManager2010));
-	// enable Windows 2007 look:
-	CBCGPVisualManager::SetDefaultManager (RUNTIME_CLASS (CBCGPVisualManagerScenic));
+	// enable VS 2010 look:
+	CBCGPVisualManager::SetDefaultManager (RUNTIME_CLASS (CBCGPVisualManagerVS2010));
 	CBCGPDockManager::SetDockMode (BCGP_DT_SMART);
 	// VISUAL_MANAGER
 	return 0;

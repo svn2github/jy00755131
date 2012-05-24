@@ -39,8 +39,6 @@ protected:  // control bar embedded members
 	CWorkSpaceBar			m_wndWorkSpace;
 	CWorkSpaceBar2			m_wndWorkSpace2;
 	COutputBar				m_wndOutput;
-
-	CBCGPToolBarImages	m_UserImages;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

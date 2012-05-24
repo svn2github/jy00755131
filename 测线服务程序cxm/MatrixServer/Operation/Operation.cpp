@@ -20,6 +20,8 @@ BEGIN_MESSAGE_MAP(COperationApp, CWinApp)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+	// Standard print setup command
+	ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
 END_MESSAGE_MAP()
 
 
@@ -84,9 +86,6 @@ BOOL COperationApp::InitInstance()
 
 	// Initialize all Managers for usage. They are automatically constructed
 	// if not yet present
-	InitContextMenuManager();
-	InitKeyboardManager();
-
 	// TODO: Remove this if you don't want extended tooltips:
 	InitTooltipManager();
 
@@ -183,9 +182,5 @@ void COperationApp::OnAppAbout()
 
 void COperationApp::PreLoadState ()
 {
-
-	GetContextMenuManager()->AddMenu (_T("My menu"), IDR_CONTEXT_MENU);
-
-	// TODO: add another context menus here
 }
 

@@ -7,7 +7,6 @@
 #define IDP_SOCKETS_INIT_FAILED		104
 #define IDR_MAINFRAME				128
 #define IDR_OperationTYPE				129
-#define IDR_CONTEXT_MENU			130
 #define IDR_POPUP_TOOLBAR			131
 #define IDB_WORKSPACE                147
 #define IDB_TOOLBAR256				151

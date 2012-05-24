@@ -17,6 +17,10 @@
 IMPLEMENT_DYNCREATE(COperationView, CView)
 
 BEGIN_MESSAGE_MAP(COperationView, CView)
+	// Standard printing commands
+	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_PREVIEW, OnFilePrintPreview)
+	ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
 END_MESSAGE_MAP()
 
 // COperationView construction/destruction
@@ -47,6 +51,30 @@ void COperationView::OnDraw(CDC* /*pDC*/)
 	ASSERT_VALID(pDoc);
 
 	// TODO: add draw code for native data here
+}
+
+
+// COperationView printing
+
+void COperationView::OnFilePrintPreview()
+{
+	BCGPPrintPreview (this);
+}
+
+BOOL COperationView::OnPreparePrinting(CPrintInfo* pInfo)
+{
+	// default preparation
+	return DoPreparePrinting(pInfo);
+}
+
+void COperationView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+{
+	// TODO: add extra initialization before printing
+}
+
+void COperationView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+{
+	// TODO: add cleanup after printing
 }
 
 

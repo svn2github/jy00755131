@@ -68,6 +68,9 @@ res\OperationDoc.ico
 ActiveX 控件
     应用程序包括对使用 ActiveX 控件的支持。
 
+打印及打印预览支持
+    应用程序向导已通过从 MFC 库调用 CView 类中的成员函数，生成了用于处理打印、打印设置和打印预览命令的代码。
+
 Windows Sockets
     应用程序支持通过 TCP/IP 网络建立通信。
 
