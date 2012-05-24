@@ -70,7 +70,6 @@ IDR_OperationTYPE         ICON         "res\\OperationDoc.ico"
 //
 
 IDR_MAINFRAME           BITMAP      "res\\Toolbar.bmp"
-IDB_WORKSPACE					BITMAP       "res\\workspace.bmp"
 IDB_TOOLBAR256					BITMAP  MOVEABLE PURE   "res\\Toolbar256.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -149,10 +148,10 @@ IDR_POPUP_TOOLBAR MENU
 BEGIN
     POPUP "DUMMY"
     BEGIN
-        MENUITEM "标准工具栏",                  ID_VIEW_TOOLBAR
-		MENUITEM "工作区(&W)",                      ID_VIEW_WORKSPACE
-		MENUITEM "第二工作区(&W)",                  ID_VIEW_WORKSPACE2
-		MENUITEM "输出(&O)",                        ID_VIEW_OUTPUT
+        MENUITEM "Standard ToolBar",            ID_VIEW_TOOLBAR
+		MENUITEM "Active Source Bar(&W)",       ID_VIEW_ACTIVESOURCEBAR
+		MENUITEM "All VP Bar(&W)",              ID_VIEW_ALLVPBAR
+		MENUITEM "Status Mail(&O)",             ID_VIEW_OUTPUT
         MENUITEM "<用户工具栏>",                ID_VIEW_USER_TOOLBAR1
         MENUITEM "<用户工具栏>",                ID_VIEW_USER_TOOLBAR2
         MENUITEM "<用户工具栏>",                ID_VIEW_USER_TOOLBAR3

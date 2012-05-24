@@ -110,6 +110,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AllVPBar.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Operation.cpp" />
     <ClCompile Include="OperationDoc.cpp" />
@@ -119,10 +120,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ActiveSourceBar" />
+    <ClCompile Include="VPDoneBar.cpp" />
+    <ClCompile Include="VPToDoBar.cpp" />
     <ClCompile Include="WorkSpaceBar.cpp" />
-    <ClCompile Include="WorkSpaceBar2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllVPBar.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Operation.h" />
     <ClInclude Include="OperationDoc.h" />
@@ -130,8 +134,10 @@
     <ClInclude Include="OutputBar.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ActiveSourceBar.h" />
+    <ClInclude Include="VPDoneBar.h" />
+    <ClInclude Include="VPToDoBar.h" />
     <ClInclude Include="WorkSpaceBar.h" />
-    <ClInclude Include="WorkSpaceBar2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Operation.ico" />

@@ -33,10 +33,19 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ActiveSourceBar">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="WorkSpaceBar.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WorkSpaceBar2.cpp">
+    <ClCompile Include="AllVPBar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VPDoneBar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VPToDoBar.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,10 +71,19 @@
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ActiveSourceBar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="WorkSpaceBar.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WorkSpaceBar2.h">
+    <ClInclude Include="AllVPBar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="VPDoneBar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="VPToDoBar.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

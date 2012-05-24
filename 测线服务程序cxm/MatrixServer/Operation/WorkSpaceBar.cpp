@@ -1,4 +1,4 @@
-// workspace.cpp : implementation of the CWorkSpaceBar class
+// workspace2.cpp : implementation of the CWorkSpaceBar class
 //
 
 #include "stdafx.h"
@@ -12,6 +12,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 const int nBorderSize = 1;
+
 /////////////////////////////////////////////////////////////////////////////
 // CWorkSpaceBar
 
@@ -19,8 +20,9 @@ BEGIN_MESSAGE_MAP(CWorkSpaceBar, CBCGPDockingControlBar)
 	//{{AFX_MSG_MAP(CWorkSpaceBar)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
-	ON_WM_PAINT()
+//	ON_WM_PAINT()
 	//}}AFX_MSG_MAP
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +31,6 @@ END_MESSAGE_MAP()
 CWorkSpaceBar::CWorkSpaceBar()
 {
 	// TODO: add one-time construction code here
-
 }
 
 CWorkSpaceBar::~CWorkSpaceBar()
@@ -46,23 +47,30 @@ int CWorkSpaceBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	CRect rectDummy;
 	rectDummy.SetRectEmpty ();
-
-	// Create tree windows.
 	// TODO: create your own tab windows here:
 	const DWORD dwViewStyle =	WS_CHILD | WS_VISIBLE | TVS_HASLINES | 
 								TVS_LINESATROOT | TVS_HASBUTTONS;
-	
-	if (!m_wndTree.Create (dwViewStyle, rectDummy, this, 1))
+
+	if (!m_GridView.Create(dwViewStyle, rectDummy, this, 1))
 	{
-		TRACE0("Failed to create workspace view\n");
-		return -1;      // fail to create
+		TRACE0("Failed to create Grid View!\n");
+		return -1;
 	}
+	BCGP_GRID_COLOR_DATA clrData;
+	clrData = m_GridView.GetColorTheme();
+	clrData.m_clrBackground = ::GetSysColor(COLOR_3DFACE);
+	clrData.m_EvenColors.m_clrBackground = RGB(255,255,255);	// 奇数行
+	clrData.m_OddColors.m_clrBackground = RGB(250,250,250);		// 偶数行
 
-	// Setup trees content:
-	HTREEITEM hRoot1 = m_wndTree.InsertItem (_T("Root 1"));
-	m_wndTree.InsertItem (_T("Item 1"), hRoot1);
-	m_wndTree.InsertItem (_T("Item 2"), hRoot1);
+	m_GridView.SetColorTheme(clrData);	
+	m_GridView.SetReadOnly();	
+	m_GridView.SetSingleSel(TRUE);
+	m_GridView.SetWholeRowSel(TRUE);	
+	m_GridView.EnableHeader (TRUE, BCGP_GRID_HEADER_HIDE_ITEMS);
+	m_GridView.EnableDragSelection(FALSE);
 
+	// 设置表头
+	SetGridHead();
 	return 0;
 }
 
@@ -71,21 +79,46 @@ void CWorkSpaceBar::OnSize(UINT nType, int cx, int cy)
 	CBCGPDockingControlBar::OnSize(nType, cx, cy);
 
 	// Tab control should cover a whole client area:
-	m_wndTree.SetWindowPos (NULL, nBorderSize, nBorderSize, 
-		cx - 2 * nBorderSize, cy - 2 * nBorderSize,
-		SWP_NOACTIVATE | SWP_NOZORDER);
+	if (m_GridView.GetSafeHwnd ())
+	{
+		m_GridView.SetWindowPos (NULL, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+	}
 }
 
-void CWorkSpaceBar::OnPaint() 
+// void CWorkSpaceBar::OnPaint() 
+// {
+// 	CPaintDC dc(this); // device context for painting
+// 	
+// 	CRect rectTree;
+// 	m_wndTree.GetWindowRect (rectTree);
+// 	ScreenToClient (rectTree);
+// 
+// 	rectTree.InflateRect (nBorderSize, nBorderSize);
+// 	dc.Draw3dRect (rectTree,	::GetSysColor (COLOR_3DSHADOW), 
+// 								::GetSysColor (COLOR_3DSHADOW));
+// }
+
+// 重载右键菜单的WM_CONTEXTMENU消息响应函数
+void CWorkSpaceBar::OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/)
 {
-	CPaintDC dc(this); // device context for painting
-	
-	CRect rectTree;
-	m_wndTree.GetWindowRect (rectTree);
-	ScreenToClient (rectTree);
-
-	rectTree.InflateRect (nBorderSize, nBorderSize);
-	dc.Draw3dRect (rectTree,	::GetSysColor (COLOR_3DSHADOW), 
-								::GetSysColor (COLOR_3DSHADOW));
+	// TODO: 在此处添加消息处理程序代码
 }
 
+
+// 设置表头
+bool CWorkSpaceBar::SetGridHead(void)
+{
+	return false;
+}
+
+
+// 载入全部炮点信息
+void CWorkSpaceBar::LoadShotPoints(void)
+{
+}
+
+
+// 载入单条炮点信息
+void CWorkSpaceBar::LoadShotPoint(void)
+{
+}

@@ -1,4 +1,4 @@
-// workspace2.h : interface of the CWorkSpaceBar2 class
+// activesourcebar.h : interface of the CActiveSourceBar class
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -8,10 +8,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class CWorkSpaceBar2 : public CBCGPDockingControlBar
+class CActiveSourceBar : public CBCGPDockingControlBar
 {
 public:
-	CWorkSpaceBar2();
+	CActiveSourceBar();
 
 // Attributes
 protected:
@@ -22,21 +22,23 @@ public:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CWorkSpaceBar2)
+	//{{AFX_VIRTUAL(CActiveSourceBar)
 	//}}AFX_VIRTUAL
 
 // Implementation
 public:
-	virtual ~CWorkSpaceBar2();
+	virtual ~CActiveSourceBar();
 
 // Generated message map functions
 protected:
-	//{{AFX_MSG(CWorkSpaceBar2)
+	//{{AFX_MSG(CActiveSourceBar)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnPaint();
+//	afx_msg void OnPaint();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 };
 
 /////////////////////////////////////////////////////////////////////////////

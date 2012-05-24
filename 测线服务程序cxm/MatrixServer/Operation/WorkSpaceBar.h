@@ -1,4 +1,4 @@
-// workspacebar.h : interface of the CWorkSpaceBar class
+// workspace2.h : interface of the CWorkSpaceBar class
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -15,8 +15,7 @@ public:
 
 // Attributes
 protected:
-	CTreeCtrl	m_wndTree;
-
+	CBCGPGridCtrl   m_GridView;
 // Operations
 public:
 
@@ -34,9 +33,20 @@ protected:
 	//{{AFX_MSG(CWorkSpaceBar)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnPaint();
+//	afx_msg void OnPaint();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+public:
+	// 载入全部炮点信息
+	virtual void LoadShotPoints(void);
+protected:
+	// 设置表头
+	virtual bool SetGridHead(void);
+private:
+	// 载入单条炮点信息
+	virtual void LoadShotPoint(void);
 };
 
 /////////////////////////////////////////////////////////////////////////////

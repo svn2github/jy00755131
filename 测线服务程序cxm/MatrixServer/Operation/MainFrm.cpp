@@ -84,40 +84,44 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
 	}
-
-	// Load control bar icons:
-	CBCGPToolBarImages imagesWorkspace;
-	imagesWorkspace.SetImageSize (CSize (16, 16));
-	imagesWorkspace.SetTransparentColor (RGB (255, 0, 255));
-	imagesWorkspace.Load (IDB_WORKSPACE);
-	imagesWorkspace.SmoothResize(globalData.GetRibbonImageScale());
 	
-	if (!m_wndWorkSpace.Create (_T("View  1"), this, CRect (0, 0, 200, 200),
-		TRUE, ID_VIEW_WORKSPACE,
-		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, 0, 200, 200),
+		TRUE, ID_VIEW_ACTIVESOURCEBAR,
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
-		TRACE0("Failed to create Workspace bar\n");
+		TRACE0("Failed to create Active Source bar\n");
 		return -1;      // fail to create
 	}
 
-	m_wndWorkSpace.SetIcon (imagesWorkspace.ExtractIcon (0), FALSE);
-
-	if (!m_wndWorkSpace2.Create (_T("View 2"), this, CRect (0, 0, 200, 200),
-		TRUE, ID_VIEW_WORKSPACE2,
-		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (0, 200, 200, 400),
+		TRUE, ID_VIEW_ALLVPBAR,
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
-		TRACE0("Failed to create Workspace bar 2\n");
+		TRACE0("Failed to create All VP bar\n");
 		return -1;      // fail to create
 	}
-
-	m_wndWorkSpace2.SetIcon (imagesWorkspace.ExtractIcon (1), FALSE);
-
-
-	if (!m_wndOutput.Create (_T("Output"), this, CSize (150, 150),
+	m_wndAllVP.LoadShotPoints();
+	if (!m_wndVPDone.Create (_T("VP Done"), this, CRect (0, 400, 200, 600),
+		TRUE, ID_VIEW_VPDONEBAR,
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
+	{
+		TRACE0("Failed to create VP Done bar\n");
+		return -1;      // fail to create
+	}
+	m_wndVPDone.LoadShotPoints();
+	if (!m_wndVPToDo.Create (_T("VP To Do"), this, CRect (0, 600, 200, 800),
+		TRUE, ID_VIEW_VPTODUBAR,
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
+	{
+		TRACE0("Failed to create VP To Do bar\n");
+		return -1;      // fail to create
+	}
+	m_wndVPToDo.LoadShotPoints();
+	if (!m_wndOutput.Create (_T("Status Mail"), this, CSize (150, 150),
 		TRUE /* Has gripper */, ID_VIEW_OUTPUT,
 		WS_CHILD | WS_VISIBLE | CBRS_BOTTOM))
 	{
-		TRACE0("Failed to create output bar\n");
+		TRACE0("Failed to create Status Mail bar\n");
 		return -1;      // fail to create
 	}
 
@@ -128,15 +132,19 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// TODO: Delete these three lines if you don't want the toolbar to be dockable
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndWorkSpace.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndWorkSpace2.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndActiveSource.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndAllVP.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndVPDone.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndVPToDo.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	EnableAutoHideBars(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndMenuBar);
 	DockControlBar(&m_wndToolBar);
-	DockControlBar(&m_wndWorkSpace);
-	m_wndWorkSpace2.AttachToTabWnd (&m_wndWorkSpace, BCGP_DM_STANDARD, FALSE, NULL);
+	DockControlBar(&m_wndActiveSource);
+	DockControlBar(&m_wndAllVP);
+	DockControlBar(&m_wndVPDone);
+	DockControlBar(&m_wndVPToDo);
 	DockControlBar(&m_wndOutput);
 
 
@@ -159,6 +167,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CBCGPVisualManager::SetDefaultManager (RUNTIME_CLASS (CBCGPVisualManagerVS2010));
 	CBCGPDockManager::SetDockMode (BCGP_DT_SMART);
 	// VISUAL_MANAGER
+	RecalcLayout();
 	return 0;
 }
 

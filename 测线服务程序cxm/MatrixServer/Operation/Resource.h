@@ -8,7 +8,6 @@
 #define IDR_MAINFRAME				128
 #define IDR_OperationTYPE				129
 #define IDR_POPUP_TOOLBAR			131
-#define IDB_WORKSPACE                147
 #define IDB_TOOLBAR256				151
 #define IDS_MAIN_TOOLBAR			101
 #define ID_VIEW_TOOLBARS			32771
@@ -24,9 +23,11 @@
 #define ID_VIEW_USER_TOOLBAR8		32800
 #define ID_VIEW_USER_TOOLBAR9		32801
 #define ID_VIEW_USER_TOOLBAR10		32802
-#define ID_VIEW_WORKSPACE			32803
-#define ID_VIEW_WORKSPACE2			32792
+#define ID_VIEW_ACTIVESOURCEBAR		32803
+#define ID_VIEW_ALLVPBAR			32792
 #define ID_VIEW_OUTPUT				32804
+#define ID_VIEW_VPDONEBAR			32805
+#define ID_VIEW_VPTODUBAR			32806
 
 
 // Next default values for new objects

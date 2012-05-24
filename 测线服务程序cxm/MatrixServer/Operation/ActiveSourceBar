@@ -1,9 +1,9 @@
-// workspace2.cpp : implementation of the CWorkSpaceBar2 class
+// ActiveSourceBar.cpp : implementation of the CActiveSourceBar class
 //
 
 #include "stdafx.h"
 #include "Operation.h"
-#include "WorkSpaceBar2.h"
+#include "ActiveSourceBar.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -12,40 +12,42 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 const int nBorderSize = 1;
-
 /////////////////////////////////////////////////////////////////////////////
-// CWorkSpaceBar2
+// CActiveSourceBar
 
-BEGIN_MESSAGE_MAP(CWorkSpaceBar2, CBCGPDockingControlBar)
-	//{{AFX_MSG_MAP(CWorkSpaceBar2)
+BEGIN_MESSAGE_MAP(CActiveSourceBar, CBCGPDockingControlBar)
+	//{{AFX_MSG_MAP(CActiveSourceBar)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
-	ON_WM_PAINT()
+//	ON_WM_PAINT()
 	//}}AFX_MSG_MAP
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CWorkSpaceBar2 construction/destruction
+// CActiveSourceBar construction/destruction
 
-CWorkSpaceBar2::CWorkSpaceBar2()
+CActiveSourceBar::CActiveSourceBar()
 {
 	// TODO: add one-time construction code here
+
 }
 
-CWorkSpaceBar2::~CWorkSpaceBar2()
+CActiveSourceBar::~CActiveSourceBar()
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CWorkSpaceBar2 message handlers
+// CActiveSourceBar message handlers
 
-int CWorkSpaceBar2::OnCreate(LPCREATESTRUCT lpCreateStruct) 
+int CActiveSourceBar::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
 	if (CBCGPDockingControlBar::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
 	CRect rectDummy;
 	rectDummy.SetRectEmpty ();
+
 	// Create tree windows.
 	// TODO: create your own tab windows here:
 	const DWORD dwViewStyle =	WS_CHILD | WS_VISIBLE | TVS_HASLINES | 
@@ -58,14 +60,14 @@ int CWorkSpaceBar2::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	// Setup trees content:
-	HTREEITEM hRoot1 = m_wndTree.InsertItem (_T("Root 2"));
+	HTREEITEM hRoot1 = m_wndTree.InsertItem (_T("Root 1"));
 	m_wndTree.InsertItem (_T("Item 1"), hRoot1);
 	m_wndTree.InsertItem (_T("Item 2"), hRoot1);
 
 	return 0;
 }
 
-void CWorkSpaceBar2::OnSize(UINT nType, int cx, int cy) 
+void CActiveSourceBar::OnSize(UINT nType, int cx, int cy) 
 {
 	CBCGPDockingControlBar::OnSize(nType, cx, cy);
 
@@ -75,15 +77,22 @@ void CWorkSpaceBar2::OnSize(UINT nType, int cx, int cy)
 		SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
-void CWorkSpaceBar2::OnPaint() 
-{
-	CPaintDC dc(this); // device context for painting
-	
-	CRect rectTree;
-	m_wndTree.GetWindowRect (rectTree);
-	ScreenToClient (rectTree);
+// void CActiveSourceBar::OnPaint() 
+// {
+// 	CPaintDC dc(this); // device context for painting
+// 	
+// 	CRect rectTree;
+// 	m_wndTree.GetWindowRect (rectTree);
+// 	ScreenToClient (rectTree);
+// 
+// 	rectTree.InflateRect (nBorderSize, nBorderSize);
+// 	dc.Draw3dRect (rectTree,	::GetSysColor (COLOR_3DSHADOW), 
+// 								::GetSysColor (COLOR_3DSHADOW));
+// }
 
-	rectTree.InflateRect (nBorderSize, nBorderSize);
-	dc.Draw3dRect (rectTree,	::GetSysColor (COLOR_3DSHADOW), 
-								::GetSysColor (COLOR_3DSHADOW));
+
+// 重载右键菜单的WM_CONTEXTMENU消息响应函数
+void CActiveSourceBar::OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/)
+{
+	// TODO: 在此处添加消息处理程序代码
 }

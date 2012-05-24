@@ -79,9 +79,11 @@ BOOL COperationApp::InitInstance()
 	// Change the registry key under which our settings are stored
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
+	// 不写入注册表则加入此行
+	m_bSaveState = FALSE;
+
 	SetRegistryKey(_T("BCGP AppWizard-Generated Applications"));
 	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
-
 	SetRegistryBase (_T("Settings"));
 
 	// Initialize all Managers for usage. They are automatically constructed

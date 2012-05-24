@@ -3,8 +3,10 @@
 
 
 #pragma once
-#include "WorkSpaceBar.h"
-#include "WorkSpaceBar2.h"
+#include "ActiveSourceBar.h"
+#include "AllVPBar.h"
+#include "VPDoneBar.h"
+#include "VPToDoBar.h"
 #include "OutputBar.h"
 
 class CMainFrame : public CBCGPFrameWnd
@@ -36,8 +38,10 @@ protected:  // control bar embedded members
 	CBCGPStatusBar			m_wndStatusBar;
 	CBCGPMenuBar			m_wndMenuBar;
 	CBCGPToolBar			m_wndToolBar;
-	CWorkSpaceBar			m_wndWorkSpace;
-	CWorkSpaceBar2			m_wndWorkSpace2;
+	CActiveSourceBar		m_wndActiveSource;
+	CAllVPBar				m_wndAllVP;
+	CVPDoneBar				m_wndVPDone;
+	CVPToDoBar				m_wndVPToDo;
 	COutputBar				m_wndOutput;
 // Generated message map functions
 protected:
