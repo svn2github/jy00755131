@@ -1867,6 +1867,7 @@ void CClientRecThread::OnProcQueryRevSection(void)
 	CString cstrType = _T("");
 	unsigned int uiBegin = 0;
 	unsigned int uiEnd = 0;
+	unsigned int uiType = 0;
 	m_pMatrixDllCall->Dll_LoadSurverySetupData();
 	m_uiLineNum = 0;
 	m_uiColumnNum = 0;
@@ -1880,7 +1881,7 @@ void CClientRecThread::OnProcQueryRevSection(void)
 		}
 		str = iter->m_pcReceiverSection;
 		cstr = str.c_str();
-		_stscanf_s(cstr, _T("%u-%u%s"), &uiBegin, &uiEnd, cstrType);
+		_stscanf_s(cstr, _T("%u-%up%u"), &uiBegin, &uiEnd, &uiType);
 		if ((uiEnd + 1) > (m_uiColumnNum + uiBegin))
 		{
 			m_uiColumnNum = uiEnd - uiBegin + 1;

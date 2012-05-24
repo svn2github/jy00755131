@@ -269,7 +269,7 @@ typedef struct CommFrame_Struct
 	unsigned int m_uiCmdIndex;
 	// 总帧数
 	unsigned int m_uiFrameNum;
-	// 帧序号
+	// 帧序号（从1开始）
 	unsigned int m_uiFrameIndex;
 	// 帧命令执行结果
 	char m_cResult;
