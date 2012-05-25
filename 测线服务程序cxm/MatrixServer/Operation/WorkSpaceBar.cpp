@@ -11,7 +11,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-const int nBorderSize = 1;
 
 /////////////////////////////////////////////////////////////////////////////
 // CWorkSpaceBar
@@ -23,6 +22,7 @@ BEGIN_MESSAGE_MAP(CWorkSpaceBar, CBCGPDockingControlBar)
 //	ON_WM_PAINT()
 	//}}AFX_MSG_MAP
 	ON_WM_CONTEXTMENU()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ int CWorkSpaceBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CBCGPDockingControlBar::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	
+
 	CRect rectDummy;
 	rectDummy.SetRectEmpty ();
 	// TODO: create your own tab windows here:
@@ -121,4 +121,13 @@ void CWorkSpaceBar::LoadShotPoints(void)
 // 载入单条炮点信息
 void CWorkSpaceBar::LoadShotPoint(void)
 {
+}
+
+
+void CWorkSpaceBar::OnDestroy()
+{
+	CBCGPDockingControlBar::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	m_GridView.RemoveAll();
 }

@@ -47,6 +47,8 @@ protected:
 private:
 	// 载入单条炮点信息
 	virtual void LoadShotPoint(void);
+public:
+	afx_msg void OnDestroy();
 };
 
 /////////////////////////////////////////////////////////////////////////////

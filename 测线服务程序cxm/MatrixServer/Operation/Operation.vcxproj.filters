@@ -33,9 +33,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ActiveSourceBar">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="WorkSpaceBar.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -46,6 +43,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="VPToDoBar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ActiveSourceBar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ActiveSourceCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,6 +87,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="VPToDoBar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ActiveSourceCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

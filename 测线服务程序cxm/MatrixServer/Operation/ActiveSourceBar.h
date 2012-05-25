@@ -7,7 +7,7 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-
+class CActiveSourceCtrl;
 class CActiveSourceBar : public CBCGPDockingControlBar
 {
 public:
@@ -15,8 +15,8 @@ public:
 
 // Attributes
 protected:
-	CTreeCtrl	m_wndTree;
-
+	CBCGPGridCtrl   m_GridView;
+	CActiveSourceCtrl* m_pActiveSourceCtrl;
 // Operations
 public:
 
@@ -39,6 +39,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnDestroy();
 };
 
 /////////////////////////////////////////////////////////////////////////////
