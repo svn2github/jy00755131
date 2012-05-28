@@ -615,7 +615,7 @@ void CClientRecThread::OnProcQuerySurveyXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usReceiverSectionSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcReceiverSection, iter->m_usReceiverSectionSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcReceiverSection, iter->m_usReceiverSectionSize);
 		iPos += iter->m_usReceiverSectionSize;
 	}
 	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
@@ -637,11 +637,11 @@ void CClientRecThread::OnProcQueryPointCodeXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcLabel, iter->m_usLabelSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
 		iPos += iter->m_usLabelSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usSensorTypeSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcSensorType, iter->m_usSensorTypeSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcSensorType, iter->m_usSensorTypeSize);
 		iPos += iter->m_usSensorTypeSize;
 	}
 	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
@@ -663,7 +663,7 @@ void CClientRecThread::OnProcQuerySensorXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcLabel, iter->m_usLabelSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
 		iPos += iter->m_usLabelSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_fContinuityMin, 4);
 		iPos += 4;
@@ -727,7 +727,7 @@ void CClientRecThread::OnProcQueryAuxXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcLabel, iter->m_usLabelSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
 		iPos += iter->m_usLabelSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiBoxType, 4);
 		iPos += 4;
@@ -741,7 +741,7 @@ void CClientRecThread::OnProcQueryAuxXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usCommentsSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcComments, iter->m_usCommentsSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcComments, iter->m_usCommentsSize);
 		iPos += iter->m_usCommentsSize;
 	}
 	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
@@ -813,7 +813,7 @@ void CClientRecThread::OnProcQueryBlastMachineXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcLabel, iter->m_usLabelSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
 		iPos += iter->m_usLabelSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiBoxType, 4);
 		iPos += 4;
@@ -827,7 +827,7 @@ void CClientRecThread::OnProcQueryBlastMachineXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usCommentsSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcComments, iter->m_usCommentsSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcComments, iter->m_usCommentsSize);
 		iPos += iter->m_usCommentsSize;
 	}
 	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
@@ -859,11 +859,11 @@ void CClientRecThread::OnProcQueryAbsoluteXMLInfo(unsigned short usCmd)
 			iPos += 4;
 			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
 			iPos += 2;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcLabel, iter->m_usLabelSize);
+			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
 			iPos += iter->m_usLabelSize;
 			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usAbsoluteSpreadSize, 2);
 			iPos += 2;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
+			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
 			iPos += iter->m_usAbsoluteSpreadSize;
 		}
 	}
@@ -886,15 +886,15 @@ void CClientRecThread::OnProcQueryGenericXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcLabel, iter->m_usLabelSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
 		iPos += iter->m_usLabelSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLineSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcLine, iter->m_usLineSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLine, iter->m_usLineSize);
 		iPos += iter->m_usLineSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usSpreadSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcSpread, iter->m_usSpreadSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcSpread, iter->m_usSpreadSize);
 		iPos += iter->m_usSpreadSize;
 	}
 	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
@@ -939,7 +939,7 @@ void CClientRecThread::OnProcQueryInstrumentTestBaseXMLInfo(unsigned short usCmd
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usDescrSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcDescr, iter->m_usDescrSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
 		iPos += iter->m_usDescrSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestType, 4);
 		iPos += 4;
@@ -975,7 +975,7 @@ void CClientRecThread::OnProcQuerySensorTestBaseXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usDescrSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcDescr, iter->m_usDescrSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
 		iPos += iter->m_usDescrSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestType, 4);
 		iPos += 4;
@@ -1011,11 +1011,11 @@ void CClientRecThread::OnProcQueryInstrumentTestLimitXMLInfo(unsigned short usCm
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usDescrSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcDescr, iter->m_usDescrSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
 		iPos += iter->m_usDescrSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usUnitSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcUnit, iter->m_usUnitSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcUnit, iter->m_usUnitSize);
 		iPos += iter->m_usUnitSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestAim, 4);
 		iPos += 4;
@@ -1043,11 +1043,11 @@ void CClientRecThread::OnProcQuerySensorTestLimitXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usDescrSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcDescr, iter->m_usDescrSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
 		iPos += iter->m_usDescrSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usUnitSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcUnit, iter->m_usUnitSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcUnit, iter->m_usUnitSize);
 		iPos += iter->m_usUnitSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestAim, 4);
 		iPos += 4;
@@ -1083,11 +1083,11 @@ void CClientRecThread::OnProcQueryInstrumentTestXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usAuxiliaryDescrSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcAuxiliaryDescr, iter->m_usAuxiliaryDescrSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcAuxiliaryDescr, iter->m_usAuxiliaryDescrSize);
 		iPos += iter->m_usAuxiliaryDescrSize;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usAbsoluteSpreadSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
 		iPos += iter->m_usAbsoluteSpreadSize;
 	}
 	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
@@ -1113,7 +1113,7 @@ void CClientRecThread::OnProcQuerySensorTestXMLInfo(unsigned short usCmd)
 		iPos += 4;
 		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usAbsoluteSpreadSize, 2);
 		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
 		iPos += iter->m_usAbsoluteSpreadSize;
 	}
 	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);

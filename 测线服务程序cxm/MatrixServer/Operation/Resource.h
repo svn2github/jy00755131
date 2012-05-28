@@ -10,10 +10,21 @@
 #define IDR_OperationTYPE               129
 #define IDR_POPUP_TOOLBAR               131
 #define IDB_TOOLBAR256                  151
-#define IDD_DIALOG1                     160
 #define IDD_ACTIVESOURCEVIEW            160
+#define IDI_ICON_RED                    161
+#define IDI_ICON_GREEN                  162
+#define IDI_ICON1                       163
+#define IDI_ICON_ORANGE                 163
 #define IDC_COMPANY_URL                 1041
 #define IDC_BUTTONGO                    1053
+#define IDC_BUTTONSTOP                  1054
+#define IDC_BUTTONABORT                 1055
+#define IDC_STATIC_ACTIVESOURCEGROUP    1056
+#define IDC_STATIC_BLASTER              1057
+#define IDC_STATIC_UPHOLE               1058
+#define IDC_STATIC_TB                   1059
+#define IDC_EDIT_TB                     1060
+#define IDC_EDIT_UPHOLE                 1061
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_TOOLBARS                32771
 #define ID_VIEW_ALLVPBAR                32792
@@ -36,9 +47,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        161
+#define _APS_NEXT_RESOURCE_VALUE        164
 #define _APS_NEXT_COMMAND_VALUE         32850
-#define _APS_NEXT_CONTROL_VALUE         1054
+#define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           108
 #endif
 #endif

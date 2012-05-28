@@ -27,7 +27,7 @@
 // 线程关闭的等待时间
 #define CloseClientCommThreadTimes			500
 // 线程执行的间隔时间
-#define RunClientCommThreadTimes			100
+#define RunClientCommThreadTimes			500
 // 发送帧延时等待次数
 #define SndFrameWaitTimes					3
 // 发送帧最多发送次数

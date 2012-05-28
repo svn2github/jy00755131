@@ -64,6 +64,9 @@ END
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\Operation.ico"
 IDR_OperationTYPE       ICON                    "res\\OperationDoc.ico"
+IDI_ICON_RED            ICON                    "res\\icon1.ico"
+IDI_ICON_GREEN          ICON                    "res\\ico00001.ico"
+IDI_ICON_ORANGE         ICON                    "res\\ico00002.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -198,11 +201,19 @@ BEGIN
     PUSHBUTTON      "http://www.srvsw.cn",IDC_COMPANY_URL,40,36,119,14
 END
 
-IDD_ACTIVESOURCEVIEW DIALOGEX 0, 0, 315, 27
+IDD_ACTIVESOURCEVIEW DIALOGEX 0, 0, 315, 34
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "Go",IDC_BUTTONGO,11,6,47,13
+    PUSHBUTTON      "Go",IDC_BUTTONGO,5,6,47,19,WS_DISABLED
+    PUSHBUTTON      "Stop",IDC_BUTTONSTOP,58,6,47,19,WS_DISABLED
+    PUSHBUTTON      "Abort",IDC_BUTTONABORT,111,6,47,19,WS_DISABLED
+    GROUPBOX        "",IDC_STATIC_ACTIVESOURCEGROUP,165,0,144,31
+    CTEXT           "Blaster",IDC_STATIC_BLASTER,174,5,28,9
+    CTEXT           "Uphole(ms)",IDC_STATIC_UPHOLE,212,5,37,9
+    CTEXT           "TB(ms)",IDC_STATIC_TB,273,5,27,9
+    EDITTEXT        IDC_EDIT_TB,263,15,43,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_UPHOLE,208,15,43,14,ES_AUTOHSCROLL
 END
 
 
@@ -263,6 +274,7 @@ BEGIN
 
     IDD_ACTIVESOURCEVIEW, DIALOG
     BEGIN
+        BOTTOMMARGIN, 32
     END
 END
 #endif    // APSTUDIO_INVOKED
