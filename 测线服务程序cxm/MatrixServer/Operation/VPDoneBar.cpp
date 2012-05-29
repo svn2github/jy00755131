@@ -1,9 +1,13 @@
 #include "StdAfx.h"
 #include "VPDoneBar.h"
-
+#include "Operation.h"
 
 CVPDoneBar::CVPDoneBar(void)
 {
+	for (int i=0; i<ActiveSourceNumLimit; i++)
+	{
+		m_iActiveSourceID[i] = ID_VPSHOT_FROM + i + ActiveSourceNumLimit * 2;
+	}
 }
 
 
@@ -37,6 +41,7 @@ bool CVPDoneBar::SetGridHead(void)
 // 载入全部炮点信息
 void CVPDoneBar::LoadShotPoints(void)
 {
+	m_GridView.RemoveAll();
 	for (int i =0; i<15; i++)
 	{
 		LoadShotPoint();
@@ -49,7 +54,7 @@ void CVPDoneBar::LoadShotPoint(void)
 {
 	CBCGPGridRow* pRow = m_GridView.CreateRow (13);
 	// pRow->GetItem (0)->SetValue (pVP->m_VPState);
-	pRow->GetItem (0)->SetValue(1);
+	pRow->GetItem (0)->SetImage(1);
 	pRow->GetItem (1)->SetValue (1);
 	pRow->GetItem (2)->SetValue (1);
 	pRow->GetItem (3)->SetValue (1);

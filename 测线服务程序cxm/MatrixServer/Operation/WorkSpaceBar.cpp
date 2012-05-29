@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Operation.h"
 #include "WorkSpaceBar.h"
-
+#include "MainFrm.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -71,6 +71,8 @@ int CWorkSpaceBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// 设置表头
 	SetGridHead();
+	m_ImageList.Create (IDB_BITMAP_VP, 16, 0, RGB (255, 0, 255));
+	m_GridView.SetImageList (&m_ImageList);
 	return 0;
 }
 
@@ -99,9 +101,34 @@ void CWorkSpaceBar::OnSize(UINT nType, int cx, int cy)
 // }
 
 // 重载右键菜单的WM_CONTEXTMENU消息响应函数
-void CWorkSpaceBar::OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/)
+void CWorkSpaceBar::OnContextMenu(CWnd* pWnd, CPoint point)
 {
 	// TODO: 在此处添加消息处理程序代码
+	CBCGPGridRow* pRow= m_GridView.GetCurSel();
+	if(NULL==pRow)
+		return;
+	CMenu menu;
+	VERIFY(menu.LoadMenu (IDR_POPUP_VPSHOT));
+	CMenu* pPopup = menu.GetSubMenu(0);
+	ASSERT(pPopup != NULL);
+	// 动态添加菜单
+	CMainFrame* pFrm = (CMainFrame*)AfxGetMainWnd();
+	int i;
+	int nCount = pFrm->m_wndActiveSource.m_GridView.GetRowCount();
+	CString  strTemp;
+	for(i=0;i<nCount;i++)
+	{	
+		// 得到震源
+		//		strTemp = _T("Start Seismonitor with ")+;
+		strTemp.Format(_T("Start Seismonitor with %d"), i);
+		// 动态添加菜单
+		pPopup->AppendMenu(MF_STRING ,m_iActiveSourceID[i], strTemp);
+		pPopup->EnableMenuItem(m_iActiveSourceID[i],MF_BYCOMMAND | MF_ENABLED);		 
+	}
+
+	CBCGPPopupMenu* pPopupMenu = new CBCGPPopupMenu;
+	// 显示菜单，由主框架响应菜单
+	pPopupMenu->Create (pFrm, point.x, point.y,pPopup->Detach(),FALSE,TRUE); //pPopup->m_hMenu 
 }
 
 

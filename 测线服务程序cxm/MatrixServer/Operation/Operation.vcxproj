@@ -112,6 +112,7 @@
   <ItemGroup>
     <ClCompile Include="ActiveSourceCtrl.cpp" />
     <ClCompile Include="AllVPBar.cpp" />
+    <ClCompile Include="ButtonItem.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Operation.cpp" />
     <ClCompile Include="OperationDoc.cpp" />
@@ -129,11 +130,13 @@
   <ItemGroup>
     <ClInclude Include="ActiveSourceCtrl.h" />
     <ClInclude Include="AllVPBar.h" />
+    <ClInclude Include="ButtonItem.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Operation.h" />
     <ClInclude Include="OperationDoc.h" />
     <ClInclude Include="OperationView.h" />
     <ClInclude Include="OutputBar.h" />
+    <ClInclude Include="Parameter.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="ActiveSourceBar.h" />
@@ -142,12 +145,16 @@
     <ClInclude Include="WorkSpaceBar.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\bitmap1.bmp" />
+    <None Include="res\bitmap2.bmp" />
     <None Include="res\ico00001.ico" />
     <None Include="res\ico00002.ico" />
+    <None Include="res\ico00003.ico" />
     <None Include="res\icon1.ico" />
     <None Include="res\Operation.ico" />
     <None Include="res\Operation.rc2" />
     <None Include="res\OperationDoc.ico" />
+    <None Include="res\productselector.ico" />
     <None Include="res\Toolbar.bmp" />
     <None Include="res\Toolbar256.bmp" />
     <None Include="UserImages.bmp" />

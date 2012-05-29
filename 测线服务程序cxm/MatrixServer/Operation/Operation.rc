@@ -75,6 +75,8 @@ IDI_ICON_ORANGE         ICON                    "res\\ico00002.ico"
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
+IDB_BITMAP_ACTIVESOURCE BITMAP                  "res\\bitmap2.bmp"
+IDB_BITMAP_VP           BITMAP                  "res\\bitmap1.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -160,6 +162,26 @@ BEGIN
         MENUITEM "<用户工具栏>",                     ID_VIEW_USER_TOOLBAR10
         MENUITEM SEPARATOR
         MENUITEM "自定义(&C)...",                  ID_VIEW_CUSTOMIZE
+    END
+END
+
+IDR_POPUP_ACTIVESOURCE MENU
+BEGIN
+    POPUP "Active Source"
+    BEGIN
+        MENUITEM "Source",                      ID_ACTIVESOURCE_SOURCE, INACTIVE
+        MENUITEM "Disassociate VP",             ID_ACTIVESOURCE_DISASSOCIATEVP
+        MENUITEM "Associate VP ...",            ID_ACTIVESOURCE_ASSOCIATEVP
+        MENUITEM "Associate Spl&Spn ...",       ID_ACTIVESOURCE_ASSOCIATESPLSPN
+        MENUITEM "Clean Ready",                 ID_ACTIVESOURCE_CLEANREADY
+    END
+END
+
+IDR_POPUP_VPSHOT MENU
+BEGIN
+    POPUP "VP Select"
+    BEGIN
+        MENUITEM "VP Selected",                 ID_VPSELECT_VPSELECTED
     END
 END
 
@@ -294,7 +316,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "Operation\n\nOperation\n\n\nOperation.Document\nOperation.Document"
+    IDR_MAINFRAME           "Operation\n天津海泰光电科技有限公司\nOperation\n\n\nOperation.Document\nOperation.Document"
 END
 
 STRINGTABLE

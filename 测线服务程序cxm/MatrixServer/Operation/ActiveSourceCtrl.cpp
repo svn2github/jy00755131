@@ -141,7 +141,6 @@ void CActiveSourceCtrl::OnDraw(CDC* /*pDC*/)
 	GetClientRect(rect);
 	int cx = rect.right;
 	int cy = rect.bottom;
-	TRACE(_T("1\n"));
 	switch(m_iBlasterStatus)
 	{
 	case 1:

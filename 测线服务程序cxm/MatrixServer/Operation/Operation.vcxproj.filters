@@ -51,6 +51,9 @@
     <ClCompile Include="ActiveSourceCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ButtonItem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -92,6 +95,12 @@
     <ClInclude Include="ActiveSourceCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Parameter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonItem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Operation.ico">
@@ -123,6 +132,18 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="res\ico00002.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bitmap2.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bitmap1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\productselector.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\ico00003.ico">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

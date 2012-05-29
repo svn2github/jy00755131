@@ -13,8 +13,11 @@
 #define IDD_ACTIVESOURCEVIEW            160
 #define IDI_ICON_RED                    161
 #define IDI_ICON_GREEN                  162
-#define IDI_ICON1                       163
 #define IDI_ICON_ORANGE                 163
+#define IDR_POPUP_ACTIVESOURCE          164
+#define IDR_POPUP_VPSHOT                165
+#define IDB_BITMAP_ACTIVESOURCE         167
+#define IDB_BITMAP_VP                   168
 #define IDC_COMPANY_URL                 1041
 #define IDC_BUTTONGO                    1053
 #define IDC_BUTTONSTOP                  1054
@@ -25,6 +28,7 @@
 #define IDC_STATIC_TB                   1059
 #define IDC_EDIT_TB                     1060
 #define IDC_EDIT_UPHOLE                 1061
+#define IDC_ACTIVESOURCE_BUTTON         1062
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_TOOLBARS                32771
 #define ID_VIEW_ALLVPBAR                32792
@@ -42,13 +46,20 @@
 #define ID_VIEW_OUTPUT                  32804
 #define ID_VIEW_VPDONEBAR               32805
 #define ID_VIEW_VPTODUBAR               32806
+#define ID_ACTIVESOURCE_SOURCE          32850
+#define ID_ACTIVESOURCE_DISASSOCIATEVP  32851
+#define ID_ACTIVESOURCE_ASSOCIATEVP     32852
+#define ID_ACTIVESOURCE_CLEANREADY      32853
+#define ID_ACTIVESOURCE_ASSOCIATESPLSPN 32854
+#define ID_VPSELECT_VPSELECTED          32855
+#define ID_VPSHOT_FROM                  32856
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        164
-#define _APS_NEXT_COMMAND_VALUE         32850
+#define _APS_NEXT_RESOURCE_VALUE        170
+#define _APS_NEXT_COMMAND_VALUE         32858
 #define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           108
 #endif

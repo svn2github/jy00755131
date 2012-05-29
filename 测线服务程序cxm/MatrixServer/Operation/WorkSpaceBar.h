@@ -7,7 +7,7 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-
+#include "Parameter.h"
 class CWorkSpaceBar : public CBCGPDockingControlBar
 {
 public:
@@ -37,7 +37,7 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 public:
 	// 载入全部炮点信息
 	virtual void LoadShotPoints(void);
@@ -45,10 +45,14 @@ protected:
 	// 设置表头
 	virtual bool SetGridHead(void);
 private:
+	CImageList	m_ImageList;
 	// 载入单条炮点信息
 	virtual void LoadShotPoint(void);
 public:
 	afx_msg void OnDestroy();
+public:
+	// 震源ID数组
+	int m_iActiveSourceID[ActiveSourceNumLimit];
 };
 
 /////////////////////////////////////////////////////////////////////////////

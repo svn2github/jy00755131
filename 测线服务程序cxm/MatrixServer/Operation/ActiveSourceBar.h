@@ -7,6 +7,7 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+#include "Parameter.h"
 class CActiveSourceCtrl;
 class CActiveSourceBar : public CBCGPDockingControlBar
 {
@@ -15,8 +16,10 @@ public:
 
 // Attributes
 protected:
-	CBCGPGridCtrl   m_GridView;
+	
 	CActiveSourceCtrl* m_pActiveSourceCtrl;
+private:
+	CImageList	m_ImageList;
 // Operations
 public:
 
@@ -38,8 +41,24 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	afx_msg void OnDestroy();
+public:
+	// 设置表头
+	bool SetGridHead(void);
+	// 载入全部震源信息
+	void LoadActiveSources(void);
+	// 载入单条震源信息
+	void LoadActiveSource(int iNb);
+	// 按键ID
+	int m_iActiveSourceBtnID[ActiveSourceNumLimit];
+public:
+	CBCGPGridCtrl   m_GridView;
+	afx_msg void OnActivesourceDisassociatevp();
+	afx_msg void OnActivesourceAssociatevp();
+	afx_msg void OnActivesourceAssociatesplspn();
+	afx_msg void OnActivesourceCleanready();
+	afx_msg void OnProcRdyBtn(UINT id);
 };
 
 /////////////////////////////////////////////////////////////////////////////

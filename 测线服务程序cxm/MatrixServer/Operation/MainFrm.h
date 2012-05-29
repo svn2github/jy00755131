@@ -38,16 +38,18 @@ protected:  // control bar embedded members
 	CBCGPStatusBar			m_wndStatusBar;
 	CBCGPMenuBar			m_wndMenuBar;
 	CBCGPToolBar			m_wndToolBar;
-	CActiveSourceBar		m_wndActiveSource;
 	CAllVPBar				m_wndAllVP;
 	CVPDoneBar				m_wndVPDone;
 	CVPToDoBar				m_wndVPToDo;
 	COutputBar				m_wndOutput;
+public:
+	CActiveSourceBar		m_wndActiveSource;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnViewCustomize();
 	afx_msg LRESULT OnToolbarReset(WPARAM,LPARAM);
+	afx_msg void OnSelectActiveSource(UINT id);
 	void OnToolsViewUserToolbar (UINT id);
 	void OnUpdateToolsViewUserToolbar (CCmdUI* pCmdUI);
 	DECLARE_MESSAGE_MAP()

@@ -1,16 +1,19 @@
 #include "StdAfx.h"
 #include "AllVPBar.h"
-
+#include "Operation.h"
 
 CAllVPBar::CAllVPBar(void)
 {
+	for (int i=0; i<ActiveSourceNumLimit; i++)
+	{
+		m_iActiveSourceID[i] = ID_VPSHOT_FROM + i;
+	}
 }
 
 
 CAllVPBar::~CAllVPBar(void)
 {
 }
-
 
 // 设置表头
 bool CAllVPBar::SetGridHead(void)
@@ -36,6 +39,7 @@ bool CAllVPBar::SetGridHead(void)
 // 载入全部炮点信息
 void CAllVPBar::LoadShotPoints(void)
 {
+	m_GridView.RemoveAll();
 	for (int i =0; i<35; i++)
 	{
 		LoadShotPoint();
@@ -48,7 +52,7 @@ void CAllVPBar::LoadShotPoint(void)
 {
 	CBCGPGridRow* pRow = m_GridView.CreateRow (12);
 	// pRow->GetItem (0)->SetValue (pVP->m_VPState);
-	pRow->GetItem (0)->SetValue(1);
+	pRow->GetItem (0)->SetImage(0);
 	pRow->GetItem (1)->SetValue (1);
 	pRow->GetItem (2)->SetValue (1);
 	pRow->GetItem (3)->SetValue (1);
@@ -64,3 +68,4 @@ void CAllVPBar::LoadShotPoint(void)
 	pRow->GetItem (11)->SetValue (2);
 	m_GridView.AddRow (pRow, FALSE );
 }
+

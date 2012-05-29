@@ -22,6 +22,7 @@ const UINT uiLastUserToolBarId	= uiFirstUserToolBarId + iMaxUserToolbars - 1;
 BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_WM_CREATE()
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, OnViewCustomize)
+	ON_COMMAND_RANGE(ID_VPSHOT_FROM, ID_VPSHOT_FROM + ActiveSourceNumLimit * 3 - 1, OnSelectActiveSource)
 	ON_REGISTERED_MESSAGE(BCGM_RESETTOOLBAR, OnToolbarReset)
 END_MESSAGE_MAP()
 
@@ -49,7 +50,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CBCGPFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	
 
 	// Menu will not take the focus on activation:
 	CBCGPPopupMenu::SetForceMenuFocus (FALSE);
@@ -84,16 +84,17 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
 	}
-	
-	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, 0, 200, 200),
+	CRect rectClient;
+	GetClientRect(rectClient);
+	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, 0, rectClient.right-1, rectClient.bottom/5),
 		TRUE, ID_VIEW_ACTIVESOURCEBAR,
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("Failed to create Active Source bar\n");
 		return -1;      // fail to create
 	}
-
-	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (0, 200, 200, 400),
+	m_wndActiveSource.LoadActiveSources();
+	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (0, rectClient.bottom/6, rectClient.right-1, rectClient.bottom/3),
 		TRUE, ID_VIEW_ALLVPBAR,
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
@@ -101,7 +102,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 	m_wndAllVP.LoadShotPoints();
-	if (!m_wndVPDone.Create (_T("VP Done"), this, CRect (0, 400, 200, 600),
+	if (!m_wndVPDone.Create (_T("VP Done"), this, CRect (0, rectClient.bottom/3, rectClient.right-1, rectClient.bottom/2),
 		TRUE, ID_VIEW_VPDONEBAR,
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
@@ -109,7 +110,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 	m_wndVPDone.LoadShotPoints();
-	if (!m_wndVPToDo.Create (_T("VP To Do"), this, CRect (0, 600, 200, 800),
+	if (!m_wndVPToDo.Create (_T("VP To Do"), this, CRect (0, rectClient.bottom/2, rectClient.right-1, rectClient.bottom*2/3),
 		TRUE, ID_VIEW_VPTODUBAR,
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
@@ -117,7 +118,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 	m_wndVPToDo.LoadShotPoints();
-	if (!m_wndOutput.Create (_T("Status Mail"), this, CSize (150, 150),
+	if (!m_wndOutput.Create (_T("Status Mail"), this, CSize (rectClient.right-1, rectClient.bottom/8),
 		TRUE /* Has gripper */, ID_VIEW_OUTPUT,
 		WS_CHILD | WS_VISIBLE | CBRS_BOTTOM))
 	{
@@ -168,6 +169,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CBCGPDockManager::SetDockMode (BCGP_DT_SMART);
 	// VISUAL_MANAGER
 	RecalcLayout();
+ 
+
 	return 0;
 }
 
@@ -231,3 +234,29 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM /*wp*/,LPARAM)
 	return 0;
 }
  // RIBBON_APP
+
+void CMainFrame::OnSelectActiveSource(UINT nMenuItemID)
+{	
+	int	nIndex;
+	// 从VPAll的窗口右键菜单选择
+	if(nMenuItemID >= ID_VPSHOT_FROM && nMenuItemID < (ID_VPSHOT_FROM + ActiveSourceNumLimit))
+	{
+		// 计算所选择的震源在网格中位置
+		nIndex = nMenuItemID - ID_VPSHOT_FROM;
+		return;
+	}
+	// 从VPToDo的窗口右键菜单选择
+	if(nMenuItemID >= (ID_VPSHOT_FROM + ActiveSourceNumLimit) && nMenuItemID< (ID_VPSHOT_FROM + ActiveSourceNumLimit * 2))
+	{
+		// 计算所选择的震源在网格中位置
+		nIndex = nMenuItemID - (ID_VPSHOT_FROM + ActiveSourceNumLimit);		
+		return;
+	}
+	// 从VPDone的窗口右键菜单选择
+	if(nMenuItemID >= (ID_VPSHOT_FROM + ActiveSourceNumLimit * 2) && nMenuItemID < (ID_VPSHOT_FROM + ActiveSourceNumLimit * 3))
+	{
+		// 计算所选择的震源在网格中位置
+		nIndex = nMenuItemID - (ID_VPSHOT_FROM + ActiveSourceNumLimit * 2);		
+		return;
+	}
+}
