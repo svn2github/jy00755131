@@ -146,6 +146,9 @@
     <None Include="res\ico00003.ico">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\icon1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Operation.rc">

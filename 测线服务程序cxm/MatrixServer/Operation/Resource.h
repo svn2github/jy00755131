@@ -18,6 +18,8 @@
 #define IDR_POPUP_VPSHOT                165
 #define IDB_BITMAP_ACTIVESOURCE         167
 #define IDB_BITMAP_VP                   168
+#define IDB_BITMAP1                     170
+#define IDB_SERVER_CONNECTED            170
 #define IDC_COMPANY_URL                 1041
 #define IDC_BUTTONGO                    1053
 #define IDC_BUTTONSTOP                  1054
@@ -53,12 +55,14 @@
 #define ID_ACTIVESOURCE_ASSOCIATESPLSPN 32854
 #define ID_VPSELECT_VPSELECTED          32855
 #define ID_VPSHOT_FROM                  32856
+#define ID_INDICATOR_CONNECT            59142
+#define IDS_CONNECTSERVER_ICON          59143
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        170
+#define _APS_NEXT_RESOURCE_VALUE        171
 #define _APS_NEXT_COMMAND_VALUE         32858
 #define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           108

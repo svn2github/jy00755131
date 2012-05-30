@@ -77,6 +77,7 @@ IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
 IDB_BITMAP_ACTIVESOURCE BITMAP                  "res\\bitmap2.bmp"
 IDB_BITMAP_VP           BITMAP                  "res\\bitmap1.bmp"
+IDB_SERVER_CONNECTED    BITMAP                  "res\\icon1.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -119,26 +120,6 @@ BEGIN
         MENUITEM "最近的文件",                       ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "退出(&X)",                      ID_APP_EXIT
-    END
-    POPUP "编辑(&E)"
-    BEGIN
-        MENUITEM "撤消(&U)\tCtrl+Z",              ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "剪切(&T)\tCtrl+X",              ID_EDIT_CUT
-        MENUITEM "复制(&C)\tCtrl+C",              ID_EDIT_COPY
-        MENUITEM "粘贴(&P)\tCtrl+V",              ID_EDIT_PASTE
-    END
-    POPUP "视图(&V)"
-    BEGIN
-        POPUP "工具栏(&T)"
-        BEGIN
-            MENUITEM "",                            ID_VIEW_TOOLBARS
-        END
-        MENUITEM "状态栏(&S)",                     ID_VIEW_STATUS_BAR
-    END
-    POPUP "帮助(&H)"
-    BEGIN
-        MENUITEM "关于 Operation (&A)...",        ID_APP_ABOUT
     END
 END
 
@@ -333,6 +314,8 @@ BEGIN
     ID_INDICATOR_SCRL       "SCRL"
     ID_INDICATOR_OVR        "OVR"
     ID_INDICATOR_REC        "REC"
+    ID_INDICATOR_CONNECT    "Connect Server"
+    IDS_CONNECTSERVER_ICON  " Connected"
 END
 
 STRINGTABLE

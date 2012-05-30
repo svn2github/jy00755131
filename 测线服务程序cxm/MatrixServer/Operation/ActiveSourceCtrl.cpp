@@ -137,20 +137,26 @@ void CActiveSourceCtrl::OnInitialUpdate()
 void CActiveSourceCtrl::OnDraw(CDC* /*pDC*/)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	CRect rect;
-	GetClientRect(rect);
-	int cx = rect.right;
-	int cy = rect.bottom;
+	CRect rectClient, rectIcon;
+	GetClientRect(rectClient);
+	int cx = rectClient.right;
+	int cy = rectClient.bottom;
+	HICON hIcon;
+	rectIcon.left = cx*59/100 - cy*3/20;
+	rectIcon.top = cy/2;
+	rectIcon.right = rectIcon.left + cy*3/10;
+	rectIcon.bottom = rectIcon.top + cy*3/10;
 	switch(m_iBlasterStatus)
 	{
 	case 1:
-		::DrawIconEx(GetDC()->m_hDC, cx*59/100 - cy*3/20, cy/2, m_oBlasterIconNoFire, cy*3/10, cy*3/10, 0, NULL, DI_NORMAL);
+		hIcon = m_oBlasterIconNoFire;
 		break;
 	case 2:
-		::DrawIconEx(GetDC()->m_hDC, cx*59/100 - cy*3/20, cy/2, m_oBlasterIconNormal, cy*3/10, cy*3/10, 0, NULL, DI_NORMAL);
+		hIcon = m_oBlasterIconNormal;
 		break;
 	default:
-		::DrawIconEx(GetDC()->m_hDC, cx*59/100 - cy*3/20, cy/2, m_oBlasterIconWarning, cy*3/10, cy*3/10, 0, NULL, DI_NORMAL);
+		hIcon = m_oBlasterIconWarning;
 		break;
 	}
+	::DrawIconEx(GetDC()->m_hDC, rectIcon.left, rectIcon.top, hIcon, rectIcon.Width(), rectIcon.Height(), 0, NULL, DI_NORMAL);
 }

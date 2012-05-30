@@ -150,6 +150,7 @@
     <None Include="res\ico00001.ico" />
     <None Include="res\ico00002.ico" />
     <None Include="res\ico00003.ico" />
+    <None Include="res\icon1.bmp" />
     <None Include="res\icon1.ico" />
     <None Include="res\Operation.ico" />
     <None Include="res\Operation.rc2" />

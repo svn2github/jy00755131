@@ -23,15 +23,19 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_WM_CREATE()
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, OnViewCustomize)
 	ON_COMMAND_RANGE(ID_VPSHOT_FROM, ID_VPSHOT_FROM + ActiveSourceNumLimit * 3 - 1, OnSelectActiveSource)
+	ON_UPDATE_COMMAND_UI(ID_INDICATOR_CONNECT, OnConnectServer)
+	ON_UPDATE_COMMAND_UI(IDS_CONNECTSERVER_ICON, OnConnectServer)
 	ON_REGISTERED_MESSAGE(BCGM_RESETTOOLBAR, OnToolbarReset)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
 {
 	ID_SEPARATOR,           // status line indicator
-	ID_INDICATOR_CAPS,
-	ID_INDICATOR_NUM,
-	ID_INDICATOR_SCRL,
+// 	ID_INDICATOR_CAPS,
+//	ID_INDICATOR_NUM,
+	ID_INDICATOR_CONNECT,
+	IDS_CONNECTSERVER_ICON,
+// 	ID_INDICATOR_SCRL,
 };
 
 // CMainFrame construction/destruction
@@ -77,13 +81,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 
-	if (!m_wndStatusBar.Create(this) ||
-		!m_wndStatusBar.SetIndicators(indicators,
-		  sizeof(indicators)/sizeof(UINT)))
+	if (!CreateStatusBar ())
 	{
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
 	}
+
 	CRect rectClient;
 	GetClientRect(rectClient);
 	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, 0, rectClient.right-1, rectClient.bottom/5),
@@ -235,6 +238,28 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM /*wp*/,LPARAM)
 }
  // RIBBON_APP
 
+BOOL CMainFrame::CreateStatusBar ()
+{
+	if (!m_wndStatusBar.Create(this) ||
+		!m_wndStatusBar.SetIndicators(indicators,
+		  sizeof(indicators)/sizeof(UINT)))
+	{
+		TRACE0("Failed to create status bar\n");
+		return FALSE;      // fail to create
+	}
+	CClientDC dc (this);
+	CString str = _T("连接到服务器 192.168.100.22:8080");
+	CSize sz = dc.GetTextExtent(str);                     //设置一个CClientDC对象来获取str的长度
+	int index = 0;
+	index = m_wndStatusBar.CommandToIndex(ID_INDICATOR_CONNECT);     //此处也可以直接输入ID_INDICATOR_CONNECT在indicators数组中从0开始的序号。
+	m_wndStatusBar.SetPaneInfo(index, ID_INDICATOR_CONNECT, SBPS_NORMAL, sz.cx);    //设置状态栏宽度
+	m_wndStatusBar.SetPaneText(index, str);              //设置ID_INDICATOR_CONNECT字符串
+
+	index = m_wndStatusBar.CommandToIndex(IDS_CONNECTSERVER_ICON);     //此处也可以直接输入ID_INDICATOR_CONNECT在indicators数组中从0开始的序号。
+	m_wndStatusBar.SetPaneStyle (index, SBPS_NOBORDERS);
+	return TRUE;
+}
+
 void CMainFrame::OnSelectActiveSource(UINT nMenuItemID)
 {	
 	int	nIndex;
@@ -259,4 +284,8 @@ void CMainFrame::OnSelectActiveSource(UINT nMenuItemID)
 		nIndex = nMenuItemID - (ID_VPSHOT_FROM + ActiveSourceNumLimit * 2);		
 		return;
 	}
+}
+void CMainFrame::OnConnectServer(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(TRUE);
 }

@@ -41,6 +41,8 @@ protected:
 protected:
 	afx_msg void OnFilePrintPreview();
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual void OnInitialUpdate();
 };
 
 #ifndef _DEBUG  // debug version in OperationView.cpp

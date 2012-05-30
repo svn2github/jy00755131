@@ -8,7 +8,6 @@
 #include "VPDoneBar.h"
 #include "VPToDoBar.h"
 #include "OutputBar.h"
-
 class CMainFrame : public CBCGPFrameWnd
 {
 	
@@ -35,7 +34,6 @@ public:
 #endif
 
 protected:  // control bar embedded members
-	CBCGPStatusBar			m_wndStatusBar;
 	CBCGPMenuBar			m_wndMenuBar;
 	CBCGPToolBar			m_wndToolBar;
 	CAllVPBar				m_wndAllVP;
@@ -44,16 +42,19 @@ protected:  // control bar embedded members
 	COutputBar				m_wndOutput;
 public:
 	CActiveSourceBar		m_wndActiveSource;
+	CBCGPStatusBar			m_wndStatusBar;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnViewCustomize();
 	afx_msg LRESULT OnToolbarReset(WPARAM,LPARAM);
 	afx_msg void OnSelectActiveSource(UINT id);
+	afx_msg void OnConnectServer(CCmdUI* pCmdUI);
 	void OnToolsViewUserToolbar (UINT id);
 	void OnUpdateToolsViewUserToolbar (CCmdUI* pCmdUI);
 	DECLARE_MESSAGE_MAP()
-
+private:
+	BOOL CreateStatusBar ();
 };
 
 

@@ -22,16 +22,38 @@ bool CAllVPBar::SetGridHead(void)
 		return false;
 	m_GridView.InsertColumn (0, _T(""), 50);
 	m_GridView.InsertColumn (1, _T("Shot#"), 80);
+	m_GridView.SetHeaderAlign (1, HDF_CENTER);
+	m_GridView.SetColumnAlign (1, HDF_RIGHT);
 	m_GridView.InsertColumn (2, _T("SourcePointLine"), 150);
+	m_GridView.SetHeaderAlign (2, HDF_CENTER);
+	m_GridView.SetColumnAlign (2, HDF_RIGHT);
 	m_GridView.InsertColumn (3, _T("SourcePointNb"), 150);
+	m_GridView.SetHeaderAlign (3, HDF_CENTER);
+	m_GridView.SetColumnAlign (3, HDF_RIGHT);
 	m_GridView.InsertColumn (4, _T("SourcePointIndex"), 150);
+	m_GridView.SetHeaderAlign (4, HDF_CENTER);
+	m_GridView.SetColumnAlign (4, HDF_RIGHT);
 	m_GridView.InsertColumn (5, _T("Sfn"), 100);
+	m_GridView.SetHeaderAlign (5, HDF_CENTER);
+	m_GridView.SetColumnAlign (5, HDF_RIGHT);
 	m_GridView.InsertColumn (6, _T("Sfl"), 100);
+	m_GridView.SetHeaderAlign (6, HDF_CENTER);
+	m_GridView.SetColumnAlign (6, HDF_RIGHT);
 	m_GridView.InsertColumn (7, _T("Spread#"), 100);
+	m_GridView.SetHeaderAlign (7, HDF_CENTER);
+	m_GridView.SetColumnAlign (7, HDF_RIGHT);
 	m_GridView.InsertColumn (8, _T("SuperSpread#"), 100);
+	m_GridView.SetHeaderAlign (8, HDF_CENTER);
+	m_GridView.SetColumnAlign (8, HDF_RIGHT);
 	m_GridView.InsertColumn (9, _T("ProcessType"), 100);
+	m_GridView.SetHeaderAlign (9, HDF_CENTER);
+	m_GridView.SetColumnAlign (9, HDF_RIGHT);
 	m_GridView.InsertColumn (10, _T("Comment"), 100);
+	m_GridView.SetHeaderAlign (10, HDF_CENTER);
+	m_GridView.SetColumnAlign (10, HDF_RIGHT);
 	m_GridView.InsertColumn (11, _T("Swath"), 100);
+	m_GridView.SetHeaderAlign (11, HDF_CENTER);
+	m_GridView.SetColumnAlign (11, HDF_RIGHT);
 	return true;
 }
 

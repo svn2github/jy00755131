@@ -11,22 +11,25 @@ CButtonItem::CButtonItem (LPCTSTR lpszText, UINT id) :
 void CButtonItem::OnDrawValue (CDC* pDC, CRect rect)
 {
 	ASSERT_VALID (pDC);
+	CRect rectBtn;
+	rectBtn = rect;
+// 	rectBtn.left = rect.left + rect.Width()/2 - rect.Height()/2;
+// 	rectBtn.right = rect.left + rect.Width()/2 + rect.Height()/2;
+	OnFillBackground (pDC, rectBtn);
 
-	OnFillBackground (pDC, rect);
+	rectBtn.DeflateRect (1, 1);
 
-	rect.DeflateRect (1, 1);
+	pDC->FillRect (rectBtn, &globalData.brBarFace);
 
-	pDC->FillRect (rect, &globalData.brBarFace);
-
-	pDC->Draw3dRect (rect, globalData.clrBarLight, globalData.clrBarDkShadow);
-	rect.DeflateRect (1, 1);
-	pDC->Draw3dRect (rect, globalData.clrBarHilite, globalData.clrBarShadow);
+	pDC->Draw3dRect (rectBtn, globalData.clrBarLight, globalData.clrBarDkShadow);
+	rectBtn.DeflateRect (1, 1);
+	pDC->Draw3dRect (rectBtn, globalData.clrBarHilite, globalData.clrBarShadow);
 
 	COLORREF clrText = pDC->SetTextColor (globalData.clrBarText);
 
 	CString strText = (LPCTSTR)(_bstr_t) m_varValue;
 
-	pDC->DrawText (strText, rect, DT_CENTER | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
+	pDC->DrawText (strText, rectBtn, DT_CENTER | DT_SINGLELINE | DT_VCENTER | DT_NOPREFIX);
 	pDC->SetTextColor (clrText);
 }
 //*****************************************************************************************
