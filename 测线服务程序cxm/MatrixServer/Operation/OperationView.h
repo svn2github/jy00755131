@@ -42,7 +42,14 @@ protected:
 	afx_msg void OnFilePrintPreview();
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual void OnInitialUpdate();
+	afx_msg void OnSetupSource();
+	afx_msg void OnSetupOperation();
+	afx_msg void OnSetupProcesstype();
+	afx_msg void OnSetupNoiseediting();
+	afx_msg void OnSetupComments();
+	afx_msg void OnSetupOptions();
+	afx_msg void OnSetupDelaysetup();
+	afx_msg void OnSetupPreferences();
 };
 
 #ifndef _DEBUG  // debug version in OperationView.cpp

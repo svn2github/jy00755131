@@ -147,6 +147,7 @@
   <ItemGroup>
     <None Include="res\bitmap1.bmp" />
     <None Include="res\bitmap2.bmp" />
+    <None Include="res\bmp00001.bmp" />
     <None Include="res\ico00001.ico" />
     <None Include="res\ico00002.ico" />
     <None Include="res\ico00003.ico" />

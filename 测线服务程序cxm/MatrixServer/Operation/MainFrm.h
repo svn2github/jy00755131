@@ -43,6 +43,9 @@ protected:  // control bar embedded members
 public:
 	CActiveSourceBar		m_wndActiveSource;
 	CBCGPStatusBar			m_wndStatusBar;
+	CBitmap					m_bmpIconConnected;
+	CBitmap					m_bmpIconDisConnected;
+	bool					m_bServerConnected;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

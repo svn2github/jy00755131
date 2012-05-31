@@ -31,11 +31,8 @@ END_MESSAGE_MAP()
 static UINT indicators[] =
 {
 	ID_SEPARATOR,           // status line indicator
-// 	ID_INDICATOR_CAPS,
-//	ID_INDICATOR_NUM,
 	ID_INDICATOR_CONNECT,
 	IDS_CONNECTSERVER_ICON,
-// 	ID_INDICATOR_SCRL,
 };
 
 // CMainFrame construction/destruction
@@ -44,6 +41,7 @@ CMainFrame::CMainFrame()
 {
 
 	// TODO: add member initialization code here
+	m_bServerConnected = false;
 }
 
 CMainFrame::~CMainFrame()
@@ -247,16 +245,26 @@ BOOL CMainFrame::CreateStatusBar ()
 		TRACE0("Failed to create status bar\n");
 		return FALSE;      // fail to create
 	}
-	CClientDC dc (this);
-	CString str = _T("连接到服务器 192.168.100.22:8080");
-	CSize sz = dc.GetTextExtent(str);                     //设置一个CClientDC对象来获取str的长度
-	int index = 0;
-	index = m_wndStatusBar.CommandToIndex(ID_INDICATOR_CONNECT);     //此处也可以直接输入ID_INDICATOR_CONNECT在indicators数组中从0开始的序号。
-	m_wndStatusBar.SetPaneInfo(index, ID_INDICATOR_CONNECT, SBPS_NORMAL, sz.cx);    //设置状态栏宽度
-	m_wndStatusBar.SetPaneText(index, str);              //设置ID_INDICATOR_CONNECT字符串
-
-	index = m_wndStatusBar.CommandToIndex(IDS_CONNECTSERVER_ICON);     //此处也可以直接输入ID_INDICATOR_CONNECT在indicators数组中从0开始的序号。
-	m_wndStatusBar.SetPaneStyle (index, SBPS_NOBORDERS);
+	if (m_bmpIconConnected.GetSafeHandle () == NULL)
+	{
+		HBITMAP hbmp = (HBITMAP) ::LoadImage (
+			AfxGetResourceHandle (),
+			MAKEINTRESOURCE(IDB_SERVER_CONNECTED),
+			IMAGE_BITMAP,
+			0, 0,
+			LR_CREATEDIBSECTION | LR_LOADMAP3DCOLORS);
+		m_bmpIconConnected.Attach (hbmp);
+	}
+	if (m_bmpIconDisConnected.GetSafeHandle () == NULL)
+	{
+		HBITMAP hbmp = (HBITMAP) ::LoadImage (
+			AfxGetResourceHandle (),
+			MAKEINTRESOURCE(IDB_SERVER_DISCONNECTED),
+			IMAGE_BITMAP,
+			0, 0,
+			LR_CREATEDIBSECTION | LR_LOADMAP3DCOLORS);
+		m_bmpIconDisConnected.Attach (hbmp);
+	}
 	return TRUE;
 }
 
@@ -287,5 +295,34 @@ void CMainFrame::OnSelectActiveSource(UINT nMenuItemID)
 }
 void CMainFrame::OnConnectServer(CCmdUI* pCmdUI)
 {
+	CClientDC dc (this);
+	CString str = _T("");
+	CSize sz;
+	int index = m_wndStatusBar.CommandToIndex(pCmdUI->m_nID);
 	pCmdUI->Enable(TRUE);
+	switch (pCmdUI->m_nID)
+	{
+	case ID_INDICATOR_CONNECT:
+		str = _T("Connected to server 192.168.100.22:8080");
+		//设置一个CClientDC对象来获取str的长度
+		sz = dc.GetTextExtent(str, 33);
+		//设置状态栏宽度
+		m_wndStatusBar.SetPaneInfo(index, ID_INDICATOR_CONNECT, SBPS_NORMAL, sz.cx);
+		//设置ID_INDICATOR_CONNECT字符串
+		m_wndStatusBar.SetPaneText(index, str);
+		break;
+	case IDS_CONNECTSERVER_ICON:
+		m_wndStatusBar.SetPaneInfo(index, ID_INDICATOR_CONNECT, SBPS_POPOUT, 0);
+		if (m_bServerConnected)
+		{
+			m_wndStatusBar.SetPaneIcon (index, m_bmpIconConnected);
+		}
+		else
+		{
+			m_wndStatusBar.SetPaneIcon (index, m_bmpIconDisConnected);
+		}
+		break;
+	default:
+		break;
+	}
 }

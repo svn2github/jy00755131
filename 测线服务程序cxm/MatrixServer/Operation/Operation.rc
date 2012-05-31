@@ -73,11 +73,12 @@ IDI_ICON_ORANGE         ICON                    "res\\ico00002.ico"
 // Bitmap
 //
 
-IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDR_MAINFRAME           BITMAP                  "D:\\海泰光电\\工作\\测线服务程序20111208\\MatrixServer\\Operation\\res\\Toolbar.bmp"
 IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
 IDB_BITMAP_ACTIVESOURCE BITMAP                  "res\\bitmap2.bmp"
 IDB_BITMAP_VP           BITMAP                  "res\\bitmap1.bmp"
 IDB_SERVER_CONNECTED    BITMAP                  "res\\icon1.bmp"
+IDB_SERVER_DISCONNECTED BITMAP                  "res\\bmp00001.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -86,16 +87,12 @@ IDB_SERVER_CONNECTED    BITMAP                  "res\\icon1.bmp"
 
 IDR_MAINFRAME TOOLBAR 16, 15
 BEGIN
-    BUTTON      ID_FILE_NEW
     BUTTON      ID_FILE_OPEN
     BUTTON      ID_FILE_SAVE
-    SEPARATOR
-    BUTTON      ID_EDIT_CUT
-    BUTTON      ID_EDIT_COPY
-    BUTTON      ID_EDIT_PASTE
-    SEPARATOR
+    BUTTON      ID_FILE_PRINT_PREVIEW
     BUTTON      ID_FILE_PRINT
-    BUTTON      ID_APP_ABOUT
+    SEPARATOR
+    BUTTON      ID_APP_EXIT
 END
 
 
@@ -108,18 +105,24 @@ IDR_MAINFRAME MENU
 BEGIN
     POPUP "文件(&F)"
     BEGIN
-        MENUITEM "新建(&N)\tCtrl+N",              ID_FILE_NEW
         MENUITEM "打开(&O)...\tCtrl+O",           ID_FILE_OPEN
         MENUITEM "保存(&S)\tCtrl+S",              ID_FILE_SAVE
-        MENUITEM "另存为(&A)...",                  ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         MENUITEM "打印(&P)...\tCtrl+P",           ID_FILE_PRINT
         MENUITEM "打印预览(&V)",                    ID_FILE_PRINT_PREVIEW
-        MENUITEM "打印设置(&R)...",                 ID_FILE_PRINT_SETUP
-        MENUITEM SEPARATOR
-        MENUITEM "最近的文件",                       ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "退出(&X)",                      ID_APP_EXIT
+    END
+    POPUP "Setup"
+    BEGIN
+        MENUITEM "&Sources",                    ID_SETUP_SOURCE
+        MENUITEM "Ope&ration",                  ID_SETUP_OPERATION
+        MENUITEM "Pro&cess Type",               ID_SETUP_PROCESSTYPE
+        MENUITEM "Nois&e Editing",              ID_SETUP_NOISEEDITING
+        MENUITEM "Co&mments",                   ID_SETUP_COMMENTS
+        MENUITEM "Optio&ns",                    ID_SETUP_OPTIONS
+        MENUITEM "Delay Se&tup",                ID_SETUP_DELAYSETUP
+        MENUITEM "Pre&ferences",                ID_SETUP_PREFERENCES
     END
 END
 
@@ -314,8 +317,8 @@ BEGIN
     ID_INDICATOR_SCRL       "SCRL"
     ID_INDICATOR_OVR        "OVR"
     ID_INDICATOR_REC        "REC"
-    ID_INDICATOR_CONNECT    "Connect Server"
-    IDS_CONNECTSERVER_ICON  " Connected"
+    ID_INDICATOR_CONNECT    "Connect"
+    IDS_CONNECTSERVER_ICON  "Connected"
 END
 
 STRINGTABLE
@@ -373,8 +376,8 @@ STRINGTABLE
 BEGIN
     ID_EDIT_CLEAR           "清除选定内容\n清除"
     ID_EDIT_CLEAR_ALL       "清除全部内容\n全部清除"
-    ID_EDIT_COPY            "复制选定内容并将其放到剪贴板上\n复制"
-    ID_EDIT_CUT             "剪切选定内容并将其放到剪贴板上\n剪切"
+    ID_EDIT_COPY            "打印活动文档\n打印"
+    ID_EDIT_CUT             "打印活动文档\n打印"
     ID_EDIT_FIND            "查找指定的文本\n查找"
     ID_EDIT_PASTE           "插入剪贴板内容\n粘贴"
     ID_EDIT_REPEAT          "重复上一操作\n重复"
@@ -433,6 +436,11 @@ BEGIN
     ID_VIEW_USER_TOOLBAR8   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
     ID_VIEW_USER_TOOLBAR9   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
     ID_VIEW_USER_TOOLBAR10  "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+END
+
+STRINGTABLE
+BEGIN
+    ID_SETUP_SOURCE         "震源类型设置\n震源"
 END
 
 #endif    // 中文(简体，中国) resources

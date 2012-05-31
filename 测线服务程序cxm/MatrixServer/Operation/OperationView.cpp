@@ -21,6 +21,14 @@ BEGIN_MESSAGE_MAP(COperationView, CView)
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, OnFilePrintPreview)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
+	ON_COMMAND(ID_SETUP_SOURCE, &COperationView::OnSetupSource)
+	ON_COMMAND(ID_SETUP_OPERATION, &COperationView::OnSetupOperation)
+	ON_COMMAND(ID_SETUP_PROCESSTYPE, &COperationView::OnSetupProcesstype)
+	ON_COMMAND(ID_SETUP_NOISEEDITING, &COperationView::OnSetupNoiseediting)
+	ON_COMMAND(ID_SETUP_COMMENTS, &COperationView::OnSetupComments)
+	ON_COMMAND(ID_SETUP_OPTIONS, &COperationView::OnSetupOptions)
+	ON_COMMAND(ID_SETUP_DELAYSETUP, &COperationView::OnSetupDelaysetup)
+	ON_COMMAND(ID_SETUP_PREFERENCES, &COperationView::OnSetupPreferences)
 END_MESSAGE_MAP()
 
 // COperationView construction/destruction
@@ -102,21 +110,50 @@ COperationDoc* COperationView::GetDocument() const // non-debug version is inlin
 // COperationView message handlers
 
 
-void COperationView::OnInitialUpdate()
+void COperationView::OnSetupSource()
 {
-	CView::OnInitialUpdate();
+	// TODO: 在此添加命令处理程序代码
+	int itest = 0;
+}
 
-	// TODO: 在此添加专用代码和/或调用基类
-	CBitmap		m_bmpIcon1;
-	if (m_bmpIcon1.GetSafeHandle () == NULL)
-	{
-		HBITMAP hbmp = (HBITMAP) ::LoadImage (
-			AfxGetResourceHandle (),
-			MAKEINTRESOURCE(IDB_SERVER_CONNECTED),
-			IMAGE_BITMAP,
-			0, 0,
-			LR_CREATEDIBSECTION | LR_LOADMAP3DCOLORS);
-		m_bmpIcon1.Attach (hbmp);
-	}
-	((CMainFrame*) AfxGetMainWnd ())->m_wndStatusBar.SetPaneIcon (2, m_bmpIcon1);
+
+void COperationView::OnSetupOperation()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void COperationView::OnSetupProcesstype()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void COperationView::OnSetupNoiseediting()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void COperationView::OnSetupComments()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void COperationView::OnSetupOptions()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void COperationView::OnSetupDelaysetup()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void COperationView::OnSetupPreferences()
+{
+	// TODO: 在此添加命令处理程序代码
 }
