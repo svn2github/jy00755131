@@ -152,6 +152,21 @@
     <None Include="res\bmp00001.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\toolbar1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmpSetupBar256.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmpView256.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmpSetupBar.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmpView.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Operation.rc">

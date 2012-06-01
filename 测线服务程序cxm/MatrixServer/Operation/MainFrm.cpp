@@ -78,6 +78,24 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create toolbar\n");
 		return -1;      // fail to create
 	}
+	m_wndToolBarSetup.SetLockedSizes(CSize(16,16),CSize(16,16));
+	uiToolbarHotID = bIsHighColor ? IDB_BITMAP_SETUPBAR256 : 0;
+	if (!m_wndToolBarSetup.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
+		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+		!m_wndToolBarSetup.LoadToolBar(IDR_SETUPBAR, 0, 0, TRUE, 0, 0, uiToolbarHotID))
+	{
+		TRACE0("Failed to create toolbar\n");
+		return -1;      // fail to create
+	}
+	m_wndToolBarView.SetLockedSizes(CSize(25,16),CSize(25,16));
+	uiToolbarHotID = bIsHighColor ? IDB_BITMAP_VIEWBAR256 : 0;
+	if (!m_wndToolBarView.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
+		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+		!m_wndToolBarView.LoadToolBar(IDR_VIEWBAR, 0, 0, TRUE, 0, 0, uiToolbarHotID))
+	{
+		TRACE0("Failed to create toolbar\n");
+		return -1;      // fail to create
+	}
 
 	if (!CreateStatusBar ())
 	{
@@ -134,6 +152,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// TODO: Delete these three lines if you don't want the toolbar to be dockable
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndToolBarSetup.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndToolBarView.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndActiveSource.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndAllVP.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndVPDone.EnableDocking(CBRS_ALIGN_ANY);
@@ -142,16 +162,17 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	EnableDocking(CBRS_ALIGN_ANY);
 	EnableAutoHideBars(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndMenuBar);
-	DockControlBar(&m_wndToolBar);
+	DockControlBar(&m_wndToolBarView);
+	DockControlBarLeftOf(&m_wndToolBarSetup,&m_wndToolBarView);
+	DockControlBarLeftOf(&m_wndToolBar,&m_wndToolBarSetup);
 	DockControlBar(&m_wndActiveSource);
 	DockControlBar(&m_wndAllVP);
 	DockControlBar(&m_wndVPDone);
 	DockControlBar(&m_wndVPToDo);
 	DockControlBar(&m_wndOutput);
-
-
 	m_wndToolBar.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
-
+	m_wndToolBarSetup.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
+	m_wndToolBarView.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
 	// Allow user-defined toolbars operations:
 	InitUserToobars (NULL,
 					uiFirstUserToolBarId,

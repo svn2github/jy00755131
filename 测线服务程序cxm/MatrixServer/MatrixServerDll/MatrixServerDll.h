@@ -2675,8 +2675,6 @@ MatrixServerDll_API void AddFreeOptTask(m_oOptTaskStruct* pOptTask, m_oOptTaskAr
 // 初始化线程函数
 MatrixServerDll_API bool OnInitThread(m_oThreadStruct* pThread, 
 	m_oLogOutPutStruct* pLogOutPut = NULL, m_oConstVarStruct* pConstVar = NULL);
-// 关闭线程函数的句柄
-MatrixServerDll_API void OnCloseThreadHandle(m_oThreadStruct* pThread);
 // 关闭线程函数
 MatrixServerDll_API bool OnCloseThread(m_oThreadStruct* pThread);
 

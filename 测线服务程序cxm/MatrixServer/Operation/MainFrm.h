@@ -36,6 +36,8 @@ public:
 protected:  // control bar embedded members
 	CBCGPMenuBar			m_wndMenuBar;
 	CBCGPToolBar			m_wndToolBar;
+	CBCGPToolBar			m_wndToolBarSetup;
+	CBCGPToolBar			m_wndToolBarView;
 	CAllVPBar				m_wndAllVP;
 	CVPDoneBar				m_wndVPDone;
 	CVPToDoBar				m_wndVPToDo;

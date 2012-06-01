@@ -73,12 +73,16 @@ IDI_ICON_ORANGE         ICON                    "res\\ico00002.ico"
 // Bitmap
 //
 
-IDR_MAINFRAME           BITMAP                  "D:\\海泰光电\\工作\\测线服务程序20111208\\MatrixServer\\Operation\\res\\Toolbar.bmp"
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
 IDB_BITMAP_ACTIVESOURCE BITMAP                  "res\\bitmap2.bmp"
 IDB_BITMAP_VP           BITMAP                  "res\\bitmap1.bmp"
 IDB_SERVER_CONNECTED    BITMAP                  "res\\icon1.bmp"
 IDB_SERVER_DISCONNECTED BITMAP                  "res\\bmp00001.bmp"
+IDR_SETUPBAR            BITMAP                  "res\\bmpSetupBar.bmp"
+IDB_BITMAP_SETUPBAR256  BITMAP                  "res\\bmpSetupBar256.bmp"
+IDB_BITMAP_VIEWBAR256   BITMAP                  "res\\bmpView256.bmp"
+IDR_VIEWBAR             BITMAP                  "res\\bmpView.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -93,6 +97,28 @@ BEGIN
     BUTTON      ID_FILE_PRINT
     SEPARATOR
     BUTTON      ID_APP_EXIT
+END
+
+IDR_SETUPBAR TOOLBAR 16, 16
+BEGIN
+    BUTTON      ID_SETUP_SOURCE
+    BUTTON      ID_SETUP_OPERATION
+    BUTTON      ID_SETUP_PROCESSTYPE
+    BUTTON      ID_SETUP_NOISEEDITING
+    BUTTON      ID_SETUP_COMMENTS
+    BUTTON      ID_SETUP_OPTIONS
+    BUTTON      ID_SETUP_DELAYSETUP
+    BUTTON      ID_SETUP_PREFERENCES
+END
+
+IDR_VIEWBAR TOOLBAR 25, 16
+BEGIN
+    BUTTON      ID_VIEW_ALLVPBAR
+    BUTTON      ID_VIEW_ACTIVESOURCEBAR
+    BUTTON      ID_VIEW_ACTIVEACQBAR
+    BUTTON      ID_VIEW_VPTODUBAR
+    BUTTON      ID_VIEW_VPDONEBAR
+    BUTTON      ID_VIEW_OPERATIONREPORTBAR
 END
 
 

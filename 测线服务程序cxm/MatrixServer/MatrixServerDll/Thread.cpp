@@ -31,24 +31,6 @@ bool OnInitThread(m_oThreadStruct* pThread, m_oLogOutPutStruct* pLogOutPut, m_oC
 	}
 	return true;
 }
-// 关闭线程函数的句柄
-void OnCloseThreadHandle(m_oThreadStruct* pThread)
-{
-	if (pThread == NULL)
-	{
-		return;
-	}
-	if (FALSE == CloseHandle(pThread->m_hThread))
-	{
-		AddMsgToLogOutPutList(pThread->m_pLogOutPut, "OnCloseThread", 
-			"pThread->m_hThread", ErrorType, IDS_ERR_CLOSEHANDLE_FAILED);
-	}
-	if (FALSE == CloseHandle(pThread->m_hThreadClose))
-	{
-		AddMsgToLogOutPutList(pThread->m_pLogOutPut, "OnCloseThread", 
-			"pThread->m_hThreadClose", ErrorType, IDS_ERR_CLOSEHANDLE_FAILED);
-	}
-}
 // 关闭线程函数
 bool OnCloseThread(m_oThreadStruct* pThread)
 {
@@ -59,15 +41,17 @@ bool OnCloseThread(m_oThreadStruct* pThread)
 	int iResult = WaitForSingleObject(pThread->m_hThreadClose, 
 		pThread->m_pConstVar->m_iCloseThreadSleepTimes 
 		* pThread->m_pConstVar->m_iOneSleepTime);
+	CloseHandle(pThread->m_hThreadClose);
+	pThread->m_hThreadClose = INVALID_HANDLE_VALUE;
 	if (iResult != WAIT_OBJECT_0)
 	{
 		TerminateThread(pThread->m_hThread, 0);
-		OnCloseThreadHandle(pThread);
 		return false;
 	}
 	else
 	{
-		OnCloseThreadHandle(pThread);
+		CloseHandle(pThread->m_hThread);
+		pThread->m_hThread = INVALID_HANDLE_VALUE;
 		return true;
 	}
 }

@@ -20,6 +20,10 @@
 #define IDB_BITMAP_VP                   168
 #define IDB_SERVER_CONNECTED            170
 #define IDB_SERVER_DISCONNECTED         171
+#define IDR_SETUPBAR                    173
+#define IDB_BITMAP_SETUPBAR256          175
+#define IDB_BITMAP_VIEWBAR256           176
+#define IDR_VIEWBAR                     177
 #define IDC_COMPANY_URL                 1041
 #define IDC_BUTTONGO                    1053
 #define IDC_BUTTONSTOP                  1054
@@ -63,6 +67,8 @@
 #define ID_SETUP_OPTIONS                32863
 #define ID_SETUP_DELAYSETUP             32864
 #define ID_SETUP_PREFERENCES            32865
+#define ID_VIEW_ACTIVEACQBAR            32868
+#define ID_VIEW_OPERATIONREPORTBAR      32869
 #define ID_INDICATOR_CONNECT            59142
 #define IDS_CONNECTSERVER_ICON          59143
 
@@ -70,8 +76,8 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        173
-#define _APS_NEXT_COMMAND_VALUE         32867
+#define _APS_NEXT_RESOURCE_VALUE        179
+#define _APS_NEXT_COMMAND_VALUE         32870
 #define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           108
 #endif

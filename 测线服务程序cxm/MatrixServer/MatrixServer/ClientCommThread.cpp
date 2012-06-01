@@ -48,9 +48,15 @@ void CClientCommThread::OnClose(void)
 	{
 		TerminateThread(m_hThread, 0);
 	}
-	CloseHandle(m_hThread);
+	else
+	{
+		CloseHandle(m_hThread);
+		m_hThread = INVALID_HANDLE_VALUE;
+	}
 	CloseHandle(m_hThreadRun);
+	m_hThreadRun = INVALID_HANDLE_VALUE;
 	CloseHandle(m_hThreadClose);
+	m_hThreadClose = INVALID_HANDLE_VALUE;
 }
 
 
