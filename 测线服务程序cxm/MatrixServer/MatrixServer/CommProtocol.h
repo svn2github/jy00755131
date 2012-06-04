@@ -7,7 +7,7 @@
 // 仪器SN位数
 #define InstrumentBytes						4
 // 仪器表网格大小，仪器SN为0则表示无仪器
-#define InstrumentTableWindowSize			338
+#define InstrumentTableWindowSize			169
 // 测试结果位数
 #define TestResultBytes						1
 // 网络传输的数据位数
@@ -25,9 +25,11 @@
 // 最大接收帧结构体数
 #define FrameStructNumMax					5800
 // 线程关闭的等待时间
-#define CloseClientCommThreadTimes			500
+#define CloseClientCommThreadTimes			1000
 // 线程执行的间隔时间
-#define RunClientCommThreadTimes			500
+#define ClientCommThreadWaitTime			50
+// 线程执行的间隔次数
+#define ClientCommThreadWaitTimes			10
 // 发送帧延时等待次数
 #define SndFrameWaitTimes					3
 // 发送帧最多发送次数
@@ -36,6 +38,8 @@
 #define ProcBufferSize						80000
 // 两次FieldOn时间间隔
 #define FieldOnWaitForTime					120000
+// 自定义关闭客户端消息
+#define CloseClientMsg						(WM_USER + 100)
 /************************************************************************/
 /* 命令字和通讯协议                                                     */
 /************************************************************************/
@@ -96,9 +100,9 @@
 #define CmdQueryRevSection					0x0002
 // 客户端心跳命令（帧内容为空）
 #define CmdSetHeartBeat						0x0003
-// 查询Whole Table（帧内容为行号+区域号+仪器SN，SN = 0表明无仪器）
+// 查询Whole Table（帧内容为行号+区域号+ 仪器SN+仪器IP，SN = 0表明无仪器）
 #define CmdQueryWholeTable					0x0004
-// 查询Update Table（帧内容为行号+区域号+仪器SN，SN = 0表明无仪器）
+// 查询Update Table（帧内容为行号+区域号+ 仪器SN+仪器IP，SN = 0表明无仪器）
 #define CmdQueryUpdateTable					0x0005
 // 上电（命令字后帧内容为空）
 #define CmdSetFieldOn						0x0006

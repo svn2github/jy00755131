@@ -65,31 +65,31 @@ public:
 	BOOL Dll_DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 	// 加载Survery设置数据
-	void Dll_LoadSurverySetupData(void);
+	void Dll_QuerySurverySetupData(char* cProcBuf, int& iPos);
 	// 加载Point Code设置数据
-	void Dll_LoadPointCodeSetupData(void);
+	void Dll_QueryPointCodeSetupData(char* cProcBuf, int& iPos);
 	// 加载Sensor设置数据
-	void Dll_LoadSensorSetupData(void);
+	void Dll_QuerySensorSetupData(char* cProcBuf, int& iPos);
 	// 加载Marker设置数据
-	void Dll_LoadMarkerSetupData(void);
+	void Dll_QueryMarkerSetupData(char* cProcBuf, int& iPos);
 	// 加载Aux设置数据
-	void Dll_LoadAuxSetupData(void);
+	void Dll_QueryAuxSetupData(char* cProcBuf, int& iPos);
 	// 加载Detour设置数据
-	void Dll_LoadDetourSetupData(void);
+	void Dll_QueryDetourSetupData(char* cProcBuf, int& iPos);
 	// 加载Mute设置数据
-	void Dll_LoadMuteSetupData(void);
+	void Dll_QueryMuteSetupData(char* cProcBuf, int& iPos);
 	// 加载BlastMachine设置数据
-	void Dll_LoadBlastMachineSetupData(void);
+	void Dll_QueryBlastMachineSetupData(char* cProcBuf, int& iPos);
 	// 加载Absolute设置数据
-	void Dll_LoadAbsoluteSetupData(void);
+	void Dll_QueryAbsoluteSetupData(char* cProcBuf, int& iPos);
 	// 加载Generic设置数据
-	void Dll_LoadGenericSetupData(void);
+	void Dll_QueryGenericSetupData(char* cProcBuf, int& iPos);
 	// 加载Look设置数据
-	void Dll_LoadLookSetupData(void);
+	void Dll_QueryLookSetupData(char* cProcBuf, int& iPos);
 	// 加载LAULeakage设置数据
-	void Dll_LoadLAULeakageSetupData(void);
+	void Dll_QueryLAULeakageSetupData(char* cProcBuf, int& iPos);
 	// 加载FormLine设置数据
-	void Dll_LoadFormLineSetupData(void);
+	void Dll_QueryFormLineSetupData(char* cProcBuf, int& iPos);
 	// 加载Instrument_SensorTestBase设置数据
 	void Dll_LoadInstrument_SensorTestBaseSetupData(bool bInstrument);
 	// 加载Instrument_SensorTestLimit设置数据
@@ -140,5 +140,7 @@ public:
 	void Dll_SetMultipleTestSetupData(char* pChar, unsigned int uiSize);
 	// 设置SeisMonitor设置数据
 	void Dll_SetSeisMonitorSetupData(char* pChar, unsigned int uiSize);
+	// 得到测线接收区域
+	void Dll_GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum);
 };
 

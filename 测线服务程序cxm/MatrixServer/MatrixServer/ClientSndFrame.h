@@ -58,7 +58,7 @@ public:
 	// 生成发送帧
 	void MakeSendFrame(m_oCommFrameStructPtr ptrFrame);
 	// 重发过期帧
-	void OnReSendFrame(void);
+	bool OnReSendFrame(void);
 	// 判断索引号是否已加入索引表
 	BOOL IfFramePtrExistInSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
 		unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap);

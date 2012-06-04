@@ -2235,7 +2235,34 @@ MatrixServerDll_API void CloseAppXMLFile(m_oInstrumentCommInfoStruct* pCommInfo)
 MatrixServerDll_API void OnFreeServerXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 释放仪器通讯信息结构体
 MatrixServerDll_API void OnFreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo);
-
+// 得到测线接收区域
+MatrixServerDll_API void GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 SurveyXML 文件信息
+MatrixServerDll_API void QuerySurverySetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 PointCode XML文件信息
+MatrixServerDll_API void QueryPointCodeSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Sensor XML文件信息
+MatrixServerDll_API void QuerySensorSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Marker XML文件信息
+MatrixServerDll_API void QueryMarkerSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Aux XML文件信息
+MatrixServerDll_API void QueryAuxSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Detour XML文件信息
+MatrixServerDll_API void QueryDetourSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Mute XML文件信息
+MatrixServerDll_API void QueryMuteSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 BlastMachine XML文件信息
+MatrixServerDll_API void QueryBlastMachineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Absolute XML文件信息
+MatrixServerDll_API void QueryAbsoluteSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Generic XML文件信息
+MatrixServerDll_API void QueryGenericSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Look XML文件信息
+MatrixServerDll_API void QueryLookSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 LAULeakage XML文件信息
+MatrixServerDll_API void QueryLAULeakageSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 FormLine XML文件信息
+MatrixServerDll_API void QueryFormLineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 /************************************************************************/
 /* 心跳帧                                                               */
 /************************************************************************/

@@ -5844,3 +5844,336 @@ void SaveLineAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	// 保存SeisMonitor设置数据
 	SaveSeisMonitorSetupData(pCommInfo);
 }
+
+// 得到测线接收区域
+void GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oSurveryStruct>::iterator iter;
+	string str = "";
+	CString cstr = _T("");
+	CString cstrType = _T("");
+	unsigned int uiBegin = 0;
+	unsigned int uiEnd = 0;
+	unsigned int uiType = 0;
+	uiLineNum = 0;
+	uiColumnNum = 0;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsSurveryStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsSurveryStruct.end(); iter++)
+	{
+		if (iter->m_uiLine > uiLineNum)
+		{
+			uiLineNum = iter->m_uiLine;
+		}
+		str = iter->m_pcReceiverSection;
+		cstr = str.c_str();
+		_stscanf_s(cstr, _T("%u-%up%u"), &uiBegin, &uiEnd, &uiType);
+		if ((uiEnd + 1) > (uiColumnNum + uiBegin))
+		{
+			uiColumnNum = uiEnd - uiBegin + 1;
+		}
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 SurveyXML 文件信息
+void QuerySurverySetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oSurveryStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsSurveryStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsSurveryStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiLine, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usReceiverSectionSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcReceiverSection, iter->m_usReceiverSectionSize);
+		iPos += iter->m_usReceiverSectionSize;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 PointCode XML文件信息
+void QueryPointCodeSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oPointCodeStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usLabelSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
+		iPos += iter->m_usLabelSize;
+		memcpy(&cProcBuf[iPos], &iter->m_usSensorTypeSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcSensorType, iter->m_usSensorTypeSize);
+		iPos += iter->m_usSensorTypeSize;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 Sensor XML文件信息
+void QuerySensorSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oSensorStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsSensorStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsSensorStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usLabelSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
+		iPos += iter->m_usLabelSize;
+		memcpy(&cProcBuf[iPos], &iter->m_fContinuityMin, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_fContinuityMax, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_fTilt, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_fNoise, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_fLeakage, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiSEGDCode, 4);
+		iPos += 4;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 Marker XML文件信息
+void QueryMarkerSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oMarkerStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsMarkerStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsMarkerStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiBoxType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiSN, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiLineName, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiPointNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiChannelNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiMarkerIncr, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiReversed, 4);
+		iPos += 4;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 Aux XML文件信息
+void QueryAuxSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oAuxStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsAuxStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsAuxStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usLabelSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
+		iPos += iter->m_usLabelSize;
+		memcpy(&cProcBuf[iPos], &iter->m_uiBoxType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiSN, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiChannelNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiGain, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiDpgNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usCommentsSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcComments, iter->m_usCommentsSize);
+		iPos += iter->m_usCommentsSize;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 Detour XML文件信息
+void QueryDetourSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oDetourStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsDetourStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsDetourStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiLowBoxType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiLowSN, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiLowChanNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiHighBoxType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiHighSN, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiHighChanNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiStopMarking, 4);
+		iPos += 4;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 Mute XML文件信息
+void QueryMuteSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oMuteStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsMuteStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsMuteStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiLineName, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiPointNb, 4);
+		iPos += 4;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 BlastMachine XML文件信息
+void QueryBlastMachineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oBlastMachineStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usLabelSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
+		iPos += iter->m_usLabelSize;
+		memcpy(&cProcBuf[iPos], &iter->m_uiBoxType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiSN, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiChannelNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiGain, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiDpgNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usCommentsSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcComments, iter->m_usCommentsSize);
+		iPos += iter->m_usCommentsSize;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 Absolute XML文件信息
+void QueryAbsoluteSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	map<unsigned int, list<m_oAbsoluteStruct>>::iterator iterMap;
+	list<m_oAbsoluteStruct>::iterator iter;
+	unsigned int uiSize = 0;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iterMap = pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.begin();
+		iterMap != pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.end(); iterMap++)
+	{
+		memcpy(&cProcBuf[iPos], &iterMap->first, 4);
+		iPos += 4;
+		uiSize = iterMap->second.size();
+		memcpy(&cProcBuf[iPos], &uiSize, 4);
+		iPos += 4;
+		for (iter = iterMap->second.begin(); iter != iterMap->second.end(); iter++)
+		{
+			memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+			iPos += 4;
+			memcpy(&cProcBuf[iPos], &iter->m_usLabelSize, 2);
+			iPos += 2;
+			memcpy(&cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
+			iPos += iter->m_usLabelSize;
+			memcpy(&cProcBuf[iPos], &iter->m_usAbsoluteSpreadSize, 2);
+			iPos += 2;
+			memcpy(&cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
+			iPos += iter->m_usAbsoluteSpreadSize;
+		}
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 Generic XML文件信息
+void QueryGenericSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oGenericStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsGenericStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsGenericStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usLabelSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
+		iPos += iter->m_usLabelSize;
+		memcpy(&cProcBuf[iPos], &iter->m_usLineSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcLine, iter->m_usLineSize);
+		iPos += iter->m_usLineSize;
+		memcpy(&cProcBuf[iPos], &iter->m_usSpreadSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcSpread, iter->m_usSpreadSize);
+		iPos += iter->m_usSpreadSize;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 Look XML文件信息
+void QueryLookSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLook.m_uiAutoLook, 4);
+	iPos += 4;
+	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLook.m_uiResistance, 4);
+	iPos += 4;
+	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLook.m_uiTilt, 4);
+	iPos += 4;
+	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLook.m_uiLeakage, 4);
+	iPos += 4;
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 LAULeakage XML文件信息
+void QueryLAULeakageSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLAULeakage.m_uiLimit, 4);
+	iPos += 4;
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 FormLine XML文件信息
+void QueryFormLineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oFormLineStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsFormLineStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsFormLineStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiBoxType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiSN, 4);
+		iPos += 4;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}

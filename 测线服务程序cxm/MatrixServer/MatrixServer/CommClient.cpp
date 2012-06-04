@@ -36,8 +36,8 @@ void CCommClient::OnInit(void)
 void CCommClient::OnClose(void)
 {
 	m_oClientSocket.OnClose();
-	m_oClientRecThread.OnClose();
 	m_oClientSndThread.OnClose();
+	m_oClientRecThread.OnClose();
 	m_oClientRecFrame.OnClose();
 	m_oClientSndFrame.OnClose();
 	delete this;

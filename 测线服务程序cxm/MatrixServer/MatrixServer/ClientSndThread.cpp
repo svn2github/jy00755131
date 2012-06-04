@@ -16,6 +16,7 @@ CClientSndThread::~CClientSndThread(void)
 void CClientSndThread::OnProc(void)
 {
 	int iFrameNum = 0;
+	bool bReSend = true;
 	m_oCommFrameStructPtr ptrFrame = NULL;
 	EnterCriticalSection(&m_pClientSndFrame->m_oSecClientFrame);
 	iFrameNum = m_pClientSndFrame->m_olsCommWorkFrame.size();
@@ -39,6 +40,10 @@ void CClientSndThread::OnProc(void)
 			m_pClientSndFrame->AddFreeFrameStruct(ptrFrame);
 		}
 	}
-	m_pClientSndFrame->OnReSendFrame();
+	bReSend = m_pClientSndFrame->OnReSendFrame();
 	LeaveCriticalSection(&m_pClientSndFrame->m_oSecClientFrame);
+	if (bReSend == false)
+	{
+		PostMessage(AfxGetApp()->GetMainWnd()->m_hWnd, CloseClientMsg, (DWORD)m_pClientSndFrame->m_pClientSocket->m_pComClient, 0);
+	}
 }

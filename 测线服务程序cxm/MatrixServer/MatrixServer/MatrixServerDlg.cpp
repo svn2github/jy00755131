@@ -73,6 +73,7 @@ BEGIN_MESSAGE_MAP(CMatrixServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_OPENROUTPOWER, &CMatrixServerDlg::OnBnClickedBtnOpenroutpower)
 	ON_BN_CLICKED(IDC_BTN_GETROUTINSTRUMENTNUM, &CMatrixServerDlg::OnBnClickedBtnGetroutinstrumentnum)
 	ON_BN_CLICKED(IDC_BTN_GETSNBYLOCATION, &CMatrixServerDlg::OnBnClickedBtnGetsnbylocation)
+	ON_MESSAGE(CloseClientMsg, &CMatrixServerDlg::OnCloseClient)
 END_MESSAGE_MAP()
 
 
@@ -297,4 +298,11 @@ void CMatrixServerDlg::OnBnClickedBtnGetsnbylocation()
 	{
 		AfxMessageBox(str);
 	}
+}
+
+LRESULT CMatrixServerDlg::OnCloseClient(WPARAM wParam, LPARAM lParam)
+{
+	CCommClient* pComClient = (CCommClient*)wParam;
+	pComClient->OnClose();
+	return 0;
 }

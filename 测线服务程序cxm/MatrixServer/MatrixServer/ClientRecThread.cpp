@@ -569,12 +569,15 @@ void CClientRecThread::OnProcInstrumentTableUpdate(void)
 			if (pInstrument != NULL)
 			{
 				memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &pInstrument->m_uiSN, 4);
+				iPos += 4;
+				memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &pInstrument->m_uiIP, 4);
+				iPos += 4;
 			}
 			else
 			{
-				memset(&m_pClientSndFrame->m_cProcBuf[iPos], 0, 4);
+				memset(&m_pClientSndFrame->m_cProcBuf[iPos], 0, 8);
+				iPos += 8;
 			}
-			iPos += 4;
 		}
 	}
 	if (iPos > 0)
@@ -598,27 +601,16 @@ void CClientRecThread::OnProcSetFieldOn(void)
 void CClientRecThread::OnProcSetFieldOff(void)
 {
 	m_pMatrixDllCall->Dll_Stop();
+	m_oInstrumentWholeTableMap.clear();
+	m_oInstrumentUpdateArea.clear();
 }
 
 
 // 查询 SurveyXML 文件信息
 void CClientRecThread::OnProcQuerySurveyXMLInfo(unsigned short usCmd)
 {
-	list<m_oSurveryStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadSurverySetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSurveryStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSurveryStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiLine, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usReceiverSectionSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcReceiverSection, iter->m_usReceiverSectionSize);
-		iPos += iter->m_usReceiverSectionSize;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QuerySurverySetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -626,25 +618,8 @@ void CClientRecThread::OnProcQuerySurveyXMLInfo(unsigned short usCmd)
 // 查询 PointCode XML文件信息
 void CClientRecThread::OnProcQueryPointCodeXMLInfo(unsigned short usCmd)
 {
-	list<m_oPointCodeStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadPointCodeSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsPointCodeStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsPointCodeStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
-		iPos += iter->m_usLabelSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usSensorTypeSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcSensorType, iter->m_usSensorTypeSize);
-		iPos += iter->m_usSensorTypeSize;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryPointCodeSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -652,33 +627,8 @@ void CClientRecThread::OnProcQueryPointCodeXMLInfo(unsigned short usCmd)
 // 查询 Sensor XML文件信息
 void CClientRecThread::OnProcQuerySensorXMLInfo(unsigned short usCmd)
 {
-	list<m_oSensorStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadSensorSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
-		iPos += iter->m_usLabelSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_fContinuityMin, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_fContinuityMax, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_fTilt, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_fNoise, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_fLeakage, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiSEGDCode, 4);
-		iPos += 4;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QuerySensorSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -686,29 +636,8 @@ void CClientRecThread::OnProcQuerySensorXMLInfo(unsigned short usCmd)
 // 查询 Marker XML文件信息
 void CClientRecThread::OnProcQueryMarkerXMLInfo(unsigned short usCmd)
 {
-	list<m_oMarkerStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadMarkerSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsMarkerStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsMarkerStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiBoxType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiSN, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiLineName, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiPointNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiChannelNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiMarkerIncr, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiReversed, 4);
-		iPos += 4;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryMarkerSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -716,35 +645,8 @@ void CClientRecThread::OnProcQueryMarkerXMLInfo(unsigned short usCmd)
 // 查询 Aux XML文件信息
 void CClientRecThread::OnProcQueryAuxXMLInfo(unsigned short usCmd)
 {
-	list<m_oAuxStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadAuxSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsAuxStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsAuxStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
-		iPos += iter->m_usLabelSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiBoxType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiSN, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiChannelNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiGain, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiDpgNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usCommentsSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcComments, iter->m_usCommentsSize);
-		iPos += iter->m_usCommentsSize;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryAuxSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -752,29 +654,8 @@ void CClientRecThread::OnProcQueryAuxXMLInfo(unsigned short usCmd)
 // 查询 Detour XML文件信息
 void CClientRecThread::OnProcQueryDetourXMLInfo(unsigned short usCmd)
 {
-	list<m_oDetourStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadDetourSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsDetourStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsDetourStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiLowBoxType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiLowSN, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiLowChanNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiHighBoxType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiHighSN, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiHighChanNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiStopMarking, 4);
-		iPos += 4;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryDetourSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -782,19 +663,8 @@ void CClientRecThread::OnProcQueryDetourXMLInfo(unsigned short usCmd)
 // 查询 Mute XML文件信息
 void CClientRecThread::OnProcQueryMuteXMLInfo(unsigned short usCmd)
 {
-	list<m_oMuteStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadMuteSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsMuteStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsMuteStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiLineName, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiPointNb, 4);
-		iPos += 4;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryMuteSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -802,35 +672,8 @@ void CClientRecThread::OnProcQueryMuteXMLInfo(unsigned short usCmd)
 // 查询 BlastMachine XML文件信息
 void CClientRecThread::OnProcQueryBlastMachineXMLInfo(unsigned short usCmd)
 {
-	list<m_oBlastMachineStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadBlastMachineSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
-		iPos += iter->m_usLabelSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiBoxType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiSN, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiChannelNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiGain, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiDpgNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usCommentsSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcComments, iter->m_usCommentsSize);
-		iPos += iter->m_usCommentsSize;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryBlastMachineSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -839,35 +682,8 @@ void CClientRecThread::OnProcQueryBlastMachineXMLInfo(unsigned short usCmd)
 // 炮点+排列个数+排列
 void CClientRecThread::OnProcQueryAbsoluteXMLInfo(unsigned short usCmd)
 {
-	map<unsigned int, list<m_oAbsoluteStruct>>::iterator iterMap;
-	list<m_oAbsoluteStruct>::iterator iter;
 	int iPos = 0;
-	unsigned int uiSize = 0;
-	m_pMatrixDllCall->Dll_LoadAbsoluteSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iterMap = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.begin();
-		iterMap != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.end(); iterMap++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first, 4);
-		iPos += 4;
-		uiSize = iterMap->second.size();
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &uiSize, 4);
-		iPos += 4;
-		for (iter = iterMap->second.begin(); iter != iterMap->second.end(); iter++)
-		{
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-			iPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
-			iPos += 2;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
-			iPos += iter->m_usLabelSize;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usAbsoluteSpreadSize, 2);
-			iPos += 2;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
-			iPos += iter->m_usAbsoluteSpreadSize;
-		}
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryAbsoluteSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -875,29 +691,8 @@ void CClientRecThread::OnProcQueryAbsoluteXMLInfo(unsigned short usCmd)
 // 查询 Generic XML文件信息
 void CClientRecThread::OnProcQueryGenericXMLInfo(unsigned short usCmd)
 {
-	list<m_oGenericStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadGenericSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsGenericStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsGenericStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLabelSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLabel, iter->m_usLabelSize);
-		iPos += iter->m_usLabelSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usLineSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcLine, iter->m_usLineSize);
-		iPos += iter->m_usLineSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usSpreadSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcSpread, iter->m_usSpreadSize);
-		iPos += iter->m_usSpreadSize;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryGenericSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -905,22 +700,8 @@ void CClientRecThread::OnProcQueryGenericXMLInfo(unsigned short usCmd)
 // 查询 Look XML文件信息
 void CClientRecThread::OnProcQueryLookXMLInfo(unsigned short usCmd)
 {
-	m_pMatrixDllCall->Dll_LoadLookSetupData();
 	int iPos = 0;
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], 
-		&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oLook.m_uiAutoLook, 4);
-	iPos += 4;
-	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], 
-		&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oLook.m_uiResistance, 4);
-	iPos += 4;
-	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], 
-		&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oLook.m_uiTilt, 4);
-	iPos += 4;
-	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], 
-		&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oLook.m_uiLeakage, 4);
-	iPos += 4;
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryLookSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -1199,12 +980,7 @@ void CClientRecThread::OnProcQuerySeisMonitorTestXMLInfo(unsigned short usCmd)
 void CClientRecThread::OnProcQueryLAULeakageXMLInfo(unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadLAULeakageSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], 
-		&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oLAULeakage.m_uiLimit, 4);
-	iPos += 4;
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryLAULeakageSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -1212,21 +988,8 @@ void CClientRecThread::OnProcQueryLAULeakageXMLInfo(unsigned short usCmd)
 // 查询 FormLine XML文件信息
 void CClientRecThread::OnProcQueryFormLineXMLInfo(unsigned short usCmd)
 {
-	list<m_oFormLineStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadFormLineSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsFormLineStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsFormLineStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiBoxType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiSN, 4);
-		iPos += 4;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryFormLineSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -1315,39 +1078,13 @@ unsigned int CClientRecThread::QueryInstrumentInfoByArea(m_oInstrumentStruct* pI
 	{
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiSN, 4);
 		uiPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_iLineIndex, 4);
+		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiIP, 4);
 		uiPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_iPointIndex, 4);
-		uiPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiLineNb, 4);
-		uiPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiPointNb, 4);
-		uiPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bJumpedChannel, 1);
-		uiPos += 1;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bSensor, 1);
-		uiPos += 1;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bAux, 1);
-		uiPos += 1;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bBlastMachine, 1);
-		uiPos += 1;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetour, 1);
-		uiPos += 1;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetourMarkerLow, 1);
-		uiPos += 1;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bDetourMarkerHigh, 1);
-		uiPos += 1;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bStopMarking, 1);
-		uiPos += 1;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bMarker, 1);
-		uiPos += 1;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &pInstrument->m_bMute, 1);
-		uiPos += 1;
 	}
 	else
 	{
-		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 30);
-		uiPos += 30;
+		memset(&m_pClientSndFrame->m_cProcBuf[uiPos], 0, 8);
+		uiPos += 8;
 	}
 	return uiPos;
 }
@@ -1860,34 +1597,8 @@ double CClientRecThread::CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument)
 // 处理查询接收区域命令
 void CClientRecThread::OnProcQueryRevSection(void)
 {
-	list<m_oSurveryStruct>::iterator iter;
 	int iPos = 0;
-	string str = "";
-	CString cstr = _T("");
-	CString cstrType = _T("");
-	unsigned int uiBegin = 0;
-	unsigned int uiEnd = 0;
-	unsigned int uiType = 0;
-	m_pMatrixDllCall->Dll_LoadSurverySetupData();
-	m_uiLineNum = 0;
-	m_uiColumnNum = 0;
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSurveryStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSurveryStruct.end(); iter++)
-	{
-		if (iter->m_uiLine > m_uiLineNum)
-		{
-			m_uiLineNum = iter->m_uiLine;
-		}
-		str = iter->m_pcReceiverSection;
-		cstr = str.c_str();
-		_stscanf_s(cstr, _T("%u-%up%u"), &uiBegin, &uiEnd, &uiType);
-		if ((uiEnd + 1) > (m_uiColumnNum + uiBegin))
-		{
-			m_uiColumnNum = uiEnd - uiBegin + 1;
-		}
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_GetLineRevSection(m_uiLineNum, m_uiColumnNum);
 	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &m_uiLineNum, 4);
 	iPos += 4;
 	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &m_uiColumnNum, 4);

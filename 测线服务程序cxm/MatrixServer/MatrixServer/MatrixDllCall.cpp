@@ -52,31 +52,31 @@ typedef BOOL (*Delete_InstrumentFromLocationMap)(int iLineIndex, int iPointIndex
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 // 载入配置文件
 // 加载Survery设置数据
-typedef void (*Load_SurverySetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_SurverySetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Point Code设置数据
-typedef void (*Load_PointCodeSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_PointCodeSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Sensor设置数据
-typedef void (*Load_SensorSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_SensorSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Marker设置数据
-typedef void (*Load_MarkerSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_MarkerSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Aux设置数据
-typedef void (*Load_AuxSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_AuxSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Detour设置数据
-typedef void (*Load_DetourSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_DetourSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Mute设置数据
-typedef void (*Load_MuteSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_MuteSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载BlastMachine设置数据
-typedef void (*Load_BlastMachineSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_BlastMachineSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Absolute设置数据
-typedef void (*Load_AbsoluteSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_AbsoluteSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Generic设置数据
-typedef void (*Load_GenericSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_GenericSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Look设置数据
-typedef void (*Load_LookSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_LookSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载LAULeakage设置数据
-typedef void (*Load_LAULeakageSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_LAULeakageSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载FormLine设置数据
-typedef void (*Load_FormLineSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_FormLineSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument_SensorTestBase设置数据
 typedef void (*Load_Instrument_SensorTestBaseSetupData)(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument_SensorTestLimit设置数据
@@ -128,6 +128,8 @@ typedef void (*Set_SensorTestSetupData)(char* pChar, unsigned int uiSize, m_oIns
 typedef void (*Set_MultipleTestSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 设置SeisMonitor设置数据
 typedef void (*Set_SeisMonitorSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 得到测线接收区域
+typedef void (*Get_LineRevSection)(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oInstrumentCommInfoStruct* pCommInfo);
 void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int _iSize, unsigned int _uiSN)
 {
 
@@ -593,11 +595,11 @@ BOOL CMatrixDllCall::Dll_DeleteInstrumentFromLocationMap(int iLineIndex, int iPo
 	return bReturn;
 }
 // 加载Survery设置数据
-void CMatrixDllCall::Dll_LoadSurverySetupData(void)
+void CMatrixDllCall::Dll_QuerySurverySetupData(char* cProcBuf, int& iPos)
 {
-	Load_SurverySetupData Dll_Load_SurverySetupData = NULL;
-	Dll_Load_SurverySetupData = (Load_SurverySetupData)GetProcAddress(m_hDllMod, "LoadSurverySetupData");
-	if (!Dll_Load_SurverySetupData)
+	Query_SurverySetupData Dll_Query_SurverySetupData = NULL;
+	Dll_Query_SurverySetupData = (Query_SurverySetupData)GetProcAddress(m_hDllMod, "QuerySurverySetupData");
+	if (!Dll_Query_SurverySetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -606,15 +608,15 @@ void CMatrixDllCall::Dll_LoadSurverySetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_SurverySetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_SurverySetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Point Code设置数据
-void CMatrixDllCall::Dll_LoadPointCodeSetupData(void)
+void CMatrixDllCall::Dll_QueryPointCodeSetupData(char* cProcBuf, int& iPos)
 {
-	Load_PointCodeSetupData Dll_Load_PointCodeSetupData = NULL;
-	Dll_Load_PointCodeSetupData = (Load_PointCodeSetupData)GetProcAddress(m_hDllMod, "LoadPointCodeSetupData");
-	if (!Dll_Load_PointCodeSetupData)
+	Query_PointCodeSetupData Dll_Query_PointCodeSetupData = NULL;
+	Dll_Query_PointCodeSetupData = (Query_PointCodeSetupData)GetProcAddress(m_hDllMod, "QueryPointCodeSetupData");
+	if (!Dll_Query_PointCodeSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -623,15 +625,15 @@ void CMatrixDllCall::Dll_LoadPointCodeSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_PointCodeSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_PointCodeSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Sensor设置数据
-void CMatrixDllCall::Dll_LoadSensorSetupData(void)
+void CMatrixDllCall::Dll_QuerySensorSetupData(char* cProcBuf, int& iPos)
 {
-	Load_SensorSetupData Dll_Load_SensorSetupData = NULL;
-	Dll_Load_SensorSetupData = (Load_SensorSetupData)GetProcAddress(m_hDllMod, "LoadSensorSetupData");
-	if (!Dll_Load_SensorSetupData)
+	Query_SensorSetupData Dll_Query_SensorSetupData = NULL;
+	Dll_Query_SensorSetupData = (Query_SensorSetupData)GetProcAddress(m_hDllMod, "QuerySensorSetupData");
+	if (!Dll_Query_SensorSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -640,15 +642,15 @@ void CMatrixDllCall::Dll_LoadSensorSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_SensorSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_SensorSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Marker设置数据
-void CMatrixDllCall::Dll_LoadMarkerSetupData(void)
+void CMatrixDllCall::Dll_QueryMarkerSetupData(char* cProcBuf, int& iPos)
 {
-	Load_MarkerSetupData Dll_Load_MarkerSetupData = NULL;
-	Dll_Load_MarkerSetupData = (Load_MarkerSetupData)GetProcAddress(m_hDllMod, "LoadMarkerSetupData");
-	if (!Dll_Load_MarkerSetupData)
+	Query_MarkerSetupData Dll_Query_MarkerSetupData = NULL;
+	Dll_Query_MarkerSetupData = (Query_MarkerSetupData)GetProcAddress(m_hDllMod, "QueryMarkerSetupData");
+	if (!Dll_Query_MarkerSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -657,15 +659,15 @@ void CMatrixDllCall::Dll_LoadMarkerSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_MarkerSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_MarkerSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Aux设置数据
-void CMatrixDllCall::Dll_LoadAuxSetupData(void)
+void CMatrixDllCall::Dll_QueryAuxSetupData(char* cProcBuf, int& iPos)
 {
-	Load_AuxSetupData Dll_Load_AuxSetupData = NULL;
-	Dll_Load_AuxSetupData = (Load_AuxSetupData)GetProcAddress(m_hDllMod, "LoadAuxSetupData");
-	if (!Dll_Load_AuxSetupData)
+	Query_AuxSetupData Dll_Query_AuxSetupData = NULL;
+	Dll_Query_AuxSetupData = (Query_AuxSetupData)GetProcAddress(m_hDllMod, "QueryAuxSetupData");
+	if (!Dll_Query_AuxSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -674,15 +676,15 @@ void CMatrixDllCall::Dll_LoadAuxSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_AuxSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_AuxSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Detour设置数据
-void CMatrixDllCall::Dll_LoadDetourSetupData(void)
+void CMatrixDllCall::Dll_QueryDetourSetupData(char* cProcBuf, int& iPos)
 {
-	Load_DetourSetupData Dll_Load_DetourSetupData = NULL;
-	Dll_Load_DetourSetupData = (Load_DetourSetupData)GetProcAddress(m_hDllMod, "LoadDetourSetupData");
-	if (!Dll_Load_DetourSetupData)
+	Query_DetourSetupData Dll_Query_DetourSetupData = NULL;
+	Dll_Query_DetourSetupData = (Query_DetourSetupData)GetProcAddress(m_hDllMod, "QueryDetourSetupData");
+	if (!Dll_Query_DetourSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -691,15 +693,15 @@ void CMatrixDllCall::Dll_LoadDetourSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_DetourSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_DetourSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Mute设置数据
-void CMatrixDllCall::Dll_LoadMuteSetupData(void)
+void CMatrixDllCall::Dll_QueryMuteSetupData(char* cProcBuf, int& iPos)
 {
-	Load_MuteSetupData Dll_Load_MuteSetupData = NULL;
-	Dll_Load_MuteSetupData = (Load_MuteSetupData)GetProcAddress(m_hDllMod, "LoadMuteSetupData");
-	if (!Dll_Load_MuteSetupData)
+	Query_MuteSetupData Dll_Query_MuteSetupData = NULL;
+	Dll_Query_MuteSetupData = (Query_MuteSetupData)GetProcAddress(m_hDllMod, "QueryMuteSetupData");
+	if (!Dll_Query_MuteSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -708,15 +710,15 @@ void CMatrixDllCall::Dll_LoadMuteSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_MuteSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_MuteSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载BlastMachine设置数据
-void CMatrixDllCall::Dll_LoadBlastMachineSetupData(void)
+void CMatrixDllCall::Dll_QueryBlastMachineSetupData(char* cProcBuf, int& iPos)
 {
-	Load_BlastMachineSetupData Dll_Load_BlastMachineSetupData = NULL;
-	Dll_Load_BlastMachineSetupData = (Load_BlastMachineSetupData)GetProcAddress(m_hDllMod, "LoadBlastMachineSetupData");
-	if (!Dll_Load_BlastMachineSetupData)
+	Query_BlastMachineSetupData Dll_Query_BlastMachineSetupData = NULL;
+	Dll_Query_BlastMachineSetupData = (Query_BlastMachineSetupData)GetProcAddress(m_hDllMod, "QueryBlastMachineSetupData");
+	if (!Dll_Query_BlastMachineSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -725,15 +727,15 @@ void CMatrixDllCall::Dll_LoadBlastMachineSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_BlastMachineSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_BlastMachineSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Absolute设置数据
-void CMatrixDllCall::Dll_LoadAbsoluteSetupData(void)
+void CMatrixDllCall::Dll_QueryAbsoluteSetupData(char* cProcBuf, int& iPos)
 {
-	Load_AbsoluteSetupData Dll_Load_AbsoluteSetupData = NULL;
-	Dll_Load_AbsoluteSetupData = (Load_AbsoluteSetupData)GetProcAddress(m_hDllMod, "LoadAbsoluteSetupData");
-	if (!Dll_Load_AbsoluteSetupData)
+	Query_AbsoluteSetupData Dll_Query_AbsoluteSetupData = NULL;
+	Dll_Query_AbsoluteSetupData = (Query_AbsoluteSetupData)GetProcAddress(m_hDllMod, "QueryAbsoluteSetupData");
+	if (!Dll_Query_AbsoluteSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -742,15 +744,15 @@ void CMatrixDllCall::Dll_LoadAbsoluteSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_AbsoluteSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_AbsoluteSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Generic设置数据
-void CMatrixDllCall::Dll_LoadGenericSetupData(void)
+void CMatrixDllCall::Dll_QueryGenericSetupData(char* cProcBuf, int& iPos)
 {
-	Load_GenericSetupData Dll_Load_GenericSetupData = NULL;
-	Dll_Load_GenericSetupData = (Load_GenericSetupData)GetProcAddress(m_hDllMod, "LoadGenericSetupData");
-	if (!Dll_Load_GenericSetupData)
+	Query_GenericSetupData Dll_Query_GenericSetupData = NULL;
+	Dll_Query_GenericSetupData = (Query_GenericSetupData)GetProcAddress(m_hDllMod, "QueryGenericSetupData");
+	if (!Dll_Query_GenericSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -759,15 +761,15 @@ void CMatrixDllCall::Dll_LoadGenericSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_GenericSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_GenericSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Look设置数据
-void CMatrixDllCall::Dll_LoadLookSetupData(void)
+void CMatrixDllCall::Dll_QueryLookSetupData(char* cProcBuf, int& iPos)
 {
-	Load_LookSetupData Dll_Load_LookSetupData = NULL;
-	Dll_Load_LookSetupData = (Load_LookSetupData)GetProcAddress(m_hDllMod, "LoadLookSetupData");
-	if (!Dll_Load_LookSetupData)
+	Query_LookSetupData Dll_Query_LookSetupData = NULL;
+	Dll_Query_LookSetupData = (Query_LookSetupData)GetProcAddress(m_hDllMod, "QueryLookSetupData");
+	if (!Dll_Query_LookSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -776,15 +778,15 @@ void CMatrixDllCall::Dll_LoadLookSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_LookSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_LookSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载LAULeakage设置数据
-void CMatrixDllCall::Dll_LoadLAULeakageSetupData(void)
+void CMatrixDllCall::Dll_QueryLAULeakageSetupData(char* cProcBuf, int& iPos)
 {
-	Load_LAULeakageSetupData Dll_Load_LAULeakageSetupData = NULL;
-	Dll_Load_LAULeakageSetupData = (Load_LAULeakageSetupData)GetProcAddress(m_hDllMod, "LoadLAULeakageSetupData");
-	if (!Dll_Load_LAULeakageSetupData)
+	Query_LAULeakageSetupData Dll_Query_LAULeakageSetupData = NULL;
+	Dll_Query_LAULeakageSetupData = (Query_LAULeakageSetupData)GetProcAddress(m_hDllMod, "QueryLAULeakageSetupData");
+	if (!Dll_Query_LAULeakageSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -793,15 +795,15 @@ void CMatrixDllCall::Dll_LoadLAULeakageSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_LAULeakageSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_LAULeakageSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载FormLine设置数据
-void CMatrixDllCall::Dll_LoadFormLineSetupData(void)
+void CMatrixDllCall::Dll_QueryFormLineSetupData(char* cProcBuf, int& iPos)
 {
-	Load_FormLineSetupData Dll_Load_FormLineSetupData = NULL;
-	Dll_Load_FormLineSetupData = (Load_FormLineSetupData)GetProcAddress(m_hDllMod, "LoadFormLineSetupData");
-	if (!Dll_Load_FormLineSetupData)
+	Query_FormLineSetupData Dll_Query_FormLineSetupData = NULL;
+	Dll_Query_FormLineSetupData = (Query_FormLineSetupData)GetProcAddress(m_hDllMod, "QueryFormLineSetupData");
+	if (!Dll_Query_FormLineSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -810,7 +812,7 @@ void CMatrixDllCall::Dll_LoadFormLineSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_FormLineSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_FormLineSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Instrument_SensorTestBase设置数据
@@ -1238,5 +1240,22 @@ void CMatrixDllCall::Dll_SetSeisMonitorSetupData(char* pChar, unsigned int uiSiz
 	{
 		// call the function
 		(*Dll_Set_SeisMonitorSetupData)(pChar, uiSize, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 得到测线接收区域
+void CMatrixDllCall::Dll_GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum)
+{
+	Get_LineRevSection Dll_Get_LineRevSection = NULL;
+	Dll_Get_LineRevSection = (Get_LineRevSection)GetProcAddress(m_hDllMod, "GetLineRevSection");
+	if (!Dll_Get_LineRevSection)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Get_LineRevSection)(uiLineNum, uiColumnNum, m_pEnv->m_pInstrumentCommInfo);
 	}
 }

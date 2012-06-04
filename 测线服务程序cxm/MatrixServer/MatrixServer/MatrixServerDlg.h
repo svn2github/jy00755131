@@ -48,4 +48,5 @@ public:
 	afx_msg void OnBnClickedBtnOpenroutpower();
 	afx_msg void OnBnClickedBtnGetroutinstrumentnum();
 	afx_msg void OnBnClickedBtnGetsnbylocation();
+	afx_msg LRESULT OnCloseClient(WPARAM wParam, LPARAM lParam);
 };

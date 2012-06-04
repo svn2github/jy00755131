@@ -132,16 +132,16 @@ void CClientSndFrame::MakeSendFrame(m_oCommFrameStructPtr ptrFrame)
 
 
 // 重发过期帧
-void CClientSndFrame::OnReSendFrame(void)
+bool CClientSndFrame::OnReSendFrame(void)
 {
+	bool bReturn = true;
 	map<m_oSndFrameKey, m_oCommFrameStructPtr>::iterator iter;
-	bool bClose = false;
 	for (iter = m_oSndFrameMap.begin(); iter != m_oSndFrameMap.end(); iter++)
 	{
 		// 超过重发次数则跳出循环并关闭该客户端连接
 		if (iter->second->m_uiSndCount > SndFrameMaxNum)
 		{
-			bClose = true;
+			bReturn = false;
 			break;
 		}
 		else
@@ -159,10 +159,7 @@ void CClientSndFrame::OnReSendFrame(void)
 			}
 		}
 	}
-	if (bClose == true)
-	{
-		m_pClientSocket->m_pComClient->OnClose();
-	}
+	return bReturn;
 }
 
 // 判断索引号是否已加入索引表
