@@ -1846,6 +1846,8 @@ MatrixServerDll_API void OnClearSocketRcvBuf(SOCKET oSocket, int iRcvFrameSize);
 // 得到路由方向上仪器个数
 MatrixServerDll_API bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection, 
 	m_oEnvironmentStruct* pEnv, unsigned int& uiInstrumentNum);
+// 计算测试数据的算术均方根
+MatrixServerDll_API double CalMeanSquare(m_oInstrumentStruct* pInstrument);
 
 /************************************************************************/
 /* 日志输出                                                             */
@@ -2263,6 +2265,20 @@ MatrixServerDll_API void QueryLookSetupData(char* cProcBuf, int& iPos, m_oInstru
 MatrixServerDll_API void QueryLAULeakageSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 查询 FormLine XML文件信息
 MatrixServerDll_API void QueryFormLineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Instrument_SensorTestBase XML文件信息
+MatrixServerDll_API void QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 InstrumentTestLimit XML文件信息
+MatrixServerDll_API void QueryInstrument_SensorTestLimitSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 InstrumentTest XML文件信息
+MatrixServerDll_API void QueryInstrumentTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 SensorTest XML文件信息
+MatrixServerDll_API void QuerySensorTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 MultipleTest XML文件信息
+MatrixServerDll_API void QueryMultipleTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 SeisMonitorTest XML文件信息
+MatrixServerDll_API void QuerySeisMonitorSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 从XML配置文件得到测试数据限制值
+MatrixServerDll_API float QueryTestDataLimit(bool bInstrument, string str, m_oInstrumentCommInfoStruct* pCommInfo);
 /************************************************************************/
 /* 心跳帧                                                               */
 /************************************************************************/
@@ -2611,6 +2627,8 @@ MatrixServerDll_API void OnInitLineList(m_oLineListStruct* pLineList, m_oConstVa
 MatrixServerDll_API void OnCloseLineList(m_oLineListStruct* pLineList);
 // 释放测线队列结构体
 MatrixServerDll_API void OnFreeLineList(m_oLineListStruct* pLineList);
+// 得到在线仪器位置
+MatrixServerDll_API void QueryInstrumentLocation(char* pChar, int& iPos, m_oLineListStruct* pLineList);
 /************************************************************************/
 /* ADC数据存储缓冲                                                      */
 /************************************************************************/

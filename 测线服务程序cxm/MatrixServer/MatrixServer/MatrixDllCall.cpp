@@ -47,9 +47,6 @@ typedef void (*Add_LocationToMap)(int iLineIndex, int iPointIndex, m_oInstrument
 // 根据输入索引号，由索引表得到仪器指针
 typedef m_oInstrumentStruct* (*Get_InstrumentFromLocationMap)(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-// 从索引表删除索引号指向的仪器指针
-typedef BOOL (*Delete_InstrumentFromLocationMap)(int iLineIndex, int iPointIndex, 
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 // 载入配置文件
 // 加载Survery设置数据
 typedef void (*Query_SurverySetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
@@ -78,17 +75,19 @@ typedef void (*Query_LAULeakageSetupData)(char* cProcBuf, int& iPos, m_oInstrume
 // 加载FormLine设置数据
 typedef void (*Query_FormLineSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument_SensorTestBase设置数据
-typedef void (*Load_Instrument_SensorTestBaseSetupData)(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_Instrument_SensorTestBaseSetupData)(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument_SensorTestLimit设置数据
-typedef void (*Load_Instrument_SensorTestLimitSetupData)(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_Instrument_SensorTestLimitSetupData)(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Instrument Test设置数据
-typedef void (*Load_InstrumentTestSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_InstrumentTestSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Sensor Test设置数据
-typedef void (*Load_SensorTestSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_SensorTestSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载Multiple Test设置数据
-typedef void (*Load_MultipleTestSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_MultipleTestSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
 // 加载SeisMonitor设置数据
-typedef void (*Load_SeisMonitorSetupData)(m_oInstrumentCommInfoStruct* pCommInfo);
+typedef void (*Query_SeisMonitorSetupData)(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 从XML配置文件得到测试数据限制值
+typedef float (*Query_TestDataLimit)(bool bInstrument, string str, m_oInstrumentCommInfoStruct* pCommInfo);
 // 写入配置文件
 // 设置Survery设置数据
 typedef void (*Set_SurverySetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
@@ -130,6 +129,10 @@ typedef void (*Set_MultipleTestSetupData)(char* pChar, unsigned int uiSize, m_oI
 typedef void (*Set_SeisMonitorSetupData)(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 得到测线接收区域
 typedef void (*Get_LineRevSection)(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oInstrumentCommInfoStruct* pCommInfo);
+// 计算测试数据的算术均方根
+typedef float (*Cal_MeanSquare)(m_oInstrumentStruct* pInstrument);
+// 得到在线仪器位置
+typedef void (*Query_InstrumentLocation)(char* pChar, int& iPos, m_oLineListStruct* pLineList);
 void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int _iSize, unsigned int _uiSN)
 {
 
@@ -574,26 +577,6 @@ m_oInstrumentStruct* CMatrixDllCall::Dll_GetInstrumentFromLocationMap(int iLineI
 	}
 	return pInstrument;
 }
-// 从索引表删除索引号指向的仪器指针
-BOOL CMatrixDllCall::Dll_DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
-{
-	BOOL bReturn = FALSE;
-	Delete_InstrumentFromLocationMap Dll_Delete_InstrumentFromLocationMap = NULL;
-	Dll_Delete_InstrumentFromLocationMap = (Delete_InstrumentFromLocationMap)GetProcAddress(m_hDllMod, "DeleteInstrumentFromLocationMap");
-	if (!Dll_Delete_InstrumentFromLocationMap)
-	{
-		// handle the error
-		FreeLibrary(m_hDllMod);
-		PostQuitMessage(0);
-	}
-	else
-	{
-		// call the function
-		bReturn = (*Dll_Delete_InstrumentFromLocationMap)(iLineIndex, iPointIndex, pMap);
-	}
-	return bReturn;
-}
 // 加载Survery设置数据
 void CMatrixDllCall::Dll_QuerySurverySetupData(char* cProcBuf, int& iPos)
 {
@@ -816,12 +799,12 @@ void CMatrixDllCall::Dll_QueryFormLineSetupData(char* cProcBuf, int& iPos)
 	}
 }
 // 加载Instrument_SensorTestBase设置数据
-void CMatrixDllCall::Dll_LoadInstrument_SensorTestBaseSetupData(bool bInstrument)
+void CMatrixDllCall::Dll_QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument)
 {
-	Load_Instrument_SensorTestBaseSetupData Dll_Load_Instrument_SensorTestBaseSetupData = NULL;
-	Dll_Load_Instrument_SensorTestBaseSetupData = 
-		(Load_Instrument_SensorTestBaseSetupData)GetProcAddress(m_hDllMod, "LoadInstrument_SensorTestBaseSetupData");
-	if (!Dll_Load_Instrument_SensorTestBaseSetupData)
+	Query_Instrument_SensorTestBaseSetupData Dll_Query_Instrument_SensorTestBaseSetupData = NULL;
+	Dll_Query_Instrument_SensorTestBaseSetupData = 
+		(Query_Instrument_SensorTestBaseSetupData)GetProcAddress(m_hDllMod, "QueryInstrument_SensorTestBaseSetupData");
+	if (!Dll_Query_Instrument_SensorTestBaseSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -830,16 +813,16 @@ void CMatrixDllCall::Dll_LoadInstrument_SensorTestBaseSetupData(bool bInstrument
 	else
 	{
 		// call the function
-		(*Dll_Load_Instrument_SensorTestBaseSetupData)(bInstrument, m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_Instrument_SensorTestBaseSetupData)(cProcBuf, iPos, bInstrument, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Instrument_SensorTestLimit设置数据
-void CMatrixDllCall::Dll_LoadInstrument_SensorTestLimitSetupData(bool bInstrument)
+void CMatrixDllCall::Dll_QueryInstrument_SensorTestLimitSetupData(char* cProcBuf, int& iPos, bool bInstrument)
 {
-	Load_Instrument_SensorTestLimitSetupData Dll_Load_Instrument_SensorTestLimitSetupData = NULL;
-	Dll_Load_Instrument_SensorTestLimitSetupData = 
-		(Load_Instrument_SensorTestLimitSetupData)GetProcAddress(m_hDllMod, "LoadInstrument_SensorTestLimitSetupData");
-	if (!Dll_Load_Instrument_SensorTestLimitSetupData)
+	Query_Instrument_SensorTestLimitSetupData Dll_Query_Instrument_SensorTestLimitSetupData = NULL;
+	Dll_Query_Instrument_SensorTestLimitSetupData = 
+		(Query_Instrument_SensorTestLimitSetupData)GetProcAddress(m_hDllMod, "QueryInstrument_SensorTestLimitSetupData");
+	if (!Dll_Query_Instrument_SensorTestLimitSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -848,15 +831,15 @@ void CMatrixDllCall::Dll_LoadInstrument_SensorTestLimitSetupData(bool bInstrumen
 	else
 	{
 		// call the function
-		(*Dll_Load_Instrument_SensorTestLimitSetupData)(bInstrument, m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_Instrument_SensorTestLimitSetupData)(cProcBuf, iPos, bInstrument, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Instrument Test设置数据
-void CMatrixDllCall::Dll_LoadInstrumentTestSetupData(void)
+void CMatrixDllCall::Dll_QueryInstrumentTestSetupData(char* cProcBuf, int& iPos)
 {
-	Load_InstrumentTestSetupData Dll_Load_InstrumentTestSetupData = NULL;
-	Dll_Load_InstrumentTestSetupData = (Load_InstrumentTestSetupData)GetProcAddress(m_hDllMod, "LoadInstrumentTestSetupData");
-	if (!Dll_Load_InstrumentTestSetupData)
+	Query_InstrumentTestSetupData Dll_Query_InstrumentTestSetupData = NULL;
+	Dll_Query_InstrumentTestSetupData = (Query_InstrumentTestSetupData)GetProcAddress(m_hDllMod, "QueryInstrumentTestSetupData");
+	if (!Dll_Query_InstrumentTestSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -865,15 +848,15 @@ void CMatrixDllCall::Dll_LoadInstrumentTestSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_InstrumentTestSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_InstrumentTestSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Sensor Test设置数据
-void CMatrixDllCall::Dll_LoadSensorTestSetupData(void)
+void CMatrixDllCall::Dll_QuerySensorTestSetupData(char* cProcBuf, int& iPos)
 {
-	Load_SensorTestSetupData Dll_Load_SensorTestSetupData = NULL;
-	Dll_Load_SensorTestSetupData = (Load_SensorTestSetupData)GetProcAddress(m_hDllMod, "LoadSensorTestSetupData");
-	if (!Dll_Load_SensorTestSetupData)
+	Query_SensorTestSetupData Dll_Query_SensorTestSetupData = NULL;
+	Dll_Query_SensorTestSetupData = (Query_SensorTestSetupData)GetProcAddress(m_hDllMod, "QuerySensorTestSetupData");
+	if (!Dll_Query_SensorTestSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -882,15 +865,15 @@ void CMatrixDllCall::Dll_LoadSensorTestSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_SensorTestSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_SensorTestSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载Multiple Test设置数据
-void CMatrixDllCall::Dll_LoadMultipleTestSetupData(void)
+void CMatrixDllCall::Dll_QueryMultipleTestSetupData(char* cProcBuf, int& iPos)
 {
-	Load_MultipleTestSetupData Dll_Load_MultipleTestSetupData = NULL;
-	Dll_Load_MultipleTestSetupData = (Load_MultipleTestSetupData)GetProcAddress(m_hDllMod, "LoadMultipleTestSetupData");
-	if (!Dll_Load_MultipleTestSetupData)
+	Query_MultipleTestSetupData Dll_Query_MultipleTestSetupData = NULL;
+	Dll_Query_MultipleTestSetupData = (Query_MultipleTestSetupData)GetProcAddress(m_hDllMod, "QueryMultipleTestSetupData");
+	if (!Dll_Query_MultipleTestSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -899,15 +882,15 @@ void CMatrixDllCall::Dll_LoadMultipleTestSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_MultipleTestSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_MultipleTestSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
 // 加载SeisMonitor设置数据
-void CMatrixDllCall::Dll_LoadSeisMonitorSetupData(void)
+void CMatrixDllCall::Dll_QuerySeisMonitorSetupData(char* cProcBuf, int& iPos)
 {
-	Load_SeisMonitorSetupData Dll_Load_SeisMonitorSetupData = NULL;
-	Dll_Load_SeisMonitorSetupData = (Load_SeisMonitorSetupData)GetProcAddress(m_hDllMod, "LoadSeisMonitorSetupData");
-	if (!Dll_Load_SeisMonitorSetupData)
+	Query_SeisMonitorSetupData Dll_Query_SeisMonitorSetupData = NULL;
+	Dll_Query_SeisMonitorSetupData = (Query_SeisMonitorSetupData)GetProcAddress(m_hDllMod, "QuerySeisMonitorSetupData");
+	if (!Dll_Query_SeisMonitorSetupData)
 	{
 		// handle the error
 		FreeLibrary(m_hDllMod);
@@ -916,8 +899,28 @@ void CMatrixDllCall::Dll_LoadSeisMonitorSetupData(void)
 	else
 	{
 		// call the function
-		(*Dll_Load_SeisMonitorSetupData)(m_pEnv->m_pInstrumentCommInfo);
+		(*Dll_Query_SeisMonitorSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
+}
+
+// 从XML配置文件得到测试数据限制值
+float CMatrixDllCall::Dll_QueryTestDataLimit(bool bInstrument, string str)
+{
+	float fReturn = 0;
+	Query_TestDataLimit Dll_Query_TestDataLimit = NULL;
+	Dll_Query_TestDataLimit = (Query_TestDataLimit)GetProcAddress(m_hDllMod, "QueryTestDataLimit");
+	if (!Dll_Query_TestDataLimit)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		fReturn = (*Dll_Query_TestDataLimit)(bInstrument, str, m_pEnv->m_pInstrumentCommInfo);
+	}
+	return fReturn;
 }
 // 设置Survery设置数据
 void CMatrixDllCall::Dll_SetSurverySetupData(char* pChar, unsigned int uiSize)
@@ -1257,5 +1260,43 @@ void CMatrixDllCall::Dll_GetLineRevSection(unsigned int& uiLineNum, unsigned int
 	{
 		// call the function
 		(*Dll_Get_LineRevSection)(uiLineNum, uiColumnNum, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+
+// 计算测试数据的算术均方根
+double CMatrixDllCall::Dll_CalMeanSquare(m_oInstrumentStruct* pInstrument)
+{
+	double dbReturn = 0;
+	Cal_MeanSquare Dll_Cal_MeanSquare = NULL;
+	Dll_Cal_MeanSquare = (Cal_MeanSquare)GetProcAddress(m_hDllMod, "CalMeanSquare");
+	if (!Dll_Cal_MeanSquare)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		dbReturn = (*Dll_Cal_MeanSquare)(pInstrument);
+	}
+	return dbReturn;
+}
+
+// 得到在线仪器位置
+void CMatrixDllCall::Dll_QueryInstrumentLocation(char* pChar, int& iPos)
+{
+	Query_InstrumentLocation Dll_Query_InstrumentLocation = NULL;
+	Dll_Query_InstrumentLocation = (Query_InstrumentLocation)GetProcAddress(m_hDllMod, "QueryInstrumentLocation");
+	if (!Dll_Query_InstrumentLocation)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_InstrumentLocation)(pChar, iPos, m_pEnv->m_pLineList);
 	}
 }

@@ -176,10 +176,19 @@ public:
 	unsigned int QuerySeisMonitorTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
 
 	// 从XML配置文件得到测试数据限制值
-	void GetTestDataLimitFromXML(bool bInstrument);
+	float GetTestDataLimitFromXML(bool bInstrument, string str);
 	// 计算测试数据的算术均方根
-	double CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument);
+	float CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument);
 	// 处理查询接收区域命令
 	void OnProcQueryRevSection(void);
+	// 判断仪器位置索引号是否已加入索引表
+	BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex, 
+		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+	// 增加对象到索引表
+	void AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
+		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+	// 根据输入索引号，由索引表得到仪器指针
+	m_oInstrumentStruct* GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
+		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 };
 

@@ -1005,3 +1005,31 @@ bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection,
 	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	return true;
 }
+
+// 计算测试数据的算术均方根
+double CalMeanSquare(m_oInstrumentStruct* pInstrument)
+{
+	double dbData = 0.0;
+	double dbAvg = 0.0;
+	int iSize = 0;
+	list<int>::iterator iter;
+	iSize = pInstrument->m_olsADCDataSave.size();
+	if (iSize == 0)
+	{
+		return 0;
+	}
+	for (iter = pInstrument->m_olsADCDataSave.begin();
+		iter != pInstrument->m_olsADCDataSave.end(); iter++)
+	{
+		dbAvg += *iter;
+	}
+	dbAvg /= iSize;
+	for (iter = pInstrument->m_olsADCDataSave.begin();
+		iter != pInstrument->m_olsADCDataSave.end(); iter++)
+	{
+		dbData += pow((*iter - dbAvg), 2);
+	}
+	dbData /= iSize;
+	dbData = pow(dbData, 0.5);
+	return dbData;
+}

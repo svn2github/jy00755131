@@ -34,8 +34,8 @@
 #define SndFrameWaitTimes					3
 // 发送帧最多发送次数
 #define SndFrameMaxNum						3
-// 数据处理缓冲区打小
-#define ProcBufferSize						80000
+// 数据处理缓冲区大小（20000站*（线号+点号+仪器指针地址））
+#define ProcBufferSize						240000
 // 两次FieldOn时间间隔
 #define FieldOnWaitForTime					120000
 // 自定义关闭客户端消息
@@ -44,7 +44,7 @@
 /* 命令字和通讯协议                                                     */
 /************************************************************************/
 // 查询某个区域客户端只需发送行号和区域号
-// 服务端则在区域号和行号后再加入仪器SN或数值（数值后跟测试结果）
+// 服务端则在区域号和行号后再加入仪器属性（SN（4个字节)后跟IP（4个字节）)或数值（数值(4个字节)后跟测试结果（1个字节））
 // 查询仪器列表某个区域（4个字节的行号和4个字节的区域序号）
 
 // 应答命令位（区别应答，进行与操作判别）
@@ -296,34 +296,8 @@ typedef struct InstrumentNet_Struct
 {
 	/** 仪器设备号*/
 	unsigned int m_uiSN;
-	/** 测线*/
-	int m_iLineIndex;
-	/** 测点号*/
-	int m_iPointIndex;
-	/** 标记线号*/
-	unsigned int m_uiLineNb;
-	/** 标记点号*/
-	unsigned int m_uiPointNb;
-	/** 是否跳过道*/
-	bool m_bJumpedChannel;
-	/** 是否连接检波器*/
-	bool m_bSensor;
-	/** 是否辅助道*/
-	bool m_bAux;
-	/** 是否连接爆炸机*/
-	bool m_bBlastMachine;
-	/** 是否迂回道*/
-	bool m_bDetour;
-	/** 是否迂回道低端标记点*/
-	bool m_bDetourMarkerLow;
-	/** 是否迂回道高端标记点*/
-	bool m_bDetourMarkerHigh;
-	/** 是否迂回道停止标记*/
-	bool m_bStopMarking;
-	/** 是否标记点*/
-	bool m_bMarker;
-	/** 是否哑道*/
-	bool m_bMute;
+	/** 仪器IP*/
+	unsigned int m_uiIP;
 }m_oInstrumentNetStruct;
 
 #endif

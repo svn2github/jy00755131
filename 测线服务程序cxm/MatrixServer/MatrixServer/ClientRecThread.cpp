@@ -322,112 +322,114 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 
 			// 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrNoiseTestArea:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentNoiseLimit = GetTestDataLimitFromXML(true, "Noise");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrNoiseTestByArea);
 			break;
 			// 查询全部仪器的仪器噪声测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrNoiseTestAll:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentNoiseLimit = GetTestDataLimitFromXML(true, "Noise");
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrNoiseTestByArea);
 			break;
 			// 查询所选区域仪器失真测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrDistortionTestArea:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentDistortionLimit = GetTestDataLimitFromXML(true, "Distortion");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrDistortionTestByArea);
 			break;
 			// 查询全部仪器失真测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrDistortionTestAll:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentDistortionLimit = GetTestDataLimitFromXML(true, "Distortion");
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrDistortionTestByArea);
 			break;
 			// 查询所选区域仪器串扰测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrCrosstalkTestArea:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentCrosstalkLimit = GetTestDataLimitFromXML(true, "Crosstalk");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrCrosstalkTestByArea);
 			break;
 			// 查询全部仪器串扰测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrCrosstalkTestAll:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentCrosstalkLimit = GetTestDataLimitFromXML(true, "Crosstalk");
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrCrosstalkTestByArea);
 			break;
 			// 查询所选区域仪器共模抑制比测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrCMRRTestArea:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentCMRRLimit = GetTestDataLimitFromXML(true, "CMRR");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrCMRRTestByArea);
 			break;
 			// 查询全部仪器共模抑制比测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrCMRRTestAll:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentCMRRLimit = GetTestDataLimitFromXML(true, "CMRR");
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrCMRRTestByArea);
 			break;
 			// 查询所选区域仪器增益相位测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrGainPhaseTestArea:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentGainPhaseLimit = GetTestDataLimitFromXML(true, "GainPhase");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QueryInstrGainPhaseTestByArea);
 			break;
 			// 查询全部仪器增益相位测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrGainPhaseTestAll:
-			GetTestDataLimitFromXML(true);
+			m_fInstrumentGainPhaseLimit = GetTestDataLimitFromXML(true, "GainPhase");
 			OnProcQueryInfoAll(&CClientRecThread::QueryInstrGainPhaseTestByArea);
 			break;
 			// 查询所选区域检波器阻抗测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorResistanceTestArea:
-			GetTestDataLimitFromXML(false);
+			m_fSensorResistanceLimitMin = GetTestDataLimitFromXML(false, "ResistanceMin");
+			m_fSensorResistanceLimitMax = GetTestDataLimitFromXML(false, "ResistanceMax");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorResistanceTestByArea);
 			break;
 			// 查询全部检波器阻抗测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorResistanceTestAll:
-			GetTestDataLimitFromXML(false);
+			m_fSensorResistanceLimitMin = GetTestDataLimitFromXML(false, "ResistanceMin");
+			m_fSensorResistanceLimitMax = GetTestDataLimitFromXML(false, "ResistanceMax");
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorResistanceTestByArea);
 			break;
 			// 查询所选区域检波器漏电测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorLeakageTestArea:
-			GetTestDataLimitFromXML(false);
+			m_fSensorLeakageLimit = GetTestDataLimitFromXML(false, "Leakage");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorLeakageTestByArea);
 			break;
 			// 查询全部检波器漏电测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorLeakageTestAll:
-			GetTestDataLimitFromXML(false);
+			m_fSensorLeakageLimit = GetTestDataLimitFromXML(false, "Leakage");
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorLeakageTestByArea);
 			break;
 			// 查询所选区域检波器噪声测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorNoiseTestArea:
-			GetTestDataLimitFromXML(false);
+			m_fSensorNoiseLimit = GetTestDataLimitFromXML(false, "Noise");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorNoiseTestByArea);
 			break;
 			// 查询全部检波器噪声测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorNoiseTestAll:
-			GetTestDataLimitFromXML(false);
+			m_fSensorNoiseLimit = GetTestDataLimitFromXML(false, "Noise");
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorNoiseTestByArea);
 			break;
 			// 查询所选区域检波器倾斜度测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorTiltTestArea:
-			GetTestDataLimitFromXML(false);
+			m_fSensorTiltLimit = GetTestDataLimitFromXML(false, "Tilt");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorTiltTestByArea);
 			break;
 			// 查询全部检波器倾斜度测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorTiltTestAll:
-			GetTestDataLimitFromXML(false);
+			m_fSensorTiltLimit = GetTestDataLimitFromXML(false, "Tilt");
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorTiltTestByArea);
 			break;
 			// 查询所选区域检波器倾斜度模式测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorTiltModelTestArea:
-			GetTestDataLimitFromXML(false);
+			m_fSensorTiltModelLimit = GetTestDataLimitFromXML(false, "Tilt Model");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySensorTiltModelTestByArea);
 			break;
 			// 查询全部检波器倾斜度模式测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorTiltModelTestAll:
-			GetTestDataLimitFromXML(false);
+			m_fSensorTiltModelLimit = GetTestDataLimitFromXML(false, "Tilt Model");
 			OnProcQueryInfoAll(&CClientRecThread::QuerySensorTiltModelTestByArea);
 			break;
 			// 查询所选区域地震监测测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySeisMonitorTestArea:
-			GetTestDataLimitFromXML(false);
+			m_fSeisMonitorLimit = GetTestDataLimitFromXML(false, "Seismonitor");
 			OnProcQueryByArea(pChar, uiSize, &CClientRecThread::QuerySeisMonitorTestByArea);
 			break;
 			// 查询全部地震监测测试数据和测试结果（帧内容为空）
 		case CmdQuerySeisMonitorTestAll:
-			GetTestDataLimitFromXML(false);
+			m_fSeisMonitorLimit = GetTestDataLimitFromXML(false, "Seismonitor");
 			OnProcQueryInfoAll(&CClientRecThread::QuerySeisMonitorTestByArea);
 			break;
 		default:
@@ -499,37 +501,44 @@ void CClientRecThread::OnProcInstrumentTableUpdate(void)
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iterLocation;
 	map<m_oAreaStruct, m_oAreaStruct>::iterator iterArea;
 	int iLineIndex = 0;
+	int iPointIndex = 0;
+	int iAddr = 0;
 	int iPointMinIndex = 0;
 	int iPointMaxIndex = 0;
 	int iPos = 0;
+	int iSize = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
+	m_oInstrumentStruct* pInstrumentClient = NULL;
 	// 将SN索引表与客户端的仪器位置索引表相对照
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pLineList->m_oSecLineList);
-	for (iterLocation = m_pMatrixDllCall->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap.begin();
-		iterLocation != m_pMatrixDllCall->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap.end(); iterLocation++)
+	m_pMatrixDllCall->Dll_QueryInstrumentLocation(m_pClientSndFrame->m_cProcBuf, iSize);
+	for (int i=0; i<iSize;)
 	{
+		memcpy(&iLineIndex, &m_pClientSndFrame->m_cProcBuf[i], 4);
+		i += 4;
+		memcpy(&iPointIndex, &m_pClientSndFrame->m_cProcBuf[i], 4);
+		i += 4;
+		memcpy(&iAddr, &m_pClientSndFrame->m_cProcBuf[i], 4);
+		i += 4;
+		pInstrument = (m_oInstrumentStruct*)iAddr;
 		// 客户端仪器索引表中找不到该设备
-		if (FALSE == m_pMatrixDllCall->Dll_IfLocationExistInMap(iterLocation->first.m_iLineIndex, 
-			iterLocation->first.m_iPointIndex, &m_oInstrumentWholeTableMap))
+		if (FALSE == IfLocationExistInMap(iLineIndex, iPointIndex, &m_oInstrumentWholeTableMap))
 		{
-			m_pMatrixDllCall->Dll_AddLocationToMap(iterLocation->first.m_iLineIndex, 
-				iterLocation->first.m_iPointIndex, iterLocation->second, &m_oInstrumentWholeTableMap);
+			AddLocationToMap(iLineIndex, iPointIndex, pInstrument, &m_oInstrumentWholeTableMap);
 			// 增加对象到索引表
-			AddAreaToMap(iterLocation->first.m_iLineIndex, 
-				iterLocation->first.m_iPointIndex, &m_oInstrumentUpdateArea);
+			AddAreaToMap(iLineIndex, iPointIndex, &m_oInstrumentUpdateArea);
 		}
 		else
 		{
-			pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iterLocation->first.m_iLineIndex,
-				iterLocation->first.m_iPointIndex, &m_oInstrumentWholeTableMap);
-			if (pInstrument->m_uiSN != iterLocation->second->m_uiSN)
+			pInstrumentClient = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &m_oInstrumentWholeTableMap);
+			if (pInstrument != pInstrumentClient)
 			{
-				pInstrument = iterLocation->second;
+				pInstrumentClient = pInstrument;
 				// 增加对象到索引表
-				AddAreaToMap(iterLocation->first.m_iLineIndex, iterLocation->first.m_iPointIndex, &m_oInstrumentUpdateArea);
+				AddAreaToMap(iLineIndex, iPointIndex, &m_oInstrumentUpdateArea);
 			}
 		}
 	}
+	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pLineList->m_oSecLineList);
 	// 将客户端的仪器位置索引表与SN索引表相对照
 	for (iterLocation = m_oInstrumentWholeTableMap.begin(); iterLocation != m_oInstrumentWholeTableMap.end();)
 	{
@@ -546,7 +555,7 @@ void CClientRecThread::OnProcInstrumentTableUpdate(void)
 			pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iterLocation->first.m_iLineIndex, 
 				iterLocation->first.m_iPointIndex, &m_pMatrixDllCall->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 			// SN不同则删除该仪器
-			if (pInstrument->m_uiSN != iterLocation->second->m_uiSN)
+			if (pInstrument != iterLocation->second)
 			{
 				iterLocation->second = pInstrument;
 			}
@@ -709,35 +718,8 @@ void CClientRecThread::OnProcQueryLookXMLInfo(unsigned short usCmd)
 // 查询 InstrumentTestBase XML文件信息
 void CClientRecThread::OnProcQueryInstrumentTestBaseXMLInfo(unsigned short usCmd)
 {
-	list<m_oInstrumentTestBaseStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadInstrument_SensorTestBaseSetupData(true);
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usDescrSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
-		iPos += iter->m_usDescrSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiADC, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiGain, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiDAC, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiFilter, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiSamplingRate, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiSamplingLength, 4);
-		iPos += 4;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryInstrument_SensorTestBaseSetupData(m_pClientSndFrame->m_cProcBuf, iPos, true);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -745,35 +727,8 @@ void CClientRecThread::OnProcQueryInstrumentTestBaseXMLInfo(unsigned short usCmd
 // 查询 SensorTestBase XML文件信息
 void CClientRecThread::OnProcQuerySensorTestBaseXMLInfo(unsigned short usCmd)
 {
-	list<m_oSensorTestBaseStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadInstrument_SensorTestBaseSetupData(false);
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usDescrSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
-		iPos += iter->m_usDescrSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiADC, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiGain, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiDAC, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiFilter, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiSamplingRate, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiSamplingLength, 4);
-		iPos += 4;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryInstrument_SensorTestBaseSetupData(m_pClientSndFrame->m_cProcBuf, iPos, false);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -781,31 +736,8 @@ void CClientRecThread::OnProcQuerySensorTestBaseXMLInfo(unsigned short usCmd)
 // 查询 InstrumentTestLimit XML文件信息
 void CClientRecThread::OnProcQueryInstrumentTestLimitXMLInfo(unsigned short usCmd)
 {
-	list<m_oInstrumentTestLimitStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadInstrument_SensorTestLimitSetupData(true);
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usDescrSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
-		iPos += iter->m_usDescrSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usUnitSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcUnit, iter->m_usUnitSize);
-		iPos += iter->m_usUnitSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestAim, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_fLimit, 4);
-		iPos += 4;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryInstrument_SensorTestLimitSetupData(m_pClientSndFrame->m_cProcBuf, iPos, true);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -813,31 +745,8 @@ void CClientRecThread::OnProcQueryInstrumentTestLimitXMLInfo(unsigned short usCm
 // 查询 SensorTestLimit XML文件信息
 void CClientRecThread::OnProcQuerySensorTestLimitXMLInfo(unsigned short usCmd)
 {
-	list<m_oSensorTestLimitStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadInstrument_SensorTestLimitSetupData(false);
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usDescrSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
-		iPos += iter->m_usDescrSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usUnitSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcUnit, iter->m_usUnitSize);
-		iPos += iter->m_usUnitSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestAim, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_fLimit, 4);
-		iPos += 4;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryInstrument_SensorTestLimitSetupData(m_pClientSndFrame->m_cProcBuf, iPos, false);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -845,33 +754,8 @@ void CClientRecThread::OnProcQuerySensorTestLimitXMLInfo(unsigned short usCmd)
 // 查询 InstrumentTest XML文件信息
 void CClientRecThread::OnProcQueryInstrumentTestXMLInfo(unsigned short usCmd)
 {
-	list<m_oInstrumentTestStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadInstrumentTestSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiGain, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiRecordLength, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiRecorded, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usAuxiliaryDescrSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcAuxiliaryDescr, iter->m_usAuxiliaryDescrSize);
-		iPos += iter->m_usAuxiliaryDescrSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usAbsoluteSpreadSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
-		iPos += iter->m_usAbsoluteSpreadSize;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryInstrumentTestSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -879,25 +763,8 @@ void CClientRecThread::OnProcQueryInstrumentTestXMLInfo(unsigned short usCmd)
 // 查询 SensorTest XML文件信息
 void CClientRecThread::OnProcQuerySensorTestXMLInfo(unsigned short usCmd)
 {
-	list<m_oSensorTestStruct>::iterator iter;
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadSensorTestSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestStruct.begin();
-		iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestStruct.end(); iter++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestType, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiRecorded, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_usAbsoluteSpreadSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
-		iPos += iter->m_usAbsoluteSpreadSize;
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QuerySensorTestSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -906,55 +773,8 @@ void CClientRecThread::OnProcQuerySensorTestXMLInfo(unsigned short usCmd)
 // 关键字结构体+排列个数+排列
 void CClientRecThread::OnProcQueryMultipleTestXMLInfo(unsigned short usCmd)
 {
-	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::iterator iterMap;
-	list<m_oMultipleTestTaskStruct>::iterator iter;
 	int iPos = 0;
-	unsigned int uiSize = 0;
-	m_pMatrixDllCall->Dll_LoadMultipleTestSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	for (iterMap = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.begin();
-		iterMap != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.end(); iterMap++)
-	{
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_uiNb, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_usTestNameSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_pcTestName, iterMap->first.m_usTestNameSize);
-		iPos += iterMap->first.m_usTestNameSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_usAuxiliaryDescrSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_pcAuxiliaryDescr, iterMap->first.m_usAuxiliaryDescrSize);
-		iPos += iterMap->first.m_usAuxiliaryDescrSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_usAbsoluteSpreadSize, 2);
-		iPos += 2;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_pcAbsoluteSpread, iterMap->first.m_usAbsoluteSpreadSize);
-		iPos += iterMap->first.m_usAbsoluteSpreadSize;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_uiDelayBetweenTest, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_uiRecordResults, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_uiRecordLength, 4);
-		iPos += 4;
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iterMap->first.m_uiTestFileNb, 4);
-		iPos += 4;
-		uiSize = iterMap->second.size();
-		memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &uiSize, 4);
-		iPos += 4;
-		for (iter = iterMap->second.begin(); iter != iterMap->second.end(); iter++)
-		{
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiLineNb, 4);
-			iPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiTestType, 4);
-			iPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiGain, 4);
-			iPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiLoopLineNb, 4);
-			iPos += 4;
-			memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &iter->m_uiNbLoops, 4);
-			iPos += 4;
-		}
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QueryMultipleTestSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -963,15 +783,7 @@ void CClientRecThread::OnProcQueryMultipleTestXMLInfo(unsigned short usCmd)
 void CClientRecThread::OnProcQuerySeisMonitorTestXMLInfo(unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->Dll_LoadSeisMonitorSetupData();
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize, 2);
-	iPos += 2;
-	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], 
-		&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize);
-	iPos += m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize;
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	m_pMatrixDllCall->Dll_QuerySeisMonitorSetupData(m_pClientSndFrame->m_cProcBuf, iPos);
 	m_pClientSndFrame->MakeSetFrame(usCmd, m_pClientSndFrame->m_cProcBuf, iPos);
 }
 
@@ -1099,7 +911,7 @@ unsigned int CClientRecThread::QueryInstrNoiseTestByArea(m_oInstrumentStruct* pI
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		fData = (float)CalTestDataMeanSquare(pInstrument);
+		fData = CalTestDataMeanSquare(pInstrument);
 		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1136,7 +948,8 @@ unsigned int CClientRecThread::QueryInstrDistortionTestByArea(m_oInstrumentStruc
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
+		fData = CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1173,7 +986,8 @@ unsigned int CClientRecThread::QueryInstrCrosstalkTestByArea(m_oInstrumentStruct
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
+		fData = CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1210,7 +1024,8 @@ unsigned int CClientRecThread::QueryInstrCMRRTestByArea(m_oInstrumentStruct* pIn
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
+		fData = CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1247,7 +1062,8 @@ unsigned int CClientRecThread::QueryInstrGainPhaseTestByArea(m_oInstrumentStruct
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
+		fData = CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1284,7 +1100,8 @@ unsigned int CClientRecThread::QuerySensorResistanceTestByArea(m_oInstrumentStru
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
+		fData = CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1321,7 +1138,8 @@ unsigned int CClientRecThread::QuerySensorLeakageTestByArea(m_oInstrumentStruct*
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
+		fData = CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1358,7 +1176,7 @@ unsigned int CClientRecThread::QuerySensorNoiseTestByArea(m_oInstrumentStruct* p
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		fData = (float)CalTestDataMeanSquare(pInstrument);
+		fData = CalTestDataMeanSquare(pInstrument);
 		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1395,7 +1213,8 @@ unsigned int CClientRecThread::QuerySensorTiltTestByArea(m_oInstrumentStruct* pI
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
+		fData = CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1432,7 +1251,8 @@ unsigned int CClientRecThread::QuerySensorTiltModelTestByArea(m_oInstrumentStruc
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
+		fData = CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1469,7 +1289,8 @@ unsigned int CClientRecThread::QuerySeisMonitorTestByArea(m_oInstrumentStruct* p
 	if (pInstrument != NULL)
 	{
 		// 数据处理
-		//		fData = pInstrument->m_iADCData;
+		fData = CalTestDataMeanSquare(pInstrument);
+		fData = (float)(2.5 * 1e6 * fData / 0x800000);
 
 		memcpy(&m_pClientSndFrame->m_cProcBuf[uiPos], &fData, 4);
 		uiPos += 4;
@@ -1498,99 +1319,16 @@ unsigned int CClientRecThread::QuerySeisMonitorTestByArea(m_oInstrumentStruct* p
 
 
 // 从XML配置文件得到测试数据限制值
-void CClientRecThread::GetTestDataLimitFromXML(bool bInstrument)
+float CClientRecThread::GetTestDataLimitFromXML(bool bInstrument, string str)
 {
-	list<m_oInstrumentTestLimitStruct>::iterator iter;
-	m_pMatrixDllCall->Dll_LoadInstrument_SensorTestLimitSetupData(bInstrument);
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	if (bInstrument == true)
-	{
-		for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.begin();
-			iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.end();
-			iter++)
-		{
-			if (0 == strcmp(iter->m_pcDescr, "Noise"))
-			{
-				m_fInstrumentNoiseLimit = iter->m_fLimit;
-			}
-			else if (0 == strcmp(iter->m_pcDescr, "Distortion"))
-			{
-				m_fInstrumentDistortionLimit = iter->m_fLimit;
-			}
-			else if (0 == strcmp(iter->m_pcDescr, "Crosstalk"))
-			{
-				m_fInstrumentCrosstalkLimit = iter->m_fLimit;
-			}
-			else if (0 == strcmp(iter->m_pcDescr, "GainPhase"))
-			{
-				m_fInstrumentGainPhaseLimit = iter->m_fLimit;
-			}
-			else if (0 == strcmp(iter->m_pcDescr, "CMRR"))
-			{
-				m_fInstrumentCMRRLimit = iter->m_fLimit;
-			}
-		}
-	}
-	else
-	{
-		for (iter = m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.begin();
-			iter != m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.end();
-			iter++)
-		{
-			if (0 == strcmp(iter->m_pcDescr, "ResistanceMin"))
-			{
-				m_fSensorResistanceLimitMin = iter->m_fLimit;
-			}
-			else if (0 == strcmp(iter->m_pcDescr, "ResistanceMax"))
-			{
-				m_fSensorResistanceLimitMax = iter->m_fLimit;
-			}
-			else if (0 == strcmp(iter->m_pcDescr, "Leakage"))
-			{
-				m_fSensorLeakageLimit = iter->m_fLimit;
-			}
-			else if (0 == strcmp(iter->m_pcDescr, "Noise"))
-			{
-				m_fSensorNoiseLimit = iter->m_fLimit;
-			}
-			else if (0 == strcmp(iter->m_pcDescr, "Tilt"))
-			{
-				m_fSensorTiltLimit = iter->m_fLimit;
-			}
-			else if (0 == strcmp(iter->m_pcDescr, "Tilt Model"))
-			{
-				m_fSensorTiltModelLimit = iter->m_fLimit;
-			}	
-			else if (0 == strcmp(iter->m_pcDescr, "Seismonitor"))
-			{
-				m_fSeisMonitorLimit = iter->m_fLimit;
-			}
-		}
-	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	return m_pMatrixDllCall->Dll_QueryTestDataLimit(bInstrument, str);
 }
 
 
 // 计算测试数据的算术均方根
-double CClientRecThread::CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument)
+float CClientRecThread::CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument)
 {
-	double dbData = 0.0;
-	double dbAvg = 0.0;
-	list<int>::iterator iter;
-	for (iter = pInstrument->m_olsADCDataSave.begin();
-		iter != pInstrument->m_olsADCDataSave.end(); iter++)
-	{
-		dbAvg += *iter;
-	}
-	dbAvg /= pInstrument->m_olsADCDataSave.size();
-	for (iter = pInstrument->m_olsADCDataSave.begin();
-		iter != pInstrument->m_olsADCDataSave.end(); iter++)
-	{
-		dbData += pow((*iter - dbAvg), 2);
-	}
-	dbData /= pInstrument->m_olsADCDataSave.size();
-	dbData = pow(dbData, 0.5);
-	return dbData;
+	return (float)m_pMatrixDllCall->Dll_CalMeanSquare(pInstrument);
 }
 
 
@@ -1604,4 +1342,58 @@ void CClientRecThread::OnProcQueryRevSection(void)
 	memcpy(&m_pClientSndFrame->m_cProcBuf[iPos], &m_uiColumnNum, 4);
 	iPos += 4;
 	m_pClientSndFrame->MakeSetFrame(CmdQueryRevSection, m_pClientSndFrame->m_cProcBuf, iPos);
+}
+
+// 判断仪器位置索引号是否已加入索引表
+BOOL CClientRecThread::IfLocationExistInMap(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return FALSE;
+	}
+	BOOL bResult = FALSE;
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
+	iter = pMap->find(Location);
+	if (iter != pMap->end())
+	{
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
+// 增加对象到索引表
+void CClientRecThread::AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	if ((pInstrument == NULL) || (pMap == NULL))
+	{
+		return;
+	}
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
+	if (false == IfLocationExistInMap(iLineIndex, iPointIndex, pMap))
+	{
+		pMap->insert(map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::value_type (Location, pInstrument));
+	}
+}
+// 根据输入索引号，由索引表得到仪器指针
+m_oInstrumentStruct* CClientRecThread::GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	if (pMap == NULL)
+	{
+		return NULL;
+	}
+	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
+	iter = pMap->find(Location);
+	if (iter == pMap->end())
+	{
+		return NULL;
+	}
+	return iter->second;
 }

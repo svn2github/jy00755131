@@ -6177,3 +6177,223 @@ void QueryFormLineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStru
 	}
 	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
 }
+
+// 查询 Instrument_SensorTestBase XML文件信息
+void QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oInstrumentTestBaseStruct>::iterator iter;
+	list<m_oInstrumentTestBaseStruct>* pList = NULL;
+	if (bInstrument == true)
+	{
+		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct;
+	}
+	else
+	{
+		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct;
+	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pList->begin();iter != pList->end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usDescrSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
+		iPos += iter->m_usDescrSize;
+		memcpy(&cProcBuf[iPos], &iter->m_uiTestType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiADC, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiGain, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiDAC, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiFilter, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiSamplingRate, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiSamplingLength, 4);
+		iPos += 4;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 InstrumentTestLimit XML文件信息
+void QueryInstrument_SensorTestLimitSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oInstrumentTestLimitStruct>::iterator iter;
+	list<m_oInstrumentTestLimitStruct>* pList = NULL;
+	if (bInstrument == true)
+	{
+		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct;
+	}
+	else
+	{
+		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct;
+	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pList->begin(); iter != pList->end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usDescrSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcDescr, iter->m_usDescrSize);
+		iPos += iter->m_usDescrSize;
+		memcpy(&cProcBuf[iPos], &iter->m_usUnitSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcUnit, iter->m_usUnitSize);
+		iPos += iter->m_usUnitSize;
+		memcpy(&cProcBuf[iPos], &iter->m_uiTestAim, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiTestType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_fLimit, 4);
+		iPos += 4;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 InstrumentTest XML文件信息
+void QueryInstrumentTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oInstrumentTestStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiTestType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiGain, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiRecordLength, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiRecorded, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usAuxiliaryDescrSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcAuxiliaryDescr, iter->m_usAuxiliaryDescrSize);
+		iPos += iter->m_usAuxiliaryDescrSize;
+		memcpy(&cProcBuf[iPos], &iter->m_usAbsoluteSpreadSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
+		iPos += iter->m_usAbsoluteSpreadSize;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 SensorTest XML文件信息
+void QuerySensorTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	list<m_oSensorTestStruct>::iterator iter;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.begin();
+		iter != pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.end(); iter++)
+	{
+		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiTestType, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_uiRecorded, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iter->m_usAbsoluteSpreadSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
+		iPos += iter->m_usAbsoluteSpreadSize;
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 MultipleTest XML文件信息
+void QueryMultipleTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::iterator iterMap;
+	list<m_oMultipleTestTaskStruct>::iterator iter;
+	unsigned int uiSize = 0;
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iterMap = pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.begin();
+		iterMap != pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.end(); iterMap++)
+	{
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_uiNb, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_usTestNameSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_pcTestName, iterMap->first.m_usTestNameSize);
+		iPos += iterMap->first.m_usTestNameSize;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_usAuxiliaryDescrSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_pcAuxiliaryDescr, iterMap->first.m_usAuxiliaryDescrSize);
+		iPos += iterMap->first.m_usAuxiliaryDescrSize;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_usAbsoluteSpreadSize, 2);
+		iPos += 2;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_pcAbsoluteSpread, iterMap->first.m_usAbsoluteSpreadSize);
+		iPos += iterMap->first.m_usAbsoluteSpreadSize;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_uiDelayBetweenTest, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_uiRecordResults, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_uiRecordLength, 4);
+		iPos += 4;
+		memcpy(&cProcBuf[iPos], &iterMap->first.m_uiTestFileNb, 4);
+		iPos += 4;
+		uiSize = iterMap->second.size();
+		memcpy(&cProcBuf[iPos], &uiSize, 4);
+		iPos += 4;
+		for (iter = iterMap->second.begin(); iter != iterMap->second.end(); iter++)
+		{
+			memcpy(&cProcBuf[iPos], &iter->m_uiLineNb, 4);
+			iPos += 4;
+			memcpy(&cProcBuf[iPos], &iter->m_uiTestType, 4);
+			iPos += 4;
+			memcpy(&cProcBuf[iPos], &iter->m_uiGain, 4);
+			iPos += 4;
+			memcpy(&cProcBuf[iPos], &iter->m_uiLoopLineNb, 4);
+			iPos += 4;
+			memcpy(&cProcBuf[iPos], &iter->m_uiNbLoops, 4);
+			iPos += 4;
+		}
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 查询 SeisMonitorTest XML文件信息
+void QuerySeisMonitorSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize, 2);
+	iPos += 2;
+	memcpy(&cProcBuf[iPos], 
+		&pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread, 
+		pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize);
+	iPos += pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize;
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+}
+
+// 从XML配置文件得到测试数据限制值
+float QueryTestDataLimit(bool bInstrument, string str, m_oInstrumentCommInfoStruct* pCommInfo)
+{
+	float fReturn = 0;
+	list<m_oInstrumentTestLimitStruct>::iterator iter;
+	list<m_oInstrumentTestLimitStruct>* pList = NULL;
+	if (bInstrument == true)
+	{
+		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct;
+	}
+	else
+	{
+		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct;
+	}
+	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	for (iter = pList->begin(); iter != pList->end(); iter++)
+	{
+		if (0 == strcmp(iter->m_pcDescr, str.c_str()))
+		{
+			fReturn = iter->m_fLimit;
+			break;
+		}
+	}
+	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	return fReturn;
+}

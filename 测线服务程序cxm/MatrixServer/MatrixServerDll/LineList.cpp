@@ -84,3 +84,24 @@ void OnFreeLineList(m_oLineListStruct* pLineList)
 	delete pLineList;
 	pLineList = NULL;
 }
+
+// 得到在线仪器位置
+void QueryInstrumentLocation(char* pChar, int& iPos, m_oLineListStruct* pLineList)
+{
+	DWORD dwAddr = 0;
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iterLocation;
+	// 将SN索引表与客户端的仪器位置索引表相对照
+	EnterCriticalSection(&pLineList->m_oSecLineList);
+	for (iterLocation = pLineList->m_pInstrumentList->m_oInstrumentLocationMap.begin();
+		iterLocation != pLineList->m_pInstrumentList->m_oInstrumentLocationMap.end(); iterLocation++)
+	{
+		memcpy(&pChar[iPos], &iterLocation->first.m_iLineIndex, 4);
+		iPos += 4;
+		memcpy(&pChar[iPos], &iterLocation->first.m_iPointIndex, 4);
+		iPos += 4;
+		dwAddr = (DWORD)iterLocation->second;
+		memcpy(&pChar[iPos], &dwAddr, 4);
+		iPos += 4;
+	}
+	LeaveCriticalSection(&pLineList->m_oSecLineList);
+}

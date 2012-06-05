@@ -61,9 +61,7 @@ public:
 	// 根据输入索引号，由索引表得到仪器指针
 	m_oInstrumentStruct* Dll_GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-	// 从索引表删除索引号指向的仪器指针
-	BOOL Dll_DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
-		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+
 	// 加载Survery设置数据
 	void Dll_QuerySurverySetupData(char* cProcBuf, int& iPos);
 	// 加载Point Code设置数据
@@ -91,17 +89,19 @@ public:
 	// 加载FormLine设置数据
 	void Dll_QueryFormLineSetupData(char* cProcBuf, int& iPos);
 	// 加载Instrument_SensorTestBase设置数据
-	void Dll_LoadInstrument_SensorTestBaseSetupData(bool bInstrument);
+	void Dll_QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument);
 	// 加载Instrument_SensorTestLimit设置数据
-	void Dll_LoadInstrument_SensorTestLimitSetupData(bool bInstrument);
+	void Dll_QueryInstrument_SensorTestLimitSetupData(char* cProcBuf, int& iPos, bool bInstrument);
 	// 加载Instrument Test设置数据
-	void Dll_LoadInstrumentTestSetupData(void);
+	void Dll_QueryInstrumentTestSetupData(char* cProcBuf, int& iPos);
 	// 加载Sensor Test设置数据
-	void Dll_LoadSensorTestSetupData(void);
+	void Dll_QuerySensorTestSetupData(char* cProcBuf, int& iPos);
 	// 加载Multiple Test设置数据
-	void Dll_LoadMultipleTestSetupData(void);
+	void Dll_QueryMultipleTestSetupData(char* cProcBuf, int& iPos);
 	// 加载SeisMonitor设置数据
-	void Dll_LoadSeisMonitorSetupData(void);
+	void Dll_QuerySeisMonitorSetupData(char* cProcBuf, int& iPos);
+	// 从XML配置文件得到测试数据限制值
+	float Dll_QueryTestDataLimit(bool bInstrument, string str);
 	// 设置Survery设置数据
 	void Dll_SetSurverySetupData(char* pChar, unsigned int uiSize);
 	// 设置Point Code设置数据
@@ -142,5 +142,9 @@ public:
 	void Dll_SetSeisMonitorSetupData(char* pChar, unsigned int uiSize);
 	// 得到测线接收区域
 	void Dll_GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum);
+	// 计算测试数据的算术均方根
+	double Dll_CalMeanSquare(m_oInstrumentStruct* pInstrument);
+	// 得到在线仪器位置
+	void Dll_QueryInstrumentLocation(char* pChar, int& iPos);
 };
 
