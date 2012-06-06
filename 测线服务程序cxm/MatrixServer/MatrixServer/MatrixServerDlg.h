@@ -31,9 +31,9 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	// DLL函数调用类成员
+	/** DLL函数调用类成员*/
 	CMatrixDllCall m_oMatrixDllCall;
-	// 与客户端通讯类成员
+	/** 与客户端通讯类成员*/
 	CComm m_oCom;
 public:
 	afx_msg void OnBnClickedBnStart();

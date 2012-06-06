@@ -126,8 +126,8 @@ void CClientSndFrame::MakeSendFrame(m_oCommFrameStructPtr ptrFrame)
 	iPos += ptrFrame->m_usFrameInfoSize;
 	pChar[iPos] = FrameTail;
 	iPos++;
-	m_pClientSocket->Send(pChar, 
-		ptrFrame->m_usFrameInfoSize + FrameHeadSize + FrameLengthSize + FrameTailSize + FrameHeadInfoSize);
+ 	m_pClientSocket->Send(pChar, 
+ 		ptrFrame->m_usFrameInfoSize + FrameHeadSize + FrameLengthSize + FrameTailSize + FrameHeadInfoSize);
 }
 
 

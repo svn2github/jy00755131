@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "ClientRecThread.h"
-
+#include "CommClient.h"
 CClientRecThread::CClientRecThread(void)
 	: m_fInstrumentNoiseLimit(0)
 	, m_fInstrumentDistortionLimit(0)
@@ -18,11 +18,15 @@ CClientRecThread::CClientRecThread(void)
 	m_pClientRecFrame = NULL;
 	m_pClientSndFrame = NULL;
 	m_pMatrixDllCall = NULL;
+	m_pComClientMap = NULL;
+	m_uiLineNum = 0;
+	m_uiColumnNum = 0;
 	m_bCheckConnected = false;
 	m_oInstrumentWholeTableMap.clear();
 	m_oInstrumentUpdateArea.clear();
-	m_uiLineNum = 0;
-	m_uiColumnNum = 0;
+	m_uiClientActiveCount = 0;
+	m_uiClientCheckCount = 0;
+	m_bClientClose = false;
 }
 
 
@@ -36,11 +40,16 @@ CClientRecThread::~CClientRecThread(void)
 void CClientRecThread::OnProc(void)
 {
 	int iFrameNum = 0;
+	bool bActive = false;
 	m_oCommFrameStructPtr ptrFrameRec = NULL;
 	m_oCommFrameStructPtr ptrFrameSnd = NULL;
 	EnterCriticalSection(&m_pClientRecFrame->m_oSecClientFrame);
 	EnterCriticalSection(&m_pClientSndFrame->m_oSecClientFrame);
 	iFrameNum = m_pClientRecFrame->m_olsCommWorkFrame.size();
+	if (iFrameNum != 0)
+	{
+		bActive = true;
+	}
 	for (int i=0; i<iFrameNum; i++)
 	{
 		ptrFrameRec = *m_pClientRecFrame->m_olsCommWorkFrame.begin();
@@ -87,6 +96,8 @@ void CClientRecThread::OnProc(void)
 	}
 	LeaveCriticalSection(&m_pClientSndFrame->m_oSecClientFrame);
 	LeaveCriticalSection(&m_pClientRecFrame->m_oSecClientFrame);
+	// 监视客户端是否活跃
+	MonitorClientActive(bActive);
 }
 // 将帧内容加入待处理任务中
 void CClientRecThread::SaveRecFrameToTask(m_oCommFrameStructPtr ptrFrame)
@@ -158,6 +169,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 SurveyXML 文件信息（帧内容为信息结构体）
 		case CmdSetSurveyXMLInfo:
 			m_pMatrixDllCall->Dll_SetSurverySetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 PointCode XML文件信息（帧内容为空）
 		case CmdQueryPointCodeXMLInfo:
@@ -166,6 +178,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 PointCode XML文件信息（帧内容为信息结构体）
 		case CmdSetPointCodeXMLInfo:
 			m_pMatrixDllCall->Dll_SetPointCodeSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 Sensor XML文件信息（帧内容为空）
 		case CmdQuerySensorXMLInfo:
@@ -174,6 +187,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 Sensor XML文件信息（帧内容为信息结构体）
 		case CmdSetSensorXMLInfo:
 			m_pMatrixDllCall->Dll_SetSensorSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 Marker XML文件信息（帧内容为空）
 		case CmdQueryMarkerXMLInfo:
@@ -182,6 +196,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 Marker XML文件信息（帧内容为信息结构体）
 		case CmdSetMarkerXMLInfo:
 			m_pMatrixDllCall->Dll_SetMarkerSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 Aux XML文件信息（帧内容为空）
 		case CmdQueryAuxXMLInfo:
@@ -190,6 +205,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 Aux XML文件信息（帧内容为信息结构体）
 		case CmdSetAuxXMLInfo:
 			m_pMatrixDllCall->Dll_SetAuxSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 Detour XML文件信息（帧内容为空）
 		case CmdQueryDetourXMLInfo:
@@ -198,6 +214,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 Detour XML文件信息（帧内容为信息结构体）
 		case CmdSetDetourXMLInfo:
 			m_pMatrixDllCall->Dll_SetDetourSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 Mute XML文件信息（帧内容为空）
 		case CmdQueryMuteXMLInfo:
@@ -206,6 +223,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 Mute XML文件信息（帧内容为信息结构体）
 		case CmdSetMuteXMLInfo:
 			m_pMatrixDllCall->Dll_SetMuteSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 BlastMachine XML文件信息（帧内容为空）
 		case CmdQueryBlastMachineXMLInfo:
@@ -214,6 +232,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 BlastMachine XML文件信息（帧内容为信息结构体）
 		case CmdSetBlastMachineXMLInfo:
 			m_pMatrixDllCall->Dll_SetBlastMachineSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 Absolute XML文件信息（帧内容为空）
 		case CmdQueryAbsoluteXMLInfo:
@@ -222,6 +241,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 Absolute XML文件信息（帧内容为信息结构体）
 		case CmdSetAbsoluteXMLInfo:
 			m_pMatrixDllCall->Dll_SetAbsoluteSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break; 
 			// 查询 Generic XML文件信息（帧内容为空）
 		case CmdQueryGenericXMLInfo:
@@ -230,6 +250,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 Generic XML文件信息（帧内容为信息结构体）
 		case CmdSetGenericXMLInfo:
 			m_pMatrixDllCall->Dll_SetGenericSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 Look XML文件信息（帧内容为空）
 		case CmdQueryLookXMLInfo:
@@ -238,6 +259,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 Look XML文件信息（帧内容为信息结构体）
 		case CmdSetLookXMLInfo:
 			m_pMatrixDllCall->Dll_SetLookSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 InstrumentTestBase XML文件信息（帧内容为空）
 		case CmdQueryInstrumentTestBaseXMLInfo:
@@ -246,6 +268,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 InstrumentTestBase XML文件信息（帧内容为信息结构体）
 		case CmdSetInstrumentTestBaseXMLInfo:
 			m_pMatrixDllCall->Dll_SetInstrument_SensorTestBaseSetupData(pChar, uiSize, true);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 SensorTestBase XML文件信息（帧内容为空）
 		case CmdQuerySensorTestBaseXMLInfo:
@@ -254,6 +277,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 SensorTestBase XML文件信息（帧内容为信息结构体）
 		case CmdSetSensorTestBaseXMLInfo:
 			m_pMatrixDllCall->Dll_SetInstrument_SensorTestBaseSetupData(pChar, uiSize, false);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 InstrumentTestLimit XML文件信息（帧内容为空）
 		case CmdQueryInstrumentTestLimitXMLInfo:
@@ -262,6 +286,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 InstrumentTestLimit XML文件信息（帧内容为信息结构体）
 		case CmdSetInstrumentTestLimitXMLInfo:
 			m_pMatrixDllCall->Dll_SetInstrument_SensorTestLimitSetupData(pChar, uiSize, true);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 SensorTestLimit XML文件信息（帧内容为空）
 		case CmdQuerySensorTestLimitXMLInfo:
@@ -270,6 +295,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 SensorTestLimit XML文件信息（帧内容为信息结构体）
 		case CmdSetSensorTestLimitXMLInfo:
 			m_pMatrixDllCall->Dll_SetInstrument_SensorTestLimitSetupData(pChar, uiSize, false);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 InstrumentTest XML文件信息（帧内容为空）
 		case CmdQueryInstrumentTestXMLInfo:
@@ -278,6 +304,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 InstrumentTest XML文件信息（帧内容为信息结构体）
 		case CmdSetInstrumentTestXMLInfo:
 			m_pMatrixDllCall->Dll_SetInstrumentTestSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 SensorTest XML文件信息（帧内容为空）
 		case CmdQuerySensorTestXMLInfo:
@@ -286,6 +313,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// SensorTest XML文件信息（帧内容为信息结构体）
 		case CmdSetSensorTestXMLInfo:
 			m_pMatrixDllCall->Dll_SetSensorSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 MultipleTest XML文件信息（帧内容为空）
 		case CmdQueryMultipleTestXMLInfo:
@@ -294,6 +322,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 MultipleTest XML文件信息（帧内容为信息结构体）
 		case CmdSetMultipleTestXMLInfo:
 			m_pMatrixDllCall->Dll_SetMultipleTestSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 SeisMonitorTest XML文件信息（帧内容为空）
 		case CmdQuerySeisMonitorTestXMLInfo:
@@ -302,6 +331,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 SeisMonitorTest XML文件信息（帧内容为信息结构体）
 		case CmdSetSeisMonitorTestXMLInfo:
 			m_pMatrixDllCall->Dll_SetSeisMonitorSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 LAULeakage XML文件信息（帧内容为空）
 		case CmdQueryLAULeakageXMLInfo:
@@ -310,6 +340,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 LAULeakage XML文件信息（帧内容为信息结构体）
 		case CmdSetLAULeakageXMLInfo:
 			m_pMatrixDllCall->Dll_SetLAULeakageSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 			// 查询 FormLine XML文件信息（帧内容为空）
 		case CmdQueryFormLineXMLInfo:
@@ -318,6 +349,7 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			// 设置 FormLine XML文件信息（帧内容为信息结构体）
 		case CmdSetFormLineXMLInfo:
 			m_pMatrixDllCall->Dll_SetFormLineSetupData(pChar, uiSize);
+			BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 
 			// 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）
@@ -1366,6 +1398,7 @@ BOOL CClientRecThread::IfLocationExistInMap(int iLineIndex, int iPointIndex,
 	}
 	return bResult;
 }
+
 // 增加对象到索引表
 void CClientRecThread::AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
@@ -1380,6 +1413,7 @@ void CClientRecThread::AddLocationToMap(int iLineIndex, int iPointIndex, m_oInst
 		pMap->insert(map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::value_type (Location, pInstrument));
 	}
 }
+
 // 根据输入索引号，由索引表得到仪器指针
 m_oInstrumentStruct* CClientRecThread::GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
@@ -1396,4 +1430,51 @@ m_oInstrumentStruct* CClientRecThread::GetInstrumentFromLocationMap(int iLineInd
 		return NULL;
 	}
 	return iter->second;
+}
+
+/** 向所有在线客户端广播配置文件变更*/
+void CClientRecThread::BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize)
+{
+	hash_map<SOCKET, CCommClient*>::iterator iter;
+	for (iter = m_pComClientMap->begin(); iter != m_pComClientMap->end(); iter++)
+	{
+		if (iter->second->m_oClientRecThread.m_bCheckConnected == true)
+		{
+			iter->second->m_oClientSndFrame.MakeSetFrame(usCmd, pChar, uiSize);
+		}
+	}
+}
+
+/** 监视客户端是否活跃*/
+void CClientRecThread::MonitorClientActive(bool bActive)
+{
+	bool bClose = false;
+	if (bActive == true)
+	{
+		m_uiClientActiveCount = 0;
+	}
+	else
+	{
+		m_uiClientActiveCount++;
+		if (m_uiClientActiveCount >= ClientActiveCountNum)
+		{
+			bClose = true;
+		}
+	}
+	if (m_bCheckConnected == false)
+	{
+		m_uiClientCheckCount++;
+		if (m_uiClientCheckCount >= ClientCheckCountNum)
+		{
+			bClose = true;
+		}
+	}
+	if (bClose == true)
+	{
+		if (m_bClientClose == false)
+		{
+			PostMessage(AfxGetApp()->GetMainWnd()->m_hWnd, CloseClientMsg, (DWORD)m_pClientSndFrame->m_pClientSocket->m_pComClient, 0);
+			m_bClientClose = true;
+		}
+	}
 }

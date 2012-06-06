@@ -4,6 +4,7 @@
 
 CClientCommFrame::CClientCommFrame(void)
 {
+	m_uiCountFree = 0;
 	m_uiPacketIndex = 0;
 	m_uiCmdIndex = 0;
 }

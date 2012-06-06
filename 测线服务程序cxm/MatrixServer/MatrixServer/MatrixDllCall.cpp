@@ -140,6 +140,7 @@ void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int
 
 CMatrixDllCall::CMatrixDllCall(void)
 {
+	m_pEnv = NULL;
 }
 
 

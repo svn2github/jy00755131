@@ -19,50 +19,51 @@ using stdext::hash_map;
 
 /*
 *	if using C++ Compiler to compile the file, adopting C linkage mode
-	*/
+*/
 #ifdef __cplusplus
 	extern "C" {
 #endif
 
-		// according to the control macro, deciding whether export or import functions
+// according to the control macro, deciding whether export or import functions
 #ifdef MATRIXSERVERDLL_EXPORTS
 #define MatrixServerDll_API __declspec(dllexport)
 #else
 #define MatrixServerDll_API __declspec(dllimport)
 #endif
 
-		// Macro definitions declarations
-		// 日志文件夹
+// Macro definitions declarations
+/** 日志文件夹*/
 #define LogFolderPath				_T("..\\Log")
-		// 系统日志文件夹（包含操作、警告、错误）
+/** 系统日志文件夹（包含操作、警告、错误）*/
 #define SysOptLogFolderPath			_T("\\系统运行日志")
-		// 时统日志文件夹（包含尾包时刻查询及时统设置应答及结果统计）
+/** 时统日志文件夹（包含尾包时刻查询及时统设置应答及结果统计）*/
 #define TimeDelayLogFolderPath		_T("\\时统日志")
-		// 误码查询日志文件夹（包含误码查询应答及结果统计）
+/** 误码查询日志文件夹（包含误码查询应答及结果统计）*/
 #define ErrorCodeLogFolderPath		_T("\\误码查询日志")
-		// 帧时间和偏移量日志（包含丢帧、重发帧及失效帧结果统计）
+/** 帧时间和偏移量日志（包含丢帧、重发帧及失效帧结果统计）*/
 #define ADCFrameTimeLogFolderPath	_T("\\采样数据帧时间及偏移量")
-		// ADC数据帧
+/** ADC数据帧*/
 #define ADCDataLogFolderPath		_T("\\采样数据")
 
-		// 输出选择:Debug输出则为0，Release输出则为1
+/** 输出选择:Debug输出则为0，Release输出则为1*/
 #define OutPutSelect				0
-		// 输出错误日志上限
+/** 输出错误日志上限*/
 #define OutPutLogErrorLimit			100
-		// 日志文件单个文件输出信息条数
+/** 日志文件单个文件输出信息条数*/
 #define OutPutLogFileInfoNumLimit	5000
-		// 日志输出类型
-		enum{LogType, WarningType, ErrorType, ExpandType};
-	// 日志文件类型
-	enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
-	// INI文件读取关键字缓冲区大小
+/** 日志输出类型*/
+enum{LogType, WarningType, ErrorType, ExpandType};
+/** 日志文件类型*/
+enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
+/** INI文件读取关键字缓冲区大小*/
 #define INIFileStrBufSize			256
-	typedef int (WINAPI *PFCALLBACK)(int Param1,int Param2) ;
+/** 回调函数-采集数据*/
 typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex, int *_piData,
 	int _iSize, unsigned int _uiSN);
 
-// Resources declarations
-// 日志输出结构
+/**
+* @brief 日志输出结构
+*/
 typedef struct LogOutPut_Struct
 {
 	// 日志输出资源同步对象
@@ -83,9 +84,11 @@ typedef struct LogOutPut_Struct
 	char m_cLogFileType;
 }m_oLogOutPutStruct;
 
-// 从INI文件中解析得到的常量
-// 该结构体中的变量值只能在INI文件中被修改
-// 暂不支持在程序中修改（可能会出现内存冲突的情况）
+/**
+* @brief 从INI文件中解析得到的常量
+* @note	该结构体中的变量值只能在INI文件中被修改
+* @note 暂不支持在程序中修改（可能会出现内存冲突的情况）
+*/
 typedef struct ConstVar_Struct
 {
 	// INI文件路径
@@ -314,7 +317,9 @@ typedef struct ConstVar_Struct
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
 
-// 从XML文件中解析得到IP地址设置数据
+/**
+* @brief 从XML文件中解析得到IP地址设置数据
+*/
 typedef struct XMLIPSetupData_Struct
 {
 	// 源地址
@@ -324,7 +329,10 @@ typedef struct XMLIPSetupData_Struct
 	// 自动数据返回地址
 	unsigned int m_uiADCDataReturnAddr;
 }m_oXMLIPSetupDataStruct;
-// 从XML文件中解析得到端口设置数据
+
+/**
+* @brief 从XML文件中解析得到端口设置数据
+*/ 
 typedef struct XMLPortSetupData_Struct
 {
 	// LCI接收的端口号
@@ -348,7 +356,10 @@ typedef struct XMLPortSetupData_Struct
 	// ADC数据返回端口
 	unsigned short m_usADCDataReturnPort;
 }m_oXMLPortSetupDataStruct;
-// 从XML文件中解析得到ADC参数设置信息
+
+/**
+* @brief 从XML文件中解析得到ADC参数设置信息
+*/
 typedef struct XMLADCSetupData_Struct
 {
 	// ADC设置正弦波命令大小
@@ -400,13 +411,18 @@ typedef struct XMLADCSetupData_Struct
 	// 高通滤波器是否开启
 	bool m_bHPFOpen;
 }m_oXMLADCSetupDataStruct;
-// 从XML文件中得到的服务端参数信息
+
+/**
+* @brief 从XML文件中得到的服务端参数信息
+*/
 typedef struct XMLParameterSetupData_Struct
 {
 	CTime m_oTimeFieldOff;
 }m_oXMLParameterSetupDataStruct;
-// Survery SETUP结构体
-// Survery
+
+/**
+* @brief Survery SETUP结构体
+*/
 typedef struct Survery_Struct
 {
 	// 测线号
@@ -416,7 +432,10 @@ typedef struct Survery_Struct
 	// 接收区域+检波器类型，如100-103p1
 	char* m_pcReceiverSection;
 }m_oSurveryStruct;
-// Point Code
+
+/**
+* @brief Point Code SETUP结构体
+*/
 typedef struct PointCode_Struct
 {
 	// 点代码编号
@@ -430,7 +449,10 @@ typedef struct PointCode_Struct
 	// 检波器类型，如s1+cs
 	char* m_pcSensorType;
 }m_oPointCodeStruct;
-// Sensor
+
+/**
+* @brief Sensor SETUP结构体
+*/
 typedef struct Sensor_Struct
 {
 	// 检波器号
@@ -452,8 +474,10 @@ typedef struct Sensor_Struct
 	// SEGD编码
 	unsigned int m_uiSEGDCode;
 }m_oSensorStruct;
-// LAYOUT SETUP
-// Marker
+
+/**
+* @brief Marker SETUP结构体
+*/
 typedef struct Marker_Struct
 {
 	// 仪器类型，1-交叉站，2-电源站，3-采集站
@@ -471,7 +495,10 @@ typedef struct Marker_Struct
 	// 翻转标记，0-不翻转，1-翻转
 	unsigned int m_uiReversed;
 }m_oMarkerStruct;
-// Aux
+
+/**
+* @brief Aux SETUP结构体
+*/
 typedef struct Aux_Struct
 {
 	// 索引号，与Instrument测试中的Auxiliary Descr对应
@@ -495,7 +522,10 @@ typedef struct Aux_Struct
 	// 注释，如Comments1
 	char* m_pcComments;
 }m_oAuxStruct;
-// Detour
+
+/**
+* @brief Detour SETUP结构体
+*/
 typedef struct Detour_Struct
 {
 	// 低端仪器类型，1-交叉站，2-电源站，3-采集站
@@ -513,7 +543,10 @@ typedef struct Detour_Struct
 	// 停止标记，0-继续标记，1-停止标记
 	unsigned int m_uiStopMarking;
 }m_oDetourStruct;
-// Mute
+
+/**
+* @brief Mute SETUP结构体
+*/
 typedef struct Mute_Struct
 {
 	// 测线号
@@ -521,7 +554,10 @@ typedef struct Mute_Struct
 	// 测点号
 	unsigned int m_uiPointNb;
 }m_oMuteStruct;
-// BlastMachine
+
+/**
+* @brief BlastMachine SETUP结构体
+*/
 typedef struct BlastMachine_Struct
 {
 	// 索引号
@@ -545,8 +581,10 @@ typedef struct BlastMachine_Struct
 	// 注释，如Comments1
 	char* m_pcComments;
 }m_oBlastMachineStruct;
-// Spread Type Setup
-// Absolute
+
+/**
+* @brief Absolute Spread SETUP结构体
+*/
 typedef struct Absolute_Struct
 {
 	// 索引号
@@ -560,7 +598,10 @@ typedef struct Absolute_Struct
 	// 绝对排列，如1:1-127（测线名：起始测点号-终止测点号）
 	char* m_pcAbsoluteSpread;
 }m_oAbsoluteStruct;
-// Generic
+
+/**
+* @brief Generic Spread SETUP结构体
+*/
 typedef struct Generic_Struct
 {
 	// 索引号
@@ -578,7 +619,10 @@ typedef struct Generic_Struct
 	// 普通排列，如10(l1+ls)（10对测线，第一条测线为Line中定义的l1类型，第二条被跳过）
 	char* m_pcSpread;
 }m_oGenericStruct;
-// Look
+
+/**
+* @brief Look SETUP结构体
+*/
 typedef struct Look_Struct
 {
 	// 自动查看是否连接了新设备，1-自动查看，2-手动查看
@@ -590,13 +634,19 @@ typedef struct Look_Struct
 	// 检波器漏电测试，1-测试，2-不测试
 	unsigned int m_uiLeakage;
 }m_oLookStruct;
-// LAULeakage
+
+/**
+* @brief LAULeakage SETUP结构体
+*/
 typedef struct LAULeakage_Struct
 {
 	// 限制值
 	unsigned int m_uiLimit;
 }m_oLAULeakageStruct;
-// Form Line
+
+/**
+* @brief Form Line SETUP结构体
+*/
 typedef struct FormLine_Struct
 {
 	// 索引号
@@ -606,7 +656,10 @@ typedef struct FormLine_Struct
 	// 仪器SN
 	unsigned int m_uiSN;
 }m_oFormLineStruct;
-// Instrument Sensor Test base
+
+/**
+* @brief Instrument Sensor Test base SETUP结构体
+*/
 typedef struct Instrument_SensorTestBase_Struct
 {
 	unsigned int m_uiTestAim;
@@ -621,7 +674,10 @@ typedef struct Instrument_SensorTestBase_Struct
 	unsigned int m_uiSamplingRate; //（us）采样率
 	unsigned int m_uiSamplingLength;//（ms）采样长度
 }m_oInstrumentTestBaseStruct, m_oSensorTestBaseStruct;
-//Instrument Limit
+
+/**
+* @brief Instrument Sensor Test Limit SETUP结构体
+*/
 typedef struct Instrument_SensorTestLimit_Struct
 {
 	unsigned int m_uiNb; //索引号（只读）
@@ -633,7 +689,10 @@ typedef struct Instrument_SensorTestLimit_Struct
 	unsigned int m_uiTestType;//测试类型代码（只读）
 	float m_fLimit;//极限值
 }m_oInstrumentTestLimitStruct, m_oSensorTestLimitStruct;
-// Instrument Test
+
+/**
+* @brief Instrument Test SETUP结构体
+*/
 typedef struct InstrumentTest_Struct
 {
 	unsigned int m_uiNb; //索引号（只读）
@@ -646,7 +705,10 @@ typedef struct InstrumentTest_Struct
 	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
 	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
 }m_oInstrumentTestStruct;
-// Sensor Test
+
+/**
+* @brief Sensor Test SETUP结构体
+*/
 typedef struct SensorTest_Struct
 {
 	unsigned int m_uiNb; //索引号（只读）
@@ -655,7 +717,10 @@ typedef struct SensorTest_Struct
 	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
 	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
 }m_oSensorTestStruct;
-// Multiple Test
+
+/**
+* @brief Multiple Test SETUP结构体
+*/
 typedef struct MultipleTestKey_Struct
 {
 	unsigned int m_uiNb; //索引号（只读）
@@ -674,7 +739,10 @@ typedef struct MultipleTestKey_Struct
 		return (m_uiNb < rhs.m_uiNb);
 	}
 }m_oMultipleTestKeyStruct;
-// Test Task
+
+/**
+* @brief Multiple Test Task结构体
+*/
 typedef struct MultipleTestTask_Struct
 {
 	unsigned int m_uiLineNb;//测线号
@@ -683,13 +751,19 @@ typedef struct MultipleTestTask_Struct
 	unsigned int m_uiLoopLineNb;//需要重复进行的测线索引号
 	unsigned int m_uiNbLoops;//输入循环次数
 }m_oMultipleTestTaskStruct;
-// SeisMonitor
+
+/**
+* @brief SeisMonitor Test结构体
+*/
 typedef struct SeisMonitorTest_Struct
 {
 	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
 	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
 }m_oSeisMonitorStruct;
-// 测线客户端信息
+
+/**
+* @brief 测线客户端信息结构体
+*/
 typedef struct LineSetupData_Struct
 {
 	// 从Line的配置文件中解析得到的信息队列
@@ -738,7 +812,10 @@ typedef struct LineSetupData_Struct
 	// SeisMonitor
 	m_oSeisMonitorStruct m_oSeisMonitor;
 }m_oLineSetupDataStruct;
-// 从XML文件中解析得到的信息
+
+/**
+* @brief 从XML文件中解析得到的信息
+*/
 typedef struct InstrumentCommInfo_Struct
 {
 	// 资源同步对象
@@ -765,7 +842,9 @@ typedef struct InstrumentCommInfo_Struct
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oInstrumentCommInfoStruct;
 
-// 与设备通讯命令字内容
+/**
+* @brief 与设备通讯命令字内容
+*/
 typedef struct InstrumentCommand_Struct
 {
 	// LCI的IP地址

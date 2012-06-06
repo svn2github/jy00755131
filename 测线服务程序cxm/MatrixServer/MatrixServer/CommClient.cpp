@@ -11,6 +11,7 @@
 CCommClient::CCommClient()
 {
 	m_pMatrixDllCall = NULL;
+	m_pComClientMap = NULL;
 }
 
 CCommClient::~CCommClient()
@@ -20,8 +21,10 @@ CCommClient::~CCommClient()
 // 创建一个客户端连接信息
 void CCommClient::OnInit(void)
 {
+	m_oClientSocket.m_pComClientMap = m_pComClientMap;
 	m_oClientSocket.OnInit(this, ServerSndBufferSize, ServerRecBufferSize);
 	m_oClientRecFrame.OnInit();
+	m_oClientRecThread.m_pComClientMap = m_pComClientMap;
 	m_oClientRecThread.m_pClientRecFrame = &m_oClientRecFrame;
 	m_oClientRecThread.m_pClientSndFrame = &m_oClientSndFrame;
 	m_oClientRecThread.m_pMatrixDllCall = m_pMatrixDllCall;

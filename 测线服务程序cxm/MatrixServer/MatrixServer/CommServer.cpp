@@ -11,10 +11,12 @@
 CCommServer::CCommServer()
 {
 	m_pMatrixDllCall = NULL;
+	m_oComClientMap.clear();
 }
 
 CCommServer::~CCommServer()
 {
+	m_oComClientMap.clear();
 }
 
 
@@ -28,7 +30,7 @@ void CCommServer::OnAccept(int nErrorCode)
 	pComClient = new CCommClient;
 	if (CAsyncSocket::Accept(pComClient->m_oClientSocket))
 	{
-		pComClient->m_oClientSocket.m_pComClientMap = &m_oComClientMap;
+		pComClient->m_pComClientMap = &m_oComClientMap;
 		pComClient->m_pMatrixDllCall = m_pMatrixDllCall;
 		pComClient->OnInit();
 	}
