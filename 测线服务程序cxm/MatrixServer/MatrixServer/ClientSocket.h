@@ -4,6 +4,7 @@
 using stdext::hash_map;
 class CCommClient;
 /**
+* @class CClientSocket
 * @brief 连接上的客户端的Socket类
 */
 class CClientSocket : public CAsyncSocket

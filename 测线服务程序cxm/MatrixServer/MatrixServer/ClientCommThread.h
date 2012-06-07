@@ -1,6 +1,7 @@
 #pragma once
 #include "CommProtocol.h"
 /**
+* @class CClientCommThread
 * @brief 与客户端通讯线程基类
 */
 class CClientCommThread

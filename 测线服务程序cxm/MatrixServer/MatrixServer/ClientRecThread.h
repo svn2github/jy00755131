@@ -8,6 +8,7 @@
 using std::map;
 using std::hash_map;
 /**
+* @class CClientRecThread
 * @brief 与客户端通讯接收线程类
 */
 class CClientRecThread : public CClientCommThread

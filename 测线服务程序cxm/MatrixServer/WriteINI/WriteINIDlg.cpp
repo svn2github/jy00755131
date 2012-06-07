@@ -231,6 +231,14 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("20");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
+	strSectionKey=_T("TimeDelayCorrectLocation");	// 需要时统修正的仪器的位置
+	strValue = _T("10");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("TimeDelayCorrect");			// 时统修正值
+	strValue = _T("10");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
 	strSectionKey=_T("HeadFrameStableNum");		// 首包计数
 	strValue = _T("4");
 	//写入ini文件中相应字段

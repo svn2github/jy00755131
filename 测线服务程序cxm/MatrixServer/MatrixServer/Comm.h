@@ -2,6 +2,7 @@
 #include "CommServer.h"
 #include "MatrixDllCall.h"
 /**
+* @class CComm
 * @brief 与客户端连接的通讯类
 */
 class CComm

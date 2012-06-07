@@ -2,6 +2,7 @@
 #include "..\\MatrixServerDll\\MatrixServerDll.h"
 #include "CommProtocol.h"
 /**
+* @class CMatrixDllCall
 * @brief 调用Dll函数类
 */
 class CMatrixDllCall

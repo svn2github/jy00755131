@@ -3,6 +3,7 @@
 #include <list>
 using std::list;
 /**
+* @class CClientCommFrame
 * @brief 与客户端通讯帧基类
 */
 class CClientCommFrame

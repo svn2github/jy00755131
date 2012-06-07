@@ -4,6 +4,7 @@
 #include <map>
 using std::map;
 /**
+* @class CClientSndFrame
 * @brief 与客户端通讯发送帧类
 */
 class CClientSndFrame : public CClientCommFrame

@@ -2,6 +2,7 @@
 #include "CommClient.h"
 #include "MatrixDllCall.h"
 /**
+* @class CCommServer
 * @brief 服务端的Socket类
 */
 class CCommServer : public CAsyncSocket

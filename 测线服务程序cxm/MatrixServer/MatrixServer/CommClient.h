@@ -6,6 +6,7 @@
 #include "ClientSocket.h"
 #include "MatrixDllCall.h"
 /**
+* @class CCommClient
 * @brief 与服务器连接的客户端成员类
 */
 class CCommClient

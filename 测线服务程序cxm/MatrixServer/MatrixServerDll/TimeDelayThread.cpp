@@ -344,13 +344,17 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		}
 		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻差值为 %d,	"), pInstrumentNext->m_uiIP, itmp1);
 		strOutPut = str;
-		itmp1 = itmp1 / 2;
+		itmp1 >>= 1;
 		itmp2 += itmp1;
+		if (pInstrumentNext->m_iPointIndex == pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayCorrectLocation)
+		{
+			itmp2 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayCorrect;
+		}
 		// 时间修正低位
 		pInstrumentNext->m_uiTimeLow = itmp2 & 0x3fff;
 		// 时间修正高位
 		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
-		// 在数据采集期间只针对未时统的仪器进行时统设置	
+		// 在数据采集期间只针对未时统的仪器进行时统设置
 		if (bADCStartSample == true)
 		{
 			if (pInstrumentNext->m_iTimeSetReturnCount == 0)

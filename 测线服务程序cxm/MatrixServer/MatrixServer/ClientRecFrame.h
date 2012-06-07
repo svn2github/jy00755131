@@ -1,6 +1,7 @@
 #pragma once
 #include "ClientCommFrame.h"
 /**
+* @class CClientRecFrame
 * @brief 与客户端通讯接收帧类
 */
 class CClientRecFrame : public CClientCommFrame

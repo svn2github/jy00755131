@@ -62,357 +62,365 @@ typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex
 	int _iSize, unsigned int _uiSN);
 
 /**
+* @struct LogOutPut_Struct
 * @brief 日志输出结构
 */
 typedef struct LogOutPut_Struct
 {
-	// 日志输出资源同步对象
+	/** 日志输出资源同步对象*/
 	CRITICAL_SECTION m_oSecLogFile;
-	// 日志输出文件指针
+	/** 日志输出文件指针*/
 	FILE* m_pFile;
-	// 日志输出结构
+	/** 日志输出结构*/
 	list<string> m_oLogOutputList;
-	// 错误计数
+	/** 错误计数*/
 	unsigned int m_uiErrorCount;
-	// 日志输出路径
+	/** 日志输出路径*/
 	string m_SaveLogFilePath;
-	// 日志文件序号
+	/** 日志文件序号*/
 	unsigned int m_uiLogFileNb;
-	// 日志文件存储信息条数记数
+	/** 日志文件存储信息条数记数*/
 	unsigned int m_uiLogInfoCount;
-	// 日志文件类型
+	/** 日志文件类型*/
 	char m_cLogFileType;
 }m_oLogOutPutStruct;
 
 /**
+* @struct ConstVar_Struct
 * @brief 从INI文件中解析得到的常量
 * @note	该结构体中的变量值只能在INI文件中被修改
 * @note 暂不支持在程序中修改（可能会出现内存冲突的情况）
 */
 typedef struct ConstVar_Struct
 {
-	// INI文件路径
+	/** INI文件路径*/
 	string m_strINIFilePath;
-	//____常量设置____
-	// 仪器设备个数
+	/** 仪器设备个数*/
 	unsigned int m_iInstrumentNum;
-	// ADC数据缓冲区个数
+	/** ADC数据缓冲区个数*/
 	int m_iADCDataCountAll;
-	// 施工任务个数
+	/** 施工任务个数*/
 	int m_iOptTaskCountAll;
-	// 一次休眠的时间
+	/** 一次休眠的时间*/
 	int m_iOneSleepTime;
-	// 日志输出线程写日志的延时次数
+	/** 日志输出线程写日志的延时次数*/
 	int m_iLogOutPutSleepTimes;
-	// 心跳线程发送心跳帧延时次数
+	/** 心跳线程发送心跳帧延时次数*/
 	int m_iHeartBeatSleepTimes;
-	// 首包线程接收首包延时次数
+	/** 首包线程接收首包延时次数*/
 	int m_iHeadFrameSleepTimes;
-	// IP地址设置线程延时次数
+	/** IP地址设置线程延时次数*/
 	int m_iIPSetFrameSleepTimes;
-	// 尾包线程延时次数
+	/** 尾包线程延时次数*/
 	int m_iTailFrameSleepTimes;
-	// 路由监视线程延时次数
+	/** 路由监视线程延时次数*/
 	int m_iMonitorSleepTimes;
-	// 时统设置线程延时次数
+	/** 时统设置线程延时次数*/
 	int m_iTimeDelaySleepTimes;
-	// ADC参数设置线程延时次数
+	/** ADC参数设置线程延时次数*/
 	int m_iADCSetSleepTimes;
-	// 误码查询线程延时次数
+	/** 误码查询线程延时次数*/
 	int m_iErrorCodeSleepTimes;
-	// ADC数据接收线程延时次数
+	/** ADC数据接收线程延时次数*/
 	int m_iADCDataRecSleepTimes;
-	// ADC数据存储线程延时次数
+	/** ADC数据存储线程延时次数*/
 	int m_iADCDataSaveSleepTimes;
-	// 等待线程关闭的延时次数
+	/** 等待线程关闭的延时次数*/
 	int m_iCloseThreadSleepTimes;
+	/** 需要时统修正的仪器位置*/
+	int m_iTimeDelayCorrectLocation;
+	/** 时统修正值*/
+	int m_iTimeDelayCorrect;
 
-	// 首包稳定计数
+	/** 首包稳定计数*/
 	int m_iHeadFrameStableTimes;
-	// IP地址重设次数
+	/** IP地址重设次数*/
 	int m_iIPAddrResetTimes;
-	// 尾包稳定次数
+	/** 尾包稳定次数*/
 	int m_iTailFrameStableTimes;
-	// 路由监视稳定时间
+	/** 路由监视稳定时间*/
 	int m_iMonitorStableTime;
-	// 测网系统状态-link
+	/** 测网系统状态-link*/
 	int m_iLineSysStatusLink;
-	// 测网系统状态-稳定
+	/** 测网系统状态-稳定*/
 	int m_iLineSysStatusStable;
-	// 测网系统状态-噪声采集
+	/** 测网系统状态-噪声采集*/
 	int m_iLineSysStatusNoise;
-	// 测网系统状态-TB采集
+	/** 测网系统状态-TB采集*/
 	int m_iLineSysStatusSample;
-	// 测网系统达到稳定状态时间
+	/** 测网系统达到稳定状态时间*/
 	int m_iLineSysStableTime;
-	// ADC参数设置操作序号
+	/** ADC参数设置操作序号*/
 	int m_iADCSetOptNb;
-	// ADC开始采集操作序号
+	/** ADC开始采集操作序号*/
 	int m_iADCStartSampleOptNb;
-	// ADC停止采集操作序号
+	/** ADC停止采集操作序号*/
 	int m_iADCStopSampleOptNb;
-	// ADC参数设置命令数
+	/** ADC参数设置命令数*/
 	int m_iADCSetCmdNum;
-	// ADC参数设置起始命令序号
+	/** ADC参数设置起始命令序号*/
 	int m_iADCSetCmdBeginNb;
-	// ADC开始采集命令数
+	/** ADC开始采集命令数*/
 	int m_iADCStartSampleCmdNum;
-	// ADC开始采集起始命令序号
+	/** ADC开始采集起始命令序号*/
 	int m_iADCStartSampleBeginNb;
-	// ADC停止采集命令数
+	/** ADC停止采集命令数*/
 	int m_iADCStopSampleCmdNum;
-	// ADC停止采集起始命令序号
+	/** ADC停止采集起始命令序号*/
 	int m_iADCStopSampleBeginNb;
-	// 仪器类型-交叉站
+	/** 仪器类型-交叉站*/
 	int m_iInstrumentTypeLAUX;
-	// 仪器类型-电源站
+	/** 仪器类型-电源站*/
 	int m_iInstrumentTypeLAUL;
-	// 仪器类型-采集站
+	/** 仪器类型-采集站*/
 	int m_iInstrumentTypeFDU;
-	// 仪器类型-LCI
+	/** 仪器类型-LCI*/
 	int m_iInstrumentTypeLCI;
-	// 方向上方
+	/** 方向上方*/
 	int m_iDirectionTop;
-	// 方向下方
+	/** 方向下方*/
 	int m_iDirectionDown;
-	// 方向左方
+	/** 方向左方*/
 	int m_iDirectionLeft;
-	// 方向右方
+	/** 方向右方*/
 	int m_iDirectionRight;
-	// 方向正中
+	/** 方向正中*/
 	int m_iDirectionCenter;
-	// IP地址设置的起始地址
+	/** IP地址设置的起始地址*/
 	int m_iIPSetAddrStart;
-	// IP地址设置的间隔
+	/** IP地址设置的间隔*/
 	int m_iIPSetAddrInterval;
-	// 路由地址设置的起始地址
+	/** 路由地址设置的起始地址*/
 	int m_iRoutSetAddrStart;
-	// 路由地址设置的间隔
+	/** 路由地址设置的间隔*/
 	int m_iRoutSetAddrInterval;
-	// 设置广播端口起始地址
+	/** 设置广播端口起始地址*/
 	int m_iBroadcastPortStart;
-	// 设置为广播IP
+	/** 设置为广播IP*/
 	unsigned int m_uiIPBroadcastAddr;
-	// 一个文件内存储单个设备ADC数据帧数
+	/** 一个文件内存储单个设备ADC数据帧数*/
 	int m_iADCFrameSaveInOneFileNum;
-	// 存储ADC数据的文件头行数
+	/** 存储ADC数据的文件头行数*/
 	int m_iADCSaveHeadLineNum;
-	// 存储ADC数据的左侧预留信息字节数
+	/** 存储ADC数据的左侧预留信息字节数*/
 	int m_iADCSaveLeftInfoBytes;
-	// 存储ADC数据的字节数
+	/** 存储ADC数据的字节数*/
 	int m_iADCSaveDataBytes;
-	// 存储ADC数据之间的间隔字节数
+	/** 存储ADC数据之间的间隔字节数*/
 	int m_iADCSaveDataIntervalBytes;
-	// 设备ADC数据缓冲区大小
+	/** 设备ADC数据缓冲区大小*/
 	int m_iADCDataBufSize;
-	// 存储用于测试计算的数据个数
+	/** 存储用于测试计算的数据个数*/
 	unsigned int m_uiSaveTestDataNum;
 
-	//____帧格式设置____
-	// 帧头长度
+	/** 帧头长度*/
 	int m_iFrameHeadSize;
-	// 同步帧头
+	/** 同步帧头*/
 	char* m_cpFrameHeadCheck;
-	// 命令字长度1字节
+	/** 命令字长度1字节*/
 	int m_iFrameCmdSize1B;
-	// 命令包长度1字节
+	/** 命令包长度1字节*/
 	int m_iFramePacketSize1B;
-	// 命令包长度2字节
+	/** 命令包长度2字节*/
 	int m_iFramePacketSize2B;
-	// 命令包长度4字节
+	/** 命令包长度4字节*/
 	int m_iFramePacketSize4B;
-	// ADC数据所占字节数
+	/** ADC数据所占字节数*/
 	int m_iADCDataSize3B;
-	// 一帧内ADC数据个数
+	/** 一帧内ADC数据个数*/
 	int m_iADCDataInOneFrameNum;
-	// ADC数据帧指针偏移量上限
+	/** ADC数据帧指针偏移量上限*/
 	unsigned short m_usADCFramePointLimit;
-	// 命令字个数最大值
+	/** 命令字个数最大值*/
 	int m_iCommandWordMaxNum;
-	// 0x18命令数组包含的最大字节数
+	/** 0x18命令数组包含的最大字节数*/
 	int m_iADCSetCommandMaxByte;
-	// 发送帧缓冲区初值设定
+	/** 发送帧缓冲区初值设定*/
 	char m_cSndFrameBufInit;
-	// 接收的网络数据帧帧长度
+	/** 接收的网络数据帧帧长度*/
 	int m_iRcvFrameSize;
-	// 发送的网络数据帧帧长度
+	/** 发送的网络数据帧帧长度*/
 	int m_iSndFrameSize;
-	//____服务器与设备命令字设置____
-	// 发送设置命令
+	/**____服务器与设备命令字设置____*/
+	/** 发送设置命令*/
 	unsigned short m_usSendSetCmd;
-	// 发送查询命令
+	/** 发送查询命令*/
 	unsigned short m_usSendQueryCmd;
-	// 发送ADC采样数据重发命令
+	/** 发送ADC采样数据重发命令*/
 	unsigned short m_usSendADCCmd;
-	// 串号
+	/** 串号*/
 	char m_cCmdSn;
-	// 首包时间
+	/** 首包时间*/
 	char m_cCmdHeadFrameTime;
-	// 本地IP地址
+	/** 本地IP地址*/
 	char m_cCmdLocalIPAddr;
-	// 本地系统时间
+	/** 本地系统时间*/
 	char m_cCmdLocalSysTime;
-	// 本地时间修正高位
+	/** 本地时间修正高位*/
 	char m_cCmdLocalTimeFixedHigh;
-	// 本地时间修正低位
+	/** 本地时间修正低位*/
 	char m_cCmdLocalTimeFixedLow;
-	// 自动数据返回地址
+	/** 自动数据返回地址*/
 	char m_cCmdADCDataReturnAddr;
-	// 自动数据返回端口和命令
+	/** 自动数据返回端口和命令*/
 	char m_cCmdADCDataReturnPort;
-	// 端口递增下限和上限
+	/** 端口递增下限和上限*/
 	char m_cCmdADCDataReturnPortLimit;
-	// 设置网络等待端口和命令
+	/** 设置网络等待端口和命令*/
 	char m_cCmdBroadCastPortSet;
-	// 系统硬件状态拷贝
+	/** 系统硬件状态拷贝*/
 	char m_cCmdFDUErrorCode;
-	// TB时刻高位
+	/** TB时刻高位*/
 	char m_cCmdTBHigh;
-	// TB时刻低位
+	/** TB时刻低位*/
 	char m_cCmdTbLow;
-	// work_ctrl 交叉站方向
+	/** work_ctrl 交叉站方向*/
 	char m_cCmdLAUXRoutOpenQuery;
-	// 路由开关
+	/** 路由开关*/
 	char m_cCmdLAUXRoutOpenSet;
-	// 仪器设备版本
+	/** 仪器设备版本*/
 	char m_cCmdVersion;
-	// 尾包接收\发送时刻低位
+	/** 尾包接收\发送时刻低位*/
 	char m_cCmdTailRecSndTime;
-	// 广播命令等待端口匹配
+	/** 广播命令等待端口匹配*/
 	char m_cCmdBroadCastPortSeted;
-	// 设置ADC控制命令命令字
+	/** 设置ADC控制命令命令字*/
 	char m_cCmdADCSet;
-	// 网络时刻
+	/** 网络时刻*/
 	char m_cCmdNetTime;
-	// 交叉站大线尾包接收时刻
+	/** 交叉站大线尾包接收时刻*/
 	char m_cCmdLineTailRecTimeLAUX;
-	// 交叉站交叉线尾包接收时刻
+	/** 交叉站交叉线尾包接收时刻*/
 	char m_cCmdLAUTailRecTimeLAUX;
-	// 交叉站故障1
+	/** 交叉站故障1*/
 	char m_cCmdLAUXErrorCode1;
-	// 交叉站故障2
+	/** 交叉站故障2*/
 	char m_cCmdLAUXErrorCode2;
-	// 交叉站路由分配
+	/** 交叉站路由分配*/
 	char m_cCmdLAUXSetRout;
-	// 返回路由
+	/** 返回路由*/
 	char m_cCmdReturnRout;
-	// 命令解析结束命令
+	/** 命令解析结束命令*/
 	char m_cCmdEnd;
 
-	// TB设置延时高位
+	/** TB设置延时高位*/
 	unsigned int m_uiTBSleepTimeHigh;
-	// TB设置延时低位
+	/** TB设置延时低位*/
 	unsigned short m_usTBSleepTimeLow;
-	// FieldOn与上一次FieldOff的时间间隔
+	/** FieldOn与上一次FieldOff的时间间隔*/
 	unsigned int m_uiFieldOnWaitTimeLimit;
-	// TB控制，0x0001 启动TB进行ADC数据采集
+	/** TB控制，0x0001 启动TB进行ADC数据采集*/
 	unsigned short m_usCmdTBCtrlStartSample;
-	// 0x0002 无需TB开关控制ADC数据采集命令
+	/** 0x0002 无需TB开关控制ADC数据采集命令*/
 	unsigned short m_usCmdTBLoseCtrlStartSample;
-	// 0x0000 TB开关控制ADC数据停止采集命令
+	/** 0x0000 TB开关控制ADC数据停止采集命令*/
 	unsigned short m_usCmdTBCtrlStopSample;
-	// LED灯灭
+	/** LED灯灭*/
 	unsigned short m_usCmdCtrlCloseLed;
-	// 输出日志指针
+	/** 输出日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oConstVarStruct;
 
 /**
+* @struct XMLIPSetupData_Struct
 * @brief 从XML文件中解析得到IP地址设置数据
 */
 typedef struct XMLIPSetupData_Struct
 {
-	// 源地址
+	/** 源地址*/
 	unsigned int m_uiSrcIP;
-	// LCI的IP地址
+	/** LCI的IP地址*/
 	unsigned int m_uiAimIP;
-	// 自动数据返回地址
+	/** 自动数据返回地址*/
 	unsigned int m_uiADCDataReturnAddr;
 }m_oXMLIPSetupDataStruct;
 
 /**
+* @struct XMLPortSetupData_Struct
 * @brief 从XML文件中解析得到端口设置数据
 */ 
 typedef struct XMLPortSetupData_Struct
 {
-	// LCI接收的端口号
+	/** LCI接收的端口号*/
 	unsigned short m_usAimPort;
-	// 心跳帧返回端口
+	/** 心跳帧返回端口*/
 	unsigned short m_usHeartBeatReturnPort;
-	// 首包接收端口
+	/** 首包接收端口*/
 	unsigned short m_usHeadFramePort;
-	// IP地址设置返回端口
+	/** IP地址设置返回端口*/
 	unsigned short m_usIPSetReturnPort;
-	// 尾包接收端口
+	/** 尾包接收端口*/
 	unsigned short m_usTailFramePort;
-	// 尾包时刻查询接收端口
+	/** 尾包时刻查询接收端口*/
 	unsigned short m_usTailTimeReturnPort;
-	// 时统设置应答端口
+	/** 时统设置应答端口*/
 	unsigned short m_usTimeDelayReturnPort;
-	// ADC参数设置应答端口
+	/** ADC参数设置应答端口*/
 	unsigned short m_usADCSetReturnPort;
-	// 误码查询返回端口
+	/** 误码查询返回端口*/
 	unsigned short m_usErrorCodeReturnPort;
-	// ADC数据返回端口
+	/** ADC数据返回端口*/
 	unsigned short m_usADCDataReturnPort;
 }m_oXMLPortSetupDataStruct;
 
 /**
+* @struct XMLADCSetupData_Struct
 * @brief 从XML文件中解析得到ADC参数设置信息
 */
 typedef struct XMLADCSetupData_Struct
 {
-	// ADC设置正弦波命令大小
+	/** ADC设置正弦波命令大小*/
 	int m_iSetADCSetSineSize;
-	// ADC设置正弦波命令
+	/** ADC设置正弦波命令*/
 	char* m_cpSetADCSetSine;
-	// ADC设置停止采样命令大小
+	/** ADC设置停止采样命令大小*/
 	int m_iSetADCStopSampleSize;
-	// ADC设置停止采样命令
+	/** ADC设置停止采样命令*/
 	char* m_cpSetADCStopSample;
-	// ADC设置打开TB电源低位大小
+	/** ADC设置打开TB电源低位大小*/
 	int m_iSetADCOpenTBPowerLowSize;
-	// ADC设置打开TB电源低位
+	/** ADC设置打开TB电源低位*/
 	char* m_cpSetADCOpenTBPowerLow;
-	// ADC设置打开TB电源高位大小
+	/** ADC设置打开TB电源高位大小*/
 	int m_iSetADCOpenTBPowerHighSize;
-	// ADC设置打开TB电源高位
+	/** ADC设置打开TB电源高位*/
 	char* m_cpSetADCOpenTBPowerHigh;
-	// ADC设置打开TB开关低位大小
+	/** ADC设置打开TB开关低位大小*/
 	int m_iSetADCOpenSwitchTBLowSize;
-	// ADC设置打开TB开关低位
+	/** ADC设置打开TB开关低位*/
 	char* m_cpSetADCOpenSwitchTBLow;
-	// ADC设置打开TB开关高位大小
+	/** ADC设置打开TB开关高位大小*/
 	int m_iSetADCOpenSwitchTBHighSize;
-	// ADC设置打开TB开关高位
+	/** ADC设置打开TB开关高位*/
 	char* m_cpSetADCOpenSwitchTBHigh;
-	// ADC设置读寄存器大小
+	/** ADC设置读寄存器大小*/
 	int m_iSetADCRegisterReadSize;
-	// ADC设置读寄存器
+	/** ADC设置读寄存器*/
 	char* m_cpSetADCRegisterRead;
-	// ADC设置写寄存器大小
+	/** ADC设置写寄存器大小*/
 	int m_iSetADCRegisterWriteSize;
-	// ADC设置写寄存器
+	/** ADC设置写寄存器*/
 	char* m_cpSetADCRegisterWrite;
-	// ADC设置打开TB开关大小
+	/** ADC设置打开TB开关大小*/
 	int m_iSetADCTBSwitchOpenSize;
-	// ADC设置打开TB开关
+	/** ADC设置打开TB开关*/
 	char* m_cpSetADCTBSwitchOpen;
-	// ADC采样设置大小
+	/** ADC采样设置大小*/
 	int m_iSetADCSampleSize;
-	// ADC采样设置
+	/** ADC采样设置*/
 	char* m_cpSetADCSample;
-	// ADC设置连续采样大小
+	/** ADC设置连续采样大小*/
 	int m_iSetADCReadContinuousSize;
-	// ADC设置连续采样
+	/** ADC设置连续采样*/
 	char* m_cpSetADCReadContinuous;
-	// 采样率设置
+	/** 采样率设置*/
 	int m_iSampleRate;
-	// 高通滤波器是否开启
+	/** 高通滤波器是否开启*/
 	bool m_bHPFOpen;
 }m_oXMLADCSetupDataStruct;
 
 /**
+* @struct XMLParameterSetupData_Struct
 * @brief 从XML文件中得到的服务端参数信息
 */
 typedef struct XMLParameterSetupData_Struct
@@ -421,319 +429,337 @@ typedef struct XMLParameterSetupData_Struct
 }m_oXMLParameterSetupDataStruct;
 
 /**
+* @struct Survery_Struct
 * @brief Survery SETUP结构体
 */
 typedef struct Survery_Struct
 {
-	// 测线号
+	/** 测线号*/
 	unsigned int m_uiLine;
-	// 长度
+	/** 长度*/
 	unsigned short m_usReceiverSectionSize;
-	// 接收区域+检波器类型，如100-103p1
+	/** 接收区域+检波器类型，如100-103p1*/
 	char* m_pcReceiverSection;
 }m_oSurveryStruct;
 
 /**
+* @struct PointCode_Struct
 * @brief Point Code SETUP结构体
 */
 typedef struct PointCode_Struct
 {
-	// 点代码编号
+	/** 点代码编号*/
 	unsigned int m_uiNb;
-	// 长度
+	/** 长度*/
 	unsigned short m_usLabelSize;
-	// 标签，如PointCode1
+	/** 标签，如PointCode1*/
 	char* m_pcLabel;
-	// 长度
+	/** 长度*/
 	unsigned short m_usSensorTypeSize;
-	// 检波器类型，如s1+cs
+	/** 检波器类型，如s1+cs*/
 	char* m_pcSensorType;
 }m_oPointCodeStruct;
 
 /**
+* @struct Sensor_Struct
 * @brief Sensor SETUP结构体
 */
 typedef struct Sensor_Struct
 {
-	// 检波器号
+	/** 检波器号*/
 	unsigned int m_uiNb;
-	// 长度
+	/** 长度*/
 	unsigned short m_usLabelSize;
-	// 标签，如Sensor1
+	/** 标签，如Sensor1*/
 	char* m_pcLabel;
-	// 检波器阻抗的下限
+	/** 检波器阻抗的下限*/
 	float m_fContinuityMin;
-	// 检波器阻抗的上限
+	/** 检波器阻抗的上限*/
 	float m_fContinuityMax;
-	// 最大陆上检波器倾斜度百分比
+	/** 最大陆上检波器倾斜度百分比*/
 	float m_fTilt;
-	// 最大RMS噪声电平
+	/** 最大RMS噪声电平*/
 	float m_fNoise;
-	// 漏电测试测量地震道与地面之间的整个漏电电阻
+	/** 漏电测试测量地震道与地面之间的整个漏电电阻*/
 	float m_fLeakage;
-	// SEGD编码
+	/** SEGD编码*/
 	unsigned int m_uiSEGDCode;
 }m_oSensorStruct;
 
 /**
+* @struct Marker_Struct
 * @brief Marker SETUP结构体
 */
 typedef struct Marker_Struct
 {
-	// 仪器类型，1-交叉站，2-电源站，3-采集站
+	/** 仪器类型，1-交叉站，2-电源站，3-采集站*/
 	unsigned int m_uiBoxType;
-	// 仪器SN
+	/** 仪器SN*/
 	unsigned int m_uiSN;
-	// 测线号
+	/** 测线号*/
 	unsigned int m_uiLineName;
-	// 测点号
+	/** 测点号*/
 	unsigned int m_uiPointNb;
-	// 测道号
+	/** 测道号*/
 	unsigned int m_uiChannelNb;
-	// 标记点增量
+	/** 标记点增量*/
 	unsigned int m_uiMarkerIncr;
-	// 翻转标记，0-不翻转，1-翻转
+	/** 翻转标记，0-不翻转，1-翻转*/
 	unsigned int m_uiReversed;
 }m_oMarkerStruct;
 
 /**
+* @struct Aux_Struct
 * @brief Aux SETUP结构体
 */
 typedef struct Aux_Struct
 {
-	// 索引号，与Instrument测试中的Auxiliary Descr对应
+	/** 索引号，与Instrument测试中的Auxiliary Descr对应*/
 	unsigned int m_uiNb;
-	// 长度
+	/** 长度*/
 	unsigned short m_usLabelSize;
-	// 标签，如pilot
+	/** 标签，如pilot*/
 	char* m_pcLabel;
-	// 仪器类型，1-交叉站，2-电源站，3-采集站
+	/** 仪器类型，1-交叉站，2-电源站，3-采集站*/
 	unsigned int m_uiBoxType;
-	// 仪器SN
+	/** 仪器SN*/
 	unsigned int m_uiSN;
-	// 测道号
+	/** 测道号*/
 	unsigned int m_uiChannelNb;
-	// 增益，1600mv或400mv
+	/** 增益，1600mv或400mv*/
 	unsigned int m_uiGain;
-	// DPG编号
+	/** DPG编号*/
 	unsigned int m_uiDpgNb;
-	// 长度
+	/** 长度*/
 	unsigned short m_usCommentsSize;
-	// 注释，如Comments1
+	/** 注释，如Comments1*/
 	char* m_pcComments;
 }m_oAuxStruct;
 
 /**
+* @struct Detour_Struct
 * @brief Detour SETUP结构体
 */
 typedef struct Detour_Struct
 {
-	// 低端仪器类型，1-交叉站，2-电源站，3-采集站
+	/** 低端仪器类型，1-交叉站，2-电源站，3-采集站*/
 	unsigned int m_uiLowBoxType;
-	// 低端仪器SN
+	/** 低端仪器SN*/
 	unsigned int m_uiLowSN;
-	// 低端测道号
+	/** 低端测道号*/
 	unsigned int m_uiLowChanNb;
-	// 高端仪器类型，1-交叉站，2-电源站，3-采集站
+	/** 高端仪器类型，1-交叉站，2-电源站，3-采集站*/
 	unsigned int m_uiHighBoxType;
-	// 高端仪器SN
+	/** 高端仪器SN*/
 	unsigned int m_uiHighSN;
-	// 高端测道号
+	/** 高端测道号*/
 	unsigned int m_uiHighChanNb;
-	// 停止标记，0-继续标记，1-停止标记
+	/** 停止标记，0-继续标记，1-停止标记*/
 	unsigned int m_uiStopMarking;
 }m_oDetourStruct;
 
 /**
+* @struct Mute_Struct
 * @brief Mute SETUP结构体
 */
 typedef struct Mute_Struct
 {
-	// 测线号
+	/** 测线号*/
 	unsigned int m_uiLineName;
-	// 测点号
+	/** 测点号*/
 	unsigned int m_uiPointNb;
 }m_oMuteStruct;
 
 /**
+* @struct BlastMachine_Struct
 * @brief BlastMachine SETUP结构体
 */
 typedef struct BlastMachine_Struct
 {
-	// 索引号
+	/** 索引号*/
 	unsigned int m_uiNb;
-	// 长度
+	/** 长度*/
 	unsigned short m_usLabelSize;
-	// 标签，如pilot
+	/** 标签，如pilot*/
 	char* m_pcLabel;
-	// 仪器类型，1-交叉站，2-电源站，3-采集站
+	/** 仪器类型，1-交叉站，2-电源站，3-采集站*/
 	unsigned int m_uiBoxType;
-	// 仪器SN
+	/** 仪器SN*/
 	unsigned int m_uiSN;
-	// 测道号
+	/** 测道号*/
 	unsigned int m_uiChannelNb;
-	// 增益，1600mv或400mv
+	/** 增益，1600mv或400mv*/
 	unsigned int m_uiGain;
-	// DPG编号
+	/** DPG编号*/
 	unsigned int m_uiDpgNb;
-	// 长度
+	/** 长度*/
 	unsigned short m_usCommentsSize;
-	// 注释，如Comments1
+	/** 注释，如Comments1*/
 	char* m_pcComments;
 }m_oBlastMachineStruct;
 
 /**
+* @struct Absolute_Struct
 * @brief Absolute Spread SETUP结构体
 */
 typedef struct Absolute_Struct
 {
-	// 索引号
+	/** 索引号*/
 	unsigned int m_uiNb;
-	// 长度
+	/** 长度*/
 	unsigned short m_usLabelSize;
-	// 标签，如Absolute1
+	/** 标签，如Absolute1*/
 	char* m_pcLabel;
-	// 长度
+	/** 长度*/
 	unsigned short m_usAbsoluteSpreadSize;
-	// 绝对排列，如1:1-127（测线名：起始测点号-终止测点号）
+	/** 绝对排列，如1:1-127（测线名：起始测点号-终止测点号）*/
 	char* m_pcAbsoluteSpread;
 }m_oAbsoluteStruct;
 
 /**
+* @struct Generic_Struct
 * @brief Generic Spread SETUP结构体
 */
 typedef struct Generic_Struct
 {
-	// 索引号
+	/** 索引号*/
 	unsigned int m_uiNb;
-	// 长度
+	/** 长度*/
 	unsigned short m_usLabelSize;
-	// 标签，如Generic1
+	/** 标签，如Generic1*/
 	char* m_pcLabel;
-	// 长度
+	/** 长度*/
 	unsigned short m_usLineSize;
-	// 普通测线类型，如50（g1+g2）（50对地震道，第一个地震道增益为0Db,第二个为12dB）
+	/** 普通测线类型，如50（g1+g2）（50对地震道，第一个地震道增益为0Db,第二个为12dB）*/
 	char* m_pcLine;
-	// 长度
+	/** 长度*/
 	unsigned short m_usSpreadSize;
-	// 普通排列，如10(l1+ls)（10对测线，第一条测线为Line中定义的l1类型，第二条被跳过）
+	/** 普通排列，如10(l1+ls)（10对测线，第一条测线为Line中定义的l1类型，第二条被跳过）*/
 	char* m_pcSpread;
 }m_oGenericStruct;
 
 /**
+* @struct Look_Struct
 * @brief Look SETUP结构体
 */
 typedef struct Look_Struct
 {
-	// 自动查看是否连接了新设备，1-自动查看，2-手动查看
+	/** 自动查看是否连接了新设备，1-自动查看，2-手动查看*/
 	unsigned int m_uiAutoLook;
-	// 检波器电阻测试，1-测试，2-不测试
+	/** 检波器电阻测试，1-测试，2-不测试*/
 	unsigned int m_uiResistance;
-	// 检波器倾斜度测试，1-测试，2-不测试
+	/** 检波器倾斜度测试，1-测试，2-不测试*/
 	unsigned int m_uiTilt;
-	// 检波器漏电测试，1-测试，2-不测试
+	/** 检波器漏电测试，1-测试，2-不测试*/
 	unsigned int m_uiLeakage;
 }m_oLookStruct;
 
 /**
+* @struct LAULeakage_Struct
 * @brief LAULeakage SETUP结构体
 */
 typedef struct LAULeakage_Struct
 {
-	// 限制值
+	/** 限制值*/
 	unsigned int m_uiLimit;
 }m_oLAULeakageStruct;
 
 /**
+* @struct FormLine_Struct
 * @brief Form Line SETUP结构体
 */
 typedef struct FormLine_Struct
 {
-	// 索引号
+	/** 索引号*/
 	unsigned int m_uiNb;
-	// 仪器类型，1-交叉站，2-电源站，3-采集站
+	/** 仪器类型，1-交叉站，2-电源站，3-采集站*/
 	unsigned int m_uiBoxType;
-	// 仪器SN
+	/** 仪器SN*/
 	unsigned int m_uiSN;
 }m_oFormLineStruct;
 
 /**
+* @struct Instrument_SensorTestBase_Struct
 * @brief Instrument Sensor Test base SETUP结构体
 */
 typedef struct Instrument_SensorTestBase_Struct
 {
 	unsigned int m_uiTestAim;
-	unsigned int m_uiNb;	//索引号（只读）
-	unsigned short m_usDescrSize; //m_pcDescr 大小
-	char* m_pcDescr; //测试类型描述，如INSTRUMENT NOISE（只读）
-	unsigned int m_uiTestType;//测试类型代码（只读）
-	unsigned int m_uiADC;//0-Close，1-Inner，2-Out	
-	unsigned int m_uiGain;//增益，1600mv或400mv
-	unsigned int m_uiDAC;//0-Close（关闭），1-Inner（连接到内部测试网络），2-Out（连接到检波器的电路输入端）	
-	unsigned int m_uiFilter;//滤波器类型，1-0.8LIN，2-0.8MIN
-	unsigned int m_uiSamplingRate; //（us）采样率
-	unsigned int m_uiSamplingLength;//（ms）采样长度
+	unsigned int m_uiNb;	/**索引号（只读）*/
+	unsigned short m_usDescrSize; /**m_pcDescr 大小*/
+	char* m_pcDescr; /**测试类型描述，如INSTRUMENT NOISE（只读）*/
+	unsigned int m_uiTestType;/**测试类型代码（只读）*/
+	unsigned int m_uiADC;/**0-Close，1-Inner，2-Out	*/
+	unsigned int m_uiGain;/**增益，1600mv或400mv*/
+	unsigned int m_uiDAC;/**0-Close（关闭），1-Inner（连接到内部测试网络），2-Out（连接到检波器的电路输入端）*/	
+	unsigned int m_uiFilter;/**滤波器类型，1-0.8LIN，2-0.8MIN*/
+	unsigned int m_uiSamplingRate; /**（us）采样率*/
+	unsigned int m_uiSamplingLength;/**（ms）采样长度*/
 }m_oInstrumentTestBaseStruct, m_oSensorTestBaseStruct;
 
 /**
+* @struct Instrument_SensorTestLimit_Struct
 * @brief Instrument Sensor Test Limit SETUP结构体
 */
 typedef struct Instrument_SensorTestLimit_Struct
 {
-	unsigned int m_uiNb; //索引号（只读）
-	unsigned short m_usDescrSize; //m_pcDescr 大小
-	char* m_pcDescr; //测试类型描述，如INSTRUMENT NOISE（只读）
-	unsigned short m_usUnitSize; //	单位 size
-	char* m_pcUnit;//	单位（只读），如%
+	unsigned int m_uiNb; /**索引号（只读）*/
+	unsigned short m_usDescrSize; /**m_pcDescr 大小*/
+	char* m_pcDescr; /**测试类型描述，如INSTRUMENT NOISE（只读）*/
+	unsigned short m_usUnitSize; /**	单位 size*/
+	char* m_pcUnit;/**	单位（只读），如%*/
 	unsigned int m_uiTestAim;
-	unsigned int m_uiTestType;//测试类型代码（只读）
-	float m_fLimit;//极限值
+	unsigned int m_uiTestType;/**测试类型代码（只读）*/
+	float m_fLimit;/**极限值*/
 }m_oInstrumentTestLimitStruct, m_oSensorTestLimitStruct;
 
 /**
+* @struct InstrumentTest_Struct
 * @brief Instrument Test SETUP结构体
 */
 typedef struct InstrumentTest_Struct
 {
-	unsigned int m_uiNb; //索引号（只读）
-	unsigned int m_uiTestType;//测试类型代码（只读）
-	unsigned int m_uiGain;//增益，1600mv或400mv
-	unsigned m_uiRecordLength; //记录时长
-	unsigned m_uiRecorded; //是否记录测试数据，0-不记录，1-记录
-	unsigned short m_usAuxiliaryDescrSize; //辅助道描述 大小
-	char* m_pcAuxiliaryDescr; //辅助道描述，如a1-a3
-	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
-	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
+	unsigned int m_uiNb; /**索引号（只读）*/
+	unsigned int m_uiTestType;/**测试类型代码（只读）*/
+	unsigned int m_uiGain;/**增益，1600mv或400mv*/
+	unsigned m_uiRecordLength; /**记录时长*/
+	unsigned m_uiRecorded; /**是否记录测试数据，0-不记录，1-记录*/
+	unsigned short m_usAuxiliaryDescrSize; /**辅助道描述 大小*/
+	char* m_pcAuxiliaryDescr; /**辅助道描述，如a1-a3*/
+	unsigned short m_usAbsoluteSpreadSize; /**绝对排列 大小*/
+	char* m_pcAbsoluteSpread; /**绝对排列，如1:10-20*/
 }m_oInstrumentTestStruct;
 
 /**
+* @struct SensorTest_Struct
 * @brief Sensor Test SETUP结构体
 */
 typedef struct SensorTest_Struct
 {
-	unsigned int m_uiNb; //索引号（只读）
-	unsigned int m_uiTestType;//测试类型代码（只读）
-	unsigned m_uiRecorded; //是否记录测试数据，0-不记录，1-记录
-	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
-	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
+	unsigned int m_uiNb; /**索引号（只读）*/
+	unsigned int m_uiTestType;/**测试类型代码（只读）*/
+	unsigned m_uiRecorded; /**是否记录测试数据，0-不记录，1-记录*/
+	unsigned short m_usAbsoluteSpreadSize; /**绝对排列 大小*/
+	char* m_pcAbsoluteSpread; /**绝对排列，如1:10-20*/
 }m_oSensorTestStruct;
 
 /**
+* @struct MultipleTestKey_Struct
 * @brief Multiple Test SETUP结构体
 */
 typedef struct MultipleTestKey_Struct
 {
-	unsigned int m_uiNb; //索引号（只读）
+	unsigned int m_uiNb; /**索引号（只读）*/
 	unsigned short m_usTestNameSize;
-	char* m_pcTestName;//测试项目名称，如Test1
-	unsigned short m_usAuxiliaryDescrSize; //辅助道描述 大小
-	char* m_pcAuxiliaryDescr; //辅助道描述，如a1-a3
-	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
-	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
-	unsigned int m_uiDelayBetweenTest;//(ms)每次测试之间的间隔
-	unsigned int m_uiRecordResults;//	是否记录测试数据，0-不记录，1-记录
-	unsigned int m_uiRecordLength; //(ms)测试记录时长
-	unsigned int m_uiTestFileNb;//文件编号
+	char* m_pcTestName;/**测试项目名称，如Test1*/
+	unsigned short m_usAuxiliaryDescrSize; /**辅助道描述 大小*/
+	char* m_pcAuxiliaryDescr; /**辅助道描述，如a1-a3*/
+	unsigned short m_usAbsoluteSpreadSize; /**绝对排列 大小*/
+	char* m_pcAbsoluteSpread; /**绝对排列，如1:10-20*/
+	unsigned int m_uiDelayBetweenTest;/**(ms)每次测试之间的间隔*/
+	unsigned int m_uiRecordResults;/**	是否记录测试数据，0-不记录，1-记录*/
+	unsigned int m_uiRecordLength; /**(ms)测试记录时长*/
+	unsigned int m_uiTestFileNb;/**文件编号*/
 	bool operator < (const MultipleTestKey_Struct& rhs) const
 	{
 		return (m_uiNb < rhs.m_uiNb);
@@ -741,415 +767,448 @@ typedef struct MultipleTestKey_Struct
 }m_oMultipleTestKeyStruct;
 
 /**
+* @struct MultipleTestTask_Struct
 * @brief Multiple Test Task结构体
 */
 typedef struct MultipleTestTask_Struct
 {
-	unsigned int m_uiLineNb;//测线号
-	unsigned int m_uiTestType;//测试类型代码
-	unsigned int m_uiGain;//增益，1600mv或400mv
-	unsigned int m_uiLoopLineNb;//需要重复进行的测线索引号
-	unsigned int m_uiNbLoops;//输入循环次数
+	unsigned int m_uiLineNb;/**测线号*/
+	unsigned int m_uiTestType;/**测试类型代码*/
+	unsigned int m_uiGain;/**增益，1600mv或400mv*/
+	unsigned int m_uiLoopLineNb;/**需要重复进行的测线索引号*/
+	unsigned int m_uiNbLoops;/**输入循环次数*/
 }m_oMultipleTestTaskStruct;
 
 /**
+* @struct SeisMonitorTest_Struct
 * @brief SeisMonitor Test结构体
 */
 typedef struct SeisMonitorTest_Struct
 {
-	unsigned short m_usAbsoluteSpreadSize; //绝对排列 大小
-	char* m_pcAbsoluteSpread; //绝对排列，如1:10-20
+	unsigned short m_usAbsoluteSpreadSize; /**绝对排列 大小*/
+	char* m_pcAbsoluteSpread; /**绝对排列，如1:10-20*/
 }m_oSeisMonitorStruct;
 
 /**
+* @struct LineSetupData_Struct
 * @brief 测线客户端信息结构体
 */
 typedef struct LineSetupData_Struct
 {
-	// 从Line的配置文件中解析得到的信息队列
-	// Survery
+	/** Survery*/
 	list<m_oSurveryStruct> m_olsSurveryStruct;
-	// Point Code
+	/** Point Code*/
 	list<m_oPointCodeStruct> m_olsPointCodeStruct;
-	// Sensor
+	/** Sensor*/
 	list<m_oSensorStruct> m_olsSensorStruct;
-	// LAYOUT SETUP
-	// Marker
+	/** LAYOUT SETUP*/
+	/** Marker*/
 	list<m_oMarkerStruct> m_olsMarkerStruct;
-	// Aux
+	/** Aux*/
 	list<m_oAuxStruct> m_olsAuxStruct;
-	// Detour
+	/** Detour*/
 	list<m_oDetourStruct> m_olsDetourStruct;
-	// Mute
+	/** Mute*/
 	list<m_oMuteStruct> m_olsMuteStruct;
-	// BlastMachine
+	/** BlastMachine*/
 	list<m_oBlastMachineStruct> m_olsBlastMachineStruct;
-	// Spread Type Setup
-	// 绝对排列和炮点的索引
+	/** 绝对排列和炮点的索引*/
 	map<unsigned int, list<m_oAbsoluteStruct>> m_oAbsoluteStructMap;
-	// Generic
+	/** Generic*/
 	list<m_oGenericStruct> m_olsGenericStruct;
-	// Look
+	/** Look*/
 	m_oLookStruct m_oLook;
-	// LAULeakage
+	/** LAULeakage*/
 	m_oLAULeakageStruct m_oLAULeakage;
-	// Form Line
+	/** Form Line*/
 	list<m_oFormLineStruct> m_olsFormLineStruct;
-	// Instrument Test base
+	/** Instrument Test base*/
 	list<m_oInstrumentTestBaseStruct> m_olsInstrumentTestBaseStruct;
-	// Sensor Test base
+	/** Sensor Test base*/
 	list<m_oSensorTestBaseStruct> m_olsSensorTestBaseStruct;
-	// Instrument Limit
+	/** Instrument Limit*/
 	list<m_oInstrumentTestLimitStruct> m_olsInstrumentTestLimitStruct;
-	// Sensor Limit
+	/** Sensor Limit*/
 	list<m_oSensorTestLimitStruct> m_olsSensorTestLimitStruct;
-	// Instrument Test
+	/** Instrument Test*/
 	list<m_oInstrumentTestStruct> m_olsInstrumentTestStruct;
-	// Sensor Test
+	/** Sensor Test*/
 	list<m_oSensorTestStruct> m_olsSensorTestStruct;
-	// Multiple Test
+	/** Multiple Test*/
 	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>> m_oMultpleTestStructMap;
-	// SeisMonitor
+	/** SeisMonitor*/
 	m_oSeisMonitorStruct m_oSeisMonitor;
 }m_oLineSetupDataStruct;
 
 /**
-* @brief 从XML文件中解析得到的信息
+* @struct InstrumentCommInfo_Struct
+* @brief 从XML文件中解析得到的信息结构体
 */
 typedef struct InstrumentCommInfo_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecCommInfo;
 	/** XMLDOM文件对象*/
 	CXMLDOMDocument m_oXMLDOMDocument;
-	// 从XML文件中解析得到IP地址设置数据
+	/** 从XML文件中解析得到IP地址设置数据*/
 	m_oXMLIPSetupDataStruct m_oXMLIPSetupData;
-	// 从XML文件中解析得到端口设置数据
+	/** 从XML文件中解析得到端口设置数据*/
 	m_oXMLPortSetupDataStruct m_oXMLPortSetupData;
-	// 从XML文件中解析得到ADC参数设置信息
+	/** 从XML文件中解析得到ADC参数设置信息*/
 	m_oXMLADCSetupDataStruct m_oXMLADCSetupData;
-	// 从XML文件中解析得到的服务端参数信息
+	/** 从XML文件中解析得到的服务端参数信息*/
 	m_oXMLParameterSetupDataStruct m_oXMLParameterSetupData;
-	// 测线客户端信息
+	/** 测线客户端信息*/
 	m_oLineSetupDataStruct m_oLineSetupData;
-	// Dll的XML配置文件路径
+	/** Dll的XML配置文件路径*/
 	string m_strDllXMLFilePath;
-	// 测线XML配置文件路径
+	/** 测线XML配置文件路径*/
 	string m_strLineXMLFilePath;
-	// 施工XML配置文件路径
+	/** 施工XML配置文件路径*/
 	string m_strOptXMLFilePath;
-	// 输出日志指针
+	/** 输出日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oInstrumentCommInfoStruct;
 
 /**
-* @brief 与设备通讯命令字内容
+* @struct InstrumentCommand_Struct
+* @brief 与设备通讯命令字内容结构体
 */
 typedef struct InstrumentCommand_Struct
 {
-	// LCI的IP地址
+	/** LCI的IP地址*/
 	unsigned int m_uiAimIP;
-	// LCI接收的端口号
+	/** LCI接收的端口号*/
 	unsigned short m_usAimPort;
-	// 源地址
+	/** 源地址*/
 	unsigned int m_uiSrcIP;
-	// 目的地址
+	/** 目的地址*/
 	unsigned int m_uiDstIP;
-	// 应答端口
+	/** 应答端口*/
 	unsigned short m_usReturnPort;
-	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
+	/** 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发*/
 	unsigned short m_usCommand;
-	// SN，低8位为仪器类型，0x01为交叉站，0x02为电源站，0x03为采集站
+	/** SN，低8位为仪器类型，0x01为交叉站，0x02为电源站，0x03为采集站*/
 	unsigned int m_uiSN;
-	// 首包时刻
+	/** 首包时刻*/
 	unsigned int m_uiTimeHeadFrame;
-	// 仪器IP地址
+	/** 仪器IP地址*/
 	unsigned int m_uiInstrumentIP;
-	// 本地时间
+	/** 本地时间*/
 	unsigned int m_uiSysTime;
-	// 本地时间修正高位
+	/** 本地时间修正高位*/
 	unsigned int m_uiLocalTimeFixedHigh;
-	// 本地时间修正低位
+	/** 本地时间修正低位*/
 	unsigned int m_uiLocalTimeFixedLow;
-	// 自动数据返回地址
+	/** 自动数据返回地址*/
 	unsigned int m_uiADCDataReturnAddr;
-	// 自动数据返回端口
+	/** 自动数据返回端口*/
 	unsigned short m_usADCDataReturnPort;
-	// 自动数据返回命令，ad_cmd(7)=1，端口递增；=0，端口不变
+	/** 自动数据返回命令，ad_cmd(7)=1，端口递增；=0，端口不变*/
 	unsigned short m_usADCDataReturnCmd;
-	// 当返回命令高位为1时，返回端口自动加1，到高限时返回低限端口
-	// 端口递增下限
+	/** 当返回命令高位为1时，返回端口自动加1，到高限时返回低限端口*/
+	/** 端口递增下限*/
 	unsigned short m_usADCDataReturnPortLimitLow;
-	// 端口递增上限
+	/** 端口递增上限*/
 	unsigned short m_usADCDataReturnPortLimitHigh;
-	// 设置网络等待端口，指设置接收上位机广播命令的端口
+	/** 设置网络等待端口，指设置接收上位机广播命令的端口*/
 	unsigned int m_uiBroadCastPortSet;
-	// 网络数据错误计数
+	/** 网络数据错误计数*/
 	char m_cFDUErrorCodeDataCount;
-	// 命令错误计数
+	/** 命令错误计数*/
 	char m_cFDUErrorCodeCmdCount;
-	// 时间报文状态
+	/** 时间报文状态*/
 	char m_cTimeStatus;
-	// 控制状态
+	/** 控制状态*/
 	char m_cCtrlStatus;
-	// TB时刻高位
+	/** TB时刻高位*/
 	unsigned int m_uiTBHigh;
-	// TB时刻低位
+	/** TB时刻低位*/
 	unsigned short m_usTBLow;
-	// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
+	/** TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭*/
 	unsigned short m_usTBCtrl;
-	// work_ctrl控制交叉站接收和发送命令的方向
-	// 由高到低位每位分别控制发送口交叉线A、B，大线A、B，接收端交叉线A、B，大线A、B
-	// =0为开，=1为关
+	/** work_ctrl控制交叉站接收和发送命令的方向*/
+	/** 由高到低位每位分别控制发送口交叉线A、B，大线A、B，接收端交叉线A、B，大线A、B*/
+	/** =0为开，=1为关*/
 	char m_cLAUXRoutOpenQuery;
-	// 路由开关
-	// 由高位到低位分别控制开交叉线A、开交叉线B、开大线A、开大线B
-	// =0为开，=1为关
+	/** 路由开关*/
+	/** 由高位到低位分别控制开交叉线A、开交叉线B、开大线A、开大线B*/
+	/** =0为开，=1为关*/
 	char m_cLAUXRoutOpenSet;
-	// 硬件设备软件版本号
+	/** 硬件设备软件版本号*/
 	unsigned int m_uiVersion;
-	// 尾包接收时刻，低14位有效
+	/** 尾包接收时刻，低14位有效*/
 	unsigned short m_usTailRecTime;
-	// 尾包发送时刻//交叉站尾包发送时刻，低14位有效
+	/** 尾包发送时刻/**交叉站尾包发送时刻，低14位有效*/
 	unsigned short m_usTailSndTime;
-	// 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令
+	/** 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令*/
 	unsigned int m_uiBroadCastPortSeted;
-	// 网络时刻
+	/** 网络时刻*/
 	unsigned int m_uiNetTime;
-	// 交叉站大线A尾包接收时刻
+	/** 交叉站大线A尾包接收时刻*/
 	unsigned short m_usLAUXTailRecTimeLineA;
-	// 交叉站大线B尾包接收时刻
+	/** 交叉站大线B尾包接收时刻*/
 	unsigned short m_usLAUXTailRecTimeLineB;
-	// 交叉站交叉线A尾包接收时刻
+	/** 交叉站交叉线A尾包接收时刻*/
 	unsigned short m_usLAUXTailRecTimeLAUXLineA;
-	// 交叉站交叉线B尾包接收时刻
+	/** 交叉站交叉线B尾包接收时刻*/
 	unsigned short m_usLAUXTailRecTimeLAUXLineB;
-	// 交叉站大线A数据故障
+	/** 交叉站大线A数据故障*/
 	char m_cLAUXErrorCodeDataLineACount;
-	// 交叉站大线B数据故障
+	/** 交叉站大线B数据故障*/
 	char m_cLAUXErrorCodeDataLineBCount;
-	// 交叉站交叉线A数据故障
+	/** 交叉站交叉线A数据故障*/
 	char m_cLAUXErrorCodeDataLAUXLineACount;
-	// 交叉站交叉线B数据故障
+	/** 交叉站交叉线B数据故障*/
 	char m_cLAUXErrorCodeDataLAUXLineBCount;
-	// 交叉站命令口故障
+	/** 交叉站命令口故障*/
 	char m_cLAUXErrorCodeCmdCount;
-	// 交叉站上方路由IP
+	/** 交叉站上方路由IP*/
 	unsigned int m_uiRoutIPTop;
-	// 交叉站下方路由IP
+	/** 交叉站下方路由IP*/
 	unsigned int m_uiRoutIPDown;
-	// 交叉站左方路由IP
+	/** 交叉站左方路由IP*/
 	unsigned int m_uiRoutIPLeft;
-	// 交叉站右方路由IP
+	/** 交叉站右方路由IP*/
 	unsigned int m_uiRoutIPRight;
-	// 路由IP地址
+	/** 路由IP地址*/
 	unsigned int m_uiRoutIP;
-	// 0x18命令数组
+	/** 0x18命令数组*/
 	char* m_cpADCSet;
-	// 0x18命令数据个数
+	/** 0x18命令数据个数*/
 	int m_iADCSetNum;
-	// ADC数据指针偏移量
+	/** ADC数据指针偏移量*/
 	unsigned short m_usADCDataPoint;
-	// ADC数据采集时仪器本地时间
+	/** ADC数据采集时仪器本地时间*/
 	unsigned int m_uiADCSampleSysTime;
-	// ADC采样数据缓冲区指针
+	/** ADC采样数据缓冲区指针*/
 	int* m_pADCData;
 }m_oInstrumentCommandStruct;
 
-// 心跳
+/**
+* @struct HeartBeatFrame_Struct
+* @brief 心跳帧结构体
+*/
 typedef struct HeartBeatFrame_Struct
 {
-	// 心跳帧资源同步对象
+	/** 心跳帧资源同步对象*/
 	CRITICAL_SECTION m_oSecHeartBeat;
-	// 发送帧缓冲区
+	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
-	// 心跳命令字集合
+	/** 心跳命令字集合*/
 	char* m_cpCommandWord;
-	// 心跳命令字个数
+	/** 心跳命令字个数*/
 	unsigned short m_usCommandWordNum;
-	// 心跳帧命令
+	/** 心跳帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStruct;
-	// 心跳Socket套接字
+	/** 心跳Socket套接字*/
 	SOCKET m_oHeartBeatSocket;
 }m_oHeartBeatFrameStruct;
 
-// 首包
+/**
+* @struct HeadFrame_Struct
+* @brief 首包帧结构体
+*/
 typedef struct HeadFrame_Struct
 {
-	// 首包帧资源同步对象
+	/** 首包帧资源同步对象*/
 	CRITICAL_SECTION m_oSecHeadFrame;
-	// 网络端口接收缓冲区大小
+	/** 网络端口接收缓冲区大小*/
 	unsigned int m_uiRcvBufferSize;
-	// 接收帧缓冲区
+	/** 接收帧缓冲区*/
 	char* m_cpRcvFrameData;
-	// 首包帧命令
+	/** 首包帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStruct;
-	// 首包Socket套接字
+	/** 首包Socket套接字*/
 	SOCKET m_oHeadFrameSocket;
 }m_oHeadFrameStruct;
 
-// IP地址设置
+/**
+* @struct IPSetFrame_Struct
+* @brief IP地址设置帧结构体
+*/
 typedef struct IPSetFrame_Struct
 {
-	// IP地址设置帧资源同步对象
+	/** IP地址设置帧资源同步对象*/
 	CRITICAL_SECTION m_oSecIPSetFrame;
-	// 网络端口发送缓冲区大小
+	/** 网络端口发送缓冲区大小*/
 	unsigned int m_uiSndBufferSize;
-	// 发送帧缓冲区
+	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
-	// IP地址设置命令字集合
+	/** IP地址设置命令字集合*/
 	char* m_cpCommandWord;
-	// IP地址设置命令字个数
+	/** IP地址设置命令字个数*/
 	unsigned short m_usCommandWordNum;
-	// IP地址设置帧命令
+	/** IP地址设置帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
-	// 网络端口接收缓冲区大小
+	/** 网络端口接收缓冲区大小*/
 	unsigned int m_uiRcvBufferSize;
-	// 接收帧缓冲区
+	/** 接收帧缓冲区*/
 	char* m_cpRcvFrameData;
-	// IP地址设置应答帧命令
+	/** IP地址设置应答帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructReturn;
-	// IP地址设置Socket套接字
+	/** IP地址设置Socket套接字*/
 	SOCKET m_oIPSetFrameSocket;
 }m_oIPSetFrameStruct;
 
-// 尾包
+/**
+* @struct TailFrame_Struct
+* @brief 尾包帧结构体
+*/
 typedef struct TailFrame_Struct
 {
-	// 尾包帧资源同步对象
+	/** 尾包帧资源同步对象*/
 	CRITICAL_SECTION m_oSecTailFrame;
-	// 网络端口接收缓冲区大小
+	/** 网络端口接收缓冲区大小*/
 	unsigned int m_uiRcvBufferSize;
-	// 接收帧缓冲区
+	/** 接收帧缓冲区*/
 	char* m_cpRcvFrameData;
-	// 尾包帧命令
+	/** 尾包帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStruct;
-	// 尾包Socket套接字
+	/** 尾包Socket套接字*/
 	SOCKET m_oTailFrameSocket;
 }m_oTailFrameStruct;
 
-// 尾包时刻
+/**
+* @struct TailTimeFrame_Struct
+* @brief 尾包时刻帧结构体
+*/
 typedef struct TailTimeFrame_Struct
 {
-	// 尾包时刻帧资源同步对象
+	/** 尾包时刻帧资源同步对象*/
 	CRITICAL_SECTION m_oSecTailTimeFrame;
-	// 网络端口接收缓冲区大小
+	/** 网络端口接收缓冲区大小*/
 	unsigned int m_uiRcvBufferSize;
-	// 接收帧缓冲区
+	/** 接收帧缓冲区*/
 	char* m_cpRcvFrameData;
-	// 尾包时刻应答帧命令
+	/** 尾包时刻应答帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructReturn;
-	// 网络端口发送缓冲区大小
+	/** 网络端口发送缓冲区大小*/
 	unsigned int m_uiSndBufferSize;
-	// 发送帧缓冲区
+	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
-	// 尾包时刻查询命令字集合
+	/** 尾包时刻查询命令字集合*/
 	char* m_cpCommandWord;
-	// 尾包时刻查询命令字个数
+	/** 尾包时刻查询命令字个数*/
 	unsigned short m_usCommandWordNum;
-	// 尾包时刻发送帧命令
+	/** 尾包时刻发送帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
-	// 尾包时刻Socket套接字
+	/** 尾包时刻Socket套接字*/
 	SOCKET m_oTailTimeFrameSocket;
 }m_oTailTimeFrameStruct;
 
-// 时统设置
+/**
+* @struct TimeDelayFrame_Struct
+* @brief 时统设置帧结构体
+*/
 typedef struct TimeDelayFrame_Struct
 {
-	// 时统设置帧资源同步对象
+	/** 时统设置帧资源同步对象*/
 	CRITICAL_SECTION m_oSecTimeDelayFrame;
-	// 网络端口接收缓冲区大小
+	/** 网络端口接收缓冲区大小*/
 	unsigned int m_uiRcvBufferSize;
-	// 接收帧缓冲区
+	/** 接收帧缓冲区*/
 	char* m_cpRcvFrameData;
-	// 时统设置应答帧命令
+	/** 时统设置应答帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructReturn;
-	// 网络端口发送缓冲区大小
+	/** 网络端口发送缓冲区大小*/
 	unsigned int m_uiSndBufferSize;
-	// 发送帧缓冲区
+	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
-	// 时统设置命令字集合
+	/** 时统设置命令字集合*/
 	char* m_cpCommandWord;
-	// 时统设置命令字个数
+	/** 时统设置命令字个数*/
 	unsigned short m_usCommandWordNum;
-	// 时统设置发送帧命令
+	/** 时统设置发送帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
-	// 时统设置Socket套接字
+	/** 时统设置Socket套接字*/
 	SOCKET m_oTimeDelayFrameSocket;
 }m_oTimeDelayFrameStruct;
 
-// ADC参数设置
+/**
+* @struct ADCSetFrame_Struct
+* @brief ADC参数设置帧结构体
+*/
 typedef struct ADCSetFrame_Struct
 {
-	// ADC参数设置帧资源同步对象
+	/** ADC参数设置帧资源同步对象*/
 	CRITICAL_SECTION m_oSecADCSetFrame;
-	// 网络端口接收缓冲区大小
+	/** 网络端口接收缓冲区大小*/
 	unsigned int m_uiRcvBufferSize;
-	// 接收帧缓冲区
+	/** 接收帧缓冲区*/
 	char* m_cpRcvFrameData;
-	// ADC参数设置应答帧命令
+	/** ADC参数设置应答帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructReturn;
-	// 网络端口发送缓冲区大小
+	/** 网络端口发送缓冲区大小*/
 	unsigned int m_uiSndBufferSize;
-	// 发送帧缓冲区
+	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
-	// ADC参数设置命令字集合
+	/** ADC参数设置命令字集合*/
 	char* m_cpCommandWord;
-	// ADC参数设置命令字个数
+	/** ADC参数设置命令字个数*/
 	unsigned short m_usCommandWordNum;
-	// ADC参数设置发送帧命令
+	/** ADC参数设置发送帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
-	// ADC参数设置Socket套接字
+	/** ADC参数设置Socket套接字*/
 	SOCKET m_oADCSetFrameSocket;
 }m_oADCSetFrameStruct;
 
-// 误码查询
+/**
+* @struct ErrorCodeFrame_Struct
+* @brief 误码查询帧结构体
+*/
 typedef struct ErrorCodeFrame_Struct
 {
-	// ADC参数设置帧资源同步对象
+	/** ADC参数设置帧资源同步对象*/
 	CRITICAL_SECTION m_oSecErrorCodeFrame;
-	// 网络端口接收缓冲区大小
+	/** 网络端口接收缓冲区大小*/
 	unsigned int m_uiRcvBufferSize;
-	// 接收帧缓冲区
+	/** 接收帧缓冲区*/
 	char* m_cpRcvFrameData;
-	// 应答帧命令
+	/** 应答帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructReturn;
-	// 网络端口发送缓冲区大小
+	/** 网络端口发送缓冲区大小*/
 	unsigned int m_uiSndBufferSize;
-	// 发送帧缓冲区
+	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
-	// 误码查询命令字集合
+	/** 误码查询命令字集合*/
 	char* m_cpCommandWord;
-	// 误码查询命令字个数
+	/** 误码查询命令字个数*/
 	unsigned short m_usCommandWordNum;
-	// 发送帧命令
+	/** 发送帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
-	// 误码查询Socket套接字
+	/** 误码查询Socket套接字*/
 	SOCKET m_oErrorCodeFrameSocket;
 }m_oErrorCodeFrameStruct;
 
-// ADC数据接收
+/**
+* @struct ADCDataFrame_Struct
+* @brief ADC数据接收帧结构体
+*/
 typedef struct ADCDataFrame_Struct
 {
-	// ADC数据接收帧资源同步对象
+	/** ADC数据接收帧资源同步对象*/
 	CRITICAL_SECTION m_oSecADCDataFrame;
-	// 网络端口接收缓冲区大小
+	/** 网络端口接收缓冲区大小*/
 	unsigned int m_uiRcvBufferSize;
-	// 接收帧缓冲区
+	/** 接收帧缓冲区*/
 	char* m_cpRcvFrameData;
-	// 应答帧命令
+	/** 应答帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructReturn;
-	// 网络端口发送缓冲区大小
+	/** 网络端口发送缓冲区大小*/
 	unsigned int m_uiSndBufferSize;
-	// 发送帧缓冲区
+	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
-	// 发送帧命令
+	/** 发送帧命令*/
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
-	// ADC数据接收和重发Socket套接字
+	/** ADC数据接收和重发Socket套接字*/
 	SOCKET m_oADCDataFrameSocket;
 }m_oADCDataFrameStruct;
 
-// 仪器属性结构体
+/**
+* @struct Instrument_Struct
+* @brief 仪器属性结构体
+*/
 typedef struct Instrument_Struct 
 {
 	/** 在仪器数组中的位置*/
@@ -1244,7 +1303,7 @@ typedef struct Instrument_Struct
 	bool m_bMarker;
 	/** 是否哑道*/
 	bool m_bMute;
-	// 首包位置稳定次数
+	/** 首包位置稳定次数*/
 	int m_iHeadFrameStableNum;
 	/** 第几次设置IP地址*/
 	int m_iIPSetCount;
@@ -1266,66 +1325,69 @@ typedef struct Instrument_Struct
 	int m_iTimeSetReturnCount;
 	/** 仪器时间设置是否成功*/
 	bool m_bTimeSetOK;
-	// ADC命令设置是否应答
+	/** ADC命令设置是否应答*/
 	bool m_bADCSetReturn;
-	// 仪器是否进行了ADC参数设置
+	/** 仪器是否进行了ADC参数设置*/
 	bool m_bADCSet;
-	// 仪器开始ADC数据采集设置成功
+	/** 仪器开始ADC数据采集设置成功*/
 	bool m_bADCStartSample;
-	// 仪器停止ADC数据采集设置成功
+	/** 仪器停止ADC数据采集设置成功*/
 	bool m_bADCStopSample;
-	// 误码查询发送帧数
+	/** 误码查询发送帧数*/
 	unsigned int m_uiErrorCodeQueryNum;
-	// 误码查询应答帧数
+	/** 误码查询应答帧数*/
 	unsigned int m_uiErrorCodeReturnNum;
-	// 采集站和电源站网络数据错误计数
+	/** 采集站和电源站网络数据错误计数*/
 	int m_iFDUErrorCodeDataCount;
-	// 采集站和电源站命令错误计数
+	/** 采集站和电源站命令错误计数*/
 	int m_iFDUErrorCodeCmdCount;
-	// 采集站和电源站网络数据错误计数
+	/** 采集站和电源站网络数据错误计数*/
 	char m_cFDUErrorCodeDataCountOld;
-	// 采集站和电源站命令错误计数
+	/** 采集站和电源站命令错误计数*/
 	char m_cFDUErrorCodeCmdCountOld;
 
-	// 交叉站大线A数据故障
+	/** 交叉站大线A数据故障*/
 	int m_iLAUXErrorCodeDataLineACount;
-	// 交叉站大线B数据故障
+	/** 交叉站大线B数据故障*/
 	int m_iLAUXErrorCodeDataLineBCount;
-	// 交叉站交叉线A数据故障
+	/** 交叉站交叉线A数据故障*/
 	int m_iLAUXErrorCodeDataLAUXLineACount;
-	// 交叉站交叉线B数据故障
+	/** 交叉站交叉线B数据故障*/
 	int m_iLAUXErrorCodeDataLAUXLineBCount;
-	// 交叉站命令口故障
+	/** 交叉站命令口故障*/
 	int m_iLAUXErrorCodeCmdCount;
 
-	// 交叉站大线A数据故障
+	/** 交叉站大线A数据故障*/
 	char m_cLAUXErrorCodeDataLineACountOld;
-	// 交叉站大线B数据故障
+	/** 交叉站大线B数据故障*/
 	char m_cLAUXErrorCodeDataLineBCountOld;
-	// 交叉站交叉线A数据故障
+	/** 交叉站交叉线A数据故障*/
 	char m_cLAUXErrorCodeDataLAUXLineACountOld;
-	// 交叉站交叉线B数据故障
+	/** 交叉站交叉线B数据故障*/
 	char m_cLAUXErrorCodeDataLAUXLineBCountOld;
-	// 交叉站命令口故障
+	/** 交叉站命令口故障*/
 	char m_cLAUXErrorCodeCmdCountOld;
 
-	// 实际接收ADC数据帧数（含重发帧）
+	/** 实际接收ADC数据帧数（含重发帧）*/
 	unsigned int m_uiADCDataActualRecFrameNum;
-	// 重发查询帧得到的应答帧数
+	/** 重发查询帧得到的应答帧数*/
 	unsigned int m_uiADCDataRetransmissionFrameNum;
-	// 应该接收ADC数据帧数（含丢帧）
+	/** 应该接收ADC数据帧数（含丢帧）*/
 	unsigned int m_uiADCDataShouldRecFrameNum;
-	// ADC采样数据（取每帧的第一个数据用于计算）
+	/** ADC采样数据（取每帧的第一个数据用于计算）*/
 	list<int> m_olsADCDataSave;
-	// ADC数据帧的指针偏移量
+	/** ADC数据帧的指针偏移量*/
 	unsigned short m_usADCDataFramePoint;
-	// ADC数据帧发送时的本地时间
+	/** ADC数据帧发送时的本地时间*/
 	unsigned int m_uiADCDataFrameSysTime;
-	// ADC数据帧起始帧数
+	/** ADC数据帧起始帧数*/
 	int m_iADCDataFrameStartNum;
 }m_oInstrumentStruct;
 
-// 仪器位置点结构体
+/**
+* @struct InstrumentLocation_Struct
+* @brief 仪器位置点结构体
+*/
 typedef struct InstrumentLocation_Struct
 {
 	InstrumentLocation_Struct(int iLineIndex, int iPointIndex)
@@ -1351,13 +1413,16 @@ typedef struct InstrumentLocation_Struct
 			return (m_iLineIndex < rhs.m_iLineIndex);
 		}
 	}
-	// 线号
+	/** 线号*/
 	int m_iLineIndex;
-	// 点号
+	/** 点号*/
 	int m_iPointIndex;
 }m_oInstrumentLocationStruct;
 
-// 丢失帧IP地址和偏移量结构体
+/**
+* @struct ADCLostFrameKey_Struct
+* @brief 丢失帧IP地址和偏移量结构体
+*/
 typedef struct ADCLostFrameKey_Struct
 {
 	ADCLostFrameKey_Struct(unsigned int uiIP, unsigned short usADCFramePointNb)
@@ -1383,26 +1448,32 @@ typedef struct ADCLostFrameKey_Struct
 			return (m_uiIP < rhs.m_uiIP);
 		}
 	}
-	// 丢帧的指针偏移量
+	/** 丢帧的指针偏移量*/
 	unsigned short m_usADCFramePointNb;
-	// 丢帧的IP地址
+	/** 丢帧的IP地址*/
 	unsigned int m_uiIP;
 }m_oADCLostFrameKeyStruct;
 
-// 丢失帧结构体
+/**
+* @struct ADCLostFrame_Struct
+* @brief 丢失帧结构体
+*/
 typedef struct ADCLostFrame_Struct
 {
-	// 丢失帧重发次数
+	/** 丢失帧重发次数*/
 	unsigned int m_uiCount;
-	// 丢帧在文件内的帧序号，从0开始
+	/** 丢帧在文件内的帧序号，从0开始*/
 	unsigned int m_uiFrameNb;
-	// 丢失帧的本地时间
+	/** 丢失帧的本地时间*/
 	unsigned int m_uiSysTime;
-	// 是否已经收到应答
+	/** 是否已经收到应答*/
 	bool m_bReturnOk;
 }m_oADCLostFrameStruct;
 
-// 仪器队列
+/**
+* @struct InstrumentList_Struct
+* @brief 仪器队列结构体
+*/
 typedef struct InstrumentList_Struct
 {
 	/** 仪器数组指针*/
@@ -1411,25 +1482,28 @@ typedef struct InstrumentList_Struct
 	list<m_oInstrumentStruct*> m_olsInstrumentFree;
 	/** 设置IP地址的仪器队列*/
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPSetInstrumentMap;
-	// 仪器SN索引表
+	/** 仪器SN索引表*/
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oSNInstrumentMap;
-	// 仪器IP地址索引表
+	/** 仪器IP地址索引表*/
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oIPInstrumentMap;
-	// 未完成ADC参数设置的仪器索引
+	/** 未完成ADC参数设置的仪器索引*/
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oADCSetInstrumentMap;
-	// 仪器位置索引表
+	/** 仪器位置索引表*/
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*> m_oInstrumentLocationMap;
-	// 丢帧索引表
+	/** 丢帧索引表*/
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct> m_oADCLostFrameMap;
 	/** 仪器总数*/
 	unsigned int m_uiCountAll;
 	/** 空闲仪器数量*/
 	unsigned int m_uiCountFree;
-	// 是否按照路由IP手动设置ADC参数
+	/** 是否按照路由IP手动设置ADC参数*/
 	bool m_bSetByHand;
 }m_oInstrumentListStruct;
 
-// 路由属性结构体
+/**
+* @struct Rout_Struct
+* @brief 路由属性结构体
+*/
 typedef struct Rout_Struct
 {
 	/** 在路由数组中的位置*/
@@ -1452,28 +1526,31 @@ typedef struct Rout_Struct
 	bool m_bRoutLaux;
 	/** 路由是否接收到ADC设置参数应答*/
 	bool m_bADCSetReturn;
-	// 路由是否发送ADC参数设置帧
+	/** 路由是否发送ADC参数设置帧*/
 	bool m_bADCSetRout;
-	// 该路由方向上仪器的个数
+	/** 该路由方向上仪器的个数*/
 	unsigned int m_uiInstrumentNum;
 }m_oRoutStruct;
 
-// 路由队列结构体
+/**
+* @struct RoutList_Struct
+* @brief 路由队列结构体
+*/
 typedef struct RoutList_Struct
 {
 	/** 路由数组指针*/
 	m_oRoutStruct* m_pArrayRout;
 	/** 空闲路由队列*/
 	list<m_oRoutStruct*> m_olsRoutFree;
-	// 仪器路由地址索引表
+	/** 仪器路由地址索引表*/
 	hash_map<unsigned int, m_oRoutStruct*> m_oRoutMap;
-	// 需要删除路由仪器的路由索引表
+	/** 需要删除路由仪器的路由索引表*/
 	hash_map<unsigned int, m_oRoutStruct*> m_oRoutDeleteMap;
-	// 仪器时统的任务队列，成员为路由IP
+	/** 仪器时统的任务队列，成员为路由IP*/
 	list<unsigned int> m_olsTimeDelayTaskQueue;
-	// 仪器时统的任务中转队列
+	/** 仪器时统的任务中转队列*/
 	list<unsigned int> m_olsTimeDelayTemp;
-	// ADC参数设置任务索引
+	/** ADC参数设置任务索引*/
 	hash_map<unsigned int, m_oRoutStruct*> m_oADCSetRoutMap;
 	/** 路由总数*/
 	unsigned int m_uiCountAll;
@@ -1481,47 +1558,57 @@ typedef struct RoutList_Struct
 	unsigned int m_uiCountFree;
 }m_oRoutListStruct;
 
-// 测线队列结构体
+/**
+* @struct LineList_Struct
+* @brief 测线队列结构体
+*/
 typedef struct LineList_Struct
 {
-	// 测线队列资源同步对象
+	/** 测线队列资源同步对象*/
 	CRITICAL_SECTION m_oSecLineList;
-	// 仪器队列结构体指针
+	/** 仪器队列结构体指针*/
 	m_oInstrumentListStruct* m_pInstrumentList;
-	// 路由队列结构体
+	/** 路由队列结构体*/
 	m_oRoutListStruct* m_pRoutList;
-	// 测网状态由不稳定变为稳定
+	/** 测网状态由不稳定变为稳定*/
 	bool m_bLineStableChange;
-	// 测网系统发生变化的时间
+	/** 测网系统发生变化的时间*/
 	unsigned int m_uiLineChangeTime;
 }m_oLineListStruct;
-// 数据存储缓冲区结构体
+
+/**
+* @struct ADCDataBuf_Struct
+* @brief 数据存储缓冲区结构体
+*/
 typedef struct ADCDataBuf_Struct
 {
-	// 缓冲区是否使用中
+	/** 缓冲区是否使用中*/
 	bool m_bInUsed;
-	// ADC数据存储缓冲区
+	/** ADC数据存储缓冲区*/
 	int* m_pADCDataBuf;
-	// 数据存储帧序号，从0开始
+	/** 数据存储帧序号，从0开始*/
 	unsigned int m_uiFrameNb;
-	// 采样仪器SN
+	/** 采样仪器SN*/
 	unsigned int m_uiSN;
-	// 帧的本地时间
+	/** 帧的本地时间*/
 	unsigned int m_uiSysTime;
-	// 缓冲区序号
+	/** 缓冲区序号*/
 	unsigned int m_uiIndex;
 }m_oADCDataBufStruct;
 
-// 数据存储缓冲区结构体
+/**
+* @struct ADCDataBufArray_Struct
+* @brief 数据存储缓冲区结构体
+*/
 typedef struct ADCDataBufArray_Struct
 {
-	// 缓冲区资源同步对象
+	/** 缓冲区资源同步对象*/
 	CRITICAL_SECTION m_oSecADCDataBufArray;
 	/** 缓冲区数组指针*/
 	m_oADCDataBufStruct* m_pArrayADCDataBuf;
 	/** 缓冲区队列*/
 	list<m_oADCDataBufStruct*> m_olsADCDataBufFree;
-	// 写入文件的数据缓冲区队列
+	/** 写入文件的数据缓冲区队列*/
 	list<m_oADCDataBufStruct*> m_olsADCDataToWrite;
 	/** 缓冲区总数*/
 	unsigned int m_uiCountAll;
@@ -1529,10 +1616,13 @@ typedef struct ADCDataBufArray_Struct
 	unsigned int m_uiCountFree;
 }m_oADCDataBufArrayStruct;
 
-// 参与施工的仪器结构体
+/**
+* @struct OptInstrument_Struct
+* @brief 参与施工的仪器结构体
+*/
 typedef struct OptInstrument_Struct
 {
-	// SN
+	/** SN*/
 	unsigned int m_uiSN;
 	/** 测线号*/
 	int m_iLineIndex;
@@ -1551,329 +1641,374 @@ typedef struct OptInstrument_Struct
 	}
 }m_oOptInstrumentStruct;
 
-// 施工任务结构体
+/**
+* @struct OptTask_Struct
+* @brief 施工任务结构体
+*/
 typedef struct OptTask_Struct
 {
-	// 任务是否使用中
+	/** 任务是否使用中*/
 	bool m_bInUsed;
-	// 任务序号
+	/** 任务序号*/
 	unsigned int m_uiIndex;
-	// 施工任务开始记录的数据帧数
+	/** 施工任务开始记录的数据帧数*/
 	unsigned int m_uiStartFrame;
-	// 施工数据输出文件指针
+	/** 施工数据输出文件指针*/
 	FILE* m_pFile;
-	// 施工数据输出前一个文件的文件指针
+	/** 施工数据输出前一个文件的文件指针*/
 	FILE* m_pPreviousFile;
-	// 最新的文件存储序号
+	/** 最新的文件存储序号*/
 	unsigned int m_uiFileSaveNb;
-	// 施工数据存储文件路径
+	/** 施工数据存储文件路径*/
 	string m_SaveLogFilePath;
-	// 施工任务索引表，关键字为SN，内容为行号
+	/** 施工任务索引表，关键字为SN，内容为行号*/
 	hash_map<unsigned int, unsigned int> m_oSNMap;
-	// 参与施工的仪器队列
+	/** 参与施工的仪器队列*/
 	list<m_oOptInstrumentStruct> m_olsOptInstrument;
 }m_oOptTaskStruct;
 
-// 施工任务结构体数组
+/**
+* @struct OptTaskArray_Struct
+* @brief 施工任务结构体数组
+*/
 typedef struct OptTaskArray_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecOptTaskArray;
 	/** 施工任务数组指针*/
 	m_oOptTaskStruct* m_pArrayOptTask;
-	// 空闲的施工任务队列
+	/** 空闲的施工任务队列*/
 	list<m_oOptTaskStruct*> m_olsOptTaskFree;
-	// 正在进行的施工任务索引
+	/** 正在进行的施工任务索引*/
 	hash_map<unsigned int, m_oOptTaskStruct*> m_oOptTaskWorkMap;
 	/** 施工任务总数*/
 	unsigned int m_uiCountAll;
 	/** 空闲任务数量*/
 	unsigned int m_uiCountFree;
-	// 施工任务数据存储文件夹计数
+	/** 施工任务数据存储文件夹计数*/
 	unsigned int m_uiADCDataFolderNb;
-	// 施工数据存储文件夹路径
+	/** 施工数据存储文件夹路径*/
 	string m_SaveLogFolderPath;
 }m_oOptTaskArrayStruct;
 
-// 线程结构体
+/**
+* @struct Thread_Struct
+* @brief 线程结构体
+*/
 typedef struct Thread_Struct
 {
-	// 线程句柄
+	/** 线程句柄*/
 	HANDLE m_hThread;
-	// 线程号
+	/** 线程号*/
 	DWORD m_dwThreadID;
-	//是否工作状态
+	/**是否工作状态*/
 	bool m_bWork;
-	// 是否关闭线程
+	/** 是否关闭线程*/
 	bool m_bClose;
-	// 线程结束事件
+	/** 线程结束事件*/
 	HANDLE m_hThreadClose;
-	// 常量指针
+	/** 常量指针*/
 	m_oConstVarStruct* m_pConstVar;
-	// 输出日志指针
+	/** 输出日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPut;
 }m_oThreadStruct;
 
-// 日志输出线程
+/**
+* @struct LogOutPutThread_Struct
+* @brief 日志输出线程结构体
+*/
 typedef struct LogOutPutThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecLogOutPutThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// 输出日志指针
+	/** 输出日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPutTimeDelay;
-	// 输出日志指针
+	/** 输出日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
-	// 输出日志指针
+	/** 输出日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
 }m_oLogOutPutThreadStruct;
 
-// 心跳线程
+/**
+* @struct HeartBeatThread_Struct
+* @brief 心跳线程结构体
+*/
 typedef struct HeartBeatThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecHeartBeatThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// 心跳帧指针
+	/** 心跳帧指针*/
 	m_oHeartBeatFrameStruct* m_pHeartBeatFrame;
 }m_oHeartBeatThreadStruct;
 
-// 首包线程
+/**
+* @struct HeadFrameThread_Struct
+* @brief 首包线程结构体
+*/
 typedef struct HeadFrameThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecHeadFrameThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// 首包帧指针
+	/** 首包帧指针*/
 	m_oHeadFrameStruct* m_pHeadFrame;
-	// 测线队列结构体指针
+	/** 测线队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
 }m_oHeadFrameThreadStruct;
 
-// IP地址设置线程
+/**
+* @struct IPSetFrameThread_Struct
+* @brief IP地址设置线程结构体
+*/
 typedef struct IPSetFrameThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecIPSetFrameThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// IP地址设置帧指针
+	/** IP地址设置帧指针*/
 	m_oIPSetFrameStruct* m_pIPSetFrame;
-	// 测线队列结构体指针
+	/** 测线队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
 }m_oIPSetFrameThreadStruct;
 
-// 尾包线程
+/**
+* @struct TailFrameThread_Struct
+* @brief 尾包线程结构体
+*/
 typedef struct TailFrameThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecTailFrameThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// 尾包帧指针
+	/** 尾包帧指针*/
 	m_oTailFrameStruct* m_pTailFrame;
-	// 仪器队列结构体指针
+	/** 仪器队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
 }m_oTailFrameThreadStruct;
 
-// 时统线程
+/**
+* @struct TimeDelayThread_Struct
+* @brief 时统线程结构体
+*/
 typedef struct TimeDelayThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecTimeDelayThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// 尾包时刻帧指针
+	/** 尾包时刻帧指针*/
 	m_oTailTimeFrameStruct* m_pTailTimeFrame;
-	// 时统设置帧指针
+	/** 时统设置帧指针*/
 	m_oTimeDelayFrameStruct* m_pTimeDelayFrame;
-	// 测线队列结构体指针
+	/** 测线队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
-	// ADC开始数据采集标志位
+	/** ADC开始数据采集标志位*/
 	bool m_bADCStartSample;
-	// 计数器
+	/** 计数器*/
 	unsigned int m_uiCounter;
-	// 输出日志指针
+	/** 输出日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPutTimeDelay;
 }m_oTimeDelayThreadStruct;
 
-// ADC参数设置线程
+/**
+* @struct ADCSetThread_Struct
+* @brief ADC参数设置线程结构体
+*/
 typedef struct ADCSetThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecADCSetThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// ADC参数设置帧指针
+	/** ADC参数设置帧指针*/
 	m_oADCSetFrameStruct* m_pADCSetFrame;
-	// 测线队列结构体指针
+	/** 测线队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
-	// ADC命令设置序号
+	/** ADC命令设置序号*/
 	int m_iADCSetOperationNb;
-	// 计数器
+	/** 计数器*/
 	unsigned int m_uiCounter;
-	// ADC开始数据采集标志位
+	/** ADC开始数据采集标志位*/
 	bool m_bADCStartSample;
-	// ADC停止数据采集标志位
+	/** ADC停止数据采集标志位*/
 	bool m_bADCStopSample;
-	// 仪器的系统时间
+	/** 仪器的系统时间*/
 	unsigned int m_uiLocalSysTime;
-	// 上一次开始采样的采样时间
+	/** 上一次开始采样的采样时间*/
 	unsigned int m_uiTBTimeOld;
-	// 从XML文件中解析得到的信息
+	/** 从XML文件中解析得到的信息*/
 	m_oInstrumentCommInfoStruct* m_pCommInfo;
-	// 输出日志指针
+	/** 输出日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
 }m_oADCSetThreadStruct;
 
-// 误码查询线程
+/**
+* @struct ErrorCodeThread_Struct
+* @brief 误码查询线程结构体
+*/
 typedef struct ErrorCodeThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecErrorCodeThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// 误码查询帧指针
+	/** 误码查询帧指针*/
 	m_oErrorCodeFrameStruct* m_pErrorCodeFrame;
-	// 测线队列结构体指针
+	/** 测线队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
-	// 误码查询日志指针
+	/** 误码查询日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
 }m_oErrorCodeThreadStruct;
 
-// 路由监视线程
+/**
+* @struct MonitorThread_Struct
+* @brief 路由监视线程结构体
+*/
 typedef struct MonitorThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecMonitorThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// 测线队列结构体指针
+	/** 测线队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
-	// 时统线程指针
+	/** 时统线程指针*/
 	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
-	// ADC参数设置线程
+	/** ADC参数设置线程*/
 	m_oADCSetThreadStruct* m_pADCSetThread;
-	// 误码查询线程
+	/** 误码查询线程*/
 	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
 }m_oMonitorThreadStruct;
 
-// ADC数据接收线程
+/**
+* @struct ADCDataRecThread_Struct
+* @brief ADC数据接收线程结构体
+*/
 typedef struct ADCDataRecThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecADCDataRecThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// 误码查询帧指针
+	/** 误码查询帧指针*/
 	m_oADCDataFrameStruct* m_pADCDataFrame;
-	// 测线队列结构体指针
+	/** 测线队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
-	// 误码查询日志指针
+	/** 误码查询日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
-	// 数据存储缓冲区结构体指针
+	/** 数据存储缓冲区结构体指针*/
 	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
-	// 采样率设置
+	/** 采样率设置*/
 	int m_iADCSampleRate;
-	// 上一帧的本地时间
+	/** 上一帧的本地时间*/
 	unsigned int m_uiADCDataFrameSysTime;
-	// 存文件数据帧数计数
+	/** 存文件数据帧数计数*/
 	int m_iADCFrameCount;
-	// 采样数据回调函数
+	/** 采样数据回调函数*/
 	ProSampleDateCallBack m_oProSampleDataCallBack;
 }m_oADCDataRecThreadStruct;
 
-// 施工放炮数据存储线程
+/**
+* @struct ADCDataSaveThread_Struct
+* @brief 施工放炮数据存储线程结构体
+*/
 typedef struct ADCDataSaveThread_Struct
 {
-	// 资源同步对象
+	/** 资源同步对象*/
 	CRITICAL_SECTION m_oSecADCDataSaveThread;
-	// 线程结构体指针
+	/** 线程结构体指针*/
 	m_oThreadStruct* m_pThread;
-	// 数据存储缓冲区结构体指针
+	/** 数据存储缓冲区结构体指针*/
 	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
-	// 施工任务数组结构体指针
+	/** 施工任务数组结构体指针*/
 	m_oOptTaskArrayStruct* m_pOptTaskArray;
 }m_oADCDataSaveThreadStruct;
 
-// 环境结构体
+/**
+* @struct Environment_Struct
+* @brief 资源环境结构体
+*/
 typedef struct Environment_Struct
 {
-	// 从INI文件得到的常量信息
+	/** 从INI文件得到的常量信息*/
 	m_oConstVarStruct* m_pConstVar;
-	// 从XML文件得到的与仪器通讯信息结构
+	/** 从XML文件得到的与仪器通讯信息结构*/
 	m_oInstrumentCommInfoStruct* m_pInstrumentCommInfo;
-	// 心跳帧结构
+	/** 心跳帧结构*/
 	m_oHeartBeatFrameStruct* m_pHeartBeatFrame;
-	// 首包帧结构
+	/** 首包帧结构*/
 	m_oHeadFrameStruct* m_pHeadFrame;
-	// IP地址设置帧结构
+	/** IP地址设置帧结构*/
 	m_oIPSetFrameStruct* m_pIPSetFrame;
-	// 尾包帧结构
+	/** 尾包帧结构*/
 	m_oTailFrameStruct* m_pTailFrame;
-	// 尾包时刻帧结构
+	/** 尾包时刻帧结构*/
 	m_oTailTimeFrameStruct* m_pTailTimeFrame;
-	// 时统设置帧结构
+	/** 时统设置帧结构*/
 	m_oTimeDelayFrameStruct* m_pTimeDelayFrame;
-	// ADC参数设置帧结构
+	/** ADC参数设置帧结构*/
 	m_oADCSetFrameStruct* m_pADCSetFrame;
-	// 误码查询帧结构
+	/** 误码查询帧结构*/
 	m_oErrorCodeFrameStruct* m_pErrorCodeFrame;
-	// ADC数据帧结构
+	/** ADC数据帧结构*/
 	m_oADCDataFrameStruct* m_pADCDataFrame;
-	// 操作日志输出结构
+	/** 操作日志输出结构*/
 	m_oLogOutPutStruct* m_pLogOutPutOpt;
-	// 时统日志输出结构
+	/** 时统日志输出结构*/
 	m_oLogOutPutStruct* m_pLogOutPutTimeDelay;
-	// 误码查询日志输出结构
+	/** 误码查询日志输出结构*/
 	m_oLogOutPutStruct* m_pLogOutPutErrorCode;
-	// 帧时间和偏移量日志输出结构
+	/** 帧时间和偏移量日志输出结构*/
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
-	// 测线队列结构体
+	/** 测线队列结构体*/
 	m_oLineListStruct* m_pLineList;
-	// 数据存储缓冲区结构体指针
+	/** 数据存储缓冲区结构体指针*/
 	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
-	// 施工任务数组结构体指针
+	/** 施工任务数组结构体指针*/
 	m_oOptTaskArrayStruct* m_pOptTaskArray;
 
-	// 日志输出线程
+	/** 日志输出线程*/
 	m_oLogOutPutThreadStruct* m_pLogOutPutThread;
-	// 心跳线程
+	/** 心跳线程*/
 	m_oHeartBeatThreadStruct* m_pHeartBeatThread;
-	// 首包接收线程
+	/** 首包接收线程*/
 	m_oHeadFrameThreadStruct* m_pHeadFrameThread;
-	// IP地址设置线程
+	/** IP地址设置线程*/
 	m_oIPSetFrameThreadStruct* m_pIPSetFrameThread;
-	// 尾包接收线程
+	/** 尾包接收线程*/
 	m_oTailFrameThreadStruct* m_pTailFrameThread;
-	// 路由监视线程
+	/** 路由监视线程*/
 	m_oMonitorThreadStruct* m_pMonitorThread;
-	// 时统线程
+	/** 时统线程*/
 	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
-	// ADC参数设置线程
+	/** ADC参数设置线程*/
 	m_oADCSetThreadStruct* m_pADCSetThread;
-	// 误码查询线程
+	/** 误码查询线程*/
 	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
-	// ADC数据接收线程
+	/** ADC数据接收线程*/
 	m_oADCDataRecThreadStruct* m_pADCDataRecThread;
-	// 施工放炮数据存储线程
+	/** 施工放炮数据存储线程*/
 	m_oADCDataSaveThreadStruct* m_pADCDataSaveThread;
-	// Field On
+	/** Field On*/
 	bool m_bFieldOn;
-	// Field Off
+	/** Field Off*/
 	bool m_bFieldOff;
 }m_oEnvironmentStruct;
 
-// functions declarations
+/** functions declarations*/
 /************************************************************************/
 /* 功能函数                                                             */
 /************************************************************************/
-// 得到帧的帧内容
+/** 得到帧的帧内容*/
 MatrixServerDll_API void GetFrameInfo(char* pFrameData, int iSize, string* strFrameData);
-// 从CString转换为char数组
+/** 从CString转换为char数组*/
 MatrixServerDll_API void ParseCStringToArray(char** pData, int iSize, CString str);
 // 判断文件是否存在
 MatrixServerDll_API bool IfFileExist(CString str);
