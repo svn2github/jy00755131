@@ -1,4 +1,14 @@
 #pragma once
+/**
+@brief 该文件为服务端与客户端通讯接收线程的声明文件
+@details
+@file ClientRecThread.h
+@note 
+@see	
+@version	
+@author cxm
+@bug
+*/
 #include "ClientRecFrame.h"
 #include "ClientSndFrame.h"
 #include "ClientCommThread.h"
@@ -10,11 +20,20 @@ using std::hash_map;
 /**
 * @class CClientRecThread
 * @brief 与客户端通讯接收线程类
+* @note 继承自CClientCommThread
 */
 class CClientRecThread : public CClientCommThread
 {
 public:
+	/**
+	* @fn CClientRecThread(void)
+	* @detail CClientRecThread构造函数
+	*/
 	CClientRecThread(void);
+	/**
+	* @fn ~CClientRecThread(void)
+	* @detail CClientRecThread析构函数
+	*/
 	~CClientRecThread(void);
 public:
 	/** 接收客户端类指针*/
@@ -91,121 +110,248 @@ public:
 	/** 客户端关闭标志位*/
 	bool m_bClientClose;
 public:
- 	/** 处理函数*/
+	/**
+	* @fn void OnProc(void)
+	* @detail 处理函数
+	* @param[in] void
+	* @return void
+	*/
  	void OnProc(void);
-	/** 将帧内容加入待处理任务中*/
+	/**
+	* @fn void SaveRecFrameToTask(m_oCommFrameStructPtr ptrFrame)
+	* @detail 将帧内容加入待处理任务中
+	* @param[in] ptrFrame 通讯帧指针
+	* @return void
+	*/
 	void SaveRecFrameToTask(m_oCommFrameStructPtr ptrFrame);
-	/** 处理接收命令函数*/
+	/**
+	* @fn void OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize)
+	* @detail 处理接收命令函数
+	* @param[in] usCmd 命令字
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 待处理的缓冲区字节数
+	* @return void
+	*/
 	void OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize);
-	/** 处理仪器设备表更新*/
+	/**
+	* @fn void OnProcInstrumentTableUpdate(void)
+	* @detail 处理仪器设备表更新
+	* @param[in] void
+	* @return void
+	*/
 	void OnProcInstrumentTableUpdate(void);
-	/** 处理上电*/
+	/**
+	* @fn void OnProcSetFieldOn(void)
+	* @detail 处理上电
+	* @param[in] void
+	* @return void
+	*/
 	void OnProcSetFieldOn(void);
-	/** 处理断电*/
+	/**
+	* @fn void OnProcSetFieldOff(void)
+	* @detail 处理断电
+	* @param[in] void
+	* @return void
+	*/
 	void OnProcSetFieldOff(void);
-	/** 查询 SurveyXML 文件信息*/
+	/**
+	* @fn void OnProcQuerySurveyXMLInfo(unsigned short usCmd)
+	* @detail 查询 SurveyXML 文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQuerySurveyXMLInfo(unsigned short usCmd);
-	/** 查询 PointCode XML文件信息*/
+	/**
+	* @fn void OnProcQueryPointCodeXMLInfo(unsigned short usCmd)
+	* @detail 查询 PointCode XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryPointCodeXMLInfo(unsigned short usCmd);
-	/** 查询 Sensor XML文件信息*/
+	/**
+	* @fn void OnProcQuerySensorXMLInfo(unsigned short usCmd)
+	* @detail 查询 Sensor XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQuerySensorXMLInfo(unsigned short usCmd);
-	/** 查询 Marker XML文件信息*/
+	/**
+	* @fn void OnProcQueryMarkerXMLInfo(unsigned short usCmd)
+	* @detail 查询 Marker XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryMarkerXMLInfo(unsigned short usCmd);
-	/** 查询 Aux XML文件信息*/
+	/**
+	* @fn void OnProcQueryAuxXMLInfo(unsigned short usCmd)
+	* @detail 查询 Aux XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryAuxXMLInfo(unsigned short usCmd);
-	/** 查询 Detour XML文件信息*/
+	/**
+	* @fn void OnProcQueryDetourXMLInfo(unsigned short usCmd)
+	* @detail 查询 Detour XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryDetourXMLInfo(unsigned short usCmd);
-	/** 查询 Mute XML文件信息*/
+	/**
+	* @fn void OnProcQueryMuteXMLInfo(unsigned short usCmd)
+	* @detail 查询 Mute XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryMuteXMLInfo(unsigned short usCmd);
-	/** 查询 BlastMachine XML文件信息*/
+	/**
+	* @fn void OnProcQueryBlastMachineXMLInfo(unsigned short usCmd)
+	* @detail 查询 BlastMachine XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryBlastMachineXMLInfo(unsigned short usCmd);
-	/** 查询 Absolute XML文件信息*/
+	/**
+	* @fn void OnProcQueryAbsoluteXMLInfo(unsigned short usCmd)
+	* @detail 查询 Absolute XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryAbsoluteXMLInfo(unsigned short usCmd);
-	/** 查询 Generic XML文件信息*/
+	/**
+	* @fn void OnProcQueryGenericXMLInfo(unsigned short usCmd)
+	* @detail 查询 Generic XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryGenericXMLInfo(unsigned short usCmd);
-	/** 查询 Look XML文件信息*/
+	/**
+	* @fn void OnProcQueryLookXMLInfo(unsigned short usCmd)
+	* @detail 查询 Look XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryLookXMLInfo(unsigned short usCmd);
-	/** 查询 InstrumentTestBase XML文件信息*/
+	/**
+	* @fn void OnProcQueryInstrumentTestBaseXMLInfo(unsigned short usCmd)
+	* @detail 查询 InstrumentTestBase XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryInstrumentTestBaseXMLInfo(unsigned short usCmd);
-	/** 查询 SensorTestBase XML文件信息*/
+	/**
+	* @fn void OnProcQuerySensorTestBaseXMLInfo(unsigned short usCmd)
+	* @detail 查询 SensorTestBase XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQuerySensorTestBaseXMLInfo(unsigned short usCmd);
-	/** 查询 InstrumentTestLimit XML文件信息*/
+	/**
+	* @fn void OnProcQueryInstrumentTestLimitXMLInfo(unsigned short usCmd)
+	* @detail 查询 InstrumentTestLimit XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryInstrumentTestLimitXMLInfo(unsigned short usCmd);
-	/** 查询 SensorTestLimit XML文件信息*/
+	/**
+	* @fn void OnProcQuerySensorTestLimitXMLInfo(unsigned short usCmd)
+	* @detail 查询 SensorTestLimit XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQuerySensorTestLimitXMLInfo(unsigned short usCmd);
-	/** 查询 InstrumentTest XML文件信息*/
+	/**
+	* @fn void OnProcQueryInstrumentTestXMLInfo(unsigned short usCmd)
+	* @detail 查询 InstrumentTest XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryInstrumentTestXMLInfo(unsigned short usCmd);
-	/** 查询 SensorTest XML文件信息*/
+	/**
+	* @fn void OnProcQuerySensorTestXMLInfo(unsigned short usCmd)
+	* @detail 查询 SensorTest XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQuerySensorTestXMLInfo(unsigned short usCmd);
-	/** 查询 MultipleTest XML文件信息*/
+	/**
+	* @fn void OnProcQueryMultipleTestXMLInfo(unsigned short usCmd)
+	* @detail 查询 MultipleTest XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQueryMultipleTestXMLInfo(unsigned short usCmd);
-	/** 查询 SeisMonitorTest XML文件信息*/
+	/**
+	* @fn void OnProcQuerySeisMonitorTestXMLInfo(unsigned short usCmd)
+	* @detail 查询 SeisMonitorTest XML文件信息
+	* @param[in] usCmd 命令字
+	* @return void
+	*/
 	void OnProcQuerySeisMonitorTestXMLInfo(unsigned short usCmd);
-	/** 查询 LAULeakage XML文件信息*/
+	// 查询 LAULeakage XML文件信息
 	void OnProcQueryLAULeakageXMLInfo(unsigned short usCmd);
-	/** 查询 FormLine XML文件信息*/
+	// 查询 FormLine XML文件信息
 	void OnProcQueryFormLineXMLInfo(unsigned short usCmd);
-	/** 由线号和点号得到区域位置*/
+	// 由线号和点号得到区域位置
 	void GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct);
-	/** 由区域号得到线号及点号范围*/
+	// 由区域号得到线号及点号范围
 	void GetPointRangeFromArea(int* iLineIndex, int* iPointMinIndex, int* iPointMaxIndex, m_oAreaStruct* pAreaStruct);
-	/** 判断仪器更新区域是否已加入索引表*/
+	// 判断仪器更新区域是否已加入索引表
 	BOOL IfAreaExistInMap(m_oAreaStruct* pAreaStruct, 
 		map<m_oAreaStruct, m_oAreaStruct>* pMap);
-	/** 增加对象到索引表*/
+	// 增加对象到索引表
 	void AddAreaToMap(int iLineIndex, int iPointIndex, 
 		map<m_oAreaStruct, m_oAreaStruct>* pMap);
-	/** 处理仪器信息查询*/
+	// 处理仪器信息查询
 	void OnProcQueryByArea(char* pChar, unsigned int uiSize, 
 		unsigned int(CClientRecThread::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos));
-	/** 处理全部信息查询*/
+	// 处理全部信息查询
 	void OnProcQueryInfoAll(unsigned int(CClientRecThread::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos));
-	/** 按区域查询仪器信息*/
+	// 按区域查询仪器信息
 	unsigned int QueryByArea(m_oAreaStruct* pArea, unsigned int uiStartPos, 
 		unsigned int(CClientRecThread::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos));
-	/** 按区域查询仪器信息*/
+	// 按区域查询仪器信息
 	unsigned int QueryInstrumentInfoByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域仪器噪声测试数据和测试结果*/
+	// 查询所选区域仪器噪声测试数据和测试结果
 	unsigned int QueryInstrNoiseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域仪器失真测试数据和测试结果*/
+	// 查询所选区域仪器失真测试数据和测试结果
 	unsigned int QueryInstrDistortionTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域仪器串扰测试数据和测试结果*/
+	// 查询所选区域仪器串扰测试数据和测试结果
 	unsigned int QueryInstrCrosstalkTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域仪器共模抑制比测试数据和测试结果*/
+	// 查询所选区域仪器共模抑制比测试数据和测试结果
 	unsigned int QueryInstrCMRRTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域仪器增益相位测试数据和测试结果*/
+	// 查询所选区域仪器增益相位测试数据和测试结果
 	unsigned int QueryInstrGainPhaseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域检波器阻抗测试数据和测试结果*/
+	// 查询所选区域检波器阻抗测试数据和测试结果
 	unsigned int QuerySensorResistanceTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域检波器漏电测试数据和测试结果*/
+	// 查询所选区域检波器漏电测试数据和测试结果
 	unsigned int QuerySensorLeakageTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域检波器噪声测试数据和测试结果*/
+	// 查询所选区域检波器噪声测试数据和测试结果
 	unsigned int QuerySensorNoiseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域检波器倾斜度测试数据和测试结果*/
+	// 查询所选区域检波器倾斜度测试数据和测试结果
 	unsigned int QuerySensorTiltTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域检波器倾斜度模式测试数据和测试结果*/
+	// 查询所选区域检波器倾斜度模式测试数据和测试结果
 	unsigned int QuerySensorTiltModelTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
-	/** 查询所选区域地震监测测试数据和测试结果*/
+	// 查询所选区域地震监测测试数据和测试结果
 	unsigned int QuerySeisMonitorTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos);
 
-	/** 从XML配置文件得到测试数据限制值*/
+	// 从XML配置文件得到测试数据限制值
 	float GetTestDataLimitFromXML(bool bInstrument, string str);
-	/** 计算测试数据的算术均方根*/
+	// 计算测试数据的算术均方根
 	float CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument);
-	/** 处理查询接收区域命令*/
+	// 处理查询接收区域命令
 	void OnProcQueryRevSection(void);
-	/** 判断仪器位置索引号是否已加入索引表*/
+	// 判断仪器位置索引号是否已加入索引表
 	BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex, 
 		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-	/** 增加对象到索引表*/
+	// 增加对象到索引表
 	void AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
 		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-	/** 根据输入索引号，由索引表得到仪器指针*/
+	// 根据输入索引号，由索引表得到仪器指针
 	m_oInstrumentStruct* GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-	/** 向所有在线客户端广播配置文件变更*/
+	// 向所有在线客户端广播配置文件变更
 	void BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize);
-	/** 监视客户端是否活跃*/
+	// 监视客户端是否活跃
 	void MonitorClientActive(bool bActive);
 };
 

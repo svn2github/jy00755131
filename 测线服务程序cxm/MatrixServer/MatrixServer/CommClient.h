@@ -30,9 +30,9 @@ public:
 	/** 连接客户端索引指针*/
 	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
 public:
-	/** 创建一个客户端连接信息*/
+	// 创建一个客户端连接信息
 	void OnInit();
-	/** 释放一个客户端连接信息*/
+	// 释放一个客户端连接信息
 	void OnClose();
 };
 

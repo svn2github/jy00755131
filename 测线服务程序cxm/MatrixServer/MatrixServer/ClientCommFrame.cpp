@@ -1,3 +1,13 @@
+/**
+@brief 该文件为服务端与客户端通讯帧的实现文件
+@details
+@file ClientCommFrame.cpp
+@note 
+@see	
+@version	
+@author cxm
+@bug
+*/
 #include "StdAfx.h"
 #include "ClientCommFrame.h"
 
@@ -9,7 +19,6 @@ CClientCommFrame::CClientCommFrame(void)
 	m_uiCmdIndex = 0;
 }
 
-
 CClientCommFrame::~CClientCommFrame(void)
 {
 }
@@ -19,6 +28,7 @@ void CClientCommFrame::OnResetFrameStruct(m_oCommFrameStructPtr pFrameStruct)
 {
 	memset(pFrameStruct, 0, sizeof(m_oCommFrameStruct));
 }
+
 // 初始化
 void CClientCommFrame::OnInit(void)
 {
@@ -55,6 +65,7 @@ m_oCommFrameStructPtr CClientCommFrame::GetFreeFrameStruct(void)
 	}
 	return pFrameStruct;
 }
+
 // 增加一个空闲接收帧结构体
 void CClientCommFrame::AddFreeFrameStruct(m_oCommFrameStructPtr pFrameStruct)
 {
@@ -64,6 +75,7 @@ void CClientCommFrame::AddFreeFrameStruct(m_oCommFrameStructPtr pFrameStruct)
 	m_olsCommFrameFree.push_back(pFrameStruct);
 	m_uiCountFree++;	// 空闲接收帧结构体总数加1
 }
+
 // 关闭
 void CClientCommFrame::OnClose(void)
 {

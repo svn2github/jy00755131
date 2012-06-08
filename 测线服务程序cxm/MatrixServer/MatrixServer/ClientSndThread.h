@@ -13,7 +13,8 @@ public:
 public:
 	/** 发送客户端类指针*/
 	CClientSndFrame* m_pClientSndFrame;
-	/** 处理函数*/
+public:
+	// 处理函数
 	void OnProc(void);
 };
 

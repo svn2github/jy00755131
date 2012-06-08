@@ -57,25 +57,25 @@ public:
 	/** 已发送帧索引*/
 	map<m_oSndFrameKey, m_oCommFrameStructPtr> m_oSndFrameMap;
 public:
-	/** 生成应答帧*/
+	// 生成应答帧
 	void MakeReturnFrame(m_oCommFrameStructPtr ptrFrame);
-	/** 生成设置帧*/
+	// 生成设置帧
 	void MakeSetFrame(unsigned short usCmd, char* pChar, unsigned int uiSize);
-	/** 生成发送帧*/
+	// 生成发送帧
 	void MakeSendFrame(m_oCommFrameStructPtr ptrFrame);
-	/** 重发过期帧*/
+	// 重发过期帧
 	bool OnReSendFrame(void);
-	/** 判断索引号是否已加入索引表*/
+	// 判断索引号是否已加入索引表
 	BOOL IfFramePtrExistInSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
 		unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap);
-	/** 增加对象到索引表*/
+	// 增加对象到索引表
 	void AddFramePtrToSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
 		unsigned int m_uiPacketIndex, m_oCommFrameStructPtr pFrameStruct, 
 		map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap);
-	/** 根据输入索引号，由索引表得到指针*/
+	// 根据输入索引号，由索引表得到指针
 	m_oCommFrameStructPtr GetFramePtrFromSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
 		unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap);
-	/** 从索引表删除索引号指向的仪器指针*/
+	// 从索引表删除索引号指向的仪器指针
 	BOOL DeleteFramePtrFromSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
 		unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap);
 };

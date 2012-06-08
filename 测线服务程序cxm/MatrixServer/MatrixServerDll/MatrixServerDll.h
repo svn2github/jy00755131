@@ -2006,9 +2006,9 @@ typedef struct Environment_Struct
 /************************************************************************/
 /* 功能函数                                                             */
 /************************************************************************/
-/** 得到帧的帧内容*/
+// 得到帧的帧内容
 MatrixServerDll_API void GetFrameInfo(char* pFrameData, int iSize, string* strFrameData);
-/** 从CString转换为char数组*/
+// 从CString转换为char数组
 MatrixServerDll_API void ParseCStringToArray(char** pData, int iSize, CString str);
 // 判断文件是否存在
 MatrixServerDll_API bool IfFileExist(CString str);

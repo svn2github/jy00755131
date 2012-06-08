@@ -1,6 +1,15 @@
+/**
+@brief 该文件为服务端与客户端通讯线程的实现文件
+@details
+@file ClientCommThread.cpp
+@note 
+@see	
+@version	
+@author cxm
+@bug
+*/
 #include "StdAfx.h"
 #include "ClientCommThread.h"
-
 
 CClientCommThread::CClientCommThread(void)
 	: m_dwThreadID(0)
@@ -10,16 +19,21 @@ CClientCommThread::CClientCommThread(void)
 {
 }
 
-
 CClientCommThread::~CClientCommThread(void)
 {
 }
 
-// 线程函数
+/**
+* @fn DWORD WINAPI RunThread(CClientCommThread* pClientCommThread)
+* @detail 线程函数
+* @param[in] pClientCommThread 通讯线程类指针	
+* @return DWORD
+*/
 DWORD WINAPI RunThread(CClientCommThread* pClientCommThread)
 {
 	return pClientCommThread->ThreadRunFunc();
 }
+
 // 初始化
 void CClientCommThread::OnInit(void)
 {
@@ -32,7 +46,6 @@ void CClientCommThread::OnInit(void)
 		0, 
 		&m_dwThreadID);
 }
-
 
 // 关闭
 void CClientCommThread::OnClose(void)
@@ -80,6 +93,7 @@ void CClientCommThread::WaitForThread(void)
 		}		
 	}
 }
+
 // 线程函数
 DWORD CClientCommThread::ThreadRunFunc(void)
 {
@@ -99,6 +113,7 @@ DWORD CClientCommThread::ThreadRunFunc(void)
 	SetEvent(m_hThreadClose);
 	return 1;
 }
+
 // 处理函数
 void CClientCommThread::OnProc(void)
 {

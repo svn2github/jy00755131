@@ -1,3 +1,13 @@
+/**
+@brief 该文件为服务端与客户端通讯接收帧的实现文件
+@details
+@file ClientRecFrame.cpp
+@note 
+@see	
+@version	
+@author cxm
+@bug
+*/
 #include "StdAfx.h"
 #include "ClientRecFrame.h"
 

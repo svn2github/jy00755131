@@ -30,11 +30,11 @@ public:
 	/** 连接客户端类指针*/
 	CCommClient* m_pComClient;
 public:
-	/** 初始化*/
+	// 初始化
 	void OnInit(CCommClient* pComClient, int iSndBufferSize, int iRcvBufferSize);
-	/** 关闭*/
+	// 关闭
 	void OnClose(void);
-	/** 处理接收帧*/
+	// 处理接收帧
 	void OnProcRec(int iSize);
 };
 

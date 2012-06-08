@@ -1,3 +1,13 @@
+/**
+@brief 该文件为服务端与客户端通讯接收线程的实现文件
+@details
+@file ClientRecThread.cpp
+@note 
+@see	
+@version	
+@author cxm
+@bug
+*/
 #include "StdAfx.h"
 #include "ClientRecThread.h"
 #include "CommClient.h"
