@@ -50,6 +50,12 @@ public:
 	afx_msg void OnSetupOptions();
 	afx_msg void OnSetupDelaysetup();
 	afx_msg void OnSetupPreferences();
+	afx_msg void OnViewAllVPBar();
+	afx_msg void OnUpdataViewAllVPBar(CCmdUI *pCmdUI);
+	afx_msg void OnViewVPToDoBar();
+	afx_msg void OnUpdataViewVPToDoBar(CCmdUI *pCmdUI);
+	afx_msg void OnViewVPDoneBar();
+	afx_msg void OnUpdataViewVPDoneBar(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in OperationView.cpp

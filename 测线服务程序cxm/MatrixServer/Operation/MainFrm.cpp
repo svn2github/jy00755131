@@ -21,11 +21,11 @@ const UINT uiLastUserToolBarId	= uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
 BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_WM_CREATE()
-	ON_COMMAND(ID_VIEW_CUSTOMIZE, OnViewCustomize)
-	ON_COMMAND_RANGE(ID_VPSHOT_FROM, ID_VPSHOT_FROM + ActiveSourceNumLimit * 3 - 1, OnSelectActiveSource)
-	ON_UPDATE_COMMAND_UI(ID_INDICATOR_CONNECT, OnConnectServer)
-	ON_UPDATE_COMMAND_UI(IDS_CONNECTSERVER_ICON, OnConnectServer)
-	ON_REGISTERED_MESSAGE(BCGM_RESETTOOLBAR, OnToolbarReset)
+	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
+	ON_COMMAND_RANGE(ID_VPSHOT_FROM, ID_VPSHOT_FROM + ActiveSourceNumLimit * 3 - 1, &CMainFrame::OnSelectActiveSource)
+	ON_UPDATE_COMMAND_UI(ID_INDICATOR_CONNECT, &CMainFrame::OnConnectServer)
+	ON_UPDATE_COMMAND_UI(IDS_CONNECTSERVER_ICON, &CMainFrame::OnConnectServer)
+	ON_REGISTERED_MESSAGE(BCGM_RESETTOOLBAR, &CMainFrame::OnToolbarReset)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =

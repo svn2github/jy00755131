@@ -83,11 +83,14 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("CloseThreadSleepTimes");		// 等待线程关闭的延时次数
 		pConstVar->m_iCloseThreadSleepTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("TimeDelayCorrectLocation");		// 时统修正的仪器的位置
-		pConstVar->m_iTimeDelayCorrectLocation = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+		strSectionKey=_T("TimeDelayFDUToFDU");			// 采集站之间需要时统修正的值
+		pConstVar->m_iTimeDelayFDUToFDU = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("TimeDelayCorrect");		// 时统修正值
-		pConstVar->m_iTimeDelayCorrect = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+		strSectionKey=_T("TimeDelayFDUToLCI");			// 采集站与LCI之间需要时统修正的值
+		pConstVar->m_iTimeDelayFDUToLCI = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
+		strSectionKey=_T("TimeDelayFDUToLAUL");			// 采集站与电源站之间需要时统修正的值
+		pConstVar->m_iTimeDelayFDUToLAUL = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("HeadFrameStableNum");			// 首包稳定计数
 		pConstVar->m_iHeadFrameStableTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);

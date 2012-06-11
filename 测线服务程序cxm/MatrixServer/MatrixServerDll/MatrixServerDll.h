@@ -127,11 +127,12 @@ typedef struct ConstVar_Struct
 	int m_iADCDataSaveSleepTimes;
 	/** 等待线程关闭的延时次数*/
 	int m_iCloseThreadSleepTimes;
-	/** 需要时统修正的仪器位置*/
-	int m_iTimeDelayCorrectLocation;
-	/** 时统修正值*/
-	int m_iTimeDelayCorrect;
-
+	/** 采集站之间的时统修正值*/
+	int m_iTimeDelayFDUToFDU;
+	/** 采集站与LCI之间的时统修正值*/
+	int m_iTimeDelayFDUToLCI;
+	/** 采集站与LAUL之间的时统修正值*/
+	int m_iTimeDelayFDUToLAUL;
 	/** 首包稳定计数*/
 	int m_iHeadFrameStableTimes;
 	/** IP地址重设次数*/

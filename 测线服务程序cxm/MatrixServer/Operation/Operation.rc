@@ -448,6 +448,7 @@ END
 
 STRINGTABLE
 BEGIN
+    ID_VIEW_ALLVPBAR        "所有炮点\nAllVP"
     ID_VIEW_USER_TOOLBAR1   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
     ID_VIEW_USER_TOOLBAR2   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
     ID_VIEW_USER_TOOLBAR3   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
@@ -462,11 +463,24 @@ BEGIN
     ID_VIEW_USER_TOOLBAR8   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
     ID_VIEW_USER_TOOLBAR9   "显示或隐藏用户自定义工具栏\n切换用户工具栏"
     ID_VIEW_USER_TOOLBAR10  "显示或隐藏用户自定义工具栏\n切换用户工具栏"
+    ID_VIEW_ACTIVESOURCEBAR "有效震源\nActiveSource"
+    ID_VIEW_VPDONEBAR       "已经放炮的炮点\nVPDone"
+    ID_VIEW_VPTODUBAR       "等待放炮的炮点\nVPToDo"
 END
 
 STRINGTABLE
 BEGIN
     ID_SETUP_SOURCE         "震源类型设置\n震源"
+    ID_SETUP_OPERATION      "炮点设置\n炮点"
+    ID_SETUP_PROCESSTYPE    "处理类型设置\n处理"
+    ID_SETUP_NOISEEDITING   "噪声编辑设置\n噪声"
+    ID_SETUP_COMMENTS       "注释设置\n注释"
+END
+
+STRINGTABLE
+BEGIN
+    ID_SETUP_DELAYSETUP     "延时设置\n延时"
+    ID_VIEW_OPERATIONREPORTBAR "施工报告\nReport"
 END
 
 #endif    // 中文(简体，中国) resources

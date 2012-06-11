@@ -342,14 +342,27 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		{
 			itmp1 += 0x3fff;
 		}
-		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻差值为 %d,	"), pInstrumentNext->m_uiIP, itmp1);
-		strOutPut = str;
+		if ((pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+			&& (pInstrumentNext->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU))
+		{
+			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToFDU;
+		}
+		if ((pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
+			&& (pInstrumentNext->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU))
+		{
+			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToLCI;
+		}
+		if ((pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+			&& (pInstrumentNext->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUL))
+		{
+			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToLAUL;
+		}
+
 		itmp1 >>= 1;
 		itmp2 += itmp1;
-		if (pInstrumentNext->m_iPointIndex == pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayCorrectLocation)
-		{
-			itmp2 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayCorrect;
-		}
+		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻差值为 %d,	"), pInstrumentNext->m_uiIP, itmp1);
+		strOutPut = str;
+
 		// 时间修正低位
 		pInstrumentNext->m_uiTimeLow = itmp2 & 0x3fff;
 		// 时间修正高位

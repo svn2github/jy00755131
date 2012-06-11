@@ -29,6 +29,12 @@ BEGIN_MESSAGE_MAP(COperationView, CView)
 	ON_COMMAND(ID_SETUP_OPTIONS, &COperationView::OnSetupOptions)
 	ON_COMMAND(ID_SETUP_DELAYSETUP, &COperationView::OnSetupDelaysetup)
 	ON_COMMAND(ID_SETUP_PREFERENCES, &COperationView::OnSetupPreferences)
+	ON_COMMAND(ID_VIEW_ALLVPBAR, &COperationView::OnViewAllVPBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_ALLVPBAR, &COperationView::OnUpdataViewAllVPBar)
+	ON_COMMAND(ID_VIEW_VPTODUBAR, &COperationView::OnViewVPToDoBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_VPTODUBAR, &COperationView::OnUpdataViewVPToDoBar)
+	ON_COMMAND(ID_VIEW_VPDONEBAR, &COperationView::OnViewVPDoneBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_VPDONEBAR, &COperationView::OnUpdataViewVPDoneBar)
 END_MESSAGE_MAP()
 
 // COperationView construction/destruction
@@ -156,4 +162,34 @@ void COperationView::OnSetupDelaysetup()
 void COperationView::OnSetupPreferences()
 {
 	// TODO: 在此添加命令处理程序代码
+}
+
+void COperationView::OnViewAllVPBar()
+{
+//	ShowControlBar (&m_wndAllVP, !(m_wndAllVP.IsVisible()), FALSE, TRUE);
+}
+
+void COperationView::OnUpdataViewAllVPBar(CCmdUI *pCmdUI)
+{
+//	pCmdUI->SetCheck(m_wndAllVP.IsVisible());
+}
+
+void COperationView::OnViewVPToDoBar()
+{
+//	ShowControlBar (&m_wndVPToDo, !(m_wndVPToDo.IsVisible()), FALSE, TRUE);
+}
+
+void COperationView::OnUpdataViewVPToDoBar(CCmdUI *pCmdUI)
+{
+//	pCmdUI->SetCheck(m_wndVPToDo.IsVisible());
+}
+
+void COperationView::OnViewVPDoneBar()
+{
+//	ShowControlBar (&m_wndVPDone, !(m_wndVPDone.IsVisible()), FALSE, TRUE);
+}
+
+void COperationView::OnUpdataViewVPDoneBar(CCmdUI *pCmdUI)
+{
+//	pCmdUI->SetCheck(m_wndVPDone.IsVisible());
 }

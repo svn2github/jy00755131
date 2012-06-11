@@ -231,8 +231,16 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("20");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("TimeDelayCorrectLocation");	// 需要时统修正的仪器的位置
-	strValue = _T("10");
+	strSectionKey=_T("TimeDelayFDUToFDU");			// 采集站之间需要时统修正的值
+	strValue = _T("-8473");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("TimeDelayFDUToLCI");			// 采集站与LCI之间需要时统修正的值
+	strValue = _T("-8501");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("TimeDelayFDUToLAUL");			// 采集站与电源站之间需要时统修正的值
+	strValue = _T("-8454");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TimeDelayCorrect");			// 时统修正值
