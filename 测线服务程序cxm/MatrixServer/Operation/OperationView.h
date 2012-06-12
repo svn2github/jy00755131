@@ -56,6 +56,8 @@ public:
 	afx_msg void OnUpdataViewVPToDoBar(CCmdUI *pCmdUI);
 	afx_msg void OnViewVPDoneBar();
 	afx_msg void OnUpdataViewVPDoneBar(CCmdUI *pCmdUI);
+	afx_msg void OnViewActiveSourceBar();
+	afx_msg void OnUpdataViewActiveSourceBar(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in OperationView.cpp

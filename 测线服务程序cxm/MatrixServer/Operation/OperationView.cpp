@@ -35,6 +35,8 @@ BEGIN_MESSAGE_MAP(COperationView, CView)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_VPTODUBAR, &COperationView::OnUpdataViewVPToDoBar)
 	ON_COMMAND(ID_VIEW_VPDONEBAR, &COperationView::OnViewVPDoneBar)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_VPDONEBAR, &COperationView::OnUpdataViewVPDoneBar)
+	ON_COMMAND(ID_VIEW_ACTIVESOURCEBAR, &COperationView::OnViewActiveSourceBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_ACTIVESOURCEBAR, &COperationView::OnUpdataViewActiveSourceBar)
 END_MESSAGE_MAP()
 
 // COperationView construction/destruction
@@ -166,30 +168,49 @@ void COperationView::OnSetupPreferences()
 
 void COperationView::OnViewAllVPBar()
 {
-//	ShowControlBar (&m_wndAllVP, !(m_wndAllVP.IsVisible()), FALSE, TRUE);
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pMainFrame->ShowControlBar(&pMainFrame->m_wndAllVP, !(pMainFrame->m_wndAllVP.IsVisible()), FALSE, TRUE);
+	
 }
 
 void COperationView::OnUpdataViewAllVPBar(CCmdUI *pCmdUI)
 {
-//	pCmdUI->SetCheck(m_wndAllVP.IsVisible());
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pCmdUI->SetCheck(pMainFrame->m_wndAllVP.IsVisible());
 }
 
 void COperationView::OnViewVPToDoBar()
 {
-//	ShowControlBar (&m_wndVPToDo, !(m_wndVPToDo.IsVisible()), FALSE, TRUE);
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pMainFrame->ShowControlBar (&pMainFrame->m_wndVPToDo, !(pMainFrame->m_wndVPToDo.IsVisible()), FALSE, TRUE);
 }
 
 void COperationView::OnUpdataViewVPToDoBar(CCmdUI *pCmdUI)
 {
-//	pCmdUI->SetCheck(m_wndVPToDo.IsVisible());
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pCmdUI->SetCheck(pMainFrame->m_wndVPToDo.IsVisible());
 }
 
 void COperationView::OnViewVPDoneBar()
 {
-//	ShowControlBar (&m_wndVPDone, !(m_wndVPDone.IsVisible()), FALSE, TRUE);
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pMainFrame->ShowControlBar (&pMainFrame->m_wndVPDone, !(pMainFrame->m_wndVPDone.IsVisible()), FALSE, TRUE);
 }
 
 void COperationView::OnUpdataViewVPDoneBar(CCmdUI *pCmdUI)
 {
-//	pCmdUI->SetCheck(m_wndVPDone.IsVisible());
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pCmdUI->SetCheck(pMainFrame->m_wndVPDone.IsVisible());
+}
+
+void COperationView::OnViewActiveSourceBar()
+{
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pMainFrame->ShowControlBar (&pMainFrame->m_wndActiveSource, !(pMainFrame->m_wndActiveSource.IsVisible()), FALSE, TRUE);
+}
+
+void COperationView::OnUpdataViewActiveSourceBar(CCmdUI *pCmdUI)
+{
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pCmdUI->SetCheck(pMainFrame->m_wndActiveSource.IsVisible());
 }

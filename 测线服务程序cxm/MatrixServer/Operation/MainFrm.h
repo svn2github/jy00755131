@@ -38,12 +38,12 @@ protected:  // control bar embedded members
 	CBCGPToolBar			m_wndToolBar;
 	CBCGPToolBar			m_wndToolBarSetup;
 	CBCGPToolBar			m_wndToolBarView;
-	CAllVPBar				m_wndAllVP;
-	CVPDoneBar				m_wndVPDone;
-	CVPToDoBar				m_wndVPToDo;
 	COutputBar				m_wndOutput;
 public:
 	CActiveSourceBar		m_wndActiveSource;
+	CAllVPBar				m_wndAllVP;
+	CVPDoneBar				m_wndVPDone;
+	CVPToDoBar				m_wndVPToDo;
 	CBCGPStatusBar			m_wndStatusBar;
 	CBitmap					m_bmpIconConnected;
 	CBitmap					m_bmpIconDisConnected;

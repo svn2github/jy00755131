@@ -152,7 +152,6 @@ void CClientRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned 
 			break;
 		case CmdQueryWholeTable:
 			m_oInstrumentWholeTableMap.clear();
-			m_oInstrumentUpdateArea.clear();
 			OnProcInstrumentTableUpdate();
 			break;
 			// 上电（命令字后帧内容为空，返回值为执行FieldOn剩余时间，为0表示无需等待）
@@ -551,6 +550,7 @@ void CClientRecThread::OnProcInstrumentTableUpdate(void)
 	int iSize = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentClient = NULL;
+	m_oInstrumentUpdateArea.clear();
 	// 将SN索引表与客户端的仪器位置索引表相对照
 	m_pMatrixDllCall->Dll_QueryInstrumentLocation(m_pClientSndFrame->m_cProcBuf, iSize);
 	for (int i=0; i<iSize;)
