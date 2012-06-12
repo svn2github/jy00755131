@@ -1,0 +1,23 @@
+-r
+E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r017mi3
+--stack-depth=16
+--access-checks
+--no-analyze-stack
+--leak-check-on-exit
+--check-resource-leaks
+--freelist-vol=1000000
+--guard-zone-size=32
+--search-dir
+sym:p=e:/works/segd/segd.conv/Debug
+--search-dir
+sym=E:/works/segd/segd.conv
+--search-dir
+sym=d:/symbols
+--
+e:\works\segd\segd.conv\Debug\segd.conv.exe
+--data-file
+E:\works\segd\example\810.dat
+--tb-time
+945858
+--manufacturer-code
+13

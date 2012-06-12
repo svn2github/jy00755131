@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feedback>
+ <message severity="info">Memory error analysis: started</message>
+ <nop/>
+ <message severity="info">Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r010mi1\r010mi1.inspxe] </message>
+ <nop/>
+ <message severity="info">Analysis started for e:\works\segd\segd.conv\Debug\segd.conv.exe (pid = 6484) </message>
+ <nop/>
+ <message severity="info">Loaded module: e:\works\segd\segd.conv\Debug\segd.conv.exe, address range [0x00d00000-0x00d90fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: D:\Intel\Inspector XE 2011\bin32\inspxe_dbghelp.dll, address range [0x577a0000-0x578c0fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: D:\Intel\Inspector XE 2011\bin32\inspxe_msdia100.dll, address range [0x61480000-0x61545fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\system32\apphelp.dll, address range [0x73cb0000-0x73cfbfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\CRYPTBASE.dll, address range [0x749f0000-0x749fbfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\SspiCli.dll, address range [0x74a00000-0x74a5ffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\ole32.dll, address range [0x74a60000-0x74bbbfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\LPK.dll, address range [0x74ce0000-0x74ce9fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\KERNELBASE.dll, address range [0x751e0000-0x75225fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\MSCTF.dll, address range [0x75230000-0x752fbfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\OLEAUT32.dll, address range [0x753d0000-0x7545efff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\USER32.dll, address range [0x75460000-0x7555ffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\USP10.dll, address range [0x75560000-0x755fcfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\SHLWAPI.dll, address range [0x75600000-0x75656fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\kernel32.dll, address range [0x75880000-0x7598ffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\WS2_32.dll, address range [0x75990000-0x759c4fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\RPCRT4.dll, address range [0x75a00000-0x75aeffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\SysWOW64\sechost.dll, address range [0x76740000-0x76758fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\system32\IMM32.DLL, address range [0x76780000-0x767dffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\imagehlp.dll, address range [0x767e0000-0x76809fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\NSI.dll, address range [0x76860000-0x76865fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\GDI32.dll, address range [0x76870000-0x768fffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\PSAPI.DLL, address range [0x76900000-0x76904fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\ADVAPI32.dll, address range [0x76910000-0x769affff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\msvcrt.dll, address range [0x769b0000-0x76a5bfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\SysWOW64\ntdll.dll, address range [0x77320000-0x7749ffff] </message>
+ <nop/>
+ <message severity="info">Application exit code: [0] </message>
+ <nop/>
+ <message severity="info">Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r010mi1\r010mi1.inspxe] </message>
+ <nop/>
+ <message severity="info">Memory error analysis: completed</message>
+ <nop/>
+</feedback>

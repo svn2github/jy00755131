@@ -1,0 +1,22 @@
+-r
+E:\works\segd\segd.conv\My Amplifier XE Results - segd.conv\r000
+--data-limit-mb=100
+--follow-child
+--type=frame:counters
+--stackwalk=offline
+--mrte-mode=auto
+--type=cpu:counters
+--type=cpu:stack
+--type=threading:stack
+--type=waiting:stack
+--type=io:stack
+--search-dir
+sym:p=e:/works/segd/segd.conv/Debug
+--search-dir
+sym=E:/works/segd/segd.conv
+--search-dir
+sym=d:/symbols
+--
+e:\works\segd\segd.conv\Debug\segd.conv.exe
+--make-segd-file
+E:\works\segd\segd.conv\args.conf

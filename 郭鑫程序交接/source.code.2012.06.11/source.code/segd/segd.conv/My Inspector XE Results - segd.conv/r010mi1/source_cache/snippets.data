@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\heapinit.c" md5="565a389dc06b3fa0e63331f33fbaaffd">
+    <snippet line="174">
+      <line line="171">        //  Initialize the "big-block" heap first.</line>
+      <line line="172">        if ( (_crtheap = HeapCreate( mtflag ? 0 : HEAP_NO_SERIALIZE,</line>
+      <line line="173">                                     BYTES_PER_PAGE, 0 )) == NULL )</line>
+      <line line="174">            return 0;</line>
+      <line line="175"/>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\crt0.c" md5="1b83bb632110a3db3b9f5c0192c0b9b8">
+    <snippet line="212">
+      <line line="209">        managedapp = check_managed_app();</line>
+      <line line="210"/>
+      <line line="211">        if ( !_heap_init(1) )               /* initialize heap */</line>
+      <line line="212">            fast_error_exit(_RT_HEAPINIT);  /* write message and die */</line>
+      <line line="213"/>
+    </snippet>
+    <snippet line="181">
+      <line line="178">        __security_init_cookie();</line>
+      <line line="179"/>
+      <line line="180">        return __tmainCRTStartup();</line>
+      <line line="181">}</line>
+      <line line="182"/>
+    </snippet>
+    <snippet line="235">
+      <line line="232">        __try {</line>
+      <line line="233"/>
+      <line line="234">            if ( _ioinit() &lt; 0 )            /* initialize lowio */</line>
+      <line line="235">                _amsg_exit(_RT_LOWIOINIT);</line>
+      <line line="236"/>
+    </snippet>
+    <snippet line="246">
+      <line line="243">            if ( _tsetargv() &lt; 0 )</line>
+      <line line="244">                _amsg_exit(_RT_SPACEARG);</line>
+      <line line="245">            if ( _tsetenvp() &lt; 0 )</line>
+      <line line="246">                _amsg_exit(_RT_SPACEENV);</line>
+      <line line="247"/>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\initcrit.c" md5="cfaa8dfc4193b960805b76f838764baa">
+    <snippet line="86">
+      <line line="83">         * Call the real InitializeCriticalSectionAndSpinCount</line>
+      <line line="84">         */</line>
+      <line line="85">        ret = InitializeCriticalSectionAndSpinCount(lpCriticalSection, dwSpinCount);</line>
+      <line line="86">    }</line>
+      <line line="87">    __except (_exception_code()== STATUS_NO_MEMORY ? EXCEPTION_EXECUTE_HANDLER:EXCEPTION_CONTINUE_SEARCH) {</line>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\ioinit.c" md5="3093acc83b6b0795f6da88222e5be433">
+    <snippet line="288">
+      <line line="285">                    /* Allocate the lock for this handle. */</line>
+      <line line="286">                    if ( !__crtInitCritSecAndSpinCount( &amp;pio-&gt;lock,</line>
+      <line line="287">                                                        _CRT_SPINCOUNT ))</line>
+      <line line="288">                        return -1;</line>
+      <line line="289">                    pio-&gt;lockinitflag++;</line>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\malloc.c" md5="a9cc1df8407bfebde7e19a49e10f8369">
+    <snippet line="105">
+      <line line="102">#else  /* _WIN64 */</line>
+      <line line="103">    if (__active_heap == __SYSTEM_HEAP) {</line>
+      <line line="104">        return HeapAlloc(_crtheap, 0, size ? size : 1);</line>
+      <line line="105">    } else</line>
+      <line line="106">    if ( __active_heap == __V6_HEAP ) {</line>
+    </snippet>
+  </file>
+</snippets>

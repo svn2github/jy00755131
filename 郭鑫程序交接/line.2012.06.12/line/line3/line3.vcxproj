@@ -1,0 +1,429 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>line</ProjectName>
+    <ProjectGuid>{EF7FEC56-ECF1-4698-A92B-E80437D22C17}</ProjectGuid>
+    <RootNamespace>line3</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\matrix\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" />
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">E:\BCGControlBarPro\BCGControlBarPro\Bin;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>false</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>false</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="data.base.cpp" />
+    <ClCompile Include="data.base.helper.cpp" />
+    <ClCompile Include="GraphInstrumentData.cpp" />
+    <ClCompile Include="GraphInstrumentList.cpp" />
+    <ClCompile Include="GridCtrlEdit.cpp" />
+    <ClCompile Include="GridCtrlList.cpp" />
+    <ClCompile Include="line.cmd.line.info.cpp" />
+    <ClCompile Include="line.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="STATUS_DIALOG.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ToolbarGraph.cpp" />
+    <ClCompile Include="ToolbarGraphButton.cpp" />
+    <ClCompile Include="ToolbarImage.cpp" />
+    <ClCompile Include="ToolbarLabel.cpp" />
+    <ClCompile Include="line.socket.cpp" />
+    <ClCompile Include="line.socket.impl.cpp" />
+    <ClCompile Include="SocketInterfaceCmdRev.cpp" />
+    <ClCompile Include="SocketInterfaceCmdSend.cpp" />
+    <ClCompile Include="SocketInterfaceDataRev.cpp" />
+    <ClCompile Include="GraphSensorData.cpp" />
+    <ClCompile Include="GraphSensorList.cpp" />
+    <ClCompile Include="GraphViewTopToolBarSensor.cpp" />
+    <ClCompile Include="LeftViewBarSensorBottom.cpp" />
+    <ClCompile Include="LeftViewBarSensorTop.cpp" />
+    <ClCompile Include="SensorGraphChildFrame.cpp" />
+    <ClCompile Include="SensorGraphDoc.cpp" />
+    <ClCompile Include="SensorGraphView.cpp" />
+    <ClCompile Include="DlgFormLineSetup.cpp" />
+    <ClCompile Include="DlgSetInstrument.cpp" />
+    <ClCompile Include="GraphViewBottomToolBar.cpp" />
+    <ClCompile Include="GraphViewTopToolBar.cpp" />
+    <ClCompile Include="GraphViewTopToolBarInstrument.cpp" />
+    <ClCompile Include="InstrumentGraphChildFrame.cpp" />
+    <ClCompile Include="InstrumentGraphDoc.cpp" />
+    <ClCompile Include="InstrumentGraphView.cpp" />
+    <ClCompile Include="LeftViewBarInstrumentBottom.cpp" />
+    <ClCompile Include="LeftViewBarInstrumentTop.cpp" />
+    <ClCompile Include="AuxData.cpp" />
+    <ClCompile Include="AuxList.cpp" />
+    <ClCompile Include="BlastMachineData.cpp" />
+    <ClCompile Include="BlastMachineList.cpp" />
+    <ClCompile Include="ChannelList.cpp" />
+    <ClCompile Include="ChannelSetupData.cpp" />
+    <ClCompile Include="DetourData.cpp" />
+    <ClCompile Include="DetourList.cpp" />
+    <ClCompile Include="FormLineData.cpp" />
+    <ClCompile Include="FormLineList.cpp" />
+    <ClCompile Include="FrameInterface.cpp" />
+    <ClCompile Include="IndexInstrumentMap.cpp" />
+    <ClCompile Include="Instrument.cpp" />
+    <ClCompile Include="InstrumentList.cpp" />
+    <ClCompile Include="LineList.cpp" />
+    <ClCompile Include="LineSetupData.cpp" />
+    <ClCompile Include="LookSetupData.cpp" />
+    <ClCompile Include="MarkerData.cpp" />
+    <ClCompile Include="MarkerList.cpp" />
+    <ClCompile Include="MuteData.cpp" />
+    <ClCompile Include="MuteList.cpp" />
+    <ClCompile Include="PointCodeData.cpp" />
+    <ClCompile Include="PointCodeList.cpp" />
+    <ClCompile Include="Rout.cpp" />
+    <ClCompile Include="RoutList.cpp" />
+    <ClCompile Include="SensorData.cpp" />
+    <ClCompile Include="SensorList.cpp" />
+    <ClCompile Include="ShotPointMap.cpp" />
+    <ClCompile Include="SiteData.cpp" />
+    <ClCompile Include="SpreadAbsoluteData.cpp" />
+    <ClCompile Include="SpreadAbsoluteList.cpp" />
+    <ClCompile Include="SpreadGenericData.cpp" />
+    <ClCompile Include="SpreadGenericList.cpp" />
+    <ClCompile Include="StaticFloat.cpp" />
+    <ClCompile Include="TabFormLine.cpp" />
+    <ClCompile Include="TabPage.cpp" />
+    <ClCompile Include="TestBaseData.cpp" />
+    <ClCompile Include="TestBaseList.cpp" />
+    <ClCompile Include="TestLimitData.cpp" />
+    <ClCompile Include="TestLimitList.cpp" />
+    <ClCompile Include="TestProject.cpp" />
+    <ClCompile Include="TestProjectList.cpp" />
+    <ClCompile Include="TestRequest.cpp" />
+    <ClCompile Include="WndInstrument.cpp" />
+    <ClCompile Include="XMLDOMTool.cpp" />
+    <ClCompile Include="OutputView.cpp" />
+    <ClCompile Include="DlgSurveySetup.cpp" />
+    <ClCompile Include="TabPointCode.cpp" />
+    <ClCompile Include="TabSensor.cpp" />
+    <ClCompile Include="TabSurvey.cpp" />
+    <ClCompile Include="DlgLayoutSetup.cpp" />
+    <ClCompile Include="TabAux.cpp" />
+    <ClCompile Include="TabBlastMachine.cpp" />
+    <ClCompile Include="TabDetour.cpp" />
+    <ClCompile Include="TabMarker.cpp" />
+    <ClCompile Include="TabMute.cpp" />
+    <ClCompile Include="DlgSpreadSetup.cpp" />
+    <ClCompile Include="TabSpreadAbsolute.cpp" />
+    <ClCompile Include="TabSpreadGeneric.cpp" />
+    <ClCompile Include="DlgLookSetup.cpp" />
+    <ClCompile Include="DlgTestBaseSetup.cpp" />
+    <ClCompile Include="TabTestBase.cpp" />
+    <ClCompile Include="TabTestLimit.cpp" />
+    <ClCompile Include="DlgTestSetup.cpp" />
+    <ClCompile Include="TabTestInstrument.cpp" />
+    <ClCompile Include="TabTestMultiple.cpp" />
+    <ClCompile Include="TabTestSeisMonitor.cpp" />
+    <ClCompile Include="TabTestSensor.cpp" />
+    <ClCompile Include="BCGPSliderButton.cpp" />
+    <ClCompile Include="GraphViewTopToolBarSeismonitor.cpp" />
+    <ClCompile Include="LeftViewBarSeismonitorTop.cpp" />
+    <ClCompile Include="SeismonitorGraphChildFrame.cpp" />
+    <ClCompile Include="SeismonitorGraphDoc.cpp" />
+    <ClCompile Include="SeismonitorGraphView.cpp" />
+    <ClCompile Include="InstrumentListCtrl.cpp" />
+    <ClCompile Include="InstrumentListDoc.cpp" />
+    <ClCompile Include="InstrumentListView.cpp" />
+    <ClCompile Include="SensorListCtrl.cpp" />
+    <ClCompile Include="SensorListDoc.cpp" />
+    <ClCompile Include="SensorListView.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="data.base.h" />
+    <ClInclude Include="data.base.helper.h" />
+    <ClInclude Include="line.socket.h" />
+    <ClInclude Include="line.socket.impl.h" />
+    <ClInclude Include="SocketInterfaceCmdRev.h" />
+    <ClInclude Include="SocketInterfaceCmdSend.h" />
+    <ClInclude Include="SocketInterfaceDataRev.h" />
+    <ClInclude Include="GraphViewTopToolBarSensor.h" />
+    <ClInclude Include="LeftViewBarSensorBottom.h" />
+    <ClInclude Include="LeftViewBarSensorTop.h" />
+    <ClInclude Include="SensorGraphChildFrame.h" />
+    <ClInclude Include="SensorGraphDoc.h" />
+    <ClInclude Include="SensorGraphView.h" />
+    <ClInclude Include="DlgFormLineSetup.h" />
+    <ClInclude Include="DlgSetInstrument.h" />
+    <ClInclude Include="GraphViewBottomToolBar.h" />
+    <ClInclude Include="GraphViewTopToolBar.h" />
+    <ClInclude Include="GraphViewTopToolBarInstrument.h" />
+    <ClInclude Include="InstrumentGraphChildFrame.h" />
+    <ClInclude Include="InstrumentGraphDoc.h" />
+    <ClInclude Include="InstrumentGraphView.h" />
+    <ClInclude Include="LeftViewBarInstrumentBottom.h" />
+    <ClInclude Include="LeftViewBarInstrumentTop.h" />
+    <ClInclude Include="AuxData.h" />
+    <ClInclude Include="AuxList.h" />
+    <ClInclude Include="BlastMachineData.h" />
+    <ClInclude Include="BlastMachineList.h" />
+    <ClInclude Include="ChannelList.h" />
+    <ClInclude Include="ChannelSetupData.h" />
+    <ClInclude Include="DetourData.h" />
+    <ClInclude Include="DetourList.h" />
+    <ClInclude Include="FormLineData.h" />
+    <ClInclude Include="FormLineList.h" />
+    <ClInclude Include="FrameInterface.h" />
+    <ClInclude Include="GraphInstrumentData.h" />
+    <ClInclude Include="GraphInstrumentList.h" />
+    <ClInclude Include="GraphSensorData.h" />
+    <ClInclude Include="GraphSensorList.h" />
+    <ClInclude Include="IndexInstrumentMap.h" />
+    <ClInclude Include="Instrument.h" />
+    <ClInclude Include="InstrumentList.h" />
+    <ClInclude Include="LineList.h" />
+    <ClInclude Include="LineSetupData.h" />
+    <ClInclude Include="LookSetupData.h" />
+    <ClInclude Include="MarkerData.h" />
+    <ClInclude Include="MarkerList.h" />
+    <ClInclude Include="MuteData.h" />
+    <ClInclude Include="MuteList.h" />
+    <ClInclude Include="PointCodeData.h" />
+    <ClInclude Include="PointCodeList.h" />
+    <ClInclude Include="Rout.h" />
+    <ClInclude Include="RoutList.h" />
+    <ClInclude Include="SensorData.h" />
+    <ClInclude Include="SensorList.h" />
+    <ClInclude Include="ShotPointMap.h" />
+    <ClInclude Include="SiteData.h" />
+    <ClInclude Include="SpreadAbsoluteData.h" />
+    <ClInclude Include="SpreadAbsoluteList.h" />
+    <ClInclude Include="SpreadGenericData.h" />
+    <ClInclude Include="SpreadGenericList.h" />
+    <ClInclude Include="StaticFloat.h" />
+    <ClInclude Include="TabFormLine.h" />
+    <ClInclude Include="TabPage.h" />
+    <ClInclude Include="TestBaseData.h" />
+    <ClInclude Include="TestBaseList.h" />
+    <ClInclude Include="TestLimitData.h" />
+    <ClInclude Include="TestLimitList.h" />
+    <ClInclude Include="TestProject.h" />
+    <ClInclude Include="TestProjectList.h" />
+    <ClInclude Include="TestRequest.h" />
+    <ClInclude Include="WndInstrument.h" />
+    <ClInclude Include="CXMLDOMDocument.h" />
+    <ClInclude Include="CXMLDOMElement.h" />
+    <ClInclude Include="CXMLDOMNode.h" />
+    <ClInclude Include="CXMLDOMNodeList.h" />
+    <ClInclude Include="XMLDOMTool.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="GridCtrlEdit.h" />
+    <ClInclude Include="GridCtrlList.h" />
+    <ClInclude Include="line.cmd.line.info.h" />
+    <ClInclude Include="line.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="STATUS_DIALOG.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ToolbarGraph.h" />
+    <ClInclude Include="ToolbarGraphButton.h" />
+    <ClInclude Include="ToolbarImage.h" />
+    <ClInclude Include="ToolbarLabel.h" />
+    <ClInclude Include="OutputView.h" />
+    <ClInclude Include="DlgSurveySetup.h" />
+    <ClInclude Include="TabPointCode.h" />
+    <ClInclude Include="TabSensor.h" />
+    <ClInclude Include="TabSurvey.h" />
+    <ClInclude Include="DlgLayoutSetup.h" />
+    <ClInclude Include="TabAux.h" />
+    <ClInclude Include="TabBlastMachine.h" />
+    <ClInclude Include="TabDetour.h" />
+    <ClInclude Include="TabMarker.h" />
+    <ClInclude Include="TabMute.h" />
+    <ClInclude Include="DlgSpreadSetup.h" />
+    <ClInclude Include="TabSpreadAbsolute.h" />
+    <ClInclude Include="TabSpreadGeneric.h" />
+    <ClInclude Include="DlgLookSetup.h" />
+    <ClInclude Include="DlgTestBaseSetup.h" />
+    <ClInclude Include="TabTestBase.h" />
+    <ClInclude Include="TabTestLimit.h" />
+    <ClInclude Include="DlgTestSetup.h" />
+    <ClInclude Include="TabTestInstrument.h" />
+    <ClInclude Include="TabTestMultiple.h" />
+    <ClInclude Include="TabTestSeisMonitor.h" />
+    <ClInclude Include="TabTestSensor.h" />
+    <ClInclude Include="BCGPSliderButton.h" />
+    <ClInclude Include="GraphViewTopToolBarSeismonitor.h" />
+    <ClInclude Include="LeftViewBarSeismonitorTop.h" />
+    <ClInclude Include="SeismonitorGraphChildFrame.h" />
+    <ClInclude Include="SeismonitorGraphDoc.h" />
+    <ClInclude Include="SeismonitorGraphView.h" />
+    <ClInclude Include="InstrumentListCtrl.h" />
+    <ClInclude Include="InstrumentListDoc.h" />
+    <ClInclude Include="InstrumentListView.h" />
+    <ClInclude Include="SensorListCtrl.h" />
+    <ClInclude Include="SensorListDoc.h" />
+    <ClInclude Include="SensorListView.h" />
+    <ClInclude Include="net.protocol.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="line.socket.impl.2.cpp">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <None Include="res\bitmap1.bmp" />
+    <None Include="res\bmp00001.bmp" />
+    <None Include="res\break.bmp" />
+    <None Include="res\edit.bmp" />
+    <None Include="res\field.bmp" />
+    <None Include="res\go.bmp" />
+    <None Include="res\line.ico" />
+    <None Include="res\line.rc2" />
+    <None Include="res\lineDoc.ico" />
+    <None Include="res\look.bmp" />
+    <None Include="res\menuimages.bmp" />
+    <None Include="res\menuimages_hc.png" />
+    <None Include="res\Toolbar.bmp" />
+    <None Include="res\toolbar1.bmp" />
+    <None Include="res\toolbar2.bmp" />
+    <None Include="res\Toolbar256.bmp" />
+    <None Include="res\toolbar_.bmp" />
+    <None Include="res\Toolbar_hc.png" />
+    <None Include="res\ToolBarMatrixField.bmp" />
+    <None Include="res\toolbarMatrixGraphBottom.bmp" />
+    <None Include="res\toolbarMatrixInstrumentGraphTop.bmp" />
+    <None Include="res\ToolBarMatrixSetup.bmp" />
+    <None Include="res\ToolBarMatrixView.bmp" />
+    <None Include="ReadMe.txt" />
+    <None Include="res\交叉站.bmp" />
+    <None Include="res\交叉站16.bmp" />
+    <None Include="res\交叉站24.bmp" />
+    <None Include="res\交叉站48.bmp" />
+    <None Include="res\电源站.bmp" />
+    <None Include="res\电源站16.bmp" />
+    <None Include="res\电源站24.bmp" />
+    <None Include="res\电源站48.bmp" />
+    <None Include="res\采集站.bmp" />
+    <None Include="res\采集站.ico" />
+    <None Include="res\采集站16.bmp" />
+    <None Include="res\采集站16.ico" />
+    <None Include="res\采集站24.bmp" />
+    <None Include="res\采集站24.ico" />
+    <None Include="res\采集站48.bmp" />
+    <None Include="res\采集站48.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="line.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="line.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

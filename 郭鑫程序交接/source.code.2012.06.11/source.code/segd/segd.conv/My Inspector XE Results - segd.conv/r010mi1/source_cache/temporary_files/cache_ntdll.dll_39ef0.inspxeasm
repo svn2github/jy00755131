@@ -1,0 +1,25 @@
+237259	RtlInitializeExceptionChain+0x3c:
+237259	push 0x14
+237261	push 0x7de9c530
+237266	call 0x2dec4 <.L0x2dec4>
+237271	RtlInitializeExceptionChain+0x48:
+237271	and dword ptr [ebp-0x4], 0x0
+237275	mov eax, dword ptr [0x7df74224]
+237280	push dword ptr [ebp+0xc]
+237283	test eax, eax
+237285	jz 0x872b8 <.L0x872b8>
+237291	RtlInitializeExceptionChain+0x5c:
+237291	mov edx, dword ptr [ebp+0x8]
+237294	xor ecx, ecx
+237296	call eax
+237298	RtlInitializeExceptionChain+0x63:
+237298	mov dword ptr [ebp-0x4], 0xfffffffe
+237305	call 0x2df09 <.L0x2df09>
+237310	RtlInitializeExceptionChain+0x6f:
+237310	ret 0x8
+237313	RtlInitializeExceptionChain+0x72:
+237313	nop 
+237314	nop 
+237315	nop 
+237316	nop 
+237317	nop 

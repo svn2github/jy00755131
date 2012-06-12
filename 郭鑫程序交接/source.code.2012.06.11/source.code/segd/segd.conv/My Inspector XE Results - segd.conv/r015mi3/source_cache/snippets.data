@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="e:\works\common\sockimpl.cpp" md5="08d9b53506ff2c0446580cda75e8c91f">
+    <snippet line="13">
+      <line line="10"/>
+      <line line="11">	WORD wVersionRequested = MAKEWORD(2, 2);</line>
+      <line line="12">	int nResult = WSAStartup(wVersionRequested, &amp;wsaData);</line>
+      <line line="13">	if (nResult != 0)</line>
+      <line line="14">		return false;</line>
+    </snippet>
+  </file>
+</snippets>

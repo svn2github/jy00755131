@@ -1,0 +1,9 @@
+LIBRARY	segd.api
+EXPORTS
+
+	init_module				@1
+	set_module_option		@2
+	release_module			@3
+	get_error_info			@4
+	show_writing_progress	@5
+	__debug_hook			@20

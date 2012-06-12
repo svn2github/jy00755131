@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcid.client", "pcid.client.vcproj", "{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dead.cycle.console", "..\test\dead.cycle.console\dead.cycle.console.vcproj", "{2050ACD9-EADB-4979-BA83-601AB4E33235}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}.Debug|Win32.Build.0 = Debug|Win32
+		{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}.Release|Win32.ActiveCfg = Release|Win32
+		{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}.Release|Win32.Build.0 = Release|Win32
+		{2050ACD9-EADB-4979-BA83-601AB4E33235}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2050ACD9-EADB-4979-BA83-601AB4E33235}.Debug|Win32.Build.0 = Debug|Win32
+		{2050ACD9-EADB-4979-BA83-601AB4E33235}.Release|Win32.ActiveCfg = Release|Win32
+		{2050ACD9-EADB-4979-BA83-601AB4E33235}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

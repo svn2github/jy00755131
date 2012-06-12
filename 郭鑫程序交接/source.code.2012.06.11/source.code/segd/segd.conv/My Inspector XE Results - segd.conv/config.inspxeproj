@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+ <version type="u32_t">1</version>
+ <All_Configurations-All_Platforms>
+  <version type="u32_t">1</version>
+  <analysis_type_settings>
+   <selected_analysis_type_path>D:\Intel\Inspector XE 2011\config\analysis_type\mi3.cfg</selected_analysis_type_path>
+  </analysis_type_settings>
+ </All_Configurations-All_Platforms>
+</root>

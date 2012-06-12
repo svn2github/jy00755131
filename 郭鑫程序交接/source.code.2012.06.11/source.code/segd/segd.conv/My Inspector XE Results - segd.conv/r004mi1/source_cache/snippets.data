@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\heapinit.c" md5="565a389dc06b3fa0e63331f33fbaaffd">
+    <snippet line="174">
+      <line line="171">        //  Initialize the "big-block" heap first.</line>
+      <line line="172">        if ( (_crtheap = HeapCreate( mtflag ? 0 : HEAP_NO_SERIALIZE,</line>
+      <line line="173">                                     BYTES_PER_PAGE, 0 )) == NULL )</line>
+      <line line="174">            return 0;</line>
+      <line line="175"/>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\initcrit.c" md5="cfaa8dfc4193b960805b76f838764baa">
+    <snippet line="86">
+      <line line="83">         * Call the real InitializeCriticalSectionAndSpinCount</line>
+      <line line="84">         */</line>
+      <line line="85">        ret = InitializeCriticalSectionAndSpinCount(lpCriticalSection, dwSpinCount);</line>
+      <line line="86">    }</line>
+      <line line="87">    __except (_exception_code()== STATUS_NO_MEMORY ? EXCEPTION_EXECUTE_HANDLER:EXCEPTION_CONTINUE_SEARCH) {</line>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\malloc.c" md5="a9cc1df8407bfebde7e19a49e10f8369">
+    <snippet line="105">
+      <line line="102">#else  /* _WIN64 */</line>
+      <line line="103">    if (__active_heap == __SYSTEM_HEAP) {</line>
+      <line line="104">        return HeapAlloc(_crtheap, 0, size ? size : 1);</line>
+      <line line="105">    } else</line>
+      <line line="106">    if ( __active_heap == __V6_HEAP ) {</line>
+    </snippet>
+  </file>
+</snippets>

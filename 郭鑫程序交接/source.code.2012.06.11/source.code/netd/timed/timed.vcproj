@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="gb2312"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="hpetd"
+	ProjectGUID="{04DA1EA5-4895-4FC1-9191-ABAAC7F89FF0}"
+	RootNamespace="timed"
+	Keyword="MakeFileProj"
+	TargetFrameworkVersion="196613"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\timed.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(DDKBUILD_PATH) -W7 checked . -cZ -prefast"
+				ReBuildCommandLine="$(DDKBUILD_PATH) -W7 checked . -cZ -prefast"
+				CleanCommandLine=""
+				Output="timerd.sys"
+				PreprocessorDefinitions="DBG=1;WINVER=0x0601;NTDDI_VERSION=0x06010000;WIN32;_DEBUG"
+				IncludeSearchPath="$(W7BASE)\inc\ddk\"
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\timed.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(DDKBUILD_PATH) -W7 free ."
+				ReBuildCommandLine="$(DDKBUILD_PATH) -W7 free ."
+				CleanCommandLine=""
+				Output="timerd.sys"
+				PreprocessorDefinitions="DBG=0;WINVER=0x0601;NTDDI_VERSION=0x06010000;WIN32;NDEBUG"
+				IncludeSearchPath="$(W7BASE)\inc\ddk\"
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
+			<File
+				RelativePath=".\hpetd.c"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
+			<File
+				RelativePath="..\include\timed\guiid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\hpetd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+			<File
+				RelativePath=".\hpetd.rc"
+				>
+			</File>
+		</Filter>
+		<File
+			RelativePath=".\readme.txt"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

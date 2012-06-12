@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<log version="1.0" tool="runtool">
+
+<msg id="1" tool="runtool">
+  <type>log-start</type>
+  <arg>2012/04/26 11:10:19</arg>
+</msg>
+<msg id="2" tool="runtool">
+  <type>mc-starts</type>
+</msg>
+<msg id="3" tool="runtool">
+  <type>marker-file</type>
+  <arg>E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r009mi3\r009mi3.inspxe</arg>
+</msg>
+<msg id="4" tool="mc">
+  <type>2001</type>
+  <arg>e:\works\segd\segd.conv\Debug\segd.conv.exe</arg>
+  <arg>6020</arg>
+  <arg>E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r009mi3\data.0\mc_segd.conv_6020.pdr</arg>
+  <description>Analysis started for e:\works\segd\segd.conv\Debug\segd.conv.exe, pid = 6020, status file = E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r009mi3\data.0\mc_segd.conv_6020.pdr</description>
+  <severity>2</severity>
+</msg>
+<msg id="5" tool="mc">
+  <type>2002</type>
+  <arg>e:\works\segd\segd.conv\Debug\segd.conv.exe</arg>
+  <arg>0x00030000</arg>
+  <arg>0x000c0fff</arg>
+  <description>Module loaded e:\works\segd\segd.conv\Debug\segd.conv.exe, address range [0x00030000-0x000c0fff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="6" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\system32\apphelp.dll</arg>
+  <arg>0x73cb0000</arg>
+  <arg>0x73cfbfff</arg>
+  <description>Module loaded C:\Windows\system32\apphelp.dll, address range [0x73cb0000-0x73cfbfff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="7" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\KERNELBASE.dll</arg>
+  <arg>0x751e0000</arg>
+  <arg>0x75225fff</arg>
+  <description>Module loaded C:\Windows\syswow64\KERNELBASE.dll, address range [0x751e0000-0x75225fff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="8" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\kernel32.dll</arg>
+  <arg>0x75880000</arg>
+  <arg>0x7598ffff</arg>
+  <description>Module loaded C:\Windows\syswow64\kernel32.dll, address range [0x75880000-0x7598ffff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="9" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\SysWOW64\ntdll.dll</arg>
+  <arg>0x77320000</arg>
+  <arg>0x7749ffff</arg>
+  <description>Module loaded C:\Windows\SysWOW64\ntdll.dll, address range [0x77320000-0x7749ffff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="10" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\USER32.dll</arg>
+  <arg>0x75460000</arg>
+  <arg>0x7555ffff</arg>
+  <description>Module loaded C:\Windows\syswow64\USER32.dll, address range [0x75460000-0x7555ffff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="11" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\GDI32.dll</arg>
+  <arg>0x76870000</arg>
+  <arg>0x768fffff</arg>
+  <description>Module loaded C:\Windows\syswow64\GDI32.dll, address range [0x76870000-0x768fffff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="12" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\LPK.dll</arg>
+  <arg>0x74ce0000</arg>
+  <arg>0x74ce9fff</arg>
+  <description>Module loaded C:\Windows\syswow64\LPK.dll, address range [0x74ce0000-0x74ce9fff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="13" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\USP10.dll</arg>
+  <arg>0x75560000</arg>
+  <arg>0x755fcfff</arg>
+  <description>Module loaded C:\Windows\syswow64\USP10.dll, address range [0x75560000-0x755fcfff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="14" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\msvcrt.dll</arg>
+  <arg>0x769b0000</arg>
+  <arg>0x76a5bfff</arg>
+  <description>Module loaded C:\Windows\syswow64\msvcrt.dll, address range [0x769b0000-0x76a5bfff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="15" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\ADVAPI32.dll</arg>
+  <arg>0x76910000</arg>
+  <arg>0x769affff</arg>
+  <description>Module loaded C:\Windows\syswow64\ADVAPI32.dll, address range [0x76910000-0x769affff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="16" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\SysWOW64\sechost.dll</arg>
+  <arg>0x76740000</arg>
+  <arg>0x76758fff</arg>
+  <description>Module loaded C:\Windows\SysWOW64\sechost.dll, address range [0x76740000-0x76758fff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="17" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\RPCRT4.dll</arg>
+  <arg>0x75a00000</arg>
+  <arg>0x75aeffff</arg>
+  <description>Module loaded C:\Windows\syswow64\RPCRT4.dll, address range [0x75a00000-0x75aeffff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="18" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\SspiCli.dll</arg>
+  <arg>0x74a00000</arg>
+  <arg>0x74a5ffff</arg>
+  <description>Module loaded C:\Windows\syswow64\SspiCli.dll, address range [0x74a00000-0x74a5ffff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="19" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\CRYPTBASE.dll</arg>
+  <arg>0x749f0000</arg>
+  <arg>0x749fbfff</arg>
+  <description>Module loaded C:\Windows\syswow64\CRYPTBASE.dll, address range [0x749f0000-0x749fbfff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="20" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\imagehlp.dll</arg>
+  <arg>0x767e0000</arg>
+  <arg>0x76809fff</arg>
+  <description>Module loaded C:\Windows\syswow64\imagehlp.dll, address range [0x767e0000-0x76809fff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="21" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\SHLWAPI.dll</arg>
+  <arg>0x75600000</arg>
+  <arg>0x75656fff</arg>
+  <description>Module loaded C:\Windows\syswow64\SHLWAPI.dll, address range [0x75600000-0x75656fff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="22" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\WS2_32.dll</arg>
+  <arg>0x75990000</arg>
+  <arg>0x759c4fff</arg>
+  <description>Module loaded C:\Windows\syswow64\WS2_32.dll, address range [0x75990000-0x759c4fff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="23" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\NSI.dll</arg>
+  <arg>0x76860000</arg>
+  <arg>0x76865fff</arg>
+  <description>Module loaded C:\Windows\syswow64\NSI.dll, address range [0x76860000-0x76865fff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="24" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\system32\IMM32.DLL</arg>
+  <arg>0x76780000</arg>
+  <arg>0x767dffff</arg>
+  <description>Module loaded C:\Windows\system32\IMM32.DLL, address range [0x76780000-0x767dffff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="25" tool="mc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\MSCTF.dll</arg>
+  <arg>0x75230000</arg>
+  <arg>0x752fbfff</arg>
+  <description>Module loaded C:\Windows\syswow64\MSCTF.dll, address range [0x75230000-0x752fbfff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="26" tool="mc">
+  <type>2002</type>
+  <arg>C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL</arg>
+  <arg>0x622b0000</arg>
+  <arg>0x622d2fff</arg>
+  <description>Module loaded C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL, address range [0x622b0000-0x622d2fff]</description>
+  <severity>2</severity>
+</msg>
+<msg id="27" tool="mc">
+  <type>2003</type>
+  <arg>C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL</arg>
+  <description>Module unloaded C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL</description>
+  <severity>2</severity>
+</msg>
+<msg id="28" tool="mc">
+  <type>2008</type>
+  <arg>e:\works\segd\segd.conv\Debug\segd.conv.exe</arg>
+  <arg>0</arg>
+  <description>Process e:\works\segd\segd.conv\Debug\segd.conv.exe exited with code 0. Leak analysis starting - this may take a while.</description>
+  <severity>2</severity>
+</msg>
+<msg id="29" tool="mc">
+  <type>2003</type>
+  <arg>e:\works\segd\segd.conv\Debug\segd.conv.exe</arg>
+  <description>Module unloaded e:\works\segd\segd.conv\Debug\segd.conv.exe</description>
+  <severity>2</severity>
+</msg>
+<msg id="30" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\system32\apphelp.dll</arg>
+  <description>Module unloaded C:\Windows\system32\apphelp.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="31" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\KERNELBASE.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\KERNELBASE.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="32" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\kernel32.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\kernel32.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="33" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\SysWOW64\ntdll.dll</arg>
+  <description>Module unloaded C:\Windows\SysWOW64\ntdll.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="34" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\USER32.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\USER32.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="35" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\GDI32.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\GDI32.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="36" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\LPK.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\LPK.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="37" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\USP10.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\USP10.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="38" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\msvcrt.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\msvcrt.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="39" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\ADVAPI32.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\ADVAPI32.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="40" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\SysWOW64\sechost.dll</arg>
+  <description>Module unloaded C:\Windows\SysWOW64\sechost.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="41" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\RPCRT4.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\RPCRT4.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="42" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\SspiCli.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\SspiCli.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="43" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\CRYPTBASE.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\CRYPTBASE.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="44" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\imagehlp.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\imagehlp.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="45" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\SHLWAPI.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\SHLWAPI.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="46" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\WS2_32.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\WS2_32.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="47" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\NSI.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\NSI.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="48" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\system32\IMM32.DLL</arg>
+  <description>Module unloaded C:\Windows\system32\IMM32.DLL</description>
+  <severity>2</severity>
+</msg>
+<msg id="49" tool="mc">
+  <type>2003</type>
+  <arg>C:\Windows\syswow64\MSCTF.dll</arg>
+  <description>Module unloaded C:\Windows\syswow64\MSCTF.dll</description>
+  <severity>2</severity>
+</msg>
+<msg id="50" tool="mc">
+  <type>2009</type>
+  <arg>e:\works\segd\segd.conv\Debug\segd.conv.exe</arg>
+  <description>Analysis completed for e:\works\segd\segd.conv\Debug\segd.conv.exe</description>
+  <severity>2</severity>
+</msg>
+<msg id="51" tool="runtool">
+  <type>app-exit-code</type>
+  <arg>0</arg>
+</msg>
+<msg id="52" tool="runtool">
+  <type>marker-file</type>
+  <arg>E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r009mi3\r009mi3.inspxe</arg>
+</msg>
+<msg id="53" tool="runtool">
+  <type>mc-done</type>
+</msg>
+<msg id="54" tool="runtool">
+  <type>log-end</type>
+  <arg>2012/04/26 11:10:53</arg>
+</msg>
+
+</log>
+

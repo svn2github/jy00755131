@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="e:\works\common\sockimpl.cpp" md5="08d9b53506ff2c0446580cda75e8c91f">
+    <snippet line="13">
+      <line line="10"/>
+      <line line="11">	WORD wVersionRequested = MAKEWORD(2, 2);</line>
+      <line line="12">	int nResult = WSAStartup(wVersionRequested, &amp;wsaData);</line>
+      <line line="13">	if (nResult != 0)</line>
+      <line line="14">		return false;</line>
+    </snippet>
+  </file>
+  <file name="e:\works\segd\segd.conv\segd.conv.private.cpp" md5="9dca9c0b21180ccdddb94d700b9de9d8">
+    <snippet line="117">
+      <line line="114"/>
+      <line line="115">	//initialize socket</line>
+      <line line="116">	init_socket();</line>
+      <line line="117"/>
+      <line line="118">	__application_environment.version_ = app_version;</line>
+    </snippet>
+    <snippet line="1183">
+      <line line="1180">	int error_code = 0x0;</line>
+      <line line="1181"/>
+      <line line="1182">	error_code = init_application(app_version);</line>
+      <line line="1183">	if(error_code == APP_FAULT)	return error_code = __application_environment.last_error_code_;</line>
+      <line line="1184">	</line>
+    </snippet>
+    <snippet line="142">
+      <line line="139">	if(__application_environment.log_)	{	</line>
+      <line line="140"/>
+      <line line="141">		__application_environment.log_-&gt;init(NULL, segd::log::CONSOLE_TYPE); </line>
+      <line line="142"/>
+      <line line="143">		size = get_string(IDS_STRING5003, format, sizeof(format)/sizeof(format[0]));</line>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\initnum.c" md5="c71af25ef08535099125988537689f57">
+    <snippet line="125">
+      <line line="122">             * Allocate a new reference counter for the numeric info</line>
+      <line line="123">             */</line>
+      <line line="124">            if ( (lconv_num_refcount = _malloc_crt(sizeof(int))) == NULL )</line>
+      <line line="125">            {</line>
+      <line line="126">                _free_crt(lc);</line>
+    </snippet>
+  </file>
+</snippets>

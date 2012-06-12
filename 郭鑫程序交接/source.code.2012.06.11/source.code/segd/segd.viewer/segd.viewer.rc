@@ -1,0 +1,268 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDC_SEGDVIEWER MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open SEG-D  file",           ID_FILE_OPEN
+        MENUITEM "&Save SEG-D file",            ID_FILE_SAVEFILE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       IDM_EXIT
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About ...",                  IDM_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDC_SEGDVIEWER ACCELERATORS 
+BEGIN
+    "?",            IDM_ABOUT,              ASCII,  ALT
+    "/",            IDM_ABOUT,              ASCII,  ALT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About segd.viewer"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            128,IDC_STATIC,14,14,21,20
+    LTEXT           "segd.viewer, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2011",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,1,23,48
+ PRODUCTVERSION 1,1,23,48
+ FILEFLAGSMASK 0x37L
+#ifdef _DEBUG
+ FILEFLAGS 0x21L
+#else
+ FILEFLAGS 0x20L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "Comments", "1.1.23.48.2011.10.27"
+            VALUE "CompanyName", "hitech"
+            VALUE "FileDescription", "SEG-D viewer version: 1.1.23.48.2011.10.27"
+            VALUE "FileVersion", "1, 1, 23, 48"
+            VALUE "InternalName", "SEG-D viewer"
+            VALUE "LegalCopyright", "Copyright (C) 2011"
+            VALUE "OriginalFilename", "segd.viewer"
+            VALUE "ProductName", "SEG-D Viewer"
+            VALUE "ProductVersion", "1, 1, 23, 48"
+            VALUE "SpecialBuild", "1.1.23.48.2011.10.27"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_APP_TITLE           "segd.viewer"
+    IDS_STRING104           "不能打开或保存文件，请重试！"
+    IDS_TREEVIEW_ROOT       "%s"
+    IDS_SEGD_REV2_X         "SD2.X"
+    IDS_STORAGTE_UNIT_LABEL "存储单元标签"
+    IDS_GENERAL_HEADER      "通用头"
+    IDC_SEGDVIEWER          "SEGDVIEWER"
+    IDS_GENERAL_HEADER_2    "通用头#2"
+    IDS_ADDITIONAL_GENERAL_HEADER "附加通用头#%d"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_COLUMONS_BEG        "名称"
+    IDS_STRING140           "字节数"
+    IDS_STRING105           "格式"
+    IDS_COLUMONS_END        "数据"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CHANNEL_SET_HEADER  "道组头段#%d"
+    IDS_SAMPLE_SKEW_HEADER  "采样时偏头段#%d"
+    IDS_EXTENDED_HEADER     "扩展头段"
+    IDS_ENTERNAL_HEADER     "外部头段"
+    IDS_TRACE_HEADER        "道头"
+    IDS_TRACE_HEADER_EXTENSION "道头扩展#%d"
+    IDS_TRACE_DATA          "采样数据"
+    IDS_GENERNAL_TRAILER    "数据追踪"
+    IDS_STRING120           "创建或打开SEG-D文件时，调用函数传递的创建参数不正确，导致失败！"
+    IDS_STRING121           "调用读取或写入文件过程中，检测函数传入参数无效！"
+    IDS_STRING122           "读取或写入SEG-D文件时，发现其格式不正确！"
+    IDS_STRING123           "读取或写入SEG-D文件头时，产生错误！"
+    IDS_STRING124           "%s 文件信息"
+    IDS_STRING125           "普通头段数据块"
+    IDS_STRING126           "#%d"
+    IDS_STRING127           "读取或写入普通头段数据块大小与规格大小不匹配"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING128           "创建或打开SEG-D文件时，分配文件数据内存失败或创建参数,读取IO方式设置不正确"
+    IDS_STRING129           "格式代码不正确"
+    IDS_STRING130           "扫描类型头段"
+    IDS_STRING131           "扩展头段"
+    IDS_STRING132           "外部头段"
+    IDS_STRING133           "记录道数据块"
+    IDS_STRING134           "多路解编道头"
+    IDS_STRING135           "道头扩展"
+    IDS_STRING136           "记录道数据"
+    IDS_STRING137           "年份时间不对"
+    IDS_STRING138           "儒略日超出范围"
+    IDS_STRING139           "辅助道头扩展"
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_SEGDVIEWER          ICON                    "segd.viewer.ico"
+IDI_SMALL               ICON                    "small.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

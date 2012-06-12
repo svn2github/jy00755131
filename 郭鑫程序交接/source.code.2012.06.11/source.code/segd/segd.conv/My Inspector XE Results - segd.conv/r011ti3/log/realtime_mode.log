@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feedback>
+ <message severity="info">Threading error analysis: started</message>
+ <nop/>
+ <message severity="info">Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r011ti3\r011ti3.inspxe] </message>
+ <nop/>
+ <message severity="info">Loaded module: e:\works\segd\segd.conv\Debug\segd.conv.exe. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\system32\apphelp.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\KERNELBASE.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\kernel32.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\SysWOW64\ntdll.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\USER32.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\GDI32.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\LPK.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\USP10.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\msvcrt.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\ADVAPI32.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\SysWOW64\sechost.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\RPCRT4.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\SspiCli.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\CRYPTBASE.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\imagehlp.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\SHLWAPI.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\WS2_32.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\NSI.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\system32\IMM32.DLL. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\MSCTF.dll. </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL. </message>
+ <nop/>
+ <message severity="info">Unloaded module: e:\works\segd\segd.conv\Debug\segd.conv.exe. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\system32\apphelp.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\KERNELBASE.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\kernel32.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\SysWOW64\ntdll.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\USER32.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\GDI32.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\LPK.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\USP10.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\msvcrt.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\ADVAPI32.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\SysWOW64\sechost.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\RPCRT4.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\SspiCli.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\CRYPTBASE.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\imagehlp.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\SHLWAPI.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\WS2_32.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\NSI.dll. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\system32\IMM32.DLL. </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\MSCTF.dll. </message>
+ <nop/>
+ <message severity="info">Process e:\works\segd\segd.conv\debug\segd.conv.exe (PID = 8740) has terminated. </message>
+ <nop/>
+ <message severity="info">Application exit code: [0] </message>
+ <nop/>
+ <message severity="info">Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r011ti3\r011ti3.inspxe] </message>
+ <nop/>
+ <message severity="info">Threading error analysis: completed</message>
+ <nop/>
+</feedback>

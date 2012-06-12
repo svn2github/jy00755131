@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "segd.conv", "segd.conv.vcproj", "{AEB66FD4-466F-4E30-88F8-6145A6B3003B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "segd.viewer", "..\segd.viewer\segd.viewer.vcproj", "{7BBE1A7D-F547-4D7A-AF33-ECCA472E04D0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "segd.conv.tester", "..\segd.conv.tester\segd.conv.tester.vcproj", "{563C8387-AA1E-45BE-A78B-B7FAD70C0882}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "segd.api", "..\segd.api\segd.api.vcproj", "{4A39BDAE-71B3-4A2E-826F-505A130E5F52}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AEB66FD4-466F-4E30-88F8-6145A6B3003B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AEB66FD4-466F-4E30-88F8-6145A6B3003B}.Debug|Win32.Build.0 = Debug|Win32
+		{AEB66FD4-466F-4E30-88F8-6145A6B3003B}.Release|Win32.ActiveCfg = Release|Win32
+		{AEB66FD4-466F-4E30-88F8-6145A6B3003B}.Release|Win32.Build.0 = Release|Win32
+		{7BBE1A7D-F547-4D7A-AF33-ECCA472E04D0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7BBE1A7D-F547-4D7A-AF33-ECCA472E04D0}.Debug|Win32.Build.0 = Debug|Win32
+		{7BBE1A7D-F547-4D7A-AF33-ECCA472E04D0}.Release|Win32.ActiveCfg = Release|Win32
+		{7BBE1A7D-F547-4D7A-AF33-ECCA472E04D0}.Release|Win32.Build.0 = Release|Win32
+		{563C8387-AA1E-45BE-A78B-B7FAD70C0882}.Debug|Win32.ActiveCfg = Debug|Win32
+		{563C8387-AA1E-45BE-A78B-B7FAD70C0882}.Debug|Win32.Build.0 = Debug|Win32
+		{563C8387-AA1E-45BE-A78B-B7FAD70C0882}.Release|Win32.ActiveCfg = Release|Win32
+		{563C8387-AA1E-45BE-A78B-B7FAD70C0882}.Release|Win32.Build.0 = Release|Win32
+		{4A39BDAE-71B3-4A2E-826F-505A130E5F52}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A39BDAE-71B3-4A2E-826F-505A130E5F52}.Debug|Win32.Build.0 = Debug|Win32
+		{4A39BDAE-71B3-4A2E-826F-505A130E5F52}.Release|Win32.ActiveCfg = Release|Win32
+		{4A39BDAE-71B3-4A2E-826F-505A130E5F52}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

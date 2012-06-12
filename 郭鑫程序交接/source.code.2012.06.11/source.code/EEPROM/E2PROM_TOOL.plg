@@ -1,0 +1,45 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: E2PROM_TOOL - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\admin\LOCALS~1\Temp\RSP390.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"E:\kuoxin\E2PROM_TOOL\E2PROM_TOOLView.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\admin\LOCALS~1\Temp\RSP390.tmp" 
+Creating temporary file "C:\DOCUME~1\admin\LOCALS~1\Temp\RSP391.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/E2PROM_TOOL.pdb" /debug /machine:I386 /out:"Debug/E2PROM_TOOL.exe" /pdbtype:sept 
+.\Debug\E2PROM_TOOL.obj
+.\Debug\E2PROM_TOOLDoc.obj
+.\Debug\E2PROM_TOOLView.obj
+.\Debug\file_oprt.obj
+.\Debug\MainFrm.obj
+.\Debug\StdAfx.obj
+.\Debug\E2PROM_TOOL.res
+.\Debug\PortTalk_IOCTL.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\admin\LOCALS~1\Temp\RSP391.tmp"
+<h3>Output Window</h3>
+Compiling...
+E2PROM_TOOLView.cpp
+Linking...
+E2PROM_TOOLView.obj : error LNK2001: unresolved external symbol "void __cdecl ClosePortTalk(void)" (?ClosePortTalk@@YAXXZ)
+E2PROM_TOOLView.obj : error LNK2001: unresolved external symbol "unsigned char __cdecl inportb(unsigned short)" (?inportb@@YAEG@Z)
+E2PROM_TOOLView.obj : error LNK2001: unresolved external symbol "void __cdecl outportb(unsigned short,unsigned char)" (?outportb@@YAXGE@Z)
+E2PROM_TOOLView.obj : error LNK2001: unresolved external symbol "unsigned char __cdecl OpenPortTalk(void)" (?OpenPortTalk@@YAEXZ)
+Debug/E2PROM_TOOL.exe : fatal error LNK1120: 4 unresolved externals
+Error executing link.exe.
+
+
+
+<h3>Results</h3>
+E2PROM_TOOL.exe - 5 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

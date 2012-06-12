@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="e:\works\segd\segd.conv\segd.conv.private.cpp" md5="9dca9c0b21180ccdddb94d700b9de9d8">
+    <snippet line="2143">
+      <line line="2140"/>
+      <line line="2141">								data[3] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j);</line>
+      <line line="2142">								data[2] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j + 1);</line>
+      <line line="2143">								data[1] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j + 2);</line>
+      <line line="2144">								data[0] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j + 3);</line>
+    </snippet>
+    <snippet line="953">
+      <line line="950"/>
+      <line line="951">					size = segd_file_get_trace_data_size(read_segd_ptr);</line>
+      <line line="952">					read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ = (SEGD_UCHAR*)malloc(size);</line>
+      <line line="953">					segd_file_read_trace_data(read_segd_ptr, read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_, size);</line>
+      <line line="954">				}</line>
+    </snippet>
+    <snippet line="2182">
+      <line line="2179">	if(read_segd_file_private(read_segd_ptr) == APP_FAULT)	return error_code = APP_FAULT;</line>
+      <line line="2180"/>
+      <line line="2181">	output_segd_log(read_segd_ptr, __application_environment.output_log_);</line>
+      <line line="2182"/>
+      <line line="2183">	segd_file_close(read_segd_ptr);</line>
+    </snippet>
+    <snippet line="1194">
+      <line line="1191">	for(i = 0; i &lt; __application_environment.arg_size_; ++i){</line>
+      <line line="1192">		index = __application_environment.args_[i];</line>
+      <line line="1193">		if(__app_cmd[index].function_ptr(__app_cmd + index) != APP_SUCCESS){</line>
+      <line line="1194">			error_code = get_last_error();</line>
+      <line line="1195">			break;</line>
+    </snippet>
+    <snippet line="2180">
+      <line line="2177"/>
+      <line line="2178">	read_segd_ptr = segd_file_create(path_name, SEGD_FILE_OPEN_EXISTING | SEGD_FILE_IO_OVERLAPPED);</line>
+      <line line="2179">	if(read_segd_file_private(read_segd_ptr) == APP_FAULT)	return error_code = APP_FAULT;</line>
+      <line line="2180"/>
+      <line line="2181">	output_segd_log(read_segd_ptr, __application_environment.output_log_);</line>
+    </snippet>
+    <snippet line="2144">
+      <line line="2141">								data[3] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j);</line>
+      <line line="2142">								data[2] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j + 1);</line>
+      <line line="2143">								data[1] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j + 2);</line>
+      <line line="2144">								data[0] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j + 3);</line>
+      <line line="2145">								memcpy(&amp;f_val, data, sizeof(UCHAR) * CURRENT_SEGD_MINI_DATA_LENGTH);</line>
+    </snippet>
+    <snippet line="2145">
+      <line line="2142">								data[2] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j + 1);</line>
+      <line line="2143">								data[1] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j + 2);</line>
+      <line line="2144">								data[0] = *(read_segd_ptr-&gt;aux_trace_headers_[i].trace_data_ + j + 3);</line>
+      <line line="2145">								memcpy(&amp;f_val, data, sizeof(UCHAR) * CURRENT_SEGD_MINI_DATA_LENGTH);</line>
+      <line line="2146">								memset(buf_file_name, 0x0, sizeof(buf_file_name));</line>
+    </snippet>
+  </file>
+</snippets>

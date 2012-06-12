@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="e:\works\segd\segd.conv\make.segd.cpp" md5="d05133ad018eab93ee5ad1c561780754">
+    <snippet line="39">
+      <line line="36">	float tmp_val = 0x0;</line>
+      <line line="37"/>
+      <line line="38">	*data = new float[freq];</line>
+      <line line="39">	data_length = 0x0;</line>
+      <line line="40">	ZeroMemory(*data, sizeof(float) * freq);</line>
+    </snippet>
+    <snippet line="316">
+      <line line="313">GOTO:</line>
+      <line line="314">	if(outp_data) free(outp_data);</line>
+      <line line="315">	if(data)	free(data);</line>
+      <line line="316"/>
+      <line line="317">	return is_ok;</line>
+    </snippet>
+    <snippet line="467">
+      <line line="464"/>
+      <line line="465">	//11. 写入记录道数据块 + 写入AD数据</line>
+      <line line="466">	make_segd_data_private(segd_config_info_ptr, outp_file_ptr, &amp;sps_data_info, &amp;ad_data);</line>
+      <line line="467">GOTO:</line>
+      <line line="468">	free_sps_data_memory(&amp;sps_data_info);</line>
+    </snippet>
+    <snippet line="204">
+      <line line="201"/>
+      <line line="202">	//生成正弦数据</line>
+      <line line="203">	make_sin_data(&amp;data, data_length);</line>
+      <line line="204">	data_length = data_length &lt; step_length ? data_length : step_length;</line>
+      <line line="205">	for(i = segd_config_ptr-&gt;extended_header_.trace_total_number_/2, k = 0; i &gt;=0 ; --i, k += step_length)</line>
+    </snippet>
+  </file>
+  <file name="e:\works\common\sockimpl.cpp" md5="08d9b53506ff2c0446580cda75e8c91f">
+    <snippet line="13">
+      <line line="10"/>
+      <line line="11">	WORD wVersionRequested = MAKEWORD(2, 2);</line>
+      <line line="12">	int nResult = WSAStartup(wVersionRequested, &amp;wsaData);</line>
+      <line line="13">	if (nResult != 0)</line>
+      <line line="14">		return false;</line>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\initnum.c" md5="c71af25ef08535099125988537689f57">
+    <snippet line="113">
+      <line line="110">         * Allocate a new reference counter for the lconv structure</line>
+      <line line="111">         */</line>
+      <line line="112">        if ( (lc_refcount = _malloc_crt(sizeof(int))) == NULL )</line>
+      <line line="113">        {</line>
+      <line line="114">            _free_crt(lc);</line>
+    </snippet>
+    <snippet line="125">
+      <line line="122">             * Allocate a new reference counter for the numeric info</line>
+      <line line="123">             */</line>
+      <line line="124">            if ( (lconv_num_refcount = _malloc_crt(sizeof(int))) == NULL )</line>
+      <line line="125">            {</line>
+      <line line="126">                _free_crt(lc);</line>
+    </snippet>
+  </file>
+  <file name="e:\works\common\log.cpp" md5="4570ac05a3aa4a242f9af3e888bda7a1">
+    <snippet line="97">
+      <line line="94">	ImageUnload(loaded_image_ptr);</line>
+      <line line="95">	std_output_handler_ = GetStdHandle(STD_OUTPUT_HANDLE);</line>
+      <line line="96">	__matrix_setlocale(LC_ALL, __TEXT("chs"));</line>
+      <line line="97">	return is_ok;</line>
+      <line line="98">}</line>
+    </snippet>
+    <snippet line="129">
+      <line line="126">		case CONSOLE_TYPE:</line>
+      <line line="127">			type_ = type;</line>
+      <line line="128">			if(!alloc_console_private()){</line>
+      <line line="129"/>
+      <line line="130">				OutputDebugString(__TEXT("can not allocate a console window!"));</line>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\initctyp.c" md5="ea800499398c92887b466144c842e3e8">
+    <snippet line="98">
+      <line line="95">            /* allocate new buffers for tables */</line>
+      <line line="96">            newctype1 = (unsigned short *)</line>
+      <line line="97">                _calloc_crt((_COFFSET+_CTABSIZE), sizeof(unsigned short));</line>
+      <line line="98">            newclmap = (char *)</line>
+      <line line="99">                _calloc_crt((_COFFSET+_CTABSIZE), sizeof(char));</line>
+    </snippet>
+  </file>
+</snippets>

@@ -1,0 +1,938 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source file">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="socket">
+      <UniqueIdentifier>{b58ab762-ae75-4091-bfce-f9d5c9d5fa6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource file">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="sensor graph view">
+      <UniqueIdentifier>{32b27da3-d082-49c7-81a9-6bd7df60cdfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="from line setup dialog">
+      <UniqueIdentifier>{73ca7477-0ef3-47ab-99b9-52eb648a7d56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="set instrument dialog">
+      <UniqueIdentifier>{38195707-79e4-4a3d-8ee9-382ecbbb2c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="instrument graph view">
+      <UniqueIdentifier>{c1394a95-d10d-48fb-b518-60d125881522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data structure">
+      <UniqueIdentifier>{282ab87b-4fe5-4e35-8265-514ec719cd6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xml">
+      <UniqueIdentifier>{44eafc12-ac7c-4eca-ad11-7b70a95d1704}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header file">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="output view">
+      <UniqueIdentifier>{1b654a0b-a15e-4fb2-8597-36dbbe162049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="survey setup dialog">
+      <UniqueIdentifier>{ac73984a-8ca6-493c-891b-88555d425975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="layout setup dialog">
+      <UniqueIdentifier>{d7fdccde-d3a3-42da-a50f-9e45442690a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="spreadtype setup dialog">
+      <UniqueIdentifier>{d15fdb6a-2def-480a-b10c-2f939527d838}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="look setup dialog">
+      <UniqueIdentifier>{182b46ef-dbb8-442e-bb2e-79389cd232bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="testbase setup dialog">
+      <UniqueIdentifier>{feba84e9-926d-4d70-8035-9baffbe23637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test setup dialog">
+      <UniqueIdentifier>{e2fc6565-2572-4a1d-b25a-4e619dbd1f87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="seismonitor graph view">
+      <UniqueIdentifier>{64932a06-6000-48d5-9119-e23ea7907126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="instrument list view">
+      <UniqueIdentifier>{a86520ad-2022-437a-8206-ec63629e39d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sensor list view">
+      <UniqueIdentifier>{cddb1079-ebc6-4300-bc0e-df1b50f9122f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="protocol">
+      <UniqueIdentifier>{59ea9105-348a-490f-a96b-1658598dde19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data structure\old">
+      <UniqueIdentifier>{d4c3b969-9f85-4992-8b8a-530b67b5e421}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ChildFrm.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCtrlEdit.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCtrlList.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="line.cmd.line.info.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="line.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="STATUS_DIALOG.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarGraph.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarGraphButton.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarImage.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarLabel.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="line.socket.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="line.socket.impl.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketInterfaceCmdRev.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketInterfaceCmdSend.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketInterfaceDataRev.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphSensorData.cpp">
+      <Filter>sensor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphSensorList.cpp">
+      <Filter>sensor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphViewTopToolBarSensor.cpp">
+      <Filter>sensor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="LeftViewBarSensorBottom.cpp">
+      <Filter>sensor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="LeftViewBarSensorTop.cpp">
+      <Filter>sensor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorGraphChildFrame.cpp">
+      <Filter>sensor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorGraphDoc.cpp">
+      <Filter>sensor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorGraphView.cpp">
+      <Filter>sensor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgFormLineSetup.cpp">
+      <Filter>from line setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSetInstrument.cpp">
+      <Filter>set instrument dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphViewBottomToolBar.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphViewTopToolBar.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphViewTopToolBarInstrument.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="InstrumentGraphChildFrame.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="InstrumentGraphDoc.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="InstrumentGraphView.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="LeftViewBarInstrumentBottom.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="LeftViewBarInstrumentTop.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLDOMTool.cpp">
+      <Filter>xml</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputView.cpp">
+      <Filter>output view</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSurveySetup.cpp">
+      <Filter>survey setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabPointCode.cpp">
+      <Filter>survey setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabSensor.cpp">
+      <Filter>survey setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabSurvey.cpp">
+      <Filter>survey setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgLayoutSetup.cpp">
+      <Filter>layout setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabAux.cpp">
+      <Filter>layout setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabBlastMachine.cpp">
+      <Filter>layout setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabDetour.cpp">
+      <Filter>layout setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabMarker.cpp">
+      <Filter>layout setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabMute.cpp">
+      <Filter>layout setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSpreadSetup.cpp">
+      <Filter>spreadtype setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabSpreadAbsolute.cpp">
+      <Filter>spreadtype setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabSpreadGeneric.cpp">
+      <Filter>spreadtype setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgLookSetup.cpp">
+      <Filter>look setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgTestBaseSetup.cpp">
+      <Filter>testbase setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabTestBase.cpp">
+      <Filter>testbase setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabTestLimit.cpp">
+      <Filter>testbase setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgTestSetup.cpp">
+      <Filter>test setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabTestInstrument.cpp">
+      <Filter>test setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabTestMultiple.cpp">
+      <Filter>test setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabTestSeisMonitor.cpp">
+      <Filter>test setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TabTestSensor.cpp">
+      <Filter>test setup dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="BCGPSliderButton.cpp">
+      <Filter>seismonitor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphViewTopToolBarSeismonitor.cpp">
+      <Filter>seismonitor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="LeftViewBarSeismonitorTop.cpp">
+      <Filter>seismonitor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="SeismonitorGraphChildFrame.cpp">
+      <Filter>seismonitor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="SeismonitorGraphDoc.cpp">
+      <Filter>seismonitor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="SeismonitorGraphView.cpp">
+      <Filter>seismonitor graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="InstrumentListCtrl.cpp">
+      <Filter>instrument list view</Filter>
+    </ClCompile>
+    <ClCompile Include="InstrumentListDoc.cpp">
+      <Filter>instrument list view</Filter>
+    </ClCompile>
+    <ClCompile Include="InstrumentListView.cpp">
+      <Filter>instrument list view</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorListCtrl.cpp">
+      <Filter>sensor list view</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorListDoc.cpp">
+      <Filter>sensor list view</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorListView.cpp">
+      <Filter>sensor list view</Filter>
+    </ClCompile>
+    <ClCompile Include="AuxData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="AuxList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="BlastMachineData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="BlastMachineList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="ChannelList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="ChannelSetupData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="FormLineData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="FormLineList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameInterface.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexInstrumentMap.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="Instrument.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="InstrumentList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="LineList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="LineSetupData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="LookSetupData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkerData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkerList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="MuteData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="MuteList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="PointCodeData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="PointCodeList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="Rout.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="RoutList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="ShotPointMap.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="SiteData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="SpreadAbsoluteData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="SpreadAbsoluteList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="SpreadGenericData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="SpreadGenericList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticFloat.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="TabFormLine.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="TabPage.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="TestBaseData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="TestBaseList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="TestLimitData.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="TestLimitList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="TestProject.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="TestProjectList.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRequest.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="WndInstrument.cpp">
+      <Filter>data structure\old</Filter>
+    </ClCompile>
+    <ClCompile Include="line.socket.impl.2.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="data.base.cpp">
+      <Filter>data structure</Filter>
+    </ClCompile>
+    <ClCompile Include="data.base.helper.cpp">
+      <Filter>data structure</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphInstrumentData.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphInstrumentList.cpp">
+      <Filter>instrument graph view</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="line.socket.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="line.socket.impl.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketInterfaceCmdRev.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketInterfaceCmdSend.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketInterfaceDataRev.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphViewTopToolBarSensor.h">
+      <Filter>sensor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="LeftViewBarSensorBottom.h">
+      <Filter>sensor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="LeftViewBarSensorTop.h">
+      <Filter>sensor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorGraphChildFrame.h">
+      <Filter>sensor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorGraphDoc.h">
+      <Filter>sensor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorGraphView.h">
+      <Filter>sensor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgFormLineSetup.h">
+      <Filter>from line setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSetInstrument.h">
+      <Filter>set instrument dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphViewBottomToolBar.h">
+      <Filter>instrument graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphViewTopToolBar.h">
+      <Filter>instrument graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphViewTopToolBarInstrument.h">
+      <Filter>instrument graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="InstrumentGraphChildFrame.h">
+      <Filter>instrument graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="InstrumentGraphDoc.h">
+      <Filter>instrument graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="InstrumentGraphView.h">
+      <Filter>instrument graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="LeftViewBarInstrumentBottom.h">
+      <Filter>instrument graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="LeftViewBarInstrumentTop.h">
+      <Filter>instrument graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="CXMLDOMDocument.h">
+      <Filter>xml</Filter>
+    </ClInclude>
+    <ClInclude Include="CXMLDOMElement.h">
+      <Filter>xml</Filter>
+    </ClInclude>
+    <ClInclude Include="CXMLDOMNode.h">
+      <Filter>xml</Filter>
+    </ClInclude>
+    <ClInclude Include="CXMLDOMNodeList.h">
+      <Filter>xml</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLDOMTool.h">
+      <Filter>xml</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFrm.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="GridCtrlEdit.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="GridCtrlList.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="line.cmd.line.info.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="line.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="STATUS_DIALOG.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarGraph.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarGraphButton.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarImage.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarLabel.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputView.h">
+      <Filter>output view</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSurveySetup.h">
+      <Filter>survey setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabPointCode.h">
+      <Filter>survey setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabSensor.h">
+      <Filter>survey setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabSurvey.h">
+      <Filter>survey setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgLayoutSetup.h">
+      <Filter>layout setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabAux.h">
+      <Filter>layout setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabBlastMachine.h">
+      <Filter>layout setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabDetour.h">
+      <Filter>layout setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabMarker.h">
+      <Filter>layout setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabMute.h">
+      <Filter>layout setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSpreadSetup.h">
+      <Filter>spreadtype setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabSpreadAbsolute.h">
+      <Filter>spreadtype setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabSpreadGeneric.h">
+      <Filter>spreadtype setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgLookSetup.h">
+      <Filter>look setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgTestBaseSetup.h">
+      <Filter>testbase setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabTestBase.h">
+      <Filter>testbase setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabTestLimit.h">
+      <Filter>testbase setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgTestSetup.h">
+      <Filter>test setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabTestInstrument.h">
+      <Filter>test setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabTestMultiple.h">
+      <Filter>test setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabTestSeisMonitor.h">
+      <Filter>test setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TabTestSensor.h">
+      <Filter>test setup dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="BCGPSliderButton.h">
+      <Filter>seismonitor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphViewTopToolBarSeismonitor.h">
+      <Filter>seismonitor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="LeftViewBarSeismonitorTop.h">
+      <Filter>seismonitor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="SeismonitorGraphChildFrame.h">
+      <Filter>seismonitor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="SeismonitorGraphDoc.h">
+      <Filter>seismonitor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="SeismonitorGraphView.h">
+      <Filter>seismonitor graph view</Filter>
+    </ClInclude>
+    <ClInclude Include="InstrumentListCtrl.h">
+      <Filter>instrument list view</Filter>
+    </ClInclude>
+    <ClInclude Include="InstrumentListDoc.h">
+      <Filter>instrument list view</Filter>
+    </ClInclude>
+    <ClInclude Include="InstrumentListView.h">
+      <Filter>instrument list view</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorListCtrl.h">
+      <Filter>sensor list view</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorListDoc.h">
+      <Filter>sensor list view</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorListView.h">
+      <Filter>sensor list view</Filter>
+    </ClInclude>
+    <ClInclude Include="net.protocol.h">
+      <Filter>protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="AuxData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="AuxList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="BlastMachineData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="BlastMachineList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="ChannelList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="ChannelSetupData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="FormLineData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="FormLineList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameInterface.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphInstrumentData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphInstrumentList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphSensorData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphSensorList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexInstrumentMap.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="Instrument.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="InstrumentList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="LineList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="LineSetupData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="LookSetupData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkerData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkerList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="MuteData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="MuteList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="PointCodeData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="PointCodeList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="Rout.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="RoutList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="ShotPointMap.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="SiteData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="SpreadAbsoluteData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="SpreadAbsoluteList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="SpreadGenericData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="SpreadGenericList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticFloat.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="TabFormLine.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="TabPage.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="TestBaseData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="TestBaseList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="TestLimitData.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="TestLimitList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="TestProject.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="TestProjectList.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="TestRequest.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="WndInstrument.h">
+      <Filter>data structure\old</Filter>
+    </ClInclude>
+    <ClInclude Include="data.base.h">
+      <Filter>data structure</Filter>
+    </ClInclude>
+    <ClInclude Include="data.base.helper.h">
+      <Filter>data structure</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\bmp00001.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\break.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\edit.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\field.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\go.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\line.ico">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\line.rc2">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\lineDoc.ico">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\look.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\menuimages.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\menuimages_hc.png">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\Toolbar.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\toolbar1.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\toolbar2.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\Toolbar256.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\toolbar_.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\Toolbar_hc.png">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\ToolBarMatrixField.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\toolbarMatrixGraphBottom.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\toolbarMatrixInstrumentGraphTop.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\ToolBarMatrixSetup.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\ToolBarMatrixView.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="ReadMe.txt" />
+    <None Include="res\采集站.ico">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\采集站16.ico">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\采集站24.ico">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\采集站48.ico">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\bitmap1.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\采集站.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\采集站16.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\采集站24.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\采集站48.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\电源站.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\电源站16.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\电源站24.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\电源站48.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\交叉站.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\交叉站16.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\交叉站24.bmp">
+      <Filter>resource file</Filter>
+    </None>
+    <None Include="res\交叉站48.bmp">
+      <Filter>resource file</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="line.rc">
+      <Filter>resource file</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

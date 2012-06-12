@@ -1,0 +1,367 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_PCID_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 359
+        VERTGUIDE, 63
+        VERTGUIDE, 72
+        VERTGUIDE, 78
+        VERTGUIDE, 90
+        VERTGUIDE, 103
+        VERTGUIDE, 109
+        VERTGUIDE, 176
+        VERTGUIDE, 184
+        VERTGUIDE, 210
+        VERTGUIDE, 280
+        VERTGUIDE, 291
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 330
+    END
+
+    IDD_OPTIONS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 244
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 284
+    END
+
+    IDD_INPUT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 255
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 44
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PCID_DIALOG DIALOGEX 0, 0, 366, 337
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "pcid"
+FONT 9, "宋体", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "启动数据接收",IDC_BTN_DI,221,311,60,19
+    PUSHBUTTON      "退出程序",IDC_BTN_SAVEDATA,300,311,60,19
+    EDITTEXT        IDC_EDIT_LISTEN_PORT,65,69,104,14,ES_AUTOHSCROLL
+    CTEXT           "0",IDC_STATIC_PCI_INPUT_NUM,72,7,104,19,SS_CENTERIMAGE | WS_BORDER
+    CTEXT           "0",IDC_STATIC_PCI_OUTPUT_NUM,72,31,104,19,SS_CENTERIMAGE | WS_BORDER
+    PUSHBUTTON      "发送单帧数据",IDC_BTN_SEND_ONE_FRAME,73,310,60,20,NOT WS_VISIBLE | WS_DISABLED
+    CTEXT           "0",IDC_STATIC_UDP_SEND_NUM,243,31,104,19,SS_CENTERIMAGE | WS_BORDER
+    EDITTEXT        IDC_EDIT_SAVE_PORT,242,150,104,14,ES_AUTOHSCROLL
+    RTEXT           "监听端口：",IDC_STATIC,21,72,41,8
+    RTEXT           "保存端口：",IDC_STATIC,199,154,41,8
+    EDITTEXT        IDC_EDIT_REMOTE_IP,65,87,104,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_REMOTE_PORT,65,105,104,14,ES_AUTOHSCROLL
+    RTEXT           "发送端口：",IDC_STATIC,1,107,61,8
+    RTEXT           "发送IP：",IDC_STATIC,13,91,49,8
+    RTEXT           "I/O卡读入数量：",IDC_STATIC,8,13,61,8
+    EDITTEXT        IDC_EDIT_LOG_PORT,242,186,104,14,ES_AUTOHSCROLL
+    RTEXT           "日志端口：",IDC_STATIC,199,189,41,8
+    EDITTEXT        IDC_EDIT_LOG_IP,242,168,104,14,ES_AUTOHSCROLL
+    RTEXT           "日志IP：",IDC_STATIC,207,171,33,8
+    EDITTEXT        IDC_EDIT_PCI_BUFFER_NUM,65,150,104,14,ES_AUTOHSCROLL
+    RTEXT           "缓冲区个数：",IDC_STATIC,13,153,49,8
+    EDITTEXT        IDC_EDIT_PCI_BUFFER_SIZE,65,168,104,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PCI_POLL_TIME,65,186,104,14,ES_AUTOHSCROLL
+    RTEXT           "每个缓冲区：",IDC_STATIC,6,171,56,8
+    RTEXT           "轮询时间：",IDC_STATIC,17,188,45,8
+    CTEXT           "0",IDC_STATIC_UDP_RECV_NUM,243,7,104,19,SS_CENTERIMAGE | WS_BORDER
+    RTEXT           "写入I/O卡数量：",IDC_STATIC,8,37,61,8
+    RTEXT           "接受UDP报文：",IDC_STATIC,186,13,53,8
+    RTEXT           "发送UDP报文：",IDC_STATIC,186,38,53,8
+    EDITTEXT        IDC_EDIT_SOCK_RECV_NUM,242,69,104,14,ES_AUTOHSCROLL
+    RTEXT           "接受缓冲：",IDC_STATIC,197,73,41,8
+    EDITTEXT        IDC_EDIT_SOCK_SEND_NUM,242,87,104,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SOCK_POLL_TIME,242,105,104,14,ES_AUTOHSCROLL
+    RTEXT           "接受轮询时间：",IDC_STATIC,177,108,61,8
+    RTEXT           "发送缓冲：",IDC_STATIC,189,90,49,8
+    GROUPBOX        "UDP设置",IDC_STATIC,7,56,350,73
+    GROUPBOX        "I/O卡设置",IDC_STATIC,7,134,174,93
+    GROUPBOX        "其他",IDC_STATIC,184,134,174,93
+    PUSHBUTTON      "锁",IDC_KEY_BUTTON,7,316,15,14
+    GROUPBOX        "过滤",IDC_STATIC,7,231,351,49
+    PUSHBUTTON      "指定有效地址和端口",IDC_ASSIGN_IP_PORT_BUTTON,258,259,94,14
+    LTEXT           "指定有效IP地址和端口，可以过滤无效数据包，如果该IP和端口列表为空，将不做任何过滤操作",IDC_STATIC,13,243,339,12
+    CONTROL         "对从并口卡接受数据进行CRC校验",IDC_CRC_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,285,133,13
+    CONTROL         "根据报文内容进行转发数据包",IDC_TRANSFER_DATA_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,144,288,122,10
+    EDITTEXT        IDC_EDIT_PCI_WRITE_BUFFER_SIZE,65,204,104,14,ES_AUTOHSCROLL | WS_DISABLED
+    RTEXT           "写入缓冲：",IDC_STATIC,17,206,45,8,WS_DISABLED
+    CONTROL         "输出全部日志",IDC_ALL_LOG_OUTPUT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,280,287,79,10
+    EDITTEXT        IDC__IGNORE_LOG_PORT,242,204,104,14,ES_AUTOHSCROLL
+    RTEXT           "忽略端口：",IDC_STATIC,199,207,41,8
+END
+
+IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 251, 291
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU
+CAPTION "配置IP和端口信息"
+FONT 9, "宋体", 400, 0, 0x86
+BEGIN
+    LISTBOX         IDC_IP_LIST,18,22,216,73,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "添加",IDC_BUTTON_ADD_IP,53,101,50,14
+    PUSHBUTTON      "修改",IDC_BUTTON_MODIFY_IP,118,101,50,14
+    PUSHBUTTON      "删除",IDC_BUTTON_DELETE_IP,183,101,50,14
+    LISTBOX         IDC_PORT_LIST,18,148,216,73,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "添加",IDC_BUTTON_ADD_PORT,53,227,50,14
+    PUSHBUTTON      "修改",IDC_BUTTON_MODIFY_PORT,118,227,50,14
+    PUSHBUTTON      "删除",IDC_BUTTON_DELETE_PORT,183,227,50,14
+    DEFPUSHBUTTON   "确定",IDC_OPTIONS_BUTTON_OK,133,270,50,14
+    PUSHBUTTON      "取消",IDC_OPTIONS_BUTTON_CANCEL,194,270,50,14
+    GROUPBOX        "有效IP地址：",IDC_STATIC,7,7,237,116
+    GROUPBOX        "有效端口地址：",IDC_STATIC,7,135,237,116
+END
+
+IDD_INPUT_DIALOG DIALOGEX 0, 0, 262, 51
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "信息框"
+FONT 9, "宋体", 400, 0, 0x86
+BEGIN
+    EDITTEXT        IDC_INPUT_EDIT,7,7,248,18
+    DEFPUSHBUTTON   "确定",IDOK,152,30,50,14
+    PUSHBUTTON      "取消",IDCANCEL,205,30,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,2,33,202
+ PRODUCTVERSION 1,2,33,202
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "Comments", "1.2.33.202.2011.08.12.20MHZ.FIFO.SERIAL.NO"
+            VALUE "CompanyName", "HITECH"
+            VALUE "FileDescription", "1.2.33.202.2011.08.12.20MHZ.FIFO.SERIAL.NO"
+            VALUE "FileVersion", "1, 2, 33, 202"
+            VALUE "InternalName", "pcid"
+            VALUE "LegalCopyright", "Copyright (C) 2011"
+            VALUE "OriginalFilename", "pcid.exe"
+            VALUE "ProductName", "parallel daemon"
+            VALUE "ProductVersion", "1, 2, 33, 202"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_APP_TITLE           "pcid"
+    IDS_START               "启动数据接收"
+    IDS_END                 "停止数据接收"
+    IDS_TRANSFER_P2N_ERROR  "调用回调函数转发并口数据到网口，发送失败，返回值为[%d]"
+    IDT_TIMER               "Do not modify it!"
+    IDS_LISTEN_PORT         "34952"
+    IDC_PCID                "PCID"
+    IDS_INPUT_BUFFERS_NUM   "2"
+    IDS_INPUT_BUFFER_SIZE   "81920"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_INPUT_WAITING_TIME  "0"
+    IDS_RECV_BUFFER_SIZE    "10485760"
+    IDS_SEND_BUFFER_SIZE    "10485760"
+    IDS_REMOTE_IP           "192.168.0.77"
+    IDS_LOG_IP              "192.168.0.12"
+    IDS_REMOTE_PORT         "39321"
+    IDS_RECV_WAITING_TIME   "10"
+    IDS_LOG_PORT            "0"
+    IDS_PRODUCT_INFORMATION_STRING "SOFTWARE\\HITECH\\pcid"
+    IDS_LISTEN_PORT_STRING  "listen_port"
+    IDS_REMOTE_IP_STRING    "remote_ip"
+    IDS_REMOTE_PORT_STRING  "remote_port"
+    IDS_RECV_BUFFER_SIZE_STRING "recv_buff_size"
+    IDS_SEND_BUFFER_SIZE_STRING "send_buff_size"
+    IDS_RECV_THREAD_WAITING_TIME_STRING "recv_thread_waiting_time"
+    IDS_INPUT_WAITING_TIME_STRING "parallel_port_input_waiting_time"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_INPUT_BUFFER_SIZE_STRING "parallel_port_data_input_buffer_size"
+    IDS_INPUT_BUFFERS_NUM_STRING "parallel_port_data_input_buffer_num"
+    IDS_LOG_PORT_STRING     "log_port"
+    IDS_LOG_IP_STRING       "log_ip"
+    IDS_PARALLEL_REGISTER_ERROR "注册并口卡失败，产生 %d 错误!"
+    IDS_PARALLEL_INPUT_ARG_ERROR "注册并口卡输入设置失败，产生 %d 错误!"
+    IDS_PARALLEL_ONPUT_ARG_ERROR "并口卡输出设置失败，产生 %d 错误!"
+    IDS_PARALLEL_MULTI_BUF_SET_ERROR "并口卡设置输入缓冲失败，产生 %d 错误!"
+    IDS_PARALLEL_START_ERROR "并口卡开始输入数据，产生 %d 错误!"
+    IDS_PARALLEL_CLEAR_ERROR "并口卡清除缓冲失败，产生 %d 错误!"
+    IDS_PARALLEL_GET_NEXT_READY_ERROR "并口卡测试是否有缓冲准备完成失败，产生 %d 错误!"
+    IDS_PARALLEL_RETURN_BUF_ID_ERROR "并口卡测试是否有缓冲准备完成时，发现返回缓冲索引错误!"
+    IDS_STRING140           "传入回调函数地址为空..."
+    IDS_STRING141           "向并口卡写入数据，产生 %d 错误!"
+    IDS_STRING142           "创建socket失败！"
+    IDS_STRING143           "SOCKET接受数据失败，产生 %d 错误!"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING144           "由于远程主机完美断开连接，SOCKET接受数据失败!"
+    IDS_STRING145           "接受数据大于所设缓冲, 丢弃该数据包..."
+    IDS_IP_PORT_FILTER      "ip.port.filter"
+    IDS_STRING147           "读取IP端口配置文件失败！"
+    IDS_STRING148           "[IP]"
+    IDS_STRING149           "[PORT]"
+    IDS_STRING150           "打开IP端口配置文件失败，返回[%d]错误！"
+    IDS_STRING151           "保存过滤IP列表时，产生错误，无法从LISTBOX中得到信息！"
+    IDS_STRING152           "保存过滤PORT列表时，产生错误，无法从LISTBOX中得到信息！"
+    IDS_STRING153           "保存IP和端口过滤信息到文件时，出现[%d]错误!"
+    IDS_ENABLE_TO_CHECK_CRC "enable_to_check_crc"
+    IDS_DISABLE_TO_CHECK_CRC "0"
+    IDS_STRING156           "您没有选择列表框中的有效数据，请再来一次！"
+    IDS_STRING157           "您输入的信息不是有效的IP地址，请重新输入！"
+    IDS_STRING158           "您输入的信息不是有效的端口，请重新输入！"
+    IDS_ENABLE_TO_TRANSFER_DATA "enable_to_transfer_data"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DISABLE_TO_TRANSFER_DATA "0"
+    IDS_STRING161           "当前数据包流水号[%d], 前一次数据包流水号[%d], 差值为[%d], 接受并口卡数据包流水号不连续"
+    IDS_OUTPUT_BUFFER_SIZE  "5120"
+    IDS_OUTPUT_BUFFER_SIZE_STRING "parallel_port_output_buffer_size"
+    IDS_STRING164           "分配并口卡输出内存缓冲失败"
+    IDS_STRING165           "将[%s]地址, [%d]端口的数据过滤处理, 数据包: %s"
+    IDS_STRING166           "向并口卡写入数据时，产生 部分写入错误!"
+    IDS_IGNORED_PORT_STRING "ignored_port"
+    IDS_IGNORED_PORT        "0"
+    IDS_BE_ALL_INFO_OUTPUTTED_STRING "be_all_info_outputted"
+    IDS_BE_ALL_INFO_OUTPUTTED "0"
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_PCID                ICON                    "pcid.ico"
+IDI_SMALL               ICON                    "small.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

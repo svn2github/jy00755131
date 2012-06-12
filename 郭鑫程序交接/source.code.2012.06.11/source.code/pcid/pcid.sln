@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcid", "pcid.vcproj", "{2E864D32-CF8F-4477-A980-CCC396EF9700}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcid.client", "..\pcid.client\pcid.client.vcproj", "{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E864D32-CF8F-4477-A980-CCC396EF9700}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2E864D32-CF8F-4477-A980-CCC396EF9700}.Debug|Win32.Build.0 = Debug|Win32
+		{2E864D32-CF8F-4477-A980-CCC396EF9700}.Release|Win32.ActiveCfg = Release|Win32
+		{2E864D32-CF8F-4477-A980-CCC396EF9700}.Release|Win32.Build.0 = Release|Win32
+		{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}.Debug|Win32.Build.0 = Debug|Win32
+		{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}.Release|Win32.ActiveCfg = Release|Win32
+		{FEB9036E-6EAD-4E93-B7F5-403388DE3B21}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

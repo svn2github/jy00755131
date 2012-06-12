@@ -1,0 +1,18 @@
+-r
+E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r004mi1
+--stack-depth=8
+--no-access-checks
+--no-analyze-stack
+--leak-check-only
+--check-resource-leaks
+--guard-zone-size=0
+--search-dir
+sym:p=e:/works/segd/segd.conv/Debug
+--search-dir
+sym=E:/works/segd/segd.conv
+--search-dir
+sym=d:/symbols
+--
+e:\works\segd\segd.conv\Debug\segd.conv.exe
+--make-segd-file
+E:\works\segd\segd.conv\args.conf

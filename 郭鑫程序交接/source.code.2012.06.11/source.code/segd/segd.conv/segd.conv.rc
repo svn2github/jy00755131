@@ -1,0 +1,215 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,2,46,125
+ PRODUCTVERSION 1,2,46,125
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x29L
+#else
+ FILEFLAGS 0x28L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080004b0"
+        BEGIN
+            VALUE "Comments", "1.2.46.125.2012.04.26.SEGD_FILE_IO_NON_OVERLAPPED"
+            VALUE "CompanyName", "Hitech"
+            VALUE "FileDescription", "1.2.46.125.2012.04.26.SEGD_FILE_IO_NON_OVERLAPPED"
+            VALUE "FileVersion", "1, 2, 46, 125"
+            VALUE "InternalName", "segd.converter"
+            VALUE "LegalCopyright", "Copyright (C) 2011"
+            VALUE "OriginalFilename", "segd.conv"
+            VALUE "PrivateBuild", "1.2.46.125.2012.04.26.SEGD_FILE_IO_NON_OVERLAPPED"
+            VALUE "ProductName", "segd.converter"
+            VALUE "ProductVersion", "1.2.46.125.2012.04.26.SEGD_FILE_IO_NON_OVERLAPPED"
+            VALUE "SpecialBuild", "1.2.46.125.2012.04.26.SEGD_FILE_IO_NON_OVERLAPPED"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x800, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING101           "初始化日志失败..."
+    IDS_STRING5001          "程序初始化时,链接Console时,产生错误..."
+    IDS_STRING5002          "程序初始化时,设置Console时,产生错误..."
+    IDS_STRING5003          "segd.conv %s\ncopyright (c) Hitech Ltd. All rights reserved."
+    IDS_STRING5004          "读取传入参数时,发现错误..."
+    IDS_STRING5005          "segd.conv.exe\n\t--data-file\t\t传入全路径AD采集数据文件名,要求必须和--tb-time一起使用, 可选--manufacturer-code使用,不能和其他命令行参数联合使用\n\t--verbose\t\t输出调试信息\n\t--help\t\t显示帮助信息\n\t--version\t\t显示版本信息\n\t--tb-time\t\t指定开始取得数据的TB时间,将从TB时间开始向后的数据将被放入到SEGD文件中\n\t--manufacturer-code\t\t指定当前制造商代码,sercel为13,默认值为0\n\t--output-file\t\t输出文件,该文将将根据主参数的不同使用,产生不同的作用\n\t--rw-segd-file\t\t读入SEGD文件,然后写出相同的SEGD文件\n"
+    IDS_STRING5006          "程序初始化时,检查命令行参数时,发现[%s]命令的参数不正确..."
+    IDS_STRING5007          "程序初始化时,检查命令行参数时,发现[%s]命令和[%s]命令优先级冲突..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING5008          "程序打开配置文件出错,产生[%X]错误..."
+    IDS_STRING5009          "检查或读取配置文件时,没有发现[%s]关键字..."
+    IDS_STRING5010          "检查或读取配置项时,不能转化[%s]关键字到多字符集模式..."
+    IDS_STRING5011          "保存配置文件时,出现不能写入错误,返回值为[%d]..."
+    IDS_STRING5012          "在对配置文件参数进行赋值时,不能转化从MBCS到UNICODE字符..."
+    IDS_STRING5013          "在检测配置文件中关键字时,没有发现[%s]关键字,检测中断..."
+    IDS_STRING5014          "不能保存指定[%s]的SEG-D文件, 程序将终止..."
+    IDS_STRING5015          "创建UDP通知SOCKET失败..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING104           "不能打开或保存文件，请重试！"
+    IDS_TREEVIEW_ROOT       "%s"
+    IDS_SEGD_REV2_X         "SD2.X"
+    IDS_STORAGTE_UNIT_LABEL "存储单元标签"
+    IDS_GENERAL_HEADER      "通用头"
+    IDC_SEGDVIEWER          "SEGDVIEWER"
+    IDS_GENERAL_HEADER_2    "通用头#2"
+    IDS_ADDITIONAL_GENERAL_HEADER "附加通用头#%d"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CHANNEL_SET_HEADER  "道组头段#%d"
+    IDS_SAMPLE_SKEW_HEADER  "采样时偏头段#%d"
+    IDS_EXTENDED_HEADER     "扩展头段"
+    IDS_ENTERNAL_HEADER     "外部头段"
+    IDS_TRACE_HEADER        "道头"
+    IDS_TRACE_HEADER_EXTENSION "道头扩展#%d"
+    IDS_TRACE_DATA          "采样数据"
+    IDS_GENERNAL_TRAILER    "数据追踪"
+    IDS_STRING120           "创建或打开SEG-D文件时，调用函数传递的创建参数不正确，导致失败！"
+    IDS_STRING121           "调用读取或写入文件过程中，检测函数传入参数无效！"
+    IDS_STRING122           "读取或写入SEG-D文件时，发现其格式不正确！"
+    IDS_STRING123           "读取或写入SEG-D文件头时，产生错误！"
+    IDS_STRING124           "%s 文件信息"
+    IDS_STRING125           "普通头段数据块"
+    IDS_STRING126           "#%d"
+    IDS_STRING127           "读取或写入普通头段数据块大小与规格大小不匹配"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING128           "创建或打开SEG-D文件时，分配文件数据内存失败或创建参数,读取IO方式设置不正确"
+    IDS_STRING129           "格式代码不正确"
+    IDS_STRING130           "扫描类型头段"
+    IDS_STRING131           "扩展头段"
+    IDS_STRING132           "外部头段"
+    IDS_STRING133           "记录道数据块"
+    IDS_STRING134           "多路解编道头"
+    IDS_STRING135           "道头扩展"
+    IDS_STRING136           "记录道数据"
+    IDS_STRING137           "年份时间不对"
+    IDS_STRING138           "儒略日超出范围"
+    IDS_STRING139           "辅助道头扩展"
+    IDS_STRING140           "采集接受点数据不存在..."
+    IDS_STRING141           "得到"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING5024          "传入SPS文件名为空..."
+    IDS_STRING5025          "传入SPS文件名不是有效文件名..."
+    IDS_STRING5026          "打开[%s]SPS文件失败..."
+    IDS_STRING5027          "程序打开AD数据文件出错,产生[%X]错误..."
+    IDS_STRING5028          "程序读取AD数据文件出错,产生[%X]错误..."
+    IDS_STRING5029          "在修改配置文件时,不能加载SEGD.API.DLL模块,产生错误[%X]..."
+    IDS_STRING5030          "程序读取AD数据文件大小时,产生[%X]错误..."
+    IDS_STRING5031          "读取相关SPS信息时,SPS关联数据结构为空..."
+    IDS_STRING5032          "写入SEGD文件时,分配内存失败.."
+    IDS_STRING5033          "开始获取并分析SPS数据信息..."
+    IDS_STRING5034          "完成获取并分析SPS数据信息..."
+    IDS_STRING5035          "创建SEGD文件..."
+    IDS_STRING5036          "写入SEGD文件头段信息..."
+    IDS_STRING5037          "写入SEGD文件扫描类型头段信息..."
+    IDS_STRING5038          "写入SEGD文件扩展头段信息..."
+    IDS_STRING5039          "写入SEGD文件数据信息..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING5040          "完成SEGD文件数据信息输出..."
+    IDS_STRING5041          "采集接受点数据信息不存在..."
+    IDS_STRING5042          "不能分配足够的内存存放[%s]SPS文件的行数据"
+    IDS_STRING5043          "在读取SPS文件时,传入保存行信息的指针参数不能为空,"
+    IDS_STRING5044          "得到每个FDU的采样数量小于要求的采样数量"
+    IDS_STRING5045          "SPS文件中记录道数量少于当前数据文件中的采集道数量,生成SEGD将被中断,请重新指定SPS文件"
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

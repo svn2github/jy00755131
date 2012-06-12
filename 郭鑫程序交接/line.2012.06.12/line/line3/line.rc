@@ -1,0 +1,948 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (Simplified, PRC) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\line.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_STATUS DIALOGEX 0, 0, 351, 47
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP
+EXSTYLE WS_EX_WINDOWEDGE | WS_EX_STATICEDGE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CTEXT           "Static",IDC_STATIC_MESSAGE,14,15,324,16
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOG_STATUS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 344
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 40
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_FDU_BITMAP_8        BITMAP                  "res\\采集站.bmp"
+IDB_FDU_BITMAP16        BITMAP                  "res\\采集站16.bmp"
+IDB_FDU_BITMAP24        BITMAP                  "res\\采集站24.bmp"
+IDB_FDU_BITMAP48        BITMAP                  "res\\采集站48.bmp"
+IDB_AUL_BITMAP8         BITMAP                  "res\\电源站.bmp"
+IDB_AUL_BITMAP16        BITMAP                  "res\\电源站16.bmp"
+IDB_AUL_BITMAP24        BITMAP                  "res\\电源站24.bmp"
+IDB_AUL_BITMAP48        BITMAP                  "res\\电源站48.bmp"
+IDB_AUX_BITMAP8         BITMAP                  "res\\交叉站.bmp"
+IDB_AUX_BITMAP16        BITMAP                  "res\\交叉站16.bmp"
+IDB_AUX_BITMAP24        BITMAP                  "res\\交叉站24.bmp"
+IDB_AUX_BITMAP48        BITMAP                  "res\\交叉站48.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_MAIN_TOOLBAR        "Standard"
+    IDS_STRING102           "创建Socket对象不能成功,请检查是否存在相同IP地址和端口绑定..."
+    IDS_STRING103           "SOCKET 连接[ip: %s] [port: %d]的服务器程序,尝试连接第[%d]次..."
+    IDP_SOCKETS_INIT_FAILED "Windows sockets initialization failed."
+    IDS_STRING105           "当前的网路连接套接字句柄无效,请重新连接..."
+    IDS_STRING106           "正在登陆服务器..."
+    IDS_STRING107           "SOCKET尝试[%d]次连接服务器失败,程序将关闭 ..."
+    IDS_STRING108           "客户端成功登陆到服务器..."
+    IDS_STRING109           "客户端没有得到正确的响应,登陆服务器失败..."
+    IDS_STRING110           "当前程序连接服务器状态为[%d],不能使用%s指令..."
+    IDS_STRING111           "在试图发送[%s]命令时,发现有[%d]指令正在运行,请稍候再试,如果出现多次请联系管理员..."
+END
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "line"
+    IDR_line3TYPE           "\nline\nline\n\n\nline.Document\nline.Document"
+    IDS_STRING130           "服务器QueryInstrumentInfo操作指令应答超时..."
+    IDS_STRING131           "服务器QueryInstrumentInfoAll操作指令应答超时..."
+    IDS_STRING132           "成功完成指定线号和区域设备查询操作..."
+    IDS_STRING133           "服务器返回QueryInstrumentInfo查询操作结果超时..."
+    IDS_STRING134           "服务器返回QueryInstrumentInfoAll查询操作结果超时..."
+    IDS_STRING135           "等待指定线号和区域设备查询操作结果超时..."
+    IDS_STRING136           "从服务器中获取全部设备信息..."
+    IDS_STRING137           "当前程序连接服务器状态为[%d],不能使用[%s]指令..."
+    IDS_STRING138           "等待服务器返回查询所有设备查询操作结果..."
+    IDS_STRING139           "客户端正在连接服务器...."
+    IDS_STRING140           "发送查询测区信息请求到服务器..."
+    IDS_STRING141           "服务器返回QueryRecvSection查询操作结果超时..."
+    IDS_STRING142           "服务器返回查询操作结果..."
+    IDS_STRING143           "在试图发送CmdClientConnect命令后,等待应答超时..."
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "line"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT_DIRECT    "Send the document directly to the default printer without making changes\nQuick Print"
+    ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
+END
+
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
+    ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
+    ID_WINDOW_CASCADE       "Arrange windows so they overlap\nCascade Windows"
+    ID_WINDOW_TILE_HORZ     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_TILE_VERT     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+    AFX_IDS_MDICHILD        "Activate this window"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_VIEW_TOOLBAR    "Matrix View"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_SETUP_TOOLBAR   "Matrix Setup"
+    ID_VIEW_FIELD_TOOLBAR   "123456"
+    ID_BUTTON_MATRIX_FIELD_ON_LABEL "Field On\nField On"
+    ID_BUTTON_MATRIX_FIELD_OFF_LABEL "Field On\nField On"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_CUSTOMIZE       "Customize toolbars and menus.\nCustomize"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_PASTE32852      "Copy the selection and put it on the Clipboard\nCopy"
+    ID_MATRIX_SURVEYSETUP   "Survey Setup"
+    ID_MATRIX_LAYOUTSETUP   "Layout Setup"
+    ID_MATRIX_SPREADSETUP   "Spread Type Setup"
+    ID_MATRIX_LOOKSETUP     "Look Setup"
+    ID_MATRIX_FORMLINESETUP "Form Line Setup"
+    ID_MATRIX_TESTBASESETUP "Test Base Setup"
+    ID_MATRIX_TESTSETUP     "Test Setup"
+END
+
+STRINGTABLE
+BEGIN
+    ID_MATRIX_VIEWGRAPH     "Graph View\nGraph View"
+    ID_MATRIX_VIEWLIST      "List View\nList View"
+END
+
+STRINGTABLE
+BEGIN
+    ID_BUTTON_MATRIX_FIELD_ON "Field On\nField On"
+    ID_BUTTON_MATRIX_FIELD_OFF "Field Off\nField Off"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_STRING112           "在试图发送Field On命令后,等待应答超时..."
+    IDS_STRING113           "开始发送Field On上电命令..."
+    IDS_STRING114           "开始发送Field Off下电命令..."
+    IDS_STRING115           "在等待FieldOnWaitTime指令时超时..."
+    IDS_STRING116           "接受到服务器FieldOn(上电)指令响应..."
+    IDS_STRING117           "等待接收服务器FieldOnWaitTime数据..."
+    IDS_STRING118           "当前程序连接服务器状态为[%d],不能接收[%s]操作指令..."
+    IDS_STRING119           "当前程序连接服务器的[%d]状态操作指令已经超时..."
+    IDS_STRING120           "Field On上电操作成功..."
+    IDS_STRING121           "用户必须等待%d时间后才能再次上电设备..."
+    IDS_STRING122           "客户端程序当前[%d]状态,不需要使用Field Off操作命令..."
+    IDS_STRING123           "服务器FieldOff操作指令应答超时..."
+    IDS_STRING124           "成功完成Field Off 操作..."
+    IDS_STRING125           "在%s情况下,不能分配足够的内存..."
+    IDS_STRING126           "在%s情况下,分配内存失败..."
+    IDS_STRING127           "从服务器中获取指定设备信息..."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_STRING144           "正在连接服务器..."
+    IDS_STRING145           "发送Field On上电命令失败..."
+    IDS_STRING146           "发送Field Off下电命令失败..."
+    IDS_STRING147           "服务器返回查询InstrumentTestLimit XML文件信息操作结果超时..."
+    IDS_STRING148           "发送[%s]请求到服务器..."
+    IDS_STRING149           "正在接收服务器返回信息..."
+    IDS_STRING150           "客户端接收服务器发送的[%s]命令的数据[%d]小于最小数据体[%d]..."
+    IDS_STRING151           "服务器完成更新设备数据信息..."
+    IDS_STRING152           "服务器正在更新设备数据信息..."
+END
+
+#endif    // Chinese (Simplified, PRC) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About line"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    LTEXT           "line Version 1.0",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2012",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
+    PUSHBUTTON      "http://www.<MyCompany>.com",IDC_COMPANY_URL,40,36,119,14
+END
+
+IDD_DIALOG_FORMLINESETUP DIALOGEX 0, 0, 335, 228
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Form Line Setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Apply",IDC_BUTTON_APPLY,71,207,50,14
+    PUSHBUTTON      "GO",IDC_BUTTON_GO,215,207,50,14
+    PUSHBUTTON      "Reset",IDC_BUTTON_RESET,143,207,50,14
+    PUSHBUTTON      "Add",IDC_BUTTON_ADD,278,117,50,14
+    PUSHBUTTON      "Change",IDC_BUTTON_CHANGE,278,152,50,14
+    PUSHBUTTON      "Delete",IDC_BUTTON_DELETE,278,187,50,14
+    CONTROL         "",IDC_STATIC_TAB,"Static",SS_BLACKRECT | NOT WS_VISIBLE,7,8,266,194
+END
+
+IDD_DIALOG_SETINSTRUMENT DIALOGEX 0, 0, 291, 146
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Set Instrument"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_COMBO_INSTRUMENT_TYPE,54,65,77,64,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Add Previous",IDC_BUTTON_ADD_PREVIOUS,166,21,92,21
+    PUSHBUTTON      "Add Next",IDC_BUTTON_ADD_NEXT,166,50,92,21
+    PUSHBUTTON      "Change",IDC_BUTTON_CHANGE,166,79,92,21
+    PUSHBUTTON      "Delete",IDC_BUTTON_DELETE,166,108,92,21
+    LTEXT           "Instrument Type",IDC_STATIC,54,47,77,12
+END
+
+IDD_DIALOG_SURVEYSETUP DIALOGEX 0, 0, 600, 226
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SURVEY SETUP"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Apply All",IDC_BUTTON_APPLYALL,7,205,50,14
+    PUSHBUTTON      "Apply Sensor",IDC_BUTTON_APPLYSENSOR,140,205,50,14
+    PUSHBUTTON      "Reset",IDC_BUTTON_RESET,273,205,50,14
+    PUSHBUTTON      "Add",IDC_BUTTON_ADD,541,83,50,14
+    PUSHBUTTON      "Change",IDC_BUTTON_CHANGE,541,118,50,14
+    PUSHBUTTON      "Delete",IDC_BUTTON_DELETE,541,153,50,14
+    PUSHBUTTON      "Reverse",IDC_BUTTON_REVERSE,541,188,50,14
+    CONTROL         "",IDC_STATIC_TAB,"Static",SS_BLACKRECT | NOT WS_VISIBLE,7,8,530,194
+END
+
+IDD_DIALOG_LAYOUTSETUP DIALOGEX 0, 0, 600, 226
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "LAYOUT SETUP"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Apply",IDC_BUTTON_APPLY,7,205,50,14
+    PUSHBUTTON      "Reset",IDC_BUTTON_RESET,273,205,50,14
+    PUSHBUTTON      "Add",IDC_BUTTON_ADD,541,83,50,14
+    PUSHBUTTON      "Change",IDC_BUTTON_CHANGE,541,118,50,14
+    PUSHBUTTON      "Delete",IDC_BUTTON_DELETE,541,153,50,14
+    PUSHBUTTON      "Clear",IDC_BUTTON_CLEAR,541,188,50,14
+    CONTROL         "",IDC_STATIC_TAB,"Static",SS_BLACKRECT | NOT WS_VISIBLE,7,8,530,194
+END
+
+IDD_DIALOG_TESTBASESETUP DIALOGEX 0, 0, 713, 226
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "TEST BASE SETUP"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Apply",IDC_BUTTON_APPLY,7,205,50,14
+    PUSHBUTTON      "Reset",IDC_BUTTON_RESET,273,205,50,14
+    PUSHBUTTON      "Change",IDC_BUTTON_CHANGE,654,187,50,14
+    CONTROL         "",IDC_STATIC_TAB,"Static",SS_BLACKRECT | NOT WS_VISIBLE,7,8,646,194
+END
+
+IDD_DIALOG_SPREADSETUP DIALOGEX 0, 0, 345, 275
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Spread Type Setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Apply",IDC_BUTTON_APPLY,88,254,50,14
+    PUSHBUTTON      "Reset",IDC_BUTTON_RESET,206,254,50,14
+    PUSHBUTTON      "Add",IDC_BUTTON_ADD,286,167,50,14
+    PUSHBUTTON      "Change",IDC_BUTTON_CHANGE,286,202,50,14
+    PUSHBUTTON      "Delete",IDC_BUTTON_DELETE,286,237,50,14
+    CONTROL         "",IDC_STATIC_TAB,"Static",SS_BLACKRECT | NOT WS_VISIBLE,7,7,275,244
+END
+
+IDD_DIALOG_TESTSETUP DIALOGEX 0, 0, 600, 441
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "TEST SETUP"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Apply",IDC_BUTTON_APPLY,7,420,50,14
+    PUSHBUTTON      "Reset",IDC_BUTTON_RESET,125,420,50,14
+    PUSHBUTTON      "Add",IDC_BUTTON_ADD,541,297,50,14
+    PUSHBUTTON      "Change",IDC_BUTTON_CHANGE,541,332,50,14
+    PUSHBUTTON      "Delete",IDC_BUTTON_DELETE,541,367,50,14
+    PUSHBUTTON      "Clear",IDC_BUTTON_CLEAR,541,402,50,14
+    CONTROL         "",IDC_STATIC_TAB,"Static",SS_BLACKRECT | NOT WS_VISIBLE,7,8,530,408
+    PUSHBUTTON      "GO",IDC_BUTTON_GO,244,420,50,14
+END
+
+IDD_DIALOG_LOOKSETUP DIALOGEX 0, 0, 155, 122
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Look Setup"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Auto Look:",IDC_CHECK_LOOKAUTO,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,52,9,51,10
+    LTEXT           "With Tests:",IDC_STATIC,15,29,38,8
+    CONTROL         "Resistance",IDC_CHECK_RESISTANCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,76,43,51,10
+    CONTROL         "Tilt",IDC_CHECK_TILT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,76,62,25,10
+    CONTROL         "Leakage",IDC_CHECK_LEAKAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,76,81,43,10
+    PUSHBUTTON      "Apply",IDC_BUTTON_APPLY,18,101,50,14
+    PUSHBUTTON      "Reset",IDC_BUTTON_RESET,88,101,50,14
+END
+
+IDD_DIALOG_SELECTSHOTPOINT DIALOGEX 0, 0, 330, 231
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select Shot Point"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_STATIC_TAB,"Static",SS_BLACKRECT | NOT WS_VISIBLE,7,7,316,197
+    PUSHBUTTON      "OK",IDC_OK,48,207,69,17
+    PUSHBUTTON      "Cancel",IDC_CANCEL,158,207,69,17
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_DIALOG_FORMLINESETUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 328
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 221
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MENU_IMAGES         BITMAP                  "res\\menuimages.bmp"
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
+IDR_TOOLBAR_MATRIX_VIEW BITMAP                  "res\\ToolBarMatrixView.bmp"
+IDR_TOOLBAR_MATRIX_INSTRUMENT_GRAPH_TOP BITMAP                  "res\\toolbarMatrixInstrumentGraphTop.bmp"
+IDR_TOOLBAR_MATRIX_GRAPH_BOTTOM BITMAP                  "res\\toolbarMatrixGraphBottom.bmp"
+IDR_TOOLBAR_MATRIX_SENSOR_GRAPH_TOP BITMAP                  "res\\toolbar_.bmp"
+IDB_BITMAP_GO           BITMAP                  "res\\go.bmp"
+IDB_BITMAP_LOOK         BITMAP                  "res\\look.bmp"
+IDR_TOOLBAR_MATRIX_FIELD BITMAP                  "res\\ToolBarMatrixField.bmp"
+IDB_TOOLBAR_MATRIX_FIELD_HC BITMAP                  "res\\field.bmp"
+IDR_TOOLBAR_MATRIX_SETUP BITMAP                  "res\\ToolBarMatrixSetup.bmp"
+IDR_TOOLBAR_MATRIX_SEISMONITOR_GRAPH_TOP BITMAP                  "res\\bmp00001.bmp"
+IDB_BREAK               BITMAP                  "res\\break.bmp"
+IDR_EDIT                BITMAP                  "res\\edit.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\line.ico"
+IDR_LINETYPE            ICON                    "res\\lineDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_MAINFRAME_HC        PNG                     "res\\Toolbar_hc.png"
+IDB_MENU_IMAGES_HC      PNG                     "res\\menuimages_hc.png"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_FILE_SEARCH
+END
+
+IDR_MENU_IMAGES TOOLBAR 16, 16
+BEGIN
+    BUTTON      ID_VIEW_OUTPUT
+    BUTTON      ID_BUTTON_MATRIX_FIELD_ON_GRAPH
+    BUTTON      ID_BUTTON_MATRIX_FIELD_OFF_GRAPH
+    BUTTON      ID_MATRIX_INSTRUMENTGRAPH
+    BUTTON      ID_MATRIX_SENSORGRAPH
+    BUTTON      ID_MATRIX_SEISMONITORGRAPH
+    BUTTON      ID_MATRIX_INSTRUMENTLIST
+    BUTTON      ID_MATRIX_SENSORLIST
+END
+
+IDR_TOOLBAR_MATRIX_VIEW TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_MATRIX_VIEWGRAPH
+    BUTTON      ID_MATRIX_VIEWLIST
+END
+
+IDR_TOOLBAR_MATRIX_INSTRUMENT_GRAPH_TOP TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_POINT
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_LINE
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_COLLECT
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_POWER
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_CROSS
+    BUTTON      ID_EMPTY
+    BUTTON      ID_EMPTY
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_TESTMARKER
+    BUTTON      ID_EMPTY
+    BUTTON      ID_EMPTY
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_LOOK
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_QCLABEL
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_QCLIST
+    BUTTON      ID_BUTTON_MATRIX_INSTRUMENT_GRAPH_QCGO
+END
+
+IDR_TOOLBAR_MATRIX_GRAPH_BOTTOM TOOLBAR 16, 16
+BEGIN
+    BUTTON      ID_BUTTON_MATRIX_GRAPH_ZOOMIN
+    BUTTON      ID_BUTTON_MATRIX_GRAPH_ZOOMOUT
+    BUTTON      ID_BUTTON_MATRIX_GRAPH_LINENAMELABEL
+    BUTTON      ID_BUTTON_MATRIX_GRAPH_LINENAME
+    BUTTON      ID_BUTTON_MATRIX_GRAPH_POINTNBLABEL
+    BUTTON      ID_BUTTON_MATRIX_GRAPH_POINTNB
+END
+
+IDR_TOOLBAR_MATRIX_SENSOR_GRAPH_TOP TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_EMPTY
+    BUTTON      ID_EMPTY
+    BUTTON      ID_BUTTON_MATRIX_SENSOR_GRAPH_TESTMARKER
+    BUTTON      ID_EMPTY
+    BUTTON      ID_EMPTY
+    BUTTON      ID_BUTTON_MATRIX_SENSOR_GRAPH_SENSORQCTYPELABEL
+    BUTTON      ID_BUTTON_MATRIX_SENSOR_GRAPH_SENSORQCTYPELIST
+    BUTTON      ID_BUTTON_MATRIX_SENSOR_GRAPH_LOOK
+    BUTTON      ID_BUTTON_MATRIX_SENSOR_GRAPH_QCLABEL
+    BUTTON      ID_BUTTON_MATRIX_SENSOR_GRAPH_QCLIST
+    BUTTON      ID_BUTTON_MATRIX_SENSOR_GRAPH_QCGO
+    BUTTON      ID_EMPTY
+END
+
+IDR_TOOLBAR_MATRIX_FIELD TOOLBAR 16, 16
+BEGIN
+    BUTTON      ID_BUTTON_MATRIX_FIELD_ON
+    BUTTON      ID_BUTTON_MATRIX_FIELD_OFF
+END
+
+IDR_TOOLBAR_MATRIX_SETUP TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_MATRIX_SURVEYSETUP
+    BUTTON      ID_MATRIX_LAYOUTSETUP
+    BUTTON      ID_MATRIX_SPREADSETUP
+    BUTTON      ID_MATRIX_LOOKSETUP
+    BUTTON      ID_MATRIX_FORMLINESETUP
+    BUTTON      ID_MATRIX_TESTBASESETUP
+    BUTTON      ID_MATRIX_TESTSETUP
+END
+
+IDR_TOOLBAR_MATRIX_SEISMONITOR_GRAPH_TOP TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_EMPTY
+    BUTTON      ID_EMPTY
+    BUTTON      ID_BUTTON_MATRIX_SEISMONITOR_GRAPH_SENSORQCTYPELABEL
+    BUTTON      ID_BUTTON_MATRIX_SEISMONITOR_GRAPH_SENSORQCTYPELIST
+    BUTTON      ID_EMPTY
+    BUTTON      ID_EMPTY
+    BUTTON      ID_BUTTON_MATRIX_SEISMONITOR_GRAPH_TESTMARKER
+    BUTTON      ID_BUTTON_MATRIX_SEISMONITOR_GRAPH_LIMITLABEL
+    BUTTON      ID_BUTTON_MATRIX_SEISMONITOR_GRAPH_LIMIT
+    BUTTON      ID_BUTTON_MATRIX_SEISMONITOR_GRAPH_LIMITVALUE
+    BUTTON      ID_BUTTON_MATRIX_SEISMONITOR_GRAPH_SEISMONITOR
+END
+
+IDR_EDIT TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "print",                       ID_FILE_PRINT
+        MENUITEM SEPARATOR
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "&Setup"
+    BEGIN
+        MENUITEM "Survey Setup",                ID_MATRIX_SURVEYSETUP
+        MENUITEM "Layout Setup",                ID_MATRIX_LAYOUTSETUP
+        MENUITEM "Spread Type Setup",           ID_MATRIX_SPREADSETUP
+        MENUITEM "Look Setup",                  ID_MATRIX_LOOKSETUP
+        MENUITEM "Form Line Setup",             ID_MATRIX_FORMLINESETUP
+        MENUITEM "Test Base Setup",             ID_MATRIX_TESTBASESETUP
+        MENUITEM "Test Setup",                  ID_MATRIX_TESTSETUP
+    END
+    POPUP "&View"
+    BEGIN
+        POPUP "Top View"
+        BEGIN
+            MENUITEM "Instrument Graph View",       ID_MATRIX_INSTRUMENTGRAPH
+            MENUITEM "Sensor Graph View",           ID_MATRIX_SENSORGRAPH
+            MENUITEM "Seismonitor Graph View",      32862
+        END
+        POPUP "Instr Num View"
+        BEGIN
+            MENUITEM "Instrument List View",        32863
+            MENUITEM "Sensor List View",            32864
+        END
+        MENUITEM "&Output",                     ID_VIEW_OUTPUT
+        MENUITEM SEPARATOR
+    END
+    POPUP "Sea&rch"
+    BEGIN
+        MENUITEM "  ",                          ID_SEARCH_
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About line...",              ID_APP_ABOUT
+    END
+END
+
+IDR_line3TYPE MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "&View"
+    BEGIN
+        POPUP "&Toolbars"
+        BEGIN
+            MENUITEM "",                            ID_VIEW_TOOLBARS
+        END
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About line3...",             ID_APP_ABOUT
+    END
+END
+
+IDR_POPUP_TOOLBAR MENU
+BEGIN
+    POPUP "DUMMY"
+    BEGIN
+        MENUITEM "Standard Toolbar",            ID_VIEW_TOOLBAR
+        MENUITEM "&Output",                     ID_VIEW_OUTPUT
+        MENUITEM SEPARATOR
+        MENUITEM "&Customize...",               ID_VIEW_CUSTOMIZE
+    END
+END
+
+IDR_POPUP_MDITABS MENU
+BEGIN
+    POPUP "DUMMY"
+    BEGIN
+        MENUITEM "&Save",                       ID_FILE_SAVE
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "New &Horizontal Tab Group",   ID_MDI_NEW_HORZ_TAB_GROUP
+        MENUITEM "New &Vertical Tab Group",     ID_MDI_NEW_VERT_GROUP
+        MENUITEM "Move to Ne&xt Tab Group",     ID_MDI_MOVE_TO_NEXT_GROUP
+        MENUITEM "Move to P&revious Tab Group", ID_MDI_MOVE_TO_PREV_GROUP
+    END
+END
+
+IDR_POPUP_DROP_MDITABS MENU
+BEGIN
+    POPUP "DUMMY"
+    BEGIN
+        MENUITEM "New &Horizontal Tab Group",   ID_MDI_NEW_HORZ_TAB_GROUP
+        MENUITEM "New &Vertical Tab Group",     ID_MDI_NEW_VERT_GROUP
+        MENUITEM "Move to Ne&xt Tab Group",     ID_MDI_MOVE_TO_NEXT_GROUP
+        MENUITEM "Move to P&revious Tab Group", ID_MDI_MOVE_TO_PREV_GROUP
+        MENUITEM SEPARATOR
+        MENUITEM "&Cancel",                     ID_MDI_CANCEL
+    END
+END
+
+IDR_MENU_MATRIX_VIEW_GRAPH MENU
+BEGIN
+    POPUP "Graph View"
+    BEGIN
+        MENUITEM "Instrument Graph View",       ID_MATRIX_INSTRUMENTGRAPH
+        MENUITEM "Sensor Graph View",           ID_MATRIX_SENSORGRAPH
+        MENUITEM "Seismonitor Graph View",      ID_MATRIX_SEISMONITORGRAPH
+    END
+END
+
+IDR_MENU_MATRIX_VIEW_LIST MENU
+BEGIN
+    POPUP "List View"
+    BEGIN
+        MENUITEM "Instrument List View",        ID_MATRIX_INSTRUMENTLIST
+        MENUITEM "Sensor List View",            ID_MATRIX_SENSORLIST
+    END
+END
+
+IDR_POPUP_GRAPHVIEW_INSTRUMENT MENU
+BEGIN
+    POPUP "DUMMY"
+    BEGIN
+        MENUITEM "Set marker...",               33009
+        MENUITEM "Properties...",               32866
+        MENUITEM "Set auxiliary...",            32867
+        MENUITEM "Set low box of detour",       32868
+        MENUITEM "Set high box of detour",      32869
+        MENUITEM "Form line...",                32870
+        MENUITEM "Set Instrument",              33068
+    END
+END
+
+IDR_POPUP_GRAPHVIEW_SENSOR MENU
+BEGIN
+    POPUP "DUMMY"
+    BEGIN
+        MENUITEM "Properties...",               32871
+        MENUITEM "Set auxiliary...",            32872
+        MENUITEM "Mute...",                     32873
+    END
+END
+
+IDR_POPUP_OUTPUT MENU
+BEGIN
+    POPUP "Popup"
+    BEGIN
+        MENUITEM "&Copy",                       ID_EDIT_COPY
+        MENUITEM "&Clear",                      ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Go To Error/Tag",            ID_OUTPUT_GOTO_ERROR
+        MENUITEM SEPARATOR
+        MENUITEM "&Hide",                       ID_VIEW_OUTPUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,8,50
+ PRODUCTVERSION 1,0,8,50
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x9L
+#else
+ FILEFLAGS 0x8L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "409004e4"
+        BEGIN
+            VALUE "Comments", "1.0.8.50.2012.05.024"
+            VALUE "CompanyName", "TODO: <Company name>"
+            VALUE "FileDescription", "1.0.8.50.2012.05.024"
+            VALUE "FileVersion", "1.0.8.50"
+            VALUE "InternalName", "line.exe"
+            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "OriginalFilename", "line.exe"
+            VALUE "PrivateBuild", "1.0.8.50.2012.05.024"
+            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductVersion", "1.0.8.50"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x4090, 1252
+    END
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(936)
+#include "res\line.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "afxprint.rc"       // printing/print preview resources
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

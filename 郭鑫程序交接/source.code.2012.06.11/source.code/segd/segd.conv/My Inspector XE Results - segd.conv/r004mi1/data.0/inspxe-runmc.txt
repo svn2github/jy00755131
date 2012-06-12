@@ -1,0 +1,35 @@
+
+=== Start: [2012/04/26 10:58:07] === 
+Memory error analysis: started
+Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r004mi1\r004mi1.inspxe] 
+Analysis started for e:\works\segd\segd.conv\Debug\segd.conv.exe (pid = 8388) 
+Loaded module: e:\works\segd\segd.conv\Debug\segd.conv.exe, address range [0x01340000-0x013d0fff] 
+Loaded module: D:\Intel\Inspector XE 2011\bin32\inspxe_dbghelp.dll, address range [0x577a0000-0x578c0fff] 
+Loaded module: D:\Intel\Inspector XE 2011\bin32\inspxe_msdia100.dll, address range [0x613f0000-0x614b5fff] 
+Loaded module: C:\Windows\system32\apphelp.dll, address range [0x73cb0000-0x73cfbfff] 
+Loaded module: C:\Windows\syswow64\CRYPTBASE.dll, address range [0x749f0000-0x749fbfff] 
+Loaded module: C:\Windows\syswow64\SspiCli.dll, address range [0x74a00000-0x74a5ffff] 
+Loaded module: C:\Windows\syswow64\ole32.dll, address range [0x74a60000-0x74bbbfff] 
+Loaded module: C:\Windows\syswow64\LPK.dll, address range [0x74ce0000-0x74ce9fff] 
+Loaded module: C:\Windows\syswow64\KERNELBASE.dll, address range [0x751e0000-0x75225fff] 
+Loaded module: C:\Windows\syswow64\MSCTF.dll, address range [0x75230000-0x752fbfff] 
+Loaded module: C:\Windows\syswow64\OLEAUT32.dll, address range [0x753d0000-0x7545efff] 
+Loaded module: C:\Windows\syswow64\USER32.dll, address range [0x75460000-0x7555ffff] 
+Loaded module: C:\Windows\syswow64\USP10.dll, address range [0x75560000-0x755fcfff] 
+Loaded module: C:\Windows\syswow64\SHLWAPI.dll, address range [0x75600000-0x75656fff] 
+Loaded module: C:\Windows\syswow64\kernel32.dll, address range [0x75880000-0x7598ffff] 
+Loaded module: C:\Windows\syswow64\WS2_32.dll, address range [0x75990000-0x759c4fff] 
+Loaded module: C:\Windows\syswow64\RPCRT4.dll, address range [0x75a00000-0x75aeffff] 
+Loaded module: C:\Windows\SysWOW64\sechost.dll, address range [0x76740000-0x76758fff] 
+Loaded module: C:\Windows\system32\IMM32.DLL, address range [0x76780000-0x767dffff] 
+Loaded module: C:\Windows\syswow64\imagehlp.dll, address range [0x767e0000-0x76809fff] 
+Loaded module: C:\Windows\syswow64\NSI.dll, address range [0x76860000-0x76865fff] 
+Loaded module: C:\Windows\syswow64\GDI32.dll, address range [0x76870000-0x768fffff] 
+Loaded module: C:\Windows\syswow64\PSAPI.DLL, address range [0x76900000-0x76904fff] 
+Loaded module: C:\Windows\syswow64\ADVAPI32.dll, address range [0x76910000-0x769affff] 
+Loaded module: C:\Windows\syswow64\msvcrt.dll, address range [0x769b0000-0x76a5bfff] 
+Loaded module: C:\Windows\SysWOW64\ntdll.dll, address range [0x77320000-0x7749ffff] 
+Application exit code: [0] 
+Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r004mi1\r004mi1.inspxe] 
+Memory error analysis: completed
+=== End: [2012/04/26 10:58:13] === 

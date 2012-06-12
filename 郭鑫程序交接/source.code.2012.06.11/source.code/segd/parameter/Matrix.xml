@@ -1,0 +1,1935 @@
+<?xml version="1.0"?>
+<Matrix>
+	<Line>
+		<Survery>
+			<SurverySetup Count="5" TabCount="4">
+				<Record LineName="1" ReceiverSection="1-250p1"/>
+				<Record LineName="2" ReceiverSection="1-250p1"/>
+				<Record LineName="3" ReceiverSection="1-250p1"/>
+				<Record LineName="4" ReceiverSection="1-250p1"/>
+				<Record LineName="5" ReceiverSection="1-250p1"/>
+			</SurverySetup>
+			<PointCodeSetup Count="10" TabCount="4">
+				<Record Nb="1" Label="PointCode1" SensorType="s1"/>
+				<Record Nb="2" Label="PointCode2" SensorType="s2"/>
+				<Record Nb="3" Label="PointCode3" SensorType="s3"/>
+				<Record Nb="4" Label="PointCode4" SensorType="s4"/>
+				<Record Nb="5" Label="PointCode5" SensorType="s5"/>
+				<Record Nb="6" Label="PointCode6" SensorType="s6"/>
+				<Record Nb="7" Label="PointCode7" SensorType="s7"/>
+				<Record Nb="8" Label="PointCode8" SensorType="s8"/>
+				<Record Nb="9" Label="PointCode9" SensorType="s9"/>
+				<Record Nb="10" Label="PointCode10" SensorType="s10+cs"/>
+			</PointCodeSetup>
+			<SensorSetup Count="10" TabCount="4">
+				<Record Nb="1" SEGDCode="0" Label="Sensor1" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="2" SEGDCode="1" Label="Sensor2" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+				<Record Nb="3" SEGDCode="2" Label="Sensor3" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="4" SEGDCode="3" Label="Sensor4" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+				<Record Nb="5" SEGDCode="4" Label="Sensor5" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="6" SEGDCode="5" Label="Sensor6" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+				<Record Nb="7" SEGDCode="6" Label="Sensor7" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="8" SEGDCode="7" Label="Sensor8" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+				<Record Nb="9" SEGDCode="8" Label="Sensor9" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="2" Leakage="30"/>
+				<Record Nb="10" SEGDCode="9" Label="Sensor10" ContinuityMin="2" ContinuityMax="8" Tilt="6" Noise="30" Leakage="3"/>
+			</SensorSetup>
+		</Survery>
+		<Layout>
+			<MarkerSetup Count="10" TabCount="4">
+				<Record BoxType="3" SN="65027" LineName="1" PointNb="1" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="10002523" LineName="2" PointNb="1" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="20002523" LineName="3" PointNb="1" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="28002523" LineName="4" PointNb="1" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="36002523" LineName="5" PointNb="30" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="44002523" LineName="6" PointNb="30" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="52002523" LineName="7" PointNb="30" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="60002523" LineName="8" PointNb="30" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="68002523" LineName="9" PointNb="30" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+				<Record BoxType="3" SN="76002523" LineName="10" PointNb="30" ChannelNb="1" MarkerIncr="1" Reversed="0"/>
+			</MarkerSetup>
+			<BlastMachineSetup Count="4" TabCount="4">
+				<Record Nb="1" Label="bm1" BoxType="3" SN="4002683" ChannelNb="1" Gain="1600" DPGNb="1" Comments="bm1"/>
+				<Record Nb="2" Label="bm2" BoxType="3" SN="4002763" ChannelNb="1" Gain="1600" DPGNb="1" Comments="bm2"/>
+				<Record Nb="3" Label="bm3" BoxType="3" SN="4002843" ChannelNb="1" Gain="1600" DPGNb="1" Comments="bm3"/>
+				<Record Nb="4" Label="bm4" BoxType="3" SN="4002923" ChannelNb="1" Gain="1600" DPGNb="1" Comments="bm4"/>
+			</BlastMachineSetup>
+			<AuxSetup Count="0" TabCount="4">
+				<Record Nb="5" Label="Aux1" BoxType="3" SN="4002523" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Aux1"/>
+				<Record Nb="2" Label="Aux2" BoxType="3" SN="4002443" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Aux2"/>
+				<Record Nb="3" Label="Aux3" BoxType="3" SN="4002363" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Aux3"/>
+				<Record Nb="4" Label="Aux4" BoxType="3" SN="4002283" ChannelNb="1" Gain="1600" DPGNb="1" Comments="Aux4"/>
+			</AuxSetup>
+			<DetourSetup Count="1" TabCount="4">
+				<Record BoxTypeLow="3" SNLow="44000923" ChannelNbLow="1" BoxTypeHigh="3" SNHigh="44001563" ChannelNbHigh="1" StopMarking="0"/>
+			</DetourSetup>
+			<MuteSetup Count="3" TabCount="4">
+				<Record LineName="2" PointNb="21"/>
+				<Record LineName="3" PointNb="43"/>
+				<Record LineName="6" PointNb="31"/>
+			</MuteSetup>
+		</Layout>
+		<SpreadType>
+			<AbsoluteSetup Count="250" TabCount="4">
+				<AbsoluteSetup1 Count="5" TabCount="4" ShotPoint="22695">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-48"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-6"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-126"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-126"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-126"/>
+				</AbsoluteSetup1>
+				<AbsoluteSetup2 Count="5" TabCount="4" ShotPoint="22697">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-22"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-127"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-127"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-127"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-127"/>
+				</AbsoluteSetup2>
+				<AbsoluteSetup3 Count="5" TabCount="4" ShotPoint="22699">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-128"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-128"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-128"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-128"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-128"/>
+				</AbsoluteSetup3>
+				<AbsoluteSetup4 Count="5" TabCount="4" ShotPoint="22701">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-129"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-129"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-129"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-129"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-129"/>
+				</AbsoluteSetup4>
+				<AbsoluteSetup5 Count="5" TabCount="4" ShotPoint="22703">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-130"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-130"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-130"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-130"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-130"/>
+				</AbsoluteSetup5>
+				<AbsoluteSetup6 Count="5" TabCount="4" ShotPoint="22705">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-131"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-131"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-131"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-131"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-131"/>
+				</AbsoluteSetup6>
+				<AbsoluteSetup7 Count="5" TabCount="4" ShotPoint="22707">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-132"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-132"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-132"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-132"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-132"/>
+				</AbsoluteSetup7>
+				<AbsoluteSetup8 Count="5" TabCount="4" ShotPoint="22709">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-133"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-133"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-133"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-133"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-133"/>
+				</AbsoluteSetup8>
+				<AbsoluteSetup9 Count="5" TabCount="4" ShotPoint="22711">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-134"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-134"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-134"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-134"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-134"/>
+				</AbsoluteSetup9>
+				<AbsoluteSetup10 Count="5" TabCount="4" ShotPoint="22713">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-135"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-135"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-135"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-135"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-135"/>
+				</AbsoluteSetup10>
+				<AbsoluteSetup11 Count="5" TabCount="4" ShotPoint="22715">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-136"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-136"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-136"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-136"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-136"/>
+				</AbsoluteSetup11>
+				<AbsoluteSetup12 Count="5" TabCount="4" ShotPoint="22717">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-137"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-137"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-137"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-137"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-137"/>
+				</AbsoluteSetup12>
+				<AbsoluteSetup13 Count="5" TabCount="4" ShotPoint="22719">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-138"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-138"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-138"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-138"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-138"/>
+				</AbsoluteSetup13>
+				<AbsoluteSetup14 Count="5" TabCount="4" ShotPoint="22721">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-139"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-139"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-139"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-139"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-139"/>
+				</AbsoluteSetup14>
+				<AbsoluteSetup15 Count="5" TabCount="4" ShotPoint="22723">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-140"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-140"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-140"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-140"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-140"/>
+				</AbsoluteSetup15>
+				<AbsoluteSetup16 Count="5" TabCount="4" ShotPoint="22725">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-141"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-141"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-141"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-141"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-141"/>
+				</AbsoluteSetup16>
+				<AbsoluteSetup17 Count="5" TabCount="4" ShotPoint="22727">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-142"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-142"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-142"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-142"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-142"/>
+				</AbsoluteSetup17>
+				<AbsoluteSetup18 Count="5" TabCount="4" ShotPoint="22729">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-143"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-143"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-143"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-143"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-143"/>
+				</AbsoluteSetup18>
+				<AbsoluteSetup19 Count="5" TabCount="4" ShotPoint="22731">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-144"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-144"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-144"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-144"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-144"/>
+				</AbsoluteSetup19>
+				<AbsoluteSetup20 Count="5" TabCount="4" ShotPoint="22733">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-145"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-145"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-145"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-145"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-145"/>
+				</AbsoluteSetup20>
+				<AbsoluteSetup21 Count="5" TabCount="4" ShotPoint="22735">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-146"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-146"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-146"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-146"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-146"/>
+				</AbsoluteSetup21>
+				<AbsoluteSetup22 Count="5" TabCount="4" ShotPoint="22737">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-147"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-147"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-147"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-147"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-147"/>
+				</AbsoluteSetup22>
+				<AbsoluteSetup23 Count="5" TabCount="4" ShotPoint="22739">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-148"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-148"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-148"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-148"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-148"/>
+				</AbsoluteSetup23>
+				<AbsoluteSetup24 Count="5" TabCount="4" ShotPoint="22741">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-149"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-149"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-149"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-149"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-149"/>
+				</AbsoluteSetup24>
+				<AbsoluteSetup25 Count="5" TabCount="4" ShotPoint="22743">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-150"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-150"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-150"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-150"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-150"/>
+				</AbsoluteSetup25>
+				<AbsoluteSetup26 Count="5" TabCount="4" ShotPoint="22745">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-151"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-151"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-151"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-151"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-151"/>
+				</AbsoluteSetup26>
+				<AbsoluteSetup27 Count="5" TabCount="4" ShotPoint="22747">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-152"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-152"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-152"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-152"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-152"/>
+				</AbsoluteSetup27>
+				<AbsoluteSetup28 Count="5" TabCount="4" ShotPoint="22749">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-153"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-153"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-153"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-153"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-153"/>
+				</AbsoluteSetup28>
+				<AbsoluteSetup29 Count="5" TabCount="4" ShotPoint="22751">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-154"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-154"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-154"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-154"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-154"/>
+				</AbsoluteSetup29>
+				<AbsoluteSetup30 Count="5" TabCount="4" ShotPoint="22753">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-155"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-155"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-155"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-155"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-155"/>
+				</AbsoluteSetup30>
+				<AbsoluteSetup31 Count="5" TabCount="4" ShotPoint="22755">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-156"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-156"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-156"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-156"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-156"/>
+				</AbsoluteSetup31>
+				<AbsoluteSetup32 Count="5" TabCount="4" ShotPoint="22757">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-157"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-157"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-157"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-157"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-157"/>
+				</AbsoluteSetup32>
+				<AbsoluteSetup33 Count="5" TabCount="4" ShotPoint="22759">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-158"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-158"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-158"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-158"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-158"/>
+				</AbsoluteSetup33>
+				<AbsoluteSetup34 Count="5" TabCount="4" ShotPoint="22761">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-159"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-159"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-159"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-159"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-159"/>
+				</AbsoluteSetup34>
+				<AbsoluteSetup35 Count="5" TabCount="4" ShotPoint="22763">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-160"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-160"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-160"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-160"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-160"/>
+				</AbsoluteSetup35>
+				<AbsoluteSetup36 Count="5" TabCount="4" ShotPoint="22765">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-161"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-161"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-161"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-161"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-161"/>
+				</AbsoluteSetup36>
+				<AbsoluteSetup37 Count="5" TabCount="4" ShotPoint="22767">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-162"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-162"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-162"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-162"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-162"/>
+				</AbsoluteSetup37>
+				<AbsoluteSetup38 Count="5" TabCount="4" ShotPoint="22769">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-163"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-163"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-163"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-163"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-163"/>
+				</AbsoluteSetup38>
+				<AbsoluteSetup39 Count="5" TabCount="4" ShotPoint="22771">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-164"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-164"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-164"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-164"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-164"/>
+				</AbsoluteSetup39>
+				<AbsoluteSetup40 Count="5" TabCount="4" ShotPoint="22773">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-165"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-165"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-165"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-165"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-165"/>
+				</AbsoluteSetup40>
+				<AbsoluteSetup41 Count="5" TabCount="4" ShotPoint="22775">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-166"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-166"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-166"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-166"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-166"/>
+				</AbsoluteSetup41>
+				<AbsoluteSetup42 Count="5" TabCount="4" ShotPoint="22777">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-167"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-167"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-167"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-167"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-167"/>
+				</AbsoluteSetup42>
+				<AbsoluteSetup43 Count="5" TabCount="4" ShotPoint="22779">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-168"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-168"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-168"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-168"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-168"/>
+				</AbsoluteSetup43>
+				<AbsoluteSetup44 Count="5" TabCount="4" ShotPoint="22781">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-169"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-169"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-169"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-169"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-169"/>
+				</AbsoluteSetup44>
+				<AbsoluteSetup45 Count="5" TabCount="4" ShotPoint="22783">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-170"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-170"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-170"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-170"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-170"/>
+				</AbsoluteSetup45>
+				<AbsoluteSetup46 Count="5" TabCount="4" ShotPoint="22785">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-171"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-171"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-171"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-171"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-171"/>
+				</AbsoluteSetup46>
+				<AbsoluteSetup47 Count="5" TabCount="4" ShotPoint="22787">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-172"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-172"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-172"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-172"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-172"/>
+				</AbsoluteSetup47>
+				<AbsoluteSetup48 Count="5" TabCount="4" ShotPoint="22789">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-173"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-173"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-173"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-173"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-173"/>
+				</AbsoluteSetup48>
+				<AbsoluteSetup49 Count="5" TabCount="4" ShotPoint="22791">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-174"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-174"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-174"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-174"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-174"/>
+				</AbsoluteSetup49>
+				<AbsoluteSetup50 Count="5" TabCount="4" ShotPoint="22793">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-175"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-175"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-175"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-175"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-175"/>
+				</AbsoluteSetup50>
+				<AbsoluteSetup51 Count="5" TabCount="4" ShotPoint="22795">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-176"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-176"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-176"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-176"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-176"/>
+				</AbsoluteSetup51>
+				<AbsoluteSetup52 Count="5" TabCount="4" ShotPoint="22797">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-177"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-177"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-177"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-177"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-177"/>
+				</AbsoluteSetup52>
+				<AbsoluteSetup53 Count="5" TabCount="4" ShotPoint="22799">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-178"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-178"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-178"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-178"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-178"/>
+				</AbsoluteSetup53>
+				<AbsoluteSetup54 Count="5" TabCount="4" ShotPoint="22801">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-179"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-179"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-179"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-179"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-179"/>
+				</AbsoluteSetup54>
+				<AbsoluteSetup55 Count="5" TabCount="4" ShotPoint="22803">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-180"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-180"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-180"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-180"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-180"/>
+				</AbsoluteSetup55>
+				<AbsoluteSetup56 Count="5" TabCount="4" ShotPoint="22805">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-181"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-181"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-181"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-181"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-181"/>
+				</AbsoluteSetup56>
+				<AbsoluteSetup57 Count="5" TabCount="4" ShotPoint="22807">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-182"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-182"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-182"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-182"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-182"/>
+				</AbsoluteSetup57>
+				<AbsoluteSetup58 Count="5" TabCount="4" ShotPoint="22809">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-183"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-183"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-183"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-183"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-183"/>
+				</AbsoluteSetup58>
+				<AbsoluteSetup59 Count="5" TabCount="4" ShotPoint="22811">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-184"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-184"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-184"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-184"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-184"/>
+				</AbsoluteSetup59>
+				<AbsoluteSetup60 Count="5" TabCount="4" ShotPoint="22813">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-185"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-185"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-185"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-185"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-185"/>
+				</AbsoluteSetup60>
+				<AbsoluteSetup61 Count="5" TabCount="4" ShotPoint="22815">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-186"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-186"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-186"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-186"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-186"/>
+				</AbsoluteSetup61>
+				<AbsoluteSetup62 Count="5" TabCount="4" ShotPoint="22817">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-187"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-187"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-187"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-187"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-187"/>
+				</AbsoluteSetup62>
+				<AbsoluteSetup63 Count="5" TabCount="4" ShotPoint="22819">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-188"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-188"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-188"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-188"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-188"/>
+				</AbsoluteSetup63>
+				<AbsoluteSetup64 Count="5" TabCount="4" ShotPoint="22821">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-189"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-189"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-189"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-189"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-189"/>
+				</AbsoluteSetup64>
+				<AbsoluteSetup65 Count="5" TabCount="4" ShotPoint="22823">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-190"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-190"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-190"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-190"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-190"/>
+				</AbsoluteSetup65>
+				<AbsoluteSetup66 Count="5" TabCount="4" ShotPoint="22825">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-191"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-191"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-191"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-191"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-191"/>
+				</AbsoluteSetup66>
+				<AbsoluteSetup67 Count="5" TabCount="4" ShotPoint="22827">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-192"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-192"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-192"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-192"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-192"/>
+				</AbsoluteSetup67>
+				<AbsoluteSetup68 Count="5" TabCount="4" ShotPoint="22829">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-193"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-193"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-193"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-193"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-193"/>
+				</AbsoluteSetup68>
+				<AbsoluteSetup69 Count="5" TabCount="4" ShotPoint="22831">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-194"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-194"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-194"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-194"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-194"/>
+				</AbsoluteSetup69>
+				<AbsoluteSetup70 Count="5" TabCount="4" ShotPoint="22833">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-195"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-195"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-195"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-195"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-195"/>
+				</AbsoluteSetup70>
+				<AbsoluteSetup71 Count="5" TabCount="4" ShotPoint="22835">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-196"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-196"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-196"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-196"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-196"/>
+				</AbsoluteSetup71>
+				<AbsoluteSetup72 Count="5" TabCount="4" ShotPoint="22837">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-197"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-197"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-197"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-197"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-197"/>
+				</AbsoluteSetup72>
+				<AbsoluteSetup73 Count="5" TabCount="4" ShotPoint="22839">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-198"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-198"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-198"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-198"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-198"/>
+				</AbsoluteSetup73>
+				<AbsoluteSetup74 Count="5" TabCount="4" ShotPoint="22841">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-199"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-199"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-199"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-199"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-199"/>
+				</AbsoluteSetup74>
+				<AbsoluteSetup75 Count="5" TabCount="4" ShotPoint="22843">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-200"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-200"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-200"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-200"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-200"/>
+				</AbsoluteSetup75>
+				<AbsoluteSetup76 Count="5" TabCount="4" ShotPoint="22845">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-201"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-201"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-201"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-201"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-201"/>
+				</AbsoluteSetup76>
+				<AbsoluteSetup77 Count="5" TabCount="4" ShotPoint="22847">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-202"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-202"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-202"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-202"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-202"/>
+				</AbsoluteSetup77>
+				<AbsoluteSetup78 Count="5" TabCount="4" ShotPoint="22849">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-203"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-203"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-203"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-203"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-203"/>
+				</AbsoluteSetup78>
+				<AbsoluteSetup79 Count="5" TabCount="4" ShotPoint="22851">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-204"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-204"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-204"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-204"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-204"/>
+				</AbsoluteSetup79>
+				<AbsoluteSetup80 Count="5" TabCount="4" ShotPoint="22853">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-205"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-205"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-205"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-205"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-205"/>
+				</AbsoluteSetup80>
+				<AbsoluteSetup81 Count="5" TabCount="4" ShotPoint="22855">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-206"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-206"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-206"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-206"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-206"/>
+				</AbsoluteSetup81>
+				<AbsoluteSetup82 Count="5" TabCount="4" ShotPoint="22857">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-207"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-207"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-207"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-207"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-207"/>
+				</AbsoluteSetup82>
+				<AbsoluteSetup83 Count="5" TabCount="4" ShotPoint="22859">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-208"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-208"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-208"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-208"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-208"/>
+				</AbsoluteSetup83>
+				<AbsoluteSetup84 Count="5" TabCount="4" ShotPoint="22861">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-209"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-209"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-209"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-209"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-209"/>
+				</AbsoluteSetup84>
+				<AbsoluteSetup85 Count="5" TabCount="4" ShotPoint="22863">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-210"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-210"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-210"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-210"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-210"/>
+				</AbsoluteSetup85>
+				<AbsoluteSetup86 Count="5" TabCount="4" ShotPoint="22865">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-211"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-211"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-211"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-211"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-211"/>
+				</AbsoluteSetup86>
+				<AbsoluteSetup87 Count="5" TabCount="4" ShotPoint="22867">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-212"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-212"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-212"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-212"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-212"/>
+				</AbsoluteSetup87>
+				<AbsoluteSetup88 Count="5" TabCount="4" ShotPoint="22869">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-213"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-213"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-213"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-213"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-213"/>
+				</AbsoluteSetup88>
+				<AbsoluteSetup89 Count="5" TabCount="4" ShotPoint="22871">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-214"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-214"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-214"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-214"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-214"/>
+				</AbsoluteSetup89>
+				<AbsoluteSetup90 Count="5" TabCount="4" ShotPoint="22873">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-215"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-215"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-215"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-215"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-215"/>
+				</AbsoluteSetup90>
+				<AbsoluteSetup91 Count="5" TabCount="4" ShotPoint="22875">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-216"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-216"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-216"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-216"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-216"/>
+				</AbsoluteSetup91>
+				<AbsoluteSetup92 Count="5" TabCount="4" ShotPoint="22877">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-217"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-217"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-217"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-217"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-217"/>
+				</AbsoluteSetup92>
+				<AbsoluteSetup93 Count="5" TabCount="4" ShotPoint="22879">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-218"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-218"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-218"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-218"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-218"/>
+				</AbsoluteSetup93>
+				<AbsoluteSetup94 Count="5" TabCount="4" ShotPoint="22881">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-219"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-219"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-219"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-219"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-219"/>
+				</AbsoluteSetup94>
+				<AbsoluteSetup95 Count="5" TabCount="4" ShotPoint="22883">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-220"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-220"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-220"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-220"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-220"/>
+				</AbsoluteSetup95>
+				<AbsoluteSetup96 Count="5" TabCount="4" ShotPoint="22885">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-221"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-221"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-221"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-221"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-221"/>
+				</AbsoluteSetup96>
+				<AbsoluteSetup97 Count="5" TabCount="4" ShotPoint="22887">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-222"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-222"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-222"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-222"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-222"/>
+				</AbsoluteSetup97>
+				<AbsoluteSetup98 Count="5" TabCount="4" ShotPoint="22889">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-223"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-223"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-223"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-223"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-223"/>
+				</AbsoluteSetup98>
+				<AbsoluteSetup99 Count="5" TabCount="4" ShotPoint="22891">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-224"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-224"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-224"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-224"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-224"/>
+				</AbsoluteSetup99>
+				<AbsoluteSetup100 Count="5" TabCount="4" ShotPoint="22893">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-225"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-225"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-225"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-225"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-225"/>
+				</AbsoluteSetup100>
+				<AbsoluteSetup101 Count="5" TabCount="4" ShotPoint="22895">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-226"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-226"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-226"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-226"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-226"/>
+				</AbsoluteSetup101>
+				<AbsoluteSetup102 Count="5" TabCount="4" ShotPoint="22897">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-227"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-227"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-227"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-227"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-227"/>
+				</AbsoluteSetup102>
+				<AbsoluteSetup103 Count="5" TabCount="4" ShotPoint="22899">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-228"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-228"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-228"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-228"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-228"/>
+				</AbsoluteSetup103>
+				<AbsoluteSetup104 Count="5" TabCount="4" ShotPoint="22901">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-229"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-229"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-229"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-229"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-229"/>
+				</AbsoluteSetup104>
+				<AbsoluteSetup105 Count="5" TabCount="4" ShotPoint="22903">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-230"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-230"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-230"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-230"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-230"/>
+				</AbsoluteSetup105>
+				<AbsoluteSetup106 Count="5" TabCount="4" ShotPoint="22905">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-231"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-231"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-231"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-231"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-231"/>
+				</AbsoluteSetup106>
+				<AbsoluteSetup107 Count="5" TabCount="4" ShotPoint="22907">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-232"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-232"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-232"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-232"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-232"/>
+				</AbsoluteSetup107>
+				<AbsoluteSetup108 Count="5" TabCount="4" ShotPoint="22909">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-233"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-233"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-233"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-233"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-233"/>
+				</AbsoluteSetup108>
+				<AbsoluteSetup109 Count="5" TabCount="4" ShotPoint="22911">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-234"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-234"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-234"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-234"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-234"/>
+				</AbsoluteSetup109>
+				<AbsoluteSetup110 Count="5" TabCount="4" ShotPoint="22913">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-235"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-235"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-235"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-235"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-235"/>
+				</AbsoluteSetup110>
+				<AbsoluteSetup111 Count="5" TabCount="4" ShotPoint="22915">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-236"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-236"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-236"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-236"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-236"/>
+				</AbsoluteSetup111>
+				<AbsoluteSetup112 Count="5" TabCount="4" ShotPoint="22917">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-237"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-237"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-237"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-237"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-237"/>
+				</AbsoluteSetup112>
+				<AbsoluteSetup113 Count="5" TabCount="4" ShotPoint="22919">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-238"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-238"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-238"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-238"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-238"/>
+				</AbsoluteSetup113>
+				<AbsoluteSetup114 Count="5" TabCount="4" ShotPoint="22921">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-239"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-239"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-239"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-239"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-239"/>
+				</AbsoluteSetup114>
+				<AbsoluteSetup115 Count="5" TabCount="4" ShotPoint="22923">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-240"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-240"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-240"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-240"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-240"/>
+				</AbsoluteSetup115>
+				<AbsoluteSetup116 Count="5" TabCount="4" ShotPoint="22925">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-241"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-241"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-241"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-241"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-241"/>
+				</AbsoluteSetup116>
+				<AbsoluteSetup117 Count="5" TabCount="4" ShotPoint="22927">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-242"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-242"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-242"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-242"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-242"/>
+				</AbsoluteSetup117>
+				<AbsoluteSetup118 Count="5" TabCount="4" ShotPoint="22929">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-243"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-243"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-243"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-243"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-243"/>
+				</AbsoluteSetup118>
+				<AbsoluteSetup119 Count="5" TabCount="4" ShotPoint="22931">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-244"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-244"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-244"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-244"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-244"/>
+				</AbsoluteSetup119>
+				<AbsoluteSetup120 Count="5" TabCount="4" ShotPoint="22933">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-245"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-245"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-245"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-245"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-245"/>
+				</AbsoluteSetup120>
+				<AbsoluteSetup121 Count="5" TabCount="4" ShotPoint="22935">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-246"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-246"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-246"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-246"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-246"/>
+				</AbsoluteSetup121>
+				<AbsoluteSetup122 Count="5" TabCount="4" ShotPoint="22937">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-247"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-247"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-247"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-247"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-247"/>
+				</AbsoluteSetup122>
+				<AbsoluteSetup123 Count="5" TabCount="4" ShotPoint="22939">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-248"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-248"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-248"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-248"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-248"/>
+				</AbsoluteSetup123>
+				<AbsoluteSetup124 Count="5" TabCount="4" ShotPoint="22941">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-249"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-249"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-249"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-249"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-249"/>
+				</AbsoluteSetup124>
+				<AbsoluteSetup125 Count="5" TabCount="4" ShotPoint="22943">
+					<Record Nb="1" Label="Absolute1" Spread="1:1-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:1-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:1-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:1-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:1-250"/>
+				</AbsoluteSetup125>
+				<AbsoluteSetup126 Count="5" TabCount="4" ShotPoint="22945">
+					<Record Nb="1" Label="Absolute1" Spread="1:2-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:2-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:2-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:2-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:2-250"/>
+				</AbsoluteSetup126>
+				<AbsoluteSetup127 Count="5" TabCount="4" ShotPoint="22947">
+					<Record Nb="1" Label="Absolute1" Spread="1:3-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:3-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:3-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:3-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:3-250"/>
+				</AbsoluteSetup127>
+				<AbsoluteSetup128 Count="5" TabCount="4" ShotPoint="22949">
+					<Record Nb="1" Label="Absolute1" Spread="1:4-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:4-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:4-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:4-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:4-250"/>
+				</AbsoluteSetup128>
+				<AbsoluteSetup129 Count="5" TabCount="4" ShotPoint="22951">
+					<Record Nb="1" Label="Absolute1" Spread="1:5-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:5-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:5-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:5-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:5-250"/>
+				</AbsoluteSetup129>
+				<AbsoluteSetup130 Count="5" TabCount="4" ShotPoint="22953">
+					<Record Nb="1" Label="Absolute1" Spread="1:6-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:6-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:6-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:6-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:6-250"/>
+				</AbsoluteSetup130>
+				<AbsoluteSetup131 Count="5" TabCount="4" ShotPoint="22955">
+					<Record Nb="1" Label="Absolute1" Spread="1:7-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:7-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:7-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:7-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:7-250"/>
+				</AbsoluteSetup131>
+				<AbsoluteSetup132 Count="5" TabCount="4" ShotPoint="22957">
+					<Record Nb="1" Label="Absolute1" Spread="1:8-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:8-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:8-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:8-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:8-250"/>
+				</AbsoluteSetup132>
+				<AbsoluteSetup133 Count="5" TabCount="4" ShotPoint="22959">
+					<Record Nb="1" Label="Absolute1" Spread="1:9-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:9-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:9-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:9-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:9-250"/>
+				</AbsoluteSetup133>
+				<AbsoluteSetup134 Count="5" TabCount="4" ShotPoint="22961">
+					<Record Nb="1" Label="Absolute1" Spread="1:10-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:10-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:10-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:10-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:10-250"/>
+				</AbsoluteSetup134>
+				<AbsoluteSetup135 Count="5" TabCount="4" ShotPoint="22963">
+					<Record Nb="1" Label="Absolute1" Spread="1:11-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:11-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:11-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:11-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:11-250"/>
+				</AbsoluteSetup135>
+				<AbsoluteSetup136 Count="5" TabCount="4" ShotPoint="22965">
+					<Record Nb="1" Label="Absolute1" Spread="1:12-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:12-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:12-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:12-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:12-250"/>
+				</AbsoluteSetup136>
+				<AbsoluteSetup137 Count="5" TabCount="4" ShotPoint="22967">
+					<Record Nb="1" Label="Absolute1" Spread="1:13-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:13-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:13-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:13-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:13-250"/>
+				</AbsoluteSetup137>
+				<AbsoluteSetup138 Count="5" TabCount="4" ShotPoint="22969">
+					<Record Nb="1" Label="Absolute1" Spread="1:14-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:14-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:14-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:14-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:14-250"/>
+				</AbsoluteSetup138>
+				<AbsoluteSetup139 Count="5" TabCount="4" ShotPoint="22971">
+					<Record Nb="1" Label="Absolute1" Spread="1:15-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:15-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:15-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:15-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:15-250"/>
+				</AbsoluteSetup139>
+				<AbsoluteSetup140 Count="5" TabCount="4" ShotPoint="22973">
+					<Record Nb="1" Label="Absolute1" Spread="1:16-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:16-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:16-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:16-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:16-250"/>
+				</AbsoluteSetup140>
+				<AbsoluteSetup141 Count="5" TabCount="4" ShotPoint="22975">
+					<Record Nb="1" Label="Absolute1" Spread="1:17-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:17-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:17-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:17-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:17-250"/>
+				</AbsoluteSetup141>
+				<AbsoluteSetup142 Count="5" TabCount="4" ShotPoint="22977">
+					<Record Nb="1" Label="Absolute1" Spread="1:18-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:18-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:18-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:18-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:18-250"/>
+				</AbsoluteSetup142>
+				<AbsoluteSetup143 Count="5" TabCount="4" ShotPoint="22979">
+					<Record Nb="1" Label="Absolute1" Spread="1:19-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:19-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:19-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:19-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:19-250"/>
+				</AbsoluteSetup143>
+				<AbsoluteSetup144 Count="5" TabCount="4" ShotPoint="22981">
+					<Record Nb="1" Label="Absolute1" Spread="1:20-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:20-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:20-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:20-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:20-250"/>
+				</AbsoluteSetup144>
+				<AbsoluteSetup145 Count="5" TabCount="4" ShotPoint="22983">
+					<Record Nb="1" Label="Absolute1" Spread="1:21-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:21-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:21-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:21-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:21-250"/>
+				</AbsoluteSetup145>
+				<AbsoluteSetup146 Count="5" TabCount="4" ShotPoint="22985">
+					<Record Nb="1" Label="Absolute1" Spread="1:22-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:22-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:22-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:22-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:22-250"/>
+				</AbsoluteSetup146>
+				<AbsoluteSetup147 Count="5" TabCount="4" ShotPoint="22987">
+					<Record Nb="1" Label="Absolute1" Spread="1:23-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:23-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:23-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:23-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:23-250"/>
+				</AbsoluteSetup147>
+				<AbsoluteSetup148 Count="5" TabCount="4" ShotPoint="22989">
+					<Record Nb="1" Label="Absolute1" Spread="1:24-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:24-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:24-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:24-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:24-250"/>
+				</AbsoluteSetup148>
+				<AbsoluteSetup149 Count="5" TabCount="4" ShotPoint="22991">
+					<Record Nb="1" Label="Absolute1" Spread="1:25-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:25-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:25-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:25-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:25-250"/>
+				</AbsoluteSetup149>
+				<AbsoluteSetup150 Count="5" TabCount="4" ShotPoint="22993">
+					<Record Nb="1" Label="Absolute1" Spread="1:26-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:26-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:26-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:26-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:26-250"/>
+				</AbsoluteSetup150>
+				<AbsoluteSetup151 Count="5" TabCount="4" ShotPoint="22995">
+					<Record Nb="1" Label="Absolute1" Spread="1:27-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:27-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:27-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:27-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:27-250"/>
+				</AbsoluteSetup151>
+				<AbsoluteSetup152 Count="5" TabCount="4" ShotPoint="22997">
+					<Record Nb="1" Label="Absolute1" Spread="1:28-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:28-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:28-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:28-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:28-250"/>
+				</AbsoluteSetup152>
+				<AbsoluteSetup153 Count="5" TabCount="4" ShotPoint="22999">
+					<Record Nb="1" Label="Absolute1" Spread="1:29-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:29-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:29-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:29-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:29-250"/>
+				</AbsoluteSetup153>
+				<AbsoluteSetup154 Count="5" TabCount="4" ShotPoint="23001">
+					<Record Nb="1" Label="Absolute1" Spread="1:30-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:30-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:30-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:30-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:30-250"/>
+				</AbsoluteSetup154>
+				<AbsoluteSetup155 Count="5" TabCount="4" ShotPoint="23003">
+					<Record Nb="1" Label="Absolute1" Spread="1:31-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:31-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:31-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:31-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:31-250"/>
+				</AbsoluteSetup155>
+				<AbsoluteSetup156 Count="5" TabCount="4" ShotPoint="23005">
+					<Record Nb="1" Label="Absolute1" Spread="1:32-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:32-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:32-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:32-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:32-250"/>
+				</AbsoluteSetup156>
+				<AbsoluteSetup157 Count="5" TabCount="4" ShotPoint="23007">
+					<Record Nb="1" Label="Absolute1" Spread="1:33-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:33-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:33-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:33-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:33-250"/>
+				</AbsoluteSetup157>
+				<AbsoluteSetup158 Count="5" TabCount="4" ShotPoint="23009">
+					<Record Nb="1" Label="Absolute1" Spread="1:34-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:34-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:34-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:34-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:34-250"/>
+				</AbsoluteSetup158>
+				<AbsoluteSetup159 Count="5" TabCount="4" ShotPoint="23011">
+					<Record Nb="1" Label="Absolute1" Spread="1:35-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:35-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:35-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:35-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:35-250"/>
+				</AbsoluteSetup159>
+				<AbsoluteSetup160 Count="5" TabCount="4" ShotPoint="23013">
+					<Record Nb="1" Label="Absolute1" Spread="1:36-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:36-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:36-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:36-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:36-250"/>
+				</AbsoluteSetup160>
+				<AbsoluteSetup161 Count="5" TabCount="4" ShotPoint="23015">
+					<Record Nb="1" Label="Absolute1" Spread="1:37-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:37-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:37-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:37-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:37-250"/>
+				</AbsoluteSetup161>
+				<AbsoluteSetup162 Count="5" TabCount="4" ShotPoint="23017">
+					<Record Nb="1" Label="Absolute1" Spread="1:38-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:38-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:38-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:38-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:38-250"/>
+				</AbsoluteSetup162>
+				<AbsoluteSetup163 Count="5" TabCount="4" ShotPoint="23019">
+					<Record Nb="1" Label="Absolute1" Spread="1:39-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:39-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:39-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:39-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:39-250"/>
+				</AbsoluteSetup163>
+				<AbsoluteSetup164 Count="5" TabCount="4" ShotPoint="23021">
+					<Record Nb="1" Label="Absolute1" Spread="1:40-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:40-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:40-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:40-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:40-250"/>
+				</AbsoluteSetup164>
+				<AbsoluteSetup165 Count="5" TabCount="4" ShotPoint="23023">
+					<Record Nb="1" Label="Absolute1" Spread="1:41-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:41-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:41-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:41-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:41-250"/>
+				</AbsoluteSetup165>
+				<AbsoluteSetup166 Count="5" TabCount="4" ShotPoint="23025">
+					<Record Nb="1" Label="Absolute1" Spread="1:42-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:42-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:42-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:42-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:42-250"/>
+				</AbsoluteSetup166>
+				<AbsoluteSetup167 Count="5" TabCount="4" ShotPoint="23027">
+					<Record Nb="1" Label="Absolute1" Spread="1:43-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:43-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:43-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:43-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:43-250"/>
+				</AbsoluteSetup167>
+				<AbsoluteSetup168 Count="5" TabCount="4" ShotPoint="23029">
+					<Record Nb="1" Label="Absolute1" Spread="1:44-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:44-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:44-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:44-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:44-250"/>
+				</AbsoluteSetup168>
+				<AbsoluteSetup169 Count="5" TabCount="4" ShotPoint="23031">
+					<Record Nb="1" Label="Absolute1" Spread="1:45-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:45-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:45-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:45-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:45-250"/>
+				</AbsoluteSetup169>
+				<AbsoluteSetup170 Count="5" TabCount="4" ShotPoint="23033">
+					<Record Nb="1" Label="Absolute1" Spread="1:46-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:46-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:46-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:46-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:46-250"/>
+				</AbsoluteSetup170>
+				<AbsoluteSetup171 Count="5" TabCount="4" ShotPoint="23035">
+					<Record Nb="1" Label="Absolute1" Spread="1:47-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:47-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:47-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:47-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:47-250"/>
+				</AbsoluteSetup171>
+				<AbsoluteSetup172 Count="5" TabCount="4" ShotPoint="23037">
+					<Record Nb="1" Label="Absolute1" Spread="1:48-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:48-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:48-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:48-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:48-250"/>
+				</AbsoluteSetup172>
+				<AbsoluteSetup173 Count="5" TabCount="4" ShotPoint="23039">
+					<Record Nb="1" Label="Absolute1" Spread="1:49-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:49-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:49-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:49-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:49-250"/>
+				</AbsoluteSetup173>
+				<AbsoluteSetup174 Count="5" TabCount="4" ShotPoint="23041">
+					<Record Nb="1" Label="Absolute1" Spread="1:50-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:50-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:50-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:50-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:50-250"/>
+				</AbsoluteSetup174>
+				<AbsoluteSetup175 Count="5" TabCount="4" ShotPoint="23043">
+					<Record Nb="1" Label="Absolute1" Spread="1:51-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:51-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:51-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:51-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:51-250"/>
+				</AbsoluteSetup175>
+				<AbsoluteSetup176 Count="5" TabCount="4" ShotPoint="23045">
+					<Record Nb="1" Label="Absolute1" Spread="1:52-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:52-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:52-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:52-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:52-250"/>
+				</AbsoluteSetup176>
+				<AbsoluteSetup177 Count="5" TabCount="4" ShotPoint="23047">
+					<Record Nb="1" Label="Absolute1" Spread="1:53-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:53-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:53-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:53-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:53-250"/>
+				</AbsoluteSetup177>
+				<AbsoluteSetup178 Count="5" TabCount="4" ShotPoint="23049">
+					<Record Nb="1" Label="Absolute1" Spread="1:54-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:54-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:54-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:54-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:54-250"/>
+				</AbsoluteSetup178>
+				<AbsoluteSetup179 Count="5" TabCount="4" ShotPoint="23051">
+					<Record Nb="1" Label="Absolute1" Spread="1:55-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:55-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:55-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:55-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:55-250"/>
+				</AbsoluteSetup179>
+				<AbsoluteSetup180 Count="5" TabCount="4" ShotPoint="23053">
+					<Record Nb="1" Label="Absolute1" Spread="1:56-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:56-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:56-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:56-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:56-250"/>
+				</AbsoluteSetup180>
+				<AbsoluteSetup181 Count="5" TabCount="4" ShotPoint="23055">
+					<Record Nb="1" Label="Absolute1" Spread="1:57-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:57-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:57-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:57-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:57-250"/>
+				</AbsoluteSetup181>
+				<AbsoluteSetup182 Count="5" TabCount="4" ShotPoint="23057">
+					<Record Nb="1" Label="Absolute1" Spread="1:58-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:58-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:58-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:58-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:58-250"/>
+				</AbsoluteSetup182>
+				<AbsoluteSetup183 Count="5" TabCount="4" ShotPoint="23059">
+					<Record Nb="1" Label="Absolute1" Spread="1:59-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:59-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:59-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:59-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:59-250"/>
+				</AbsoluteSetup183>
+				<AbsoluteSetup184 Count="5" TabCount="4" ShotPoint="23061">
+					<Record Nb="1" Label="Absolute1" Spread="1:60-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:60-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:60-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:60-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:60-250"/>
+				</AbsoluteSetup184>
+				<AbsoluteSetup185 Count="5" TabCount="4" ShotPoint="23063">
+					<Record Nb="1" Label="Absolute1" Spread="1:61-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:61-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:61-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:61-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:61-250"/>
+				</AbsoluteSetup185>
+				<AbsoluteSetup186 Count="5" TabCount="4" ShotPoint="23065">
+					<Record Nb="1" Label="Absolute1" Spread="1:62-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:62-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:62-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:62-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:62-250"/>
+				</AbsoluteSetup186>
+				<AbsoluteSetup187 Count="5" TabCount="4" ShotPoint="23067">
+					<Record Nb="1" Label="Absolute1" Spread="1:63-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:63-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:63-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:63-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:63-250"/>
+				</AbsoluteSetup187>
+				<AbsoluteSetup188 Count="5" TabCount="4" ShotPoint="23069">
+					<Record Nb="1" Label="Absolute1" Spread="1:64-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:64-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:64-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:64-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:64-250"/>
+				</AbsoluteSetup188>
+				<AbsoluteSetup189 Count="5" TabCount="4" ShotPoint="23071">
+					<Record Nb="1" Label="Absolute1" Spread="1:65-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:65-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:65-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:65-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:65-250"/>
+				</AbsoluteSetup189>
+				<AbsoluteSetup190 Count="5" TabCount="4" ShotPoint="23073">
+					<Record Nb="1" Label="Absolute1" Spread="1:66-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:66-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:66-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:66-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:66-250"/>
+				</AbsoluteSetup190>
+				<AbsoluteSetup191 Count="5" TabCount="4" ShotPoint="23075">
+					<Record Nb="1" Label="Absolute1" Spread="1:67-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:67-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:67-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:67-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:67-250"/>
+				</AbsoluteSetup191>
+				<AbsoluteSetup192 Count="5" TabCount="4" ShotPoint="23077">
+					<Record Nb="1" Label="Absolute1" Spread="1:68-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:68-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:68-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:68-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:68-250"/>
+				</AbsoluteSetup192>
+				<AbsoluteSetup193 Count="5" TabCount="4" ShotPoint="23079">
+					<Record Nb="1" Label="Absolute1" Spread="1:69-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:69-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:69-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:69-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:69-250"/>
+				</AbsoluteSetup193>
+				<AbsoluteSetup194 Count="5" TabCount="4" ShotPoint="23081">
+					<Record Nb="1" Label="Absolute1" Spread="1:70-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:70-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:70-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:70-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:70-250"/>
+				</AbsoluteSetup194>
+				<AbsoluteSetup195 Count="5" TabCount="4" ShotPoint="23083">
+					<Record Nb="1" Label="Absolute1" Spread="1:71-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:71-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:71-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:71-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:71-250"/>
+				</AbsoluteSetup195>
+				<AbsoluteSetup196 Count="5" TabCount="4" ShotPoint="23085">
+					<Record Nb="1" Label="Absolute1" Spread="1:72-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:72-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:72-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:72-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:72-250"/>
+				</AbsoluteSetup196>
+				<AbsoluteSetup197 Count="5" TabCount="4" ShotPoint="23087">
+					<Record Nb="1" Label="Absolute1" Spread="1:73-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:73-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:73-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:73-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:73-250"/>
+				</AbsoluteSetup197>
+				<AbsoluteSetup198 Count="5" TabCount="4" ShotPoint="23089">
+					<Record Nb="1" Label="Absolute1" Spread="1:74-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:74-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:74-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:74-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:74-250"/>
+				</AbsoluteSetup198>
+				<AbsoluteSetup199 Count="5" TabCount="4" ShotPoint="23091">
+					<Record Nb="1" Label="Absolute1" Spread="1:75-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:75-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:75-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:75-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:75-250"/>
+				</AbsoluteSetup199>
+				<AbsoluteSetup200 Count="5" TabCount="4" ShotPoint="23093">
+					<Record Nb="1" Label="Absolute1" Spread="1:76-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:76-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:76-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:76-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:76-250"/>
+				</AbsoluteSetup200>
+				<AbsoluteSetup201 Count="5" TabCount="4" ShotPoint="23095">
+					<Record Nb="1" Label="Absolute1" Spread="1:77-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:77-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:77-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:77-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:77-250"/>
+				</AbsoluteSetup201>
+				<AbsoluteSetup202 Count="5" TabCount="4" ShotPoint="23097">
+					<Record Nb="1" Label="Absolute1" Spread="1:78-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:78-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:78-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:78-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:78-250"/>
+				</AbsoluteSetup202>
+				<AbsoluteSetup203 Count="5" TabCount="4" ShotPoint="23099">
+					<Record Nb="1" Label="Absolute1" Spread="1:79-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:79-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:79-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:79-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:79-250"/>
+				</AbsoluteSetup203>
+				<AbsoluteSetup204 Count="5" TabCount="4" ShotPoint="23101">
+					<Record Nb="1" Label="Absolute1" Spread="1:80-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:80-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:80-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:80-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:80-250"/>
+				</AbsoluteSetup204>
+				<AbsoluteSetup205 Count="5" TabCount="4" ShotPoint="23103">
+					<Record Nb="1" Label="Absolute1" Spread="1:81-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:81-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:81-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:81-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:81-250"/>
+				</AbsoluteSetup205>
+				<AbsoluteSetup206 Count="5" TabCount="4" ShotPoint="23105">
+					<Record Nb="1" Label="Absolute1" Spread="1:82-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:82-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:82-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:82-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:82-250"/>
+				</AbsoluteSetup206>
+				<AbsoluteSetup207 Count="5" TabCount="4" ShotPoint="23107">
+					<Record Nb="1" Label="Absolute1" Spread="1:83-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:83-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:83-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:83-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:83-250"/>
+				</AbsoluteSetup207>
+				<AbsoluteSetup208 Count="5" TabCount="4" ShotPoint="23109">
+					<Record Nb="1" Label="Absolute1" Spread="1:84-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:84-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:84-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:84-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:84-250"/>
+				</AbsoluteSetup208>
+				<AbsoluteSetup209 Count="5" TabCount="4" ShotPoint="23111">
+					<Record Nb="1" Label="Absolute1" Spread="1:85-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:85-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:85-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:85-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:85-250"/>
+				</AbsoluteSetup209>
+				<AbsoluteSetup210 Count="5" TabCount="4" ShotPoint="23113">
+					<Record Nb="1" Label="Absolute1" Spread="1:86-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:86-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:86-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:86-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:86-250"/>
+				</AbsoluteSetup210>
+				<AbsoluteSetup211 Count="5" TabCount="4" ShotPoint="23115">
+					<Record Nb="1" Label="Absolute1" Spread="1:87-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:87-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:87-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:87-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:87-250"/>
+				</AbsoluteSetup211>
+				<AbsoluteSetup212 Count="5" TabCount="4" ShotPoint="23117">
+					<Record Nb="1" Label="Absolute1" Spread="1:88-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:88-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:88-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:88-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:88-250"/>
+				</AbsoluteSetup212>
+				<AbsoluteSetup213 Count="5" TabCount="4" ShotPoint="23119">
+					<Record Nb="1" Label="Absolute1" Spread="1:89-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:89-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:89-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:89-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:89-250"/>
+				</AbsoluteSetup213>
+				<AbsoluteSetup214 Count="5" TabCount="4" ShotPoint="23121">
+					<Record Nb="1" Label="Absolute1" Spread="1:90-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:90-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:90-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:90-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:90-250"/>
+				</AbsoluteSetup214>
+				<AbsoluteSetup215 Count="5" TabCount="4" ShotPoint="23123">
+					<Record Nb="1" Label="Absolute1" Spread="1:91-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:91-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:91-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:91-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:91-250"/>
+				</AbsoluteSetup215>
+				<AbsoluteSetup216 Count="5" TabCount="4" ShotPoint="23125">
+					<Record Nb="1" Label="Absolute1" Spread="1:92-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:92-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:92-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:92-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:92-250"/>
+				</AbsoluteSetup216>
+				<AbsoluteSetup217 Count="5" TabCount="4" ShotPoint="23127">
+					<Record Nb="1" Label="Absolute1" Spread="1:93-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:93-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:93-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:93-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:93-250"/>
+				</AbsoluteSetup217>
+				<AbsoluteSetup218 Count="5" TabCount="4" ShotPoint="23129">
+					<Record Nb="1" Label="Absolute1" Spread="1:94-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:94-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:94-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:94-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:94-250"/>
+				</AbsoluteSetup218>
+				<AbsoluteSetup219 Count="5" TabCount="4" ShotPoint="23131">
+					<Record Nb="1" Label="Absolute1" Spread="1:95-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:95-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:95-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:95-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:95-250"/>
+				</AbsoluteSetup219>
+				<AbsoluteSetup220 Count="5" TabCount="4" ShotPoint="23133">
+					<Record Nb="1" Label="Absolute1" Spread="1:96-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:96-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:96-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:96-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:96-250"/>
+				</AbsoluteSetup220>
+				<AbsoluteSetup221 Count="5" TabCount="4" ShotPoint="23135">
+					<Record Nb="1" Label="Absolute1" Spread="1:97-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:97-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:97-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:97-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:97-250"/>
+				</AbsoluteSetup221>
+				<AbsoluteSetup222 Count="5" TabCount="4" ShotPoint="23137">
+					<Record Nb="1" Label="Absolute1" Spread="1:98-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:98-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:98-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:98-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:98-250"/>
+				</AbsoluteSetup222>
+				<AbsoluteSetup223 Count="5" TabCount="4" ShotPoint="23139">
+					<Record Nb="1" Label="Absolute1" Spread="1:99-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:99-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:99-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:99-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:99-250"/>
+				</AbsoluteSetup223>
+				<AbsoluteSetup224 Count="5" TabCount="4" ShotPoint="23141">
+					<Record Nb="1" Label="Absolute1" Spread="1:100-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:100-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:100-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:100-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:100-250"/>
+				</AbsoluteSetup224>
+				<AbsoluteSetup225 Count="5" TabCount="4" ShotPoint="23143">
+					<Record Nb="1" Label="Absolute1" Spread="1:101-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:101-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:101-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:101-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:101-250"/>
+				</AbsoluteSetup225>
+				<AbsoluteSetup226 Count="5" TabCount="4" ShotPoint="23145">
+					<Record Nb="1" Label="Absolute1" Spread="1:102-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:102-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:102-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:102-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:102-250"/>
+				</AbsoluteSetup226>
+				<AbsoluteSetup227 Count="5" TabCount="4" ShotPoint="23147">
+					<Record Nb="1" Label="Absolute1" Spread="1:103-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:103-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:103-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:103-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:103-250"/>
+				</AbsoluteSetup227>
+				<AbsoluteSetup228 Count="5" TabCount="4" ShotPoint="23149">
+					<Record Nb="1" Label="Absolute1" Spread="1:104-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:104-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:104-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:104-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:104-250"/>
+				</AbsoluteSetup228>
+				<AbsoluteSetup229 Count="5" TabCount="4" ShotPoint="23151">
+					<Record Nb="1" Label="Absolute1" Spread="1:105-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:105-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:105-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:105-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:105-250"/>
+				</AbsoluteSetup229>
+				<AbsoluteSetup230 Count="5" TabCount="4" ShotPoint="23153">
+					<Record Nb="1" Label="Absolute1" Spread="1:106-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:106-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:106-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:106-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:106-250"/>
+				</AbsoluteSetup230>
+				<AbsoluteSetup231 Count="5" TabCount="4" ShotPoint="23155">
+					<Record Nb="1" Label="Absolute1" Spread="1:107-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:107-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:107-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:107-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:107-250"/>
+				</AbsoluteSetup231>
+				<AbsoluteSetup232 Count="5" TabCount="4" ShotPoint="23157">
+					<Record Nb="1" Label="Absolute1" Spread="1:108-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:108-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:108-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:108-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:108-250"/>
+				</AbsoluteSetup232>
+				<AbsoluteSetup233 Count="5" TabCount="4" ShotPoint="23159">
+					<Record Nb="1" Label="Absolute1" Spread="1:109-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:109-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:109-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:109-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:109-250"/>
+				</AbsoluteSetup233>
+				<AbsoluteSetup234 Count="5" TabCount="4" ShotPoint="23161">
+					<Record Nb="1" Label="Absolute1" Spread="1:110-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:110-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:110-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:110-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:110-250"/>
+				</AbsoluteSetup234>
+				<AbsoluteSetup235 Count="5" TabCount="4" ShotPoint="23163">
+					<Record Nb="1" Label="Absolute1" Spread="1:111-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:111-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:111-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:111-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:111-250"/>
+				</AbsoluteSetup235>
+				<AbsoluteSetup236 Count="5" TabCount="4" ShotPoint="23165">
+					<Record Nb="1" Label="Absolute1" Spread="1:112-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:112-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:112-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:112-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:112-250"/>
+				</AbsoluteSetup236>
+				<AbsoluteSetup237 Count="5" TabCount="4" ShotPoint="23167">
+					<Record Nb="1" Label="Absolute1" Spread="1:113-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:113-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:113-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:113-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:113-250"/>
+				</AbsoluteSetup237>
+				<AbsoluteSetup238 Count="5" TabCount="4" ShotPoint="23169">
+					<Record Nb="1" Label="Absolute1" Spread="1:114-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:114-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:114-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:114-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:114-250"/>
+				</AbsoluteSetup238>
+				<AbsoluteSetup239 Count="5" TabCount="4" ShotPoint="23171">
+					<Record Nb="1" Label="Absolute1" Spread="1:115-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:115-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:115-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:115-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:115-250"/>
+				</AbsoluteSetup239>
+				<AbsoluteSetup240 Count="5" TabCount="4" ShotPoint="23173">
+					<Record Nb="1" Label="Absolute1" Spread="1:116-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:116-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:116-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:116-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:116-250"/>
+				</AbsoluteSetup240>
+				<AbsoluteSetup241 Count="5" TabCount="4" ShotPoint="23175">
+					<Record Nb="1" Label="Absolute1" Spread="1:117-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:117-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:117-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:117-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:117-250"/>
+				</AbsoluteSetup241>
+				<AbsoluteSetup242 Count="5" TabCount="4" ShotPoint="23177">
+					<Record Nb="1" Label="Absolute1" Spread="1:118-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:118-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:118-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:118-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:118-250"/>
+				</AbsoluteSetup242>
+				<AbsoluteSetup243 Count="5" TabCount="4" ShotPoint="23179">
+					<Record Nb="1" Label="Absolute1" Spread="1:119-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:119-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:119-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:119-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:119-250"/>
+				</AbsoluteSetup243>
+				<AbsoluteSetup244 Count="5" TabCount="4" ShotPoint="23181">
+					<Record Nb="1" Label="Absolute1" Spread="1:120-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:120-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:120-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:120-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:120-250"/>
+				</AbsoluteSetup244>
+				<AbsoluteSetup245 Count="5" TabCount="4" ShotPoint="23183">
+					<Record Nb="1" Label="Absolute1" Spread="1:121-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:121-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:121-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:121-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:121-250"/>
+				</AbsoluteSetup245>
+				<AbsoluteSetup246 Count="5" TabCount="4" ShotPoint="23185">
+					<Record Nb="1" Label="Absolute1" Spread="1:122-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:122-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:122-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:122-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:122-250"/>
+				</AbsoluteSetup246>
+				<AbsoluteSetup247 Count="5" TabCount="4" ShotPoint="23187">
+					<Record Nb="1" Label="Absolute1" Spread="1:123-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:123-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:123-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:123-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:123-250"/>
+				</AbsoluteSetup247>
+				<AbsoluteSetup248 Count="5" TabCount="4" ShotPoint="23189">
+					<Record Nb="1" Label="Absolute1" Spread="1:124-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:124-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:124-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:124-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:124-250"/>
+				</AbsoluteSetup248>
+				<AbsoluteSetup249 Count="5" TabCount="4" ShotPoint="23191">
+					<Record Nb="1" Label="Absolute1" Spread="1:125-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:125-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:125-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:125-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:125-250"/>
+				</AbsoluteSetup249>
+				<AbsoluteSetup250 Count="5" TabCount="4" ShotPoint="23193">
+					<Record Nb="1" Label="Absolute1" Spread="1:126-250"/>
+					<Record Nb="2" Label="Absolute2" Spread="2:126-250"/>
+					<Record Nb="3" Label="Absolute3" Spread="3:126-250"/>
+					<Record Nb="4" Label="Absolute4" Spread="4:126-250"/>
+					<Record Nb="5" Label="Absolute5" Spread="5:126-250"/>
+				</AbsoluteSetup250>
+			</AbsoluteSetup>
+			<GenericSetup Count="3" TabCount="4">
+				<Record Nb="1" Label="Generic1" Line="50g1+50g2" Spread="10l1+10l2"/>
+				<Record Nb="2" Label="Generic2" Line="50g1+50g2" Spread="10l1+10l2"/>
+				<Record Nb="3" Label="Generic3" Line="50g1+50g2" Spread="10l1+10l2"/>
+			</GenericSetup>
+		</SpreadType>
+		<TestSetup>
+			<InstrumentTestBase Count="5" TabCount="4">
+				<Record TestAim="1" Nb="1" Descr="INSTRUMENT NOISE" TestType="4" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="1" Nb="2" Descr="INSTRUMENT DISTORTION" TestType="5" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="1" Nb="3" Descr="INSTRUMENT CROSSTALK" TestType="7" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="1" Nb="4" Descr="INSTRUMENT GAIN/PHASE" TestType="6" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="1" Nb="5" Descr="INSTRUMENT CMRR" TestType="8" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+			</InstrumentTestBase>
+			<SensorTestBase Count="6" TabCount="4">
+				<Record TestAim="2" Nb="1" Descr="SENSOR RESISTANCE" TestType="15" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="2" Descr="SENSOR LEAKAGE" TestType="14" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="3" Descr="SENSOR NOISE" TestType="1" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="4" Descr="SENSOR TILT" TestType="20" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="5" Descr="SENSOR TILT MODEL" TestType="21" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+				<Record TestAim="2" Nb="6" Descr="SENSOR SEISMONITOR" TestType="22" ADC="1" Gain="1600" DAC="1" Filter="1" SamplingRate="1000" SamplingLength="2048"/>
+			</SensorTestBase>
+			<InstrumentTestLimit Count="6" TabCount="4">
+				<Record TestAim="1" Nb="400" Descr="Noise" Unit="uv" TestType="4" Limit="50"/>
+				<Record TestAim="1" Nb="500" Descr="Distortion" Unit="%" TestType="5" Limit="12"/>
+				<Record TestAim="1" Nb="700" Descr="Crosstalk" Unit="%" TestType="7" Limit="50"/>
+				<Record TestAim="1" Nb="600" Descr="Gain" Unit="%" TestType="6" Limit="14"/>
+				<Record TestAim="1" Nb="610" Descr="Phase" Unit="%" TestType="6" Limit="15"/>
+				<Record TestAim="1" Nb="800" Descr="CMRR" Unit="%" TestType="8" Limit="50"/>
+			</InstrumentTestLimit>
+			<SensorTestLimit Count="7" TabCount="4">
+				<Record TestAim="2" Nb="1500" Descr="ResistanceMin" Unit="ohms" TestType="15" Limit="90"/>
+				<Record TestAim="2" Nb="1501" Descr="ResistanceMax" Unit="ohms" TestType="15" Limit="110"/>
+				<Record TestAim="2" Nb="1400" Descr="Leakage" Unit="Mohms" TestType="14" Limit="30"/>
+				<Record TestAim="2" Nb="100" Descr="Noise" Unit="uv" TestType="1" Limit="50"/>
+				<Record TestAim="2" Nb="2000" Descr="Tilt" Unit="%" TestType="20" Limit="14"/>
+				<Record TestAim="2" Nb="2100" Descr="Tilt Model" Unit="%" TestType="21" Limit="15"/>
+				<Record TestAim="2" Nb="2200" Descr="Seismonitor" Unit="db" TestType="22" Limit="-66"/>
+			</SensorTestLimit>
+			<InstrumentTest Count="7" TabCount="4">
+				<Record TestNb="1" Recorded="1" RecordLength="10000" AuxiliaryDescr="all" AbsoluteSpread="1:10-23" TestType="4" Gain="400"/>
+				<Record TestNb="7" Recorded="0" RecordLength="5000" AuxiliaryDescr="all" AbsoluteSpread="2:1-120" TestType="4" Gain="400"/>
+				<Record TestNb="2" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="30" Gain="1600"/>
+				<Record TestNb="3" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="6" Gain="1600"/>
+				<Record TestNb="4" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="5" Gain="1600"/>
+				<Record TestNb="5" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="7" Gain="1600"/>
+				<Record TestNb="6" Recorded="1" RecordLength="5000" AuxiliaryDescr="" AbsoluteSpread="2:50-51;3:50-51" TestType="8" Gain="1600"/>
+			</InstrumentTest>
+			<SensorTest Count="4" TabCount="4">
+				<Record TestNb="1" Recorded="1" AbsoluteSpread="2:50-51;3:50-51" TestType="1"/>
+				<Record TestNb="2" Recorded="1" AbsoluteSpread="1:3-14;2:2-15" TestType="40"/>
+				<Record TestNb="3" Recorded="1" AbsoluteSpread="1:3-14;2:2-15;3:1-50" TestType="14"/>
+				<Record TestNb="6" Recorded="0" AbsoluteSpread="1:3-14;2:2-15;3:1-50" TestType="15"/>
+			</SensorTest>
+			<MultipleTest Count="10" TabCount="4">
+				<TestSetup Count="7" TabCount="5" TestNb="1" TestName="Test1" DelayBetweenTest="1000" RecordResults="1" RecordLength="30000" TestFileNb="10" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="1:3-14;2:2-15;3:1-23">
+					<Record LineNb="1" TestType="1" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="2" TestType="1" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="3" TestType="40" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="4" TestType="1" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="10" TestType="60" Gain="0" LoopLineNb="2" NbLoops="2"/>
+					<Record LineNb="5" TestType="50" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="7" TestType="60" Gain="0" LoopLineNb="2" NbLoops="2"/>
+				</TestSetup>
+				<TestSetup Count="9" TabCount="5" TestNb="2" TestName="Test2" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="a1-a3,a4-a6" AbsoluteSpread="1:3-14;2:2-15">
+					<Record LineNb="1" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="2" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="3" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="4" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="5" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="6" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="7" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="8" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="9" TestType="1" Gain="400" LoopLineNb="0" NbLoops="0"/>
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="3" TestName="Test3" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="4" TestName="Test4" DelayBetweenTest="0" RecordResults="0" RecordLength="0" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="5" TestName="Test5" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="6" TestName="Test6" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="7" TestName="Test7" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="1" TabCount="5" TestNb="8" TestName="Test8" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+					<Record LineNb="1" TestType="1" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+				</TestSetup>
+				<TestSetup Count="0" TabCount="5" TestNb="9" TestName="Test9" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="" AbsoluteSpread="">
+				</TestSetup>
+				<TestSetup Count="10" TabCount="5" TestNb="10" TestName="Test10" DelayBetweenTest="0" RecordResults="1" RecordLength="1000" TestFileNb="0" AuxiliaryDescr="a1" AbsoluteSpread="1:10-20">
+					<Record LineNb="1" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="2" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="3" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="4" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="5" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="6" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="7" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="8" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="9" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+					<Record LineNb="10" TestType="0" Gain="1600" LoopLineNb="0" NbLoops="0"/>
+				</TestSetup>
+			</MultipleTest>
+			<SeisMonitorTest AbsoluteSpread="2:50-51;3:50-51"/>
+		</TestSetup>
+		<LAULeakageSetup Limit="20"/>
+		<LookSetup AutoLook="1" Resistance="0" Tilt="0" Leakage="0"/>
+		<FormLineSetup Count="1" TabCount="3">
+			<Record Nb="1" BoxType="1" SN="44002601"/>
+		</FormLineSetup>
+	</Line>
+</Matrix>

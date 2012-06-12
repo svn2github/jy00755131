@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cache_index>
+  <entity original_file="f:\dd\vctools\crt_bld\self_x86\crt\src\heapinit.c" cached_file="cache_565a389dc06b3fa0e63331f33fbaaffd_heapinit.c" md5="565a389dc06b3fa0e63331f33fbaaffd"/>
+<entity original_file="f:\dd\vctools\crt_bld\self_x86\crt\src\initcrit.c" cached_file="cache_cfaa8dfc4193b960805b76f838764baa_initcrit.c" md5="cfaa8dfc4193b960805b76f838764baa"/><entity original_file="f:\dd\vctools\crt_bld\self_x86\crt\src\malloc.c" cached_file="cache_a9cc1df8407bfebde7e19a49e10f8369_malloc.c" md5="a9cc1df8407bfebde7e19a49e10f8369"/></cache_index>

@@ -1,0 +1,55 @@
+
+=== Start: [2012/04/26 10:53:49] === 
+Memory error analysis: started
+Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r002mi3\r002mi3.inspxe] 
+Analysis started for e:\works\segd\segd.conv\Debug\segd.conv.exe (pid = 3820) 
+Loaded module: e:\works\segd\segd.conv\Debug\segd.conv.exe, address range [0x01340000-0x013d0fff] 
+Loaded module: C:\Windows\system32\apphelp.dll, address range [0x73cb0000-0x73cfbfff] 
+Loaded module: C:\Windows\syswow64\KERNELBASE.dll, address range [0x751e0000-0x75225fff] 
+Loaded module: C:\Windows\syswow64\kernel32.dll, address range [0x75880000-0x7598ffff] 
+Loaded module: C:\Windows\SysWOW64\ntdll.dll, address range [0x77320000-0x7749ffff] 
+Loaded module: C:\Windows\syswow64\USER32.dll, address range [0x75460000-0x7555ffff] 
+Loaded module: C:\Windows\syswow64\GDI32.dll, address range [0x76870000-0x768fffff] 
+Loaded module: C:\Windows\syswow64\LPK.dll, address range [0x74ce0000-0x74ce9fff] 
+Loaded module: C:\Windows\syswow64\USP10.dll, address range [0x75560000-0x755fcfff] 
+Loaded module: C:\Windows\syswow64\msvcrt.dll, address range [0x769b0000-0x76a5bfff] 
+Loaded module: C:\Windows\syswow64\ADVAPI32.dll, address range [0x76910000-0x769affff] 
+Loaded module: C:\Windows\SysWOW64\sechost.dll, address range [0x76740000-0x76758fff] 
+Loaded module: C:\Windows\syswow64\RPCRT4.dll, address range [0x75a00000-0x75aeffff] 
+Loaded module: C:\Windows\syswow64\SspiCli.dll, address range [0x74a00000-0x74a5ffff] 
+Loaded module: C:\Windows\syswow64\CRYPTBASE.dll, address range [0x749f0000-0x749fbfff] 
+Loaded module: C:\Windows\syswow64\imagehlp.dll, address range [0x767e0000-0x76809fff] 
+Loaded module: C:\Windows\syswow64\SHLWAPI.dll, address range [0x75600000-0x75656fff] 
+Loaded module: C:\Windows\syswow64\WS2_32.dll, address range [0x75990000-0x759c4fff] 
+Loaded module: C:\Windows\syswow64\NSI.dll, address range [0x76860000-0x76865fff] 
+Loaded module: C:\Windows\system32\IMM32.DLL, address range [0x76780000-0x767dffff] 
+Loaded module: C:\Windows\syswow64\MSCTF.dll, address range [0x75230000-0x752fbfff] 
+Loaded module: C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL, address range [0x622b0000-0x622d2fff] 
+Unloaded module: C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL 
+Process e:\works\segd\segd.conv\Debug\segd.conv.exe exited with code 0. Leak analysis starting. Please wait... 
+Unloaded module: e:\works\segd\segd.conv\Debug\segd.conv.exe 
+Unloaded module: C:\Windows\system32\apphelp.dll 
+Unloaded module: C:\Windows\syswow64\KERNELBASE.dll 
+Unloaded module: C:\Windows\syswow64\kernel32.dll 
+Unloaded module: C:\Windows\SysWOW64\ntdll.dll 
+Unloaded module: C:\Windows\syswow64\USER32.dll 
+Unloaded module: C:\Windows\syswow64\GDI32.dll 
+Unloaded module: C:\Windows\syswow64\LPK.dll 
+Unloaded module: C:\Windows\syswow64\USP10.dll 
+Unloaded module: C:\Windows\syswow64\msvcrt.dll 
+Unloaded module: C:\Windows\syswow64\ADVAPI32.dll 
+Unloaded module: C:\Windows\SysWOW64\sechost.dll 
+Unloaded module: C:\Windows\syswow64\RPCRT4.dll 
+Unloaded module: C:\Windows\syswow64\SspiCli.dll 
+Unloaded module: C:\Windows\syswow64\CRYPTBASE.dll 
+Unloaded module: C:\Windows\syswow64\imagehlp.dll 
+Unloaded module: C:\Windows\syswow64\SHLWAPI.dll 
+Unloaded module: C:\Windows\syswow64\WS2_32.dll 
+Unloaded module: C:\Windows\syswow64\NSI.dll 
+Unloaded module: C:\Windows\system32\IMM32.DLL 
+Unloaded module: C:\Windows\syswow64\MSCTF.dll 
+Completed analysis for e:\works\segd\segd.conv\Debug\segd.conv.exe 
+Application exit code: [0] 
+Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r002mi3\r002mi3.inspxe] 
+Memory error analysis: completed
+=== End: [2012/04/26 10:54:23] === 

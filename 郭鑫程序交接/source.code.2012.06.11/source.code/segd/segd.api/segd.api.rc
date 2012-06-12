@@ -1,0 +1,207 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,13,45
+ PRODUCTVERSION 1,0,13,45
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x29L
+#else
+ FILEFLAGS 0x28L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "Comments", "1.0.13.45.2011.10.28"
+            VALUE "CompanyName", "hitech"
+            VALUE "FileDescription", "1.0.13.45.2011.10.28"
+            VALUE "FileVersion", "1, 0, 13, 45"
+            VALUE "InternalName", "segd.api"
+            VALUE "LegalCopyright", "Copyright (C) 2011"
+            VALUE "OriginalFilename", "segd.api"
+            VALUE "PrivateBuild", "1.0.13.45.2011.10.28"
+            VALUE "ProductName", "segd.api"
+            VALUE "ProductVersion", "1, 0, 13, 45"
+            VALUE "SpecialBuild", "1.0.13.45.2011.10.28"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOGEX 0, 0, 267, 77
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SEG-D文件生成精度对话框"
+FONT 9, "宋体", 400, 0, 0x86
+BEGIN
+    DEFPUSHBUTTON   "退出",IDOK,210,56,50,14
+    CONTROL         "",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,37,17,217,10
+    LTEXT           "进度:",IDC_STATIC,12,18,25,8
+    LTEXT           "信息:",IDC_STATIC,12,37,25,8
+    LTEXT           "",IDC_PROGRESS_INFO_STATIC,37,33,217,16,0,WS_EX_CLIENTEDGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 260
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 70
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING104           "不能打开或保存文件，请重试！"
+    IDS_TREEVIEW_ROOT       "%s"
+    IDS_SEGD_REV2_X         "SD2.X"
+    IDS_STRING107           "对话框"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING120           "创建或打开SEG-D文件时，调用函数传递的创建参数不正确，导致失败！"
+    IDS_STRING121           "调用读取或写入文件过程中，检测文件句柄无效！"
+    IDS_STRING122           "读取SEG-D文件时，发现其格式不正确！"
+    IDS_STRING123           "读取SEG-D文件头时，产生错误！"
+    IDS_STRING124           "%s 文件信息"
+    IDS_STRING125           "普通头段数据块"
+    IDS_STRING126           "#%d"
+    IDS_STRING127           "读取普通头段数据块大小与规格大小不匹配"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING128           "创建或打开SEG-D文件时，分配文件数据内存失败"
+    IDS_STRING129           "格式代码不正确"
+    IDS_STRING137           "年份时间不对"
+    IDS_STRING138           "儒略日超出范围"
+    IDS_STRING139           "辅助道头扩展"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING101           "初始化日志失败..."
+    IDS_STRING5001          "程序初始化时,链接Console时,产生错误..."
+    IDS_STRING5002          "程序初始化时,设置Console时,产生错误..."
+    IDS_STRING5004          "读取传入参数时,发现错误..."
+    IDS_STRING5006          "程序初始化时,检查命令行参数时,发现[%s]命令的参数不正确..."
+    IDS_STRING5007          "程序初始化时,检查命令行参数时,发现[%s]命令和[%s]命令优先级冲突..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING5008          "程序打开配置文件出错,产生[%X]错误..."
+    IDS_STRING5009          "检查或读取配置文件时,没有发现[%s]关键字..."
+    IDS_STRING5010          "检查或读取配置项时,不能转化[%s]关键字到多字符集模式..."
+    IDS_STRING5011          "保存配置文件时,出现不能写入错误,返回值为[%d]..."
+    IDS_STRING5012          "在对配置文件参数进行赋值时,不能转化从MBCS到UNICODE字符..."
+    IDS_STRING5013          "在检测配置文件中关键字时,没有发现[%s]关键字,检测中断..."
+    IDS_STRING5014          "不能保存指定[%s]的SEG-D文件, 程序将终止..."
+    IDS_STRING5015          "[%s]对话框已经正在使用中,不能再创建,请释放正在使用的,然后重新调用..."
+    IDS_STRING5016          "初始化SOCKET失败..."
+    IDS_STRING5017          "程序初始化时,产生[%d]错误..."
+    IDS_STRING5018          "程序初始化时,传入监听端口不能为空..."
+    IDS_STRING5019          "创建SOCKET失败,返回错误代码[%d]..."
+    IDS_STRING5020          "[%s]对话框初始化失败..."
+    IDS_STRING5021          "对话框创建失败..."
+    IDS_STRING5022          "对话框从UDP接受到数据大小小于数据包中描述信息大小,该数据包将被扔掉..."
+    IDS_STRING5023          "对话框从UDP接受缓冲大小小于数据包中信息大小,该数据包将被扔掉..."
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

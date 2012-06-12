@@ -1,0 +1,24 @@
+-r
+E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r011ti3
+--check-deadlock
+--check-potential-deadlock
+--check-datarace
+--no-terminate-on-deadlock
+--stack-depth=16
+--check-cross-thread-stack-access
+--defer-memory-check
+--resolution=fine
+--no-check-stack-access
+--save-stack-on-first-access
+--save-stack-on-allocation
+--mrte-mode=native
+--search-dir
+sym:p=e:/works/segd/segd.conv/Debug
+--search-dir
+sym=E:/works/segd/segd.conv
+--search-dir
+sym=d:/symbols
+--
+e:\works\segd\segd.conv\Debug\segd.conv.exe
+--make-segd-file
+E:\works\segd\segd.conv\args.conf

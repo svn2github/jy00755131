@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<VSPerformanceSession Version="1.00">
+  <Options>
+    <Solution>E:\works\segd\segd.conv\segd.conv.sln</Solution>
+    <CollectionMethod>Instrumentation</CollectionMethod>
+    <AllocationMethod>None</AllocationMethod>
+    <LaunchRuntimeControl>true</LaunchRuntimeControl>
+    <Reportname>E:\works\segd\performance\segd.conv</Reportname>
+    <AddReport>true</AddReport>
+    <UniqueReport>Timestamp</UniqueReport>
+    <SamplingMethod>PerformanceCounter</SamplingMethod>
+    <CycleCount>10000000</CycleCount>
+    <PageFaultCount>10</PageFaultCount>
+    <SysCallCount>10</SysCallCount>
+    <SamplingCounter Name="InstructionsRetired" ReloadValue="00000000000f4240" DisplayName="Instructions Retired" />
+    <RelocateBinaries>false</RelocateBinaries>
+    <HardwareCounters EnableHWCounters="false" />
+    <EtwSettings>
+      <Provider ControlGuid="06b94d9a-b15e-456e-a4ef-37c984a2cb4b" Enabled="false" Flags="000000fe" Level="5" />
+      <Provider ControlGuid="1fbecc45-c060-4e7c-8a0e-0dbd6116181b" Enabled="false" Flags="000000fe" Level="5" />
+      <Provider ControlGuid="3a2a4e84-4c21-4981-ae10-3fda0d9b0f83" Enabled="false" Flags="000000fe" Level="5" />
+      <Provider ControlGuid="9e814aad-3204-11d2-9a82-006008a86939" Enabled="true" Flags="00000307" Level="0" />
+      <Provider ControlGuid="a1c2040e-8840-4c31-ba11-9871031a19ea" Enabled="false" Flags="000000fe" Level="5" />
+      <Provider ControlGuid="aff081fe-0247-4275-9c4e-021f3dc1da35" Enabled="false" Flags="ffffffff" Level="5" />
+      <Provider ControlGuid="e13c0d23-ccbc-4e12-931b-d9cc2eee27e4" Enabled="false" Flags="7fffffff" Level="5" />
+    </EtwSettings>
+    <PdhSettings>
+      <PdhCountersEnabled>false</PdhCountersEnabled>
+      <PdhCountersRate>500</PdhCountersRate>
+      <PdhCounters>
+        <PdhCounter>\Memory\Pages/sec</PdhCounter>
+        <PdhCounter>\PhysicalDisk(_Total)\Avg. Disk Queue Length</PdhCounter>
+        <PdhCounter>\Processor(_Total)\% Processor Time</PdhCounter>
+      </PdhCounters>
+    </PdhSettings>
+  </Options>
+  <ExcludeSmallFuncs>true</ExcludeSmallFuncs>
+  <PreinstrumentEvent>
+    <InstrEventExclude>false</InstrEventExclude>
+  </PreinstrumentEvent>
+  <PostinstrumentEvent>
+    <InstrEventExclude>false</InstrEventExclude>
+  </PostinstrumentEvent>
+  <Binaries>
+    <ProjBinary>
+      <Path>e:\works\segd\segd.conv\Debug\segd.conv.exe</Path>
+      <ArgumentTimestamp>01/01/0001 00:00:00</ArgumentTimestamp>
+      <Instrument>true</Instrument>
+      <Sample>true</Sample>
+      <LaunchProject>true</LaunchProject>
+      <LaunchMethod>Executable</LaunchMethod>
+      <ExecutablePath>e:\works\segd\segd.conv\Debug\segd.conv.exe</ExecutablePath>
+      <StartupDirectory>e:\works\segd\segd.conv\</StartupDirectory>
+      <Arguments>--data-file d:\892.dat</Arguments>
+      <NetAppHost>IIS</NetAppHost>
+      <NetBrowser>InternetExplorer</NetBrowser>
+      <ExcludeSmallFuncs>true</ExcludeSmallFuncs>
+      <PreinstrumentEvent>
+        <InstrEventExclude>false</InstrEventExclude>
+      </PreinstrumentEvent>
+      <PostinstrumentEvent>
+        <InstrEventExclude>false</InstrEventExclude>
+      </PostinstrumentEvent>
+      <ProjRef>{AEB66FD4-466F-4E30-88F8-6145A6B3003B}|segd.conv.vcproj</ProjRef>
+      <ProjPath>E:\works\segd\segd.conv\segd.conv.vcproj</ProjPath>
+      <ProjName>segd.conv</ProjName>
+    </ProjBinary>
+  </Binaries>
+  <Launches>
+    <ProjBinary>
+      <Path>:PB:{AEB66FD4-466F-4E30-88F8-6145A6B3003B}|segd.conv.vcproj</Path>
+    </ProjBinary>
+  </Launches>
+  <RuntimeMarks>
+    <MarkName>Mark One</MarkName>
+    <MarkName>Mark Two</MarkName>
+    <MarkName>Mark Three</MarkName>
+    <MarkName>Mark Four</MarkName>
+    <MarkName>Mark Five</MarkName>
+    <MarkName>Mark Six</MarkName>
+    <MarkName>Mark Seven</MarkName>
+    <MarkName>Mark Eight</MarkName>
+    <MarkName>Mark Nine</MarkName>
+    <MarkName>Mark Ten</MarkName>
+  </RuntimeMarks>
+</VSPerformanceSession>

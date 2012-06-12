@@ -1,0 +1,12 @@
+目录结构
+doc			收集SEGD标准
+example			从客户那拿到的SEGD文件
+mktools			生成测试SEGD文件
+parameter		使用的配置参数文件
+performance		INTEL测试统计文件
+question		以前收集的SEGD问题
+segd			segd.conv程序生成SEGD文件目录
+segd.api		用户显示segd生成进度条UI的DLL工程
+segd.conv		segd的生成工程
+segd.conv.tester	segd测试工程
+segd.viewer		segd文件读取分析工具工程	

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feedback>
+ <message severity="info">Memory error analysis: started</message>
+ <nop/>
+ <message severity="info">Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r012mi3\r012mi3.inspxe] </message>
+ <nop/>
+ <message severity="info">Analysis started for e:\works\segd\segd.conv\Debug\segd.conv.exe (pid = 5108) </message>
+ <nop/>
+ <message severity="info">Loaded module: e:\works\segd\segd.conv\Debug\segd.conv.exe, address range [0x00020000-0x000b0fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\system32\apphelp.dll, address range [0x73cb0000-0x73cfbfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\KERNELBASE.dll, address range [0x751e0000-0x75225fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\kernel32.dll, address range [0x75880000-0x7598ffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\SysWOW64\ntdll.dll, address range [0x77320000-0x7749ffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\USER32.dll, address range [0x75460000-0x7555ffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\GDI32.dll, address range [0x76870000-0x768fffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\LPK.dll, address range [0x74ce0000-0x74ce9fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\USP10.dll, address range [0x75560000-0x755fcfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\msvcrt.dll, address range [0x769b0000-0x76a5bfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\ADVAPI32.dll, address range [0x76910000-0x769affff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\SysWOW64\sechost.dll, address range [0x76740000-0x76758fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\RPCRT4.dll, address range [0x75a00000-0x75aeffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\SspiCli.dll, address range [0x74a00000-0x74a5ffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\CRYPTBASE.dll, address range [0x749f0000-0x749fbfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\imagehlp.dll, address range [0x767e0000-0x76809fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\SHLWAPI.dll, address range [0x75600000-0x75656fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\WS2_32.dll, address range [0x75990000-0x759c4fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\NSI.dll, address range [0x76860000-0x76865fff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\system32\IMM32.DLL, address range [0x76780000-0x767dffff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\Windows\syswow64\MSCTF.dll, address range [0x75230000-0x752fbfff] </message>
+ <nop/>
+ <message severity="info">Loaded module: C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL, address range [0x622b0000-0x622d2fff] </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL </message>
+ <nop/>
+ <message severity="info">Process e:\works\segd\segd.conv\Debug\segd.conv.exe exited with code 0. Leak analysis starting. Please wait... </message>
+ <nop/>
+ <message severity="info">Unloaded module: e:\works\segd\segd.conv\Debug\segd.conv.exe </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\system32\apphelp.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\KERNELBASE.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\kernel32.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\SysWOW64\ntdll.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\USER32.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\GDI32.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\LPK.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\USP10.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\msvcrt.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\ADVAPI32.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\SysWOW64\sechost.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\RPCRT4.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\SspiCli.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\CRYPTBASE.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\imagehlp.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\SHLWAPI.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\WS2_32.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\NSI.dll </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\system32\IMM32.DLL </message>
+ <nop/>
+ <message severity="info">Unloaded module: C:\Windows\syswow64\MSCTF.dll </message>
+ <nop/>
+ <message severity="info">Completed analysis for e:\works\segd\segd.conv\Debug\segd.conv.exe </message>
+ <nop/>
+ <message severity="info">Application exit code: [0] </message>
+ <nop/>
+ <message severity="info">Result file: [E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r012mi3\r012mi3.inspxe] </message>
+ <nop/>
+ <message severity="info">Memory error analysis: completed</message>
+ <nop/>
+</feedback>

@@ -1,0 +1,18 @@
+78728	BaseThreadInitThunk:
+78728	mov edi, edi
+78730	push ebp
+78731	mov ebp, esp
+78733	test ecx, ecx
+78735	jnz 0x1620a <.L0x1620a>
+78741	BaseThreadInitThunk+0xd:
+78741	push dword ptr [ebp+0x8]
+78744	call edx
+78746	BaseThreadInitThunk+0x12:
+78746	push eax
+78747	call dword ptr [0x7dd70704]
+78753	BaseThreadInitThunk+0x19:
+78753	nop 
+78754	nop 
+78755	nop 
+78756	nop 
+78757	nop 

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="e:\works\segd\segd.viewer\segd.file.format.cpp" md5="5d464816e64978dad6da5fe2f8926857">
+    <snippet line="284">
+      <line line="281">	if(file_handler == NULL || buff == NULL || buff_size == 0){	SetLastError(IDS_STRING121); return i_ret; }</line>
+      <line line="282"/>
+      <line line="283">	is_ok = WriteFile(file_handler, buff, buff_size, &amp;number_bytes_read, NULL);</line>
+      <line line="284">	if(!is_ok){	SetLastError(IDS_STRING123); return i_ret; }</line>
+      <line line="285"/>
+    </snippet>
+    <snippet line="305">
+      <line line="302">			break;</line>
+      <line line="303">		case SEGD_FILE_IO_NON_OVERLAPPED:</line>
+      <line line="304">			i_ret = segd_file_write_non_overlapped_private(file_handle-&gt;file_handle_, buff, buff_size);</line>
+      <line line="305">			break;</line>
+      <line line="306">		case SEGD_FILE_IO_OVERLAPPED_NO_BUFFERING:</line>
+    </snippet>
+  </file>
+  <file name="e:\works\segd\segd.conv\segd.conv.private.cpp" md5="2d627815b2b903d6e78343c79a0b7682">
+    <snippet line="406">
+      <line line="403">	else __matrix_zero_Memory(data_ptr, total_data_size_per_trace);</line>
+      <line line="404"/>
+      <line line="405">	outp_data_ptr = (UCHAR*)malloc(total_outp_data_size_pertrace);</line>
+      <line line="406">	if(outp_data_ptr == NULL){	set_last_error(IDS_STRING5032); output_log(IDS_STRING5032); is_ok = APP_FAULT; goto GOTO;}</line>
+      <line line="407">	else __matrix_zero_Memory(outp_data_ptr, total_data_size_per_trace);</line>
+    </snippet>
+    <snippet line="787">
+      <line line="784">	send_progress_info(&amp;progress_info);</line>
+      <line line="785">	</line>
+      <line line="786">	write_segd_data_private(segd_config_info_ptr, outp_file_ptr, &amp;progress_info, &amp;sps_data_info, &amp;ad_data);</line>
+      <line line="787">GOTO:</line>
+      <line line="788">	if(error_code == APP_FAULT){</line>
+    </snippet>
+    <snippet line="1194">
+      <line line="1191">	for(i = 0; i &lt; __application_environment.arg_size_; ++i){</line>
+      <line line="1192">		index = __application_environment.args_[i];</line>
+      <line line="1193">		if(__app_cmd[index].function_ptr(__app_cmd + index) != APP_SUCCESS){</line>
+      <line line="1194">			error_code = get_last_error();</line>
+      <line line="1195">			break;</line>
+    </snippet>
+    <snippet line="492">
+      <line line="489"/>
+      <line line="490">			convert_ints_to_floats(data_ptr, tmp_val2, outp_data_ptr, &amp;total_outp_data_size_pertrace);</line>
+      <line line="491">			segd_file_write_trace_data(outp_file_ptr, outp_data_ptr, valid_segd_data_size);</line>
+      <line line="492">			progress_info_ptr-&gt;step_position_ += (1000/(trace_number*receiver_line_number));</line>
+      <line line="493">			send_progress_info(progress_info_ptr);</line>
+    </snippet>
+    <snippet line="142">
+      <line line="139">	if(__application_environment.log_)	{	</line>
+      <line line="140"/>
+      <line line="141">		__application_environment.log_-&gt;init(NULL, segd::log::CONSOLE_TYPE); </line>
+      <line line="142"/>
+      <line line="143">		size = get_string(IDS_STRING5003, format, sizeof(format)/sizeof(format[0]));</line>
+    </snippet>
+    <snippet line="1183">
+      <line line="1180">	int error_code = 0x0;</line>
+      <line line="1181"/>
+      <line line="1182">	error_code = init_application(app_version);</line>
+      <line line="1183">	if(error_code == APP_FAULT)	return error_code = __application_environment.last_error_code_;</line>
+      <line line="1184">	</line>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\initctyp.c" md5="ea800499398c92887b466144c842e3e8">
+    <snippet line="102">
+      <line line="99">                _calloc_crt((_COFFSET+_CTABSIZE), sizeof(char));</line>
+      <line line="100">            newcumap = (char *)</line>
+      <line line="101">                _calloc_crt((_COFFSET+_CTABSIZE), sizeof(char));</line>
+      <line line="102">            cbuffer = (unsigned char *)</line>
+      <line line="103">                _calloc_crt (_CTABSIZE, sizeof(char));</line>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\gmtime.c" md5="6e32ee7a5855e4eb98cad51285bed372">
+    <snippet line="180">
+      <line line="177"/>
+      <line line="178">        if ( (ptd-&gt;_gmtimebuf != NULL) || ((ptd-&gt;_gmtimebuf =</line>
+      <line line="179">            _malloc_crt(sizeof(struct tm))) != NULL) )</line>
+      <line line="180">                ptb = ptd-&gt;_gmtimebuf;</line>
+      <line line="181">        else</line>
+    </snippet>
+  </file>
+  <file name="e:\works\common\sockimpl.cpp" md5="08d9b53506ff2c0446580cda75e8c91f">
+    <snippet line="13">
+      <line line="10"/>
+      <line line="11">	WORD wVersionRequested = MAKEWORD(2, 2);</line>
+      <line line="12">	int nResult = WSAStartup(wVersionRequested, &amp;wsaData);</line>
+      <line line="13">	if (nResult != 0)</line>
+      <line line="14">		return false;</line>
+    </snippet>
+  </file>
+  <file name="f:\dd\vctools\crt_bld\self_x86\crt\src\initmon.c" md5="449473bc9cdeaad9cfb44512913b9063">
+    <snippet line="101">
+      <line line="98">             * Allocate a new reference counter for the numeric info</line>
+      <line line="99">             */</line>
+      <line line="100">            if ( (lconv_mon_refcount = _malloc_crt(sizeof(int))) == NULL )</line>
+      <line line="101">            {</line>
+      <line line="102">                _free_crt(lc);</line>
+    </snippet>
+  </file>
+  <file name="e:\works\common\log.cpp" md5="4570ac05a3aa4a242f9af3e888bda7a1">
+    <snippet line="129">
+      <line line="126">		case CONSOLE_TYPE:</line>
+      <line line="127">			type_ = type;</line>
+      <line line="128">			if(!alloc_console_private()){</line>
+      <line line="129"/>
+      <line line="130">				OutputDebugString(__TEXT("can not allocate a console window!"));</line>
+    </snippet>
+    <snippet line="97">
+      <line line="94">	ImageUnload(loaded_image_ptr);</line>
+      <line line="95">	std_output_handler_ = GetStdHandle(STD_OUTPUT_HANDLE);</line>
+      <line line="96">	__matrix_setlocale(LC_ALL, __TEXT("chs"));</line>
+      <line line="97">	return is_ok;</line>
+      <line line="98">}</line>
+    </snippet>
+  </file>
+</snippets>

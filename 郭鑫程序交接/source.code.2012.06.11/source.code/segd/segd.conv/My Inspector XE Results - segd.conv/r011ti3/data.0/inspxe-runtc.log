@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<log version="1.0" tool="runtool">
+
+<msg id="1" tool="runtool">
+  <type>log-start</type>
+  <arg>2012/04/26 11:13:28</arg>
+</msg>
+<msg id="2" tool="runtool">
+  <type>tc-starts</type>
+</msg>
+<msg id="3" tool="runtool">
+  <type>marker-file</type>
+  <arg>E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r011ti3\r011ti3.inspxe</arg>
+</msg>
+<msg id="4" tool="tc">
+  <type>2207</type>
+  <timestamp>Thu Apr 26 11:13:28 2012</timestamp>
+  <severity>2</severity>
+  <description>START</description>
+</msg>
+<msg id="5" tool="tc">
+  <type>2001</type>
+  <arg>e:\works\segd\segd.conv\Debug\segd.conv.exe</arg>
+  <timestamp>Thu Apr 26 11:13:28 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="6" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\system32\apphelp.dll</arg>
+  <timestamp>Thu Apr 26 11:13:28 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="7" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\KERNELBASE.dll</arg>
+  <timestamp>Thu Apr 26 11:13:28 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="8" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\kernel32.dll</arg>
+  <timestamp>Thu Apr 26 11:13:28 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="9" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\SysWOW64\ntdll.dll</arg>
+  <timestamp>Thu Apr 26 11:13:28 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="10" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\USER32.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="11" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\GDI32.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="12" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\LPK.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="13" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\USP10.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="14" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\msvcrt.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="15" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\ADVAPI32.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="16" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\SysWOW64\sechost.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="17" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\RPCRT4.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="18" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\SspiCli.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="19" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\CRYPTBASE.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="20" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\imagehlp.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="21" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\SHLWAPI.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="22" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\WS2_32.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="23" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\NSI.dll</arg>
+  <timestamp>Thu Apr 26 11:13:29 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="24" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\system32\IMM32.DLL</arg>
+  <timestamp>Thu Apr 26 11:13:30 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="25" tool="tc">
+  <type>2001</type>
+  <arg>C:\Windows\syswow64\MSCTF.dll</arg>
+  <timestamp>Thu Apr 26 11:13:30 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="26" tool="tc">
+  <type>2001</type>
+  <arg>C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL</arg>
+  <timestamp>Thu Apr 26 11:13:30 2012</timestamp>
+  <severity>2</severity>
+  <description>LOAD_MODULE</description>
+</msg>
+<msg id="27" tool="tc">
+  <type>2002</type>
+  <arg>C:\PROGRA~2\Google\GOOGLE~3\GO36F4~1.DLL</arg>
+  <timestamp>Thu Apr 26 11:13:32 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="28" tool="tc">
+  <type>2002</type>
+  <arg>e:\works\segd\segd.conv\Debug\segd.conv.exe</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="29" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\system32\apphelp.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="30" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\KERNELBASE.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="31" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\kernel32.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="32" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\SysWOW64\ntdll.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="33" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\USER32.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="34" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\GDI32.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="35" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\LPK.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="36" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\USP10.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="37" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\msvcrt.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="38" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\ADVAPI32.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="39" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\SysWOW64\sechost.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="40" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\RPCRT4.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="41" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\SspiCli.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="42" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\CRYPTBASE.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="43" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\imagehlp.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="44" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\SHLWAPI.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="45" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\WS2_32.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="46" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\NSI.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="47" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\system32\IMM32.DLL</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="48" tool="tc">
+  <type>2002</type>
+  <arg>C:\Windows\syswow64\MSCTF.dll</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>UNLOAD_MODULE</description>
+</msg>
+<msg id="49" tool="tc">
+  <type>2018</type>
+  <arg>e:\works\segd\segd.conv\debug\segd.conv.exe</arg>
+  <arg>8740</arg>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>PROCESS_TERMINATE</description>
+</msg>
+<msg id="50" tool="tc">
+  <type>2208</type>
+  <timestamp>Thu Apr 26 11:14:04 2012</timestamp>
+  <severity>2</severity>
+  <description>STOP</description>
+</msg>
+<msg id="51" tool="runtool">
+  <type>app-exit-code</type>
+  <arg>0</arg>
+</msg>
+<msg id="52" tool="runtool">
+  <type>marker-file</type>
+  <arg>E:\works\segd\segd.conv\My Inspector XE Results - segd.conv\r011ti3\r011ti3.inspxe</arg>
+</msg>
+<msg id="53" tool="runtool">
+  <type>tc-done</type>
+</msg>
+<msg id="54" tool="runtool">
+  <type>log-end</type>
+  <arg>2012/04/26 11:14:08</arg>
+</msg>
+
+</log>
+

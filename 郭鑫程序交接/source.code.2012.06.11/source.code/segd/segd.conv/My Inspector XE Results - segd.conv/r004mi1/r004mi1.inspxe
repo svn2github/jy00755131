@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+ <rdmgr>
+  <timestamp type="u64_t">1335409087</timestamp>
+  <hostname>hitech-PC</hostname>
+  <os>windows</os>
+  <product>Intel® Inspector XE 2011 Update 2</product>
+  <buildNumber type="s32_t">134657</buildNumber>
+  <variables>
+   <at>mi1</at>
+  </variables>
+ </rdmgr>
+</root>

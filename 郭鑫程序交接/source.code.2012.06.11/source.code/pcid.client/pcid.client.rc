@@ -1,0 +1,207 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_MAIN_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 432
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 301
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 439, 308
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "宋体", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "初始化SOCKET",ID_START_SOCKET,53,272,90,29
+    PUSHBUTTON      "开始接受数据",ID_RECV_BUTTON,173,272,83,28
+    CTEXT           "0",IDC_STATIC_UDP_SEND_NUM,73,45,120,21,SS_CENTERIMAGE | WS_BORDER
+    CTEXT           "0",IDC_STATIC_UDP_RECV_NUM,73,19,120,21,SS_CENTERIMAGE | WS_BORDER
+    RTEXT           "接受UDP报文：",IDC_STATIC,16,25,53,9
+    RTEXT           "发送UDP报文：",IDC_STATIC,16,51,53,9
+    EDITTEXT        IDC_EDIT_LISTEN_PORT,73,103,120,15,ES_AUTOHSCROLL
+    RTEXT           "监听端口：",IDC_STATIC,28,107,41,9
+    EDITTEXT        IDC_EDIT_REMOTE_IP,73,123,120,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_REMOTE_PORT,73,143,120,15,ES_AUTOHSCROLL
+    RTEXT           "发送端口：",IDC_STATIC,28,146,41,9
+    RTEXT           "发送IP：",IDC_STATIC,35,127,34,9
+    EDITTEXT        IDC_EDIT_SOCK_RECV_NUM,73,163,120,15,ES_AUTOHSCROLL
+    RTEXT           "接受缓冲：",IDC_STATIC,28,167,41,9
+    EDITTEXT        IDC_EDIT_SOCK_SEND_NUM,73,183,120,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SOCK_POLL_TIME,73,203,120,15,ES_AUTOHSCROLL
+    RTEXT           "接受轮询时间：",IDC_STATIC,17,206,52,9
+    RTEXT           "发送缓冲：",IDC_STATIC,24,186,45,9
+    EDITTEXT        IDC_EDIT_SOCK_SND_NUM_PER_HALF_HUNDRAND,73,223,120,15,ES_AUTOHSCROLL
+    RTEXT           "发送数量：",IDC_STATIC,17,226,52,9
+    EDITTEXT        IDC_EDIT_SOCK_SND_POLL_TIME,73,242,120,15,ES_AUTOHSCROLL
+    RTEXT           "发送间隔时间：",IDC_STATIC,17,245,52,9
+    LISTBOX         IDC_LIST_OUTPUT,200,7,231,250,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "开始发送数据",ID_SND_BUTTON,287,272,83,28
+    EDITTEXT        IDC_EDIT_LISTEN_IP,73,83,120,15,ES_AUTOHSCROLL
+    RTEXT           "监听IP：",IDC_STATIC,27,87,41,9
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,10,40
+ PRODUCTVERSION 1,0,10,40
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "Comments", "pcid.client.1.0.10.40.2012.02.23"
+            VALUE "FileDescription", "pcid.client.1.0.10.40.2012.02.23"
+            VALUE "FileVersion", "1, 0, 10, 40"
+            VALUE "InternalName", "pcid.client.1.0.10.40.2012.02.23"
+            VALUE "LegalCopyright", "Copyright (C) 2012"
+            VALUE "LegalTrademarks", "pcid.client.1.0.10.40.2012.02.23"
+            VALUE "OriginalFilename", "pcid.client"
+            VALUE "ProductName", "pcid.client.1.0.10.40.2012.02.23"
+            VALUE "ProductVersion", "1, 0, 10, 40"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_PCIDCLIENT          ICON                    "pcid.client.ico"
+IDI_SMALL               ICON                    "small.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_APP_TITLE           "pcid.client"
+    IDT_RECV_TIMER          "sx"
+    IDT_SND_TIMER           "IDT_SND_TIMER"
+    IDC_PCIDCLIENT          "PCIDCLIENT"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
