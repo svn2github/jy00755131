@@ -59,13 +59,13 @@ typedef struct __tagAPPLICATION_ENVIRONMENT
 	unsigned int be_all_info_outputted_;//是否输出全部接受发送信息
 
 	//log
-	log* log_;
+	segd::log* log_;
 
 	LONG volatile serial_no_;//support cross-station debug 
 	LONG volatile udp_send_serial_no_; //support cross-station debug 
 
 #if defined(__DEBUG_PCI_WRITE_PORT_PERFORMANCE__)
-	log* pci_writing_performance_log_;
+	segd::log* pci_writing_performance_log_;
 #endif //defined(__DEBUG_PCI_WRITE_PORT_PERFORMANCE__)
 
 }APPLICATION_ENVIRONMENT, *APPLICATION_ENVIRONMENT_PTR;

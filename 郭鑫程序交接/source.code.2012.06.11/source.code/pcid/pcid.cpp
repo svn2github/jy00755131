@@ -44,8 +44,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	memset(&__application_environment, 0x0, sizeof(__application_environment));
 
 	__application_environment.instance_ = hInstance;
-	__application_environment.log_ = new log;
-	__application_environment.log_->init(NULL, log::CONSOLE_TYPE);
+	__application_environment.log_ = new segd::log;
+	__application_environment.log_->init(NULL, segd::log::CONSOLE_TYPE);
 
 	__application_environment.main_window_ = CreateDialogParam(__application_environment.instance_, 
 												MAKEINTRESOURCE(IDD_PCID_DIALOG), NULL, main_Wnd_proc, NULL);

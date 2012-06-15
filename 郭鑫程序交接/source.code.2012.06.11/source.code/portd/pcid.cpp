@@ -45,8 +45,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	memset(&__application_environment, 0x0, sizeof(__application_environment));
 
 	__application_environment.instance_ = hInstance;
-	__application_environment.log_ = new log;
-	__application_environment.log_->init(NULL, log::CONSOLE_TYPE);
+	__application_environment.log_ = new segd::log;
+	__application_environment.log_->init(NULL, segd::log::CONSOLE_TYPE);
 	__application_environment.device_info_list_ = new APPLICATION_ENVIRONMENT::DEVICE_INFO_LIST;
 	__application_environment.virtual_ip_table_map_ = new APPLICATION_ENVIRONMENT::IP_TABLE_MAP;
 

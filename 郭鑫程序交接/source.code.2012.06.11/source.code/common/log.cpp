@@ -31,7 +31,7 @@
 	2011.09.06	修改该类支持unicode, 加入对于进程类型判断,如果是CUI将直接使用console,否则将创建新的console
 
 */
-
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <time.h>
 #include <share.h>
