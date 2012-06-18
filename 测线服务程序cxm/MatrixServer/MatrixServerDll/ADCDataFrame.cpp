@@ -134,7 +134,7 @@ void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, m_oL
 	}
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	// 创建套接字
-	pADCDataFrame->m_oADCDataFrameSocket = CreateInstrumentSocket(pADCDataFrame->m_pCommandStructSet->m_usReturnPort, 
+	pADCDataFrame->m_oADCDataFrameSocket = CreateInstrumentSocket(pADCDataFrame->m_pCommandStructSet->m_usReturnPort + NetedPortMove, 
 		pADCDataFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pADCDataFrame->m_oADCDataFrameSocket, pLogOutPut);

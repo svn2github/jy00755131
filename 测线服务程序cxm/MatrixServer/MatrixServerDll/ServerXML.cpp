@@ -91,7 +91,7 @@ void LoadServerPort(m_oInstrumentCommInfoStruct* pCommInfo)
 	try
 	{
 		// 找到IP地址设置区
-		strKey = _T("LineServerAppPortSetup");
+		strKey = _T("LineServerAppPortSetSetup");
 		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
@@ -100,23 +100,23 @@ void LoadServerPort(m_oInstrumentCommInfoStruct* pCommInfo)
 
 		strKey = _T("PortLCI");
 		pCommInfo->m_oXMLPortSetupData.m_usAimPort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
-		strKey = _T("PortForHeartBeat");
+		strKey = _T("PortForHeartBeatSet");
 		pCommInfo->m_oXMLPortSetupData.m_usHeartBeatReturnPort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
-		strKey = _T("PortForHeadFrame");
+		strKey = _T("PortForHeadFrameSet");
 		pCommInfo->m_oXMLPortSetupData.m_usHeadFramePort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
-		strKey = _T("PortForIPSet");
+		strKey = _T("PortForIPSetSet");
 		pCommInfo->m_oXMLPortSetupData.m_usIPSetReturnPort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
-		strKey = _T("PortForTailFrame");
+		strKey = _T("PortForTailFrameSet");
 		pCommInfo->m_oXMLPortSetupData.m_usTailFramePort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
-		strKey = _T("PortForTailTimeFrame");
+		strKey = _T("PortForTailTimeFrameSet");
 		pCommInfo->m_oXMLPortSetupData.m_usTailTimeReturnPort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
-		strKey = _T("PortForTimeSet");
+		strKey = _T("PortForTimeSetSet");
 		pCommInfo->m_oXMLPortSetupData.m_usTimeDelayReturnPort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
-		strKey = _T("PortForADCSet");
+		strKey = _T("PortForADCSetSet");
 		pCommInfo->m_oXMLPortSetupData.m_usADCSetReturnPort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
-		strKey = _T("PortForErrorCode");
+		strKey = _T("PortForErrorCodeSet");
 		pCommInfo->m_oXMLPortSetupData.m_usErrorCodeReturnPort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
-		strKey = _T("PortForADCData");
+		strKey = _T("PortForADCDataSet");
 		pCommInfo->m_oXMLPortSetupData.m_usADCDataReturnPort = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
 	}
 	catch (CMemoryException* e)

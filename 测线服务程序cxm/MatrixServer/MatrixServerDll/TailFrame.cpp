@@ -93,7 +93,7 @@ void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTailFrame, m_oLogOutPutS
 	}
 	EnterCriticalSection(&pTailFrame->m_oSecTailFrame);
 	// 创建套接字
-	pTailFrame->m_oTailFrameSocket = CreateInstrumentSocket(pTailFrame->m_pCommandStruct->m_usReturnPort, 
+	pTailFrame->m_oTailFrameSocket = CreateInstrumentSocket(pTailFrame->m_pCommandStruct->m_usReturnPort + NetedPortMove, 
 		pTailFrame->m_pCommandStruct->m_uiSrcIP, pLogOutPut);
 	// 设置接收缓冲区
 	SetRcvBufferSize(pTailFrame->m_oTailFrameSocket, pTailFrame->m_uiRcvBufferSize, pLogOutPut);

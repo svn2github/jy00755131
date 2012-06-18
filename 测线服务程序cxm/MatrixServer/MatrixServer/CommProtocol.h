@@ -18,6 +18,8 @@
 #define ServerRecBufferSize					8192000
 /** C/S发送缓冲区大小*/
 #define ServerSndBufferSize					8192000
+/** C/S通讯端口*/
+#define ServerClientPort					0x8330
 /** 最多连接的客户端个数*/
 #define ListenClientMaxNum					5
 /** 网络接收缓冲区大小*/

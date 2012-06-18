@@ -18,7 +18,7 @@ public:
 	CMatrixDllCall* m_pMatrixDllCall;
 public:
 	// ≥ı ºªØ
-	void OnInit(unsigned int uiSocketPort = 8080, int iSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
+	void OnInit(unsigned int uiSocketPort = ServerClientPort, int iSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
 	// πÿ±’
 	void OnClose(void);
 };
