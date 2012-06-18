@@ -85,7 +85,7 @@ protected://create_data_base & release_data_base 成对调用
 public: // element accessed
 	void instrument_limit_lock() const{EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&instrument_limit_lock_));};
 	void instrument_limit_unlock() const{LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&instrument_limit_lock_));};
-	instrument_limit_vector const const& get_instrument_limit_vector() const{ return data_base_ptr_->instrument_limits_;};
+	instrument_limit_vector const& get_instrument_limit_vector() const{ return data_base_ptr_->instrument_limits_;};
 
 	void sensor_limit_lock() const{EnterCriticalSection(const_cast<LPCRITICAL_SECTION>(&sensor_limit_lock_));};
 	void sensor_limit_unlock() const{LeaveCriticalSection(const_cast<LPCRITICAL_SECTION>(&sensor_limit_lock_));};
