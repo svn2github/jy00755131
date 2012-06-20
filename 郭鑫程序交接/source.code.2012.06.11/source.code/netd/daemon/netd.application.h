@@ -21,7 +21,7 @@ class netd_application;
 class inp_data
 {
 public:
-	enum{MAX_IN_BUFFER_SIZE = 128};//256
+	enum{MAX_IN_BUFFER_SIZE = 256};//256
 
 	inp_data(){SecureZeroMemory(buf_, sizeof(buf_));};
 	inp_data(inp_data& data){
@@ -89,6 +89,13 @@ public:
 class netd_application:public matrix_application
 {
 public:
+	enum
+	{
+		DEST_IP_BEGIN_POS = 20,		//!< LCI上行数据包中目标IP位置
+		DEST_PORT_BEGIN_POS = 24, //!< LCI上行数据包中目标端口位置
+		ADDITION_PORT_VALUE = 50,//!< 转发后在原端口上加入该值
+	};
+public:
 	netd_application(int argc, char_t **argv, char_t **envp = NULL);
 	~netd_application();
 
@@ -114,7 +121,10 @@ protected:
 public:
 	unsigned int netcard_id_; //!< pcap绑定网卡编号
 	unsigned int lci_ip_;//!< LCI ip地址(pcap读取发送数据到该ip) 
-	unsigned int lci_inp_port_;//<! pcap读取LCI 端口
+	
+	unsigned int* lci_inp_port_;//<! pcap读取LCI 端口
+	unsigned int lci_inp_port_size_;//!< pcap读取LCI端口数量
+
 	unsigned int lci_outp_port_;//<! pcap写入端口
 
 	unsigned int matrix_service_ip_;//!< 上位机ip地址(socket监听该ip,并将LCI上行数据包发送到该ip)

@@ -35,13 +35,22 @@ void netd_socket_snd_thread::run()
 	int i = 0;
 	unsigned int size = 0;
 	inp_data i_d;
+	SOCKADDR_IN remote_ip;
+
+	SecureZeroMemory(&remote_ip, sizeof(remote_ip));
+	remote_ip.sin_family = AF_INET;
+	remote_ip.sin_addr.s_addr = socket_service_ptr_->application_ptr_->matrix_service_ip_;
 
 	while(true){
 
 		size = socket_service_ptr_->application_ptr_->inp_queue_->size();
 		for(i = 0x0; i < size; ++i){
 			if(socket_service_ptr_->application_ptr_->inp_queue_->pop(i_d)){
-				socket_service_ptr_->send((char*)i_d.buf_, sizeof(i_d.buf_));
+
+			//	memcpy(&remote_ip.sin_addr.s_addr, i_d.buf_ + netd_application::DEST_IP_BEGIN_POS, sizeof(unsigned int));
+				memcpy(&remote_ip.sin_port, i_d.buf_ + netd_application::DEST_PORT_BEGIN_POS, sizeof(unsigned short));
+				remote_ip.sin_port = htons(remote_ip.sin_port + netd_application::ADDITION_PORT_VALUE);
+				socket_service_ptr_->send((char*)i_d.buf_, sizeof(i_d.buf_), (SOCKADDR*)&remote_ip);
 				InterlockedIncrement(&socket_service_ptr_->application_ptr_->socket_data_sent_num_);
 			}
 			else break;

@@ -72,8 +72,24 @@ bool netd_pcap_service::send(pcap_t* handle, unsigned int src_ip, unsigned short
 	ethernet_header eh = {0};
 	udp_header dh = {0};
 	unsigned int tmp = 0x0;
+	int i = 0;
 
 	eh.type = 0x08;
+	eh.source[0] = 0;
+	eh.source[1] = 0x30;
+	eh.source[2] = 0x67;
+	eh.source[3] = 0x6b;
+	eh.source[4] = 0xe4;
+	eh.source[5] = 0xca;
+
+	eh.dest[0] = 0;
+	eh.dest[1] = 0xa;
+	eh.dest[2] = 0x35;
+	eh.dest[3] = 0x00;
+	eh.dest[4] = 0x01;
+	eh.dest[5] = 0x02;
+	
+
 	memcpy(tmp_buf, &eh, sizeof(eh));
 
 	ip.ver_ihl = 0x45;		// Version (4 bits) + Internet header length (4 bits)
@@ -119,7 +135,10 @@ bool netd_pcap_service::start()
 	/* Retrieve the interfaces list */
 	pcap_findalldevs(&alldevs, errbuf);
 
-	for(unsigned i = 0; i < application_ptr_->netcard_id_; ++i)	d = alldevs->next;
+	if(application_ptr_->netcard_id_ == 0){	d = alldevs;}
+	else{
+		for(unsigned i = 0; i < application_ptr_->netcard_id_; ++i)	d = alldevs->next;
+	}
 
 	pcap_handle_ptr_  = pcap_open_live(d->name, application_ptr_->pcap_max_package_size_, 
 										1, application_ptr_->pcap_timeout_, errbuf);
@@ -143,7 +162,7 @@ bool netd_pcap_service::start()
 
 void netd_pcap_service::stop()
 {
-	snd_thread_ptr_->stop();
-	recv_thread_ptr_->stop();
+	if(snd_thread_ptr_ != NULL)		snd_thread_ptr_->stop();
+	if(recv_thread_ptr_ != NULL)	recv_thread_ptr_->stop();
 }
 

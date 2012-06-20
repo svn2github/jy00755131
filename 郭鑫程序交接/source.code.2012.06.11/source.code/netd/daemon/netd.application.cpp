@@ -30,13 +30,27 @@ netd_application::netd_application(int argc, char_t **argv, char_t **envp)
 	InterlockedExchange(&socket_data_sent_num_, 0);
 	InterlockedExchange(&socket_data_received_num_, 0);
 
-	netcard_id_ = 1;
-	lci_ip_ = inet_addr("192.168.0.19");
-	lci_inp_port_ = htons(36888);//<! pcap读取LCI 端口
-	lci_outp_port_ = htons(39321);//<! pcap写入端口
+	netcard_id_ = 0;
+	lci_ip_ = inet_addr("192.168.0.252");
 
-	netd_ip_ = inet_addr("192.168.0.25"); //!< 中转程序ip地址
-	netd_listen_port_ = htons(36866); //!< 中转程序监听端口
+//	lci_inp_port_ = htons(36888);//<! pcap读取LCI 端口
+	lci_inp_port_size_ = 9;
+	lci_inp_port_ = new unsigned int[9];
+	lci_inp_port_[0] = htons(28672);
+	lci_inp_port_[1] = htons(32768);
+	lci_inp_port_[2] = htons(36864);
+	lci_inp_port_[3] = htons(37120);
+	lci_inp_port_[4] = htons(37376);
+	lci_inp_port_[5] = htons(37632);
+	lci_inp_port_[6] = htons(37888);
+	lci_inp_port_[7] = htons(38144);
+	lci_inp_port_[8] = htons(38400);
+
+
+	lci_outp_port_ = htons(36866);//<! pcap写入端口
+
+	netd_ip_ = inet_addr("192.168.0.19"); //!< 中转程序ip地址
+	netd_listen_port_ = htons(36666); //!< 中转程序监听端口
 	netd_outp_port_ = htons(1111);
 
 	netd_recv_buffer_size_ = 10485760;//<! 10485760 #socket上位机接受缓冲
@@ -46,7 +60,7 @@ netd_application::netd_application(int argc, char_t **argv, char_t **envp)
 	pcap_timeout_ = 100;	//!< pcap操作超时时间以毫秒为单位
 	pcap_outp_poll_time_ = 10; //!< pcap写入LCI时,轮询outp_queue队列时间
 
-	strcpy(pcap_filter_, "udp"); //!< 指定当前pcap使用的过滤器参数
+	strcpy_s(pcap_filter_, strlen("udp") + 1, "udp"); //!< 指定当前pcap使用的过滤器参数
 
 	inp_queue_size_ = 100000;//!< 存放pcap输入(读取)队列缓冲大小 
 	outp_queue_size_ = 10000;//!< 存放pcap输出(写入)队列缓冲大小
@@ -54,17 +68,26 @@ netd_application::netd_application(int argc, char_t **argv, char_t **envp)
 	netd_recv_poll_time_ = 10;//<! 10 #中转程序从上位机接受数据的轮询时间
 	netd_snd_poll_time_ = 10;//<! 10 #中转程序向上位机发送数据时,轮询缓冲队列时间
 
-	matrix_service_ip_ = inet_addr("192.168.0.25");//!< 上位机ip地址(socket监听该ip,并将LCI上行数据包发送到该ip)
+	matrix_service_ip_ = inet_addr("192.168.0.19");//!< 上位机ip地址(socket监听该ip,并将LCI上行数据包发送到该ip)
 	matrix_service_listen_port_ = htons(39321);//<! 39321 #socket写入上位机端口
 
 	inp_queue_ = NULL; //!< pcap输入(读取)数据
 	outp_queue_ = NULL; //!< pcap的输出(写入)数据
 
 	socket_service_ptr_ = NULL;
-	pcap_service_ptr_ = NULL;	
+	pcap_service_ptr_ = NULL;
+	netd_service_be_started_ = false;
+
 }
 
-netd_application::~netd_application(){}
+netd_application::~netd_application()
+{
+	if(lci_inp_port_size_ != 0){
+		delete []lci_inp_port_;
+		lci_inp_port_ = NULL;
+		lci_inp_port_size_ = 0x0;
+	}
+}
 
 /**
 @fn void clear_console()
@@ -285,7 +308,8 @@ unsigned netd_application::get_line(FILE* file_ptr, char* buf, int buf_size)
 	1014: 分析配置文件失败
 */
 int netd_application::read_opt()
-{/*
+{
+	/*
 	int index = 0;
 	OPENFILENAME ofn;
 	TCHAR szFile[MAX_STRING_SIZE * 2] = {0};
@@ -370,7 +394,7 @@ int netd_application::read_opt()
 	}
 
 	fclose(file_ptr);
-	*/
+*/	
 	return 0;
 }
 

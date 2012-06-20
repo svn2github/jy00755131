@@ -34,6 +34,7 @@ void netd_pcap_snd_thread::run()
 {
 	unsigned i = 0, size = 0;
 	outp_data data;
+	bool is_ok = false;
 
 	while(true){
 
@@ -41,7 +42,7 @@ void netd_pcap_snd_thread::run()
 		for(i = 0; i < size; ++i){
 
 			if(!pcap_service_ptr_->application_ptr_->outp_queue_->pop(data)) break;
-			pcap_service_ptr_->send(pcap_service_ptr_->pcap_handle_ptr_, 
+			is_ok = pcap_service_ptr_->send(pcap_service_ptr_->pcap_handle_ptr_, 
 									pcap_service_ptr_->application_ptr_->netd_ip_,
 									pcap_service_ptr_->application_ptr_->netd_outp_port_,
 									pcap_service_ptr_->application_ptr_->lci_ip_,

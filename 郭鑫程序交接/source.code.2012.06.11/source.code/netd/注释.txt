@@ -1,0 +1,3 @@
+1. 在netd_application构造函数中进行文件配置
+2. netcard_id_指明网卡编号,如果只有一个网卡使用0
+3. 使用netd_pcap_service::send时,需要指明原地址(中转程序)和目标地址(LCI)的MAC地址

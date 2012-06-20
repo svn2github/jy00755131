@@ -26,7 +26,7 @@ protected:
 	void run();
 
 private:
-	HANDLE stop_event_;
+	HANDLE stop_event_;//!<结束该线程的时间通知
 	netd_socket_service* socket_service_ptr_;
 };
 
