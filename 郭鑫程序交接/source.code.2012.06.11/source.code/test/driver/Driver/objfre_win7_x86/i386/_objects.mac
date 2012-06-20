@@ -1,0 +1,20 @@
+PASS0_386_OBJECTS=\
+ $(PASS0_HEADERDIR)\msg_driver.h \
+ $(MC_SOURCEDIR)\msg_driver.rc \
+
+
+386_OBJECTS=\
+ $(OBJ_PATH)\$O\driver.obj \
+
+
+_RES_FILE=$(OBJ_PATH)\$O\drvversion.res
+
+
+
+# lowercased
+BASEDIR=d:\winddk\760016~1.1
+OBJECT_ROOT=d:\winddk\760016~1.1
+MAKEDIR_LOWERCASE=e:\works\test\driver\driver
+OBJ_PATH=e:\works\test\driver\driver
+CONCURRENT_MIDL=0
+CONCURRENT_MANIFEST_BUILD=0
