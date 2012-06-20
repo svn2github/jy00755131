@@ -1,0 +1,14 @@
+function Install()
+{
+writeRegStr(HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "DisplayName", $ST_TITLE_CAPTION);
+writeRegStr(HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "DisplayIcon", $ST_INSTDIR+"\E2PROM_TOOL.exe");
+writeRegStr(HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "DisplayVersion", $ST_PRODUCT_VERSION);
+writeRegStr(HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "ProductID", "bc224927-1ec3-11b2-b27a-8ce77d0acd64");
+writeRegStr(HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "InstallLocation", $ST_INSTDIR);
+writeRegStr(HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "UninstallString", $ST_WINSYSDIR + $ST_UNINST_KEY + $ST_INSTDIR+"\_gcLog.uninst");
+createDesktopShortcut($ST_INSTDIR+"\E2PROM_TOOL.exe", $ST_PRODUCT_NAME+".lnk", $ST_PRODUCT_NAME, $ST_INSTDIR+"\E2PROM_TOOL.exe", $ST_INSTDIR, " ");
+}
+function main()
+{
+Install();
+}

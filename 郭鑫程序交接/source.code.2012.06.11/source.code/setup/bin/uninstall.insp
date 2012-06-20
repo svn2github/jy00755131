@@ -1,0 +1,9 @@
+function Uninstall()
+{
+deleteRegKey(HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL");
+deleteDesktopShortcut($ST_PRODUCT_NAME+".lnk");
+}
+function main()
+{
+Uninstall();
+}

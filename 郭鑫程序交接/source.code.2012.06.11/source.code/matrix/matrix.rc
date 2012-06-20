@@ -1,0 +1,292 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MATRIX              ICON                    "matrix.ico"
+IDI_SMALL               ICON                    "small.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MATRIX_DIALOG DIALOGEX 0, 0, 373, 300
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "开始心跳",ID_START_BUTTON,6,279,50,14
+    PUSHBUTTON      "退出",IDCANCEL,316,279,50,14
+    PUSHBUTTON      "AD设置",IDC_AD_SETTING_BUTTON,68,279,50,14
+    PUSHBUTTON      "AD采集",IDC_AD_COLLECTION_BUTTON,192,279,50,14
+    PUSHBUTTON      "零漂设置",IDC_ZERO_OFFSET_BUTTON,130,279,50,14
+    PUSHBUTTON      "停止采集",IDC_STOP_COLLECTION_BUTTON,254,279,50,14
+    CTEXT           "0",IDC_SND_COUNTER_STATIC,108,57,126,14,0,WS_EX_STATICEDGE
+    CTEXT           "0",IDC_RECV_COUNTER_STATIC,108,77,126,14,0,WS_EX_STATICEDGE
+    LTEXT           "LCI发送查询:",IDC_SND_COUNTER_STATIC,58,60,46,8
+    LTEXT           "LCI接受:",IDC_SND_COUNTER_STATIC,74,80,30,8
+    RTEXT           "LCI收发差值:",IDC_SND_COUNTER_STATIC,31,98,73,8
+    CTEXT           "0",IDC_RECV_SND_MINUE_STATIC,108,97,126,14,0,WS_EX_STATICEDGE
+    CTEXT           "0",IDC_FDU_SND_COUNTER_STATIC,107,142,126,14,0,WS_EX_STATICEDGE
+    CTEXT           "0",IDC_FDU_RECV_COUNTER_STATIC,107,162,126,14,0,WS_EX_STATICEDGE
+    LTEXT           "FDU发送查询:",IDC_SND_COUNTER_STATIC,57,145,49,8
+    LTEXT           "FDU接受:",IDC_SND_COUNTER_STATIC,73,165,33,8
+    LTEXT           "FDU收发差值:",IDC_SND_COUNTER_STATIC,57,182,49,8
+    CTEXT           "0",IDC_FDU_RECV_SND_MINUE_STATIC,107,182,126,14,0,WS_EX_STATICEDGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_MATRIX_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 366
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 293
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,12,55
+ PRODUCTVERSION 1,0,12,55
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "Comments", "1.0.12.55.2011.8.30.EIGHT.PORTS.1K"
+            VALUE "CompanyName", "Hitech"
+            VALUE "FileDescription", "1.0.12.55.2011.8.30.EIGHT.PORTS.1K"
+            VALUE "FileVersion", "1, 0, 12, 55"
+            VALUE "InternalName", "matrix"
+            VALUE "LegalCopyright", "Copyright (C) 2011"
+            VALUE "OriginalFilename", "matrix.exe"
+            VALUE "ProductName", "matrix Application"
+            VALUE "ProductVersion", "1, 0, 12, 55"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_APP_TITLE           "matrix"
+    IDS_END                 "停止"
+    IDS_START               "开始"
+    IDS_STRING106           "尝试发送心跳操作【%d】次，但都失败！"
+    IDS_STRING107           "接受到首包大小大于规定大小128, 该数据包信息：%s"
+    IDS_STRING108           "检测该首包为非法数据包"
+    IDC_MATRIX              "MATRIX"
+    IDS_STRING110           "收到首包加入新设备，串号为： %X"
+    IDS_STRING111           "收到首包加入新设备失败，串号为： %X"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING128           "接受尾包时，检测该尾包存在错误，数据包为： %s"
+    IDS_STRING129           "接受尾包中包含的SN[%X],不能发现在SN索引表中,数据包: %s"
+    IDS_STRING130           "接受数据处理函数发现未知设备类型[%X]..."
+    IDS_STRING131           "接受交叉站尾包产生[%d]错误，数据包：%s"
+    IDS_STRING132           "接受采集站或电源站尾包产生[%d]错误，数据包：%s"
+    IDS_STRING133           "时延响应接收函数在调用select时，产生[%d]错误..."
+    IDS_STRING134           "[%X]路由方向发送时延查询错误,数据包为:%s"
+    IDS_STRING135           "接受时延查询应答数据产生[%d]错误..."
+    IDS_STRING136           "接受时延查询应答数据包大小为[%d]小于标准大小[%d]，数据为：%s"
+    IDS_STRING137           "接受时延应答包时，检测该包存在错误，数据包为： %s"
+    IDS_STRING138           "接受时延应答包中包含的ip地址[%08X],不能发现在IP索引表中,数据包: %s"
+    IDS_STRING139           "处理尾包时延响应超时后,重发查询数据中,根据当前尾包结构体路由[%X],当前设备ip[%08X],不能找到相应的交叉站..."
+    IDS_STRING140           "检查接受时延设置响应数据包存在错误， 数据包信息： %s"
+    IDS_STRING141           "发送时延设置数据包失败，将其保留在时延设置响应队列中，等待下次发送，该设备IP为%08X"
+    IDS_STRING142           "创建socket失败！"
+    IDS_STRING143           "SOCKET接受数据失败，产生 %d 错误!"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING144           "由于远程主机完美断开连接，SOCKET接受数据失败!"
+    IDS_STRING145           "接受数据大于所设缓冲, 丢弃该数据包..."
+    IDS_STRING146           "已经发送【%d】次时延设置包，都没有收到时延设置响应，将设置ip为【%08X】设备为无效设备，数据包：%s"
+    IDS_STRING147           "设置时延发送队列已满,不能再加入新的发送数据包,需要重新调整该队列大小,当前大小为[%d]..."
+    IDS_STRING148           "收到设备尾包SN:[%X], IP地址[%08X], 尾包计数器[%d], 仪器类型[%X]..."
+    IDS_STRING149           "该设备为%s"
+    IDS_STRING150           "该测线的时统......[%s]"
+    IDS_STRING151           "更新交叉线时统状态队列时, 传入路由信息错误,传入路由参数为:%d"
+    IDS_STRING152           "更新交叉线时统状态队列时, 尾包设备类型[%X]信息,该类型不应出现..."
+    IDS_STRING153           "在时统完成后,更新测线队列时, 传入路由参数[%X]错误,该参数取值不应出现..."
+    IDS_STRING154           "AD设置发送队列已满[%d], 不能加入记录..."
+    IDS_STRING155           "接受到得AD设置响应数据包大小不正确，当前大小为[%d], 数据包信息： %s"
+    IDS_STRING156           "检查接受到得AD设置响应数据包格式不正确， 数据包信息： %s"
+    IDS_STRING157           "根据AD设置响应数据包中IP地址[%4X]查询不到相应的发送数据信息， 数据包信息： %s"
+    IDS_STRING158           "已经发送【%d】次AD设置包，都没有收到AD设置应答，由于IP地址【%08X】的设备设置失败,该过程将停止, AD设置数据包: %s"
+    IDS_STRING159           "发送AD设置数据包失败，将其保留在AD设置响应队列中，等待下次发送，该设备IP为%08X"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING112           "接受首包时刻与原首包时刻不相等, 该数据包信息：%s"
+    IDS_STRING113           "没有可用设备数据存储内存可用，当前大小为：%d"
+    IDS_STRING114           "在索引表中没有发现与该[%X]串号相对应的采集站或电源站信息"
+    IDS_STRING115           "ip设置应答队列已满，不能分配，等待下次再分配"
+    IDS_STRING116           "接受到得ip响应数据包大小不正确，当前大小为[%d], 数据包信息： %s"
+    IDS_STRING117           "发送ip设置数据包失败，将其保留在ip设置响应队列中，等待下次发送，该设备sn为%X"
+    IDS_STRING118           "已经发送【%d】次ip设置包，都没有收到ip设置响应，将拆除SN为【%X】设备，数据包：%s"
+    IDS_STRING119           "recv数据函数失败，远程主机已经断掉连接%s"
+    IDS_STRING120           "在删除设备SN:%X时，发现不正常路由配置信息[%X]，将无法修改其后所有站信息，产生无法预料错误"
+    IDS_STRING121           "由于出现设备退化问题，将重新设定ip地址时，发现ip设置应答队列已满，强行剔除SN:%X设备的应答消息，优先提供给SN:%X修改IP使用"
+    IDS_STRING122           "在删除设备SN:%X时，发现路由信息【%X】，不能在路由索引表中查询到，产生无法预料错误"
+    IDS_STRING123           "在索引表中没有发现与该[%X]串号相对应的交叉站信息"
+    IDS_STRING124           "尾包接受函数在调用select时，产生[%d]错误..."
+    IDS_STRING125           "接受尾包产生[%d]错误..."
+    IDS_STRING126           "接受时延设置响应数据包大小不正确，当前大小为[%d], 数据包信息： %s"
+    IDS_STRING127           "接受尾包大小为[%d]小于标准大小[%d]，数据为：%s"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING160           "根据AD设置响应数据包中IP地址[%08X]查询到相应的发送数据信息，但应答和设置命令内容不一致, 应答数据包信息： %s"
+    IDS_STRING161           "初始化接受AD采集数据时,产生[%d]错误..."
+    IDS_STRING162           "开始接受AD采集数据,间隔为[%d]ms..."
+    IDS_STRING163           "接受到得AD采集数据包大小不正确，当前大小为[%d], 数据包信息： %s"
+    IDS_STRING164           "检查接受到得AD采集数据包格式不正确， 数据包信息： %s"
+    IDS_STRING165           "存放AD接受数据缓冲[%d]小于所需缓冲大小[%d]..."
+    IDS_STRING166           "接受来自IP[%d]的AD采集数据,但没有发现该设备信息, 该数据包:%s"
+    IDS_STRING167           "在发送补帧过程中,不能从重发缓冲中得到资源,当前缓冲[%d]已经被全部占用,程序将终止..."
+    IDS_STRING168           "在AD采集补帧过程中,不能发送补帧数据包,产生错误[%d]..."
+    IDS_STRING169           "在AD采集补帧时, 发送数据包大小[%d]小于数据包本身大小[%d]..."
+    IDS_STRING170           "在尾包处理中的时延设置,不能从发送缓冲中得到足够的发送缓冲数据结构,当前设置缓冲大小为%d..."
+    IDS_STRING171           "该次尾包处理将被中断,因为有其他过程在运行中,当前设备ip为[%08X]..."
+    IDS_STRING172           "在%s文件第%d行, 提示信息: %s"
+    IDS_STRING173           "%s文件中%s函数, 执行%s操作, 数据为:%s"
+    IDS_STRING174           "在%s文件的%s函数, 提示信息: %s"
+    IDS_STRING175           "在AD命令操作中"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING176           "不能对无效设备(SN %X, IP %08X)进行AD设置命令操作..."
+    IDS_STRING177           "TB设置中设备IP %08X, TBtime %X..."
+    IDS_STRING178           "AD操作中,存放大线队列资源数组[%d]小于目前使用数量[%d]..."
+    IDS_STRING179           "在%s文件的%s函数, 提示信息: %d"
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

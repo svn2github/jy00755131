@@ -1,0 +1,184 @@
+// install.insp
+// this is a test for install script.
+// the creator is kuolei.
+
+/*
+
+*/
+
+function Setting()
+{
+	setCompany("HITECH");
+	setProductID("bc224927-1ec3-11b2-b27a-8ce77d0acd64");
+	setProductKey("E2PROM_TOOL.exe");
+	setProductName("EEPROM 工具");
+	setProductVersion("1.-.0.1");
+	setCaption("EEPROM 工具");
+	setUninstDisplayName("EEPROM 工具");
+	setUninstKey("\_gcuninst.exe --file ");
+
+	setInstIcon("135");
+	setUninstIcon("136");
+
+	setInstallDir($ST_PROGRAMFILES);
+
+	setString("ST_PRETREAT", "准备安装……", CHN_PRC);
+
+	addString("ST_TITLE_CAPTION", "EEPROM 工具", CH_PRC);
+
+	setString("ST_WELCOM_CAPTION", $ST_TITLE_CAPTION + " 安装", CHN_PRC);
+	setString("ST_BACK", "< 上一步(&P)", CHN_PRC);
+	setString("ST_NEXT", "下一步(&N) >", CHN_PRC);
+	setString("ST_CANCEL", "取消(&C)", CHN_PRC);
+
+	setString("ST_WELCOM_TITLE", "欢迎使用" + $ST_TITLE_CAPTION + "安装向导", CHN_PRC);
+	setString("ST_WELCOM_DESCRIP", "这个向导将指引你完成 "+ $ST_TITLE_CAPTION +" 的安装进程。\\n\\n在开始安装之前，建议先关闭其他所有应用程序。这将允许“安装程序”更新指定的系统文件，而不需要重新启动你的计算机。", CHN_PRC);
+
+	setString("ST_LICENSE_CAPTION", $ST_TITLE_CAPTION + " 安装", CHN_PRC);
+	setString("ST_DENY", "不同意(&D)", CHN_PRC);
+	setString("ST_AGREE", "我同意(&I)", CHN_PRC);
+
+	setString("ST_INSTALL_TITLE1", "许可证协议", CHN_PRC);
+	setString("ST_INSTALL_DESCRIP1", "在安装 " + $ST_TITLE_CAPTION +" 之前，请检阅授权条款。", CHN_PRC);
+	setString("ST_LICENSE_TITLE", "检阅协议的其余部分，请按 [PgDn] 往下卷动页面。", CHN_PRC);
+	setString("ST_LICENSE_DESCRIP", "如果你接受协议中的条款，单击 [我同意(I)] 继续安装。如果你选定 [取消(C)] ，安装程序将会关闭。必须要接受协议才能安装 "+ $ST_TITLE_CAPTION +" 。", CHN_PRC);
+
+	setString("ST_OPTIONS_CAPTION", $ST_TITLE_CAPTION + " 安装", CHN_PRC);
+	setString("ST_INSTALL", "安装(&I)", CHN_PRC);
+
+	setString("ST_INSTALL_TITLE2", "选定安装位置", CHN_PRC);
+	setString("ST_INSTALL_DESCRIP2", "选定 " + $ST_TITLE_CAPTION +" 要安装的文件夹。", CHN_PRC);
+	setString("ST_OPTIONS_DESCRIP", "Setup 将安装 " + $ST_TITLE_CAPTION +" 在下列文件夹。要安装到不同文件夹，单击 [浏览(B)] 并选择其他的文件夹。 单击 [安装(I)] 开始安装进程。", CHN_PRC);
+	setString("ST_OPTIONS_DESTDIR", "目标文件夹", CHN_PRC);
+	setString("ST_BROWER_BUTTON", "浏览(&B)...", CHN_PRC);
+	setString("ST_OPTIONS_SPACE_REQ", "所需空间: %d.%d MB", CHN_PRC);
+	setString("ST_OPTIONS_SPACE", "可用空间: %d.%d GB", CHN_PRC);
+
+	setString("ST_INSTALL_CAPTION", $ST_TITLE_CAPTION + " 安装", CHN_PRC);
+
+	setString("ST_INSTALL_TITLE3", "正在安装", CHN_PRC);
+	setString("ST_INSTALL_DESCRIP3", "正在安装" + $ST_TITLE_CAPTION + " ，请稍候。", CHN_PRC);
+	setString("ST_INSTALL_INFO", "拷贝文件：%s", CHN_PRC);
+	setString("ST_INSTALL_COMPLETE", "完成...", CHN_PRC);
+
+	setString("ST_FINISH_CAPTION", $ST_TITLE_CAPTION + " 安装", CHN_PRC);
+	setString("ST_FINISH", "完成(&F)", CHN_PRC);
+
+	setString("ST_FINISH_TITLE", "完成 " + $ST_TITLE_CAPTION +" 安装向导", CHN_PRC);
+	setString("ST_FINISH_DESCRIP", $ST_TITLE_CAPTION + " 已在你的系统安装。\\n单击 [完成(F)] 关闭此向导。", CHN_PRC);
+
+	setString("ST_UNINST_PRETREAT", "准备卸载……", CHN_PRC);
+
+	setString("ST_UNINST_CAPTION", $ST_TITLE_CAPTION + " 卸载安装", CHN_PRC);
+	setString("ST_UNINSTALL", "移除(&U)", CHN_PRC);
+
+	setString("ST_INSTALL_TITLE4", "卸载安装 " + $ST_TITLE_CAPTION, CHN_PRC);
+	setString("ST_INSTALL_DESCRIP4", "从你的计算机解除安装 "+ $ST_TITLE_CAPTION +"。", CHN_PRC);
+	setString("ST_UNINST_DESCRIP", "这个向导将从你的计算机解除安装 " + $ST_TITLE_CAPTION + " 。 单击 [解除安装(U)] 开始解除安装进程。", CHN_PRC);
+	setString("ST_UNINST_DESTDIR", "卸载安装目录: ", CHN_PRC);
+	setString("ST_UNINST_EDIT", "%s", CHN_PRC);
+	setString("ST_UNINSTING_CAPTION", "卸载安装 " + $ST_TITLE_CAPTION, CHN_PRC);
+
+	setString("ST_UNINSTING_TITLE5", "正在卸载", CHN_PRC);
+	setString("ST_UNINSTING_DESCRIP5", "正在卸载" + $ST_TITLE_CAPTION + " ，请稍候。", CHN_PRC);
+	setString("ST_UNINSTING_INFO", "删除文件: %s", CHN_PRC);
+	setString("ST_UNINSTING_COMPLETE", "已完成", CHN_PRC);
+
+	setString("ST_BROWSE_CAPTION", "浏览文件夹...", CHN_PRC);
+	setString("ST_BROWSE_TEXT", "选择要安装 "+ $ST_TITLE_CAPTION +" 的文件夹位置: ", CHN_PRC);
+
+	setString("ST_INST_DENY_INFO", "是否要退出 "+ $ST_TITLE_CAPTION +" 安装?", CHN_PRC);
+	setString("ST_INST_CANCEL_INFO", "是否要退出 "+ $ST_TITLE_CAPTION +" 安装?", CHN_PRC);
+	setString("ST_INST_UNZIP_ERROR", "%s 解压文件错误！", CHN_PRC);
+	setString("ST_INST_READ_LICENSE_ERROR", "读取授权文件错误！", CHN_PRC);
+	setString("ST_INST_COPY_ERROR", "%s 复制文件错误！", CHN_PRC);
+	setString("ST_INST_REGISTERY_ERROR", "注册表操作失败！", CHN_PRC);
+	setString("ST_INST_SHORTCUT_ERROR", "创建快捷方式错误！", CHN_PRC);
+	setString("ST_INST_FILE_ERROR", "%s 文件操作失败！", CHN_PRC);
+	setString("ST_INST_SPACE_ERROR", "硬盘空间不足，请重新选择目标文件夹！", CHN_PRC);
+	setString("ST_INST_WRITE_ERROR", "%s 文件写错误！", CHN_PRC);
+
+	setString("ST_UNINST_CANCEL_INFO", "是否取消卸载" + $ST_TITLE_CAPTION, CHN_PRC);
+	setString("ST_UNINST_DELETE_ERROR", "%s 文件删除错误！", CHN_PRC);
+	setString("ST_UNINST_REGISTERY_ERROR", "注册表操作失败！", CHN_PRC);
+	setString("ST_UNINST_SHORTCUT_ERROR", "快捷方式删除失败！", CHN_PRC);
+	setString("ST_UNINST_FILE_ERROR", "%s 文件操作失败！", CHN_PRC);
+	setString("ST_UNINST_MARK", " ", CHN_PRC);
+
+	setString("ST_INIT_ERROR", "安装程序初始化错误！", CHN_PRC);
+	setString("ST_OPEN_ERROR", "安装程序打开错误！", CHN_PRC);
+	setString("ST_INITDLG_ERROR", "初始化窗体错误！", CHN_PRC);
+	setString("ST_PACKAGE_ICON", "-138", CHN_PRC);
+	setString("ST_EXIST_ERROR", "文件已经存在！", CHN_PRC);
+	setString("ST_UNZIP_FILE_ERROR", "%s 文件解压错误！", CHN_PRC);
+	setString("ST_PRODUCE_EXISTED", "软件已存在，是否需要重新安装？", CHN_PRC);
+	setString("ST_PRODUCE_EXISTED_NEW", "当前操作系统中已安装了最新版本的该软件。请卸载该软件后，再安装当前软件包，否则将影响您的使用。 是否您还要直接安装该软件包呢？", CHN_PRC);
+	setString("ST_PRODUCE_OLD_EXISTED", "准备更新旧版本...", CHN_PRC);
+	setString("ST_CREATE_LOGFILE_ERROR", "打开卸载文件失败！", CHN_PRC);
+	setString("ST_REGISTER_DLL", "注册组件：%s", CHN_PRC);
+	setString("ST_UNREGISTER_DLL", "删除组件：%s", CHN_PRC);
+	setString("ST_WARNING_SHARE_FILE", "是否删除共享组件？", CHN_PRC);
+	setString("ST_GETSCRIPT_ERROR", "安装脚本 %s 获取错误！", CHN_PRC);
+	setString("ST_RUNSCRIPT_HINT", "运行脚本错误：%s", CHN_PRC);
+	setString("ST_INSTALL_UI", "安装用户界面！", CHN_PRC);
+	setString("ST_UNINSTALL_UI", "卸载用户界面！", CHN_PRC);
+	setString("ST_REGISTER_DLL_ERROR", "注册组件错误！\\n[放弃]-放弃注册。\\n[重试]-重新注册。\\n[忽略]-跳过注册。", CHN_PRC);
+	setString("ST_UNREGISTER_DLL_ERROR", "删除组件错误！\\n[放弃]-放弃删除。\\n[重试]-重新删除。\\n[忽略]-跳过删除。", CHN_PRC);
+	setString("ST_UNINSTALL_DIR", "删除文件夹：%s", CHN_PRC);
+	setString("ST_UNINSTING_TITLE6", "卸载完成", CHN_PRC);
+	setString("ST_UNINSTING_DESCRIP6", "卸载成功！", CHN_PRC);
+	setString("ST_SOFTWARE_NOT_EXISTED_ERROR", "当前安装包为更新包，不能在没有该软件的前提下进行软件更新！", CHN_PRC);
+
+	setOutdir("c:\setup\dist");
+	setOutFile($ST_OUTDIR + "\Setup.exe");
+
+	addString("COMPONENTDES", "this component description.", CHN_PRC);
+	addString("COMPONENTSTATUSTEXT", "this component statustext.", CHN_PRC);
+	addString("GAMEHALL_DIR", "c:\setup\eprom", CHN_PRC);
+
+	setLicenceData($GAMEHALL_DIR + "\license.txt");	
+	addComponent("PROGRAMFILES_COM", "Program Files", $ST_INSTDIR, "Program Files", "程序文件", "主程序", TRUE, TRUE, TRUE);
+	addFileGroup("PROGRAMS_GROUP", "Programs Files Group", FALSE, FALSE, INDEPENDENT, CHN_PRC, $ST_INSTDIR);
+
+	addSetupType("TYPICAL", $PROGRAMFILES_COM);
+
+	addDataFile($GAMEHALL_DIR + "\E2PROM_TOOL.exe", $PROGRAMS_GROUP, TRUE);
+	addDataFile($GAMEHALL_DIR + "\inpout32.dll", $PROGRAMS_GROUP, TRUE);
+	addDataFile($GAMEHALL_DIR + "\license.txt", $PROGRAMS_GROUP, TRUE);
+	addDataFile($GAMEHALL_DIR + "\test.case.EEPROM", $PROGRAMS_GROUP, TRUE);
+
+	addComponentFileGroupRelation($PROGRAMFILES_COM, $PROGRAMS_GROUP);
+}
+
+
+
+function Install()
+{
+
+	// Write the uninstall keys for windows
+	writeRegStr (HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "DisplayName", $ST_TITLE_CAPTION);
+	writeRegStr (HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "DisplayIcon", $ST_INSTDIR+"\E2PROM_TOOL.exe");
+	writeRegStr (HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "DisplayVersion", $ST_PRODUCT_VERSION);
+	writeRegStr (HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "ProductID", "bc224927-1ec3-11b2-b27a-8ce77d0acd64");
+	writeRegStr (HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "InstallLocation", $ST_INSTDIR);
+	writeRegStr (HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL", "UninstallString", $ST_WINSYSDIR + $ST_UNINST_KEY + $ST_INSTDIR+"\_gcLog.uninst");
+
+	createDesktopShortcut($ST_INSTDIR+"\E2PROM_TOOL.exe", $ST_PRODUCT_NAME+".lnk", $ST_PRODUCT_NAME, $ST_INSTDIR+"\E2PROM_TOOL.exe", $ST_INSTDIR, " ");
+}
+
+// uninstall
+function Uninstall()
+{
+
+	// delete registry keys
+	deleteRegKey (HKLM, "Software\Microsoft\Windows\CurrentVersion\Uninstall\EEPROM_TOOL");
+	deleteDesktopShortcut($ST_PRODUCT_NAME+".lnk");
+}
+
+// installer main
+function main()
+{
+	Setting();
+	Install();
+	Uninstall();
+}

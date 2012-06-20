@@ -1,0 +1,192 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_MAIN_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 227
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 250
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 234, 257
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "server"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "开始接受",ID_START_BUTTON,101,236,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,167,236,50,14
+    CTEXT           "0",IDC_STATIC_UDP_SEND_NUM,95,38,120,18,SS_CENTERIMAGE | WS_BORDER
+    CTEXT           "0",IDC_STATIC_UDP_RECV_NUM,95,16,120,18,SS_CENTERIMAGE | WS_BORDER
+    RTEXT           "接受TCP报文：",IDC_STATIC,39,21,53,8
+    RTEXT           "发送TCP报文：",IDC_STATIC,39,43,53,8
+    EDITTEXT        IDC_EDIT_LISTEN_PORT,95,87,120,13,ES_AUTOHSCROLL
+    RTEXT           "监听端口：",IDC_STATIC,51,90,41,8
+    EDITTEXT        IDC_EDIT_REMOTE_IP,95,104,120,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_REMOTE_PORT,95,121,120,13,ES_AUTOHSCROLL
+    RTEXT           "发送端口：",IDC_STATIC,51,124,41,8
+    RTEXT           "发送IP：",IDC_STATIC,58,108,34,8
+    EDITTEXT        IDC_EDIT_SOCK_RECV_NUM,95,138,120,13,ES_AUTOHSCROLL
+    RTEXT           "接受缓冲：",IDC_STATIC,51,142,41,8
+    EDITTEXT        IDC_EDIT_SOCK_SEND_NUM,95,155,120,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SOCK_POLL_TIME,95,172,120,13,ES_AUTOHSCROLL
+    RTEXT           "接受轮询时间：",IDC_STATIC,24,174,68,8
+    RTEXT           "发送缓冲：",IDC_STATIC,47,158,45,8
+    EDITTEXT        IDC_EDIT_SOCK_SND_NUM_PER_HALF_HUNDRAND,95,189,120,13,ES_AUTOHSCROLL
+    RTEXT           "发送数量：",IDC_STATIC,40,191,52,8
+    EDITTEXT        IDC_EDIT_SOCK_SND_POLL_TIME,95,205,120,13,ES_AUTOHSCROLL
+    RTEXT           "发送间隔时间：",IDC_STATIC,17,207,75,8
+    EDITTEXT        IDC_EDIT_LISTEN_IP,95,70,120,13,ES_AUTOHSCROLL
+    RTEXT           "监听IP：",IDC_STATIC,51,74,41,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,1,10
+ PRODUCTVERSION 1,0,1,10
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "Comments", "server.1.0.1.10.2012.02.24"
+            VALUE "FileDescription", "server.1.0.1.10.2012.02.24"
+            VALUE "FileVersion", "1, 0, 1, 10"
+            VALUE "InternalName", "server.1.0.1.10.2012.02.24"
+            VALUE "LegalCopyright", "Copyright (C) 2012"
+            VALUE "OriginalFilename", "server.exe"
+            VALUE "ProductName", "server Application"
+            VALUE "ProductVersion", "1, 0, 1, 10"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_APP_TITLE           "server"
+    IDC_SERVER              "SERVER"
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,5 @@
+A:EEPROM程序：Inp32，Out32输入输出参数都是short型，而程序中是char，原因？
+Q:这是因为e2prom只能接受uchar
+
+A:log模块只有.h文件，.cpp文件？
+Q:这个模块,本来要做的,刘总后来叫停了,所以只有.h文件
