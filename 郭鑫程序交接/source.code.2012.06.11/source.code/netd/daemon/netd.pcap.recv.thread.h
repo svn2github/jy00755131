@@ -12,7 +12,7 @@
 #define __NETD_PCAP_RECV_THREAD__
 
 #include "..\core\matrix.thread.h"
-
+#define RunTimes	2000
 class netd_pcap_service;
 class netd_pcap_recv_thread : public matrix_thread
 {
@@ -27,6 +27,12 @@ protected:
 private:
 	HANDLE stop_event_;//!<结束该线程的时间通知
 	netd_pcap_service* pcap_service_ptr_;
+	// 2012.06.21 cxm
+	int m_iRunTimes;
+	// 计时开始计数缓冲区
+	DWORD m_dwStartCount[RunTimes];
+	// 计时结束计数缓冲区
+	DWORD m_dwStopCount[RunTimes];
 };
 
 #endif /*__NETD_PCAP_RECV_THREAD__*/

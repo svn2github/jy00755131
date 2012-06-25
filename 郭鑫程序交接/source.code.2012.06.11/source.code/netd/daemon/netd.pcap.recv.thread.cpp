@@ -21,6 +21,7 @@ netd_pcap_recv_thread::netd_pcap_recv_thread(netd_pcap_service* pcap_service_ptr
 												: pcap_service_ptr_(pcap_service_ptr)
 {
 	stop_event_ = CreateEvent(NULL, TRUE, FALSE, NULL);
+	m_iRunTimes = 0;
 }
 
 netd_pcap_recv_thread::~netd_pcap_recv_thread()
@@ -55,6 +56,13 @@ void netd_pcap_recv_thread::run()
 	DWORD errNum = 0;
 	char driverLocation[MAX_PATH] = {0x0};
 	TCHAR driverLocation_a[MAX_PATH] = {0x0};
+
+	LARGE_INTEGER liFrq;
+	LARGE_INTEGER liCount;
+	LPCTSTR str = _T("");
+	TCHAR OutPutBuf[RunTimes * 11+1];
+	double dbTime = 0;
+	QueryPerformanceFrequency(&liFrq);
 
 	//open the device
 	if((hDevice = CreateFile(
@@ -113,7 +121,11 @@ void netd_pcap_recv_thread::run()
 	registerEvent.Type = IRP_BASED;
 
 	do{
-
+		if (m_iRunTimes < RunTimes)
+		{
+			QueryPerformanceCounter(&liCount);
+			m_dwStartCount[m_iRunTimes] = liCount.LowPart;
+		}
 		status = pcap_next_ex(pcap_service_ptr_->pcap_handle_ptr_, &pkt_header, &pkt_data);
 		if(status == 1){
 
@@ -148,10 +160,23 @@ void netd_pcap_recv_thread::run()
 			);
 
 		//wait...
-//		if(WaitForSingleObject(stop_event_, 0) == WAIT_OBJECT_0)	break;
+		if(WaitForSingleObject(stop_event_, 0) == WAIT_OBJECT_0)	break;
+		if (m_iRunTimes < RunTimes)
+		{
+			QueryPerformanceCounter(&liCount);
+			m_dwStopCount[m_iRunTimes] = liCount.LowPart;
+			m_iRunTimes++;
+		}
 	}while(status >= 0);
 
-
+	for (int i=0; i<RunTimes; i++)
+	{
+		dbTime = (double)(m_dwStopCount[i] - m_dwStartCount[i]);
+		dbTime /= liFrq.LowPart;
+		swprintf(&OutPutBuf[i*11],L"%.8f\n",dbTime);
+	}
+	str = OutPutBuf;
+	OutputDebugString(str);
 	// close the handle to the device.
 	CloseHandle(hDevice);
 	// Unload the driver.  Ignore any errors.

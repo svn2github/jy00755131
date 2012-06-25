@@ -29,7 +29,7 @@ netd_pcap_service::~netd_pcap_service()
 	}
 
 	if(recv_thread_ptr_){
-		delete recv_thread_ptr_;
+//		delete recv_thread_ptr_;
 		recv_thread_ptr_ = NULL;
 	}
 }
