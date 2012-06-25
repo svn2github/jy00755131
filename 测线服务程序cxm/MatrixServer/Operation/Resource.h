@@ -5,6 +5,8 @@
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDS_MAIN_TOOLBAR                101
+#define IDS_SETUP_TOOLBAR               102
+#define IDS_VIEW_TOOLBAR                103
 #define IDP_SOCKETS_INIT_FAILED         104
 #define IDR_MAINFRAME                   128
 #define IDR_OperationTYPE               129
@@ -52,6 +54,8 @@
 #define ID_VIEW_OUTPUT                  32804
 #define ID_VIEW_VPDONEBAR               32805
 #define ID_VIEW_VPTODUBAR               32806
+#define ID_TOOLBAR_SETUP				32807
+#define ID_TOOLBAR_VIEW					32808
 #define ID_ACTIVESOURCE_SOURCE          32850
 #define ID_ACTIVESOURCE_DISASSOCIATEVP  32851
 #define ID_ACTIVESOURCE_ASSOCIATEVP     32852

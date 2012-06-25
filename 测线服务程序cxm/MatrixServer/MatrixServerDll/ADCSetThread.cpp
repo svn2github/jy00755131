@@ -265,6 +265,12 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = -45;
 				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 4;
 			}
+			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[8] = 0;
+			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[9] = 0;
+			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[10] = 0;
+			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[11] = 0;
+			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[12] = 0;
+			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[13] = 64;
 		}
 		else
 		{
