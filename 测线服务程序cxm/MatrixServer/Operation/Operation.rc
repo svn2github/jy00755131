@@ -74,15 +74,17 @@ IDI_ICON_ORANGE         ICON                    "res\\ico00002.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
-IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
+IDB_BITMAP_VPVIEW256    BITMAP                  "res\\bmpView256_1.bmp"
 IDB_BITMAP_ACTIVESOURCE BITMAP                  "res\\bitmap2.bmp"
 IDB_BITMAP_VP           BITMAP                  "res\\bitmap1.bmp"
 IDB_SERVER_CONNECTED    BITMAP                  "res\\icon1.bmp"
 IDB_SERVER_DISCONNECTED BITMAP                  "res\\bmp00001.bmp"
 IDR_SETUPBAR            BITMAP                  "res\\bmpSetupBar.bmp"
 IDB_BITMAP_SETUPBAR256  BITMAP                  "res\\bmpSetupBar256.bmp"
-IDB_BITMAP_VIEWBAR256   BITMAP                  "res\\bmpView256.bmp"
-IDR_VIEWBAR             BITMAP                  "res\\bmpView.bmp"
+IDB_BITMAP_VIEWBAR256   BITMAP                  "res\\bmpView256_2.bmp"
+IDR_VIEWBAR             BITMAP                  "res\\bmpView_2.bmp"
+IDR_VPVIEWBAR           BITMAP                  "D:\\海泰光电\\工作\\测线服务程序20111208\\MatrixServer\\Operation\\res\\bmpView_1.bmp"
+IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -92,48 +94,51 @@ IDR_VIEWBAR             BITMAP                  "res\\bmpView.bmp"
 IDR_MAINFRAME TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_FILE_OPEN
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_FILE_SAVE
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_FILE_PRINT_PREVIEW
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_FILE_PRINT
     SEPARATOR
     BUTTON      ID_APP_EXIT
 END
 
-IDR_SETUPBAR TOOLBAR 16, 16
+IDR_SETUPBAR TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_SETUP_SOURCE
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_SETUP_OPERATION
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_SETUP_PROCESSTYPE
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_SETUP_NOISEEDITING
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_SETUP_COMMENTS
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_SETUP_OPTIONS
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_SETUP_DELAYSETUP
-	SEPARATOR
+    SEPARATOR
     BUTTON      ID_SETUP_PREFERENCES
 END
 
-IDR_VIEWBAR TOOLBAR 25, 16
+IDR_VIEWBAR TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_VIEW_VPSOURCEBAR
+    SEPARATOR
+    BUTTON      ID_VIEW_GRAPHBAR
+    SEPARATOR
+    BUTTON      ID_VIEW_OPERATIONREPORTBAR
+END
+
+IDR_VPVIEWBAR TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_VIEW_ALLVPBAR
-	SEPARATOR
-    BUTTON      ID_VIEW_ACTIVESOURCEBAR
-	SEPARATOR
-    BUTTON      ID_VIEW_ACTIVEACQBAR
-	SEPARATOR
-    BUTTON      ID_VIEW_VPTODUBAR
-	SEPARATOR
+    BUTTON      ID_VIEW_VPTODOBAR
     BUTTON      ID_VIEW_VPDONEBAR
-	SEPARATOR
-    BUTTON      ID_VIEW_OPERATIONREPORTBAR
+    BUTTON      ID_VIEW_ACTIVESOURCEBAR
+    BUTTON      ID_VIEW_ACTIVEACQBAR
 END
 
 
@@ -208,6 +213,15 @@ BEGIN
     BEGIN
         MENUITEM "VP Selected",                 ID_VPSELECT_VPSELECTED
     END
+END
+
+IDR_POPUP_VPVIEW MENU
+BEGIN
+    MENUITEM "All VP",                      ID_VIEW_ALLVPBAR
+    MENUITEM "VP To Do",                    ID_VIEW_VPTODOBAR
+    MENUITEM "VP Done",                     ID_VIEW_VPDONEBAR
+    MENUITEM "Active Source",               ID_VIEW_ACTIVESOURCEBAR
+    MENUITEM "Active Acq",                  ID_VIEW_ACTIVEACQBAR
 END
 
 
@@ -482,7 +496,7 @@ BEGIN
     ID_VIEW_USER_TOOLBAR10  "显示或隐藏用户自定义工具栏\n切换用户工具栏"
     ID_VIEW_ACTIVESOURCEBAR "有效震源\nActiveSource"
     ID_VIEW_VPDONEBAR       "已经放炮的炮点\nVPDone"
-    ID_VIEW_VPTODUBAR       "等待放炮的炮点\nVPToDo"
+    ID_VIEW_VPTODOBAR       "等待放炮的炮点\nVPToDo"
 END
 
 STRINGTABLE
@@ -498,6 +512,10 @@ STRINGTABLE
 BEGIN
     ID_SETUP_DELAYSETUP     "延时设置\n延时"
     ID_VIEW_OPERATIONREPORTBAR "施工报告\nReport"
+    ID_VIEW_VPSOURCE        "炮点视图\nVP"
+    ID_VIEW_GRAPH           "绘图\nGraph"
+    ID_VIEW_VPSOURCEBAR     "施工视图\nVP View"
+    ID_VIEW_GRAPHBAR        "绘图\nGraph"
 END
 
 #endif    // 中文(简体，中国) resources

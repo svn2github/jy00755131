@@ -167,6 +167,21 @@
     <None Include="res\bmpView.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\bmpView2.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmpView256_2.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmpView_2.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmpView256_1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bmpView_1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Operation.rc">

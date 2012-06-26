@@ -155,7 +155,12 @@
     <None Include="res\bmpSetupBar.bmp" />
     <None Include="res\bmpSetupBar256.bmp" />
     <None Include="res\bmpView.bmp" />
+    <None Include="res\bmpView2.bmp" />
     <None Include="res\bmpView256.bmp" />
+    <None Include="res\bmpView256_1.bmp" />
+    <None Include="res\bmpView256_2.bmp" />
+    <None Include="res\bmpView_1.bmp" />
+    <None Include="res\bmpView_2.bmp" />
     <None Include="res\ico00001.ico" />
     <None Include="res\ico00002.ico" />
     <None Include="res\ico00003.ico" />

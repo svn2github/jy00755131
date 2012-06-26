@@ -72,7 +72,6 @@ int CActiveSourceBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create Grid View!\n");
 		return -1;
 	}
-
 	BCGP_GRID_COLOR_DATA clrData;
 	clrData = m_GridView.GetColorTheme();
 	clrData.m_clrBackground = ::GetSysColor(COLOR_3DFACE);

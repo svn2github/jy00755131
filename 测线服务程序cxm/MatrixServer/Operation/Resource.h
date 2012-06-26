@@ -11,7 +11,8 @@
 #define IDR_MAINFRAME                   128
 #define IDR_OperationTYPE               129
 #define IDR_POPUP_TOOLBAR               131
-#define IDB_TOOLBAR256                  151
+#define IDB_TOOLBAR256                  150
+#define IDB_BITMAP_VPVIEW256            151
 #define IDD_ACTIVESOURCEVIEW            160
 #define IDI_ICON_RED                    161
 #define IDI_ICON_GREEN                  162
@@ -26,6 +27,8 @@
 #define IDB_BITMAP_SETUPBAR256          175
 #define IDB_BITMAP_VIEWBAR256           176
 #define IDR_VIEWBAR                     177
+#define IDR_POPUP_VPVIEW                182
+#define IDR_VPVIEWBAR                   190
 #define IDC_COMPANY_URL                 1041
 #define IDC_BUTTONGO                    1053
 #define IDC_BUTTONSTOP                  1054
@@ -53,9 +56,9 @@
 #define ID_VIEW_ACTIVESOURCEBAR         32803
 #define ID_VIEW_OUTPUT                  32804
 #define ID_VIEW_VPDONEBAR               32805
-#define ID_VIEW_VPTODUBAR               32806
-#define ID_TOOLBAR_SETUP				32807
-#define ID_TOOLBAR_VIEW					32808
+#define ID_VIEW_VPTODOBAR               32806
+#define ID_TOOLBAR_SETUP                32807
+#define ID_TOOLBAR_VIEW                 32808
 #define ID_ACTIVESOURCE_SOURCE          32850
 #define ID_ACTIVESOURCE_DISASSOCIATEVP  32851
 #define ID_ACTIVESOURCE_ASSOCIATEVP     32852
@@ -73,6 +76,10 @@
 #define ID_SETUP_PREFERENCES            32865
 #define ID_VIEW_ACTIVEACQBAR            32868
 #define ID_VIEW_OPERATIONREPORTBAR      32869
+#define ID_VIEW_VPSOURCE                32870
+#define ID_VIEW_GRAPH                   32871
+#define ID_VIEW_VPSOURCEBAR             32877
+#define ID_VIEW_GRAPHBAR                32878
 #define ID_INDICATOR_CONNECT            59142
 #define IDS_CONNECTSERVER_ICON          59143
 
@@ -80,8 +87,8 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        179
-#define _APS_NEXT_COMMAND_VALUE         32870
+#define _APS_NEXT_RESOURCE_VALUE        195
+#define _APS_NEXT_COMMAND_VALUE         32879
 #define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           108
 #endif

@@ -80,32 +80,30 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndToolBarSetup.SetLockedSizes(CSize(16,16),CSize(16,16));
 	uiToolbarHotID = bIsHighColor ? IDB_BITMAP_SETUPBAR256 : 0;
-// 	if (!m_wndToolBarSetup.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
-// 		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-// 		!m_wndToolBarSetup.LoadToolBar(IDR_SETUPBAR, 0, 0, TRUE, 0, 0, uiToolbarHotID))
 	if (!m_wndToolBarSetup.Create(this,
 		WS_CHILD|WS_VISIBLE|CBRS_TOP|CBRS_TOOLTIPS|CBRS_FLYBY|CBRS_HIDE_INPLACE|CBRS_SIZE_DYNAMIC|
 		CBRS_GRIPPER | CBRS_BORDER_3D,
 		ID_TOOLBAR_SETUP) ||
-		!m_wndToolBarSetup.LoadToolBar (IDR_SETUPBAR))
+		!m_wndToolBarSetup.LoadToolBar (IDR_SETUPBAR, 0, 0, FALSE, 0, 0, uiToolbarHotID))
 	{
 		TRACE0("Failed to create toolbar\n");
 		return -1;      // fail to create
 	}
-	m_wndToolBarView.SetLockedSizes(CSize(25,16),CSize(25,16));
+//	m_wndToolBarView.SetLockedSizes(CSize(25,16),CSize(25,16));
 	uiToolbarHotID = bIsHighColor ? IDB_BITMAP_VIEWBAR256 : 0;
- 	if (!m_wndToolBarView.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
- 		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
- 		!m_wndToolBarView.LoadToolBar(IDR_VIEWBAR, 0, 0, TRUE, 0, 0, uiToolbarHotID))
-// 	if (!m_wndToolBarView.Create(this,
-// 		WS_CHILD|WS_VISIBLE|CBRS_TOP|CBRS_TOOLTIPS|CBRS_FLYBY|CBRS_HIDE_INPLACE|CBRS_SIZE_DYNAMIC|
-// 		CBRS_GRIPPER | CBRS_BORDER_3D,
-// 		ID_VIEW_TOOLBAR) ||
-// 		!m_wndToolBarSetup.LoadToolBar (IDR_VIEWBAR))
+	if (!m_wndToolBarView.Create(this,
+		WS_CHILD|WS_VISIBLE|CBRS_TOP|CBRS_TOOLTIPS|CBRS_FLYBY|CBRS_HIDE_INPLACE|CBRS_SIZE_DYNAMIC|
+		CBRS_GRIPPER | CBRS_BORDER_3D,
+		ID_TOOLBAR_VIEW) ||
+		!m_wndToolBarView.LoadToolBar (IDR_VIEWBAR, 0, 0, FALSE, 0, 0, uiToolbarHotID))
 	{
 		TRACE0("Failed to create toolbar\n");
 		return -1;      // fail to create
 	}
+
+	CBCGPToolBar::AddToolBarForImageCollection (IDR_VPVIEWBAR, 
+		bIsHighColor ? IDB_BITMAP_VPVIEW256 : 0);
+
 
 	if (!CreateStatusBar ())
 	{
@@ -123,13 +121,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 
-
-// 	CBitmap bmp;
-// 	bmp.LoadBitmap (IDB_BITMAP_VIEWBAR256);
-// 
-// 	CImageList m_imageList;
-// 	m_imageList.Create (25, 16, ILC_MASK | ILC_COLOR24, 0, 0);
-// 	m_imageList.Add (&bmp, RGB (192, 192, 192));
 	m_wndActiveSource.LoadActiveSources();
 	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (0, rectClient.bottom/6, rectClient.right-1, rectClient.bottom/3),
 		TRUE, ID_VIEW_ALLVPBAR,
@@ -148,7 +139,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndVPDone.LoadShotPoints();
 	if (!m_wndVPToDo.Create (_T("VP To Do"), this, CRect (0, rectClient.bottom/2, rectClient.right-1, rectClient.bottom*2/3),
-		TRUE, ID_VIEW_VPTODUBAR,
+		TRUE, ID_VIEW_VPTODOBAR,
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("Failed to create VP To Do bar\n");
@@ -169,9 +160,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	strToolbarTitle.LoadString (IDS_SETUP_TOOLBAR);
 	m_wndToolBarSetup.SetWindowText (strToolbarTitle);
-
-// 	strToolbarTitle.LoadString (IDS_VIEW_TOOLBAR);
-// 	m_wndToolBarView.SetWindowText (strToolbarTitle);
 
 	// TODO: Delete these three lines if you don't want the toolbar to be dockable
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
@@ -194,9 +182,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	DockControlBar(&m_wndVPDone);
 	DockControlBar(&m_wndVPToDo);
 	DockControlBar(&m_wndOutput);
+	// 添加自定义工具栏
 	m_wndToolBar.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
 	m_wndToolBarSetup.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
-//	m_wndToolBarView.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
+
 	// Allow user-defined toolbars operations:
 	InitUserToobars (NULL,
 					uiFirstUserToolBarId,
@@ -274,16 +263,20 @@ void CMainFrame::OnViewCustomize()
 	pDlgCust->Create ();
 }
 
-afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM /*wp*/,LPARAM)
+afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp,LPARAM)
 {
 	// TODO: reset toolbar with id = (UINT) wp to its initial state:
-	//
-	// UINT uiToolBarId = (UINT) wp;
-	// if (uiToolBarId == IDR_MAINFRAME)
-	// {
-	//		do something with m_wndToolBar
-	// }
 
+	UINT uiToolBarId = (UINT) wp;
+	if (uiToolBarId != IDR_VIEWBAR)
+	{
+		return 0;
+	}
+	CMenu menuViews;
+	menuViews.LoadMenu (IDR_POPUP_VPVIEW);
+	m_wndToolBarView.ReplaceButton (ID_VIEW_VPSOURCEBAR,
+		CBCGPToolbarMenuButton (ID_VIEW_VPSOURCEBAR, menuViews, 
+		CImageHash::GetImageOfCommand (ID_VIEW_VPSOURCEBAR), NULL));
 	return 0;
 }
  // RIBBON_APP

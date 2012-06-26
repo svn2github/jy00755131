@@ -31,12 +31,13 @@ BEGIN_MESSAGE_MAP(COperationView, CView)
 	ON_COMMAND(ID_SETUP_PREFERENCES, &COperationView::OnSetupPreferences)
 	ON_COMMAND(ID_VIEW_ALLVPBAR, &COperationView::OnViewAllVPBar)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_ALLVPBAR, &COperationView::OnUpdataViewAllVPBar)
-	ON_COMMAND(ID_VIEW_VPTODUBAR, &COperationView::OnViewVPToDoBar)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_VPTODUBAR, &COperationView::OnUpdataViewVPToDoBar)
+	ON_COMMAND(ID_VIEW_VPTODOBAR, &COperationView::OnViewVPToDoBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_VPTODOBAR, &COperationView::OnUpdataViewVPToDoBar)
 	ON_COMMAND(ID_VIEW_VPDONEBAR, &COperationView::OnViewVPDoneBar)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_VPDONEBAR, &COperationView::OnUpdataViewVPDoneBar)
 	ON_COMMAND(ID_VIEW_ACTIVESOURCEBAR, &COperationView::OnViewActiveSourceBar)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_ACTIVESOURCEBAR, &COperationView::OnUpdataViewActiveSourceBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_VPSOURCEBAR, &COperationView::OnUpdataViewVPSourceBar)
 END_MESSAGE_MAP()
 
 // COperationView construction/destruction
@@ -213,4 +214,9 @@ void COperationView::OnUpdataViewActiveSourceBar(CCmdUI *pCmdUI)
 {
 	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
 	pCmdUI->SetCheck(pMainFrame->m_wndActiveSource.IsVisible());
+}
+
+void COperationView::OnUpdataViewVPSourceBar(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(TRUE);
 }
