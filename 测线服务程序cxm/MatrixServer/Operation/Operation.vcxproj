@@ -114,6 +114,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActiveAcqBar.cpp" />
     <ClCompile Include="ActiveSourceCtrl.cpp" />
     <ClCompile Include="AllVPBar.cpp" />
     <ClCompile Include="ButtonItem.cpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="WorkSpaceBar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActiveAcqBar.h" />
     <ClInclude Include="ActiveSourceCtrl.h" />
     <ClInclude Include="AllVPBar.h" />
     <ClInclude Include="ButtonItem.h" />
@@ -151,6 +153,7 @@
   <ItemGroup>
     <None Include="res\bitmap1.bmp" />
     <None Include="res\bitmap2.bmp" />
+    <None Include="res\bitmap3.bmp" />
     <None Include="res\bmp00001.bmp" />
     <None Include="res\bmpSetupBar.bmp" />
     <None Include="res\bmpSetupBar256.bmp" />

@@ -368,25 +368,8 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		// 时间修正高位
 		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
 		// 在数据采集期间只针对未时统的仪器进行时统设置
-		if (bADCStartSample == true)
-		{
-			if (pInstrumentNext->m_iTimeSetReturnCount == 0)
-			{
-				// 时统设置次数加一
-				pInstrumentNext->m_iTimeSetCount++;
-				// 生成并发送时统设置帧
-				MakeInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, 
-					pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext);
-				SendInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, 
-					pTimeDelayThread->m_pThread->m_pConstVar);
-				str.Format(_T("发送时统设置帧时统修正高位为 0x%x，时统修正低位为 0x%x"), 
-					pInstrumentNext->m_uiTimeHigh, pInstrumentNext->m_uiTimeLow);
-				strOutPut += str;
-				strConv = (CStringA)strOutPut;
-				AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
-			}
-		}
-		else
+		if (((bADCStartSample == true) && (pInstrumentNext->m_iTimeSetReturnCount == 0))
+			|| (bADCStartSample == false))
 		{
 			// 时统设置次数加一
 			pInstrumentNext->m_iTimeSetCount++;
@@ -400,6 +383,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 			strOutPut += str;
 			strConv = (CStringA)strOutPut;
 			AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
+			OutputDebugString(strOutPut);
 		}
 		pInstrument = pInstrumentNext;
 	} while (pInstrumentNext != pRout->m_pTail);

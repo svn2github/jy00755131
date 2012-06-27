@@ -85,6 +85,7 @@ IDB_BITMAP_VIEWBAR256   BITMAP                  "res\\bmpView256_2.bmp"
 IDR_VIEWBAR             BITMAP                  "res\\bmpView_2.bmp"
 IDR_VPVIEWBAR           BITMAP                  "D:\\海泰光电\\工作\\测线服务程序20111208\\MatrixServer\\Operation\\res\\bmpView_1.bmp"
 IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
+IDB_BITMAP_ACQ          BITMAP                  "res\\bitmap3.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -513,7 +514,6 @@ BEGIN
     ID_SETUP_DELAYSETUP     "延时设置\n延时"
     ID_VIEW_OPERATIONREPORTBAR "施工报告\nReport"
     ID_VIEW_VPSOURCE        "炮点视图\nVP"
-    ID_VIEW_GRAPH           "绘图\nGraph"
     ID_VIEW_VPSOURCEBAR     "施工视图\nVP View"
     ID_VIEW_GRAPHBAR        "绘图\nGraph"
 END

@@ -29,6 +29,7 @@
 #define IDR_VIEWBAR                     177
 #define IDR_POPUP_VPVIEW                182
 #define IDR_VPVIEWBAR                   190
+#define IDB_BITMAP_ACQ                  195
 #define IDC_COMPANY_URL                 1041
 #define IDC_BUTTONGO                    1053
 #define IDC_BUTTONSTOP                  1054
@@ -77,7 +78,6 @@
 #define ID_VIEW_ACTIVEACQBAR            32868
 #define ID_VIEW_OPERATIONREPORTBAR      32869
 #define ID_VIEW_VPSOURCE                32870
-#define ID_VIEW_GRAPH                   32871
 #define ID_VIEW_VPSOURCEBAR             32877
 #define ID_VIEW_GRAPHBAR                32878
 #define ID_INDICATOR_CONNECT            59142
@@ -87,7 +87,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        195
+#define _APS_NEXT_RESOURCE_VALUE        196
 #define _APS_NEXT_COMMAND_VALUE         32879
 #define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           108

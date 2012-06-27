@@ -7,6 +7,7 @@
 #include "AllVPBar.h"
 #include "VPDoneBar.h"
 #include "VPToDoBar.h"
+#include "ActiveAcqBar.h"
 #include "OutputBar.h"
 class CMainFrame : public CBCGPFrameWnd
 {
@@ -44,6 +45,7 @@ public:
 	CAllVPBar				m_wndAllVP;
 	CVPDoneBar				m_wndVPDone;
 	CVPToDoBar				m_wndVPToDo;
+	CActiveAcqBar			m_wndActiveAcq;
 	CBCGPStatusBar			m_wndStatusBar;
 	CBitmap					m_bmpIconConnected;
 	CBitmap					m_bmpIconDisConnected;

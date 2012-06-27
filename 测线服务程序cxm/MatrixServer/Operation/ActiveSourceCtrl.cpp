@@ -55,6 +55,7 @@ BOOL CActiveSourceCtrl::CreateView(CWnd* pParent, CRect rect, CCreateContext* pC
 	}
 	GetDlgItem(IDC_EDIT_UPHOLE)->SetWindowText(_T("0.00"));
 	GetDlgItem(IDC_EDIT_TB)->SetWindowText(_T("0.00"));
+	GetDlgItem(IDC_BUTTONGO)->EnableWindow(TRUE);
 	m_oBlasterIconNoFire = AfxGetApp()->LoadIcon(IDI_ICON_RED);
 	m_oBlasterIconNormal = AfxGetApp()->LoadIcon(IDI_ICON_GREEN);
 	m_oBlasterIconWarning = AfxGetApp()->LoadIcon(IDI_ICON_ORANGE);
