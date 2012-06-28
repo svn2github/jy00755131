@@ -50,7 +50,6 @@ int CWorkSpaceBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// TODO: create your own tab windows here:
 	const DWORD dwViewStyle =	WS_CHILD | WS_VISIBLE | TVS_HASLINES | 
 								TVS_LINESATROOT | TVS_HASBUTTONS;
-
 	if (!m_GridView.Create(dwViewStyle, rectDummy, this, 1))
 	{
 		TRACE0("Failed to create Grid View!\n");

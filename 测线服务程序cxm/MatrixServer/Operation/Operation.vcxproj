@@ -118,11 +118,15 @@
     <ClCompile Include="ActiveSourceCtrl.cpp" />
     <ClCompile Include="AllVPBar.cpp" />
     <ClCompile Include="ButtonItem.cpp" />
+    <ClCompile Include="DlgSourceExploSetup.cpp" />
+    <ClCompile Include="DlgSourceTypeSetup.cpp" />
+    <ClCompile Include="DlgSourceVibroSetup.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Operation.cpp" />
     <ClCompile Include="OperationDoc.cpp" />
     <ClCompile Include="OperationView.cpp" />
     <ClCompile Include="OutputBar.cpp" />
+    <ClCompile Include="SetupGridCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -137,6 +141,9 @@
     <ClInclude Include="ActiveSourceCtrl.h" />
     <ClInclude Include="AllVPBar.h" />
     <ClInclude Include="ButtonItem.h" />
+    <ClInclude Include="DlgSourceExploSetup.h" />
+    <ClInclude Include="DlgSourceTypeSetup.h" />
+    <ClInclude Include="DlgSourceVibroSetup.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Operation.h" />
     <ClInclude Include="OperationDoc.h" />
@@ -144,6 +151,7 @@
     <ClInclude Include="OutputBar.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SetupGridCtrl.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="ActiveSourceBar.h" />
     <ClInclude Include="VPDoneBar.h" />

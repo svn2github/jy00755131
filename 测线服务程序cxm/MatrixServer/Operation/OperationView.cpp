@@ -3,10 +3,10 @@
 
 #include "stdafx.h"
 #include "Operation.h"
-
 #include "OperationDoc.h"
 #include "OperationView.h"
 #include "MainFrm.h"
+#include "DlgSourceTypeSetup.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -37,7 +37,11 @@ BEGIN_MESSAGE_MAP(COperationView, CView)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_VPDONEBAR, &COperationView::OnUpdataViewVPDoneBar)
 	ON_COMMAND(ID_VIEW_ACTIVESOURCEBAR, &COperationView::OnViewActiveSourceBar)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_ACTIVESOURCEBAR, &COperationView::OnUpdataViewActiveSourceBar)
+	ON_COMMAND(ID_VIEW_ACTIVEACQBAR, &COperationView::OnViewActiveAcqBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_ACTIVEACQBAR, &COperationView::OnUpdataViewActiveAcqBar)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_VPSOURCEBAR, &COperationView::OnUpdataViewVPSourceBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_GRAPHBAR, &COperationView::OnUpdataViewGraphBar)
+	ON_COMMAND(ID_VIEW_OPERATIONREPORTBAR, &COperationView::OnViewReportBar)
 END_MESSAGE_MAP()
 
 // COperationView construction/destruction
@@ -45,7 +49,6 @@ END_MESSAGE_MAP()
 COperationView::COperationView()
 {
 	// TODO: add construction code here
-
 }
 
 COperationView::~COperationView()
@@ -122,7 +125,8 @@ COperationDoc* COperationView::GetDocument() const // non-debug version is inlin
 void COperationView::OnSetupSource()
 {
 	// TODO: 在此添加命令处理程序代码
-	int itest = 0;
+	CDlgSourceTypeSetup dlg;
+	dlg.DoModal();
 }
 
 
@@ -216,7 +220,29 @@ void COperationView::OnUpdataViewActiveSourceBar(CCmdUI *pCmdUI)
 	pCmdUI->SetCheck(pMainFrame->m_wndActiveSource.IsVisible());
 }
 
+void COperationView::OnViewActiveAcqBar()
+{
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pMainFrame->ShowControlBar (&pMainFrame->m_wndActiveAcq, !(pMainFrame->m_wndActiveAcq.IsVisible()), FALSE, TRUE);
+}
+
+void COperationView::OnUpdataViewActiveAcqBar(CCmdUI *pCmdUI)
+{
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	pCmdUI->SetCheck(pMainFrame->m_wndActiveAcq.IsVisible());
+}
+
 void COperationView::OnUpdataViewVPSourceBar(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
+}
+
+void COperationView::OnUpdataViewGraphBar(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(TRUE);
+}
+
+void COperationView::OnViewReportBar(void)
+{
+
 }

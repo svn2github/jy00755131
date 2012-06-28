@@ -252,7 +252,6 @@ void CActiveSourceBar::LoadActiveSource(int iNb)
 	pRow->GetItem (11)->SetValue (1);
 	pRow->GetItem (12)->SetValue (2);
 	m_GridView.AddRow (pRow, FALSE );
-	pRow->SetData(1);
 }
 
 void CActiveSourceBar::OnActivesourceDisassociatevp()
@@ -280,5 +279,7 @@ void CActiveSourceBar::OnActivesourceCleanready()
 
 void CActiveSourceBar::OnProcRdyBtn(UINT id)
 {
-	int itest = 0;
+	int iPos = id - IDC_ACTIVESOURCE_BUTTON;
+	CBCGPGridRow* pRow = m_GridView.GetRow(iPos);
+	pRow->GetItem(1)->SetValue(_T("F"));
 }

@@ -57,6 +57,18 @@
     <ClCompile Include="ActiveAcqBar.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="DlgSourceTypeSetup.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSourceExploSetup.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgSourceVibroSetup.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SetupGridCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -105,6 +117,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ActiveAcqBar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSourceTypeSetup.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSourceExploSetup.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSourceVibroSetup.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SetupGridCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

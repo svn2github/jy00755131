@@ -113,7 +113,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CRect rectClient;
 	GetClientRect(rectClient);
-	if (!m_wndVPToDo.Create (_T("VP To Do"), this, CRect (0, 0, rectClient.right-1, rectClient.bottom*5/6),
+	if (!m_wndVPToDo.Create (_T("VP To Do"), this, CRect (0, 0, rectClient.right - 1, rectClient.bottom / 3),
 		TRUE, ID_VIEW_VPTODOBAR,
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
@@ -122,85 +122,40 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndVPToDo.LoadShotPoints();
 
-	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, 0, rectClient.right/2, rectClient.bottom/6),
+	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, rectClient.bottom / 3, rectClient.right/2, rectClient.bottom*8/15),
 		TRUE, ID_VIEW_ACTIVESOURCEBAR,
-		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("Failed to create Active Source bar\n");
 		return -1;      // fail to create
 	}
 	m_wndActiveSource.LoadActiveSources();
-	if (!m_wndActiveAcq.Create (_T("Active Acquisition"), this, CRect (0, 0, rectClient.right/2 - 1, rectClient.bottom/6),
+	if (!m_wndActiveAcq.Create (_T("Active Acquisition"), this, CRect (rectClient.right / 2, rectClient.bottom / 3, rectClient.right - 1, rectClient.bottom*8/15),
 		TRUE, ID_VIEW_ACTIVEACQBAR,
-		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("Failed to create All VP bar\n");
 		return -1;      // fail to create
 	}
 	m_wndActiveAcq.LoadAcqInfos();
-	if (!m_wndVPDone.Create (_T("VP Done"), this, CRect (0, 0, rectClient.right/2, rectClient.bottom/6),
+	if (!m_wndVPDone.Create (_T("VP Done"), this, CRect (0, rectClient.bottom*8/15, rectClient.right/2, rectClient.bottom*11/15),
 		TRUE, ID_VIEW_VPDONEBAR,
-		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("Failed to create VP Done bar\n");
 		return -1;      // fail to create
 	}
 	m_wndVPDone.LoadShotPoints();
-	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (0, 0, rectClient.right/2 - 1, rectClient.bottom/6),
+	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (rectClient.right/2, rectClient.bottom*8/15, rectClient.right - 1, rectClient.bottom*11/15),
 		TRUE, ID_VIEW_ALLVPBAR,
-		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("Failed to create All VP bar\n");
 		return -1;      // fail to create
 	}
 	m_wndAllVP.LoadShotPoints();
 
-
-// 	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, 0, rectClient.right/2, rectClient.bottom/5),
-// 		TRUE, ID_VIEW_ACTIVESOURCEBAR,
-// 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
-// 	{
-// 		TRACE0("Failed to create Active Source bar\n");
-// 		return -1;      // fail to create
-// 	}
-// 	m_wndActiveSource.LoadActiveSources();
-// 
-// 	if (!m_wndActiveAcq.Create (_T("Active Acquisition"), this, CRect (rectClient.right/2 + 1, 0, rectClient.right-1, rectClient.bottom/5),
-// 		TRUE, ID_VIEW_ACTIVEACQBAR,
-// 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-// 	{
-// 		TRACE0("Failed to create All VP bar\n");
-// 		return -1;      // fail to create
-// 	}
-// 	m_wndActiveAcq.LoadAcqInfos();
-// 
-// 	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (0, rectClient.bottom/6, rectClient.right-1, rectClient.bottom/3),
-// 		TRUE, ID_VIEW_ALLVPBAR,
-// 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
-// 	{
-// 		TRACE0("Failed to create All VP bar\n");
-// 		return -1;      // fail to create
-// 	}
-// 	m_wndAllVP.LoadShotPoints();
-// 
-// 	if (!m_wndVPDone.Create (_T("VP Done"), this, CRect (0, rectClient.bottom/3, rectClient.right-1, rectClient.bottom/2),
-// 		TRUE, ID_VIEW_VPDONEBAR,
-// 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
-// 	{
-// 		TRACE0("Failed to create VP Done bar\n");
-// 		return -1;      // fail to create
-// 	}
-// 	m_wndVPDone.LoadShotPoints();
-// 	if (!m_wndVPToDo.Create (_T("VP To Do"), this, CRect (0, rectClient.bottom/2, rectClient.right-1, rectClient.bottom*2/3),
-// 		TRUE, ID_VIEW_VPTODOBAR,
-// 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
-// 	{
-// 		TRACE0("Failed to create VP To Do bar\n");
-// 		return -1;      // fail to create
-// 	}
-// 	m_wndVPToDo.LoadShotPoints();
-
-	if (!m_wndOutput.Create (_T("Status Mail"), this, CSize (rectClient.right-1, rectClient.bottom/6),
+	if (!m_wndOutput.Create (_T("Status Mail"), this, CSize (rectClient.right-1, rectClient.bottom/5),
 		TRUE /* Has gripper */, ID_VIEW_OUTPUT,
 		WS_CHILD | WS_VISIBLE | CBRS_BOTTOM))
 	{
@@ -235,20 +190,18 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	DockControlBar(&m_wndToolBarSetup);
 	DockControlBarLeftOf(&m_wndToolBarView,&m_wndToolBarSetup);
 	DockControlBarLeftOf(&m_wndToolBar,&m_wndToolBarView);
-// 	DockControlBar(&m_wndActiveSource);
-// 	DockControlBar(&m_wndActiveAcq);
-// 	DockControlBar(&m_wndAllVP);
-// 	DockControlBar(&m_wndVPDone);
 	DockControlBar(&m_wndVPToDo);
-	m_wndActiveSource.DockToWindow (&m_wndVPToDo, CBRS_ALIGN_BOTTOM);
-	m_wndActiveAcq.DockToWindow (&m_wndActiveSource, CBRS_ALIGN_RIGHT);
- 	m_wndVPDone.DockToWindow(&m_wndVPToDo, CBRS_ALIGN_BOTTOM);
- 	m_wndAllVP.DockToWindow (&m_wndVPDone, CBRS_ALIGN_RIGHT);
+	DockControlBar(&m_wndActiveSource);
+	DockControlBar(&m_wndVPDone);
+	
+ 	m_wndActiveAcq.DockToWindow (&m_wndActiveSource, CBRS_ALIGN_RIGHT);
+  	m_wndAllVP.DockToWindow (&m_wndVPDone, CBRS_ALIGN_RIGHT);
 	DockControlBar(&m_wndOutput);
 	// 添加自定义工具栏
 	m_wndToolBar.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
-	m_wndToolBarSetup.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
 	m_wndToolBarView.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
+	m_wndToolBarSetup.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
+	
 	// Allow user-defined toolbars operations:
 	InitUserToobars (NULL,
 					uiFirstUserToolBarId,
