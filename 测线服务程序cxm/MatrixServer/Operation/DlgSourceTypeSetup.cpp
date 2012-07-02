@@ -37,7 +37,15 @@ END_MESSAGE_MAP()
 BOOL CDlgSourceTypeSetup::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
-	CRect rectTab;
+ 	CRect rectTab, rectWindow;
+	/** 将标题栏设置在居中位置，在前面添加空格*/
+// 	this->GetWindowRect(&rectWindow);
+// 	CString str;
+// 	CDC* pDC = GetDC();
+// 	GetWindowText(str);
+// 	int iStrWidth = pDC->GetTextExtent(str).cx;
+// 	int iSpaceWidth = pDC->GetTextExtent(_T(" ")).cx;
+// 	int iSpaceNum = rectWindow.Width() - iSpaceWidth
 	GetDlgItem(IDC_STATIC_TAB)->GetWindowRect (&rectTab);
 	ScreenToClient (&rectTab);
 

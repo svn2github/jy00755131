@@ -168,7 +168,7 @@ bool CActiveSourceBar::SetGridHead(void)
 {
 	if(!m_GridView.GetSafeHwnd())		
 		return false;
-	m_GridView.InsertColumn (0, _T(""), 40);
+	m_GridView.InsertColumn (0, _T("¿Ú"), 40);
 	m_GridView.InsertColumn (1, _T("Rdy"), 40);
 	m_GridView.InsertColumn (2, _T("Rdy VP"), 60);
 	m_GridView.SetHeaderAlign (2, HDF_LEFT);

@@ -82,7 +82,7 @@ bool CActiveAcqBar::SetGridHead(void)
 {
 	if(!m_GridView.GetSafeHwnd())		
 		return false;
-	m_GridView.InsertColumn (0, _T(""), 50);
+	m_GridView.InsertColumn (0, _T("¿Ú"), 50);
 	m_GridView.InsertColumn (1, _T("Shot#"), 150);
 	m_GridView.SetHeaderAlign (1, HDF_LEFT);
 	m_GridView.SetColumnAlign (1, HDF_RIGHT);

@@ -7,6 +7,7 @@
 #include "OperationView.h"
 #include "MainFrm.h"
 #include "DlgSourceTypeSetup.h"
+#include "DlgSourceShotSetup.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -133,6 +134,8 @@ void COperationView::OnSetupSource()
 void COperationView::OnSetupOperation()
 {
 	// TODO: 在此添加命令处理程序代码
+	CDlgSourceShotSetup dlg;
+	dlg.DoModal();
 }
 
 
