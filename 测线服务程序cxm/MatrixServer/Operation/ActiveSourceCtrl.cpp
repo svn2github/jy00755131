@@ -135,7 +135,7 @@ void CActiveSourceCtrl::OnInitialUpdate()
 }
 
 
-void CActiveSourceCtrl::OnDraw(CDC* /*pDC*/)
+void CActiveSourceCtrl::OnDraw(CDC* pDC)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	CRect rectClient, rectIcon;
@@ -151,13 +151,15 @@ void CActiveSourceCtrl::OnDraw(CDC* /*pDC*/)
 	{
 	case 1:
 		hIcon = m_oBlasterIconNoFire;
+		::DrawIconEx(pDC->m_hDC, rectIcon.left, rectIcon.top, hIcon, rectIcon.Width(), rectIcon.Height(), 0, NULL, DI_NORMAL);
 		break;
 	case 2:
 		hIcon = m_oBlasterIconNormal;
+		::DrawIconEx(pDC->m_hDC, rectIcon.left, rectIcon.top, hIcon, rectIcon.Width(), rectIcon.Height(), 0, NULL, DI_NORMAL);
 		break;
 	default:
 		hIcon = m_oBlasterIconWarning;
+		::DrawIconEx(pDC->m_hDC, rectIcon.left, rectIcon.top, hIcon, rectIcon.Width(), rectIcon.Height(), 0, NULL, DI_NORMAL);
 		break;
 	}
-	::DrawIconEx(GetDC()->m_hDC, rectIcon.left, rectIcon.top, hIcon, rectIcon.Width(), rectIcon.Height(), 0, NULL, DI_NORMAL);
 }

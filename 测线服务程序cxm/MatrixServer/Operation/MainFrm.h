@@ -40,6 +40,7 @@ protected:  // control bar embedded members
 	CBCGPToolBar			m_wndToolBarSetup;
 	CBCGPToolBar			m_wndToolBarView;
 	COutputBar				m_wndOutput;
+	CImageList				m_imagesBarView;
 public:
 	CActiveSourceBar		m_wndActiveSource;
 	CAllVPBar				m_wndAllVP;

@@ -157,3 +157,4 @@ void CWorkSpaceBar::OnDestroy()
 	// TODO: 在此处添加消息处理程序代码
 	m_GridView.RemoveAll();
 }
+

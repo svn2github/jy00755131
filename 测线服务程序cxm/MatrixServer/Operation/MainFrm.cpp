@@ -89,7 +89,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create toolbar\n");
 		return -1;      // fail to create
 	}
-//	m_wndToolBarView.SetLockedSizes(CSize(25,16),CSize(25,16));
 	uiToolbarHotID = bIsHighColor ? IDB_BITMAP_VIEWBAR256 : 0;
 	if (!m_wndToolBarView.Create(this,
 		WS_CHILD|WS_VISIBLE|CBRS_TOP|CBRS_TOOLTIPS|CBRS_FLYBY|CBRS_HIDE_INPLACE|CBRS_SIZE_DYNAMIC|
@@ -110,6 +109,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
 	}
+	m_imagesBarView.Create (IDB_BITMAP_VPVIEW256, 16, 0, RGB (255, 0, 255));
 
 	CRect rectClient;
 	GetClientRect(rectClient);
@@ -120,6 +120,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create VP To Do bar\n");
 		return -1;      // fail to create
 	}
+	m_wndVPToDo.SetIcon (m_imagesBarView.ExtractIcon (1), FALSE);
 	m_wndVPToDo.LoadShotPoints();
 
 	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, rectClient.bottom / 3, rectClient.right/2, rectClient.bottom*8/15),
@@ -129,6 +130,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create Active Source bar\n");
 		return -1;      // fail to create
 	}
+	m_wndActiveSource.SetIcon (m_imagesBarView.ExtractIcon (3), FALSE);
 	m_wndActiveSource.LoadActiveSources();
 	if (!m_wndActiveAcq.Create (_T("Active Acquisition"), this, CRect (rectClient.right / 2, rectClient.bottom / 3, rectClient.right - 1, rectClient.bottom*8/15),
 		TRUE, ID_VIEW_ACTIVEACQBAR,
@@ -137,6 +139,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create All VP bar\n");
 		return -1;      // fail to create
 	}
+	m_wndActiveAcq.SetIcon (m_imagesBarView.ExtractIcon (4), FALSE);
 	m_wndActiveAcq.LoadAcqInfos();
 	if (!m_wndVPDone.Create (_T("VP Done"), this, CRect (0, rectClient.bottom*8/15, rectClient.right/2, rectClient.bottom*11/15),
 		TRUE, ID_VIEW_VPDONEBAR,
@@ -145,6 +148,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create VP Done bar\n");
 		return -1;      // fail to create
 	}
+	m_wndVPDone.SetIcon (m_imagesBarView.ExtractIcon (2), FALSE);
 	m_wndVPDone.LoadShotPoints();
 	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (rectClient.right/2, rectClient.bottom*8/15, rectClient.right - 1, rectClient.bottom*11/15),
 		TRUE, ID_VIEW_ALLVPBAR,
@@ -153,6 +157,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create All VP bar\n");
 		return -1;      // fail to create
 	}
+	m_wndAllVP.SetIcon (m_imagesBarView.ExtractIcon (0), FALSE);
 	m_wndAllVP.LoadShotPoints();
 
 	if (!m_wndOutput.Create (_T("Status Mail"), this, CSize (rectClient.right-1, rectClient.bottom/5),

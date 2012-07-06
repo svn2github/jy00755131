@@ -83,7 +83,7 @@ IDR_SETUPBAR            BITMAP                  "res\\bmpSetupBar.bmp"
 IDB_BITMAP_SETUPBAR256  BITMAP                  "res\\bmpSetupBar256.bmp"
 IDB_BITMAP_VIEWBAR256   BITMAP                  "res\\bmpView256_2.bmp"
 IDR_VIEWBAR             BITMAP                  "res\\bmpView_2.bmp"
-IDR_VPVIEWBAR           BITMAP                  "D:\\海泰光电\\工作\\测线服务程序20111208\\MatrixServer\\Operation\\res\\bmpView_1.bmp"
+IDR_VPVIEWBAR           BITMAP                  "res\\bmpView_1.bmp"
 IDB_TOOLBAR256          BITMAP                  "res\\Toolbar256.bmp"
 IDB_BITMAP_ACQ          BITMAP                  "res\\bitmap3.bmp"
 
