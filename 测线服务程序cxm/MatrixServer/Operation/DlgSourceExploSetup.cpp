@@ -14,7 +14,7 @@ IMPLEMENT_DYNAMIC(CDlgSourceExploSetup, CBCGPDialog)
 CDlgSourceExploSetup::CDlgSourceExploSetup(CWnd* pParent /*=NULL*/)
 	: CBCGPDialog(CDlgSourceExploSetup::IDD, pParent)
 {
-	EnableVisualManagerStyle();
+//	EnableVisualManagerStyle();
 }
 
 CDlgSourceExploSetup::~CDlgSourceExploSetup()

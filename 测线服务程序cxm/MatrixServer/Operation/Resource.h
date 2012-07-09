@@ -34,6 +34,7 @@
 #define IDD_DIALOG_SOURCEEXPLO          197
 #define IDD_DIALOG_SOURCEVIBRO          198
 #define IDD_DIALOG_SOURCESHOTSETUP      199
+#define IDD_DIALOG_PROCESSSETUP         201
 #define IDC_COMPANY_URL                 1041
 #define IDC_BUTTONGO                    1053
 #define IDC_BUTTONSTOP                  1054
@@ -86,6 +87,25 @@
 #define IDC_STATIC_SUPERSPREAD          1091
 #define IDC_STATIC_PROCTYPE             1092
 #define IDC_BUTTON_REVERSE              1093
+#define IDC_RADIO_STANDARD              1095
+#define IDC_RADIO_ADVANCED              1096
+#define IDC_COMBO_PROCESSTYPESELECT     1097
+#define IDC_COMBO_PLUG                  1098
+#define IDC_COMBO_BOXTYPE               1099
+#define IDC_EDIT_SERIALNB               1100
+#define IDC_STATIC_TBWINDOW             1101
+#define IDC_EDIT_RECORDLENGTH           1102
+#define IDC_EDIT_TBWINDOW               1103
+#define IDC_EDIT_PEAKTIME               1104
+#define IDC_STATIC_PEAKTIME             1105
+#define IDC_CHECK_RAW                   1106
+#define IDC_STATIC_RAW                  1107
+#define IDC_STATIC_AUXGROUP             1108
+#define IDC_BUTTON1                     1109
+#define IDC_BUTTON2                     1110
+#define IDC_BUTTON3                     1111
+#define IDC_EDIT5                       1112
+#define IDC_CHECK2                      1113
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_TOOLBARS                32771
 #define ID_VIEW_ALLVPBAR                32792
@@ -162,9 +182,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        201
+#define _APS_NEXT_RESOURCE_VALUE        203
 #define _APS_NEXT_COMMAND_VALUE         32879
-#define _APS_NEXT_CONTROL_VALUE         1095
+#define _APS_NEXT_CONTROL_VALUE         1114
 #define _APS_NEXT_SYMED_VALUE           108
 #endif
 #endif

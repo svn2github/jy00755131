@@ -90,4 +90,3 @@ void CAllVPBar::LoadShotPoint(void)
 	pRow->GetItem (11)->SetValue (2);
 	m_GridView.AddRow (pRow, FALSE );
 }
-

@@ -118,6 +118,7 @@
     <ClCompile Include="ActiveSourceCtrl.cpp" />
     <ClCompile Include="AllVPBar.cpp" />
     <ClCompile Include="ButtonItem.cpp" />
+    <ClCompile Include="DlgProcessTypeSetup.cpp" />
     <ClCompile Include="DlgSourceExploSetup.cpp" />
     <ClCompile Include="DlgSourceShotSetup.cpp" />
     <ClCompile Include="DlgSourceTypeSetup.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="ActiveSourceCtrl.h" />
     <ClInclude Include="AllVPBar.h" />
     <ClInclude Include="ButtonItem.h" />
+    <ClInclude Include="DlgProcessTypeSetup.h" />
     <ClInclude Include="DlgSourceExploSetup.h" />
     <ClInclude Include="DlgSourceShotSetup.h" />
     <ClInclude Include="DlgSourceTypeSetup.h" />

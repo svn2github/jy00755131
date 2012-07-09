@@ -14,7 +14,7 @@ IMPLEMENT_DYNAMIC(CDlgSourceVibroSetup, CBCGPDialog)
 CDlgSourceVibroSetup::CDlgSourceVibroSetup(CWnd* pParent /*=NULL*/)
 	: CBCGPDialog(CDlgSourceVibroSetup::IDD, pParent)
 {
-	EnableVisualManagerStyle();
+//	EnableVisualManagerStyle();
 }
 
 CDlgSourceVibroSetup::~CDlgSourceVibroSetup()

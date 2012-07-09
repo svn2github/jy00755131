@@ -13,6 +13,5 @@ public:
 private:
 	// 载入单条炮点信息
 	void LoadShotPoint(void);
-
 };
 

@@ -113,7 +113,27 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CRect rectClient;
 	GetClientRect(rectClient);
-	if (!m_wndVPToDo.Create (_T("VP To Do"), this, CRect (0, 0, rectClient.right - 1, rectClient.bottom / 3),
+	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, 0, rectClient.right / 2, rectClient.bottom / 5),
+		TRUE, ID_VIEW_ACTIVESOURCEBAR,
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
+	{
+		TRACE0("Failed to create Active Source bar\n");
+		return -1;      // fail to create
+	}
+	m_wndActiveSource.SetIcon (m_imagesBarView.ExtractIcon (3), FALSE);
+	m_wndActiveSource.LoadActiveSources();
+
+	if (!m_wndActiveAcq.Create (_T("Active Acquisition"), this, CRect (rectClient.right / 2, 0, rectClient.right - 1, rectClient.bottom / 5),
+		TRUE, ID_VIEW_ACTIVEACQBAR,
+		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
+	{
+		TRACE0("Failed to create All VP bar\n");
+		return -1;      // fail to create
+	}
+	m_wndActiveAcq.SetIcon (m_imagesBarView.ExtractIcon (4), FALSE);
+	m_wndActiveAcq.LoadAcqInfos();
+
+	if (!m_wndVPToDo.Create (_T("VP To Do"), this, CRect (0, rectClient.bottom / 5, rectClient.right / 2, rectClient.bottom * 2 / 5),
 		TRUE, ID_VIEW_VPTODOBAR,
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
@@ -123,25 +143,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndVPToDo.SetIcon (m_imagesBarView.ExtractIcon (1), FALSE);
 	m_wndVPToDo.LoadShotPoints();
 
-	if (!m_wndActiveSource.Create (_T("Active Source"), this, CRect (0, rectClient.bottom / 3, rectClient.right/2, rectClient.bottom*8/15),
-		TRUE, ID_VIEW_ACTIVESOURCEBAR,
-		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
-	{
-		TRACE0("Failed to create Active Source bar\n");
-		return -1;      // fail to create
-	}
-	m_wndActiveSource.SetIcon (m_imagesBarView.ExtractIcon (3), FALSE);
-	m_wndActiveSource.LoadActiveSources();
-	if (!m_wndActiveAcq.Create (_T("Active Acquisition"), this, CRect (rectClient.right / 2, rectClient.bottom / 3, rectClient.right - 1, rectClient.bottom*8/15),
-		TRUE, ID_VIEW_ACTIVEACQBAR,
-		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
-	{
-		TRACE0("Failed to create All VP bar\n");
-		return -1;      // fail to create
-	}
-	m_wndActiveAcq.SetIcon (m_imagesBarView.ExtractIcon (4), FALSE);
-	m_wndActiveAcq.LoadAcqInfos();
-	if (!m_wndVPDone.Create (_T("VP Done"), this, CRect (0, rectClient.bottom*8/15, rectClient.right/2, rectClient.bottom*11/15),
+	if (!m_wndVPDone.Create (_T("VP Done"), this, CRect (rectClient.right / 2, rectClient.bottom / 5, rectClient.right - 1, rectClient.bottom * 2 / 5),
 		TRUE, ID_VIEW_VPDONEBAR,
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
@@ -150,7 +152,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndVPDone.SetIcon (m_imagesBarView.ExtractIcon (2), FALSE);
 	m_wndVPDone.LoadShotPoints();
-	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (rectClient.right/2, rectClient.bottom*8/15, rectClient.right - 1, rectClient.bottom*11/15),
+
+	if (!m_wndAllVP.Create (_T("All VP"), this, CRect (0, rectClient.bottom * 2 / 5, rectClient.right - 1, rectClient.bottom * 11 / 15),
 		TRUE, ID_VIEW_ALLVPBAR,
 		WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP | CBRS_FLOAT_MULTI))
 	{
@@ -167,7 +170,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create Status Mail bar\n");
 		return -1;      // fail to create
 	}
+	
 
+
+	
 	CString strToolbarTitle;
 	strToolbarTitle.LoadString (IDS_MAIN_TOOLBAR);
 	m_wndToolBar.SetWindowText (strToolbarTitle);
@@ -195,12 +201,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	DockControlBar(&m_wndToolBarSetup);
 	DockControlBarLeftOf(&m_wndToolBarView,&m_wndToolBarSetup);
 	DockControlBarLeftOf(&m_wndToolBar,&m_wndToolBarView);
-	DockControlBar(&m_wndVPToDo);
 	DockControlBar(&m_wndActiveSource);
-	DockControlBar(&m_wndVPDone);
-	
+	DockControlBar(&m_wndVPToDo);
+	DockControlBar(&m_wndAllVP);
  	m_wndActiveAcq.DockToWindow (&m_wndActiveSource, CBRS_ALIGN_RIGHT);
-  	m_wndAllVP.DockToWindow (&m_wndVPDone, CBRS_ALIGN_RIGHT);
+  	m_wndVPDone.DockToWindow (&m_wndVPToDo, CBRS_ALIGN_RIGHT);
 	DockControlBar(&m_wndOutput);
 	// 添加自定义工具栏
 	m_wndToolBar.EnableCustomizeButton (TRUE, ID_VIEW_CUSTOMIZE, _T("Customize..."));
@@ -225,8 +230,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CBCGPDockManager::SetDockMode (BCGP_DT_SMART);
 	// VISUAL_MANAGER
 	RecalcLayout();
- 
-
+	ShowControlBar (&m_wndActiveAcq, FALSE, FALSE, TRUE);
+	ShowControlBar (&m_wndVPToDo, FALSE, FALSE, TRUE);
+	ShowControlBar (&m_wndVPDone, FALSE, FALSE, TRUE);
 	return 0;
 }
 

@@ -19,7 +19,6 @@ BEGIN_MESSAGE_MAP(CWorkSpaceBar, CBCGPDockingControlBar)
 	//{{AFX_MSG_MAP(CWorkSpaceBar)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
-//	ON_WM_PAINT()
 	//}}AFX_MSG_MAP
 	ON_WM_CONTEXTMENU()
 	ON_WM_DESTROY()
@@ -85,19 +84,6 @@ void CWorkSpaceBar::OnSize(UINT nType, int cx, int cy)
 		m_GridView.SetWindowPos (NULL, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 	}
 }
-
-// void CWorkSpaceBar::OnPaint() 
-// {
-// 	CPaintDC dc(this); // device context for painting
-// 	
-// 	CRect rectTree;
-// 	m_wndTree.GetWindowRect (rectTree);
-// 	ScreenToClient (rectTree);
-// 
-// 	rectTree.InflateRect (nBorderSize, nBorderSize);
-// 	dc.Draw3dRect (rectTree,	::GetSysColor (COLOR_3DSHADOW), 
-// 								::GetSysColor (COLOR_3DSHADOW));
-// }
 
 // 重载右键菜单的WM_CONTEXTMENU消息响应函数
 void CWorkSpaceBar::OnContextMenu(CWnd* pWnd, CPoint point)

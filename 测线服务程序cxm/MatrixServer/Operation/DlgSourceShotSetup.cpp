@@ -14,7 +14,7 @@ IMPLEMENT_DYNAMIC(CDlgSourceShotSetup, CBCGPDialog)
 CDlgSourceShotSetup::CDlgSourceShotSetup(CWnd* pParent /*=NULL*/)
 	: CBCGPDialog(CDlgSourceShotSetup::IDD, pParent)
 {
-	EnableVisualManagerStyle();
+//	EnableVisualManagerStyle();
 }
 
 CDlgSourceShotSetup::~CDlgSourceShotSetup()

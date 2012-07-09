@@ -53,7 +53,6 @@ public:
 public:
 	// ี๐ิดIDสýื้
 	int m_iActiveSourceID[ActiveSourceNumLimit];
-/*	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);*/
 };
 
 /////////////////////////////////////////////////////////////////////////////

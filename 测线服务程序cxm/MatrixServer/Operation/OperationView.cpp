@@ -8,6 +8,7 @@
 #include "MainFrm.h"
 #include "DlgSourceTypeSetup.h"
 #include "DlgSourceShotSetup.h"
+#include "DlgProcessTypeSetup.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -142,6 +143,8 @@ void COperationView::OnSetupOperation()
 void COperationView::OnSetupProcesstype()
 {
 	// TODO: 在此添加命令处理程序代码
+	CDlgProcessTypeSetup dlg;
+	dlg.DoModal();
 }
 
 

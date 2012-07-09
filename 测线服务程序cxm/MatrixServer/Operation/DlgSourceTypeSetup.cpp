@@ -14,7 +14,7 @@ IMPLEMENT_DYNAMIC(CDlgSourceTypeSetup, CBCGPDialog)
 CDlgSourceTypeSetup::CDlgSourceTypeSetup(CWnd* pParent /*=NULL*/)
 	: CBCGPDialog(CDlgSourceTypeSetup::IDD, pParent)
 {
-	EnableVisualManagerStyle();
+//	EnableVisualManagerStyle();
 }
 
 CDlgSourceTypeSetup::~CDlgSourceTypeSetup()
@@ -37,15 +37,7 @@ END_MESSAGE_MAP()
 BOOL CDlgSourceTypeSetup::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
- 	CRect rectTab, rectWindow;
-	/** 将标题栏设置在居中位置，在前面添加空格*/
-// 	this->GetWindowRect(&rectWindow);
-// 	CString str;
-// 	CDC* pDC = GetDC();
-// 	GetWindowText(str);
-// 	int iStrWidth = pDC->GetTextExtent(str).cx;
-// 	int iSpaceWidth = pDC->GetTextExtent(_T(" ")).cx;
-// 	int iSpaceNum = rectWindow.Width() - iSpaceWidth
+ 	CRect rectTab;
 	GetDlgItem(IDC_STATIC_TAB)->GetWindowRect (&rectTab);
 	ScreenToClient (&rectTab);
 
@@ -65,6 +57,22 @@ BOOL CDlgSourceTypeSetup::OnInitDialog()
 	m_wndTab.SetFlatFrame(FALSE,TRUE);
 	m_wndTab.RecalcLayout ();
 	m_wndTab.RedrawWindow ();
+	/** 将标题栏设置在居中位置，在前面添加空格*/
+// 	CString str;
+// 	CString strOut = _T("");
+// 	CDC* pDC = GetDC();
+// 	CSize winSize = pDC->GetWindowExt();
+// 	GetWindowText(str);
+// 	int iStrWidth = pDC->GetTextExtent(str).cx;
+// 	int iSpaceWidth = pDC->GetTextExtent(_T(" ")).cx;
+// 	int iSpaceNum = (winSize.cx - iStrWidth) / iSpaceWidth;
+// 	iSpaceNum /= 2;
+// 	for (int i=0; i<iSpaceNum; i++)
+// 	{
+// 		strOut += _T(" ");
+// 	}
+// 	strOut += str;
+// 	SetWindowText(strOut);
 	return TRUE;
 }
 
@@ -78,3 +86,5 @@ void CDlgSourceTypeSetup::OnBnClickedButtonReset()
 {
 	// TODO: 在此添加控件通知处理程序代码
 }
+
+
