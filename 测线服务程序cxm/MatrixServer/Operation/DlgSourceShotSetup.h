@@ -29,4 +29,5 @@ public:
 	afx_msg void OnBnClickedButtonApply();
 	afx_msg void OnBnClickedButtonReset();
 	virtual BOOL OnInitDialog();
+	afx_msg void OnDestroy();
 };

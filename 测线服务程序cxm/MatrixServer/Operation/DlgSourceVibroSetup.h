@@ -26,4 +26,5 @@ public:
 	afx_msg void OnBnClickedButtonAdd();
 	afx_msg void OnBnClickedButtonChange();
 	afx_msg void OnBnClickedButtonDelete();
+	afx_msg void OnDestroy();
 };

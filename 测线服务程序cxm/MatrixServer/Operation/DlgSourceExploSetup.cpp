@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(CDlgSourceExploSetup, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BUTTON_ADD, &CDlgSourceExploSetup::OnBnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON_CHANGE, &CDlgSourceExploSetup::OnBnClickedButtonChange)
 	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CDlgSourceExploSetup::OnBnClickedButtonDelete)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -67,7 +68,6 @@ BOOL CDlgSourceExploSetup::OnInitDialog()
 	m_wndListGrid.InsertColumn (2, _T("Shooter Nb"), iShooterNbWidth);
 	m_wndListGrid.InsertColumn (3, _T("Incr Nb"), iIncrNbWidth);
 	m_wndListGrid.InsertColumn (4, _T("Comment"), iCommentWidth);
-
 	for(int i=0;i<5;i++)
 	{
 		m_wndEditGrid.SetColumnLocked(i,TRUE);
@@ -93,4 +93,14 @@ void CDlgSourceExploSetup::OnBnClickedButtonChange()
 void CDlgSourceExploSetup::OnBnClickedButtonDelete()
 {
 	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CDlgSourceExploSetup::OnDestroy()
+{
+	CBCGPDialog::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	m_wndEditGrid.RemoveAll();
+	m_wndListGrid.RemoveAll();
 }

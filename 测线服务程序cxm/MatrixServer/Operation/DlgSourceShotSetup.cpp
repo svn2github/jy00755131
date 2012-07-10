@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CDlgSourceShotSetup, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BUTTON_REVERSE, &CDlgSourceShotSetup::OnBnClickedButtonReverse)
 	ON_BN_CLICKED(IDC_BUTTON_APPLY, &CDlgSourceShotSetup::OnBnClickedButtonApply)
 	ON_BN_CLICKED(IDC_BUTTON_RESET, &CDlgSourceShotSetup::OnBnClickedButtonReset)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -156,3 +157,13 @@ void CDlgSourceShotSetup::OnBnClickedButtonReset()
 
 
 
+
+
+void CDlgSourceShotSetup::OnDestroy()
+{
+	CBCGPDialog::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	m_wndEditGrid.RemoveAll();
+	m_wndListGrid.RemoveAll();
+}

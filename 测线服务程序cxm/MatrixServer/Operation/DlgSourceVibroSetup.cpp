@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(CDlgSourceVibroSetup, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BUTTON_ADD, &CDlgSourceVibroSetup::OnBnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON_CHANGE, &CDlgSourceVibroSetup::OnBnClickedButtonChange)
 	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CDlgSourceVibroSetup::OnBnClickedButtonDelete)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -100,4 +101,14 @@ void CDlgSourceVibroSetup::OnBnClickedButtonChange()
 void CDlgSourceVibroSetup::OnBnClickedButtonDelete()
 {
 	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CDlgSourceVibroSetup::OnDestroy()
+{
+	CBCGPDialog::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	m_wndEditGrid.RemoveAll();
+	m_wndListGrid.RemoveAll();
 }

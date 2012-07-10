@@ -1,14 +1,6 @@
 #pragma once
-// 数据处理对象类型
-#define PROCESS_IMPULSIVE		0		// 脉冲
-#define PROCESS_STACKIMPULSIVE	1		// 脉冲叠加
-#define PROCESS_CORRELAFTER		2		// 叠加后相关
-#define PROCESS_CORRELBEFORE	3		// 叠加前相关
-#define PROCESS_STACK			4		// 可控震源地震叠加
-// 处理设置选项
-#define PROCESS_STANDARD		0		// 标准
-#define PROCESS_ADVANCE			1		// 高级
-
+#include "Parameter.h"
+#include "SetupGridCtrl.h"
 // CDlgProcessTypeSetup 对话框
 
 class CDlgProcessTypeSetup : public CBCGPDialog
@@ -27,11 +19,58 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	// 处理类型选项
-	int m_radioProcessSetup;
+	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedRadioStandard();
 	afx_msg void OnBnClickedRadioAdvanced();
+	afx_msg void OnCbnSelchangeComboProcesstypeselect();
+	afx_msg void OnBnClickedButtonAuxAdd();
+	afx_msg void OnBnClickedButtonAuxChange();
+	afx_msg void OnBnClickedButtonAuxDelete();
+	afx_msg void OnBnClickedButtonAcqAdd();
+	afx_msg void OnBnClickedButtonAcqChange();
+	afx_msg void OnBnClickedButtonAcqDelete();
+	afx_msg void OnBnClickedButtonProAdd();
+	afx_msg void OnBnClickedButtonProChange();
+	afx_msg void OnBnClickedButtonProDelete();
+	afx_msg void OnBnClickedButtonApply();
+	afx_msg void OnBnClickedButtonReset();
+	afx_msg void OnDestroy();
+public:
+	// 处理类型选项
+	int m_radioProcessSetup;
 	// 处理类型选择
 	int m_cbindexProcessType;
-	afx_msg void OnCbnSelchangeComboProcesstypeselect();
+	// Plug选项的数值变量
+	int m_cbindexPlug;
+	// 设备类型选项的数值变量
+	int m_cbindexBoxType;
+	// 串号的数值变量
+	int m_editindexSerialNb;
+	// 记录时间数值变量
+	int m_editindexRecordLength;
+	// TB时间窗口的数值变量
+	int m_editindexTBWindow;
+	// PeakTime的数值变量
+	int m_editindexPeakTime;
+	// Raw的布尔型变量
+	BOOL m_bCheckRaw;
+	// CorrelWith的字符串变量
+	CString m_strCorrelWith;
+	// AuxesFromDSD的布尔型变量
+	BOOL m_bAuxesFromDSD;
+public:
+	CGridCtrlList		m_wndAuxListGrid;
+	CGridCtrlEdit		m_wndAuxEditGrid;
+	CGridCtrlList		m_wndAcqListGrid;
+	CGridCtrlEdit		m_wndAcqEditGrid;
+	CGridCtrlList		m_wndProTypeListGrid;
+	CGridCtrlEdit		m_wndProTypeEditGrid;
+	// 显示处理类型窗口
+	void OnShowProcessTypeWindow(int iProcessType);
+	// 显示Aux窗口
+	void OnShowAuxWindow(void);
+	// 显示Process Type窗口
+	void OnShowProTypeWindow(void);
+	// 设置Impulsive处理类型控件的位置
+	void SetProcessImpulsiveCtrlsRect(void);
 };
