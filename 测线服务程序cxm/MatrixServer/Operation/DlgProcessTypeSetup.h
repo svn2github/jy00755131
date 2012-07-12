@@ -65,12 +65,67 @@ public:
 	CGridCtrlEdit		m_wndAcqEditGrid;
 	CGridCtrlList		m_wndProTypeListGrid;
 	CGridCtrlEdit		m_wndProTypeEditGrid;
+	// ProType控件显示
+	typedef struct ProTypeControls
+	{
+		// IDC_STATIC_TBWINDOW
+		bool m_bTbWindow;
+		// IDC_STATIC_PEAKTIME
+		bool m_bPeakTime;
+		// IDC_STATIC_RAW
+		bool m_bRaw;
+	}m_oProTypeControls;
+	m_oProTypeControls m_oProTypeControlsShow;
+	// Aux控件显示
+	typedef struct AuxControls
+	{
+		// IDC_STATIC_AUX_COR
+		bool m_bAuxCor;
+		// IDC_CHECK_AUX
+		bool m_bAuxCheck;
+	}m_oAuxControls;
+	m_oAuxControls m_oAuxControlsShow;
+	// Acq控件显示
+	typedef struct AcqControls
+	{
+		// IDC_STATIC_ACQGROUP
+		bool m_bAcqGroup;
+		// IDC_STATIC_ACQ
+		bool m_bAcq;
+		// IDC_STATIC_ACQNB
+		bool m_bAcqNb;
+		// IDC_STATIC_ACQTYPE
+		bool m_bAcqType;
+		// IDC_STATIC_ACQSIGNSTACK
+		bool m_bAcqSignStack;
+		// IDC_STATIC_ACQOUTPUT
+		bool m_bAcqOutput;
+		// IDC_STATIC_ACQ_GRID_EDIT
+		bool m_bAcqGridEdit;
+		// IDC_STATIC_ACQ_GRID
+		bool m_bAcqGridList;
+		// IDC_BUTTON_ACQ_ADD,IDC_BUTTON_ACQ_CHANGE,IDC_BUTTON_ACQ_DELETE
+		bool m_bAcqEdit;
+	}m_oAcqControls;
+	m_oAcqControls m_oAcqControlsShow;
+	// 显示控件
+	void OnShowControls(void);
+	// 依据左边界设置控件位置和尺寸
+	void OnSetControlsLocationByLeftPos(int ID, int iLeftPos);
+	// 依据右边界设置控件位置和尺寸
+	void OnSetControlsLocationByRightPos(int ID, int iRightPos);
+	// 显示处理类型控件
+	void OnShowProTypeControls(void);
+	// 显示Aux控件
+	void OnShowAuxControls(void);
+	// 显示Acq控件
+	void OnShowAcqControls(void);
 	// 显示处理类型窗口
 	void OnShowProcessTypeWindow(int iProcessType);
 	// 显示Aux窗口
 	void OnShowAuxWindow(void);
+	// 显示Aux窗口
+	void OnShowAcqWindow(void);
 	// 显示Process Type窗口
 	void OnShowProTypeWindow(void);
-	// 设置Impulsive处理类型控件的位置
-	void SetProcessImpulsiveCtrlsRect(void);
 };

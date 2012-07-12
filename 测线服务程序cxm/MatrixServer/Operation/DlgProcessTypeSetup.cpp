@@ -74,9 +74,29 @@ BOOL CDlgProcessTypeSetup::OnInitDialog()
 	CBCGPDialog::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	OnShowAuxWindow();
-	OnShowProTypeWindow();
+	CRect rectGrid;
+	GetDlgItem(IDC_STATIC_AUX_GRID_EDIT)->GetWindowRect (&rectGrid);
+	ScreenToClient (&rectGrid);
+	m_wndAuxEditGrid.CreateGrid(rectGrid,this);
+	GetDlgItem(IDC_STATIC_AUX_GRID)->GetWindowRect (&rectGrid);
+	ScreenToClient (&rectGrid);
+	m_wndAuxListGrid.CreateGrid(rectGrid,this);
+	GetDlgItem(IDC_STATIC_PRO_GRID_EDIT)->GetWindowRect (&rectGrid);
+	ScreenToClient (&rectGrid);
+	m_wndProTypeEditGrid.CreateGrid(rectGrid,this);
+	GetDlgItem(IDC_STATIC_PRO_GRID)->GetWindowRect (&rectGrid);
+	ScreenToClient (&rectGrid);
+	m_wndProTypeListGrid.CreateGrid(rectGrid,this);
+
+	GetDlgItem(IDC_STATIC_ACQ_GRID_EDIT)->GetWindowRect (&rectGrid);
+	ScreenToClient (&rectGrid);
+	m_wndAcqEditGrid.CreateGrid(rectGrid,this);
+	GetDlgItem(IDC_STATIC_ACQ_GRID)->GetWindowRect (&rectGrid);
+	ScreenToClient (&rectGrid);
+	m_wndAcqListGrid.CreateGrid(rectGrid,this);
+
 	OnShowProcessTypeWindow(PROCESS_IMPULSIVE);
+	OnShowProTypeWindow();
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }
@@ -189,68 +209,126 @@ void CDlgProcessTypeSetup::OnDestroy()
 // 显示处理类型窗口
 void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 {
-	CRect rectAux, rectAcq;
 	switch(iProcessType)
 	{
 	case PROCESS_IMPULSIVE:
-		GetDlgItem(IDC_STATIC_RAW)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_CHECK_RAW)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_PEAKTIME)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_EDIT_PEAKTIME)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_TBWINDOW)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_EDIT_TBWINDOW)->ShowWindow(SW_SHOW);
-		GetDlgItem(IDC_STATIC_AUX_COR)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_EDIT_AUX_COR)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_CHECK_AUX)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_ACQGROUP)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_ACQ)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_ACQNB)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_ACQTYPE)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_ACQSIGNSTACK)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_ACQOUTPUT)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_ACQ_GRID_EDIT)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_ACQ_GRID)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_ACQ_ADD)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_ACQ_CHANGE)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_BUTTON_ACQ_DELETE)->ShowWindow(SW_HIDE);
-		SetProcessImpulsiveCtrlsRect();
+		m_oProTypeControlsShow.m_bTbWindow = true;
+		m_oProTypeControlsShow.m_bPeakTime = false;
+		m_oProTypeControlsShow.m_bRaw = false;
+
+		m_oAuxControlsShow.m_bAuxCor = false;
+		m_oAuxControlsShow.m_bAuxCheck = false;
+
+		m_oAcqControlsShow.m_bAcqGroup = false;
+		m_oAcqControlsShow.m_bAcq = false;
+		m_oAcqControlsShow.m_bAcqNb = false;
+		m_oAcqControlsShow.m_bAcqType = false;
+		m_oAcqControlsShow.m_bAcqSignStack = false;
+		m_oAcqControlsShow.m_bAcqOutput = false;
+		m_oAcqControlsShow.m_bAcqGridEdit = false;
+		m_oAcqControlsShow.m_bAcqGridList = false;
+		m_oAcqControlsShow.m_bAcqEdit = false;
 		break;
 	case PROCESS_STACKIMPULSIVE:
+		m_oProTypeControlsShow.m_bTbWindow = true;
+		m_oProTypeControlsShow.m_bPeakTime = false;
+		m_oProTypeControlsShow.m_bRaw = true;
+
+		m_oAuxControlsShow.m_bAuxCor = false;
+		m_oAuxControlsShow.m_bAuxCheck = false;
+
+		m_oAcqControlsShow.m_bAcqGroup = true;
+		m_oAcqControlsShow.m_bAcq = true;
+		m_oAcqControlsShow.m_bAcqNb = true;
+		m_oAcqControlsShow.m_bAcqType = false;
+		m_oAcqControlsShow.m_bAcqSignStack = false;
+		m_oAcqControlsShow.m_bAcqOutput = true;
+		m_oAcqControlsShow.m_bAcqGridEdit = true;
+		m_oAcqControlsShow.m_bAcqGridList = true;
+		m_oAcqControlsShow.m_bAcqEdit = true;
+//		ReSetProStackImpulsiveCtrlsRect();
 		break;
 	case PROCESS_CORRELAFTER:
+		m_oProTypeControlsShow.m_bTbWindow = false;
+		m_oProTypeControlsShow.m_bPeakTime = true;
+		m_oProTypeControlsShow.m_bRaw = true;
+
+		m_oAuxControlsShow.m_bAuxCor = true;
+		m_oAuxControlsShow.m_bAuxCheck = true;
+
+		m_oAcqControlsShow.m_bAcqGroup = true;
+		m_oAcqControlsShow.m_bAcq = true;
+		m_oAcqControlsShow.m_bAcqNb = true;
+		m_oAcqControlsShow.m_bAcqType = true;
+		m_oAcqControlsShow.m_bAcqSignStack = true;
+		m_oAcqControlsShow.m_bAcqOutput = true;
+		m_oAcqControlsShow.m_bAcqGridEdit = true;
+		m_oAcqControlsShow.m_bAcqGridList = true;
+		m_oAcqControlsShow.m_bAcqEdit = true;
 		break;
 	case PROCESS_CORRELBEFORE:
+		m_oProTypeControlsShow.m_bTbWindow = false;
+		m_oProTypeControlsShow.m_bPeakTime = true;
+		m_oProTypeControlsShow.m_bRaw = true;
+
+		m_oAuxControlsShow.m_bAuxCor = true;
+		m_oAuxControlsShow.m_bAuxCheck = true;
+
+		m_oAcqControlsShow.m_bAcqGroup = true;
+		m_oAcqControlsShow.m_bAcq = true;
+		m_oAcqControlsShow.m_bAcqNb = true;
+		m_oAcqControlsShow.m_bAcqType = true;
+		m_oAcqControlsShow.m_bAcqSignStack = false;
+		m_oAcqControlsShow.m_bAcqOutput = true;
+		m_oAcqControlsShow.m_bAcqGridEdit = true;
+		m_oAcqControlsShow.m_bAcqGridList = true;
+		m_oAcqControlsShow.m_bAcqEdit = true;
 		break;
 	case PROCESS_STACK:
+		m_oProTypeControlsShow.m_bTbWindow = false;
+		m_oProTypeControlsShow.m_bPeakTime = false;
+		m_oProTypeControlsShow.m_bRaw = true;
+
+		m_oAuxControlsShow.m_bAuxCor = false;
+		m_oAuxControlsShow.m_bAuxCheck = true;
+
+		m_oAcqControlsShow.m_bAcqGroup = true;
+		m_oAcqControlsShow.m_bAcq = true;
+		m_oAcqControlsShow.m_bAcqNb = true;
+		m_oAcqControlsShow.m_bAcqType = true;
+		m_oAcqControlsShow.m_bAcqSignStack = true;
+		m_oAcqControlsShow.m_bAcqOutput = true;
+		m_oAcqControlsShow.m_bAcqGridEdit = true;
+		m_oAcqControlsShow.m_bAcqGridList = true;
+		m_oAcqControlsShow.m_bAcqEdit = true;
 		break;
 	default:
 		break;
 	}
+	OnShowControls();
+	OnShowAcqWindow();
+	OnShowAuxWindow();
 }
 
 
 // 显示Aux窗口
 void CDlgProcessTypeSetup::OnShowAuxWindow(void)
 {
+
+	CRect rect;
+	int iNbWidth, iProcessingWidth;
+	m_wndAuxEditGrid.DeleteAllColumns();
+	m_wndAuxListGrid.DeleteAllColumns();
 	m_wndAuxEditGrid.RemoveAll();
 	m_wndAuxListGrid.RemoveAll();
-	CRect rectGrid;
-	int iNbWidth, iProcessingWidth;
-	GetDlgItem(IDC_STATIC_AUX_GRID_EDIT)->GetWindowRect (&rectGrid);
-	ScreenToClient (&rectGrid);
-	m_wndAuxEditGrid.CreateGrid(rectGrid,this);
-	GetDlgItem(IDC_STATIC_AUXNB)->GetWindowRect (&rectGrid);
-	iNbWidth = rectGrid.Width();
-	GetDlgItem(IDC_STATIC_AUXPRO)->GetWindowRect (&rectGrid);
-	iProcessingWidth = rectGrid.Width();
+	GetDlgItem(IDC_STATIC_AUXNB)->GetWindowRect (&rect);
+	iNbWidth = rect.Width();
+	GetDlgItem(IDC_STATIC_AUXPRO)->GetWindowRect (&rect);
+	iProcessingWidth = rect.Width();
 	m_wndAuxEditGrid.InsertColumn (0, _T("Nb"), iNbWidth);
-	m_wndAuxEditGrid.InsertColumn (1, _T("Processing"), iProcessingWidth);
-
-	GetDlgItem(IDC_STATIC_AUX_GRID)->GetWindowRect (&rectGrid);
-	ScreenToClient (&rectGrid);
-	m_wndAuxListGrid.CreateGrid(rectGrid,this);
 	m_wndAuxListGrid.InsertColumn (0, _T("Nb"), iNbWidth);
-	m_wndAuxListGrid.InsertColumn (1, _T("Processing"), iProcessingWidth);
+	m_wndAuxEditGrid.InsertColumn (1, _T("Processing"), iProcessingWidth-1);
+	m_wndAuxListGrid.InsertColumn (1, _T("Processing"), iProcessingWidth-1);
 	for(int i=0;i<2;i++)
 	{
 		m_wndAuxEditGrid.SetColumnLocked(i,TRUE);
@@ -260,29 +338,74 @@ void CDlgProcessTypeSetup::OnShowAuxWindow(void)
 	m_wndAuxEditGrid.AdjustLayout();
 }
 
+// 显示Acq窗口
+void CDlgProcessTypeSetup::OnShowAcqWindow(void)
+{
+
+	CRect rect;
+	int iNbWidth, iTypeWidth, iSignStackWidth, iOutPutWidth;
+	int iCount = 0;
+	m_wndAcqEditGrid.DeleteAllColumns();
+	m_wndAcqListGrid.DeleteAllColumns();
+	m_wndAcqEditGrid.RemoveAll();
+	m_wndAcqListGrid.RemoveAll();
+	if (m_oAcqControlsShow.m_bAcqNb == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQNB)->GetWindowRect (&rect);
+		iNbWidth = rect.Width();
+		m_wndAcqEditGrid.InsertColumn (iCount, _T("Nb"), iNbWidth);
+		m_wndAcqListGrid.InsertColumn (iCount, _T("Nb"), iNbWidth);
+		iCount++;
+	}
+	if (m_oAcqControlsShow.m_bAcqType == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQTYPE)->GetWindowRect (&rect);
+		iTypeWidth = rect.Width();
+		m_wndAcqEditGrid.InsertColumn (iCount, _T("Type"), iTypeWidth);
+		m_wndAcqListGrid.InsertColumn (iCount, _T("Type"), iTypeWidth);
+		iCount++;
+	}
+	if (m_oAcqControlsShow.m_bAcqSignStack == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQSIGNSTACK)->GetWindowRect (&rect);
+		iSignStackWidth = rect.Width();
+		m_wndAcqEditGrid.InsertColumn (iCount, _T("Sign Stack"), iSignStackWidth);
+		m_wndAcqListGrid.InsertColumn (iCount, _T("Sign Stack"), iSignStackWidth);
+		iCount++;
+	}
+	if (m_oAcqControlsShow.m_bAcqOutput == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQOUTPUT)->GetWindowRect (&rect);
+		iOutPutWidth = rect.Width();
+		m_wndAcqEditGrid.InsertColumn (iCount, _T("OutPut"), iOutPutWidth);
+		m_wndAcqListGrid.InsertColumn (iCount, _T("OutPut"), iOutPutWidth);
+		iCount++;
+	}
+
+	for(int i=0;i<iCount;i++)
+	{
+		m_wndAcqEditGrid.SetColumnLocked(i,TRUE);
+		m_wndAcqListGrid.SetColumnLocked(i,TRUE);
+	}
+	m_wndAcqEditGrid.AddRow();
+	m_wndAcqEditGrid.AdjustLayout();
+}
 
 // 显示Process Type窗口
 void CDlgProcessTypeSetup::OnShowProTypeWindow(void)
 {
 	m_wndProTypeEditGrid.RemoveAll();
 	m_wndProTypeListGrid.RemoveAll();
-	CRect rectGrid;
+	CRect rect;
 	int iNbWidth, iLabelWidth;
-	GetDlgItem(IDC_STATIC_PRO_GRID_EDIT)->GetWindowRect (&rectGrid);
-	ScreenToClient (&rectGrid);
-	m_wndProTypeEditGrid.CreateGrid(rectGrid,this);
-	GetDlgItem(IDC_STATIC_PROTYPE_NB)->GetWindowRect (&rectGrid);
-	iNbWidth = rectGrid.Width();
-	GetDlgItem(IDC_STATIC_PROTYPE_LABEL)->GetWindowRect (&rectGrid);
-	iLabelWidth = rectGrid.Width();
+	GetDlgItem(IDC_STATIC_PROTYPE_NB)->GetWindowRect (&rect);
+	iNbWidth = rect.Width();
+	GetDlgItem(IDC_STATIC_PROTYPE_LABEL)->GetWindowRect (&rect);
+	iLabelWidth = rect.Width();
 	m_wndProTypeEditGrid.InsertColumn (0, _T("Nb"), iNbWidth);
-	m_wndProTypeEditGrid.InsertColumn (1, _T("Label"), iLabelWidth);
-
-	GetDlgItem(IDC_STATIC_PRO_GRID)->GetWindowRect (&rectGrid);
-	ScreenToClient (&rectGrid);
-	m_wndProTypeListGrid.CreateGrid(rectGrid,this);
+	m_wndProTypeEditGrid.InsertColumn (1, _T("Label"), iLabelWidth-1);
 	m_wndProTypeListGrid.InsertColumn (0, _T("Nb"), iNbWidth);
-	m_wndProTypeListGrid.InsertColumn (1, _T("Label"), iLabelWidth);
+	m_wndProTypeListGrid.InsertColumn (1, _T("Label"), iLabelWidth-1);
 	for(int i=0;i<2;i++)
 	{
 		m_wndProTypeEditGrid.SetColumnLocked(i,TRUE);
@@ -292,44 +415,300 @@ void CDlgProcessTypeSetup::OnShowProTypeWindow(void)
 	m_wndProTypeEditGrid.AdjustLayout();
 }
 
-
-// 设置Impulsive处理类型控件的位置
-void CDlgProcessTypeSetup::SetProcessImpulsiveCtrlsRect(void)
+// 显示控件
+void CDlgProcessTypeSetup::OnShowControls(void)
 {
-	CRect rect, rectAuxGroupOld, rectAuxGroupNew;
+	OnShowProTypeControls();
+	OnShowAcqControls();
+	OnShowAuxControls();
+}
+// 依据左边界设置控件位置和尺寸
+void CDlgProcessTypeSetup::OnSetControlsLocationByLeftPos(int ID, int iLeftPos)
+{
 	int iWidth = 0;
-	// 设置IDC_STATIC_AUXGROUP控件位置
-	GetDlgItem(IDC_STATIC_PROTYPEGROUP)->GetWindowRect(&rect);
+	CRect rect;
+	GetDlgItem(ID)->GetWindowRect(&rect);
 	iWidth = rect.Width();
-	GetDlgItem(IDC_STATIC_AUXGROUP)->GetWindowRect(&rectAuxGroupOld);
-	if (rectAuxGroupOld.Width() == iWidth)
-	{
-		return;
-	}
-	rect = rectAuxGroupOld;
+	rect.left = iLeftPos;
 	rect.right = rect.left + iWidth;
-	rectAuxGroupNew = rect;
+	ScreenToClient(&rect);
+	GetDlgItem(ID)->MoveWindow(&rect);
+}
+// 依据右边界设置控件位置和尺寸
+void CDlgProcessTypeSetup::OnSetControlsLocationByRightPos(int ID, int iRightPos)
+{
+	int iWidth = 0;
+	CRect rect;
+	GetDlgItem(ID)->GetWindowRect(&rect);
+	iWidth = rect.Width();
+	rect.right = iRightPos;
+	rect.left = rect.right - iWidth;
+	ScreenToClient(&rect);
+	GetDlgItem(ID)->MoveWindow(&rect);
+}
+// 显示处理类型控件
+void CDlgProcessTypeSetup::OnShowProTypeControls(void)
+{
+	CRect rect;
+	int iLeftPos = 0;
+	GetDlgItem(IDC_EDIT_RECORDLENGTH)->GetWindowRect(&rect);
+	iLeftPos = rect.right + ControlsInterval;
+	if (m_oProTypeControlsShow.m_bTbWindow == true)
+	{
+		GetDlgItem(IDC_STATIC_TBWINDOW)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT_TBWINDOW)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByLeftPos(IDC_STATIC_TBWINDOW, iLeftPos);
+		OnSetControlsLocationByLeftPos(IDC_EDIT_TBWINDOW, iLeftPos);
+		GetDlgItem(IDC_EDIT_TBWINDOW)->GetWindowRect(&rect);
+		iLeftPos = rect.right + ControlsInterval;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_TBWINDOW)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_TBWINDOW)->ShowWindow(SW_HIDE);
+	}
+	if (m_oProTypeControlsShow.m_bPeakTime == true)
+	{
+		GetDlgItem(IDC_STATIC_PEAKTIME)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT_PEAKTIME)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByLeftPos(IDC_STATIC_PEAKTIME, iLeftPos);
+		OnSetControlsLocationByLeftPos(IDC_EDIT_PEAKTIME, iLeftPos);
+		GetDlgItem(IDC_EDIT_PEAKTIME)->GetWindowRect(&rect);
+		iLeftPos = rect.right + ControlsInterval;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_PEAKTIME)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_PEAKTIME)->ShowWindow(SW_HIDE);
+	}
+	if (m_oProTypeControlsShow.m_bRaw == true)
+	{
+		GetDlgItem(IDC_STATIC_RAW)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_CHECK_RAW)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByLeftPos(IDC_STATIC_RAW, iLeftPos);
+		OnSetControlsLocationByLeftPos(IDC_CHECK_RAW, iLeftPos);
+		GetDlgItem(IDC_CHECK_RAW)->GetWindowRect(&rect);
+		iLeftPos = rect.right + ControlsInterval;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_RAW)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_CHECK_RAW)->ShowWindow(SW_HIDE);
+	}
+}
+// 显示Aux控件
+void CDlgProcessTypeSetup::OnShowAuxControls(void)
+{
+	CRect rect;
+	int iRightPos = 0;
+	int iWidth = 0;
+	int iBottom = 0;
+	// 设置控件IDC_STATIC_AUXGROUP位置
+	if (m_oAcqControlsShow.m_bAcqGroup == false)
+	{
+		GetDlgItem(IDC_STATIC_PROTYPEGROUP)->GetWindowRect(&rect);
+		iRightPos = rect.right;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_ACQGROUP)->GetWindowRect(&rect);
+		iRightPos = rect.left - ControlsInterval;
+	}
+	GetDlgItem(IDC_STATIC_AUXGROUP)->GetWindowRect(&rect);
+	rect.right = iRightPos;
 	ScreenToClient(&rect);
 	GetDlgItem(IDC_STATIC_AUXGROUP)->MoveWindow(&rect);
-	// 设置IDC_BUTTON_AUX_ADD控件位置
+	iRightPos -= ControlsInterval;
+
+	OnSetControlsLocationByRightPos(IDC_BUTTON_AUX_ADD, iRightPos);
+	OnSetControlsLocationByRightPos(IDC_BUTTON_AUX_CHANGE, iRightPos);
+	OnSetControlsLocationByRightPos(IDC_BUTTON_AUX_DELETE, iRightPos);
 	GetDlgItem(IDC_BUTTON_AUX_ADD)->GetWindowRect(&rect);
-	iWidth = rect.Width();
-	rect.left = rectAuxGroupNew.right - 5 - iWidth;
-	rect.right = rect.left + iWidth;
+	iRightPos -= rect.Width();
+	iRightPos -= ControlsInterval;
+
+	GetDlgItem(IDC_STATIC_AUX)->GetWindowRect(&rect);
+	rect.right = iRightPos;
 	ScreenToClient(&rect);
-	GetDlgItem(IDC_BUTTON_AUX_ADD)->MoveWindow(&rect);
-	// 设置IDC_BUTTON_AUX_CHANGE控件位置
-	GetDlgItem(IDC_BUTTON_AUX_CHANGE)->GetWindowRect(&rect);
+	GetDlgItem(IDC_STATIC_AUX)->MoveWindow(&rect);
 	iWidth = rect.Width();
-	rect.left = rectAuxGroupNew.right - 5 - iWidth;
-	rect.right = rect.left + iWidth;
+
+	GetDlgItem(IDC_STATIC_AUXNB)->GetWindowRect(&rect);
+	rect.right = rect.left + iWidth / 5;
 	ScreenToClient(&rect);
-	GetDlgItem(IDC_BUTTON_AUX_CHANGE)->MoveWindow(&rect);
-	// 设置IDC_BUTTON_AUX_DELETE控件位置
-	GetDlgItem(IDC_BUTTON_AUX_DELETE)->GetWindowRect(&rect);
-	iWidth = rect.Width();
-	rect.left = rectAuxGroupNew.right - 5 - iWidth;
-	rect.right = rect.left + iWidth;
+	GetDlgItem(IDC_STATIC_AUXNB)->MoveWindow(&rect);
+
+	GetDlgItem(IDC_STATIC_AUXPRO)->GetWindowRect(&rect);
+	rect.right = iRightPos;
+	rect.left = rect.right - (iWidth - iWidth / 5);
 	ScreenToClient(&rect);
-	GetDlgItem(IDC_BUTTON_AUX_DELETE)->MoveWindow(&rect);
+	GetDlgItem(IDC_STATIC_AUXPRO)->MoveWindow(&rect);
+
+	m_wndAuxEditGrid.GetWindowRect(&rect);
+	rect.right = iRightPos;
+	ScreenToClient(&rect);
+	m_wndAuxEditGrid.MoveWindow(&rect);
+
+	m_wndAuxListGrid.GetWindowRect(&rect);
+	rect.right = iRightPos;
+	ScreenToClient(&rect);
+	m_wndAuxListGrid.MoveWindow(&rect);
+
+	GetDlgItem(IDC_EDIT_AUX_COR)->GetWindowRect(&rect);
+	iBottom = rect.top - ControlsInterval;
+	if (m_oAuxControlsShow.m_bAuxCor == true)
+	{
+		GetDlgItem(IDC_STATIC_AUX_COR)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT_AUX_COR)->ShowWindow(SW_SHOW);
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_AUX_COR)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_AUX_COR)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_AUX_COR)->GetWindowRect(&rect);
+		iBottom = rect.bottom;
+	}
+	if (m_oAuxControlsShow.m_bAuxCheck == true)
+	{
+		GetDlgItem(IDC_CHECK_AUX)->ShowWindow(SW_SHOW);
+	}
+	else
+	{
+		GetDlgItem(IDC_CHECK_AUX)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_CHECK_AUX)->GetWindowRect(&rect);
+		iBottom = rect.bottom;
+	}
+	m_wndAuxListGrid.GetWindowRect(&rect);
+	rect.bottom = iBottom;
+	ScreenToClient(&rect);
+	m_wndAuxListGrid.MoveWindow(&rect);
+}
+// 显示Acq控件
+void CDlgProcessTypeSetup::OnShowAcqControls(void)
+{
+	CRect rect, rectTemp;
+	int iRightPos = 0;
+	GetDlgItem(IDC_STATIC_PROTYPEGROUP)->GetWindowRect(&rect);
+	iRightPos = rect.right - ControlsInterval;
+	if (m_oAcqControlsShow.m_bAcqEdit == true)
+	{
+		GetDlgItem(IDC_BUTTON_ACQ_ADD)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_BUTTON_ACQ_CHANGE)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_BUTTON_ACQ_DELETE)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByRightPos(IDC_BUTTON_ACQ_ADD, iRightPos);
+		OnSetControlsLocationByRightPos(IDC_BUTTON_ACQ_CHANGE, iRightPos);
+		OnSetControlsLocationByRightPos(IDC_BUTTON_ACQ_DELETE, iRightPos);
+		GetDlgItem(IDC_BUTTON_ACQ_ADD)->GetWindowRect(&rect);
+		iRightPos = rect.left - ControlsInterval;
+	}
+	else
+	{
+		GetDlgItem(IDC_BUTTON_ACQ_ADD)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_ACQ_CHANGE)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BUTTON_ACQ_DELETE)->ShowWindow(SW_HIDE);
+	}
+	if (m_oAcqControlsShow.m_bAcqOutput == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQOUTPUT)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByRightPos(IDC_STATIC_ACQOUTPUT, iRightPos);
+		GetDlgItem(IDC_STATIC_ACQOUTPUT)->GetWindowRect(&rect);
+		iRightPos = rect.left;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_ACQOUTPUT)->ShowWindow(SW_HIDE);
+	}
+	if (m_oAcqControlsShow.m_bAcqSignStack == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQSIGNSTACK)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByRightPos(IDC_STATIC_ACQSIGNSTACK, iRightPos);
+		GetDlgItem(IDC_STATIC_ACQSIGNSTACK)->GetWindowRect(&rect);
+		iRightPos = rect.left;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_ACQSIGNSTACK)->ShowWindow(SW_HIDE);
+	}
+	if (m_oAcqControlsShow.m_bAcqType == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQTYPE)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByRightPos(IDC_STATIC_ACQTYPE, iRightPos);
+		GetDlgItem(IDC_STATIC_ACQTYPE)->GetWindowRect(&rect);
+		iRightPos = rect.left;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_ACQTYPE)->ShowWindow(SW_HIDE);
+	}
+	if (m_oAcqControlsShow.m_bAcqNb == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQNB)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByRightPos(IDC_STATIC_ACQNB, iRightPos);
+		GetDlgItem(IDC_STATIC_ACQNB)->GetWindowRect(&rect);
+		iRightPos = rect.left - ControlsInterval;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_ACQNB)->ShowWindow(SW_HIDE);
+	}
+	if (m_oAcqControlsShow.m_bAcq == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQ)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_ACQ)->GetWindowRect(&rect);
+		GetDlgItem(IDC_STATIC_ACQOUTPUT)->GetWindowRect(&rectTemp);
+		rect.right = rectTemp.right;
+		GetDlgItem(IDC_STATIC_ACQNB)->GetWindowRect(&rectTemp);
+		rect.left = rectTemp.left;
+		ScreenToClient(&rect);
+		GetDlgItem(IDC_STATIC_ACQ)->MoveWindow(&rect);
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_ACQ)->ShowWindow(SW_HIDE);
+	}
+	GetDlgItem(IDC_STATIC_ACQ_GRID_EDIT)->ShowWindow(SW_HIDE);
+	if (m_oAcqControlsShow.m_bAcqGridEdit == true) 
+	{
+		m_wndAcqEditGrid.ShowWindow(SW_SHOW);
+		m_wndAcqEditGrid.GetWindowRect(&rect);
+		GetDlgItem(IDC_STATIC_ACQ)->GetWindowRect(&rectTemp);
+		rect.right = rectTemp.right;
+		rect.left = rectTemp.left - 20;
+		ScreenToClient(&rect);
+		m_wndAcqEditGrid.MoveWindow(&rect);
+		iRightPos -= 20;
+	}
+	else
+	{
+		m_wndAcqEditGrid.ShowWindow(SW_HIDE);
+	}
+	GetDlgItem(IDC_STATIC_ACQ_GRID)->ShowWindow(SW_HIDE);
+	if (m_oAcqControlsShow.m_bAcqGridList == true)
+	{
+		m_wndAcqListGrid.ShowWindow(SW_SHOW);
+		m_wndAcqListGrid.GetWindowRect(&rect);
+		m_wndAcqEditGrid.GetWindowRect(&rectTemp);
+		rect.right = rectTemp.right;
+		rect.left = rectTemp.left;
+		ScreenToClient(&rect);
+		m_wndAcqListGrid.MoveWindow(&rect);
+	}
+	else
+	{
+		m_wndAcqListGrid.ShowWindow(SW_HIDE);
+	}
+	if (m_oAcqControlsShow.m_bAcqGroup == true)
+	{
+		GetDlgItem(IDC_STATIC_ACQGROUP)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_ACQGROUP)->GetWindowRect(&rect);
+		GetDlgItem(IDC_STATIC_PROTYPEGROUP)->GetWindowRect(&rectTemp);
+		rect.left = iRightPos;
+		rect.right = rectTemp.right;
+		ScreenToClient(&rect);
+		GetDlgItem(IDC_STATIC_ACQGROUP)->MoveWindow(&rect);
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_ACQGROUP)->ShowWindow(SW_HIDE);
+	}
 }

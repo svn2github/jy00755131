@@ -12,4 +12,5 @@
 // 处理设置选项
 #define PROCESS_STANDARD		0		// 标准
 #define PROCESS_ADVANCE			1		// 高级
+#define ControlsInterval		5		// 控件之间的间距
 #endif
