@@ -75,6 +75,12 @@
     <ClCompile Include="DlgProcessTypeSetup.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="DlgCommentTypeSetup.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgDelaySetup.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -141,6 +147,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="DlgProcessTypeSetup.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgCommentTypeSetup.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgDelaySetup.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

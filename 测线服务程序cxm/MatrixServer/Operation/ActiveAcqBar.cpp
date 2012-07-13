@@ -113,7 +113,7 @@ void CActiveAcqBar::LoadAcqInfos(void)
 // 载入单条Acq信息
 void CActiveAcqBar::LoadAcqInfo(void)
 {
-	CBCGPGridRow* pRow = m_GridView.CreateRow (5);
+	CBCGPGridRow* pRow = m_GridView.CreateRow (m_GridView.GetColumnCount());
 	pRow->GetItem (0)->SetImage(1);
 	pRow->GetItem (1)->SetValue (1);
 	pRow->GetItem (2)->SetValue (1);

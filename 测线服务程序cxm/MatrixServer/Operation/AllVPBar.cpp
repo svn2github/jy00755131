@@ -72,7 +72,7 @@ void CAllVPBar::LoadShotPoints(void)
 // 载入单条炮点信息
 void CAllVPBar::LoadShotPoint(void)
 {
-	CBCGPGridRow* pRow = m_GridView.CreateRow (12);
+	CBCGPGridRow* pRow = m_GridView.CreateRow (m_GridView.GetColumnCount());
 	// pRow->GetItem (0)->SetValue (pVP->m_VPState);
 	pRow->GetItem (0)->SetImage(0);
 	pRow->GetItem (1)->SetValue (1);

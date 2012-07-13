@@ -19,6 +19,27 @@ const int  iMaxUserToolbars		= 10;
 const UINT uiFirstUserToolBarId	= AFX_IDW_CONTROLBAR_FIRST + 40;
 const UINT uiLastUserToolBarId	= uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
+/** 将标题栏设置在居中位置，在前面添加空格*/
+void MoveTitleToCenter(CWnd* pWnd)
+{
+	CString str;
+	CString strOut = _T("");
+	CDC* pDC = pWnd->GetDC();
+	CRect rect;
+	pWnd->GetClientRect(&rect);
+	pWnd->GetWindowText(str);
+	int iLength = str.GetLength();
+	int iSpaceWidth = pDC->GetTextExtent(_T(" ")).cx;
+	int iSpaceNum = rect.Width() / iSpaceWidth - iLength;
+	iSpaceNum /= 2;
+	for (int i=0; i<iSpaceNum; i++)
+	{
+		strOut += _T(" ");
+	}
+	strOut += str;
+	pWnd->SetWindowText(strOut);
+}
+
 BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_WM_CREATE()
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)

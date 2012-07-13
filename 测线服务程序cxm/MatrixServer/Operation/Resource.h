@@ -35,6 +35,8 @@
 #define IDD_DIALOG_SOURCEVIBRO          198
 #define IDD_DIALOG_SOURCESHOTSETUP      199
 #define IDD_DIALOG_PROCESSSETUP         201
+#define IDD_DIALOG_COMMENTSETUP         203
+#define IDD_DIALOG_DELAYSETUP           204
 #define IDC_COMPANY_URL                 1041
 #define IDC_BUTTONGO                    1053
 #define IDC_BUTTONSTOP                  1054
@@ -62,7 +64,6 @@
 #define IDC_ACTIVESOURCE_EIGHT          1069
 #define IDC_STATIC_TAB                  1069
 #define IDC_ACTIVESOURCE_NINE           1070
-#define IDC_STATIC_GRID                 1070
 #define IDC_ACTIVESOURCE_TEN            1071
 #define IDC_STATIC_NB                   1071
 #define IDC_STATIC_LABEL                1072
@@ -75,6 +76,7 @@
 #define IDC_STATIC_WORKBYACQ            1079
 #define IDC_STATIC_CLUSTERNB            1080
 #define IDC_STATIC_SHOTID               1081
+#define IDC_STATIC_CLUSTERNB2           1081
 #define IDC_STATIC_BREAKPOINT           1082
 #define IDC_STATIC_SWATHNB              1083
 #define IDC_STATIC_LINE                 1084
@@ -111,6 +113,7 @@
 #define IDC_STATIC_AUXPRO               1116
 #define IDC_STATIC_AUX_GRID_EDIT        1117
 #define IDC_STATIC_AUX_GRID             1118
+#define IDC_STATIC_AUX_GRID_LIST        1118
 #define IDC_STATIC_AUX_COR              1119
 #define IDC_STATIC_ACQGROUP             1120
 #define IDC_STATIC_ACQ                  1121
@@ -120,18 +123,26 @@
 #define IDC_STATIC_ACQOUTPUT            1125
 #define IDC_STATIC_ACQ_GRID_EDIT        1126
 #define IDC_STATIC_ACQ_GRID             1127
+#define IDC_STATIC_ACQ_GRID_LIST        1127
 #define IDC_BUTTON_ACQ_ADD              1128
 #define IDC_BUTTON_ACQ_CHANGE           1129
 #define IDC_BUTTON_ACQ_DELETE           1130
 #define IDC_STATIC_PROTYPE_NB           1133
 #define IDC_STATIC_PRO_GRID_EDIT        1134
 #define IDC_STATIC_PRO_GRID             1135
+#define IDC_STATIC_PRO_GRID_LIST        1135
 #define IDC_BUTTON_PRO_ADD              1136
 #define IDC_BUTTON_PRO_CHANGE           1137
 #define IDC_BUTTON_PRO_DELETE           1138
 #define IDC_STATIC_PROTYPE_LABEL        1139
 #define IDC_STATIC_PROTYPEGROUP         1140
 #define IDC_STATIC_FIREGROUP            1141
+#define IDC_EDIT_COMMENT                1142
+#define IDC_STATIC_GRID_LIST            1143
+#define IDC_SLIDER_ACQ                  1144
+#define IDC_EDIT_ACQTIME                1145
+#define IDC_SLIDER_VP                   1146
+#define IDC_EDIT_VPTIME                 1147
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_TOOLBARS                32771
 #define ID_VIEW_ALLVPBAR                32792
@@ -208,9 +219,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        203
+#define _APS_NEXT_RESOURCE_VALUE        205
 #define _APS_NEXT_COMMAND_VALUE         32879
-#define _APS_NEXT_CONTROL_VALUE         1142
+#define _APS_NEXT_CONTROL_VALUE         1146
 #define _APS_NEXT_SYMED_VALUE           108
 #endif
 #endif

@@ -5,7 +5,7 @@
 #include "Operation.h"
 #include "DlgSourceShotSetup.h"
 #include "afxdialogex.h"
-
+#include "Parameter.h"
 
 // CDlgSourceShotSetup 对话框
 
@@ -45,7 +45,7 @@ BOOL CDlgSourceShotSetup::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	CRect rectGrid;
-	int iShotIdWidth, iBreakPointWidth, iSwathNbWidth, iSourceLineWidth, 
+	int iShotIdWidth, iBreakPointWidth, iSourceLineWidth, 
 		iSourceRcvWidth, iSpreadSflWidth, iSpreadSfnWidth, iSpreadTypeWidth,
 		iSuperSpreadWidth, iProcTypeWidth, iCommentWidth;
 	GetDlgItem(IDC_STATIC_GRID_EDIT)->GetWindowRect (&rectGrid);
@@ -55,8 +55,6 @@ BOOL CDlgSourceShotSetup::OnInitDialog()
 	iShotIdWidth = rectGrid.Width();
 	GetDlgItem(IDC_STATIC_BREAKPOINT)->GetWindowRect(&rectGrid);
 	iBreakPointWidth = rectGrid.Width();
-	GetDlgItem(IDC_STATIC_SWATHNB)->GetWindowRect(&rectGrid);
-	iSwathNbWidth = rectGrid.Width();
 	GetDlgItem(IDC_STATIC_LINE)->GetWindowRect(&rectGrid);
 	iSourceLineWidth = rectGrid.Width();
 	GetDlgItem(IDC_STATIC_RCV)->GetWindowRect(&rectGrid);
@@ -75,34 +73,31 @@ BOOL CDlgSourceShotSetup::OnInitDialog()
 	iCommentWidth = rectGrid.Width();
 	m_wndEditGrid.InsertColumn (0, _T("Shot Id"), iShotIdWidth);
 	m_wndEditGrid.InsertColumn (1, _T("BreakPoint"), iBreakPointWidth);
-	m_wndEditGrid.InsertColumn (2, _T("Swath Nb"), iSwathNbWidth);
-	m_wndEditGrid.InsertColumn (3, _T("Source Line"), iSourceLineWidth);
-	m_wndEditGrid.InsertColumn (4, _T("Source Rcv"), iSourceRcvWidth);
+	m_wndEditGrid.InsertColumn (2, _T("Source Line"), iSourceLineWidth);
+	m_wndEditGrid.InsertColumn (3, _T("Source Rcv"), iSourceRcvWidth);
 
-	m_wndEditGrid.InsertColumn (5, _T("Spread Sfl"), iSpreadSflWidth);
-	m_wndEditGrid.InsertColumn (6, _T("Spread Sfn"), iSpreadSfnWidth);
-	m_wndEditGrid.InsertColumn (7, _T("Spread Type"), iSpreadTypeWidth);
-	m_wndEditGrid.InsertColumn (8, _T("Super Spread"), iSuperSpreadWidth);
-	m_wndEditGrid.InsertColumn (9, _T("Proc Type"), iProcTypeWidth);
-	m_wndEditGrid.InsertColumn (10, _T("Comment"), iCommentWidth);
+	m_wndEditGrid.InsertColumn (4, _T("Spread Sfl"), iSpreadSflWidth);
+	m_wndEditGrid.InsertColumn (5, _T("Spread Sfn"), iSpreadSfnWidth);
+	m_wndEditGrid.InsertColumn (6, _T("Spread Type"), iSpreadTypeWidth);
+	m_wndEditGrid.InsertColumn (7, _T("Super Spread"), iSuperSpreadWidth);
+	m_wndEditGrid.InsertColumn (8, _T("Proc Type"), iProcTypeWidth);
+	m_wndEditGrid.InsertColumn (9, _T("Comment"), iCommentWidth);
 
-	GetDlgItem(IDC_STATIC_GRID)->GetWindowRect (&rectGrid);
+	GetDlgItem(IDC_STATIC_GRID_LIST)->GetWindowRect (&rectGrid);
 	ScreenToClient (&rectGrid);
 	m_wndListGrid.CreateGrid(rectGrid,this);
 	m_wndListGrid.InsertColumn (0, _T("Shot Id"), iShotIdWidth);
 	m_wndListGrid.InsertColumn (1, _T("BreakPoint"), iBreakPointWidth);
-	m_wndListGrid.InsertColumn (2, _T("Swath Nb"), iSwathNbWidth);
-	m_wndListGrid.InsertColumn (3, _T("Source Line"), iSourceLineWidth);
-	m_wndListGrid.InsertColumn (4, _T("Source Rcv"), iSourceRcvWidth);
+	m_wndListGrid.InsertColumn (2, _T("Source Line"), iSourceLineWidth);
+	m_wndListGrid.InsertColumn (3, _T("Source Rcv"), iSourceRcvWidth);
+	m_wndListGrid.InsertColumn (4, _T("Spread Sfl"), iSpreadSflWidth);
+	m_wndListGrid.InsertColumn (5, _T("Spread Sfn"), iSpreadSfnWidth);
+	m_wndListGrid.InsertColumn (6, _T("Spread Type"), iSpreadTypeWidth);
+	m_wndListGrid.InsertColumn (7, _T("Super Spread"), iSuperSpreadWidth);
+	m_wndListGrid.InsertColumn (8, _T("Proc Type"), iProcTypeWidth);
+	m_wndListGrid.InsertColumn (9, _T("Comment"), iCommentWidth);
 
-	m_wndListGrid.InsertColumn (5, _T("Spread Sfl"), iSpreadSflWidth);
-	m_wndListGrid.InsertColumn (6, _T("Spread Sfn"), iSpreadSfnWidth);
-	m_wndListGrid.InsertColumn (7, _T("Spread Type"), iSpreadTypeWidth);
-	m_wndListGrid.InsertColumn (8, _T("Super Spread"), iSuperSpreadWidth);
-	m_wndListGrid.InsertColumn (9, _T("Proc Type"), iProcTypeWidth);
-	m_wndListGrid.InsertColumn (10, _T("Comment"), iCommentWidth);
-
-	for(int i=0;i<11;i++)
+	for(int i=0;i<m_wndEditGrid.GetColumnCount();i++)
 	{
 		m_wndEditGrid.SetColumnLocked(i,TRUE);
 		m_wndListGrid.SetColumnLocked(i,TRUE);
@@ -116,6 +111,7 @@ BOOL CDlgSourceShotSetup::OnInitDialog()
 
 	m_wndEditGrid.AddRow(pRow);
 	m_wndEditGrid.AdjustLayout();
+	MoveTitleToCenter((CWnd*)this);
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }

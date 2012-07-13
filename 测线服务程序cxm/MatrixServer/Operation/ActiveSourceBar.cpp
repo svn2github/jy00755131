@@ -231,7 +231,7 @@ void CActiveSourceBar::LoadActiveSources(void)
 // 载入单条震源信息
 void CActiveSourceBar::LoadActiveSource(int iNb)
 {
-	CBCGPGridRow* pRow = m_GridView.CreateRow (17);
+	CBCGPGridRow* pRow = m_GridView.CreateRow (m_GridView.GetColumnCount());
 	pRow->GetItem (0)->SetImage(1);
 	pRow->ReplaceItem (1, new CButtonItem (_T(""), m_iActiveSourceBtnID[iNb]));
 	if (iNb == 4)

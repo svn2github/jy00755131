@@ -5,7 +5,7 @@
 #include "Operation.h"
 #include "DlgSourceTypeSetup.h"
 #include "afxdialogex.h"
-
+#include "Parameter.h"
 
 // CDlgSourceTypeSetup 对话框
 
@@ -57,22 +57,7 @@ BOOL CDlgSourceTypeSetup::OnInitDialog()
 	m_wndTab.SetFlatFrame(FALSE,TRUE);
 	m_wndTab.RecalcLayout ();
 	m_wndTab.RedrawWindow ();
-	/** 将标题栏设置在居中位置，在前面添加空格*/
-// 	CString str;
-// 	CString strOut = _T("");
-// 	CDC* pDC = GetDC();
-// 	CSize winSize = pDC->GetWindowExt();
-// 	GetWindowText(str);
-// 	int iStrWidth = pDC->GetTextExtent(str).cx;
-// 	int iSpaceWidth = pDC->GetTextExtent(_T(" ")).cx;
-// 	int iSpaceNum = (winSize.cx - iStrWidth) / iSpaceWidth;
-// 	iSpaceNum /= 2;
-// 	for (int i=0; i<iSpaceNum; i++)
-// 	{
-// 		strOut += _T(" ");
-// 	}
-// 	strOut += str;
-// 	SetWindowText(strOut);
+	MoveTitleToCenter((CWnd*)this);
 	return TRUE;
 }
 

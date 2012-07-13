@@ -5,7 +5,7 @@
 #include "Operation.h"
 #include "DlgSourceVibroSetup.h"
 #include "afxdialogex.h"
-
+#include "Parameter.h"
 
 // CDlgSourceVibroSetup ¶Ô»°¿ò
 
@@ -40,7 +40,8 @@ BOOL CDlgSourceVibroSetup::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 	CRect rectGrid;
-	int iNbWidth, iLabelWidth, iFleetNbWidth, iTypeOfMovingWidth, iStepWidth, iWorkByAcqWidth, iClusterNbWidth;
+	int iNbWidth, iLabelWidth, iFleetNbWidth, iTypeOfMovingWidth, 
+		iStepWidth, iWorkByAcqWidth, iClusterNbWidth, iCommentWidth;
 	GetDlgItem(IDC_STATIC_GRID_EDIT)->GetWindowRect (&rectGrid);
 	ScreenToClient (&rectGrid);
  	m_wndEditGrid.CreateGrid(rectGrid,this);
@@ -58,6 +59,8 @@ BOOL CDlgSourceVibroSetup::OnInitDialog()
 	iWorkByAcqWidth = rectGrid.Width();
 	GetDlgItem(IDC_STATIC_CLUSTERNB)->GetWindowRect (&rectGrid);
 	iClusterNbWidth = rectGrid.Width();
+	GetDlgItem(IDC_STATIC_COMMENT)->GetWindowRect (&rectGrid);
+	iCommentWidth = rectGrid.Width();
 	m_wndEditGrid.InsertColumn (0, _T("Nb"), iNbWidth);
 	m_wndEditGrid.InsertColumn (1, _T("Label"), iLabelWidth);
 	m_wndEditGrid.InsertColumn (2, _T("Fleet Nb"), iFleetNbWidth);
@@ -65,8 +68,9 @@ BOOL CDlgSourceVibroSetup::OnInitDialog()
 	m_wndEditGrid.InsertColumn (4, _T("Step"), iStepWidth);
 	m_wndEditGrid.InsertColumn (5, _T("Work By Acq"), iWorkByAcqWidth);
 	m_wndEditGrid.InsertColumn (6, _T("Cluster Nb"), iClusterNbWidth);
+	m_wndEditGrid.InsertColumn (7, _T("Comment"), iCommentWidth);
 
-	GetDlgItem(IDC_STATIC_GRID)->GetWindowRect (&rectGrid);
+	GetDlgItem(IDC_STATIC_GRID_LIST)->GetWindowRect (&rectGrid);
 	ScreenToClient (&rectGrid);
 	m_wndListGrid.CreateGrid(rectGrid,this);
 	m_wndListGrid.InsertColumn (0, _T("Nb"), iNbWidth);
@@ -76,12 +80,25 @@ BOOL CDlgSourceVibroSetup::OnInitDialog()
 	m_wndListGrid.InsertColumn (4, _T("Step"), iStepWidth);
 	m_wndListGrid.InsertColumn (5, _T("Work By Acq"), iWorkByAcqWidth);
 	m_wndListGrid.InsertColumn (6, _T("Cluster Nb"), iClusterNbWidth);
-	for(int i=0;i<7;i++)
+	m_wndListGrid.InsertColumn (7, _T("Comment"), iCommentWidth);
+	for(int i=0;i<m_wndEditGrid.GetColumnCount();i++)
 	{
 		m_wndEditGrid.SetColumnLocked(i,TRUE);
 		m_wndListGrid.SetColumnLocked(i,TRUE);
 	}
-	m_wndEditGrid.AddRow();
+	CBCGPGridRow* pRow = m_wndEditGrid.CreateRow (m_wndEditGrid.GetColumnCount ());
+	CBCGPGridItem* pItem = new CBCGPGridItem (VIBROMOVING_STRING_SEQ);
+	pItem->AddOption (VIBROMOVING_STRING_SEQ, TRUE);
+	pItem->AddOption (VIBROMOVING_STRING_RND, TRUE);
+	pRow->GetItem(0)->SetValue(1);
+	pRow->GetItem(1)->SetValue(_T(""));
+	pRow->GetItem(2)->SetValue(1);
+	pRow->ReplaceItem (3, pItem);
+	pRow->GetItem(4)->SetValue(1);
+	pRow->ReplaceItem (5, new CBCGPGridCheckItem (FALSE));
+	pRow->GetItem(6)->SetValue(1);
+	pRow->GetItem(7)->SetValue(_T(""));
+	m_wndEditGrid.AddRow(pRow);
 	m_wndEditGrid.AdjustLayout();
 	return TRUE;
 }

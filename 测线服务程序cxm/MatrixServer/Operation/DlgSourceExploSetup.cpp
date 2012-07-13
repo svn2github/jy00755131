@@ -60,7 +60,7 @@ BOOL CDlgSourceExploSetup::OnInitDialog()
 	m_wndEditGrid.InsertColumn (3, _T("Incr Nb"), iIncrNbWidth);
 	m_wndEditGrid.InsertColumn (4, _T("Comment"), iCommentWidth);
 
-	GetDlgItem(IDC_STATIC_GRID)->GetWindowRect (&rectGrid);
+	GetDlgItem(IDC_STATIC_GRID_LIST)->GetWindowRect (&rectGrid);
 	ScreenToClient (&rectGrid);
 	m_wndListGrid.CreateGrid(rectGrid,this);
 	m_wndListGrid.InsertColumn (0, _T("Nb"), iNbWidth);
@@ -68,7 +68,7 @@ BOOL CDlgSourceExploSetup::OnInitDialog()
 	m_wndListGrid.InsertColumn (2, _T("Shooter Nb"), iShooterNbWidth);
 	m_wndListGrid.InsertColumn (3, _T("Incr Nb"), iIncrNbWidth);
 	m_wndListGrid.InsertColumn (4, _T("Comment"), iCommentWidth);
-	for(int i=0;i<5;i++)
+	for(int i=0;i<m_wndEditGrid.GetColumnCount();i++)
 	{
 		m_wndEditGrid.SetColumnLocked(i,TRUE);
 		m_wndListGrid.SetColumnLocked(i,TRUE);

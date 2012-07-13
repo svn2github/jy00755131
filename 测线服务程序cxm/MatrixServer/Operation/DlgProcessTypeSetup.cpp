@@ -97,6 +97,7 @@ BOOL CDlgProcessTypeSetup::OnInitDialog()
 
 	OnShowProcessTypeWindow(PROCESS_IMPULSIVE);
 	OnShowProTypeWindow();
+	MoveTitleToCenter((CWnd*)this);
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }
@@ -329,7 +330,7 @@ void CDlgProcessTypeSetup::OnShowAuxWindow(void)
 	m_wndAuxListGrid.InsertColumn (0, _T("Nb"), iNbWidth);
 	m_wndAuxEditGrid.InsertColumn (1, _T("Processing"), iProcessingWidth-1);
 	m_wndAuxListGrid.InsertColumn (1, _T("Processing"), iProcessingWidth-1);
-	for(int i=0;i<2;i++)
+	for(int i=0;i<m_wndAuxEditGrid.GetColumnCount();i++)
 	{
 		m_wndAuxEditGrid.SetColumnLocked(i,TRUE);
 		m_wndAuxListGrid.SetColumnLocked(i,TRUE);
@@ -387,7 +388,32 @@ void CDlgProcessTypeSetup::OnShowAcqWindow(void)
 		m_wndAcqEditGrid.SetColumnLocked(i,TRUE);
 		m_wndAcqListGrid.SetColumnLocked(i,TRUE);
 	}
-	m_wndAcqEditGrid.AddRow();
+	CBCGPGridRow* pRow = m_wndAcqEditGrid.CreateRow (iCount);
+	int iColumnNum = 0;
+	if (iCount > 0)
+	{
+		if (m_oAcqControlsShow.m_bAcqNb == true)
+		{
+			pRow->GetItem (iColumnNum)->SetValue (_T(""));
+			iColumnNum++;
+		}
+		if (m_oAcqControlsShow.m_bAcqType == true)
+		{
+			pRow->GetItem (iColumnNum)->SetValue (1);
+			iColumnNum++;
+		}
+		if (m_oAcqControlsShow.m_bAcqSignStack == true)
+		{
+			pRow->GetItem (iColumnNum)->SetValue (_T("plus"));
+			iColumnNum++;
+		}
+		if (m_oAcqControlsShow.m_bAcqOutput == true)
+		{
+			pRow->GetItem (iColumnNum)->SetValue (_T("none"));
+			iColumnNum++;
+		}
+	}
+	m_wndAcqEditGrid.AddRow(pRow, TRUE);
 	m_wndAcqEditGrid.AdjustLayout();
 }
 
@@ -406,7 +432,7 @@ void CDlgProcessTypeSetup::OnShowProTypeWindow(void)
 	m_wndProTypeEditGrid.InsertColumn (1, _T("Label"), iLabelWidth-1);
 	m_wndProTypeListGrid.InsertColumn (0, _T("Nb"), iNbWidth);
 	m_wndProTypeListGrid.InsertColumn (1, _T("Label"), iLabelWidth-1);
-	for(int i=0;i<2;i++)
+	for(int i=0;i<m_wndProTypeEditGrid.GetColumnCount();i++)
 	{
 		m_wndProTypeEditGrid.SetColumnLocked(i,TRUE);
 		m_wndProTypeListGrid.SetColumnLocked(i,TRUE);

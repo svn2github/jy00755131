@@ -13,4 +13,9 @@
 #define PROCESS_STANDARD		0		// 标准
 #define PROCESS_ADVANCE			1		// 高级
 #define ControlsInterval		5		// 控件之间的间距
+// 定义选择字符串
+#define VIBROMOVING_STRING_SEQ  _T("SEQUIENTIAL")
+#define VIBROMOVING_STRING_RND  _T("RANDOM")
+/** 将标题栏设置在居中位置，在前面添加空格*/
+extern void MoveTitleToCenter(CWnd* pWnd);
 #endif

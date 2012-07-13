@@ -9,6 +9,8 @@
 #include "DlgSourceTypeSetup.h"
 #include "DlgSourceShotSetup.h"
 #include "DlgProcessTypeSetup.h"
+#include "DlgCommentTypeSetup.h"
+#include "DlgDelaySetup.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -157,6 +159,8 @@ void COperationView::OnSetupNoiseediting()
 void COperationView::OnSetupComments()
 {
 	// TODO: 在此添加命令处理程序代码
+	CDlgCommentTypeSetup dlg;
+	dlg.DoModal();
 }
 
 
@@ -169,6 +173,8 @@ void COperationView::OnSetupOptions()
 void COperationView::OnSetupDelaysetup()
 {
 	// TODO: 在此添加命令处理程序代码
+	CDlgDelaySetup dlg;
+	dlg.DoModal();
 }
 
 
