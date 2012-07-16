@@ -34,6 +34,9 @@ protected:
 	afx_msg void OnPaint();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	// »’÷æ ‰≥ˆ
+	void AppendLog(LPCTSTR strLog);
 };
 
 /////////////////////////////////////////////////////////////////////////////

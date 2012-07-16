@@ -16,6 +16,8 @@
 // 定义选择字符串
 #define VIBROMOVING_STRING_SEQ  _T("SEQUIENTIAL")
 #define VIBROMOVING_STRING_RND  _T("RANDOM")
+// OutPut输出行数
+#define OutPutStoreRowsLimit	200
 /** 将标题栏设置在居中位置，在前面添加空格*/
 extern void MoveTitleToCenter(CWnd* pWnd);
 #endif

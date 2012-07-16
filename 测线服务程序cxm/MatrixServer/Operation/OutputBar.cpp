@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Operation.h"
 #include "outputbar.h"
-
+#include "Parameter.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -49,14 +49,23 @@ int COutputBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Create list window.
 	// TODO: create your own window here:
 	const DWORD dwViewStyle =	
-		LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
+		LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT;
 	
 	if (!m_wndList.Create (dwViewStyle, rectDummy, this, 1))
 	{
 		TRACE0("Failed to create output view\n");
 		return -1;      // fail to create
 	}
-
+	CRect rect;
+	GetClientRect(&rect);
+	m_wndList.InsertColumn(0, _T(""));
+	m_wndList.SetColumnWidth(0, rect.Width()-18);
+	CString str = _T("");
+	for (int i= 0; i<210; i++)
+	{
+		str.Format(_T("%d"), i);
+		AppendLog(str);
+	}
 	return 0;
 }
 
@@ -80,4 +89,16 @@ void COutputBar::OnPaint()
 	rectList.InflateRect (1, 1);
 	dc.Draw3dRect (rectList,	::GetSysColor (COLOR_3DSHADOW), 
 								::GetSysColor (COLOR_3DSHADOW));
+}
+// 日志输出
+void COutputBar::AppendLog(LPCTSTR strLog)
+{
+	if(!m_wndList.GetSafeHwnd())
+		return;
+	m_wndList.InsertItem(0,strLog);
+	// 只保留最新的200条记录
+	if(m_wndList.GetItemCount()>=OutPutStoreRowsLimit)
+	{
+		m_wndList.DeleteItem(m_wndList.GetItemCount() - 1);
+	}
 }
