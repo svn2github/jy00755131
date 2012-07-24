@@ -9,6 +9,7 @@
 #include "VPToDoBar.h"
 #include "ActiveAcqBar.h"
 #include "OutputBar.h"
+#include "..\\MatrixCommDll\\MatrixCommDll.h"
 class CMainFrame : public CBCGPFrameWnd
 {
 	
@@ -51,6 +52,13 @@ public:
 	CBitmap					m_bmpIconConnected;
 	CBitmap					m_bmpIconDisConnected;
 	bool					m_bServerConnected;
+public:
+	// 通讯类指针
+	CMatrixCommDll*	m_pMatrixCommDll;
+	// 客户端通讯类指针
+	CCommClient* m_pCommClient;
+	// Dll句柄
+	HINSTANCE m_hCommDll;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -63,6 +71,12 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	BOOL CreateStatusBar ();
+	// 创建客户端通讯
+	void OnCreateClientComm();
+	// 释放客户端通讯
+	void OnDeleteClientComm();
+public:
+	afx_msg void OnDestroy();
 };
 
 

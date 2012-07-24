@@ -18,6 +18,10 @@
 #define VIBROMOVING_STRING_RND  _T("RANDOM")
 // OutPut输出行数
 #define OutPutStoreRowsLimit	200
+/** C/S接收缓冲区大小*/
+#define ClientRecBufferSize					8192000
+/** C/S发送缓冲区大小*/
+#define ClientSndBufferSize					8192000
 /** 将标题栏设置在居中位置，在前面添加空格*/
 extern void MoveTitleToCenter(CWnd* pWnd);
 #endif
