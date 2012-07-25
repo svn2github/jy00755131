@@ -259,6 +259,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	ShowControlBar (&m_wndVPToDo, FALSE, FALSE, TRUE);
 	ShowControlBar (&m_wndVPDone, FALSE, FALSE, TRUE);
 
+	OnInitSocketLib();
 	m_hCommDll=::LoadLibrary(_T("MatrixCommDll.dll"));
 	// 创建客户端通讯
 	OnCreateClientComm();
@@ -440,9 +441,9 @@ void CMainFrame::OnCreateClientComm()
 	else
 	{
 		m_pMatrixCommDll = (*pfn)();
+		m_pMatrixCommDll->OnInit();
 		m_pCommClient = m_pMatrixCommDll->CreateCommClient();
-		m_pMatrixCommDll->CreateSocket(m_pCommClient, 0, FD_READ|FD_WRITE|FD_CONNECT|FD_CONNECT);
-		m_pMatrixCommDll->SetSocketBuffer(m_pCommClient->m_hSocket, ClientSndBufferSize, ClientRecBufferSize);
+		m_pCommClient->OnInit();
 	}
 }
 
@@ -458,6 +459,8 @@ void CMainFrame::OnDeleteClientComm()
 	}
 	else
 	{
+		m_pCommClient->OnClose();
+		m_pMatrixCommDll->OnClose();
 		m_pMatrixCommDll->DeleteCommClient(m_pCommClient);
 		(*pfn)(m_pMatrixCommDll);
 	}
@@ -468,5 +471,30 @@ void CMainFrame::OnDestroy()
 	CBCGPFrameWnd::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
+	OnDeleteClientComm();
 	FreeLibrary(m_hCommDll);
+	OnCloseSocketLib();
+}
+
+// 初始化套接字库
+void CMainFrame::OnInitSocketLib(void)
+{
+	WSADATA wsaData;
+	CString str = _T("");
+	if (WSAStartup(0x0202, &wsaData) != 0)
+	{
+		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
+}
+// 释放套接字库
+void CMainFrame::OnCloseSocketLib(void)
+{
+	CString str = _T("");
+	// 释放套接字库
+	if (WSACleanup() != 0)
+	{
+		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
 }

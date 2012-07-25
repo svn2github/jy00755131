@@ -11,9 +11,10 @@
 #include "Parameter.h"
 #include <list>
 #include <map>
-
+#include <hash_map>
 using std::list;
 using std::map;
+using std::hash_map;
 /*
 *	if using C++ Compiler to compile the file, adopting C linkage mode
 */
@@ -140,15 +141,17 @@ public:
 * @class CSndFrame
 * @brief 通讯发送帧类
 */
-class CCommSocket;
+class CClientSocket;
 class MATRIXCOMMDLL_API CCommSndFrame : public CCommFrame
 {
 public:
 	CCommSndFrame(void);
 	~CCommSndFrame(void);
 public:
-	/** Socket类指针*/
-	CCommSocket* m_pCommSocket;
+	/** 客户端Socket类指针*/
+	CClientSocket* m_pClientSocket;
+	/** 客户端连接有效标志符*/
+	bool m_bConnectValid;
 	/**
 	* @brief 已发送帧索引关键字
 	*/
@@ -274,6 +277,7 @@ public:
 * @brief 通讯接收线程类
 * @note 继承自CCommThread
 */
+class CCommClient;
 class MATRIXCOMMDLL_API CCommRecThread : public CCommThread
 {
 public:
@@ -292,6 +296,15 @@ public:
 	CCommRecFrame* m_pCommRecFrame;
 	/** 发送帧类指针*/
 	CCommSndFrame* m_pCommSndFrame;
+	/** 连接客户端索引指针*/
+	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
+private:
+	/** 连接验证*/
+	bool m_bCheckConnected;
+	/** 客户端验证时间次数计数*/
+	unsigned int m_uiClientCheckCount;
+	/** 客户端活跃时间间隔计数*/
+	unsigned int m_uiClientActiveCount;
 public:
 	/**
 	* @fn void OnProc(void)
@@ -316,6 +329,10 @@ public:
 	* @return void
 	*/
 	virtual void OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize);
+	// 向所有在线客户端广播配置文件变更
+	void BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize);
+	// 监视客户端是否活跃
+	void MonitorClientActive(bool bActive);
 };
 /**
 * @class CCommSndThread
@@ -334,27 +351,46 @@ public:
 	void OnProc(void);
 };
 
-
 /**
-* @class CCommSocket
+* @class CCommMonitorThread
+* @brief 通讯监视线程类
+*/
+class MATRIXCOMMDLL_API CCommMonitorThread : public CCommThread
+{
+public:
+	CCommMonitorThread(void);
+	~CCommMonitorThread(void);
+public:
+	/** 连接客户端索引指针*/
+	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
+	/** 需要关闭的客户端指针队列*/
+	list<CCommClient*> m_olsClientClose;
+public:
+	// 处理函数
+	void OnProc(void);
+};
+/**
+* @class CClientSocket
 * @brief 从Dll导出的Socket类
 */
-class MATRIXCOMMDLL_API CCommSocket : public CAsyncSocket
+class MATRIXCOMMDLL_API CClientSocket : public CAsyncSocket
 {
 public:
 	/**
 	* @fn CCommSocket(void)
 	* @detail 构造函数
 	*/
-	CCommSocket();
+	CClientSocket();
 	/**
 	* @fn ~CCommSocket(void)
 	* @detail 析构函数
 	*/
-	virtual ~CCommSocket();
+	virtual ~CClientSocket();
 	virtual void OnReceive(int nErrorCode);
 	virtual void OnClose(int nErrorCode);
 public:
+	/** 连接客户端索引指针*/
+	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
 	/** 接收缓冲区*/
 	char m_cRecBuf[ServerRecBufSize];
 	/** 发送缓冲区*/
@@ -365,28 +401,27 @@ public:
 	int m_iPosProc;
 	/** 帧内容长度*/
 	unsigned short m_usFrameInfoSize;
-	/** 接收帧*/
-	CCommRecFrame m_oRecFrame;
-	/** 发送帧*/
-	CCommSndFrame m_oSndFrame;
-	/** 接收线程*/
-	CCommRecThread m_oRecThread;
-	/** 发送线程*/
-	CCommSndThread m_oSndThread;
+	/** 连接客户端类指针*/
+	CCommClient* m_pComClient;
 public:
-	// 处理接收帧
-	void OnProcRec(int iSize);
 	// 初始化
-	void OnInit();
+	void OnInit(CCommClient* pComClient,int iSndBufferSize, int iRcvBufferSize);
+	/**
+	* @fn void SetSocketBuffer(SOCKET s, int iSndBufferSize, int iRcvBufferSize)
+	* @detail 设置Socket缓冲区大小
+	*/
+	virtual void SetSocketBuffer(int iSndBufferSize, int iRcvBufferSize);
 	// 关闭
 	void OnClose();
+	// 处理接收帧
+	void OnProcRec(int iSize);
 };
 
 /**
 * @class CCommClient
-* @brief 从Dll导出的客户端Socket类
+* @brief 与服务器连接的客户端成员类
 */
-class MATRIXCOMMDLL_API CCommClient : public CCommSocket
+class MATRIXCOMMDLL_API CCommClient
 {
 public:
 	/**
@@ -399,9 +434,47 @@ public:
 	* @detail 析构函数
 	*/
 	~CCommClient();
-	virtual void OnConnect(int nErrorCode);
+public:
+	/** 接收客户端帧成员类*/
+	CCommRecFrame m_oRecFrame;
+	/** 接收客户端帧的处理线程成员类*/
+	CCommRecThread m_oRecThread;
+	/** 发送客户端帧成员类*/
+	CCommSndFrame m_oSndFrame;
+	/** 发送客户端帧的处理线程成员类*/
+	CCommSndThread m_oSndThread;
+	/** 接收客户端通讯成员类*/
+	CClientSocket m_oClientSocket;
+// 	/** DLL函数调用类成员*/
+// 	CMatrixDllCall* m_pMatrixDllCall;
+	/** 连接客户端索引指针*/
+	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
+public:
+	// 创建一个客户端连接信息
+	virtual void OnInit();
+	// 释放一个客户端连接信息
+	virtual void OnClose();
 };
 
+/**
+* @class CCommServer
+* @brief 服务端的Socket类
+*/
+class MATRIXCOMMDLL_API CCommServer : public CAsyncSocket
+{
+public:
+	CCommServer();
+	virtual ~CCommServer();
+	virtual void OnAccept(int nErrorCode);
+public:
+	/** 客户端连接索引*/
+	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
+public:
+	// 初始化
+	virtual void OnInit(unsigned int uiSocketPort = ServerClientPort, int iSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
+	// 关闭
+	virtual void OnClose(void);
+};
 /**
 * @class CMatrixCommDll
 * @brief 从Dll导出的通讯接口类
@@ -418,27 +491,13 @@ public:
 	* @detail 析构函数
 	*/
 	~CMatrixCommDll();
+public:
+	/** 客户端连接索引*/
+	hash_map<SOCKET, CCommClient*> m_oComClientMap;
+	/** 监视客户端线程*/
+	CCommMonitorThread m_oMonitorThread;
+public:
 	// TODO: 在此添加您的方法。
-	/**
-	* @fn void OnInitSocketLib(void)
-	* @detail 初始化套接字库
-	*/
-	virtual void OnInitSocketLib(void);
-	/**
-	* @fn void OnCloseSocketLib(void)
-	* @detail 释放套接字库
-	*/
-	virtual void OnCloseSocketLib(void);
-	/**
-	* @fn void CreateSocket(CAsyncSocket* pSocket, unsigned int uiSocketPort, long lEvent)
-	* @detail 创建客户端套接字
-	*/
-	virtual void CreateSocket(CAsyncSocket* pSocket, unsigned int uiSocketPort, long lEvent);
-	/**
-	* @fn void SetSocketBuffer(SOCKET s, int iSndBufferSize, int iRcvBufferSize)
-	* @detail 设置Socket缓冲区大小
-	*/
-	virtual void SetSocketBuffer(SOCKET s, int iSndBufferSize, int iRcvBufferSize);
 	/**
 	* @fn CCommClient* CreateCommClient(void)
 	* @detail 创建客户端
@@ -449,6 +508,20 @@ public:
 	* @detail 释放客户端
 	*/
 	virtual void DeleteCommClient(CCommClient* pClass);
+	/**
+	* @fn CCommServer* CreateCommServer(void)
+	* @detail 创建客户端
+	*/
+	virtual CCommServer* CreateCommServer(void);
+	/**
+	* @fn void DeleteCommServer(CCommServer* pClass)
+	* @detail 释放客户端
+	*/
+	virtual void DeleteCommServer(CCommServer* pClass);
+	/** 初始化*/
+	virtual void OnInit(void);
+	/** 关闭*/
+	virtual void OnClose(void);
 };
 
 extern MATRIXCOMMDLL_API int nMatrixCommDll;

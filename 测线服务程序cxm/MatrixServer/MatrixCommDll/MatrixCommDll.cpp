@@ -62,64 +62,14 @@ CMatrixCommDll::CMatrixCommDll()
 }
 CMatrixCommDll::~CMatrixCommDll()
 {
-
-}
-// 初始化套接字库
-void CMatrixCommDll::OnInitSocketLib(void)
-{
-	WSADATA wsaData;
-	CString str = _T("");
-	if (WSAStartup(0x0202, &wsaData) != 0)
-	{
-		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-	}
-}
-// 释放套接字库
-void CMatrixCommDll::OnCloseSocketLib(void)
-{
-	CString str = _T("");
-	// 释放套接字库
-	if (WSACleanup() != 0)
-	{
-		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-	}
-}
-
-// 创建套接字
-void CMatrixCommDll::CreateSocket(CAsyncSocket* pSocket, unsigned int uiSocketPort, long lEvent)
-{
-	CString str = _T("");
-	if (FALSE == pSocket->Create(uiSocketPort, SOCK_STREAM, lEvent, NULL))
-	{
-		str.Format(_T("Client Socket Create Error %d!"), GetLastError());
-		AfxMessageBox(str);
-		return;
-	}
-}
-
-// 设置Socket缓冲区大小
-void CMatrixCommDll::SetSocketBuffer(SOCKET s, int iSndBufferSize, int iRcvBufferSize)
-{
-	CString str = _T("");
-	if (SOCKET_ERROR == setsockopt(s, SOL_SOCKET, SO_SNDBUF,  
-		reinterpret_cast<const char *>(&iSndBufferSize), sizeof(int)))
-	{
-		str.Format(_T("Client Socket Set SndBuf Error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-	}
-	if (SOCKET_ERROR == setsockopt(s, SOL_SOCKET, SO_RCVBUF,  
-		reinterpret_cast<const char *>(&iRcvBufferSize), sizeof(int)))
-	{
-		str.Format(_T("Client Socket Set RcvBuf Error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-	}
 }
 
 CCommClient* CMatrixCommDll::CreateCommClient(void)
 {
-	return new CCommClient;
+	CCommClient* pCommClient = NULL;
+	pCommClient = new CCommClient;
+	pCommClient->m_pComClientMap = &m_oComClientMap;
+	return pCommClient;
 }
 void CMatrixCommDll::DeleteCommClient(CCommClient* pClass)
 {
@@ -127,4 +77,32 @@ void CMatrixCommDll::DeleteCommClient(CCommClient* pClass)
 	{
 		delete pClass;
 	}
+}
+
+CCommServer* CMatrixCommDll::CreateCommServer(void)
+{
+	CCommServer* pCommServer = NULL;
+	pCommServer = new CCommServer;
+	pCommServer->m_pComClientMap = &m_oComClientMap;
+	return pCommServer;
+}
+void CMatrixCommDll::DeleteCommServer(CCommServer* pClass)
+{
+	if (pClass != NULL)
+	{
+		delete pClass;
+	}
+}
+
+void CMatrixCommDll::OnInit(void)
+{
+	m_oComClientMap.clear();
+	m_oMonitorThread.m_pComClientMap = &m_oComClientMap;
+	m_oMonitorThread.OnInit();
+}
+
+void CMatrixCommDll::OnClose(void)
+{
+	m_oMonitorThread.OnClose();
+	m_oComClientMap.clear();
 }

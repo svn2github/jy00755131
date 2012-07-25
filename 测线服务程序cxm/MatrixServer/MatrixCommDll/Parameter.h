@@ -13,13 +13,13 @@
 /** 数据表网格大小*/
 #define DataTableWindowSize					270
 /** C/S接收缓冲区大小*/
-#define ServerRecBufferSize					8192000
+#define CommRecBufferSize					8192000
 /** C/S发送缓冲区大小*/
-#define ServerSndBufferSize					8192000
+#define CommSndBufferSize					8192000
 /** C/S通讯端口*/
 #define ServerClientPort					0x8330
 /** 最多连接的客户端个数*/
-#define ListenClientMaxNum					5
+#define ListenClientMaxNum					15
 /** 网络接收缓冲区大小*/
 #define ServerRecBufSize					8192000
 /** 最大接收帧结构体数*/
@@ -42,8 +42,6 @@
 #define ProcBufferSize						240000
 /** 两次FieldOn时间间隔*/
 #define FieldOnWaitForTime					120000
-/** 自定义关闭客户端消息*/
-#define CloseClientMsg						(WM_USER + 100)
 /**
 * @brief 命令字和通讯协议/n
 * 查询某个区域客户端只需发送行号和区域号/n

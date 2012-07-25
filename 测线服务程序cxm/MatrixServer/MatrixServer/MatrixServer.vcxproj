@@ -104,17 +104,10 @@
     <None Include="res\MatrixServer.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\MatrixCommDll\MatrixCommDll.h" />
     <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h" />
-    <ClInclude Include="ClientCommThread.h" />
-    <ClInclude Include="ClientCommFrame.h" />
-    <ClInclude Include="ClientRecFrame.h" />
-    <ClInclude Include="ClientSndFrame.h" />
-    <ClInclude Include="ClientSndThread.h" />
-    <ClInclude Include="ClientSocket.h" />
-    <ClInclude Include="Comm.h" />
-    <ClInclude Include="CommClient.h" />
+    <ClInclude Include="CommDll.h" />
     <ClInclude Include="CommProtocol.h" />
-    <ClInclude Include="CommServer.h" />
     <ClInclude Include="CXMLDOMDocument.h" />
     <ClInclude Include="CXMLDOMElement.h" />
     <ClInclude Include="CXMLDOMNode.h" />
@@ -125,19 +118,10 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="ClientRecThread.h" />
     <ClInclude Include="XMLDOMTool.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ClientCommThread.cpp" />
-    <ClCompile Include="ClientCommFrame.cpp" />
-    <ClCompile Include="ClientRecFrame.cpp" />
-    <ClCompile Include="ClientSndFrame.cpp" />
-    <ClCompile Include="ClientSndThread.cpp" />
-    <ClCompile Include="ClientSocket.cpp" />
-    <ClCompile Include="Comm.cpp" />
-    <ClCompile Include="CommClient.cpp" />
-    <ClCompile Include="CommServer.cpp" />
+    <ClCompile Include="CommDll.cpp" />
     <ClCompile Include="MatrixDllCall.cpp" />
     <ClCompile Include="MatrixServer.cpp" />
     <ClCompile Include="MatrixServerDlg.cpp" />
@@ -145,7 +129,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ClientRecThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MatrixServer.rc" />

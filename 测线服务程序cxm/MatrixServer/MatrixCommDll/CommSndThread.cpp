@@ -41,8 +41,10 @@ void CCommSndThread::OnProc(void)
 	}
 	bReSend = m_pCommSndFrame->OnReSendFrame();
 	LeaveCriticalSection(&m_pCommSndFrame->m_oSecClientFrame);
-// 	if (bReSend == false)
-// 	{
-// 		PostMessage(AfxGetApp()->GetMainWnd()->m_hWnd, CloseClientMsg, (DWORD)m_pClientSndFrame->m_pClientSocket->m_pComClient, 0);
-// 	}
+	if (bReSend == false)
+	{
+		EnterCriticalSection(&m_pCommSndFrame->m_oSecClientFrame);
+		m_pCommSndFrame->m_bConnectValid = false;
+		LeaveCriticalSection(&m_pCommSndFrame->m_oSecClientFrame);
+	}
 }

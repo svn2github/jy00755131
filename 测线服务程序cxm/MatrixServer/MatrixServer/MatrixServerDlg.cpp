@@ -73,7 +73,6 @@ BEGIN_MESSAGE_MAP(CMatrixServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_OPENROUTPOWER, &CMatrixServerDlg::OnBnClickedBtnOpenroutpower)
 	ON_BN_CLICKED(IDC_BTN_GETROUTINSTRUMENTNUM, &CMatrixServerDlg::OnBnClickedBtnGetroutinstrumentnum)
 	ON_BN_CLICKED(IDC_BTN_GETSNBYLOCATION, &CMatrixServerDlg::OnBnClickedBtnGetsnbylocation)
-	ON_MESSAGE(CloseClientMsg, &CMatrixServerDlg::OnCloseClient)
 END_MESSAGE_MAP()
 
 
@@ -109,11 +108,12 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	OnInitSocketLib();
 	// 初始化动态链接库
 	m_oMatrixDllCall.OnInit(_T("MatrixServerDll.dll"));
 	// 初始化与客户端通讯连接
-	m_oCom.m_pMatrixDllCall = &m_oMatrixDllCall;
-	m_oCom.OnInit();
+	m_oComDll.m_pMatrixDllCall = &m_oMatrixDllCall;
+	m_oComDll.OnInit(_T("MatrixCommDll.dll"));
 	GetDlgItem(IDC_BN_START)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BN_STOP)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BN_ADCSET_ALL)->EnableWindow(FALSE);
@@ -205,9 +205,10 @@ void CMatrixServerDlg::OnDestroy()
 
 	// TODO: 在此处添加消息处理程序代码
 	// 关闭与客户端通讯连接
-	m_oCom.OnClose();
+	m_oComDll.OnClose();
 	// 关闭动态链接库
 	m_oMatrixDllCall.OnClose();
+	OnCloseSocketLib();
 }
 void CMatrixServerDlg::OnBnClickedButtonStartsampleAll()
 {
@@ -300,9 +301,25 @@ void CMatrixServerDlg::OnBnClickedBtnGetsnbylocation()
 	}
 }
 
-LRESULT CMatrixServerDlg::OnCloseClient(WPARAM wParam, LPARAM lParam)
+// 初始化套接字库
+void CMatrixServerDlg::OnInitSocketLib(void)
 {
-	CCommClient* pComClient = (CCommClient*)wParam;
-	pComClient->OnClose();
-	return 0;
+	WSADATA wsaData;
+	CString str = _T("");
+	if (WSAStartup(0x0202, &wsaData) != 0)
+	{
+		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
+}
+// 释放套接字库
+void CMatrixServerDlg::OnCloseSocketLib(void)
+{
+	CString str = _T("");
+	// 释放套接字库
+	if (WSACleanup() != 0)
+	{
+		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
 }

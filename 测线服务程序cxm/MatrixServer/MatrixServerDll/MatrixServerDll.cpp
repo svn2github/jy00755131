@@ -622,8 +622,6 @@ void OnInit(m_oEnvironmentStruct* pEnv)
 	OnInitConstVar(pEnv->m_pConstVar, pEnv->m_pLogOutPutOpt);
 	// 初始化仪器通讯信息结构体
 	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo, pEnv->m_pLogOutPutOpt);
-	// 初始化套接字库
-	OnInitSocketLib(pEnv->m_pLogOutPutOpt);
 	// 初始化日志输出线程
 	OnInit_LogOutPutThread(pEnv);
 	// 初始化心跳线程
@@ -805,8 +803,6 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 	OnCloseSocket(pEnv->m_pErrorCodeFrame->m_oErrorCodeFrameSocket);
 	// 关闭ADC数据帧Socket
 	OnCloseSocket(pEnv->m_pADCDataFrame->m_oADCDataFrameSocket);
-	// 释放套接字库
-	OnCloseSocketLib(pEnv->m_pLogOutPutOpt);
 	// 释放常量资源
 	OnCloseConstVar(pEnv->m_pConstVar);
 	// 释放心跳资源

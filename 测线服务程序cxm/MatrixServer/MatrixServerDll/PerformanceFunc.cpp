@@ -886,37 +886,6 @@ bool SendFrame(SOCKET oSocket, char* pFrameData,int iSndFrameSize,
 	}
 	return bReturn;
 }
-// 初始化套接字库
-void OnInitSocketLib(m_oLogOutPutStruct* pLogOutPut)
-{
-	WSADATA data;									// 定义结构体变量
-	WORD w = MAKEWORD(2, 2);			// 初始化套接字版本号
-	int err = WSAStartup(w, &data);							// 初始化套接字库
-	if (err == 0)
-	{
-		AddMsgToLogOutPutList(pLogOutPut, "InitSocketLib", "初始化套接字库成功！");
-	}
-	else
-	{
-		AddMsgToLogOutPutList(pLogOutPut, "InitSocketLib", "初始化套接字库失败！",
-			ErrorType, WSAGetLastError());
-	}
-}
-// 释放套接字库
-void OnCloseSocketLib(m_oLogOutPutStruct* pLogOutPut)
-{
-	// 释放套接字库
-	int err = WSACleanup();	
-	if (err == 0)
-	{
-		AddMsgToLogOutPutList(pLogOutPut, "FreeSocketLib", "释放套接字库成功！");
-	}
-	else
-	{
-		AddMsgToLogOutPutList(pLogOutPut, "FreeSocketLib", "释放套接字库失败！",
-			ErrorType, WSAGetLastError());
-	}
-}
 // 关闭Socket套接字
 void OnCloseSocket(SOCKET oSocket)
 {

@@ -4,7 +4,7 @@
 
 #pragma once
 #include "MatrixDllCall.h"
-#include "Comm.h"
+#include "CommDll.h"
 
 // CMatrixServerDlg 对话框
 class CMatrixServerDlg : public CDialogEx
@@ -34,7 +34,17 @@ public:
 	/** DLL函数调用类成员*/
 	CMatrixDllCall m_oMatrixDllCall;
 	/** 与客户端通讯类成员*/
-	CComm m_oCom;
+	CCommDll m_oComDll;
+	/**
+	* @fn void OnInitSocketLib(void)
+	* @detail 初始化套接字库
+	*/
+	void OnInitSocketLib(void);
+	/**
+	* @fn void OnCloseSocketLib(void)
+	* @detail 释放套接字库
+	*/
+	void OnCloseSocketLib(void);
 public:
 	afx_msg void OnBnClickedBnStart();
 	afx_msg void OnBnClickedBnStop();
@@ -48,5 +58,4 @@ public:
 	afx_msg void OnBnClickedBtnOpenroutpower();
 	afx_msg void OnBnClickedBtnGetroutinstrumentnum();
 	afx_msg void OnBnClickedBtnGetsnbylocation();
-	afx_msg LRESULT OnCloseClient(WPARAM wParam, LPARAM lParam);
 };

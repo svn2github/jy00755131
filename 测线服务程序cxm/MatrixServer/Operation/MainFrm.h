@@ -75,6 +75,16 @@ private:
 	void OnCreateClientComm();
 	// 释放客户端通讯
 	void OnDeleteClientComm();
+	/**
+	* @fn void OnInitSocketLib(void)
+	* @detail 初始化套接字库
+	*/
+	void OnInitSocketLib(void);
+	/**
+	* @fn void OnCloseSocketLib(void)
+	* @detail 释放套接字库
+	*/
+	void OnCloseSocketLib(void);
 public:
 	afx_msg void OnDestroy();
 };

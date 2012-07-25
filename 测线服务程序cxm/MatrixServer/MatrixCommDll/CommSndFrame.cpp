@@ -3,13 +3,15 @@
 
 CCommSndFrame::CCommSndFrame(void)
 {
-	m_pCommSocket = NULL;
+	m_pClientSocket = NULL;
 	m_oSndFrameMap.clear();
+	m_bConnectValid = true;
 }
 
 
 CCommSndFrame::~CCommSndFrame(void)
 {
+	m_oSndFrameMap.clear();
 }
 
 
@@ -74,7 +76,7 @@ void CCommSndFrame::MakeSetFrame(unsigned short usCmd, char* pChar, unsigned int
 // Éú³É·¢ËÍÖ¡
 void CCommSndFrame::MakeSendFrame(m_oCommFrameStructPtr ptrFrame)
 {
-	char* pChar = m_pCommSocket->m_cSndBuf;
+	char* pChar = m_pClientSocket->m_cSndBuf;
 	int iPos = 0;
 	unsigned short usCmd = 0;
 	unsigned short usFrameLength = 0;
@@ -124,7 +126,7 @@ void CCommSndFrame::MakeSendFrame(m_oCommFrameStructPtr ptrFrame)
 	iPos += ptrFrame->m_usFrameInfoSize;
 	pChar[iPos] = FrameTail;
 	iPos++;
-	m_pCommSocket->Send(pChar, 
+	m_pClientSocket->Send(pChar, 
 		ptrFrame->m_usFrameInfoSize + FrameHeadSize + FrameLengthSize + FrameTailSize + FrameHeadInfoSize);
 }
 

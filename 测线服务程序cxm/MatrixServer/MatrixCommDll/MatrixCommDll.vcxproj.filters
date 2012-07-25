@@ -44,9 +44,6 @@
     <ClCompile Include="CommFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CommSocket.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CommClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -63,6 +60,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CommSndThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommClientSocket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommMonitorThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

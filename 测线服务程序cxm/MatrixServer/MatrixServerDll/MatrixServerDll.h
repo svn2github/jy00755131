@@ -2052,10 +2052,6 @@ MatrixServerDll_API void ClearRcvFrameBuf(SOCKET oSocket, char* pFrameData,
 // 发送帧
 MatrixServerDll_API bool SendFrame(SOCKET oSocket, char* pFrameData,int iSndFrameSize, 
 	unsigned short usPort, unsigned int uiIP, m_oLogOutPutStruct* pLogOutPut = NULL);
-// 初始化套接字库
-MatrixServerDll_API void OnInitSocketLib(m_oLogOutPutStruct* pLogOutPut = NULL);
-// 释放套接字库
-MatrixServerDll_API void OnCloseSocketLib(m_oLogOutPutStruct* pLogOutPut = NULL);
 // 关闭Socket套接字
 MatrixServerDll_API void OnCloseSocket(SOCKET oSocket);
 // 清空接收缓冲区

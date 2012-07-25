@@ -1,12 +1,5 @@
-// ClientSocket.cpp : 实现文件
-//
-
 #include "stdafx.h"
-#include "MatrixServer.h"
-#include "ClientSocket.h"
-#include "CommClient.h"
-
-// CClientSocket
+#include "MatrixCommDll.h"
 
 CClientSocket::CClientSocket()
 {
@@ -110,7 +103,7 @@ void CClientSocket::OnProcRec(int iSize)
 				else
 				{
 					// 帧解析
-					m_pComClient->m_oClientRecFrame.PhraseFrame(m_cRecBuf + (i + m_iPosRec + FrameTailSize - m_usFrameInfoSize), 
+					m_pComClient->m_oRecFrame.PhraseFrame(m_cRecBuf + (i + m_iPosRec + FrameTailSize - m_usFrameInfoSize), 
 						m_usFrameInfoSize - FrameTailSize - FrameHeadInfoSize);
 					i++;
 				}
@@ -157,32 +150,36 @@ void CClientSocket::OnReceive(int nErrorCode)
 	}
 	CAsyncSocket::OnReceive(nErrorCode);
 }
-
 void CClientSocket::OnClose(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	m_pComClient->OnClose();
 	CAsyncSocket::OnClose(nErrorCode);
 }
-
+// 设置Socket缓冲区大小
+void CClientSocket::SetSocketBuffer(int iSndBufferSize, int iRcvBufferSize)
+{
+	CString str = _T("");
+	if (SOCKET_ERROR == setsockopt(m_hSocket, SOL_SOCKET, SO_SNDBUF,  
+		reinterpret_cast<const char *>(&iSndBufferSize), sizeof(int)))
+	{
+		str.Format(_T("Client Socket Set SndBuf Error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
+	if (SOCKET_ERROR == setsockopt(m_hSocket, SOL_SOCKET, SO_RCVBUF,  
+		reinterpret_cast<const char *>(&iRcvBufferSize), sizeof(int)))
+	{
+		str.Format(_T("Client Socket Set RcvBuf Error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
+}
 // 初始化
 void CClientSocket::OnInit(CCommClient* pComClient,int iSndBufferSize, int iRcvBufferSize)
 {
 	m_pComClient = pComClient;
 	m_pComClientMap->insert(hash_map<SOCKET, CCommClient*>::value_type (m_hSocket, pComClient));
-	if (SOCKET_ERROR == setsockopt(m_hSocket, SOL_SOCKET, SO_SNDBUF,  
-		reinterpret_cast<const char *>(&iSndBufferSize), sizeof(int)))
-	{
-		// 写错误日志
-	}
-	if (SOCKET_ERROR == setsockopt(m_hSocket, SOL_SOCKET, SO_RCVBUF,  
-		reinterpret_cast<const char *>(&iRcvBufferSize), sizeof(int)))
-	{
-		// 写错误日志
-	}
+	SetSocketBuffer(iSndBufferSize, iRcvBufferSize);
 }
-
-
 // 关闭
 void CClientSocket::OnClose(void)
 {
@@ -193,5 +190,3 @@ void CClientSocket::OnClose(void)
 		m_pComClientMap->erase(iter);
 	}
 }
-
-

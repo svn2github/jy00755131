@@ -5,6 +5,10 @@ CCommRecThread::CCommRecThread(void)
 {
 	m_pCommRecFrame = NULL;
 	m_pCommSndFrame = NULL;
+	m_pComClientMap = NULL;
+	m_bCheckConnected = false;
+	m_uiClientActiveCount = 0;
+	m_uiClientCheckCount = 0;
 }
 
 
@@ -72,8 +76,8 @@ void CCommRecThread::OnProc(void)
 	}
 	LeaveCriticalSection(&m_pCommSndFrame->m_oSecClientFrame);
 	LeaveCriticalSection(&m_pCommRecFrame->m_oSecClientFrame);
-// 	// 监视客户端是否活跃
-// 	MonitorClientActive(bActive);
+ 	// 监视客户端是否活跃
+ 	MonitorClientActive(bActive);
 }
 // 将帧内容加入待处理任务中
 void CCommRecThread::SaveRecFrameToTask(m_oCommFrameStructPtr ptrFrame)
@@ -92,4 +96,48 @@ void CCommRecThread::SaveRecFrameToTask(m_oCommFrameStructPtr ptrFrame)
 void CCommRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize)
 {
 
+}
+/** 向所有在线客户端广播配置文件变更*/
+void CCommRecThread::BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize)
+{
+	hash_map<SOCKET, CCommClient*>::iterator iter;
+	for (iter = m_pComClientMap->begin(); iter != m_pComClientMap->end(); iter++)
+	{
+		if (iter->second->m_oRecThread.m_bCheckConnected == true)
+		{
+			iter->second->m_oSndFrame.MakeSetFrame(usCmd, pChar, uiSize);
+		}
+	}
+}
+
+/** 监视客户端是否活跃*/
+void CCommRecThread::MonitorClientActive(bool bActive)
+{
+	bool bClose = false;
+	if (bActive == true)
+	{
+		m_uiClientActiveCount = 0;
+	}
+	else
+	{
+		m_uiClientActiveCount++;
+		if (m_uiClientActiveCount >= ClientActiveCountNum)
+		{
+			bClose = true;
+		}
+	}
+	if (m_bCheckConnected == false)
+	{
+		m_uiClientCheckCount++;
+		if (m_uiClientCheckCount >= ClientCheckCountNum)
+		{
+			bClose = true;
+		}
+	}
+	if (bClose == true)
+	{
+		EnterCriticalSection(&m_pCommSndFrame->m_oSecClientFrame);
+		m_pCommSndFrame->m_bConnectValid = false;
+		LeaveCriticalSection(&m_pCommSndFrame->m_oSecClientFrame);
+	}
 }

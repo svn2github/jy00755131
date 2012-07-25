@@ -3,15 +3,36 @@
 
 CCommClient::CCommClient()
 {
-
+	m_pComClientMap = NULL;
 }
+
 CCommClient::~CCommClient()
 {
-
 }
-void CCommClient::OnConnect(int nErrorCode)
+
+// 创建一个客户端连接信息
+void CCommClient::OnInit(void)
 {
-	// TODO: 在此添加专用代码和/或调用基类
-	OnInit();
-	CCommSocket::OnConnect(nErrorCode);
+	m_oClientSocket.m_pComClientMap = m_pComClientMap;
+	m_oClientSocket.OnInit(this, CommSndBufferSize, CommRecBufferSize);
+	m_oRecFrame.OnInit();
+	m_oRecThread.m_pComClientMap = m_pComClientMap;
+	m_oRecThread.m_pCommRecFrame = &m_oRecFrame;
+	m_oRecThread.m_pCommSndFrame = &m_oSndFrame;
+	m_oRecThread.OnInit();
+	m_oSndFrame.OnInit();
+	m_oSndFrame.m_pClientSocket = &m_oClientSocket;
+	m_oSndThread.m_pCommSndFrame = &m_oSndFrame;
+	m_oSndThread.OnInit();
+}
+
+// 释放一个客户端连接信息
+void CCommClient::OnClose(void)
+{
+	m_oClientSocket.OnClose();
+	m_oSndThread.OnClose();
+	m_oRecThread.OnClose();
+	m_oRecFrame.OnClose();
+	m_oSndFrame.OnClose();
+	delete this;
 }

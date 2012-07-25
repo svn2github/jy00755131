@@ -141,6 +141,7 @@
     <ClCompile Include="WorkSpaceBar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\MatrixCommDll\MatrixCommDll.h" />
     <ClInclude Include="ActiveAcqBar.h" />
     <ClInclude Include="ActiveSourceCtrl.h" />
     <ClInclude Include="AllVPBar.h" />

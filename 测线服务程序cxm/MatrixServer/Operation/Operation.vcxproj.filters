@@ -155,6 +155,9 @@
     <ClInclude Include="DlgDelaySetup.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\MatrixCommDll\MatrixCommDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Operation.ico">

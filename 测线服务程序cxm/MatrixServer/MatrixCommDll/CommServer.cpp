@@ -1,22 +1,13 @@
-// ComServer.cpp : 实现文件
-//
-
 #include "stdafx.h"
-#include "MatrixServer.h"
-#include "CommServer.h"
-
-
-// CComServer
+#include "MatrixCommDll.h"
 
 CCommServer::CCommServer()
 {
-	m_pMatrixDllCall = NULL;
-	m_oComClientMap.clear();
+	m_pComClientMap = NULL;
 }
 
 CCommServer::~CCommServer()
 {
-	m_oComClientMap.clear();
 }
 
 
@@ -30,8 +21,7 @@ void CCommServer::OnAccept(int nErrorCode)
 	pComClient = new CCommClient;
 	if (CAsyncSocket::Accept(pComClient->m_oClientSocket))
 	{
-		pComClient->m_pComClientMap = &m_oComClientMap;
-		pComClient->m_pMatrixDllCall = m_pMatrixDllCall;
+		pComClient->m_pComClientMap = m_pComClientMap;
 		pComClient->OnInit();
 	}
 	else
@@ -56,7 +46,6 @@ void CCommServer::OnInit(unsigned int uiSocketPort, int iSocketType, LPCTSTR lps
 		return;
 	}
 	CAsyncSocket::Listen(ListenClientMaxNum);
-	m_oComClientMap.clear();
 }
 
 
@@ -64,10 +53,10 @@ void CCommServer::OnInit(unsigned int uiSocketPort, int iSocketType, LPCTSTR lps
 void CCommServer::OnClose(void)
 {
 	hash_map<SOCKET, CCommClient*>::iterator iter;
-	int iSize = m_oComClientMap.size();
+	int iSize = m_pComClientMap->size();
 	for (int i=0; i<iSize; i++)
 	{
-		iter = m_oComClientMap.begin();
+		iter = m_pComClientMap->begin();
 		iter->second->OnClose();
 	}
 	Close();
