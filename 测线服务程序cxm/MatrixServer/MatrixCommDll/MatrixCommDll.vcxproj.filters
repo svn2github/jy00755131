@@ -68,9 +68,6 @@
     <ClCompile Include="CommServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CommMonitorThread.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MatrixCommDll.rc">

@@ -3,7 +3,6 @@
 
 CClientSocket::CClientSocket()
 {
-	m_pComClientMap = NULL;
 	memset(m_cRecBuf, 0, ServerRecBufSize);
 	m_iPosRec = 0;
 	m_iPosProc = 0;
@@ -177,16 +176,16 @@ void CClientSocket::SetSocketBuffer(int iSndBufferSize, int iRcvBufferSize)
 void CClientSocket::OnInit(CCommClient* pComClient,int iSndBufferSize, int iRcvBufferSize)
 {
 	m_pComClient = pComClient;
-	m_pComClientMap->insert(hash_map<SOCKET, CCommClient*>::value_type (m_hSocket, pComClient));
+	m_pComClient->m_pComClientMap->insert(hash_map<SOCKET, CCommClient*>::value_type (m_hSocket, pComClient));
 	SetSocketBuffer(iSndBufferSize, iRcvBufferSize);
 }
 // ¹Ø±Õ
 void CClientSocket::OnClose(void)
 {
 	hash_map<SOCKET, CCommClient*>::iterator iter;
-	iter = m_pComClientMap->find(m_hSocket);
-	if (iter != m_pComClientMap->end())
+	iter = m_pComClient->m_pComClientMap->find(m_hSocket);
+	if (iter != m_pComClient->m_pComClientMap->end())
 	{
-		m_pComClientMap->erase(iter);
+		m_pComClient->m_pComClientMap->erase(iter);
 	}
 }

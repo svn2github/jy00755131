@@ -350,25 +350,6 @@ public:
 	// 处理函数
 	void OnProc(void);
 };
-
-/**
-* @class CCommMonitorThread
-* @brief 通讯监视线程类
-*/
-class MATRIXCOMMDLL_API CCommMonitorThread : public CCommThread
-{
-public:
-	CCommMonitorThread(void);
-	~CCommMonitorThread(void);
-public:
-	/** 连接客户端索引指针*/
-	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
-	/** 需要关闭的客户端指针队列*/
-	list<CCommClient*> m_olsClientClose;
-public:
-	// 处理函数
-	void OnProc(void);
-};
 /**
 * @class CClientSocket
 * @brief 从Dll导出的Socket类
@@ -389,8 +370,6 @@ public:
 	virtual void OnReceive(int nErrorCode);
 	virtual void OnClose(int nErrorCode);
 public:
-	/** 连接客户端索引指针*/
-	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
 	/** 接收缓冲区*/
 	char m_cRecBuf[ServerRecBufSize];
 	/** 发送缓冲区*/
@@ -469,11 +448,15 @@ public:
 public:
 	/** 客户端连接索引*/
 	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
+	/** 需要关闭的客户端指针队列*/
+	list<CCommClient*> m_olsClientClose;
 public:
 	// 初始化
 	virtual void OnInit(unsigned int uiSocketPort = ServerClientPort, int iSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
 	// 关闭
 	virtual void OnClose(void);
+	/** 关闭无效的客户端连接*/
+	void CloseInvalidClient(void);
 };
 /**
 * @class CMatrixCommDll
@@ -494,8 +477,6 @@ public:
 public:
 	/** 客户端连接索引*/
 	hash_map<SOCKET, CCommClient*> m_oComClientMap;
-	/** 监视客户端线程*/
-	CCommMonitorThread m_oMonitorThread;
 public:
 	// TODO: 在此添加您的方法。
 	/**

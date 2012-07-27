@@ -97,12 +97,9 @@ void CMatrixCommDll::DeleteCommServer(CCommServer* pClass)
 void CMatrixCommDll::OnInit(void)
 {
 	m_oComClientMap.clear();
-	m_oMonitorThread.m_pComClientMap = &m_oComClientMap;
-	m_oMonitorThread.OnInit();
 }
 
 void CMatrixCommDll::OnClose(void)
 {
-	m_oMonitorThread.OnClose();
 	m_oComClientMap.clear();
 }
