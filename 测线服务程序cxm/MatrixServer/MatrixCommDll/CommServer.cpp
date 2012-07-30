@@ -23,6 +23,7 @@ void CCommServer::OnAccept(int nErrorCode)
 	if (CAsyncSocket::Accept(pComClient->m_oClientSocket))
 	{
 		pComClient->m_pComClientMap = m_pComClientMap;
+		pComClient->m_oProcRecCmdCallBack = m_oProcRecCmdCallBack;
 		pComClient->OnInit();
 	}
 	else

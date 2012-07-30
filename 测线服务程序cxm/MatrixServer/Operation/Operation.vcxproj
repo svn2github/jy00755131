@@ -118,6 +118,7 @@
     <ClCompile Include="ActiveSourceCtrl.cpp" />
     <ClCompile Include="AllVPBar.cpp" />
     <ClCompile Include="ButtonItem.cpp" />
+    <ClCompile Include="CommDll.cpp" />
     <ClCompile Include="DlgCommentTypeSetup.cpp" />
     <ClCompile Include="DlgDelaySetup.cpp" />
     <ClCompile Include="DlgProcessTypeSetup.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="ActiveSourceCtrl.h" />
     <ClInclude Include="AllVPBar.h" />
     <ClInclude Include="ButtonItem.h" />
+    <ClInclude Include="CommDll.h" />
     <ClInclude Include="DlgCommentTypeSetup.h" />
     <ClInclude Include="DlgDelaySetup.h" />
     <ClInclude Include="DlgProcessTypeSetup.h" />

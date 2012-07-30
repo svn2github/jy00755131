@@ -213,5 +213,5 @@ typedef struct InstrumentNet_Struct
 	/** ÒÇÆ÷IP*/
 	unsigned int m_uiIP;
 }m_oInstrumentNetStruct;
-
+//extern CCommDll m_oComDll;
 #endif

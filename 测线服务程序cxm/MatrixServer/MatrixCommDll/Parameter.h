@@ -68,15 +68,15 @@
 /** 帧内容限制*/
 #define FrameInfoSizeLimit					(FrameSizeLimit-FrameHeadSize-FrameLengthSize-FrameHeadInfoSize-FrameTailSize)
 /** 帧头*/
-#define FrameHead1							(char)(0xaa)
+#define FrameHead1							0xaa
 /** 帧头*/
-#define FrameHead2							(char)(0xa5)
+#define FrameHead2							0xa5
 /** 帧头*/
 #define FrameHead3							0x5a
 /** 帧头*/
 #define FrameHead4							0x55
 /** 帧尾*/
-#define FrameTail							(char)(0xff)
+#define FrameTail							0xff
 /** 帧命令执行结果-等待执行*/
 #define CmdResultWait						0x00
 /** 帧命令执行结果-执行成功*/

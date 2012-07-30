@@ -81,6 +81,9 @@
     <ClCompile Include="DlgDelaySetup.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CommDll.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -156,6 +159,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\MatrixCommDll\MatrixCommDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommDll.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

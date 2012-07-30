@@ -39,8 +39,6 @@ void MoveTitleToCenter(CWnd* pWnd)
 	strOut += str;
 	pWnd->SetWindowText(strOut);
 }
-typedef CMatrixCommDll* (*CREATEFN)(void);
-typedef void (*DELETEFN)(CMatrixCommDll*);
 
 BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_WM_CREATE()
@@ -65,8 +63,6 @@ CMainFrame::CMainFrame()
 {
 	// TODO: add member initialization code here
 	m_bServerConnected = false;
-	m_pMatrixCommDll = NULL;
-	m_pCommClient = NULL;
 }
 
 CMainFrame::~CMainFrame()
@@ -260,9 +256,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	ShowControlBar (&m_wndVPDone, FALSE, FALSE, TRUE);
 
 	OnInitSocketLib();
-	m_hCommDll=::LoadLibrary(_T("MatrixCommDll.dll"));
-	// 创建客户端通讯
-	OnCreateClientComm();
+	m_oComDll.OnInit(_T("MatrixCommDll.dll"));
 	return 0;
 }
 
@@ -428,51 +422,14 @@ void CMainFrame::OnConnectServer(CCmdUI* pCmdUI)
 		break;
 	}
 }
-// 创建客户端通讯
-void CMainFrame::OnCreateClientComm()
-{
-	CREATEFN pfn = NULL;
-	pfn = (CREATEFN)GetProcAddress(m_hCommDll, "CreateMatrixCommDll");
-	if (!pfn)
-	{
-		FreeLibrary(m_hCommDll);
-		PostQuitMessage(0);
-	}
-	else
-	{
-		m_pMatrixCommDll = (*pfn)();
-		m_pMatrixCommDll->OnInit();
-		m_pCommClient = m_pMatrixCommDll->CreateCommClient();
-		m_pCommClient->OnInit();
-	}
-}
-
-// 释放客户端通讯
-void CMainFrame::OnDeleteClientComm()
-{
-	DELETEFN pfn = NULL;
-	pfn = (DELETEFN)GetProcAddress(m_hCommDll, "DeleteMatrixCommDll");
-	if (!pfn)
-	{
-		FreeLibrary(m_hCommDll);
-		PostQuitMessage(0);
-	}
-	else
-	{
-		m_pCommClient->OnClose();
-		m_pMatrixCommDll->OnClose();
-		m_pMatrixCommDll->DeleteCommClient(m_pCommClient);
-		(*pfn)(m_pMatrixCommDll);
-	}
-}
 
 void CMainFrame::OnDestroy()
 {
 	CBCGPFrameWnd::OnDestroy();
 
 	// TODO: 在此处添加消息处理程序代码
-	OnDeleteClientComm();
-	FreeLibrary(m_hCommDll);
+	// 关闭与客户端通讯连接
+	m_oComDll.OnClose();
 	OnCloseSocketLib();
 }
 

@@ -18,6 +18,7 @@ void CCommClient::OnInit(void)
 	m_oRecThread.m_pComClientMap = m_pComClientMap;
 	m_oRecThread.m_pCommRecFrame = &m_oRecFrame;
 	m_oRecThread.m_pCommSndFrame = &m_oSndFrame;
+	m_oRecThread.m_oProcRecCmdCallBack = m_oProcRecCmdCallBack;
 	m_oRecThread.OnInit();
 	m_oSndFrame.OnInit();
 	m_oSndFrame.m_pClientSocket = &m_oClientSocket;

@@ -7,7 +7,6 @@
 
 #ifndef _MatrixCommDll_H
 #define _MatrixCommDll_H
-
 #include "Parameter.h"
 #include <list>
 #include <map>
@@ -197,7 +196,7 @@ public:
 	// 生成应答帧
 	void MakeReturnFrame(m_oCommFrameStructPtr ptrFrame);
 	// 生成设置帧
-	void MakeSetFrame(unsigned short usCmd, char* pChar, unsigned int uiSize);
+	virtual void MakeSetFrame(unsigned short usCmd, char* pChar, unsigned int uiSize);
 	// 生成发送帧
 	void MakeSendFrame(m_oCommFrameStructPtr ptrFrame);
 	// 重发过期帧
@@ -273,11 +272,40 @@ public:
 	virtual void OnProc(void);
 };
 /**
+* @brief 仪器区域结构体
+*/
+typedef struct AreaStruct
+{
+	/** 线号，从1开始*/
+	unsigned int m_uiLineNb;
+	/** 区域号，从1开始*/
+	unsigned int m_uiAreaNb;
+	bool operator == (const AreaStruct& rhs) const
+	{
+		return ((m_uiLineNb == rhs.m_uiLineNb) && (m_uiAreaNb == rhs.m_uiAreaNb));
+	}
+	bool operator < (const AreaStruct& rhs) const
+	{
+			if (m_uiLineNb == rhs.m_uiLineNb)
+		{
+			return (m_uiAreaNb < rhs.m_uiAreaNb);
+		}
+		else
+		{
+			return (m_uiLineNb < rhs.m_uiLineNb);
+		}
+	}
+}m_oAreaStruct;
+/**
 * @class CCommRecThread
 * @brief 通讯接收线程类
 * @note 继承自CCommThread
 */
 class CCommClient;
+class CCommRecThread;
+/** 回调函数-接收数据处理*/
+typedef void (CALLBACK* ProcRecCmdCallBack)(unsigned short usCmd, char* pChar, 
+	unsigned int uiSize, CCommRecThread* pRecThread);
 class MATRIXCOMMDLL_API CCommRecThread : public CCommThread
 {
 public:
@@ -298,12 +326,52 @@ public:
 	CCommSndFrame* m_pCommSndFrame;
 	/** 连接客户端索引指针*/
 	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
-private:
+	/** 回调函数-接收数据处理*/
+	ProcRecCmdCallBack m_oProcRecCmdCallBack;
 	/** 连接验证*/
 	bool m_bCheckConnected;
+	/**
+	* @struct InstrumentLocation_Struct
+	* @brief 仪器位置点结构体
+	*/
+	typedef struct InstrumentLocation_Struct
+	{
+		InstrumentLocation_Struct(int iLineIndex, int iPointIndex)
+		{
+			this->m_iLineIndex = iLineIndex;
+			this->m_iPointIndex = iPointIndex;
+		}
+		~InstrumentLocation_Struct()
+		{
+		}
+		bool operator == (const InstrumentLocation_Struct& rhs) const
+		{
+			return ((m_iLineIndex == rhs.m_iLineIndex) && (m_iPointIndex == rhs.m_iPointIndex));
+		}
+		bool operator < (const InstrumentLocation_Struct& rhs) const
+		{
+			if (m_iLineIndex == rhs.m_iLineIndex)
+			{
+				return (m_iPointIndex < rhs.m_iPointIndex);
+			}
+			else
+			{
+				return (m_iLineIndex < rhs.m_iLineIndex);
+			}
+		}
+		/** 线号*/
+		int m_iLineIndex;
+		/** 点号*/
+		int m_iPointIndex;
+	}m_oLocationStruct;
+ 	/** 客户端设备位置索引表*/
+ 	map<m_oLocationStruct, unsigned int> m_oInstrumentWholeTableMap;
+	/** 客户端设备更新区域索引表*/
+	map<m_oAreaStruct, m_oAreaStruct> m_oInstrumentUpdateArea;
+private:
 	/** 客户端验证时间次数计数*/
 	unsigned int m_uiClientCheckCount;
-	/** 客户端活跃时间间隔计数*/
+		/** 客户端活跃时间间隔计数*/
 	unsigned int m_uiClientActiveCount;
 public:
 	/**
@@ -329,10 +397,21 @@ public:
 	* @return void
 	*/
 	virtual void OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize);
+	// 判断仪器更新区域是否已加入索引表
+	virtual BOOL IfAreaExistInMap(m_oAreaStruct oAreaStruct);
+	// 增加对象到索引表
+	virtual void AddAreaToMap(m_oAreaStruct oAreaStruct);
+	// 判断仪器位置索引号是否已加入索引表
+	virtual BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex);
+	// 增加对象到索引表
+	virtual void AddLocationToMap(int iLineIndex, int iPointIndex, unsigned int uiSN);
+	// 根据输入索引号，由索引表得到仪器指针
+	virtual unsigned int GetSnFromLocationMap(int iLineIndex, int iPointIndex);
 	// 向所有在线客户端广播配置文件变更
 	void BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize);
 	// 监视客户端是否活跃
 	void MonitorClientActive(bool bActive);
+
 };
 /**
 * @class CCommSndThread
@@ -428,6 +507,8 @@ public:
 // 	CMatrixDllCall* m_pMatrixDllCall;
 	/** 连接客户端索引指针*/
 	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
+	/** 回调函数-接收数据处理*/
+	ProcRecCmdCallBack m_oProcRecCmdCallBack;
 public:
 	// 创建一个客户端连接信息
 	virtual void OnInit();
@@ -450,6 +531,8 @@ public:
 	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
 	/** 需要关闭的客户端指针队列*/
 	list<CCommClient*> m_olsClientClose;
+	/** 回调函数-接收数据处理*/
+	ProcRecCmdCallBack m_oProcRecCmdCallBack;
 public:
 	// 初始化
 	virtual void OnInit(unsigned int uiSocketPort = ServerClientPort, int iSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
