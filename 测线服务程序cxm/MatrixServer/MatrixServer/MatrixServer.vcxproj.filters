@@ -24,9 +24,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommProtocol.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CXMLDOMDocument.h">
       <Filter>头文件</Filter>
     </ClInclude>

@@ -3,16 +3,17 @@
 
 typedef CMatrixCommDll* (*CREATEFN)(void);
 typedef void (*DELETEFN)(CMatrixCommDll*);
-
+static CCommDll* m_pCommDll;
 void CALLBACK ProcRecCmd(unsigned short usCmd, char* pChar, 
 	unsigned int uiSize, CCommRecThread* pRecThread)
 {
-
+	m_pCommDll->OnProcRecCmd(usCmd, pChar, uiSize, pRecThread);
 }
 CCommDll::CCommDll(void)
 {
 	m_pMatrixCommDll = NULL;
 	m_pCommClient = NULL;
+	m_pCommDll = this;
 }
 
 
@@ -42,6 +43,7 @@ void CCommDll::FreeMatrixCommDll(void)
 void CCommDll::OnCreateClientComm()
 {
 	CREATEFN pfn = NULL;
+	CString str = _T("");
 	pfn = (CREATEFN)GetProcAddress(m_hCommDll, "CreateMatrixCommDll");
 	if (!pfn)
 	{
@@ -54,7 +56,8 @@ void CCommDll::OnCreateClientComm()
 		m_pMatrixCommDll->OnInit();
 		m_pCommClient = m_pMatrixCommDll->CreateCommClient();
 		m_pCommClient->m_oProcRecCmdCallBack = ProcRecCmd;
-		m_pCommClient->OnInit();
+
+		m_pCommClient->OnInit(true);
 	}
 }
 
@@ -88,4 +91,9 @@ void CCommDll::OnClose(void)
 {
 	OnDeleteClientComm();
 	FreeMatrixCommDll();
+}
+/** 接收帧命令字处理*/
+void CCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize, CCommRecThread* pRecThread)
+{
+
 }

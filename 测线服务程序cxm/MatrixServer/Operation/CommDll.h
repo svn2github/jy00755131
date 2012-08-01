@@ -25,5 +25,7 @@ public:
 	void OnInit(CString strPath);
 	// 关闭
 	void OnClose(void);
+	/** 接收帧命令字处理*/
+	void OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize, CCommRecThread* pRecThread);
 };
 

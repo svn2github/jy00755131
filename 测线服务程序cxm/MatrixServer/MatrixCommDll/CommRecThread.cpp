@@ -10,14 +10,12 @@ CCommRecThread::CCommRecThread(void)
 	m_uiClientActiveCount = 0;
 	m_uiClientCheckCount = 0;
 	m_oInstrumentWholeTableMap.clear();
-	m_oInstrumentUpdateArea.clear();
 }
 
 
 CCommRecThread::~CCommRecThread(void)
 {
 	m_oInstrumentWholeTableMap.clear();
-	m_oInstrumentUpdateArea.clear();
 }
 
 // 处理函数
@@ -130,7 +128,7 @@ void CCommRecThread::AddLocationToMap(int iLineIndex, int iPointIndex, unsigned 
 }
 
 // 根据输入索引号，由索引表得到仪器指针
-unsigned int CCommRecThread::GetSnFromLocationMap(int iLineIndex, int iPointIndex)
+unsigned int* CCommRecThread::GetSnPtrFromLocationMap(int iLineIndex, int iPointIndex)
 {
 	m_oLocationStruct Location(iLineIndex, iPointIndex);
 	map<m_oLocationStruct, unsigned int>::iterator iter;
@@ -139,36 +137,16 @@ unsigned int CCommRecThread::GetSnFromLocationMap(int iLineIndex, int iPointInde
 	{
 		return NULL;
 	}
-	return iter->second;
-}
-// 判断仪器更新区域是否已加入索引表
-BOOL CCommRecThread::IfAreaExistInMap(m_oAreaStruct oAreaStruct)
-{
-	BOOL bResult = FALSE;
-	map<m_oAreaStruct, m_oAreaStruct>::iterator iter;
-	iter = m_oInstrumentUpdateArea.find(oAreaStruct);
-	if (iter != m_oInstrumentUpdateArea.end())
-	{
-		bResult = TRUE;
-	}
-	else
-	{
-		bResult = FALSE;
-	}
-	return bResult;
-}
-// 增加对象到索引表
-void CCommRecThread::AddAreaToMap(m_oAreaStruct oAreaStruct)
-{
-	if (FALSE == IfAreaExistInMap(oAreaStruct))
-	{
-		m_oInstrumentUpdateArea.insert(map<m_oAreaStruct, m_oAreaStruct>::value_type (oAreaStruct, oAreaStruct));
-	}
+	return &(iter->second);
 }
 /** 向所有在线客户端广播配置文件变更*/
 void CCommRecThread::BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize)
 {
 	hash_map<SOCKET, CCommClient*>::iterator iter;
+	if (m_pComClientMap == NULL)
+	{
+		return;
+	}
 	for (iter = m_pComClientMap->begin(); iter != m_pComClientMap->end(); iter++)
 	{
 		if (iter->second->m_oRecThread.m_bCheckConnected == true)

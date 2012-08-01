@@ -8,6 +8,8 @@ CClientSocket::CClientSocket()
 	m_iPosProc = 0;
 	m_usFrameInfoSize = 0;
 	m_pComClient = NULL;
+	m_strServerIP = ServerIP;
+	m_uiServerPort = ServerListenPort;
 }
 
 CClientSocket::~CClientSocket()
@@ -187,5 +189,21 @@ void CClientSocket::OnClose(void)
 	if (iter != m_pComClient->m_pComClientMap->end())
 	{
 		m_pComClient->m_pComClientMap->erase(iter);
+	}
+}
+
+// 连接服务器
+void CClientSocket::ConnectServer(void)
+{
+	int iError = 0;
+	CString str = _T("");
+	if (FALSE == Connect(m_strServerIP, m_uiServerPort))
+	{
+		iError = GetLastError();
+		if (iError != WSAEWOULDBLOCK)
+		{
+			str.Format(_T("Client can not connect to Server, Error is %d!"), iError);
+			AfxMessageBox(str);
+		}
 	}
 }

@@ -107,7 +107,6 @@
     <ClInclude Include="..\MatrixCommDll\MatrixCommDll.h" />
     <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h" />
     <ClInclude Include="CommDll.h" />
-    <ClInclude Include="CommProtocol.h" />
     <ClInclude Include="CXMLDOMDocument.h" />
     <ClInclude Include="CXMLDOMElement.h" />
     <ClInclude Include="CXMLDOMNode.h" />

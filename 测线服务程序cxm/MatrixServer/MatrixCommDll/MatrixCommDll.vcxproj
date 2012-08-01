@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommClient.cpp" />
+    <ClCompile Include="CommHeartBeatThread.cpp" />
     <ClCompile Include="CommRecThread.cpp" />
     <ClCompile Include="CommServer.cpp" />
     <ClCompile Include="CommSndThread.cpp" />

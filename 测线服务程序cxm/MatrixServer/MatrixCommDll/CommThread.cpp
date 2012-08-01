@@ -6,6 +6,8 @@ CCommThread::CCommThread(void)
 	, m_hThread(INVALID_HANDLE_VALUE)
 	, m_hThreadClose(INVALID_HANDLE_VALUE)
 	, m_bClose(false)
+	, m_uiThreadSleepTime(ClientCommThreadWaitTime)
+	, m_uiThreadSleepCount(ClientCommThreadWaitTimes)
 {
 }
 

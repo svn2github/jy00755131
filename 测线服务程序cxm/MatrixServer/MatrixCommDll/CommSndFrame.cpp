@@ -41,7 +41,8 @@ void CCommSndFrame::MakeSetFrame(unsigned short usCmd, char* pChar, unsigned int
 	m_oCommFrameStructPtr pFrameStruct = NULL;
 	unsigned int uiFrameNum = 0;
 	uiFrameNum = uiSize / FrameInfoSizeLimit;
-	if (uiSize % FrameInfoSizeLimit != 0)
+	if ((uiSize % FrameInfoSizeLimit != 0)
+		|| (uiSize == 0))
 	{
 		uiFrameNum++;
 	}

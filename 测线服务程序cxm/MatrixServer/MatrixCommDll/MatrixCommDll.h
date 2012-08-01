@@ -233,15 +233,20 @@ public:
 	* @note 虚函数
 	*/
 	virtual ~CCommThread(void);
-public:
-	/** 线程句柄*/
-	HANDLE m_hThread;
+protected:
 	/** 线程ID*/
 	DWORD m_dwThreadID;
 	/** 线程关闭事件*/
 	HANDLE m_hThreadClose;
 	/** 线程关闭标志位*/
 	bool m_bClose;
+public:
+	/** 线程句柄*/
+	HANDLE m_hThread;
+	/** 线程函数等待一次的时间*/
+	unsigned int m_uiThreadSleepTime;
+	/** 线程函数等待的次数*/
+	unsigned int m_uiThreadSleepCount;
 public:
 	/**
 	* @fn void OnInit(void)
@@ -296,6 +301,41 @@ typedef struct AreaStruct
 		}
 	}
 }m_oAreaStruct;
+
+/**
+* @struct InstrumentLocation_Struct
+* @brief 仪器位置点结构体
+*/
+typedef struct Location_Struct
+{
+	Location_Struct(int iLineIndex, int iPointIndex)
+	{
+		this->m_iLineIndex = iLineIndex;
+		this->m_iPointIndex = iPointIndex;
+	}
+	~Location_Struct()
+	{
+	}
+	bool operator == (const Location_Struct& rhs) const
+	{
+		return ((m_iLineIndex == rhs.m_iLineIndex) && (m_iPointIndex == rhs.m_iPointIndex));
+	}
+	bool operator < (const Location_Struct& rhs) const
+	{
+		if (m_iLineIndex == rhs.m_iLineIndex)
+		{
+			return (m_iPointIndex < rhs.m_iPointIndex);
+		}
+		else
+		{
+			return (m_iLineIndex < rhs.m_iLineIndex);
+		}
+	}
+	/** 线号*/
+	int m_iLineIndex;
+	/** 点号*/
+	int m_iPointIndex;
+}m_oLocationStruct;
 /**
 * @class CCommRecThread
 * @brief 通讯接收线程类
@@ -330,40 +370,6 @@ public:
 	ProcRecCmdCallBack m_oProcRecCmdCallBack;
 	/** 连接验证*/
 	bool m_bCheckConnected;
-	/**
-	* @struct InstrumentLocation_Struct
-	* @brief 仪器位置点结构体
-	*/
-	typedef struct InstrumentLocation_Struct
-	{
-		InstrumentLocation_Struct(int iLineIndex, int iPointIndex)
-		{
-			this->m_iLineIndex = iLineIndex;
-			this->m_iPointIndex = iPointIndex;
-		}
-		~InstrumentLocation_Struct()
-		{
-		}
-		bool operator == (const InstrumentLocation_Struct& rhs) const
-		{
-			return ((m_iLineIndex == rhs.m_iLineIndex) && (m_iPointIndex == rhs.m_iPointIndex));
-		}
-		bool operator < (const InstrumentLocation_Struct& rhs) const
-		{
-			if (m_iLineIndex == rhs.m_iLineIndex)
-			{
-				return (m_iPointIndex < rhs.m_iPointIndex);
-			}
-			else
-			{
-				return (m_iLineIndex < rhs.m_iLineIndex);
-			}
-		}
-		/** 线号*/
-		int m_iLineIndex;
-		/** 点号*/
-		int m_iPointIndex;
-	}m_oLocationStruct;
  	/** 客户端设备位置索引表*/
  	map<m_oLocationStruct, unsigned int> m_oInstrumentWholeTableMap;
 	/** 客户端设备更新区域索引表*/
@@ -397,18 +403,14 @@ public:
 	* @return void
 	*/
 	virtual void OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize);
-	// 判断仪器更新区域是否已加入索引表
-	virtual BOOL IfAreaExistInMap(m_oAreaStruct oAreaStruct);
-	// 增加对象到索引表
-	virtual void AddAreaToMap(m_oAreaStruct oAreaStruct);
 	// 判断仪器位置索引号是否已加入索引表
 	virtual BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex);
 	// 增加对象到索引表
 	virtual void AddLocationToMap(int iLineIndex, int iPointIndex, unsigned int uiSN);
 	// 根据输入索引号，由索引表得到仪器指针
-	virtual unsigned int GetSnFromLocationMap(int iLineIndex, int iPointIndex);
+	virtual unsigned int* GetSnPtrFromLocationMap(int iLineIndex, int iPointIndex);
 	// 向所有在线客户端广播配置文件变更
-	void BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize);
+	virtual void BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize);
 	// 监视客户端是否活跃
 	void MonitorClientActive(bool bActive);
 
@@ -422,6 +424,22 @@ class MATRIXCOMMDLL_API CCommSndThread : public CCommThread
 public:
 	CCommSndThread(void);
 	~CCommSndThread(void);
+public:
+	/** 发送帧类指针*/
+	CCommSndFrame* m_pCommSndFrame;
+public:
+	// 处理函数
+	void OnProc(void);
+};
+/**
+* @class CCommHeartBeatThread
+* @brief 通讯心跳线程类
+*/
+class MATRIXCOMMDLL_API CCommHeartBeatThread : public CCommThread
+{
+public:
+	CCommHeartBeatThread(void);
+	~CCommHeartBeatThread(void);
 public:
 	/** 发送帧类指针*/
 	CCommSndFrame* m_pCommSndFrame;
@@ -461,6 +479,10 @@ public:
 	unsigned short m_usFrameInfoSize;
 	/** 连接客户端类指针*/
 	CCommClient* m_pComClient;
+	/** 服务器IP地址*/
+	CString m_strServerIP;
+	/** 服务器端口*/
+	unsigned int m_uiServerPort;
 public:
 	// 初始化
 	void OnInit(CCommClient* pComClient,int iSndBufferSize, int iRcvBufferSize);
@@ -473,6 +495,8 @@ public:
 	void OnClose();
 	// 处理接收帧
 	void OnProcRec(int iSize);
+	/** 连接服务器*/
+	void ConnectServer();
 };
 
 /**
@@ -493,14 +517,16 @@ public:
 	*/
 	~CCommClient();
 public:
-	/** 接收客户端帧成员类*/
+	/** 接收帧成员类*/
 	CCommRecFrame m_oRecFrame;
-	/** 接收客户端帧的处理线程成员类*/
+	/** 接收帧的处理线程成员类*/
 	CCommRecThread m_oRecThread;
-	/** 发送客户端帧成员类*/
+	/** 发送帧成员类*/
 	CCommSndFrame m_oSndFrame;
-	/** 发送客户端帧的处理线程成员类*/
+	/** 发送帧的处理线程成员类*/
 	CCommSndThread m_oSndThread;
+	/** 发送客户端心跳帧线程成员类*/
+	CCommHeartBeatThread m_oHeartBeatThread;
 	/** 接收客户端通讯成员类*/
 	CClientSocket m_oClientSocket;
 // 	/** DLL函数调用类成员*/
@@ -511,7 +537,7 @@ public:
 	ProcRecCmdCallBack m_oProcRecCmdCallBack;
 public:
 	// 创建一个客户端连接信息
-	virtual void OnInit();
+	virtual void OnInit(bool bClient = false);
 	// 释放一个客户端连接信息
 	virtual void OnClose();
 };
@@ -535,7 +561,7 @@ public:
 	ProcRecCmdCallBack m_oProcRecCmdCallBack;
 public:
 	// 初始化
-	virtual void OnInit(unsigned int uiSocketPort = ServerClientPort, int iSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
+	virtual void OnInit(unsigned int uiSocketPort = ServerListenPort, int iSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);
 	// 关闭
 	virtual void OnClose(void);
 	/** 关闭无效的客户端连接*/
