@@ -1,0 +1,49 @@
+<?xml version= "1.0" encoding= "gb2312" ?>
+<Matrix>
+	<Operation>
+		<OperationDelay AcqTimeMin = "0" AcqTimeMax = "1000" AcqSlipTime = "10" VPTimeMin = "0" VPTimeMax = "1000" VPSlipTime = "10" />
+		<OperationTable Count = "14" TabCount = "3">
+			<Record VPStatus = "0" ShotID = "1" BreakPoint = "0" SourceLine = "20" SourceReceiver = "10" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "µÚÒ»¸öÅÚµã"/>
+			<Record VPStatus = "1" ShotID = "2" BreakPoint = "0" SourceLine = "20.5" SourceReceiver = "10.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "2" SuperSpread= "2" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "0" ShotID = "3" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "3" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "2" ShotID = "4" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "4" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "0" ShotID = "5" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "2" ShotID = "6" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "4" ShotID = "7" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "0" ShotID = "8" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "4" ShotID = "9" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "2" ShotID = "10" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "3" ShotID = "11" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "0" ShotID = "12" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "4" ShotID = "13" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+			<Record VPStatus = "0" ShotID = "14" BreakPoint = "0" SourceLine = "25.5" SourceReceiver = "30.5" SpreadSFL = "1" SpreadSFN = "1" SpreadType = "1" SuperSpread= "1" ProcessTypeID = "1" Comments = "×¢ÊÍ"/>
+		</OperationTable>
+		<SourceType>
+			<SourceExplo Count = "3" TabCount = "4">
+				<Record SourceStatus= "2" SourceNb = "1" Label = "Explo One" ShooterSN= "123456" IncrNb= "1" Comment = "SourceExplo1ÕðÔ´ÃèÊö" />
+				<Record SourceStatus= "2" SourceNb = "2" Label = "Explo two" ShooterSN= "213256" IncrNb= "1" Comment = "SourceExplo2ÕðÔ´ÃèÊö" />
+				<Record SourceStatus= "2" SourceNb = "3" Label = "Explo Three" ShooterSN= "313456" IncrNb= "1" Comment = "SourceExplo3ÕðÔ´ÃèÊö" />
+			</SourceExplo>
+			<SourceVibro Count = "2" TabCount = "4">
+				<Record SourceStatus= "2" SourceNb = "1001" Label = "Vibro one" FleetNb = "12345" Moving = "1" Step = "1" WorkByAcq = "0" ClusterNb = "1" Comment = "SourceVibro1ÕðÔ´ÃèÊö" />
+				<Record SourceStatus= "3" SourceNb = "1002" Label = "Vibro two" FleetNb = "12333" Moving = "1" Step = "1" WorkByAcq = "0" ClusterNb = "1" Comment = "SourceVibro2ÕðÔ´ÃèÊö" />
+			</SourceVibro>
+		</SourceType>
+		<ProcessType>
+			<ProcessRecord Plug = "0" BoxType = "0" SerialNb = "2442269" RecordLength = "4000" TBWindow = "3000" PeakTime = "0" Raw = "0" />
+			<Auxiliaries Count = "1" TabCount = "4" CorrelWith = "no" AppendFromDsd = "0">
+				<Record AuxNb = "1" AuxProcessing = "Aux1*Aux2" />
+			</Auxiliaries>
+			<Acquisition Count = "1" TabCount = "4">
+				<Record AcqNb = "1" AcqType = "1" AcqSignStack = "plus" AcqOutPut = "none" />
+			</Acquisition>
+			<Process Count = "1" TabCount = "4">
+				<Record ProNb = "1" ProLabel = "IMPULSIVE" />
+			</Process>
+		</ProcessType>
+		<OperationComment Count = "2" TabCount = "3">
+			<Record Nb = "1" Label= "label1" Comment = "²Ù×÷Ô±Ê©¹¤×¢ÊÍ1" />
+			<Record Nb = "2" Label= "label1" Comment = "²Ù×÷Ô±Ê©¹¤×¢ÊÍ2" />
+		</OperationComment>
+	</Operation>
+</Matrix>

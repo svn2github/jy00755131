@@ -58,6 +58,12 @@
     <ClInclude Include="XMLDOMTool.h">
       <Filter>杂项\XML</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigLineXml.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigOperationXml.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

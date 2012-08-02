@@ -39,8 +39,6 @@ void CCommClient::OnInit(bool bClient)
 		m_oHeartBeatThread.OnInit();
 		// 连接服务器
 		m_oClientSocket.ConnectServer();
-		// 发送验证码
-		m_oSndFrame.MakeSetFrame(CmdClientConnect, CommCheck, strlen(CommCheck));
 	}
 }
 

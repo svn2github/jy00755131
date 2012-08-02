@@ -108,10 +108,10 @@ typedef struct CommFrame_Struct
 	char m_cCmdType;
 	/** 帧命令字，表明帧的功能*/
 	unsigned short m_usCmd;
-	/** 服务端时间戳*/
-	unsigned int m_uiServerTimeStep;
-	/** 客户端时间戳*/
-	unsigned int m_uiClientTimeStep;
+	/** 源时间戳*/
+	unsigned int m_uiSrcTimeStep;
+	/** 目标时间戳*/
+	unsigned int m_uiDstTimeStep;
 	/** 包流水号*/
 	unsigned int m_uiPacketIndex;
 	/** 命令流水号*/

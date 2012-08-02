@@ -30,7 +30,7 @@ void CCommSndThread::OnProc(void)
 		// 如果为设置帧则将其加入已发送帧索引
 		if (ptrFrame->m_cCmdType == CmdTypeSet)
 		{
-			m_pCommSndFrame->AddFramePtrToSndMap(ptrFrame->m_usCmd, ptrFrame->m_uiServerTimeStep, 
+			m_pCommSndFrame->AddFramePtrToSndMap(ptrFrame->m_usCmd, ptrFrame->m_uiSrcTimeStep, 
 				ptrFrame->m_uiPacketIndex, ptrFrame, &m_pCommSndFrame->m_oSndFrameMap);
 		}
 		// 如果为应答帧则发送后就无需关注应答

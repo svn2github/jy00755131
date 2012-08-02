@@ -61,14 +61,14 @@ void CCommRecThread::OnProc(void)
 		{
 			// 在已发送帧索引中找到该帧并删除
 			if (TRUE == m_pCommSndFrame->IfFramePtrExistInSndMap(ptrFrameRec->m_usCmd, 
-				ptrFrameRec->m_uiServerTimeStep, ptrFrameRec->m_uiPacketIndex, 
+				ptrFrameRec->m_uiDstTimeStep, ptrFrameRec->m_uiPacketIndex, 
 				&m_pCommSndFrame->m_oSndFrameMap))
 			{
 				ptrFrameSnd = m_pCommSndFrame->GetFramePtrFromSndMap(ptrFrameRec->m_usCmd, 
-					ptrFrameRec->m_uiServerTimeStep, ptrFrameRec->m_uiPacketIndex, 
+					ptrFrameRec->m_uiDstTimeStep, ptrFrameRec->m_uiPacketIndex, 
 					&m_pCommSndFrame->m_oSndFrameMap);
 				m_pCommSndFrame->DeleteFramePtrFromSndMap(ptrFrameRec->m_usCmd, 
-					ptrFrameRec->m_uiServerTimeStep, ptrFrameRec->m_uiPacketIndex, 
+					ptrFrameRec->m_uiDstTimeStep, ptrFrameRec->m_uiPacketIndex, 
 					&m_pCommSndFrame->m_oSndFrameMap);
 				m_pCommSndFrame->AddFreeFrameStruct(ptrFrameSnd);
 			}

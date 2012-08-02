@@ -7,8 +7,8 @@ m_oInstrumentCommInfoStruct* OnCreateInstrumentCommInfo(void)
 	m_oInstrumentCommInfoStruct* pCommInfo = NULL;
 	pCommInfo = new m_oInstrumentCommInfoStruct;
 	pCommInfo->m_pLogOutPut = NULL;
-	pCommInfo->m_strDllXMLFilePath = "..\\parameter\\MatrixLineApp.XML";
-	pCommInfo->m_strLineXMLFilePath = "..\\parameter\\Matrix.XML";
+	pCommInfo->m_strServerXMLFilePath = "..\\parameter\\MatrixServer.XML";
+	pCommInfo->m_strLineXMLFilePath = "..\\parameter\\MatrixLine.XML";
 	pCommInfo->m_strOptXMLFilePath = "";
 
 	InitializeCriticalSection(&pCommInfo->m_oSecCommInfo);

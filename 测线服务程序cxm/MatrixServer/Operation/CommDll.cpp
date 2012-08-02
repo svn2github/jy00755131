@@ -56,7 +56,6 @@ void CCommDll::OnCreateClientComm()
 		m_pMatrixCommDll->OnInit();
 		m_pCommClient = m_pMatrixCommDll->CreateCommClient();
 		m_pCommClient->m_oProcRecCmdCallBack = ProcRecCmd;
-
 		m_pCommClient->OnInit(true);
 	}
 }

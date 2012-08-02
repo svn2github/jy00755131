@@ -21,10 +21,11 @@ void CCommSndFrame::MakeReturnFrame(m_oCommFrameStructPtr ptrFrame)
 	m_oCommFrameStructPtr pFrameStruct = NULL;
 	EnterCriticalSection(&m_oSecClientFrame);
 	pFrameStruct = GetFreeFrameStruct();
+	TRACE(_T("%d\n"), m_uiCountFree);
 	pFrameStruct->m_cCmdType = CmdTypeReturn;
 	pFrameStruct->m_usCmd = ptrFrame->m_usCmd;
-	pFrameStruct->m_uiServerTimeStep = GetTickCount();
-	pFrameStruct->m_uiClientTimeStep = ptrFrame->m_uiClientTimeStep;
+	pFrameStruct->m_uiSrcTimeStep = GetTickCount();
+	pFrameStruct->m_uiDstTimeStep = ptrFrame->m_uiSrcTimeStep;
 	pFrameStruct->m_uiPacketIndex = ptrFrame->m_uiPacketIndex;
 	pFrameStruct->m_uiCmdIndex = ptrFrame->m_uiCmdIndex;
 	pFrameStruct->m_uiFrameNum = ptrFrame->m_uiFrameNum;
@@ -51,10 +52,11 @@ void CCommSndFrame::MakeSetFrame(unsigned short usCmd, char* pChar, unsigned int
 	for (unsigned int i=0; i<uiFrameNum; i++)
 	{
 		pFrameStruct = GetFreeFrameStruct();
+		TRACE(_T("%d\n"), m_uiCountFree);
 		pFrameStruct->m_cCmdType = CmdTypeSet;
 		pFrameStruct->m_usCmd = usCmd;
-		pFrameStruct->m_uiServerTimeStep = GetTickCount();
-		pFrameStruct->m_uiClientTimeStep = 0;
+		pFrameStruct->m_uiSrcTimeStep = GetTickCount();
+		pFrameStruct->m_uiDstTimeStep = 0;
 		m_uiPacketIndex++;
 		pFrameStruct->m_uiPacketIndex = m_uiPacketIndex;
 		pFrameStruct->m_uiCmdIndex = m_uiCmdIndex;
@@ -103,10 +105,10 @@ void CCommSndFrame::MakeSendFrame(m_oCommFrameStructPtr ptrFrame)
 	memcpy(&pChar[iPos], &usCmd, 2);
 	iPos += 2;
 	// 服务端时间戳
-	memcpy(&pChar[iPos], &ptrFrame->m_uiServerTimeStep, 4);
+	memcpy(&pChar[iPos], &ptrFrame->m_uiSrcTimeStep, 4);
 	iPos += 4;
 	// 客户端时间戳
-	memcpy(&pChar[iPos], &ptrFrame->m_uiClientTimeStep, 4);
+	memcpy(&pChar[iPos], &ptrFrame->m_uiDstTimeStep, 4);
 	iPos += 4;
 	// 包流水号
 	memcpy(&pChar[iPos], &ptrFrame->m_uiPacketIndex, 4);

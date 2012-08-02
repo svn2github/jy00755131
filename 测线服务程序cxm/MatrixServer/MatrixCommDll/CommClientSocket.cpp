@@ -197,13 +197,23 @@ void CClientSocket::ConnectServer(void)
 {
 	int iError = 0;
 	CString str = _T("");
-	if (FALSE == Connect(m_strServerIP, m_uiServerPort))
+	Connect(m_strServerIP, m_uiServerPort);
+}
+
+void CClientSocket::OnConnect(int nErrorCode)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	CString str = _T("");
+	if (nErrorCode != 0)
 	{
-		iError = GetLastError();
-		if (iError != WSAEWOULDBLOCK)
-		{
-			str.Format(_T("Client can not connect to Server, Error is %d!"), iError);
-			AfxMessageBox(str);
-		}
+		str.Format(_T("Client can not connect to Server, Error is %d!"), nErrorCode);
+		AfxMessageBox(str);
+		PostQuitMessage(nErrorCode);
 	}
+	else
+	{
+		// 发送验证码
+		m_pComClient->m_oSndFrame.MakeSetFrame(CmdClientConnect, CommCheck, strlen(CommCheck));
+	}
+	CAsyncSocket::OnConnect(nErrorCode);
 }

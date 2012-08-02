@@ -34,10 +34,10 @@ void CCommRecFrame::PhraseFrame(char* cpFrame, unsigned short usSize)
 	// 帧命令字，表明帧的功能
 	pFrameStruct->m_usCmd = usCmd & (~CmdReturnBit);
 	// 服务端时间戳
-	memcpy(&pFrameStruct->m_uiServerTimeStep, &cpFrame[iPos], 4);
+	memcpy(&pFrameStruct->m_uiSrcTimeStep, &cpFrame[iPos], 4);
 	iPos += 4;
 	// 客户端时间戳
-	memcpy(&pFrameStruct->m_uiClientTimeStep, &cpFrame[iPos], 4);
+	memcpy(&pFrameStruct->m_uiDstTimeStep, &cpFrame[iPos], 4);
 	iPos += 4;
 	// 包流水号
 	memcpy(&pFrameStruct->m_uiPacketIndex, &cpFrame[iPos], 4);

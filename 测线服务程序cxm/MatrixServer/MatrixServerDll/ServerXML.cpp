@@ -390,7 +390,7 @@ void LoadServerIPSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	}
 	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strDllXMLFilePath))
+	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strServerXMLFilePath))
 	{
 		// 加载IP地址设置数据
 		LoadServerIP(pCommInfo);
@@ -408,7 +408,7 @@ void LoadServerPortSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	}
 	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strDllXMLFilePath))
+	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strServerXMLFilePath))
 	{
 		// 加载端口设置数据
 		LoadServerPort(pCommInfo);
@@ -426,7 +426,7 @@ void LoadServerADCSetSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	}
 	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strDllXMLFilePath))
+	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strServerXMLFilePath))
 	{
 		// 加载ADC参数设置数据
 		LoadServerADCSet(pCommInfo);
@@ -444,7 +444,7 @@ void LoadServerParameterSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	}
 	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strDllXMLFilePath))
+	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strServerXMLFilePath))
 	{
 		// 加载服务端参数设置数据
 		LoadServerParameter(pCommInfo);
@@ -463,12 +463,12 @@ void SaveServerParameterSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
 	COleVariant oVariant;
 	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strDllXMLFilePath))
+	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strServerXMLFilePath))
 	{
 		// 保存服务器端参数设置数据
 		SaveServerParameter(pCommInfo);
 	}
-	oVariant = (CString)(pCommInfo->m_strDllXMLFilePath.c_str());
+	oVariant = (CString)(pCommInfo->m_strServerXMLFilePath.c_str());
 	pCommInfo->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
 	CloseAppXMLFile(pCommInfo);

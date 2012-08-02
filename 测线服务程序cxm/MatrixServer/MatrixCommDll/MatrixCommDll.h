@@ -497,6 +497,7 @@ public:
 	void OnProcRec(int iSize);
 	/** 连接服务器*/
 	void ConnectServer();
+	virtual void OnConnect(int nErrorCode);
 };
 
 /**
