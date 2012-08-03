@@ -14,8 +14,14 @@
 #define PROCESS_ADVANCE			1		// 高级
 #define ControlsInterval		5		// 控件之间的间距
 // 定义选择字符串
-#define VIBROMOVING_STRING_SEQ  _T("SEQUIENTIAL")
-#define VIBROMOVING_STRING_RND  _T("RANDOM")
+#define VIBROMOVING_STRING_SEQ	_T("SEQUIENTIAL")
+#define VIBROMOVING_STRING_RND	_T("RANDOM")
+#define SHOTBREAKPOINT_STRING_NO	_T("No")
+#define SHOTBREAKPOINT_STRING_YES	_T("Yes")
+#define ACQSIGNSTACK_STRING_PLUS	_T("plus")
+#define ACQOUTPUT_STRING_NONE		_T("none")
+#define ACQOUTPUT_STRING_DUMP		_T("dump")
+#define ACQOUTPUT_STRING_XDUMP		_T("xdump")
 // OutPut输出行数
 #define OutPutStoreRowsLimit	200
 /** C/S接收缓冲区大小*/

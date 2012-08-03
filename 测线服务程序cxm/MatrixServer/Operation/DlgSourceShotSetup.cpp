@@ -104,9 +104,9 @@ BOOL CDlgSourceShotSetup::OnInitDialog()
 	}	
 
 	CBCGPGridRow* pRow = m_wndEditGrid.CreateRow (m_wndEditGrid.GetColumnCount ());
-	CBCGPGridItem* pItem = new CBCGPGridItem (_T("No"));
-	pItem->AddOption (_T("No"), TRUE);
-	pItem->AddOption (_T("Yes"), TRUE);
+	CBCGPGridItem* pItem = new CBCGPGridItem (SHOTBREAKPOINT_STRING_NO);
+	pItem->AddOption (SHOTBREAKPOINT_STRING_NO, TRUE);
+	pItem->AddOption (SHOTBREAKPOINT_STRING_YES, TRUE);
 	pRow->ReplaceItem (1, pItem);
 
 	m_wndEditGrid.AddRow(pRow);

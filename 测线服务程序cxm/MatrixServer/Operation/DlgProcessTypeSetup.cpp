@@ -404,12 +404,18 @@ void CDlgProcessTypeSetup::OnShowAcqWindow(void)
 		}
 		if (m_oAcqControlsShow.m_bAcqSignStack == true)
 		{
-			pRow->GetItem (iColumnNum)->SetValue (_T("plus"));
+			CBCGPGridItem* pItem = new CBCGPGridItem (ACQSIGNSTACK_STRING_PLUS);
+			pItem->AddOption (ACQSIGNSTACK_STRING_PLUS, TRUE);
+			pRow->ReplaceItem (iColumnNum, pItem);
 			iColumnNum++;
 		}
 		if (m_oAcqControlsShow.m_bAcqOutput == true)
 		{
-			pRow->GetItem (iColumnNum)->SetValue (_T("none"));
+			CBCGPGridItem* pItem = new CBCGPGridItem (ACQOUTPUT_STRING_NONE);
+			pItem->AddOption (ACQOUTPUT_STRING_NONE, TRUE);
+			pItem->AddOption (ACQOUTPUT_STRING_DUMP, TRUE);
+			pItem->AddOption (ACQOUTPUT_STRING_XDUMP, TRUE);
+			pRow->ReplaceItem (iColumnNum, pItem);
 			iColumnNum++;
 		}
 	}
