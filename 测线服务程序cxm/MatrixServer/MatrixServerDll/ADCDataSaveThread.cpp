@@ -163,35 +163,29 @@ void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf,
 	strOutSize = strOut.length();
 	fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
 
-	// 写第一个仪器的采样数据时写入采样帧的本地时间作为第三行
-	if (uiLineIndex == 0)
+	// 写入采样帧的本地时间作为第三行
+	lOffSet = uiLineLength * (pConstVar->m_iADCSaveHeadLineNum - 1) + uiRowNb;
+	fseek(pFile, lOffSet, SEEK_SET);
+	str.Format(_T("%*d "), pConstVar->m_iADCSaveDataBytes, pADCDataBuf->m_uiSysTime);
+	strOut = (CStringA)str;
+	for (int i=0; i<(pConstVar->m_iADCDataInOneFrameNum - 1); i++)
 	{
-		lOffSet = uiLineLength * (pConstVar->m_iADCSaveHeadLineNum - 1) + uiRowNb;
-		fseek(pFile, lOffSet, SEEK_SET);
-		str.Format(_T("%*d "), pConstVar->m_iADCSaveDataBytes, pADCDataBuf->m_uiSysTime);
-		strOut = (CStringA)str;
-		for (int i=0; i<(pConstVar->m_iADCDataInOneFrameNum - 1); i++)
+		for (int j=0; j<pConstVar->m_iADCSaveDataBytes; j++)
 		{
-			for (int j=0; j<pConstVar->m_iADCSaveDataBytes; j++)
-			{
-				strOut += '-';
-			}
-			strOut += ' ';
+			strOut += '-';
 		}
-		strOutSize = strOut.length();
-		fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
+		strOut += ' ';
 	}
-	// 记录文件中每个设备的最后一个数据帧时将SN写入左侧信息区
-/*	if ((uiFrameInFileNb + 1) == static_cast<unsigned int>(pConstVar->m_iADCFrameSaveInOneFileNum))*/
-	if (uiFrameInFileNb == 0)
-	{
-		lOffSet = uiLineLength * uiLineNb;
-		fseek(pFile, lOffSet, SEEK_SET);
-		str.Format(_T("SN=0x%x "), pADCDataBuf->m_uiSN);
-		strOut = (CStringA)str;
-		strOutSize = strOut.length();
-		fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
-	}
+	strOutSize = strOut.length();
+	fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
+
+	// 将SN写入左侧信息区
+	lOffSet = uiLineLength * uiLineNb;
+	fseek(pFile, lOffSet, SEEK_SET);
+	str.Format(_T("SN=0x%x "), pADCDataBuf->m_uiSN);
+	strOut = (CStringA)str;
+	strOutSize = strOut.length();
+	fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
 }
 // 关闭所有的施工文件
 void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray)

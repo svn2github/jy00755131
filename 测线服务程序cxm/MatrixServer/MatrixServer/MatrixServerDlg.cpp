@@ -119,6 +119,7 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	GetDlgItem(IDC_BN_ADCSET_ALL)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BN_STARTSAMPLE_ALL)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(FALSE);
+	GetDlgItem(IDC_COMBO_SAMPLERATE)->SetWindowText(_T("1000"));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -180,7 +181,7 @@ void CMatrixServerDlg::OnBnClickedBnStart()
 		GetDlgItem(IDC_BN_STOP)->EnableWindow(TRUE);
 		GetDlgItem(IDC_BN_ADCSET_ALL)->EnableWindow(TRUE);
 		GetDlgItem(IDC_BN_STARTSAMPLE_ALL)->EnableWindow(TRUE);
-		GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(FALSE);
 	}
 	else
 	{
@@ -213,14 +214,20 @@ void CMatrixServerDlg::OnDestroy()
 void CMatrixServerDlg::OnBnClickedButtonStartsampleAll()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("");
+	GetDlgItem(IDC_COMBO_SAMPLERATE)->GetWindowText(str);
 	// DLL开始AD数据采集
-	m_oMatrixDllCall.Dll_StartSample(1000);
+	m_oMatrixDllCall.Dll_StartSample(_ttoi(str));
+	GetDlgItem(IDC_BN_STARTSAMPLE_ALL)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(TRUE);
 }
 void CMatrixServerDlg::OnBnClickedButtonStopsampleAll()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL停止AD数据采集
 	m_oMatrixDllCall.Dll_StopSample();
+	GetDlgItem(IDC_BN_STARTSAMPLE_ALL)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(FALSE);
 }
 
 
