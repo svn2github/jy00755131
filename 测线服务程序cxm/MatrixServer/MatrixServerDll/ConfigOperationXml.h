@@ -113,7 +113,10 @@ typedef struct SourceVibro_Struct
 */
 typedef struct SourceType_Struct
 {
-
+	/** Explo震源结构体*/
+	list<m_oSourceExploStruct> m_olsExploStruct;
+	/** Vibro震源结构体*/
+	list<m_oSourceVibroStruct> m_olsVibroStruct;
 }m_oSourceTypeStruct;
 /**
 * @struct ProcessAux_Struct
@@ -167,6 +170,32 @@ typedef struct ProcessType_Struct
 */
 typedef struct Process_Struct
 {
+	/** Plug选项*/
+	unsigned int m_uiPlug;
+	/** BoxType选项*/
+	unsigned int m_uiBoxType;
+	/** SN串号*/
+	unsigned int m_uiSN;
+	/** 在脉冲模式中记录长度*/
+	unsigned int m_uiRecordLength;
+	/** 折射延迟*/
+	unsigned int m_uiRefractionDelay;
+	/** TB窗口时间*/
+	unsigned int m_uiTBWindow;
+	/** 在可控震源模式中记录长度*/
+	unsigned int m_uiListeningTime;
+	/** PeakTime*/
+	unsigned int m_uiPeakTime;
+	/** Raw*/
+	bool m_bRaw;
+	/** PreStack*/
+	bool m_bPreStack;
+	/** 迂回道队列*/
+	list<m_oProcessAuxStruct> m_olsProcessAuxStruct;
+	/** Acq队列*/
+	list<m_oProcessAcqStruct> m_olsProcessAcqStruct;
+	/** 处理类型队列*/
+	list<m_oProcessTypeStruct> m_olsProcessTypeStruct;
 }m_oProcessStruct;
 
 /**
@@ -182,3 +211,19 @@ typedef struct OperationComment_Struct
 	/** 注释*/
 	char* m_pcComments;
 }m_oOperationCommentStruct;
+
+/**
+* @struct OptSetupData_Struct
+* @brief 施工客户端信息结构体
+*/
+typedef struct OptSetupData_Struct
+{
+	/**	Delay*/
+	m_oDelayStruct m_oDelay;
+	/** 震源类型*/
+	m_oSourceTypeStruct m_oSourceType;
+	/** 处理类型*/
+	m_oProcessStruct m_oProcess;
+	/** 注释*/
+	m_oOperationCommentStruct m_oComment;
+}m_oOptSetupDataStruct;

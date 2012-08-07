@@ -208,7 +208,8 @@ void CClientSocket::OnConnect(int nErrorCode)
 	{
 		str.Format(_T("Client can not connect to Server, Error is %d!"), nErrorCode);
 		AfxMessageBox(str);
-		PostQuitMessage(nErrorCode);
+		// @@@@调试时暂时注销掉下面这行
+//		PostQuitMessage(nErrorCode);
 	}
 	else
 	{

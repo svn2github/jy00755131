@@ -58,6 +58,12 @@ public:
 	CString m_strCorrelWith;
 	// AuxesFromDSD的布尔型变量
 	BOOL m_bAuxesFromDSD;
+	// 折射延迟的数值变量
+	int m_editIndexRefractionDelay;
+	// 记录长度
+	int m_editIndexListeningTime;
+	// PreStack的布尔型变量
+	BOOL m_bPreStack;
 public:
 	CGridCtrlList		m_wndAuxListGrid;
 	CGridCtrlEdit		m_wndAuxEditGrid;
@@ -72,8 +78,14 @@ public:
 		bool m_bTbWindow;
 		// IDC_STATIC_PEAKTIME
 		bool m_bPeakTime;
+		// IDC_STATIC_REFRACTIONDELAY
+		bool m_bRefractionDelay;
+		// IDC_STATIC_LISTENINGTIME
+		bool m_bListeningTime;
 		// IDC_STATIC_RAW
 		bool m_bRaw;
+		// IDC_STATIC_PRESTACK
+		bool m_bPreStack;
 	}m_oProTypeControls;
 	m_oProTypeControls m_oProTypeControlsShow;
 	// Aux控件显示

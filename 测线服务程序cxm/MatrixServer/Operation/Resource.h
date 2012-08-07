@@ -76,7 +76,6 @@
 #define IDC_STATIC_WORKBYACQ            1079
 #define IDC_STATIC_CLUSTERNB            1080
 #define IDC_STATIC_SHOTID               1081
-#define IDC_STATIC_CLUSTERNB2           1081
 #define IDC_STATIC_BREAKPOINT           1082
 #define IDC_STATIC_SWATHNB              1083
 #define IDC_STATIC_LINE                 1084
@@ -127,6 +126,9 @@
 #define IDC_BUTTON_ACQ_ADD              1128
 #define IDC_BUTTON_ACQ_CHANGE           1129
 #define IDC_BUTTON_ACQ_DELETE           1130
+#define IDC_STATIC_PRESTACK             1131
+#define IDC_CHECK_RAW2                  1132
+#define IDC_CHECK_PRESTACK              1132
 #define IDC_STATIC_PROTYPE_NB           1133
 #define IDC_STATIC_PRO_GRID_EDIT        1134
 #define IDC_STATIC_PRO_GRID             1135
@@ -142,7 +144,11 @@
 #define IDC_SLIDER_ACQ                  1144
 #define IDC_EDIT_ACQTIME                1145
 #define IDC_SLIDER_VP                   1146
+#define IDC_STATIC_REFRACTIONDELAY      1146
 #define IDC_EDIT_VPTIME                 1147
+#define IDC_EDIT_REFRACTIONDELAY        1147
+#define IDC_STATIC_LISTENINGTIME        1148
+#define IDC_EDIT_LISTENINGTIME          1149
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_TOOLBARS                32771
 #define ID_VIEW_ALLVPBAR                32792
@@ -221,7 +227,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        205
 #define _APS_NEXT_COMMAND_VALUE         32879
-#define _APS_NEXT_CONTROL_VALUE         1146
+#define _APS_NEXT_CONTROL_VALUE         1150
 #define _APS_NEXT_SYMED_VALUE           108
 #endif
 #endif

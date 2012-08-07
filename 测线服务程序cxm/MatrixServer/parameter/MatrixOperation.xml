@@ -30,7 +30,7 @@
 			</SourceVibro>
 		</SourceType>
 		<Process>
-			<ProcessRecord Plug = "0" BoxType = "0" SerialNb = "2442269" RecordLength = "4000" TBWindow = "3000" PeakTime = "0" Raw = "0" />
+			<ProcessRecord Plug = "0" BoxType = "0" SerialNb = "2442269" RecordLength = "4000" RefractionDelay = "0" TBWindow = "3000" ListeningTime = "0" PeakTime = "0" Raw = "0" PreStack = "0" />
 			<Auxiliaries Count = "1" TabCount = "4" CorrelWith = "no" AppendFromDsd = "0">
 				<Record AuxNb = "1" AuxProcessing = "Aux1*Aux2" />
 			</Auxiliaries>

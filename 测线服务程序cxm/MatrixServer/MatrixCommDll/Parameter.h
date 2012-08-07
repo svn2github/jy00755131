@@ -244,6 +244,22 @@ typedef struct CommFrame_Struct
 #define CmdQueryFormLineXMLInfo				0x1029
 /** 设置 FormLine XML文件信息（帧内容为信息结构体）*/
 #define CmdSetFormLineXMLInfo				0x102a
+/** 查询 OperationDelay XML文件信息（帧内容为空）*/
+#define CmdQueryDelayOptXMLInfo				0x102b
+/** 设置 OperationDelay XML文件信息（帧内容为信息结构体）*/
+#define CmdSetDelayOptXMLInfo				0x102c
+/** 查询 震源类型 XML文件信息（帧内容为空）*/
+#define CmdQuerySourceTypeOptXMLInfo		0x102d
+/** 设置 震源类型 XML文件信息（帧内容为信息结构体）*/
+#define CmdSetSourceTypeOptXMLInfo			0x102e
+/** 查询 处理类型 XML文件信息（帧内容为空）*/
+#define CmdQueryProcessTypeOptXMLInfo		0x102f
+/** 设置 处理类型 XML文件信息（帧内容为信息结构体）*/
+#define CmdSetProcessTypeOptXMLInfo			0x1030
+/** 查询 注释 XML文件信息（帧内容为空）*/
+#define CmdQueryCommentOptXMLInfo			0x1031
+/** 设置 注释 XML文件信息（帧内容为信息结构体）*/
+#define CmdSetCommentOptXMLInfo				0x1032
 
 /** 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）*/
 #define CmdQueryInstrNoiseTestArea			0x2001

@@ -24,6 +24,9 @@ CDlgProcessTypeSetup::CDlgProcessTypeSetup(CWnd* pParent /*=NULL*/)
 	, m_bCheckRaw(FALSE)
 	, m_strCorrelWith(_T(""))
 	, m_bAuxesFromDSD(FALSE)
+	, m_editIndexRefractionDelay(0)
+	, m_editIndexListeningTime(0)
+	, m_bPreStack(FALSE)
 {
 //	EnableVisualManagerStyle();
 }
@@ -46,6 +49,10 @@ void CDlgProcessTypeSetup::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_RAW, m_bCheckRaw);
 	DDX_Text(pDX, IDC_EDIT_AUX_COR, m_strCorrelWith);
 	DDX_Check(pDX, IDC_CHECK_AUX, m_bAuxesFromDSD);
+	DDX_Text(pDX, IDC_EDIT_REFRACTIONDELAY, m_editIndexRefractionDelay);
+	DDV_MinMaxInt(pDX, m_editIndexRefractionDelay, 0, 64000);
+	DDX_Text(pDX, IDC_EDIT_LISTENINGTIME, m_editIndexListeningTime);
+	DDX_Check(pDX, IDC_CHECK_PRESTACK, m_bPreStack);
 }
 
 
@@ -107,6 +114,7 @@ void CDlgProcessTypeSetup::OnBnClickedRadioStandard()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_radioProcessSetup = PROCESS_STANDARD;
+	OnCbnSelchangeComboProcesstypeselect();
 }
 
 
@@ -114,6 +122,7 @@ void CDlgProcessTypeSetup::OnBnClickedRadioAdvanced()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_radioProcessSetup = PROCESS_ADVANCE;
+	OnCbnSelchangeComboProcesstypeselect();
 }
 
 
@@ -215,7 +224,17 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 	case PROCESS_IMPULSIVE:
 		m_oProTypeControlsShow.m_bTbWindow = true;
 		m_oProTypeControlsShow.m_bPeakTime = false;
+		m_oProTypeControlsShow.m_bListeningTime = false;
+		m_oProTypeControlsShow.m_bPreStack = false;
 		m_oProTypeControlsShow.m_bRaw = false;
+		if (m_radioProcessSetup == PROCESS_STANDARD)
+		{
+			m_oProTypeControlsShow.m_bRefractionDelay = false;
+		}
+		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		{
+			m_oProTypeControlsShow.m_bRefractionDelay = true;
+		}
 
 		m_oAuxControlsShow.m_bAuxCor = false;
 		m_oAuxControlsShow.m_bAuxCheck = false;
@@ -234,6 +253,17 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 		m_oProTypeControlsShow.m_bTbWindow = true;
 		m_oProTypeControlsShow.m_bPeakTime = false;
 		m_oProTypeControlsShow.m_bRaw = true;
+		m_oProTypeControlsShow.m_bListeningTime = false;
+		if (m_radioProcessSetup == PROCESS_STANDARD)
+		{
+			m_oProTypeControlsShow.m_bRefractionDelay = false;
+			m_oProTypeControlsShow.m_bPreStack = false;
+		}
+		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		{
+			m_oProTypeControlsShow.m_bRefractionDelay = true;
+			m_oProTypeControlsShow.m_bPreStack = true;
+		}
 
 		m_oAuxControlsShow.m_bAuxCor = false;
 		m_oAuxControlsShow.m_bAuxCheck = false;
@@ -253,6 +283,17 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 		m_oProTypeControlsShow.m_bTbWindow = false;
 		m_oProTypeControlsShow.m_bPeakTime = true;
 		m_oProTypeControlsShow.m_bRaw = true;
+		m_oProTypeControlsShow.m_bRefractionDelay = false;
+		if (m_radioProcessSetup == PROCESS_STANDARD)
+		{
+			m_oProTypeControlsShow.m_bListeningTime = false;
+			m_oProTypeControlsShow.m_bPreStack = false;
+		}
+		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		{
+			m_oProTypeControlsShow.m_bListeningTime = true;
+			m_oProTypeControlsShow.m_bPreStack = true;
+		}
 
 		m_oAuxControlsShow.m_bAuxCor = true;
 		m_oAuxControlsShow.m_bAuxCheck = true;
@@ -271,6 +312,16 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 		m_oProTypeControlsShow.m_bTbWindow = false;
 		m_oProTypeControlsShow.m_bPeakTime = true;
 		m_oProTypeControlsShow.m_bRaw = true;
+		m_oProTypeControlsShow.m_bPreStack = false;
+		m_oProTypeControlsShow.m_bRefractionDelay = false;
+		if (m_radioProcessSetup == PROCESS_STANDARD)
+		{
+			m_oProTypeControlsShow.m_bListeningTime = false;
+		}
+		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		{
+			m_oProTypeControlsShow.m_bListeningTime = true;
+		}
 
 		m_oAuxControlsShow.m_bAuxCor = true;
 		m_oAuxControlsShow.m_bAuxCheck = true;
@@ -289,6 +340,17 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 		m_oProTypeControlsShow.m_bTbWindow = false;
 		m_oProTypeControlsShow.m_bPeakTime = false;
 		m_oProTypeControlsShow.m_bRaw = true;
+		m_oProTypeControlsShow.m_bRefractionDelay = false;
+		if (m_radioProcessSetup == PROCESS_STANDARD)
+		{
+			m_oProTypeControlsShow.m_bListeningTime = false;
+			m_oProTypeControlsShow.m_bPreStack = false;
+		}
+		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		{
+			m_oProTypeControlsShow.m_bListeningTime = true;
+			m_oProTypeControlsShow.m_bPreStack = true;
+		}
 
 		m_oAuxControlsShow.m_bAuxCor = false;
 		m_oAuxControlsShow.m_bAuxCheck = true;
@@ -485,6 +547,20 @@ void CDlgProcessTypeSetup::OnShowProTypeControls(void)
 	int iLeftPos = 0;
 	GetDlgItem(IDC_EDIT_RECORDLENGTH)->GetWindowRect(&rect);
 	iLeftPos = rect.right + ControlsInterval;
+	if (m_oProTypeControlsShow.m_bRefractionDelay == true)
+	{
+		GetDlgItem(IDC_STATIC_REFRACTIONDELAY)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT_REFRACTIONDELAY)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByLeftPos(IDC_STATIC_REFRACTIONDELAY, iLeftPos);
+		OnSetControlsLocationByLeftPos(IDC_EDIT_REFRACTIONDELAY, iLeftPos);
+		GetDlgItem(IDC_EDIT_REFRACTIONDELAY)->GetWindowRect(&rect);
+		iLeftPos = rect.right + ControlsInterval;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_REFRACTIONDELAY)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_REFRACTIONDELAY)->ShowWindow(SW_HIDE);
+	}
 	if (m_oProTypeControlsShow.m_bTbWindow == true)
 	{
 		GetDlgItem(IDC_STATIC_TBWINDOW)->ShowWindow(SW_SHOW);
@@ -498,6 +574,20 @@ void CDlgProcessTypeSetup::OnShowProTypeControls(void)
 	{
 		GetDlgItem(IDC_STATIC_TBWINDOW)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_EDIT_TBWINDOW)->ShowWindow(SW_HIDE);
+	}
+	if (m_oProTypeControlsShow.m_bListeningTime == true)
+	{
+		GetDlgItem(IDC_STATIC_LISTENINGTIME)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_EDIT_LISTENINGTIME)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByLeftPos(IDC_STATIC_LISTENINGTIME, iLeftPos);
+		OnSetControlsLocationByLeftPos(IDC_EDIT_LISTENINGTIME, iLeftPos);
+		GetDlgItem(IDC_EDIT_LISTENINGTIME)->GetWindowRect(&rect);
+		iLeftPos = rect.right + ControlsInterval;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_LISTENINGTIME)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_EDIT_LISTENINGTIME)->ShowWindow(SW_HIDE);
 	}
 	if (m_oProTypeControlsShow.m_bPeakTime == true)
 	{
@@ -526,6 +616,20 @@ void CDlgProcessTypeSetup::OnShowProTypeControls(void)
 	{
 		GetDlgItem(IDC_STATIC_RAW)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_CHECK_RAW)->ShowWindow(SW_HIDE);
+	}
+	if (m_oProTypeControlsShow.m_bPreStack == true)
+	{
+		GetDlgItem(IDC_STATIC_PRESTACK)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_CHECK_PRESTACK)->ShowWindow(SW_SHOW);
+		OnSetControlsLocationByLeftPos(IDC_STATIC_PRESTACK, iLeftPos);
+		OnSetControlsLocationByLeftPos(IDC_CHECK_PRESTACK, iLeftPos);
+		GetDlgItem(IDC_CHECK_PRESTACK)->GetWindowRect(&rect);
+		iLeftPos = rect.right + ControlsInterval;
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_PRESTACK)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_CHECK_PRESTACK)->ShowWindow(SW_HIDE);
 	}
 }
 // 显示Aux控件
