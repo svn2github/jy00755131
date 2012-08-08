@@ -453,6 +453,8 @@ typedef struct InstrumentCommInfo_Struct
 	m_oXMLParameterSetupDataStruct m_oXMLParameterSetupData;
 	/** 测线客户端信息*/
 	m_oLineSetupDataStruct m_oLineSetupData;
+	/** 施工客户端信息*/
+	m_oOptSetupDataStruct m_oOptSetupData;
 	/** Dll的XML配置文件路径*/
 	string m_strServerXMLFilePath;
 	/** 测线XML配置文件路径*/
@@ -1701,6 +1703,8 @@ MatrixServerDll_API m_oInstrumentCommInfoStruct* OnCreateInstrumentCommInfo(void
 MatrixServerDll_API void OnInitServerXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 初始化测线客户程序设置信息
 MatrixServerDll_API void OnInitLineClientXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 初始化施工客户程序设置信息
+MatrixServerDll_API void OnInitOptClientXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 重置Survery
 MatrixServerDll_API void OnResetSurveryList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 重置Point Code
@@ -1737,6 +1741,23 @@ MatrixServerDll_API void OnResetMultipleTestMap(m_oInstrumentCommInfoStruct* pCo
 MatrixServerDll_API void OnResetSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo);
 // 重置测线客户端信息
 MatrixServerDll_API void OnResetLineClientXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+
+// 重置炮点队列
+MatrixServerDll_API void OnResetOptSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Explo震源类型队列
+MatrixServerDll_API void OnResetOptExploList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置Vibro震源类型队列
+MatrixServerDll_API void OnResetOptVibroList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置处理类型Aux队列
+MatrixServerDll_API void OnResetOptProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置处理类型Acq队列
+MatrixServerDll_API void OnResetOptProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置处理类型队列
+MatrixServerDll_API void OnResetOptProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置注释队列
+MatrixServerDll_API void OnResetOptCommentList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 重置施工客户端信息
+MatrixServerDll_API void OnResetOptClientXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 打开程序配置文件
 MatrixServerDll_API BOOL OpenAppXMLFile(m_oInstrumentCommInfoStruct* pCommInfo,
 	string strXMLFilePath);
@@ -2026,11 +2047,75 @@ MatrixServerDll_API void SaveSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
 MatrixServerDll_API void SaveSeisMonitorSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 设置SeisMonitor设置数据
 MatrixServerDll_API void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
-
 // 加载测线客户端程序设置数据
 MatrixServerDll_API void LoadLineAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存测线客户端程序设置数据
 MatrixServerDll_API void SaveLineAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+
+// 加载Delay设置数据
+MatrixServerDll_API void LoadDelay(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载Delay设置数据
+MatrixServerDll_API void LoadOptDelaySetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Delay设置数据
+MatrixServerDll_API void SaveDelay(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Delay设置数据
+MatrixServerDll_API void SaveDelaySetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Delay设置数据
+MatrixServerDll_API void SetDelaySetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Delay XML文件信息
+MatrixServerDll_API void QueryDelaySetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载SourceShot设置数据
+MatrixServerDll_API void LoadSourceShot(m_oSourceShotStruct* pSourceShotStruct,CXMLDOMElement* pElement);
+// 加载SourceShot设置队列数据
+MatrixServerDll_API void LoadSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载SourceShot设置数据
+MatrixServerDll_API void LoadSourceShotSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存SourceShot设置数据
+MatrixServerDll_API void SaveSourceShot(m_oSourceShotStruct* pSourceShotStruct,CXMLDOMElement* pElement);
+// 保存SourceShot设置队列数据
+MatrixServerDll_API void SaveSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存SourceShot设置数据
+MatrixServerDll_API void SaveSourceShotSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置SourceShot设置数据
+MatrixServerDll_API void SetSourceShotSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 SourceShot XML文件信息
+MatrixServerDll_API void QuerySourceShotSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载Explo设置数据
+MatrixServerDll_API void LoadExplo(m_oSourceExploStruct* pSourceExploStruct,CXMLDOMElement* pElement);
+// 加载Explo设置队列数据
+MatrixServerDll_API void LoadExploList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载Explo设置数据
+MatrixServerDll_API void LoadExploSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Explo设置数据
+MatrixServerDll_API void SaveExplo(m_oSourceExploStruct* pSourceExploStruct,CXMLDOMElement* pElement);
+// 保存Explo设置队列数据
+MatrixServerDll_API void SaveExploList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Explo设置数据
+MatrixServerDll_API void SaveExploSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Explo设置数据
+MatrixServerDll_API void SetExploSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Explo XML文件信息
+MatrixServerDll_API void QueryExploSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载Vibro设置数据
+MatrixServerDll_API void LoadVibro(m_oSourceVibroStruct* pSourceVibroStruct,CXMLDOMElement* pElement);
+// 加载Vibro设置队列数据
+MatrixServerDll_API void LoadVibroList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载Vibro设置数据
+MatrixServerDll_API void LoadVibroSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Vibro设置数据
+MatrixServerDll_API void SaveVibro(m_oSourceVibroStruct* pSourceVibroStruct,CXMLDOMElement* pElement);
+// 保存Vibro设置队列数据
+MatrixServerDll_API void SaveVibroList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存Vibro设置数据
+MatrixServerDll_API void SaveVibroSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置Vibro设置数据
+MatrixServerDll_API void SetVibroSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 Vibro XML文件信息
+MatrixServerDll_API void QueryVibroSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载施工客户端程序设置数据
+MatrixServerDll_API void LoadOptAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存施工客户端程序设置数据
+MatrixServerDll_API void SaveOptAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 初始化仪器通讯信息结构体
 MatrixServerDll_API void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);

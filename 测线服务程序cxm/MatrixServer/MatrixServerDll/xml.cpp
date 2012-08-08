@@ -9,13 +9,15 @@ m_oInstrumentCommInfoStruct* OnCreateInstrumentCommInfo(void)
 	pCommInfo->m_pLogOutPut = NULL;
 	pCommInfo->m_strServerXMLFilePath = "..\\parameter\\MatrixServer.XML";
 	pCommInfo->m_strLineXMLFilePath = "..\\parameter\\MatrixLine.XML";
-	pCommInfo->m_strOptXMLFilePath = "";
+	pCommInfo->m_strOptXMLFilePath = "..\\parameter\\MatrixOperation.XML";
 
 	InitializeCriticalSection(&pCommInfo->m_oSecCommInfo);
 	// 初始化服务程序设置信息
 	OnInitServerXMLSetupData(pCommInfo);
 	// 初始化测线客户程序设置信息
 	OnInitLineClientXMLSetupData(pCommInfo);
+	// 初始化施工客户程序设置信息
+	OnInitOptClientXMLSetupData(pCommInfo);
 	return pCommInfo;
 }
 
@@ -74,6 +76,8 @@ void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo,
 	LoadServerAppSetupData(pCommInfo);
 	// 加载测线客户端程序设置数据
 	LoadLineAppSetupData(pCommInfo);
+	// 加载施工客户端程序设置数据
+	LoadOptAppSetupData(pCommInfo);
 	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
 }
 // 关闭程序配置文件
@@ -102,6 +106,10 @@ void OnFreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
 	SaveLineAppSetupData(pCommInfo);
 	// 重置测线客户端信息
 	OnResetLineClientXMLSetupData(pCommInfo);
+	// 保存施工客户端程序设置数据
+	SaveOptAppSetupData(pCommInfo);
+	// 重置施工客户端信息
+	OnResetOptClientXMLSetupData(pCommInfo);
 	DeleteCriticalSection(&pCommInfo->m_oSecCommInfo);
 	delete pCommInfo;
 	pCommInfo = NULL;

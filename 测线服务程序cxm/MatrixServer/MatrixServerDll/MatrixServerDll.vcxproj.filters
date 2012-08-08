@@ -186,6 +186,9 @@
     <ClCompile Include="LineList.cpp">
       <Filter>帧</Filter>
     </ClCompile>
+    <ClCompile Include="OptClientXML.cpp">
+      <Filter>杂项\XML</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MatrixServerDll.rc">

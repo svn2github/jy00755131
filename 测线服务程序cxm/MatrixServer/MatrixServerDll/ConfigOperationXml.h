@@ -8,18 +8,18 @@ using std::map;
 */
 typedef struct Delay_Struct
 {
-	/** Acq时间延时最小值*/
-	int m_iAcqTimeMin;
-	/** Acq时间延时最大值*/
-	int m_iAcqTimeMax;
-	/** Acq时间滑动值*/
-	int m_iAcqSlipTime;
-	/** VP时间延时最小值*/
-	int m_iVPTimeMin;
-	/** VP时间延时最大值*/
-	int m_iVPTimeMax;
 	/** VP时间滑动值*/
 	int m_iVPSlipTime;
+	/** VP时间延时最大值*/
+	int m_iVPTimeMax;
+	/** VP时间延时最小值*/
+	int m_iVPTimeMin;
+	/** Acq时间滑动值*/
+	int m_iAcqSlipTime;
+	/** Acq时间延时最大值*/
+	int m_iAcqTimeMax;
+	/** Acq时间延时最小值*/
+	int m_iAcqTimeMin;
 }m_oDelayStruct;
 
 /**
@@ -33,7 +33,7 @@ typedef struct SourceShot_Struct
 	/** 炮号*/
 	unsigned int m_uiShotID;
 	/** 中断标志位*/
-	bool m_bBreakPoint;
+	unsigned int m_uiBreakPoint;
 	/** 震源点测线号*/
 	float m_fSourceLine;
 	/** 震源点接收道位置号*/
@@ -44,7 +44,7 @@ typedef struct SourceShot_Struct
 	unsigned int m_uiSFN;
 	/** 排列类型（绝对排列和相对排列）*/
 	unsigned int m_uiSpreadType;
-	/** 超级排列（不适用则显示为空,值为-1）*/
+	/** 超级排列（不使用则显示为空,值为-1）*/
 	int m_iSuperSpread;
 	/** 数据处理类型*/
 	unsigned int m_uiProcessType;
@@ -99,7 +99,7 @@ typedef struct SourceVibro_Struct
 	/** 递增步幅*/
 	int m_iStep;
 	/** Work by Acq*/
-	bool m_bWorkByAcq;
+	unsigned int m_uiWorkByAcq;
 	/** Cluster 编号确定要同时使用的两个震源组*/
 	unsigned int m_uiCluster;
 	/** 注释信息长度*/
@@ -107,17 +107,35 @@ typedef struct SourceVibro_Struct
 	/** 注释*/
 	char* m_pcComments;
 }m_oSourceVibroStruct;
+
 /**
-* @struct SourceType_Struct
-* @brief 震源类型结构体
+* @struct ProcessRecord_Struct
+* @brief ProcessRecord结构体
 */
-typedef struct SourceType_Struct
+typedef struct ProcessRecord_Struct
 {
-	/** Explo震源结构体*/
-	list<m_oSourceExploStruct> m_olsExploStruct;
-	/** Vibro震源结构体*/
-	list<m_oSourceVibroStruct> m_olsVibroStruct;
-}m_oSourceTypeStruct;
+	/** Plug选项*/
+	unsigned int m_uiPlug;
+	/** BoxType选项*/
+	unsigned int m_uiBoxType;
+	/** SN串号*/
+	unsigned int m_uiSN;
+	/** 在脉冲模式中记录长度*/
+	unsigned int m_uiRecordLength;
+	/** 折射延迟*/
+	unsigned int m_uiRefractionDelay;
+	/** TB窗口时间*/
+	unsigned int m_uiTBWindow;
+	/** 在可控震源模式中记录长度*/
+	unsigned int m_uiListeningTime;
+	/** PeakTime*/
+	unsigned int m_uiPeakTime;
+	/** Raw*/
+	unsigned int m_uiRaw;
+	/** PreStack*/
+	unsigned int m_uiPreStack;
+}m_oProcessRecordStruct;
+
 /**
 * @struct ProcessAux_Struct
 * @brief ProcessAux结构体
@@ -165,40 +183,6 @@ typedef struct ProcessType_Struct
 }m_oProcessTypeStruct;
 
 /**
-* @struct Process_Struct
-* @brief Process结构体
-*/
-typedef struct Process_Struct
-{
-	/** Plug选项*/
-	unsigned int m_uiPlug;
-	/** BoxType选项*/
-	unsigned int m_uiBoxType;
-	/** SN串号*/
-	unsigned int m_uiSN;
-	/** 在脉冲模式中记录长度*/
-	unsigned int m_uiRecordLength;
-	/** 折射延迟*/
-	unsigned int m_uiRefractionDelay;
-	/** TB窗口时间*/
-	unsigned int m_uiTBWindow;
-	/** 在可控震源模式中记录长度*/
-	unsigned int m_uiListeningTime;
-	/** PeakTime*/
-	unsigned int m_uiPeakTime;
-	/** Raw*/
-	bool m_bRaw;
-	/** PreStack*/
-	bool m_bPreStack;
-	/** 迂回道队列*/
-	list<m_oProcessAuxStruct> m_olsProcessAuxStruct;
-	/** Acq队列*/
-	list<m_oProcessAcqStruct> m_olsProcessAcqStruct;
-	/** 处理类型队列*/
-	list<m_oProcessTypeStruct> m_olsProcessTypeStruct;
-}m_oProcessStruct;
-
-/**
 * @struct OperationComment_Struct
 * @brief OperationComment结构体
 */
@@ -220,10 +204,20 @@ typedef struct OptSetupData_Struct
 {
 	/**	Delay*/
 	m_oDelayStruct m_oDelay;
-	/** 震源类型*/
-	m_oSourceTypeStruct m_oSourceType;
+	/** 炮点队列*/
+	list<m_oSourceShotStruct> m_olsSourceShot;
+	/** Explo震源结构体*/
+	list<m_oSourceExploStruct> m_olsExploStruct;
+	/** Vibro震源结构体*/
+	list<m_oSourceVibroStruct> m_olsVibroStruct;
 	/** 处理类型*/
-	m_oProcessStruct m_oProcess;
-	/** 注释*/
-	m_oOperationCommentStruct m_oComment;
+	m_oProcessRecordStruct m_oProcessRecord;
+	/** 迂回道队列*/
+	list<m_oProcessAuxStruct> m_olsProcessAuxStruct;
+	/** Acq队列*/
+	list<m_oProcessAcqStruct> m_olsProcessAcqStruct;
+	/** 处理类型队列*/
+	list<m_oProcessTypeStruct> m_olsProcessTypeStruct;
+	/** 注释队列*/
+	list<m_oOperationCommentStruct> m_olsComment;
 }m_oOptSetupDataStruct;

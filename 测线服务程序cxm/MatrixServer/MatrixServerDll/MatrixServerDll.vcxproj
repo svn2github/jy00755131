@@ -122,6 +122,7 @@
     <ClCompile Include="LogOutPutThread.cpp" />
     <ClCompile Include="MatrixServerDll.cpp" />
     <ClCompile Include="MonitorThread.cpp" />
+    <ClCompile Include="OptClientXML.cpp" />
     <ClCompile Include="OptTask.cpp" />
     <ClCompile Include="OptTaskArray.cpp" />
     <ClCompile Include="PerformanceFunc.cpp" />

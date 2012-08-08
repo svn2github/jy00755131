@@ -42,7 +42,6 @@ unsigned short CXMLDOMTool::GetElementAttributeUnsignedShort(CXMLDOMElement* pEl
 	unsigned short uiData = oVariant.uiVal;
 	return uiData;
 }
-
 // 解析属性，返回单精度浮点数
 float CXMLDOMTool::GetElementAttributeFloat(CXMLDOMElement* pElement, CString strKey)
 {
