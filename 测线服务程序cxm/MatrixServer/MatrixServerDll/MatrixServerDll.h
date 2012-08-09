@@ -2112,6 +2112,83 @@ MatrixServerDll_API void SaveVibroSetupData(m_oInstrumentCommInfoStruct* pCommIn
 MatrixServerDll_API void SetVibroSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
 // 查询 Vibro XML文件信息
 MatrixServerDll_API void QueryVibroSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessRecord设置数据
+MatrixServerDll_API void LoadProcessRecord(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessRecord设置数据
+MatrixServerDll_API void LoadOptProcessRecordSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessRecord设置数据
+MatrixServerDll_API void SaveProcessRecord(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessRecord设置数据
+MatrixServerDll_API void SaveProcessRecordSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置ProcessRecord设置数据
+MatrixServerDll_API void SetProcessRecordSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 ProcessRecord XML文件信息
+MatrixServerDll_API void QueryProcessRecordSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessAux设置数据
+MatrixServerDll_API void LoadProcessAux(m_oProcessAuxStruct* pProcessAuxStruct,CXMLDOMElement* pElement);
+// 加载ProcessAux设置队列数据
+MatrixServerDll_API void LoadProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessAux设置数据
+MatrixServerDll_API void LoadProcessAuxSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessAux设置数据
+MatrixServerDll_API void SaveProcessAux(m_oProcessAuxStruct* pProcessAuxStruct,CXMLDOMElement* pElement);
+// 保存ProcessAux设置队列数据
+MatrixServerDll_API void SaveProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessAux设置数据
+MatrixServerDll_API void SaveProcessAuxSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置ProcessAux设置数据
+MatrixServerDll_API void SetProcessAuxSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 ProcessAux XML文件信息
+MatrixServerDll_API void QueryProcessAuxSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessAcq设置数据
+MatrixServerDll_API void LoadProcessAcq(m_oProcessAcqStruct* pProcessAcqStruct,CXMLDOMElement* pElement);
+// 加载ProcessAcq设置队列数据
+MatrixServerDll_API void LoadProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessAcq设置数据
+MatrixServerDll_API void LoadProcessAcqSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessAcq设置数据
+MatrixServerDll_API void SaveProcessAcq(m_oProcessAcqStruct* pProcessAcqStruct,CXMLDOMElement* pElement);
+// 保存ProcessAcq设置队列数据
+MatrixServerDll_API void SaveProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessAcq设置数据
+MatrixServerDll_API void SaveProcessAcqSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置ProcessAcq设置数据
+MatrixServerDll_API void SetProcessAcqSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 ProcessAcq XML文件信息
+MatrixServerDll_API void QueryProcessAcqSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessType设置数据
+MatrixServerDll_API void LoadProcessType(m_oProcessTypeStruct* pProcessTypeStruct,CXMLDOMElement* pElement);
+// 加载ProcessType设置队列数据
+MatrixServerDll_API void LoadProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessType设置数据
+MatrixServerDll_API void LoadProcessTypeSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessType设置数据
+MatrixServerDll_API void SaveProcessType(m_oProcessTypeStruct* pProcessTypeStruct,CXMLDOMElement* pElement);
+// 保存ProcessType设置队列数据
+MatrixServerDll_API void SaveProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessType设置数据
+MatrixServerDll_API void SaveProcessTypeSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置ProcessType设置数据
+MatrixServerDll_API void SetProcessTypeSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 ProcessType XML文件信息
+MatrixServerDll_API void QueryProcessTypeSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessComments设置数据
+MatrixServerDll_API void LoadProcessComments(m_oOperationCommentStruct* pCommentsStruct,CXMLDOMElement* pElement);
+// 加载ProcessComments设置队列数据
+MatrixServerDll_API void LoadProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 加载ProcessComments设置数据
+MatrixServerDll_API void LoadProcessCommentsSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessComments设置数据
+MatrixServerDll_API void SaveProcessComments(m_oOperationCommentStruct* pCommentsStruct,CXMLDOMElement* pElement);
+// 保存ProcessComments设置队列数据
+MatrixServerDll_API void SaveProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo);
+// 保存ProcessComments设置数据
+MatrixServerDll_API void SaveProcessCommentsSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
+// 设置ProcessComments设置数据
+MatrixServerDll_API void SetProcessCommentsSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo);
+// 查询 ProcessComments XML文件信息
+MatrixServerDll_API void QueryProcessCommentsSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+
 // 加载施工客户端程序设置数据
 MatrixServerDll_API void LoadOptAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo);
 // 保存施工客户端程序设置数据

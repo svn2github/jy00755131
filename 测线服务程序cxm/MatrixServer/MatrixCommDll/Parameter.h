@@ -248,18 +248,38 @@ typedef struct CommFrame_Struct
 #define CmdQueryDelayOptXMLInfo				0x102b
 /** 设置 OperationDelay XML文件信息（帧内容为信息结构体）*/
 #define CmdSetDelayOptXMLInfo				0x102c
-/** 查询 震源类型 XML文件信息（帧内容为空）*/
-#define CmdQuerySourceTypeOptXMLInfo		0x102d
-/** 设置 震源类型 XML文件信息（帧内容为信息结构体）*/
-#define CmdSetSourceTypeOptXMLInfo			0x102e
-/** 查询 处理类型 XML文件信息（帧内容为空）*/
-#define CmdQueryProcessTypeOptXMLInfo		0x102f
-/** 设置 处理类型 XML文件信息（帧内容为信息结构体）*/
-#define CmdSetProcessTypeOptXMLInfo			0x1030
+/** 查询 炮表 XML文件信息（帧内容为空）*/
+#define CmdQuerySourceShotOptXMLInfo		0x102d
+/** 设置 炮表 XML文件信息（帧内容为信息结构体）*/
+#define CmdSetSourceShotOptXMLInfo			0x102e
+/** 查询 Explo震源类型 XML文件信息（帧内容为空）*/
+#define CmdQueryExploOptXMLInfo				0x102f
+/** 设置 Explo震源类型 XML文件信息（帧内容为信息结构体）*/
+#define CmdSetExploOptXMLInfo				0x1030
+/** 查询 Vibro震源类型 XML文件信息（帧内容为空）*/
+#define CmdQueryVibroOptXMLInfo				0x1031
+/** 设置 Vibro震源类型 XML文件信息（帧内容为信息结构体）*/
+#define CmdSetVibroOptXMLInfo				0x1032
+/** 查询 ProcessRecord XML文件信息（帧内容为空）*/
+#define CmdQueryProcessRecordOptXMLInfo		0x1033
+/** 设置 ProcessRecord XML文件信息（帧内容为信息结构体）*/
+#define CmdSetProcessRecordOptXMLInfo		0x1034
+/** 查询 ProcessAux XML文件信息（帧内容为空）*/
+#define CmdQueryProcessAuxOptXMLInfo		0x1035
+/** 设置 ProcessAux XML文件信息（帧内容为信息结构体）*/
+#define CmdSetProcessAuxOptXMLInfo			0x1036
+/** 查询 ProcessAcq XML文件信息（帧内容为空）*/
+#define CmdQueryProcessAcqOptXMLInfo		0x1037
+/** 设置 ProcessAcq XML文件信息（帧内容为信息结构体）*/
+#define CmdSetProcessAcqOptXMLInfo			0x1038
+/** 查询 ProcessType XML文件信息（帧内容为空）*/
+#define CmdQueryProcessTypeOptXMLInfo		0x1039
+/** 设置 ProcessType XML文件信息（帧内容为信息结构体）*/
+#define CmdSetProcessTypeOptXMLInfo			0x103a
 /** 查询 注释 XML文件信息（帧内容为空）*/
-#define CmdQueryCommentOptXMLInfo			0x1031
+#define CmdQueryCommentsOptXMLInfo			0x103b
 /** 设置 注释 XML文件信息（帧内容为信息结构体）*/
-#define CmdSetCommentOptXMLInfo				0x1032
+#define CmdSetCommentsOptXMLInfo			0x103c
 
 /** 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）*/
 #define CmdQueryInstrNoiseTestArea			0x2001

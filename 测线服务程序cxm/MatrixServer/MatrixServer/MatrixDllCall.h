@@ -134,6 +134,25 @@ public:
 	void Dll_SetLAULeakageSetupData(char* pChar, unsigned int uiSize);
 	// 设置FormLine设置数据
 	void Dll_SetFormLineSetupData(char* pChar, unsigned int uiSize);
+	// 设置Delay设置数据
+	void Dll_SetDelaySetupData(char* pChar, unsigned int uiSize);
+	// 设置SourceShot设置数据
+	void Dll_SetSourceShotSetupData(char* pChar, unsigned int uiSize);
+	// 设置Explo设置数据
+	void Dll_SetExploSetupData(char* pChar, unsigned int uiSize);
+	// 设置Vibro设置数据
+	void Dll_SetVibroSetupData(char* pChar, unsigned int uiSize);
+	// 设置ProcessRecord设置数据
+	void Dll_SetProcessRecordSetupData(char* pChar, unsigned int uiSize);
+	// 设置ProcessAux设置数据
+	void Dll_SetProcessAuxSetupData(char* pChar, unsigned int uiSize);
+	// 设置ProcessAcq设置数据
+	void Dll_SetProcessAcqSetupData(char* pChar, unsigned int uiSize);
+	// 设置ProcessType设置数据
+	void Dll_SetProcessTypeSetupData(char* pChar, unsigned int uiSize);
+	// 设置ProcessComments设置数据
+	void Dll_SetProcessCommentsSetupData(char* pChar, unsigned int uiSize);
+
 	// 设置Instrument_SensorTestBase设置数据
 	void Dll_SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, bool bInstrument);
 	// 设置Instrument_SensorTestLimit设置数据

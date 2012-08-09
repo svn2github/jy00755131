@@ -190,6 +190,10 @@ typedef struct OperationComment_Struct
 {
 	/** 序号*/
 	unsigned int m_uiNb;
+	/** 标签信息长度*/
+	unsigned short m_usLabelSize;
+	/** 标签*/
+	char* m_pcLabel;
 	/** 注释信息长度*/
 	unsigned short m_usCommentsSize;
 	/** 注释*/
@@ -212,6 +216,10 @@ typedef struct OptSetupData_Struct
 	list<m_oSourceVibroStruct> m_olsVibroStruct;
 	/** 处理类型*/
 	m_oProcessRecordStruct m_oProcessRecord;
+	/** AppendAuxesFromDsd*/
+	unsigned int m_uiAppendAux;
+	/** Correl with*/
+	int m_iCorrelWith;
 	/** 迂回道队列*/
 	list<m_oProcessAuxStruct> m_olsProcessAuxStruct;
 	/** Acq队列*/

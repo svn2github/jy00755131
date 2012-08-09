@@ -342,6 +342,7 @@ void CCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSi
 			pRecThread->BroadCastXMLChange(usCmd, pChar, uiSize);
 			break;
 
+
 			// 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrNoiseTestArea:
 			m_fInstrumentNoiseLimit = GetTestDataLimitFromXML(true, "Noise");
