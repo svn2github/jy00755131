@@ -3,6 +3,7 @@
 #include <map>
 using std::list;
 using std::map;
+using std::string;
 /**
 * @struct Survery_Struct
 * @brief Survery SETUP结构体
@@ -413,4 +414,10 @@ typedef struct LineSetupData_Struct
 	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>> m_oMultpleTestStructMap;
 	/** SeisMonitor*/
 	m_oSeisMonitorStruct m_oSeisMonitor;
+	/** 资源同步对象*/
+	CRITICAL_SECTION m_oSecCommInfo;
+	/** XMLDOM文件对象*/
+	CXMLDOMDocument m_oXMLDOMDocument;
+	/** 测线XML配置文件路径*/
+	string m_strLineXMLFilePath;
 }m_oLineSetupDataStruct;

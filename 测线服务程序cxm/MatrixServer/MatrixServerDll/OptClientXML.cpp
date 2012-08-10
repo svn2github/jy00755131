@@ -2,21 +2,72 @@
 #include "MatrixServerDll.h"
 
 // 初始化施工客户程序设置信息
-void OnInitOptClientXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnInitOptClientXMLSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-// 	pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread = NULL;
+	InitializeCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	pOptSetupData->m_strOptXMLFilePath = "..\\parameter\\MatrixOperation.XML";
 	// 重置施工客户端信息
-	OnResetOptClientXMLSetupData(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	OnResetOptClientXMLSetupData(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
+}
+// 打开施工客户端程序配置文件
+BOOL OpenOptClientXMLFile(m_oOptSetupDataStruct* pOptSetupData)
+{
+	if (pOptSetupData == NULL)
+	{
+		return FALSE;
+	}
+	CString strOLEObject;
+	COleException oError;
+	COleVariant oVariant;
+	CString str = _T("");
+	strOLEObject = _T("msxml2.domdocument");
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	// 初始化COM库
+	CoInitialize(NULL);
+	if (FALSE == pOptSetupData->m_oXMLDOMDocument.CreateDispatch(strOLEObject, &oError))
+	{
+		AfxMessageBox(_T("XML结构创建失败！"));
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		return FALSE;
+	}
+	str = pOptSetupData->m_strOptXMLFilePath.c_str();
+	oVariant = str;
+	if (false == IfFileExist(str))
+	{
+		AfxMessageBox(_T("文件不存在"));
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		return FALSE;
+	}
+	if (FALSE == pOptSetupData->m_oXMLDOMDocument.load(oVariant))
+	{
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		return FALSE;
+	}
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	return TRUE;
+}
+// 关闭施工客户端程序配置文件
+void CloseOptClientXMLFile(m_oOptSetupDataStruct* pOptSetupData)
+{
+	if (pOptSetupData == NULL)
+	{
+		return;
+	}
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	pOptSetupData->m_oXMLDOMDocument.DetachDispatch();
+	// 释放COM库
+	CoUninitialize();
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 重置炮点队列
-void OnResetOptSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetOptSourceShotList(m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oSourceShotStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsSourceShot.begin(); 
-		iter != pCommInfo->m_oOptSetupData.m_olsSourceShot.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsSourceShot.begin(); 
+		iter != pOptSetupData->m_olsSourceShot.end(); iter++)
 	{
 		if (iter->m_pcComments != NULL)
 		{
@@ -24,16 +75,16 @@ void OnResetOptSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcComments = NULL;
 		}
 	}
-	pCommInfo->m_oOptSetupData.m_olsSourceShot.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pOptSetupData->m_olsSourceShot.clear();
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 重置Explo震源类型队列
-void OnResetOptExploList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetOptExploList(m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oSourceExploStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsExploStruct.begin(); 
-		iter != pCommInfo->m_oOptSetupData.m_olsExploStruct.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsExploStruct.begin(); 
+		iter != pOptSetupData->m_olsExploStruct.end(); iter++)
 	{
 		if (iter->m_pcComments != NULL)
 		{
@@ -46,16 +97,16 @@ void OnResetOptExploList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcLabel = NULL;
 		}
 	}
-	pCommInfo->m_oOptSetupData.m_olsExploStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pOptSetupData->m_olsExploStruct.clear();
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 重置Vibro震源类型队列
-void OnResetOptVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetOptVibroList(m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oSourceVibroStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsVibroStruct.begin(); 
-		iter != pCommInfo->m_oOptSetupData.m_olsVibroStruct.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsVibroStruct.begin(); 
+		iter != pOptSetupData->m_olsVibroStruct.end(); iter++)
 	{
 		if (iter->m_pcComments != NULL)
 		{
@@ -68,16 +119,16 @@ void OnResetOptVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcLabel = NULL;
 		}
 	}
-	pCommInfo->m_oOptSetupData.m_olsVibroStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pOptSetupData->m_olsVibroStruct.clear();
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 重置处理类型Aux队列
-void OnResetOptProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetOptProcessAuxList(m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oProcessAuxStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.begin(); 
-		iter != pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsProcessAuxStruct.begin(); 
+		iter != pOptSetupData->m_olsProcessAuxStruct.end(); iter++)
 	{
 		if (iter->m_pcAuxProcessing != NULL)
 		{
@@ -85,23 +136,23 @@ void OnResetOptProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcAuxProcessing = NULL;
 		}
 	}
-	pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pOptSetupData->m_olsProcessAuxStruct.clear();
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 重置处理类型Acq队列
-void OnResetOptProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetOptProcessAcqList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	pCommInfo->m_oOptSetupData.m_olsProcessAcqStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	pOptSetupData->m_olsProcessAcqStruct.clear();
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 重置处理类型队列
-void OnResetOptProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetOptProcessTypeList(m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oProcessTypeStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.begin(); 
-		iter != pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsProcessTypeStruct.begin(); 
+		iter != pOptSetupData->m_olsProcessTypeStruct.end(); iter++)
 	{
 		if (iter->m_pcLabel != NULL)
 		{
@@ -109,16 +160,16 @@ void OnResetOptProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcLabel = NULL;
 		}
 	}
-	pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pOptSetupData->m_olsProcessTypeStruct.clear();
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 重置注释队列
-void OnResetOptCommentList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetOptCommentList(m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oOperationCommentStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsComment.begin(); 
-		iter != pCommInfo->m_oOptSetupData.m_olsComment.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsComment.begin(); 
+		iter != pOptSetupData->m_olsComment.end(); iter++)
 	{
 		if (iter->m_pcLabel != NULL)
 		{
@@ -131,31 +182,31 @@ void OnResetOptCommentList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcComments = NULL;
 		}
 	}
-	pCommInfo->m_oOptSetupData.m_olsComment.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pOptSetupData->m_olsComment.clear();
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 重置施工客户端信息
-void OnResetOptClientXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetOptClientXMLSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
 	// 重置炮点队列
-	OnResetOptSourceShotList(pCommInfo);
+	OnResetOptSourceShotList(pOptSetupData);
 	// 重置Explo震源类型队列
-	OnResetOptExploList(pCommInfo);
+	OnResetOptExploList(pOptSetupData);
 	// 重置Vibro震源类型队列
-	OnResetOptVibroList(pCommInfo);
+	OnResetOptVibroList(pOptSetupData);
 	// 重置处理类型Aux队列
-	OnResetOptProcessAuxList(pCommInfo);
+	OnResetOptProcessAuxList(pOptSetupData);
 	// 重置处理类型Acq队列
-	OnResetOptProcessAcqList(pCommInfo);
+	OnResetOptProcessAcqList(pOptSetupData);
 	// 重置处理类型队列
-	OnResetOptProcessTypeList(pCommInfo);
+	OnResetOptProcessTypeList(pOptSetupData);
 	// 重置注释队列
-	OnResetOptCommentList(pCommInfo);
+	OnResetOptCommentList(pOptSetupData);
 }
 // 加载Delay设置数据
-void LoadDelay(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadDelay(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -164,29 +215,29 @@ void LoadDelay(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Operation Delay设置区
 		strKey = "OperationDelay";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 
 		strKey = "VPSlipTime";
-		pCommInfo->m_oOptSetupData.m_oDelay.m_iVPSlipTime = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
+		pOptSetupData->m_oDelay.m_iVPSlipTime = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
 		strKey = "VPTimeMax";
-		pCommInfo->m_oOptSetupData.m_oDelay.m_iVPTimeMax = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
+		pOptSetupData->m_oDelay.m_iVPTimeMax = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
 		strKey = "VPTimeMin";
-		pCommInfo->m_oOptSetupData.m_oDelay.m_iVPTimeMin = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
+		pOptSetupData->m_oDelay.m_iVPTimeMin = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
 		strKey = "AcqSlipTime";
-		pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqSlipTime = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
+		pOptSetupData->m_oDelay.m_iAcqSlipTime = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
 		strKey = "AcqTimeMax";
-		pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqTimeMax = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
+		pOptSetupData->m_oDelay.m_iAcqTimeMax = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
 		strKey = "AcqTimeMin";
-		pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqTimeMin = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
+		pOptSetupData->m_oDelay.m_iAcqTimeMin = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
 	}
 	catch (CMemoryException* e)
 	{
@@ -200,30 +251,30 @@ void LoadDelay(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载Delay设置数据
-void LoadOptDelaySetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadOptDelaySetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 加载Delay设置数据
-		LoadDelay(pCommInfo);
+		LoadDelay(pOptSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存Delay设置数据
-void SaveDelay(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveDelay(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -233,34 +284,34 @@ void SaveDelay(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Delay设置区
 		strKey = "OperationDelay";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 
 		strKey = "VPSlipTime";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oDelay.m_iVPSlipTime;
+		oVariant = (long)pOptSetupData->m_oDelay.m_iVPSlipTime;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "VPTimeMax";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oDelay.m_iVPTimeMax;
+		oVariant = (long)pOptSetupData->m_oDelay.m_iVPTimeMax;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "VPTimeMin";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oDelay.m_iVPTimeMin;
+		oVariant = (long)pOptSetupData->m_oDelay.m_iVPTimeMin;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "AcqSlipTime";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqSlipTime;
+		oVariant = (long)pOptSetupData->m_oDelay.m_iAcqSlipTime;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "AcqTimeMax";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqTimeMax;
+		oVariant = (long)pOptSetupData->m_oDelay.m_iAcqTimeMax;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "AcqTimeMin";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqTimeMin;
+		oVariant = (long)pOptSetupData->m_oDelay.m_iAcqTimeMin;
 		oElement.setAttribute(strKey, oVariant);
 	}
 	catch (CMemoryException* e)
@@ -275,69 +326,69 @@ void SaveDelay(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存Delay设置数据
-void SaveDelaySetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveDelaySetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 保存Delay设置数据
-		SaveDelay(pCommInfo);
+		SaveDelay(pOptSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strOptXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pOptSetupData->m_strOptXMLFilePath.c_str());
+	pOptSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置Delay设置数据
-void SetDelaySetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetDelaySetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	unsigned int uiPos = 0;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	while(uiPos < uiSize)
 	{
-		memcpy(&pCommInfo->m_oOptSetupData.m_oDelay.m_iVPSlipTime, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oDelay.m_iVPSlipTime, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oDelay.m_iVPTimeMax, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oDelay.m_iVPTimeMax, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oDelay.m_iVPTimeMin, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oDelay.m_iVPTimeMin, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqSlipTime, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oDelay.m_iAcqSlipTime, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqTimeMax, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oDelay.m_iAcqTimeMax, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqTimeMin, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oDelay.m_iAcqTimeMin, &pChar[uiPos], 4);
 		uiPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
-	SaveDelaySetupData(pCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	SaveDelaySetupData(pOptSetupData);
 }
 // 查询 Delay XML文件信息
-void QueryDelaySetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryDelaySetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oDelay.m_iVPSlipTime, 4);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oDelay.m_iVPSlipTime, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oDelay.m_iVPTimeMax, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oDelay.m_iVPTimeMax, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oDelay.m_iVPTimeMin, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oDelay.m_iVPTimeMin, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqSlipTime, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oDelay.m_iAcqSlipTime, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqTimeMax, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oDelay.m_iAcqTimeMax, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oDelay.m_iAcqTimeMin, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oDelay.m_iAcqTimeMin, 4);
 	iPos += 4;
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 
 // 加载SourceShot设置数据
@@ -389,9 +440,9 @@ void LoadSourceShot(m_oSourceShotStruct* pSourceShotStruct,CXMLDOMElement* pElem
 	}
 }
 // 加载SourceShot设置队列数据
-void LoadSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSourceShotList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -400,12 +451,12 @@ void LoadSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到VPTable设置区
 		strKey = "VPTable";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -425,7 +476,7 @@ void LoadSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadSourceShot(&oSourceShotStruct, &oElement);
 			// 增加SourceShot
-			pCommInfo->m_oOptSetupData.m_olsSourceShot.push_back(oSourceShotStruct);
+			pOptSetupData->m_olsSourceShot.push_back(oSourceShotStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -440,27 +491,27 @@ void LoadSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载SourceShot设置数据
-void LoadSourceShotSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSourceShotSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置SourceShot
-	OnResetOptSourceShotList(pCommInfo);
+	OnResetOptSourceShotList(pOptSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 加载SourceShot设置队列数据
-		LoadSourceShotList(pCommInfo);
+		LoadSourceShotList(pOptSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存SourceShot设置数据
 void SaveSourceShot(m_oSourceShotStruct* pSourceShotStruct,CXMLDOMElement* pElement)
@@ -521,9 +572,9 @@ void SaveSourceShot(m_oSourceShotStruct* pSourceShotStruct,CXMLDOMElement* pElem
 	}
 }
 // 保存SourceShot设置队列数据
-void SaveSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSourceShotList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -536,12 +587,12 @@ void SaveSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oSourceShotStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到SourceShot设置区
 		strKey = "VPTable";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -562,7 +613,7 @@ void SaveSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置SourceShot总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_olsSourceShot.size();
+		oVariant = (long)pOptSetupData->m_olsSourceShot.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -570,17 +621,17 @@ void SaveSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oOptSetupData.m_olsSourceShot.begin();
-			iter != pCommInfo->m_oOptSetupData.m_olsSourceShot.end(); iter++)
+		for (iter = pOptSetupData->m_olsSourceShot.begin();
+			iter != pOptSetupData->m_olsSourceShot.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveSourceShot(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -595,35 +646,35 @@ void SaveSourceShotList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存SourceShot设置数据
-void SaveSourceShotSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSourceShotSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 保存SourceShot设置队列数据
-		SaveSourceShotList(pCommInfo);
+		SaveSourceShotList(pOptSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strOptXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pOptSetupData->m_strOptXMLFilePath.c_str());
+	pOptSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置SourceShot设置数据
-void SetSourceShotSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetSourceShotSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	m_oSourceShotStruct oSourceShotStruct;
 	unsigned int uiPos = 0;
-	OnResetOptSourceShotList(pCommInfo);
+	OnResetOptSourceShotList(pOptSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oSourceShotStruct.m_uiVPStatus, &pChar[uiPos], 4);
@@ -651,19 +702,19 @@ void SetSourceShotSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommI
 		oSourceShotStruct.m_pcComments = new char[oSourceShotStruct.m_usCommentsSize];
 		memcpy(&oSourceShotStruct.m_pcComments, &pChar[uiPos], oSourceShotStruct.m_usCommentsSize);
 		uiPos += oSourceShotStruct.m_usCommentsSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oOptSetupData.m_olsSourceShot.push_back(oSourceShotStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		pOptSetupData->m_olsSourceShot.push_back(oSourceShotStruct);
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveSourceShotSetupData(pCommInfo);
+	SaveSourceShotSetupData(pOptSetupData);
 }
 // 查询 SourceShot XML文件信息
-void QuerySourceShotSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QuerySourceShotSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oSourceShotStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsSourceShot.begin();
-		iter != pCommInfo->m_oOptSetupData.m_olsSourceShot.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsSourceShot.begin();
+		iter != pOptSetupData->m_olsSourceShot.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiVPStatus, 4);
 		iPos += 4;
@@ -690,7 +741,7 @@ void QuerySourceShotSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoSt
 		memcpy(&cProcBuf[iPos], &iter->m_pcComments, iter->m_usCommentsSize);
 		iPos += iter->m_usCommentsSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 
 // 加载Explo设置数据
@@ -736,9 +787,9 @@ void LoadExplo(m_oSourceExploStruct* pSourceExploStruct,CXMLDOMElement* pElement
 	}
 }
 // 加载Explo设置队列数据
-void LoadExploList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadExploList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -747,12 +798,12 @@ void LoadExploList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Explo设置区
 		strKey = "SourceExplo";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -772,7 +823,7 @@ void LoadExploList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadExplo(&oSourceExploStruct, &oElement);
 			// 增加Explo
-			pCommInfo->m_oOptSetupData.m_olsExploStruct.push_back(oSourceExploStruct);
+			pOptSetupData->m_olsExploStruct.push_back(oSourceExploStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -787,27 +838,27 @@ void LoadExploList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载Explo设置数据
-void LoadExploSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadExploSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置Explo
-	OnResetOptExploList(pCommInfo);
+	OnResetOptExploList(pOptSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 加载Explo设置队列数据
-		LoadExploList(pCommInfo);
+		LoadExploList(pOptSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存Explo设置数据
 void SaveExplo(m_oSourceExploStruct* pSourceExploStruct,CXMLDOMElement* pElement)
@@ -855,9 +906,9 @@ void SaveExplo(m_oSourceExploStruct* pSourceExploStruct,CXMLDOMElement* pElement
 	}
 }
 // 保存Explo设置队列数据
-void SaveExploList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveExploList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -870,12 +921,12 @@ void SaveExploList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oSourceExploStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Explo设置区
 		strKey = "SourceExplo";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -896,7 +947,7 @@ void SaveExploList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Explo总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_olsExploStruct.size();
+		oVariant = (long)pOptSetupData->m_olsExploStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -904,17 +955,17 @@ void SaveExploList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oOptSetupData.m_olsExploStruct.begin();
-			iter != pCommInfo->m_oOptSetupData.m_olsExploStruct.end(); iter++)
+		for (iter = pOptSetupData->m_olsExploStruct.begin();
+			iter != pOptSetupData->m_olsExploStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveExplo(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -929,35 +980,35 @@ void SaveExploList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存Explo设置数据
-void SaveExploSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveExploSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 保存Explo设置队列数据
-		SaveExploList(pCommInfo);
+		SaveExploList(pOptSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strOptXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pOptSetupData->m_strOptXMLFilePath.c_str());
+	pOptSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置Explo设置数据
-void SetExploSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetExploSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	m_oSourceExploStruct oSourceExploStruct;
 	unsigned int uiPos = 0;
-	OnResetOptExploList(pCommInfo);
+	OnResetOptExploList(pOptSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oSourceExploStruct.m_uiSourceStatus, &pChar[uiPos], 4);
@@ -978,19 +1029,19 @@ void SetExploSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoSt
 		oSourceExploStruct.m_pcComments = new char[oSourceExploStruct.m_usCommentsSize];
 		memcpy(&oSourceExploStruct.m_pcComments, &pChar[uiPos], oSourceExploStruct.m_usCommentsSize);
 		uiPos += oSourceExploStruct.m_usCommentsSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oOptSetupData.m_olsExploStruct.push_back(oSourceExploStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		pOptSetupData->m_olsExploStruct.push_back(oSourceExploStruct);
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveExploSetupData(pCommInfo);
+	SaveExploSetupData(pOptSetupData);
 }
 // 查询 Explo XML文件信息
-void QueryExploSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryExploSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oSourceExploStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsExploStruct.begin();
-		iter != pCommInfo->m_oOptSetupData.m_olsExploStruct.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsExploStruct.begin();
+		iter != pOptSetupData->m_olsExploStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiSourceStatus, 4);
 		iPos += 4;
@@ -1009,7 +1060,7 @@ void QueryExploSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct*
 		memcpy(&cProcBuf[iPos], &iter->m_pcComments, iter->m_usCommentsSize);
 		iPos += iter->m_usCommentsSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载Vibro设置数据
 void LoadVibro(m_oSourceVibroStruct* pSourceVibroStruct,CXMLDOMElement* pElement)
@@ -1060,9 +1111,9 @@ void LoadVibro(m_oSourceVibroStruct* pSourceVibroStruct,CXMLDOMElement* pElement
 	}
 }
 // 加载Vibro设置队列数据
-void LoadVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadVibroList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -1071,12 +1122,12 @@ void LoadVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Vibro设置区
 		strKey = "SourceVibro";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1096,7 +1147,7 @@ void LoadVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadVibro(&oSourceVibroStruct, &oElement);
 			// 增加Vibro
-			pCommInfo->m_oOptSetupData.m_olsVibroStruct.push_back(oSourceVibroStruct);
+			pOptSetupData->m_olsVibroStruct.push_back(oSourceVibroStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -1111,27 +1162,27 @@ void LoadVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载Vibro设置数据
-void LoadVibroSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadVibroSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置Vibro
-	OnResetOptVibroList(pCommInfo);
+	OnResetOptVibroList(pOptSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 加载Vibro设置队列数据
-		LoadVibroList(pCommInfo);
+		LoadVibroList(pOptSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存Vibro设置数据
 void SaveVibro(m_oSourceVibroStruct* pSourceVibroStruct,CXMLDOMElement* pElement)
@@ -1188,9 +1239,9 @@ void SaveVibro(m_oSourceVibroStruct* pSourceVibroStruct,CXMLDOMElement* pElement
 	}
 }
 // 保存Vibro设置队列数据
-void SaveVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveVibroList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -1203,12 +1254,12 @@ void SaveVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oSourceVibroStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Vibro设置区
 		strKey = "SourceVibro";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1229,7 +1280,7 @@ void SaveVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Explo总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_olsVibroStruct.size();
+		oVariant = (long)pOptSetupData->m_olsVibroStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -1237,17 +1288,17 @@ void SaveVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oOptSetupData.m_olsVibroStruct.begin();
-			iter != pCommInfo->m_oOptSetupData.m_olsVibroStruct.end(); iter++)
+		for (iter = pOptSetupData->m_olsVibroStruct.begin();
+			iter != pOptSetupData->m_olsVibroStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveVibro(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -1262,35 +1313,35 @@ void SaveVibroList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存Vibro设置数据
-void SaveVibroSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveVibroSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 保存Vibro设置队列数据
-		SaveVibroList(pCommInfo);
+		SaveVibroList(pOptSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strOptXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pOptSetupData->m_strOptXMLFilePath.c_str());
+	pOptSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置Vibro设置数据
-void SetVibroSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetVibroSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	m_oSourceVibroStruct oSourceVibroStruct;
 	unsigned int uiPos = 0;
-	OnResetOptVibroList(pCommInfo);
+	OnResetOptVibroList(pOptSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oSourceVibroStruct.m_uiSourceStatus, &pChar[uiPos], 4);
@@ -1317,19 +1368,19 @@ void SetVibroSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoSt
 		oSourceVibroStruct.m_pcComments = new char[oSourceVibroStruct.m_usCommentsSize];
 		memcpy(&oSourceVibroStruct.m_pcComments, &pChar[uiPos], oSourceVibroStruct.m_usCommentsSize);
 		uiPos += oSourceVibroStruct.m_usCommentsSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oOptSetupData.m_olsVibroStruct.push_back(oSourceVibroStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		pOptSetupData->m_olsVibroStruct.push_back(oSourceVibroStruct);
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveVibroSetupData(pCommInfo);
+	SaveVibroSetupData(pOptSetupData);
 }
 // 查询 Vibro XML文件信息
-void QueryVibroSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryVibroSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oSourceVibroStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsVibroStruct.begin();
-		iter != pCommInfo->m_oOptSetupData.m_olsVibroStruct.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsVibroStruct.begin();
+		iter != pOptSetupData->m_olsVibroStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiSourceStatus, 4);
 		iPos += 4;
@@ -1354,13 +1405,13 @@ void QueryVibroSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct*
 		memcpy(&cProcBuf[iPos], &iter->m_pcComments, iter->m_usCommentsSize);
 		iPos += iter->m_usCommentsSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 
 // 加载ProcessRecord设置数据
-void LoadProcessRecord(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadProcessRecord(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -1369,37 +1420,37 @@ void LoadProcessRecord(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Operation ProcessRecord设置区
 		strKey = "ProcessRecord";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 
 		strKey = "Plug";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPlug = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiPlug = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "BoxType";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiBoxType = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiBoxType = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "SerialNb";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiSN = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiSN = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "RecordLength";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRecordLength = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiRecordLength = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "RefractionDelay";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRefractionDelay = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiRefractionDelay = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "TBWindow";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiTBWindow = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiTBWindow = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "ListeningTime";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiListeningTime = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiListeningTime = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "PeakTime";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPeakTime = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiPeakTime = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "Raw";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRaw = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiRaw = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "PreStack";
-		pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPreStack = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_oProcessRecord.m_uiPreStack = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 	}
 	catch (CMemoryException* e)
 	{
@@ -1413,30 +1464,30 @@ void LoadProcessRecord(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载ProcessRecord设置数据
-void LoadOptProcessRecordSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadOptProcessRecordSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 加载ProcessRecord设置数据
-		LoadProcessRecord(pCommInfo);
+		LoadProcessRecord(pOptSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessRecord设置数据
-void SaveProcessRecord(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessRecord(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -1446,46 +1497,46 @@ void SaveProcessRecord(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到ProcessRecord设置区
 		strKey = "ProcessRecord";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 
 		strKey = "Plug";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPlug;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiPlug;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "BoxType";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiBoxType;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiBoxType;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "SerialNb";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiSN;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiSN;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "RecordLength";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRecordLength;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiRecordLength;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "RefractionDelay";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRefractionDelay;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiRefractionDelay;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "TBWindow";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiTBWindow;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiTBWindow;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "ListeningTime";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiListeningTime;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiListeningTime;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "PeakTime";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPeakTime;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiPeakTime;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "Raw";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRaw;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiRaw;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "PreStack";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPreStack;
+		oVariant = (long)pOptSetupData->m_oProcessRecord.m_uiPreStack;
 		oElement.setAttribute(strKey, oVariant);
 	}
 	catch (CMemoryException* e)
@@ -1500,85 +1551,85 @@ void SaveProcessRecord(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessRecord设置数据
-void SaveProcessRecordSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessRecordSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 保存ProcessRecord设置数据
-		SaveProcessRecord(pCommInfo);
+		SaveProcessRecord(pOptSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strOptXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pOptSetupData->m_strOptXMLFilePath.c_str());
+	pOptSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessRecord设置数据
-void SetProcessRecordSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetProcessRecordSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	unsigned int uiPos = 0;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	while(uiPos < uiSize)
 	{
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPlug, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiPlug, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiBoxType, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiBoxType, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiSN, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiSN, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRecordLength, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiRecordLength, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRefractionDelay, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiRefractionDelay, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiTBWindow, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiTBWindow, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiListeningTime, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiListeningTime, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPeakTime, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiPeakTime, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRaw, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiRaw, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPreStack, &pChar[uiPos], 4);
+		memcpy(&pOptSetupData->m_oProcessRecord.m_uiPreStack, &pChar[uiPos], 4);
 		uiPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
-	SaveProcessRecordSetupData(pCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	SaveProcessRecordSetupData(pOptSetupData);
 }
 // 查询 ProcessRecord XML文件信息
-void QueryProcessRecordSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryProcessRecordSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPlug, 4);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiPlug, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiBoxType, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiBoxType, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiSN, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiSN, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRecordLength, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiRecordLength, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRefractionDelay, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiRefractionDelay, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiTBWindow, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiTBWindow, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiListeningTime, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiListeningTime, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPeakTime, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiPeakTime, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiRaw, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiRaw, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_oProcessRecord.m_uiPreStack, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_oProcessRecord.m_uiPreStack, 4);
 	iPos += 4;
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 
 // 加载ProcessAux设置数据
@@ -1612,9 +1663,9 @@ void LoadProcessAux(m_oProcessAuxStruct* pProcessAuxStruct,CXMLDOMElement* pElem
 	}
 }
 // 加载ProcessAux设置队列数据
-void LoadProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadProcessAuxList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -1623,12 +1674,12 @@ void LoadProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到ProcessAux设置区
 		strKey = "Auxiliaries";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1637,9 +1688,9 @@ void LoadProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 		strKey = "Count";
 		uiCountAll = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "AppendAuxesFromDsd";
-		pCommInfo->m_oOptSetupData.m_uiAppendAux = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pOptSetupData->m_uiAppendAux = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "CorrelWith";
-		pCommInfo->m_oOptSetupData.m_iCorrelWith = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
+		pOptSetupData->m_iCorrelWith = CXMLDOMTool::GetElementAttributeInt(&oElement, strKey);
 
 		// 得到队列
 		lpDispatch = oElement.get_childNodes();
@@ -1652,7 +1703,7 @@ void LoadProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadProcessAux(&oProcessAuxStruct, &oElement);
 			// 增加ProcessAux
-			pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.push_back(oProcessAuxStruct);
+			pOptSetupData->m_olsProcessAuxStruct.push_back(oProcessAuxStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -1667,27 +1718,27 @@ void LoadProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载ProcessAux设置数据
-void LoadProcessAuxSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadProcessAuxSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置ProcessAux
-	OnResetOptProcessAuxList(pCommInfo);
+	OnResetOptProcessAuxList(pOptSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 加载ProcessAux设置队列数据
-		LoadProcessAuxList(pCommInfo);
+		LoadProcessAuxList(pOptSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessAux设置数据
 void SaveProcessAux(m_oProcessAuxStruct* pProcessAuxStruct,CXMLDOMElement* pElement)
@@ -1721,9 +1772,9 @@ void SaveProcessAux(m_oProcessAuxStruct* pProcessAuxStruct,CXMLDOMElement* pElem
 	}
 }
 // 保存ProcessAux设置队列数据
-void SaveProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessAuxList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -1736,12 +1787,12 @@ void SaveProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oProcessAuxStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到ProcessAux设置区
 		strKey = "Auxiliaries";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1762,13 +1813,13 @@ void SaveProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置ProcessAux总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.size();
+		oVariant = (long)pOptSetupData->m_olsProcessAuxStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		strKey = "AppendAuxesFromDsd";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_uiAppendAux;
+		oVariant = (long)pOptSetupData->m_uiAppendAux;
 		oElementParent.setAttribute(strKey, oVariant);
 		strKey = "CorrelWith";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_iCorrelWith;
+		oVariant = (long)pOptSetupData->m_iCorrelWith;
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -1776,17 +1827,17 @@ void SaveProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.begin();
-			iter != pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.end(); iter++)
+		for (iter = pOptSetupData->m_olsProcessAuxStruct.begin();
+			iter != pOptSetupData->m_olsProcessAuxStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveProcessAux(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -1801,38 +1852,38 @@ void SaveProcessAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessAux设置数据
-void SaveProcessAuxSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessAuxSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 保存ProcessAux设置队列数据
-		SaveProcessAuxList(pCommInfo);
+		SaveProcessAuxList(pOptSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strOptXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pOptSetupData->m_strOptXMLFilePath.c_str());
+	pOptSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessAux设置数据
-void SetProcessAuxSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetProcessAuxSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	m_oProcessAuxStruct oProcessAuxStruct;
 	unsigned int uiPos = 0;
-	OnResetOptProcessAuxList(pCommInfo);
-	memcpy(&pCommInfo->m_oOptSetupData.m_uiAppendAux, &pChar[uiPos], 4);
+	OnResetOptProcessAuxList(pOptSetupData);
+	memcpy(&pOptSetupData->m_uiAppendAux, &pChar[uiPos], 4);
 	uiPos += 4;
-	memcpy(&pCommInfo->m_oOptSetupData.m_iCorrelWith, &pChar[uiPos], 4);
+	memcpy(&pOptSetupData->m_iCorrelWith, &pChar[uiPos], 4);
 	uiPos += 4;
 	while(uiPos < uiSize)
 	{
@@ -1843,23 +1894,23 @@ void SetProcessAuxSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommI
 		oProcessAuxStruct.m_pcAuxProcessing = new char[oProcessAuxStruct.m_usAuxProcessingSize];
 		memcpy(&oProcessAuxStruct.m_pcAuxProcessing, &pChar[uiPos], oProcessAuxStruct.m_usAuxProcessingSize);
 		uiPos += oProcessAuxStruct.m_usAuxProcessingSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.push_back(oProcessAuxStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		pOptSetupData->m_olsProcessAuxStruct.push_back(oProcessAuxStruct);
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveProcessAuxSetupData(pCommInfo);
+	SaveProcessAuxSetupData(pOptSetupData);
 }
 // 查询 ProcessAux XML文件信息
-void QueryProcessAuxSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryProcessAuxSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oProcessAuxStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_uiAppendAux, 4);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_uiAppendAux, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oOptSetupData.m_iCorrelWith, 4);
+	memcpy(&cProcBuf[iPos], &pOptSetupData->m_iCorrelWith, 4);
 	iPos += 4;
-	for (iter = pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.begin();
-		iter != pCommInfo->m_oOptSetupData.m_olsProcessAuxStruct.end(); iter++)
+	for (iter = pOptSetupData->m_olsProcessAuxStruct.begin();
+		iter != pOptSetupData->m_olsProcessAuxStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiAuxNb, 4);
 		iPos += 4;
@@ -1868,7 +1919,7 @@ void QueryProcessAuxSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoSt
 		memcpy(&cProcBuf[iPos], &iter->m_pcAuxProcessing, iter->m_usAuxProcessingSize);
 		iPos += iter->m_usAuxProcessingSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载ProcessAcq设置数据
 void LoadProcessAcq(m_oProcessAcqStruct* pProcessAcqStruct,CXMLDOMElement* pElement)
@@ -1903,9 +1954,9 @@ void LoadProcessAcq(m_oProcessAcqStruct* pProcessAcqStruct,CXMLDOMElement* pElem
 	}
 }
 // 加载ProcessAcq设置队列数据
-void LoadProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadProcessAcqList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -1914,12 +1965,12 @@ void LoadProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到ProcessAcq设置区
 		strKey = "Acquisition";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1939,7 +1990,7 @@ void LoadProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadProcessAcq(&oProcessAcqStruct, &oElement);
 			// 增加ProcessAux
-			pCommInfo->m_oOptSetupData.m_olsProcessAcqStruct.push_back(oProcessAcqStruct);
+			pOptSetupData->m_olsProcessAcqStruct.push_back(oProcessAcqStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -1954,27 +2005,27 @@ void LoadProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载ProcessAcq设置数据
-void LoadProcessAcqSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadProcessAcqSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置ProcessAcq
-	OnResetOptProcessAcqList(pCommInfo);
+	OnResetOptProcessAcqList(pOptSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 加载ProcessAcq设置队列数据
-		LoadProcessAcqList(pCommInfo);
+		LoadProcessAcqList(pOptSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessAcq设置数据
 void SaveProcessAcq(m_oProcessAcqStruct* pProcessAcqStruct,CXMLDOMElement* pElement)
@@ -2015,9 +2066,9 @@ void SaveProcessAcq(m_oProcessAcqStruct* pProcessAcqStruct,CXMLDOMElement* pElem
 	}
 }
 // 保存ProcessAcq设置队列数据
-void SaveProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessAcqList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -2030,12 +2081,12 @@ void SaveProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oProcessAcqStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到ProcessAcq设置区
 		strKey = "Acquisition";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2056,7 +2107,7 @@ void SaveProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置ProcessAcq总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_olsProcessAcqStruct.size();
+		oVariant = (long)pOptSetupData->m_olsProcessAcqStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -2064,17 +2115,17 @@ void SaveProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oOptSetupData.m_olsProcessAcqStruct.begin();
-			iter != pCommInfo->m_oOptSetupData.m_olsProcessAcqStruct.end(); iter++)
+		for (iter = pOptSetupData->m_olsProcessAcqStruct.begin();
+			iter != pOptSetupData->m_olsProcessAcqStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveProcessAcq(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -2089,35 +2140,35 @@ void SaveProcessAcqList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessAcq设置数据
-void SaveProcessAcqSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessAcqSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 保存ProcessAcq设置队列数据
-		SaveProcessAcqList(pCommInfo);
+		SaveProcessAcqList(pOptSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strOptXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pOptSetupData->m_strOptXMLFilePath.c_str());
+	pOptSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessAcq设置数据
-void SetProcessAcqSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetProcessAcqSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	m_oProcessAcqStruct oProcessAcqStruct;
 	unsigned int uiPos = 0;
-	OnResetOptProcessAcqList(pCommInfo);
+	OnResetOptProcessAcqList(pOptSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oProcessAcqStruct.m_uiAcqStatus, &pChar[uiPos], 4);
@@ -2130,19 +2181,19 @@ void SetProcessAcqSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommI
 		uiPos += 4;
 		memcpy(&oProcessAcqStruct.m_uiOutPut, &pChar[uiPos], 4);
 		uiPos += 4;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oOptSetupData.m_olsProcessAcqStruct.push_back(oProcessAcqStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		pOptSetupData->m_olsProcessAcqStruct.push_back(oProcessAcqStruct);
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveProcessAcqSetupData(pCommInfo);
+	SaveProcessAcqSetupData(pOptSetupData);
 }
 // 查询 ProcessAcq XML文件信息
-void QueryProcessAcqSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryProcessAcqSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oProcessAcqStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsProcessAcqStruct.begin();
-		iter != pCommInfo->m_oOptSetupData.m_olsProcessAcqStruct.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsProcessAcqStruct.begin();
+		iter != pOptSetupData->m_olsProcessAcqStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiAcqStatus, 4);
 		iPos += 4;
@@ -2155,7 +2206,7 @@ void QueryProcessAcqSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoSt
 		memcpy(&cProcBuf[iPos], &iter->m_uiOutPut, 4);
 		iPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载ProcessType设置数据
 void LoadProcessType(m_oProcessTypeStruct* pProcessTypeStruct,CXMLDOMElement* pElement)
@@ -2188,9 +2239,9 @@ void LoadProcessType(m_oProcessTypeStruct* pProcessTypeStruct,CXMLDOMElement* pE
 	}
 }
 // 加载ProcessType设置队列数据
-void LoadProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadProcessTypeList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -2199,12 +2250,12 @@ void LoadProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到ProcessType设置区
 		strKey = "ProcessType";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2224,7 +2275,7 @@ void LoadProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadProcessType(&oProcessTypeStruct, &oElement);
 			// 增加ProcessAux
-			pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.push_back(oProcessTypeStruct);
+			pOptSetupData->m_olsProcessTypeStruct.push_back(oProcessTypeStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -2239,27 +2290,27 @@ void LoadProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载ProcessType设置数据
-void LoadProcessTypeSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadProcessTypeSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置ProcessType
-	OnResetOptProcessTypeList(pCommInfo);
+	OnResetOptProcessTypeList(pOptSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 加载ProcessType设置队列数据
-		LoadProcessTypeList(pCommInfo);
+		LoadProcessTypeList(pOptSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessType设置数据
 void SaveProcessType(m_oProcessTypeStruct* pProcessTypeStruct,CXMLDOMElement* pElement)
@@ -2293,9 +2344,9 @@ void SaveProcessType(m_oProcessTypeStruct* pProcessTypeStruct,CXMLDOMElement* pE
 	}
 }
 // 保存ProcessType设置队列数据
-void SaveProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessTypeList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -2308,12 +2359,12 @@ void SaveProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oProcessTypeStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到ProcessType设置区
 		strKey = "ProcessType";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2334,7 +2385,7 @@ void SaveProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置ProcessType总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.size();
+		oVariant = (long)pOptSetupData->m_olsProcessTypeStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -2342,17 +2393,17 @@ void SaveProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.begin();
-			iter != pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.end(); iter++)
+		for (iter = pOptSetupData->m_olsProcessTypeStruct.begin();
+			iter != pOptSetupData->m_olsProcessTypeStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveProcessType(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -2367,35 +2418,35 @@ void SaveProcessTypeList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessType设置数据
-void SaveProcessTypeSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessTypeSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 保存ProcessType设置队列数据
-		SaveProcessTypeList(pCommInfo);
+		SaveProcessTypeList(pOptSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strOptXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pOptSetupData->m_strOptXMLFilePath.c_str());
+	pOptSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessType设置数据
-void SetProcessTypeSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetProcessTypeSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	m_oProcessTypeStruct oProcessTypeStruct;
 	unsigned int uiPos = 0;
-	OnResetOptProcessTypeList(pCommInfo);
+	OnResetOptProcessTypeList(pOptSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oProcessTypeStruct.m_uiProNb, &pChar[uiPos], 4);
@@ -2404,19 +2455,19 @@ void SetProcessTypeSetupData(char* pChar, unsigned int uiSize, m_oInstrumentComm
 		uiPos += 2;
 		memcpy(&oProcessTypeStruct.m_pcLabel, &pChar[uiPos], oProcessTypeStruct.m_usLabelSize);
 		uiPos += oProcessTypeStruct.m_usLabelSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.push_back(oProcessTypeStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		pOptSetupData->m_olsProcessTypeStruct.push_back(oProcessTypeStruct);
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveProcessTypeSetupData(pCommInfo);
+	SaveProcessTypeSetupData(pOptSetupData);
 }
 // 查询 ProcessType XML文件信息
-void QueryProcessTypeSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryProcessTypeSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oProcessTypeStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.begin();
-		iter != pCommInfo->m_oOptSetupData.m_olsProcessTypeStruct.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsProcessTypeStruct.begin();
+		iter != pOptSetupData->m_olsProcessTypeStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiProNb, 4);
 		iPos += 4;
@@ -2425,7 +2476,7 @@ void QueryProcessTypeSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoS
 		memcpy(&cProcBuf[iPos], &iter->m_pcLabel, iter->m_usLabelSize);
 		iPos += iter->m_usLabelSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载ProcessComments设置数据
 void LoadProcessComments(m_oOperationCommentStruct* pCommentsStruct,CXMLDOMElement* pElement)
@@ -2464,9 +2515,9 @@ void LoadProcessComments(m_oOperationCommentStruct* pCommentsStruct,CXMLDOMEleme
 	}
 }
 // 加载ProcessComments设置队列数据
-void LoadProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadProcessCommentsList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -2475,12 +2526,12 @@ void LoadProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到ProcessComments设置区
 		strKey = "OperationComment";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2500,7 +2551,7 @@ void LoadProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadProcessComments(&oOperationCommentStruct, &oElement);
 			// 增加ProcessComments
-			pCommInfo->m_oOptSetupData.m_olsComment.push_back(oOperationCommentStruct);
+			pOptSetupData->m_olsComment.push_back(oOperationCommentStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -2515,27 +2566,27 @@ void LoadProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 加载ProcessComments设置数据
-void LoadProcessCommentsSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadProcessCommentsSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置ProcessComments
-	OnResetOptCommentList(pCommInfo);
+	OnResetOptCommentList(pOptSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 加载ProcessComments设置队列数据
-		LoadProcessCommentsList(pCommInfo);
+		LoadProcessCommentsList(pOptSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessComments设置数据
 void SaveProcessComments(m_oOperationCommentStruct* pCommentsStruct,CXMLDOMElement* pElement)
@@ -2574,9 +2625,9 @@ void SaveProcessComments(m_oOperationCommentStruct* pCommentsStruct,CXMLDOMEleme
 	}
 }
 // 保存ProcessComments设置队列数据
-void SaveProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessCommentsList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
@@ -2589,12 +2640,12 @@ void SaveProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oOperationCommentStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到ProcessComments设置区
 		strKey = "OperationComment";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2615,7 +2666,7 @@ void SaveProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置ProcessComments总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oOptSetupData.m_olsComment.size();
+		oVariant = (long)pOptSetupData->m_olsComment.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -2623,17 +2674,17 @@ void SaveProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oOptSetupData.m_olsComment.begin();
-			iter != pCommInfo->m_oOptSetupData.m_olsComment.end(); iter++)
+		for (iter = pOptSetupData->m_olsComment.begin();
+			iter != pOptSetupData->m_olsComment.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pOptSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveProcessComments(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pOptSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -2648,35 +2699,35 @@ void SaveProcessCommentsList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 保存ProcessComments设置数据
-void SaveProcessCommentsSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveProcessCommentsSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strOptXMLFilePath))
+	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
 	{
 		// 保存ProcessComments设置队列数据
-		SaveProcessCommentsList(pCommInfo);
+		SaveProcessCommentsList(pOptSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strOptXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pOptSetupData->m_strOptXMLFilePath.c_str());
+	pOptSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseOptClientXMLFile(pOptSetupData);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessComments设置数据
-void SetProcessCommentsSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetProcessCommentsSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	m_oOperationCommentStruct oCommentStruct;
 	unsigned int uiPos = 0;
-	OnResetOptCommentList(pCommInfo);
+	OnResetOptCommentList(pOptSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oCommentStruct.m_uiNb, &pChar[uiPos], 4);
@@ -2689,19 +2740,19 @@ void SetProcessCommentsSetupData(char* pChar, unsigned int uiSize, m_oInstrument
 		uiPos += 2;
 		memcpy(&oCommentStruct.m_pcComments, &pChar[uiPos], oCommentStruct.m_usCommentsSize);
 		uiPos += oCommentStruct.m_usCommentsSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oOptSetupData.m_olsComment.push_back(oCommentStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+		pOptSetupData->m_olsComment.push_back(oCommentStruct);
+		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveProcessCommentsSetupData(pCommInfo);
+	SaveProcessCommentsSetupData(pOptSetupData);
 }
 // 查询 ProcessComments XML文件信息
-void QueryProcessCommentsSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryProcessCommentsSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
 	list<m_oOperationCommentStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oOptSetupData.m_olsComment.begin();
-		iter != pCommInfo->m_oOptSetupData.m_olsComment.end(); iter++)
+	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	for (iter = pOptSetupData->m_olsComment.begin();
+		iter != pOptSetupData->m_olsComment.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
 		iPos += 4;
@@ -2714,59 +2765,59 @@ void QueryProcessCommentsSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommI
 		memcpy(&cProcBuf[iPos], &iter->m_pcComments, iter->m_usCommentsSize);
 		iPos += iter->m_usCommentsSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 
 // 加载施工客户端程序设置数据
-void LoadOptAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadOptAppSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	// 加载Delay设置数据
-	LoadOptDelaySetupData(pCommInfo);
+	LoadOptDelaySetupData(pOptSetupData);
 	// 加载SourceShot设置数据
-	LoadSourceShotSetupData(pCommInfo);
+	LoadSourceShotSetupData(pOptSetupData);
 	// 加载Explo设置数据
-	LoadExploSetupData(pCommInfo);
+	LoadExploSetupData(pOptSetupData);
 	// 加载Vibro设置数据
-	LoadVibroSetupData(pCommInfo);
+	LoadVibroSetupData(pOptSetupData);
 	// 加载ProcessRecord设置数据
-	LoadOptProcessRecordSetupData(pCommInfo);
+	LoadOptProcessRecordSetupData(pOptSetupData);
 	// 加载ProcessAux设置数据
-	LoadProcessAuxSetupData(pCommInfo);
+	LoadProcessAuxSetupData(pOptSetupData);
 	// 加载ProcessAcq设置数据
-	LoadProcessAcqSetupData(pCommInfo);
+	LoadProcessAcqSetupData(pOptSetupData);
 	// 加载ProcessType设置数据
-	LoadProcessTypeSetupData(pCommInfo);
+	LoadProcessTypeSetupData(pOptSetupData);
 	// 加载ProcessComments设置数据
-	LoadProcessCommentsSetupData(pCommInfo);
+	LoadProcessCommentsSetupData(pOptSetupData);
 }
 
 // 保存施工客户端程序设置数据
-void SaveOptAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveOptAppSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pOptSetupData == NULL)
 	{
 		return;
 	}
 	// 保存Delay设置数据
-	SaveDelaySetupData(pCommInfo);
+	SaveDelaySetupData(pOptSetupData);
 	// 保存SourceShot设置数据
-	SaveSourceShotSetupData(pCommInfo);
+	SaveSourceShotSetupData(pOptSetupData);
 	// 保存Explo设置数据
-	SaveExploSetupData(pCommInfo);
+	SaveExploSetupData(pOptSetupData);
 	// 保存Vibro设置数据
-	SaveVibroSetupData(pCommInfo);
+	SaveVibroSetupData(pOptSetupData);
 	// 保存ProcessRecord设置数据
-	SaveProcessRecordSetupData(pCommInfo);
+	SaveProcessRecordSetupData(pOptSetupData);
 	// 保存ProcessAux设置数据
-	SaveProcessAuxSetupData(pCommInfo);
+	SaveProcessAuxSetupData(pOptSetupData);
 	// 保存ProcessAcq设置数据
-	SaveProcessAcqSetupData(pCommInfo);
+	SaveProcessAcqSetupData(pOptSetupData);
 	// 保存ProcessType设置数据
-	SaveProcessTypeSetupData(pCommInfo);
+	SaveProcessTypeSetupData(pOptSetupData);
 	// 保存ProcessComments设置数据
-	SaveProcessCommentsSetupData(pCommInfo);
+	SaveProcessCommentsSetupData(pOptSetupData);
 }

@@ -2,6 +2,7 @@
 #include <map>
 using std::list;
 using std::map;
+using std::string;
 /**
 * @struct Delay_Struct
 * @brief Delay SETUP结构体
@@ -228,4 +229,10 @@ typedef struct OptSetupData_Struct
 	list<m_oProcessTypeStruct> m_olsProcessTypeStruct;
 	/** 注释队列*/
 	list<m_oOperationCommentStruct> m_olsComment;
+	/** 资源同步对象*/
+	CRITICAL_SECTION m_oSecCommInfo;
+	/** XMLDOM文件对象*/
+	CXMLDOMDocument m_oXMLDOMDocument;
+	/** 施工XML配置文件路径*/
+	string m_strOptXMLFilePath;
 }m_oOptSetupDataStruct;

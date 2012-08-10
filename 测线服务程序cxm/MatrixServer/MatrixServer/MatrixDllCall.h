@@ -94,6 +94,25 @@ public:
 	void Dll_QueryLAULeakageSetupData(char* cProcBuf, int& iPos);
 	// 加载FormLine设置数据
 	void Dll_QueryFormLineSetupData(char* cProcBuf, int& iPos);
+	// 查询Delay设置数据
+	void Dll_QueryDelaySetupData(char* cProcBuf, int& iPos);
+	// 查询SourceShot设置数据
+	void Dll_QuerySourceShotSetupData(char* cProcBuf, int& iPos);
+	// 查询Explo设置数据
+	void Dll_QueryExploSetupData(char* cProcBuf, int& iPos);
+	// 查询Vibro设置数据
+	void Dll_QueryVibroSetupData(char* cProcBuf, int& iPos);
+	// 查询ProcessRecord设置数据
+	void Dll_QueryProcessRecordSetupData(char* cProcBuf, int& iPos);
+	// 查询ProcessAux设置数据
+	void Dll_QueryProcessAuxSetupData(char* cProcBuf, int& iPos);
+	// 查询ProcessAcq设置数据
+	void Dll_QueryProcessAcqSetupData(char* cProcBuf, int& iPos);
+	// 查询ProcessType设置数据
+	void Dll_QueryProcessTypeSetupData(char* cProcBuf, int& iPos);
+	// 查询ProcessComments设置数据
+	void Dll_ProcessCommentsSetupData(char* cProcBuf, int& iPos);
+
 	// 加载Instrument_SensorTestBase设置数据
 	void Dll_QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument);
 	// 加载Instrument_SensorTestLimit设置数据

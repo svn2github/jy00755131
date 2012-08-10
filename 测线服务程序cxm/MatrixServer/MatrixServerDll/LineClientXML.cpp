@@ -2,22 +2,74 @@
 #include "MatrixServerDll.h"
 
 // 初始化测线客户程序设置信息
-void OnInitLineClientXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnInitLineClientXMLSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread = NULL;
+	InitializeCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	pLineSetupData->m_strLineXMLFilePath = "..\\parameter\\MatrixLine.XML";
+	pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread = NULL;
 	// 重置测线客户端信息
-	OnResetLineClientXMLSetupData(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	OnResetLineClientXMLSetupData(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+}
+// 打开测线客户端程序配置文件
+BOOL OpenLineClientXMLFile(m_oLineSetupDataStruct* pLineSetupData)
+{
+	if (pLineSetupData == NULL)
+	{
+		return FALSE;
+	}
+	CString strOLEObject;
+	COleException oError;
+	COleVariant oVariant;
+	CString str = _T("");
+	strOLEObject = _T("msxml2.domdocument");
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	// 初始化COM库
+	CoInitialize(NULL);
+	if (FALSE == pLineSetupData->m_oXMLDOMDocument.CreateDispatch(strOLEObject, &oError))
+	{
+		AfxMessageBox(_T("XML结构创建失败！"));
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		return FALSE;
+	}
+	str = pLineSetupData->m_strLineXMLFilePath.c_str();
+	oVariant = str;
+	if (false == IfFileExist(str))
+	{
+		AfxMessageBox(_T("文件不存在"));
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		return FALSE;
+	}
+	if (FALSE == pLineSetupData->m_oXMLDOMDocument.load(oVariant))
+	{
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		return FALSE;
+	}
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	return TRUE;
+}
+// 关闭测线客户端程序配置文件
+void CloseLineClientXMLFile(m_oLineSetupDataStruct* pLineSetupData)
+{
+	if (pLineSetupData == NULL)
+	{
+		return;
+	}
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	pLineSetupData->m_oXMLDOMDocument.DetachDispatch();
+	// 释放COM库
+	CoUninitialize();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Survery
-void OnResetSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetSurveryList(m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oSurveryStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Survery
-	for (iter = pCommInfo->m_oLineSetupData.m_olsSurveryStruct.begin(); 
-		iter != pCommInfo->m_oLineSetupData.m_olsSurveryStruct.end(); iter++)
+	for (iter = pLineSetupData->m_olsSurveryStruct.begin(); 
+		iter != pLineSetupData->m_olsSurveryStruct.end(); iter++)
 	{
 		if (iter->m_pcReceiverSection != NULL)
 		{
@@ -25,17 +77,17 @@ void OnResetSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcReceiverSection = NULL;
 		}
 	}
-	pCommInfo->m_oLineSetupData.m_olsSurveryStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsSurveryStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Point Code
-void OnResetPointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetPointCodeList(m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oPointCodeStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Survery
-	for (iter = pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.begin(); 
-		iter != pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.end(); iter++)
+	for (iter = pLineSetupData->m_olsPointCodeStruct.begin(); 
+		iter != pLineSetupData->m_olsPointCodeStruct.end(); iter++)
 	{
 		if (iter->m_pcLabel != NULL)
 		{
@@ -48,17 +100,17 @@ void OnResetPointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcSensorType = NULL;
 		}
 	}
-	pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsPointCodeStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Sensor
-void OnResetSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetSensorList(m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oSensorStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Survery
-	for (iter = pCommInfo->m_oLineSetupData.m_olsSensorStruct.begin(); 
-		iter != pCommInfo->m_oLineSetupData.m_olsSensorStruct.end(); iter++)
+	for (iter = pLineSetupData->m_olsSensorStruct.begin(); 
+		iter != pLineSetupData->m_olsSensorStruct.end(); iter++)
 	{
 		if (iter->m_pcLabel != NULL)
 		{
@@ -66,25 +118,25 @@ void OnResetSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcLabel = NULL;
 		}
 	}
-	pCommInfo->m_oLineSetupData.m_olsSensorStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsSensorStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Marker
-void OnResetMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetMarkerList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Marker
-	pCommInfo->m_oLineSetupData.m_olsMarkerStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsMarkerStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Aux
-void OnResetAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetAuxList(m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oAuxStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Aux
-	for (iter = pCommInfo->m_oLineSetupData.m_olsAuxStruct.begin(); 
-		iter != pCommInfo->m_oLineSetupData.m_olsAuxStruct.end(); iter++)
+	for (iter = pLineSetupData->m_olsAuxStruct.begin(); 
+		iter != pLineSetupData->m_olsAuxStruct.end(); iter++)
 	{
 		if (iter->m_pcLabel != NULL)
 		{
@@ -97,33 +149,33 @@ void OnResetAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcComments = NULL;
 		}
 	}
-	pCommInfo->m_oLineSetupData.m_olsAuxStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsAuxStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Detour
-void OnResetDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetDetourList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Detour
-	pCommInfo->m_oLineSetupData.m_olsDetourStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsDetourStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Mute
-void OnResetMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetMuteList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Mute
-	pCommInfo->m_oLineSetupData.m_olsMuteStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsMuteStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置BlastMachine
-void OnResetBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetBlastMachineList(m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oBlastMachineStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// BlastMachine
-	for (iter = pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.begin(); 
-		iter != pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.end(); iter++)
+	for (iter = pLineSetupData->m_olsBlastMachineStruct.begin(); 
+		iter != pLineSetupData->m_olsBlastMachineStruct.end(); iter++)
 	{
 		if (iter->m_pcLabel != NULL)
 		{
@@ -136,18 +188,18 @@ void OnResetBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
 			iter->m_pcComments = NULL;
 		}
 	}
-	pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsBlastMachineStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Absolute
-void OnResetAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetAbsoluteMap(m_oLineSetupDataStruct* pLineSetupData)
 {
 	map<unsigned int, list<m_oAbsoluteStruct>>::iterator iterMap;
 	list<m_oAbsoluteStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Absolute
-	for (iterMap = pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.begin();
-		iterMap != pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.end(); iterMap++)
+	for (iterMap = pLineSetupData->m_oAbsoluteStructMap.begin();
+		iterMap != pLineSetupData->m_oAbsoluteStructMap.end(); iterMap++)
 	{
 		for (iter = iterMap->second.begin(); iter != iterMap->second.end(); iter++)
 		{
@@ -164,16 +216,16 @@ void OnResetAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		iterMap->second.clear();
 	}
-	pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_oAbsoluteStructMap.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Generic
-void OnResetGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetGenericList(m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oGenericStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsGenericStruct.begin(); 
-		iter != pCommInfo->m_oLineSetupData.m_olsGenericStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsGenericStruct.begin(); 
+		iter != pLineSetupData->m_olsGenericStruct.end(); iter++)
 	{
 		if (iter->m_pcLabel != NULL)
 		{
@@ -192,30 +244,30 @@ void OnResetGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 	}
 	// Generic
-	pCommInfo->m_oLineSetupData.m_olsGenericStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsGenericStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置FormLine
-void OnResetFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetFormLineList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Form Line
-	pCommInfo->m_oLineSetupData.m_olsFormLineStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsFormLineStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Instrument_SensorTestBase
-void OnResetInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetInstrument_SensorTestBaseList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<Instrument_SensorTestBase_Struct>::iterator iter;
 	list<Instrument_SensorTestBase_Struct>* pList = NULL;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	if (bInstrument == true)
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct;
+		pList = &pLineSetupData->m_olsInstrumentTestBaseStruct;
 	}
 	else
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct;
+		pList = &pLineSetupData->m_olsSensorTestBaseStruct;
 	}
 	for (iter = pList->begin(); iter != pList->end(); iter++)
 	{
@@ -226,21 +278,21 @@ void OnResetInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInf
 		}
 	}
 	pList->clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Instrument_SensorTestLimit
-void OnResetInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetInstrument_SensorTestLimitList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<Instrument_SensorTestLimit_Struct>::iterator iter;
 	list<Instrument_SensorTestLimit_Struct>* pList = NULL;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	if (bInstrument == true)
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct;
+		pList = &pLineSetupData->m_olsInstrumentTestLimitStruct;
 	}
 	else
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct;
+		pList = &pLineSetupData->m_olsSensorTestLimitStruct;
 	}
 	for (iter = pList->begin(); iter != pList->end(); iter++)
 	{
@@ -256,15 +308,15 @@ void OnResetInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommIn
 		}
 	}
 	pList->clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Instrument Test
-void OnResetInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetInstrumentTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oInstrumentTestStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.begin(); 
-		iter != pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsInstrumentTestStruct.begin(); 
+		iter != pLineSetupData->m_olsInstrumentTestStruct.end(); iter++)
 	{
 		if (iter->m_pcAbsoluteSpread != NULL)
 		{
@@ -278,16 +330,16 @@ void OnResetInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 	}
 	// Instrument Test
-	pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsInstrumentTestStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Sensor Test
-void OnResetSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetSensorTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oSensorTestStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.begin(); 
-		iter != pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsSensorTestStruct.begin(); 
+		iter != pLineSetupData->m_olsSensorTestStruct.end(); iter++)
 	{
 		if (iter->m_pcAbsoluteSpread != NULL)
 		{
@@ -296,18 +348,18 @@ void OnResetSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 	}
 	// Sensor Test
-	pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_olsSensorTestStruct.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置Multiple Test
-void OnResetMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetMultipleTestMap(m_oLineSetupDataStruct* pLineSetupData)
 {
 	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::iterator iterMap;
 	list<m_oMultipleTestTaskStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// Absolute
-	for (iterMap = pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.begin();
-		iterMap != pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.end(); iterMap++)
+	for (iterMap = pLineSetupData->m_oMultpleTestStructMap.begin();
+		iterMap != pLineSetupData->m_oMultpleTestStructMap.end(); iterMap++)
 	{
 		if (iterMap->first.m_pcAbsoluteSpread != NULL)
 		{
@@ -323,62 +375,62 @@ void OnResetMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		iterMap->second.clear();
 	}
-	pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.clear();
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	pLineSetupData->m_oMultpleTestStructMap.clear();
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置SeisMonitor
-void OnResetSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetSeisMonitor(m_oLineSetupDataStruct* pLineSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// SeisMonitor
-	if (pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread != NULL)
+	if (pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread != NULL)
 	{
-		delete[] pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread;
-		pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread = NULL;
+		delete[] pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread;
+		pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread = NULL;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 重置测线客户端信息
-void OnResetLineClientXMLSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void OnResetLineClientXMLSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
 	// 重置Survery
-	OnResetSurveryList(pCommInfo);
+	OnResetSurveryList(pLineSetupData);
 	// 重置Point Code
-	OnResetPointCodeList(pCommInfo);
+	OnResetPointCodeList(pLineSetupData);
 	// 重置Sensor
-	OnResetSensorList(pCommInfo);
+	OnResetSensorList(pLineSetupData);
 	// 重置Marker
-	OnResetMarkerList(pCommInfo);
+	OnResetMarkerList(pLineSetupData);
 	// 重置Aux
-	OnResetAuxList(pCommInfo);
+	OnResetAuxList(pLineSetupData);
 	// 重置Detour
-	OnResetDetourList(pCommInfo);
+	OnResetDetourList(pLineSetupData);
 	// 重置Mute
-	OnResetMuteList(pCommInfo);
+	OnResetMuteList(pLineSetupData);
 	// 重置BlastMachine
-	OnResetBlastMachineList(pCommInfo);
+	OnResetBlastMachineList(pLineSetupData);
 	// 重置Absolute
-	OnResetAbsoluteMap(pCommInfo);
+	OnResetAbsoluteMap(pLineSetupData);
 	// 重置Generic
-	OnResetGenericList(pCommInfo);
+	OnResetGenericList(pLineSetupData);
 	// 重置FormLine
-	OnResetFormLineList(pCommInfo);
+	OnResetFormLineList(pLineSetupData);
 	// 重置Instrument Test base
-	OnResetInstrument_SensorTestBaseList(true, pCommInfo);
+	OnResetInstrument_SensorTestBaseList(true, pLineSetupData);
 	// 重置Sensor Test base
-	OnResetInstrument_SensorTestBaseList(false, pCommInfo);
+	OnResetInstrument_SensorTestBaseList(false, pLineSetupData);
 	// 重置Instrument Limit
-	OnResetInstrument_SensorTestLimitList(true, pCommInfo);
+	OnResetInstrument_SensorTestLimitList(true, pLineSetupData);
 	// 重置Sensor Limit
-	OnResetInstrument_SensorTestLimitList(false, pCommInfo);
+	OnResetInstrument_SensorTestLimitList(false, pLineSetupData);
 	// 重置Instrument Test
-	OnResetInstrumentTestList(pCommInfo);
+	OnResetInstrumentTestList(pLineSetupData);
 	// 重置Sensor Test
-	OnResetSensorTestList(pCommInfo);
+	OnResetSensorTestList(pLineSetupData);
 	// 重置Multiple Test
-	OnResetMultipleTestMap(pCommInfo);
+	OnResetMultipleTestMap(pLineSetupData);
 	// 重置SeisMonitor
-	OnResetSeisMonitor(pCommInfo);
+	OnResetSeisMonitor(pLineSetupData);
 }
 
 // 加载Survery设置数据
@@ -414,9 +466,9 @@ void LoadSurvery(m_oSurveryStruct* pSurveryStruct,CXMLDOMElement* pElement)
 	}
 }
 // 加载Survery设置队列数据
-void LoadSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSurveryList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -425,12 +477,12 @@ void LoadSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Survery设置区
 		strKey = "SurverySetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -450,7 +502,7 @@ void LoadSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadSurvery(&oSurveryStruct, &oElement);
 			// 增加Survery
-			pCommInfo->m_oLineSetupData.m_olsSurveryStruct.push_back(oSurveryStruct);
+			pLineSetupData->m_olsSurveryStruct.push_back(oSurveryStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -465,27 +517,27 @@ void LoadSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Survery设置数据
-void LoadSurverySetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSurverySetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Survery
-	OnResetSurveryList(pCommInfo);
+	OnResetSurveryList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Survery设置队列数据
-		LoadSurveryList(pCommInfo);
+		LoadSurveryList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Survery设置数据
 void SaveSurvery(m_oSurveryStruct* pSurveryStruct,CXMLDOMElement* pElement)
@@ -519,9 +571,9 @@ void SaveSurvery(m_oSurveryStruct* pSurveryStruct,CXMLDOMElement* pElement)
 	}
 }
 // 保存Survery设置队列数据
-void SaveSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSurveryList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -534,12 +586,12 @@ void SaveSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oSurveryStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Survery设置区
 		strKey = "SurverySetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -560,7 +612,7 @@ void SaveSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Survery总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsSurveryStruct.size();
+		oVariant = (long)pLineSetupData->m_olsSurveryStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -568,17 +620,17 @@ void SaveSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsSurveryStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsSurveryStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsSurveryStruct.begin();
+			iter != pLineSetupData->m_olsSurveryStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveSurvery(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -593,35 +645,35 @@ void SaveSurveryList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Survery设置数据
-void SaveSurverySetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSurverySetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Survery设置队列数据
-		SaveSurveryList(pCommInfo);
+		SaveSurveryList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Survery设置数据
-void SetSurverySetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetSurverySetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oSurveryStruct oSurveryStruct;
 	unsigned int uiPos = 0;
-	OnResetSurveryList(pCommInfo);
+	OnResetSurveryList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oSurveryStruct.m_uiLine, &pChar[uiPos], 4);
@@ -631,11 +683,11 @@ void SetSurverySetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfo
 		oSurveryStruct.m_pcReceiverSection = new char[oSurveryStruct.m_usReceiverSectionSize];
 		memcpy(&oSurveryStruct.m_pcReceiverSection, &pChar[uiPos], oSurveryStruct.m_usReceiverSectionSize);
 		uiPos += oSurveryStruct.m_usReceiverSectionSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsSurveryStruct.push_back(oSurveryStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsSurveryStruct.push_back(oSurveryStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveSurverySetupData(pCommInfo);
+	SaveSurverySetupData(pLineSetupData);
 }
 // 加载Point Code设置数据
 void LoadPointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement)
@@ -674,9 +726,9 @@ void LoadPointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement
 	}
 }
 // 加载Point Code设置队列数据
-void LoadPointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadPointCodeList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -685,12 +737,12 @@ void LoadPointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到PointCode设置区
 		strKey = "PointCodeSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -710,7 +762,7 @@ void LoadPointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadPointCode(&oPointCodeStruct, &oElement);
 			// 增加PointCode
-			pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.push_back(oPointCodeStruct);
+			pLineSetupData->m_olsPointCodeStruct.push_back(oPointCodeStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -725,27 +777,27 @@ void LoadPointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Point Code设置数据
-void LoadPointCodeSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadPointCodeSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Point Code
-	OnResetPointCodeList(pCommInfo);
+	OnResetPointCodeList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载PointCode设置队列数据
-		LoadPointCodeList(pCommInfo);
+		LoadPointCodeList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Point Code设置数据
 void SavePointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement)
@@ -784,9 +836,9 @@ void SavePointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement
 	}
 }
 // 保存Point Code设置队列数据
-void SavePointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SavePointCodeList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -799,12 +851,12 @@ void SavePointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oPointCodeStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到PointCode设置区
 		strKey = "PointCodeSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -825,7 +877,7 @@ void SavePointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置PointCode总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.size();
+		oVariant = (long)pLineSetupData->m_olsPointCodeStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -833,17 +885,17 @@ void SavePointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsPointCodeStruct.begin();
+			iter != pLineSetupData->m_olsPointCodeStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SavePointCode(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -858,35 +910,35 @@ void SavePointCodeList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Point Code设置数据
-void SavePointCodeSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SavePointCodeSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Point Code设置队列数据
-		SavePointCodeList(pCommInfo);
+		SavePointCodeList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Point Code设置数据
-void SetPointCodeSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetPointCodeSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oPointCodeStruct oPointCodeStruct;
 	unsigned int uiPos = 0;
-	OnResetPointCodeList(pCommInfo);
+	OnResetPointCodeList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oPointCodeStruct.m_uiNb, &pChar[uiPos], 4);
@@ -901,11 +953,11 @@ void SetPointCodeSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommIn
 		oPointCodeStruct.m_pcSensorType = new char[oPointCodeStruct.m_usSensorTypeSize];
 		memcpy(&oPointCodeStruct.m_pcSensorType, &pChar[uiPos], oPointCodeStruct.m_usSensorTypeSize);
 		uiPos += oPointCodeStruct.m_usSensorTypeSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.push_back(oPointCodeStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsPointCodeStruct.push_back(oPointCodeStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SavePointCodeSetupData(pCommInfo);
+	SavePointCodeSetupData(pLineSetupData);
 }
 // 加载Sensor设置数据
 void LoadSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement)
@@ -950,9 +1002,9 @@ void LoadSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement)
 	}
 }
 // 加载Sensor设置队列数据
-void LoadSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSensorList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -961,12 +1013,12 @@ void LoadSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Sensor设置区
 		strKey = "SensorSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -986,7 +1038,7 @@ void LoadSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadSensor(&oSensorStruct, &oElement);
 			// 增加Sensor
-			pCommInfo->m_oLineSetupData.m_olsSensorStruct.push_back(oSensorStruct);
+			pLineSetupData->m_olsSensorStruct.push_back(oSensorStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -1001,27 +1053,27 @@ void LoadSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Sensor设置数据
-void LoadSensorSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSensorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Sensor
-	OnResetSensorList(pCommInfo);
+	OnResetSensorList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Sensor设置队列数据
-		LoadSensorList(pCommInfo);
+		LoadSensorList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Sensor设置数据
 void SaveSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement)
@@ -1073,9 +1125,9 @@ void SaveSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement)
 	}
 }
 // 保存Sensor设置队列数据
-void SaveSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSensorList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -1088,12 +1140,12 @@ void SaveSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oSensorStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Sensor设置区
 		strKey = "SensorSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1114,7 +1166,7 @@ void SaveSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Sensor总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsSensorStruct.size();
+		oVariant = (long)pLineSetupData->m_olsSensorStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -1122,17 +1174,17 @@ void SaveSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsSensorStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsSensorStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsSensorStruct.begin();
+			iter != pLineSetupData->m_olsSensorStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveSensor(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -1147,35 +1199,35 @@ void SaveSensorList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Sensor设置数据
-void SaveSensorSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSensorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Sensor设置队列数据
-		SaveSensorList(pCommInfo);
+		SaveSensorList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Sensor设置数据
-void SetSensorSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetSensorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oSensorStruct oSensorStruct;
 	unsigned int uiPos = 0;
-	OnResetSensorList(pCommInfo);
+	OnResetSensorList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oSensorStruct.m_uiNb, &pChar[uiPos], 4);
@@ -1197,11 +1249,11 @@ void SetSensorSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoS
 		uiPos += 4;
 		memcpy(&oSensorStruct.m_uiSEGDCode, &pChar[uiPos], 4);
 		uiPos += 4;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsSensorStruct.push_back(oSensorStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsSensorStruct.push_back(oSensorStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveSensorSetupData(pCommInfo);
+	SaveSensorSetupData(pLineSetupData);
 }
 // 加载Marker设置数据
 void LoadMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElement* pElement)
@@ -1240,9 +1292,9 @@ void LoadMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElement* pElement)
 	}
 }
 // 加载Marker设置队列数据
-void LoadMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadMarkerList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -1251,12 +1303,12 @@ void LoadMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Marker设置区
 		strKey = "MarkerSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1276,7 +1328,7 @@ void LoadMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadMarker(&oMarkerStruct, &oElement);
 			// 增加Marker
-			pCommInfo->m_oLineSetupData.m_olsMarkerStruct.push_back(oMarkerStruct);
+			pLineSetupData->m_olsMarkerStruct.push_back(oMarkerStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -1291,27 +1343,27 @@ void LoadMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Marker设置数据
-void LoadMarkerSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadMarkerSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Marker
-	OnResetMarkerList(pCommInfo);
+	OnResetMarkerList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Marker设置队列数据
-		LoadMarkerList(pCommInfo);
+		LoadMarkerList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Marker设置数据
 void SaveMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElement* pElement)
@@ -1358,9 +1410,9 @@ void SaveMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElement* pElement)
 	}
 }
 // 保存Marker设置队列数据
-void SaveMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveMarkerList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -1373,12 +1425,12 @@ void SaveMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oMarkerStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Marker设置区
 		strKey = "MarkerSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1399,7 +1451,7 @@ void SaveMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Marker总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsMarkerStruct.size();
+		oVariant = (long)pLineSetupData->m_olsMarkerStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -1407,17 +1459,17 @@ void SaveMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsMarkerStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsMarkerStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsMarkerStruct.begin();
+			iter != pLineSetupData->m_olsMarkerStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveMarker(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -1432,35 +1484,35 @@ void SaveMarkerList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Marker设置数据
-void SaveMarkerSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveMarkerSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Marker设置队列数据
-		SaveMarkerList(pCommInfo);
+		SaveMarkerList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Marker设置数据
-void SetMarkerSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetMarkerSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oMarkerStruct oMarkerStruct;
 	unsigned int uiPos = 0;
-	OnResetMarkerList(pCommInfo);
+	OnResetMarkerList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oMarkerStruct.m_uiBoxType, &pChar[uiPos], 4);
@@ -1477,11 +1529,11 @@ void SetMarkerSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoS
 		uiPos += 4;
 		memcpy(&oMarkerStruct.m_uiReversed, &pChar[uiPos], 4);
 		uiPos += 4;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsMarkerStruct.push_back(oMarkerStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsMarkerStruct.push_back(oMarkerStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveMarkerSetupData(pCommInfo);
+	SaveMarkerSetupData(pLineSetupData);
 }
 // 加载Aux设置数据
 void LoadAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement)
@@ -1530,9 +1582,9 @@ void LoadAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement)
 	}
 }
 // 加载Aux设置队列数据
-void LoadAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadAuxList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -1541,12 +1593,12 @@ void LoadAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Aux设置区
 		strKey = "AuxSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1566,7 +1618,7 @@ void LoadAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadAux(&oAuxStruct, &oElement);
 			// 增加Aux
-			pCommInfo->m_oLineSetupData.m_olsAuxStruct.push_back(oAuxStruct);
+			pLineSetupData->m_olsAuxStruct.push_back(oAuxStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -1581,27 +1633,27 @@ void LoadAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Aux设置数据
-void LoadAuxSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadAuxSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Aux
-	OnResetAuxList(pCommInfo);
+	OnResetAuxList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Aux设置队列数据
-		LoadAuxList(pCommInfo);
+		LoadAuxList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Aux设置数据
 void SaveAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement)
@@ -1655,9 +1707,9 @@ void SaveAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement)
 	}
 }
 // 保存Aux设置队列数据
-void SaveAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveAuxList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -1670,12 +1722,12 @@ void SaveAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oAuxStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Aux设置区
 		strKey = "AuxSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1696,7 +1748,7 @@ void SaveAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Aux总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsAuxStruct.size();
+		oVariant = (long)pLineSetupData->m_olsAuxStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -1704,17 +1756,17 @@ void SaveAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsAuxStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsAuxStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsAuxStruct.begin();
+			iter != pLineSetupData->m_olsAuxStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveAux(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -1729,35 +1781,35 @@ void SaveAuxList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Aux设置数据
-void SaveAuxSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveAuxSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Aux设置队列数据
-		SaveAuxList(pCommInfo);
+		SaveAuxList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Aux设置数据
-void SetAuxSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetAuxSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oAuxStruct oAuxStruct;
 	unsigned int uiPos = 0;
-	OnResetAuxList(pCommInfo);
+	OnResetAuxList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oAuxStruct.m_uiNb, &pChar[uiPos], 4);
@@ -1782,11 +1834,11 @@ void SetAuxSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStru
 		oAuxStruct.m_pcComments = new char[oAuxStruct.m_usCommentsSize];
 		memcpy(&oAuxStruct.m_pcComments, &pChar[uiPos], oAuxStruct.m_usCommentsSize);
 		uiPos += oAuxStruct.m_usCommentsSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsAuxStruct.push_back(oAuxStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsAuxStruct.push_back(oAuxStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveAuxSetupData(pCommInfo);
+	SaveAuxSetupData(pLineSetupData);
 }
 // 加载Detour设置数据
 void LoadDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElement* pElement)
@@ -1825,9 +1877,9 @@ void LoadDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElement* pElement)
 	}
 }
 // 加载Detour设置队列数据
-void LoadDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadDetourList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -1836,12 +1888,12 @@ void LoadDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Detour设置区
 		strKey = "DetourSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1861,7 +1913,7 @@ void LoadDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadDetour(&oDetourStruct, &oElement);
 			// 增加Aux
-			pCommInfo->m_oLineSetupData.m_olsDetourStruct.push_back(oDetourStruct);
+			pLineSetupData->m_olsDetourStruct.push_back(oDetourStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -1876,27 +1928,27 @@ void LoadDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Detour设置数据
-void LoadDetourSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadDetourSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Detour
-	OnResetDetourList(pCommInfo);
+	OnResetDetourList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Detour设置队列数据
-		LoadDetourList(pCommInfo);
+		LoadDetourList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Detour设置数据
 void SaveDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElement* pElement)
@@ -1943,9 +1995,9 @@ void SaveDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElement* pElement)
 	}
 }
 // 保存Detour设置队列数据
-void SaveDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveDetourList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -1958,12 +2010,12 @@ void SaveDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oDetourStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Detour设置区
 		strKey = "DetourSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -1984,7 +2036,7 @@ void SaveDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Aux总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsDetourStruct.size();
+		oVariant = (long)pLineSetupData->m_olsDetourStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -1992,17 +2044,17 @@ void SaveDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsDetourStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsDetourStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsDetourStruct.begin();
+			iter != pLineSetupData->m_olsDetourStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveDetour(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -2017,35 +2069,35 @@ void SaveDetourList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Detour设置数据
-void SaveDetourSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveDetourSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Detour设置队列数据
-		SaveDetourList(pCommInfo);
+		SaveDetourList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Detour设置数据
-void SetDetourSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetDetourSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oDetourStruct oDetourStruct;
 	unsigned int uiPos = 0;
-	OnResetDetourList(pCommInfo);
+	OnResetDetourList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oDetourStruct.m_uiLowBoxType, &pChar[uiPos], 4);
@@ -2062,11 +2114,11 @@ void SetDetourSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoS
 		uiPos += 4;
 		memcpy(&oDetourStruct.m_uiStopMarking, &pChar[uiPos], 4);
 		uiPos += 4;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsDetourStruct.push_back(oDetourStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsDetourStruct.push_back(oDetourStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveDetourSetupData(pCommInfo);
+	SaveDetourSetupData(pLineSetupData);
 }
 // 加载Mute设置数据
 void LoadMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pElement)
@@ -2095,9 +2147,9 @@ void LoadMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pElement)
 	}
 }
 // 加载Mute设置队列数据
-void LoadMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadMuteList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -2106,12 +2158,12 @@ void LoadMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Mute设置区
 		strKey = "MuteSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2131,7 +2183,7 @@ void LoadMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadMute(&oMuteStruct, &oElement);
 			// 增加Mute
-			pCommInfo->m_oLineSetupData.m_olsMuteStruct.push_back(oMuteStruct);
+			pLineSetupData->m_olsMuteStruct.push_back(oMuteStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -2146,27 +2198,27 @@ void LoadMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Mute设置数据
-void LoadMuteSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadMuteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Mute
-	OnResetMuteList(pCommInfo);
+	OnResetMuteList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Mute设置队列数据
-		LoadMuteList(pCommInfo);
+		LoadMuteList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Mute设置数据
 void SaveMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pElement)
@@ -2198,9 +2250,9 @@ void SaveMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pElement)
 	}
 }
 // 保存Mute设置队列数据
-void SaveMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveMuteList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -2213,12 +2265,12 @@ void SaveMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oMuteStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Mute设置区
 		strKey = "MuteSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2239,7 +2291,7 @@ void SaveMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Mute总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsMuteStruct.size();
+		oVariant = (long)pLineSetupData->m_olsMuteStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -2247,17 +2299,17 @@ void SaveMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsMuteStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsMuteStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsMuteStruct.begin();
+			iter != pLineSetupData->m_olsMuteStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveMute(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -2272,46 +2324,46 @@ void SaveMuteList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Mute设置数据
-void SaveMuteSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveMuteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Mute设置队列数据
-		SaveMuteList(pCommInfo);
+		SaveMuteList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Mute设置数据
-void SetMuteSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetMuteSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oMuteStruct oMuteStruct;
 	unsigned int uiPos = 0;
-	OnResetMuteList(pCommInfo);
+	OnResetMuteList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oMuteStruct.m_uiLineName, &pChar[uiPos], 4);
 		uiPos += 4;
 		memcpy(&oMuteStruct.m_uiPointNb, &pChar[uiPos], 4);
 		uiPos += 4;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsMuteStruct.push_back(oMuteStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsMuteStruct.push_back(oMuteStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveMuteSetupData(pCommInfo);
+	SaveMuteSetupData(pLineSetupData);
 }
 // 加载BlastMachine设置数据
 void LoadBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement* pElement)
@@ -2360,9 +2412,9 @@ void LoadBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement*
 	}
 }
 // 加载BlastMachine设置队列数据
-void LoadBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadBlastMachineList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -2371,12 +2423,12 @@ void LoadBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到BlastMachine设置区
 		strKey = "BlastMachineSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2396,7 +2448,7 @@ void LoadBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadBlastMachine(&oBlastMachineStruct, &oElement);
 			// 增加BlastMachine
-			pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.push_back(oBlastMachineStruct);
+			pLineSetupData->m_olsBlastMachineStruct.push_back(oBlastMachineStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -2411,27 +2463,27 @@ void LoadBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载BlastMachine设置数据
-void LoadBlastMachineSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadBlastMachineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置BlastMachine
-	OnResetBlastMachineList(pCommInfo);
+	OnResetBlastMachineList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载BlastMachine设置队列数据
-		LoadBlastMachineList(pCommInfo);
+		LoadBlastMachineList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存BlastMachine设置数据
 void SaveBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement* pElement)
@@ -2485,9 +2537,9 @@ void SaveBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement*
 	}
 }
 // 保存BlastMachine设置队列数据
-void SaveBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveBlastMachineList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -2500,12 +2552,12 @@ void SaveBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oBlastMachineStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到BlastMachine设置区
 		strKey = "BlastMachineSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2526,7 +2578,7 @@ void SaveBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置BlastMachine总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.size();
+		oVariant = (long)pLineSetupData->m_olsBlastMachineStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -2534,17 +2586,17 @@ void SaveBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsBlastMachineStruct.begin();
+			iter != pLineSetupData->m_olsBlastMachineStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveBlastMachine(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -2559,35 +2611,35 @@ void SaveBlastMachineList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存BlastMachine设置数据
-void SaveBlastMachineSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveBlastMachineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存BlastMachine设置队列数据
-		SaveBlastMachineList(pCommInfo);
+		SaveBlastMachineList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置BlastMachine设置数据
-void SetBlastMachineSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetBlastMachineSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oBlastMachineStruct oBlastMachineStruct;
 	unsigned int uiPos = 0;
-	OnResetBlastMachineList(pCommInfo);
+	OnResetBlastMachineList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oBlastMachineStruct.m_uiNb, &pChar[uiPos], 4);
@@ -2612,11 +2664,11 @@ void SetBlastMachineSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCom
 		oBlastMachineStruct.m_pcComments = new char[oBlastMachineStruct.m_usCommentsSize];
 		memcpy(&oBlastMachineStruct.m_pcComments, &pChar[uiPos], oBlastMachineStruct.m_usCommentsSize);
 		uiPos += oBlastMachineStruct.m_usCommentsSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.push_back(oBlastMachineStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsBlastMachineStruct.push_back(oBlastMachineStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveBlastMachineSetupData(pCommInfo);
+	SaveBlastMachineSetupData(pLineSetupData);
 }
 // 加载Absolute设置数据
 void LoadAbsolute(m_oAbsoluteStruct* pAbsoluteStruct,CXMLDOMElement* pElement)
@@ -2655,9 +2707,9 @@ void LoadAbsolute(m_oAbsoluteStruct* pAbsoluteStruct,CXMLDOMElement* pElement)
 	}
 }
 // 加载Absolute设置队列数据
-void LoadAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pElement)
+void LoadAbsoluteList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pElement)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -2670,7 +2722,7 @@ void LoadAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pE
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll = 0;
 	unsigned int uiShotPoint = 0;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 得到Absolute总数
@@ -2694,7 +2746,7 @@ void LoadAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pE
 			// 增加Absolute
 			olsAbsoluteStruct.push_back(oAbsoluteStruct);
 		}
-		pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.insert(
+		pLineSetupData->m_oAbsoluteStructMap.insert(
 			map<unsigned int, list<m_oAbsoluteStruct>>::value_type (uiShotPoint, olsAbsoluteStruct));
 	}
 	catch (CMemoryException* e)
@@ -2709,12 +2761,12 @@ void LoadAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pE
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Absolute设置索引数据
-void LoadAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadAbsoluteMap(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -2723,12 +2775,12 @@ void LoadAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Absolute设置区
 		strKey = "AbsoluteSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2743,7 +2795,7 @@ void LoadAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
 		{
 			lpDispatch = oNodeList.get_item(i);
 			oElement.AttachDispatch(lpDispatch);
-			LoadAbsoluteList(pCommInfo, &oElement);
+			LoadAbsoluteList(pLineSetupData, &oElement);
 		}
 	}
 	catch (CMemoryException* e)
@@ -2758,27 +2810,27 @@ void LoadAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Absolute设置数据
-void LoadAbsoluteSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadAbsoluteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Absolute
-	OnResetAbsoluteMap(pCommInfo);
+	OnResetAbsoluteMap(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Absolute设置队列数据
-		LoadAbsoluteMap(pCommInfo);
+		LoadAbsoluteMap(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Absolute设置数据
 void SaveAbsolute(m_oAbsoluteStruct* pAbsoluteStruct, CXMLDOMElement* pElement)
@@ -2817,10 +2869,10 @@ void SaveAbsolute(m_oAbsoluteStruct* pAbsoluteStruct, CXMLDOMElement* pElement)
 	}
 }
 // 保存Absolute设置队列数据
-void SaveAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pElement, 
+void SaveAbsoluteList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pElement, 
 	map<unsigned int, list<m_oAbsoluteStruct>>::iterator iter, unsigned int uiTabCount)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -2838,7 +2890,7 @@ void SaveAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pE
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oAbsoluteStruct>::iterator iterList;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		strKey = "Count";
@@ -2863,14 +2915,14 @@ void SaveAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pE
 		}
 		for (iterList = iter->second.begin(); iterList != iter->second.end(); iterList++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			pElement->appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveAbsolute(&(*iterList), &oElementChild);
 			pElement->appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		pElement->appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -2885,12 +2937,12 @@ void SaveAbsoluteList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pE
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Absolute设置索引数据
-void SaveAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveAbsoluteMap(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -2905,12 +2957,12 @@ void SaveAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString str = _T("");
 	int iCount = 0;
 	map<unsigned int, list<m_oAbsoluteStruct>>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Absolute设置区
 		strKey = "AbsoluteSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -2930,7 +2982,7 @@ void SaveAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Absolute总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.size();
+		oVariant = (long)pLineSetupData->m_oAbsoluteStructMap.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -2938,19 +2990,19 @@ void SaveAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.begin();
-			iter != pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.end(); iter++)
+		for (iter = pLineSetupData->m_oAbsoluteStructMap.begin();
+			iter != pLineSetupData->m_oAbsoluteStructMap.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
 			iCount++;
 			str.Format(_T("AbsoluteSetup%d"), iCount);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(str);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(str);
 			oElementChild.AttachDispatch(lpDispatch);
-			SaveAbsoluteList(pCommInfo, &oElementChild, iter, uiTabCount + 1);
+			SaveAbsoluteList(pLineSetupData, &oElementChild, iter, uiTabCount + 1);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -2965,38 +3017,38 @@ void SaveAbsoluteMap(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Absolute设置数据
-void SaveAbsoluteSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveAbsoluteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Absolute设置索引数据
-		SaveAbsoluteMap(pCommInfo);
+		SaveAbsoluteMap(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Absolute设置数据
-void SetAbsoluteSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetAbsoluteSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oAbsoluteStruct oAbsoluteStruct;
 	list<m_oAbsoluteStruct> olsAbsoluteStruct;
 	int iCount = 0;
 	unsigned int uiShotPoint = 0;
 	unsigned int uiPos = 0;
-	OnResetAbsoluteMap(pCommInfo);
+	OnResetAbsoluteMap(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&uiShotPoint, &pChar[uiPos], 4);
@@ -3020,12 +3072,12 @@ void SetAbsoluteSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInf
 			uiPos += oAbsoluteStruct.m_usAbsoluteSpreadSize;
 			olsAbsoluteStruct.push_back(oAbsoluteStruct);
 		}
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.insert(
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_oAbsoluteStructMap.insert(
 			map<unsigned int, list<m_oAbsoluteStruct>>::value_type (uiShotPoint, olsAbsoluteStruct));
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveAbsoluteSetupData(pCommInfo);
+	SaveAbsoluteSetupData(pLineSetupData);
 }
 // 加载Generic设置数据
 void LoadGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMElement* pElement)
@@ -3070,9 +3122,9 @@ void LoadGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMElement* pElement)
 	}
 }
 // 加载Generic设置队列数据
-void LoadGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadGenericList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -3081,12 +3133,12 @@ void LoadGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Generic设置区
 		strKey = "GenericSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -3106,7 +3158,7 @@ void LoadGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadGeneric(&oGenericStruct, &oElement);
 			// 增加Generic
-			pCommInfo->m_oLineSetupData.m_olsGenericStruct.push_back(oGenericStruct);
+			pLineSetupData->m_olsGenericStruct.push_back(oGenericStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -3121,27 +3173,27 @@ void LoadGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Generic设置数据
-void LoadGenericSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadGenericSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Generic
-	OnResetGenericList(pCommInfo);
+	OnResetGenericList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Generic设置队列数据
-		LoadGenericList(pCommInfo);
+		LoadGenericList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Generic设置数据
 void SaveGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMElement* pElement)
@@ -3185,9 +3237,9 @@ void SaveGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMElement* pElement)
 	}
 }
 // 保存Generic设置队列数据
-void SaveGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveGenericList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -3200,12 +3252,12 @@ void SaveGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oGenericStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Generic设置区
 		strKey = "GenericSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -3226,7 +3278,7 @@ void SaveGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置BlastMachine总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsGenericStruct.size();
+		oVariant = (long)pLineSetupData->m_olsGenericStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -3234,17 +3286,17 @@ void SaveGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsGenericStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsGenericStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsGenericStruct.begin();
+			iter != pLineSetupData->m_olsGenericStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveGeneric(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -3259,35 +3311,35 @@ void SaveGenericList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Generic设置数据
-void SaveGenericSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveGenericSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Generic设置队列数据
-		SaveGenericList(pCommInfo);
+		SaveGenericList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Generic设置数据
-void SetGenericSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetGenericSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oGenericStruct oGenericStruct;
 	unsigned int uiPos = 0;
-	OnResetGenericList(pCommInfo);
+	OnResetGenericList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oGenericStruct.m_uiNb, &pChar[uiPos], 4);
@@ -3307,16 +3359,16 @@ void SetGenericSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfo
 		oGenericStruct.m_pcSpread = new char[oGenericStruct.m_usSpreadSize];
 		memcpy(&oGenericStruct.m_pcSpread, &pChar[uiPos], oGenericStruct.m_usSpreadSize);
 		uiPos += oGenericStruct.m_usSpreadSize;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsGenericStruct.push_back(oGenericStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsGenericStruct.push_back(oGenericStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveGenericSetupData(pCommInfo);
+	SaveGenericSetupData(pLineSetupData);
 }
 // 加载Look设置数据
-void LoadLook(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadLook(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -3324,25 +3376,25 @@ void LoadLook(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Look设置区
 		strKey = "LookSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 
 		strKey = "AutoLook";
-		pCommInfo->m_oLineSetupData.m_oLook.m_uiAutoLook = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pLineSetupData->m_oLook.m_uiAutoLook = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "Resistance";
-		pCommInfo->m_oLineSetupData.m_oLook.m_uiResistance = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pLineSetupData->m_oLook.m_uiResistance = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "Tilt";
-		pCommInfo->m_oLineSetupData.m_oLook.m_uiTilt = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pLineSetupData->m_oLook.m_uiTilt = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 		strKey = "Leakage";
-		pCommInfo->m_oLineSetupData.m_oLook.m_uiLeakage = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pLineSetupData->m_oLook.m_uiLeakage = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 	}
 	catch (CMemoryException* e)
 	{
@@ -3356,30 +3408,30 @@ void LoadLook(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Look设置数据
-void LoadLookSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadLookSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Look设置数据
-		LoadLook(pCommInfo);
+		LoadLook(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Look设置数据
-void SaveLook(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveLook(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -3388,28 +3440,28 @@ void SaveLook(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Look设置区
 		strKey = "LookSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 
 		strKey = "AutoLook";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_oLook.m_uiAutoLook;
+		oVariant = (long)pLineSetupData->m_oLook.m_uiAutoLook;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "Resistance";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_oLook.m_uiResistance;
+		oVariant = (long)pLineSetupData->m_oLook.m_uiResistance;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "Tilt";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_oLook.m_uiTilt;
+		oVariant = (long)pLineSetupData->m_oLook.m_uiTilt;
 		oElement.setAttribute(strKey, oVariant);
 		strKey = "Leakage";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_oLook.m_uiLeakage;
+		oVariant = (long)pLineSetupData->m_oLook.m_uiLeakage;
 		oElement.setAttribute(strKey, oVariant);
 	}
 	catch (CMemoryException* e)
@@ -3424,52 +3476,52 @@ void SaveLook(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Look设置数据
-void SaveLookSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveLookSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Look设置数据
-		SaveLook(pCommInfo);
+		SaveLook(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Look设置数据
-void SetLookSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetLookSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	unsigned int uiPos = 0;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	while(uiPos < uiSize)
 	{
-		memcpy(&pCommInfo->m_oLineSetupData.m_oLook.m_uiAutoLook, &pChar[uiPos], 4);
+		memcpy(&pLineSetupData->m_oLook.m_uiAutoLook, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oLineSetupData.m_oLook.m_uiResistance, &pChar[uiPos], 4);
+		memcpy(&pLineSetupData->m_oLook.m_uiResistance, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oLineSetupData.m_oLook.m_uiTilt, &pChar[uiPos], 4);
+		memcpy(&pLineSetupData->m_oLook.m_uiTilt, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&pCommInfo->m_oLineSetupData.m_oLook.m_uiLeakage, &pChar[uiPos], 4);
+		memcpy(&pLineSetupData->m_oLook.m_uiLeakage, &pChar[uiPos], 4);
 		uiPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
-	SaveLookSetupData(pCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	SaveLookSetupData(pLineSetupData);
 }
 // 加载LAULeakage设置数据
-void LoadLAULeakage(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadLAULeakage(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -3477,19 +3529,19 @@ void LoadLAULeakage(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到LAULeakage设置区
 		strKey = "LAULeakageSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 
 		strKey = "Limit";
-		pCommInfo->m_oLineSetupData.m_oLAULeakage.m_uiLimit = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
+		pLineSetupData->m_oLAULeakage.m_uiLimit = CXMLDOMTool::GetElementAttributeUnsignedInt(&oElement, strKey);
 	}
 	catch (CMemoryException* e)
 	{
@@ -3503,30 +3555,30 @@ void LoadLAULeakage(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载LAULeakage设置数据
-void LoadLAULeakageSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadLAULeakageSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载LAULeakage设置数据
-		LoadLAULeakage(pCommInfo);
+		LoadLAULeakage(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存LAULeakage设置数据
-void SaveLAULeakage(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveLAULeakage(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -3535,19 +3587,19 @@ void SaveLAULeakage(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到LAULeakage设置区
 		strKey = "LAULeakageSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 
 		strKey = "Limit";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_oLAULeakage.m_uiLimit;
+		oVariant = (long)pLineSetupData->m_oLAULeakage.m_uiLimit;
 		oElement.setAttribute(strKey, oVariant);
 	}
 	catch (CMemoryException* e)
@@ -3562,41 +3614,41 @@ void SaveLAULeakage(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存LAULeakage设置数据
-void SaveLAULeakageSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveLAULeakageSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存LAULeakage设置数据
-		SaveLAULeakage(pCommInfo);
+		SaveLAULeakage(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置LAULeakage设置数据
-void SetLAULeakageSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetLAULeakageSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	unsigned int uiPos = 0;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	while(uiPos < uiSize)
 	{
-		memcpy(&pCommInfo->m_oLineSetupData.m_oLAULeakage.m_uiLimit, &pChar[uiPos], 4);
+		memcpy(&pLineSetupData->m_oLAULeakage.m_uiLimit, &pChar[uiPos], 4);
 		uiPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
-	SaveLAULeakageSetupData(pCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	SaveLAULeakageSetupData(pLineSetupData);
 }
 // 加载FormLine设置数据
 void LoadFormLine(m_oFormLineStruct* pFormLineStruct,CXMLDOMElement* pElement)
@@ -3625,9 +3677,9 @@ void LoadFormLine(m_oFormLineStruct* pFormLineStruct,CXMLDOMElement* pElement)
 	}
 }
 // 加载FormLine设置队列数据
-void LoadFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadFormLineList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -3636,12 +3688,12 @@ void LoadFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到FormLine设置区
 		strKey = "FormLineSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -3661,7 +3713,7 @@ void LoadFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadFormLine(&oFormLineStruct, &oElement);
 			// 增加FormLine
-			pCommInfo->m_oLineSetupData.m_olsFormLineStruct.push_back(oFormLineStruct);
+			pLineSetupData->m_olsFormLineStruct.push_back(oFormLineStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -3676,27 +3728,27 @@ void LoadFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载FormLine设置数据
-void LoadFormLineSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadFormLineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置FormLine
-	OnResetFormLineList(pCommInfo);
+	OnResetFormLineList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载FormLine设置队列数据
-		LoadFormLineList(pCommInfo);
+		LoadFormLineList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存FormLine设置数据
 void SaveFormLine(m_oFormLineStruct* pFormLineStruct,CXMLDOMElement* pElement)
@@ -3731,9 +3783,9 @@ void SaveFormLine(m_oFormLineStruct* pFormLineStruct,CXMLDOMElement* pElement)
 	}
 }
 // 保存FormLine设置队列数据
-void SaveFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveFormLineList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -3746,12 +3798,12 @@ void SaveFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oFormLineStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到FormLine设置区
 		strKey = "FormLineSetup";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -3772,7 +3824,7 @@ void SaveFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置FormLine总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsFormLineStruct.size();
+		oVariant = (long)pLineSetupData->m_olsFormLineStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -3780,17 +3832,17 @@ void SaveFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsFormLineStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsFormLineStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsFormLineStruct.begin();
+			iter != pLineSetupData->m_olsFormLineStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveFormLine(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -3805,35 +3857,35 @@ void SaveFormLineList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存FormLine设置数据
-void SaveFormLineSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveFormLineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存FormLine设置队列数据
-		SaveFormLineList(pCommInfo);
+		SaveFormLineList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置FormLine设置数据
-void SetFormLineSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetFormLineSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oFormLineStruct oFormLineStruct;
 	unsigned int uiPos = 0;
-	OnResetFormLineList(pCommInfo);
+	OnResetFormLineList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oFormLineStruct.m_uiNb, &pChar[uiPos], 4);
@@ -3842,11 +3894,11 @@ void SetFormLineSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInf
 		uiPos += 4;
 		memcpy(&oFormLineStruct.m_uiSN, &pChar[uiPos], 4);
 		uiPos += 4;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsFormLineStruct.push_back(oFormLineStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsFormLineStruct.push_back(oFormLineStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveFormLineSetupData(pCommInfo);
+	SaveFormLineSetupData(pLineSetupData);
 }
 // 加载Instrument_SensorTestBase设置数据
 void LoadInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument_SensorTestBaseStruct,
@@ -3896,9 +3948,9 @@ void LoadInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument
 	}
 }
 // 加载Instrument_SensorTestBase设置队列数据
-void LoadInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadInstrument_SensorTestBaseList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -3907,7 +3959,7 @@ void LoadInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Instrument_SensorTestBase设置区
@@ -3919,7 +3971,7 @@ void LoadInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 		{
 			strKey = "SensorTestBase";
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -3941,11 +3993,11 @@ void LoadInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 			// 增加Instrument_SensorTestBase
 			if (bInstrument == true)
 			{
-				pCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct.push_back(oInstrument_SensorTestBaseStruct);
+				pLineSetupData->m_olsInstrumentTestBaseStruct.push_back(oInstrument_SensorTestBaseStruct);
 			}
 			else
 			{
-				pCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct.push_back(oInstrument_SensorTestBaseStruct);
+				pLineSetupData->m_olsSensorTestBaseStruct.push_back(oInstrument_SensorTestBaseStruct);
 			}
 		}
 	}
@@ -3961,27 +4013,27 @@ void LoadInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Instrument_SensorTestBase设置数据
-void LoadInstrument_SensorTestBaseSetupData(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadInstrument_SensorTestBaseSetupData(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Instrument_SensorTestBase
-	OnResetInstrument_SensorTestBaseList(bInstrument, pCommInfo);
+	OnResetInstrument_SensorTestBaseList(bInstrument, pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Instrument_SensorTestBase设置队列数据
-		LoadInstrument_SensorTestBaseList(bInstrument, pCommInfo);
+		LoadInstrument_SensorTestBaseList(bInstrument, pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Instrument_SensorTestBase设置数据
 void SaveInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument_SensorTestBaseStruct,CXMLDOMElement* pElement)
@@ -4039,9 +4091,9 @@ void SaveInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument
 	}
 }
 // 保存Instrument_SensorTestBase设置队列数据
-void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -4054,7 +4106,7 @@ void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oInstrumentTestBaseStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Instrument_SensorTestBase设置区
@@ -4066,7 +4118,7 @@ void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 		{
 			strKey = "SensorTestBase";
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -4088,11 +4140,11 @@ void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 		strKey = "Count";
 		if (bInstrument == true)
 		{
-			oVariant = (long)pCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct.size();
+			oVariant = (long)pLineSetupData->m_olsInstrumentTestBaseStruct.size();
 		}
 		else
 		{
-			oVariant = (long)pCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct.size();
+			oVariant = (long)pLineSetupData->m_olsSensorTestBaseStruct.size();
 		}
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
@@ -4103,12 +4155,12 @@ void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 		}
 		if (bInstrument == true)
 		{
-			for (iter = pCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct.begin();
-				iter != pCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct.end(); iter++)
+			for (iter = pLineSetupData->m_olsInstrumentTestBaseStruct.begin();
+				iter != pLineSetupData->m_olsInstrumentTestBaseStruct.end(); iter++)
 			{
-				lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+				lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 				oElementParent.appendChild(lpDispatch);
-				lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+				lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 				oElementChild.AttachDispatch(lpDispatch);
 				SaveInstrument_SensorTestBase(&(*iter), &oElementChild);
 				oElementParent.appendChild(lpDispatch);		
@@ -4116,18 +4168,18 @@ void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 		}
 		else
 		{
-			for (iter = pCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct.begin();
-				iter != pCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct.end(); iter++)
+			for (iter = pLineSetupData->m_olsSensorTestBaseStruct.begin();
+				iter != pLineSetupData->m_olsSensorTestBaseStruct.end(); iter++)
 			{
-				lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+				lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 				oElementParent.appendChild(lpDispatch);
-				lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+				lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 				oElementChild.AttachDispatch(lpDispatch);
 				SaveInstrument_SensorTestBase(&(*iter), &oElementChild);
 				oElementParent.appendChild(lpDispatch);		
 			}
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -4142,35 +4194,35 @@ void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oInstrumentCommInfoSt
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Instrument_SensorTestBase设置数据
-void SaveInstrument_SensorTestBaseSetupData(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveInstrument_SensorTestBaseSetupData(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Instrument_SensorTestBase设置队列数据
-		SaveInstrument_SensorTestBaseList(bInstrument, pCommInfo);
+		SaveInstrument_SensorTestBaseList(bInstrument, pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Instrument_SensorTestBase设置数据
-void SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oInstrumentTestBaseStruct oInstrument_SensorTestBaseStruct;
 	unsigned int uiPos = 0;
-	OnResetInstrument_SensorTestBaseList(bInstrument, pCommInfo);
+	OnResetInstrument_SensorTestBaseList(bInstrument, pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oInstrument_SensorTestBaseStruct.m_uiTestAim, &pChar[uiPos], 4);
@@ -4196,18 +4248,18 @@ void SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, boo
 		uiPos += 4;
 		memcpy(&oInstrument_SensorTestBaseStruct.m_uiSamplingLength, &pChar[uiPos], 4);
 		uiPos += 4;
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 		if (bInstrument == true)
 		{
-			pCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct.push_back(oInstrument_SensorTestBaseStruct);
+			pLineSetupData->m_olsInstrumentTestBaseStruct.push_back(oInstrument_SensorTestBaseStruct);
 		}
 		else
 		{
-			pCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct.push_back(oInstrument_SensorTestBaseStruct);
+			pLineSetupData->m_olsSensorTestBaseStruct.push_back(oInstrument_SensorTestBaseStruct);
 		}
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveInstrument_SensorTestBaseSetupData(bInstrument, pCommInfo);
+	SaveInstrument_SensorTestBaseSetupData(bInstrument, pLineSetupData);
 }
 // 加载Instrument_SensorTestLimit设置数据
 void LoadInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrument_SensorTestLimitStruct,CXMLDOMElement* pElement)
@@ -4252,9 +4304,9 @@ void LoadInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrume
 	}
 }
 // 加载Instrument_SensorTestLimit设置队列数据
-void LoadInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadInstrument_SensorTestLimitList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -4263,7 +4315,7 @@ void LoadInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Instrument_SensorTestLimit设置区
@@ -4275,7 +4327,7 @@ void LoadInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 		{
 			strKey = "SensorTestLimit";
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -4297,11 +4349,11 @@ void LoadInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 			// 增加Instrument_SensorTestLimit
 			if (bInstrument == true)
 			{
-				pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.push_back(oInstrument_SensorTestLimitStruct);
+				pLineSetupData->m_olsInstrumentTestLimitStruct.push_back(oInstrument_SensorTestLimitStruct);
 			}
 			else
 			{
-				pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.push_back(oInstrument_SensorTestLimitStruct);
+				pLineSetupData->m_olsSensorTestLimitStruct.push_back(oInstrument_SensorTestLimitStruct);
 			}
 		}
 	}
@@ -4317,27 +4369,27 @@ void LoadInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Instrument_SensorTestLimit设置数据
-void LoadInstrument_SensorTestLimitSetupData(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadInstrument_SensorTestLimitSetupData(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Instrument_SensorTestLimit
-	OnResetInstrument_SensorTestLimitList(bInstrument, pCommInfo);
+	OnResetInstrument_SensorTestLimitList(bInstrument, pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Instrument_SensorTestLimit设置队列数据
-		LoadInstrument_SensorTestLimitList(bInstrument, pCommInfo);
+		LoadInstrument_SensorTestLimitList(bInstrument, pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Instrument_SensorTestLimit设置数据
 void SaveInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrument_SensorTestLimitStruct,CXMLDOMElement* pElement)
@@ -4385,9 +4437,9 @@ void SaveInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrume
 	}
 }
 // 保存Instrument_SensorTestLimit设置队列数据
-void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -4400,7 +4452,7 @@ void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oInstrumentTestLimitStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Instrument_SensorTestLimit设置区
@@ -4412,7 +4464,7 @@ void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 		{
 			strKey = "SensorTestLimit";
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -4434,11 +4486,11 @@ void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 		strKey = "Count";
 		if (bInstrument == true)
 		{
-			oVariant = (long)pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.size();
+			oVariant = (long)pLineSetupData->m_olsInstrumentTestLimitStruct.size();
 		}
 		else
 		{
-			oVariant = (long)pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.size();
+			oVariant = (long)pLineSetupData->m_olsSensorTestLimitStruct.size();
 		}
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
@@ -4449,12 +4501,12 @@ void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 		}
 		if (bInstrument == true)
 		{
-			for (iter = pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.begin();
-				iter != pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.end(); iter++)
+			for (iter = pLineSetupData->m_olsInstrumentTestLimitStruct.begin();
+				iter != pLineSetupData->m_olsInstrumentTestLimitStruct.end(); iter++)
 			{
-				lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+				lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 				oElementParent.appendChild(lpDispatch);
-				lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+				lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 				oElementChild.AttachDispatch(lpDispatch);
 				SaveInstrument_SensorTestLimit(&(*iter), &oElementChild);
 				oElementParent.appendChild(lpDispatch);		
@@ -4462,18 +4514,18 @@ void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 		}
 		else
 		{
-			for (iter = pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.begin();
-				iter != pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.end(); iter++)
+			for (iter = pLineSetupData->m_olsSensorTestLimitStruct.begin();
+				iter != pLineSetupData->m_olsSensorTestLimitStruct.end(); iter++)
 			{
-				lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+				lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 				oElementParent.appendChild(lpDispatch);
-				lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+				lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 				oElementChild.AttachDispatch(lpDispatch);
 				SaveInstrument_SensorTestLimit(&(*iter), &oElementChild);
 				oElementParent.appendChild(lpDispatch);		
 			}
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -4488,35 +4540,35 @@ void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oInstrumentCommInfoS
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Instrument_SensorTestLimit设置数据
-void SaveInstrument_SensorTestLimitSetupData(bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveInstrument_SensorTestLimitSetupData(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Instrument_SensorTestLimit设置队列数据
-		SaveInstrument_SensorTestLimitList(bInstrument, pCommInfo);
+		SaveInstrument_SensorTestLimitList(bInstrument, pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Instrument_SensorTestLimit设置数据
-void SetInstrument_SensorTestLimitSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetInstrument_SensorTestLimitSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oInstrumentTestLimitStruct oInstrument_SensorTestLimitStruct;
 	unsigned int uiPos = 0;
-	OnResetInstrument_SensorTestLimitList(bInstrument, pCommInfo);
+	OnResetInstrument_SensorTestLimitList(bInstrument, pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oInstrument_SensorTestLimitStruct.m_uiNb, &pChar[uiPos], 4);
@@ -4538,18 +4590,18 @@ void SetInstrument_SensorTestLimitSetupData(char* pChar, unsigned int uiSize, bo
 		memcpy(&oInstrument_SensorTestLimitStruct.m_fLimit, &pChar[uiPos], 4);
 		uiPos += 4;
 
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 		if (bInstrument == true)
 		{
-			pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct.push_back(oInstrument_SensorTestLimitStruct);
+			pLineSetupData->m_olsInstrumentTestLimitStruct.push_back(oInstrument_SensorTestLimitStruct);
 		}
 		else
 		{
-			pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct.push_back(oInstrument_SensorTestLimitStruct);
+			pLineSetupData->m_olsSensorTestLimitStruct.push_back(oInstrument_SensorTestLimitStruct);
 		}
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveInstrument_SensorTestLimitSetupData(bInstrument, pCommInfo);
+	SaveInstrument_SensorTestLimitSetupData(bInstrument, pLineSetupData);
 }
 // 加载Instrument Test设置数据
 void LoadInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct,CXMLDOMElement* pElement)
@@ -4596,9 +4648,9 @@ void LoadInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct,CXMLDOMEl
 	}
 }
 // 加载Instrument Test设置队列数据
-void LoadInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadInstrumentTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -4607,12 +4659,12 @@ void LoadInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Instrument Test设置区
 		strKey = "InstrumentTest";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -4632,7 +4684,7 @@ void LoadInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadInstrumentTest(&oInstrumentTestStruct, &oElement);
 			// 增加Instrument Test
-			pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.push_back(oInstrumentTestStruct);
+			pLineSetupData->m_olsInstrumentTestStruct.push_back(oInstrumentTestStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -4647,27 +4699,27 @@ void LoadInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Instrument Test设置数据
-void LoadInstrumentTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadInstrumentTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Instrument Test
-	OnResetInstrumentTestList(pCommInfo);
+	OnResetInstrumentTestList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Instrument Test设置队列数据
-		LoadInstrumentTestList(pCommInfo);
+		LoadInstrumentTestList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Instrument Test设置数据
 void SaveInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct, CXMLDOMElement* pElement)
@@ -4718,9 +4770,9 @@ void SaveInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct, CXMLDOME
 	}
 }
 // 保存Instrument Test设置队列数据
-void SaveInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveInstrumentTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -4733,12 +4785,12 @@ void SaveInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oInstrumentTestStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Instrument Test设置区
 		strKey = "InstrumentTest";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -4758,7 +4810,7 @@ void SaveInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Instrument Test总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.size();
+		oVariant = (long)pLineSetupData->m_olsInstrumentTestStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -4766,17 +4818,17 @@ void SaveInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsInstrumentTestStruct.begin();
+			iter != pLineSetupData->m_olsInstrumentTestStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveInstrumentTest(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -4791,35 +4843,35 @@ void SaveInstrumentTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Instrument Test设置数据
-void SaveInstrumentTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveInstrumentTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Instrument Test设置队列数据
-		SaveInstrumentTestList(pCommInfo);
+		SaveInstrumentTestList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Instrument Test设置数据
-void SetInstrumentTestSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetInstrumentTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oInstrumentTestStruct oInstrumentTestStruct;
 	unsigned int uiPos = 0;
-	OnResetInstrumentTestList(pCommInfo);
+	OnResetInstrumentTestList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oInstrumentTestStruct.m_uiNb, &pChar[uiPos], 4);
@@ -4843,11 +4895,11 @@ void SetInstrumentTestSetupData(char* pChar, unsigned int uiSize, m_oInstrumentC
 		memcpy(&oInstrumentTestStruct.m_pcAbsoluteSpread, &pChar[uiPos], oInstrumentTestStruct.m_usAbsoluteSpreadSize);
 		uiPos += oInstrumentTestStruct.m_usAbsoluteSpreadSize;
 
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.push_back(oInstrumentTestStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsInstrumentTestStruct.push_back(oInstrumentTestStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveInstrumentTestSetupData(pCommInfo);
+	SaveInstrumentTestSetupData(pLineSetupData);
 }
 // 加载Sensor Test设置数据
 void LoadSensorTest(m_oSensorTestStruct* pSensorTestStruct,CXMLDOMElement* pElement)
@@ -4884,9 +4936,9 @@ void LoadSensorTest(m_oSensorTestStruct* pSensorTestStruct,CXMLDOMElement* pElem
 	}
 }
 // 加载Sensor Test设置队列数据
-void LoadSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSensorTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -4895,12 +4947,12 @@ void LoadSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Sensor Test设置区
 		strKey = "SensorTest";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -4920,7 +4972,7 @@ void LoadSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 			oElement.AttachDispatch(lpDispatch);
 			LoadSensorTest(&oSensorTestStruct, &oElement);
 			// 增加Sensor Test
-			pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.push_back(oSensorTestStruct);
+			pLineSetupData->m_olsSensorTestStruct.push_back(oSensorTestStruct);
 		}
 	}
 	catch (CMemoryException* e)
@@ -4935,27 +4987,27 @@ void LoadSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Sensor Test设置数据
-void LoadSensorTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSensorTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Sensor Test
-	OnResetSensorTestList(pCommInfo);
+	OnResetSensorTestList(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Sensor Test设置队列数据
-		LoadSensorTestList(pCommInfo);
+		LoadSensorTestList(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Sensor Test设置数据
 void SaveSensorTest(m_oSensorTestStruct* pSensorTestStruct, CXMLDOMElement* pElement)
@@ -4995,9 +5047,9 @@ void SaveSensorTest(m_oSensorTestStruct* pSensorTestStruct, CXMLDOMElement* pEle
 	}
 }
 // 保存Sensor Test设置队列数据
-void SaveSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSensorTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -5010,12 +5062,12 @@ void SaveSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oSensorTestStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Sensor Test设置区
 		strKey = "SensorTest";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -5035,7 +5087,7 @@ void SaveSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Sensor Test总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.size();
+		oVariant = (long)pLineSetupData->m_olsSensorTestStruct.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -5043,17 +5095,17 @@ void SaveSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.begin();
-			iter != pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.end(); iter++)
+		for (iter = pLineSetupData->m_olsSensorTestStruct.begin();
+			iter != pLineSetupData->m_olsSensorTestStruct.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveSensorTest(&(*iter), &oElementChild);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -5068,35 +5120,35 @@ void SaveSensorTestList(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Sensor Test设置数据
-void SaveSensorTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSensorTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Sensor Test设置队列数据
-		SaveSensorTestList(pCommInfo);
+		SaveSensorTestList(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Sensor Test设置数据
-void SetSensorTestSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetSensorTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oSensorTestStruct oSensorTestStruct;
 	unsigned int uiPos = 0;
-	OnResetSensorTestList(pCommInfo);
+	OnResetSensorTestList(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oSensorTestStruct.m_uiNb, &pChar[uiPos], 4);
@@ -5111,11 +5163,11 @@ void SetSensorTestSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommI
 		memcpy(&oSensorTestStruct.m_pcAbsoluteSpread, &pChar[uiPos], oSensorTestStruct.m_usAbsoluteSpreadSize);
 		uiPos += oSensorTestStruct.m_usAbsoluteSpreadSize;
 
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.push_back(oSensorTestStruct);
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_olsSensorTestStruct.push_back(oSensorTestStruct);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveSensorTestSetupData(pCommInfo);
+	SaveSensorTestSetupData(pLineSetupData);
 }
 // 加载Multiple Test设置数据
 void LoadMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDOMElement* pElement)
@@ -5148,9 +5200,9 @@ void LoadMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDO
 	}
 }
 // 加载Multiple Test设置队列数据
-void LoadMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pElement)
+void LoadMultipleTestList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pElement)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -5165,7 +5217,7 @@ void LoadMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll = 0;
 	m_oMultipleTestKeyStruct oMultipleTestKeyStruct;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		strKey = "Count";
@@ -5212,7 +5264,7 @@ void LoadMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement
 			// 增加
 			olsMultipleTestTaskStruct.push_back(oMultipleTestTaskStruct);
 		}
-		pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.insert(
+		pLineSetupData->m_oMultpleTestStructMap.insert(
 			map<m_oMultipleTestKeyStruct, 
 			list<m_oMultipleTestTaskStruct>>::value_type (oMultipleTestKeyStruct, olsMultipleTestTaskStruct));
 	}
@@ -5228,12 +5280,12 @@ void LoadMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Multiple Test设置索引数据
-void LoadMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadMultipleTestMap(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -5242,12 +5294,12 @@ void LoadMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
 	unsigned int uiCountAll;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Multiple Test设置区
 		strKey = "MultipleTest";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -5264,7 +5316,7 @@ void LoadMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
 		{
 			lpDispatch = oNodeList.get_item(i);
 			oElement.AttachDispatch(lpDispatch);
-			LoadMultipleTestList(pCommInfo, &oElement);
+			LoadMultipleTestList(pLineSetupData, &oElement);
 		}
 	}
 	catch (CMemoryException* e)
@@ -5279,27 +5331,27 @@ void LoadMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载Multiple Test设置数据
-void LoadMultipleTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadMultipleTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Multiple Test
-	OnResetMultipleTestMap(pCommInfo);
+	OnResetMultipleTestMap(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载Multiple Test设置队列数据
-		LoadMultipleTestMap(pCommInfo);
+		LoadMultipleTestMap(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Multiple Test设置数据
 void SaveMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDOMElement* pElement)
@@ -5340,10 +5392,10 @@ void SaveMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDO
 	}
 }
 // 保存Multiple Test设置队列数据
-void SaveMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement* pElement, 
+void SaveMultipleTestList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pElement, 
 	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::iterator iter, unsigned int uiTabCount)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -5361,7 +5413,7 @@ void SaveMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	list<m_oMultipleTestTaskStruct>::iterator iterList;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		strKey = "Count";
@@ -5412,14 +5464,14 @@ void SaveMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement
 		}
 		for (iterList = iter->second.begin(); iterList != iter->second.end(); iterList++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			pElement->appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("Record"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("Record"));
 			oElementChild.AttachDispatch(lpDispatch);
 			SaveMultipleTest(&(*iterList), &oElementChild);
 			pElement->appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		pElement->appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -5434,12 +5486,12 @@ void SaveMultipleTestList(m_oInstrumentCommInfoStruct* pCommInfo, CXMLDOMElement
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Multiple Test设置索引数据
-void SaveMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveMultipleTestMap(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -5452,12 +5504,12 @@ void SaveMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
 	CString strTabChild = _T("");
 	CString strTabParent = _T("");
 	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到Multiple Test设置区
 		strKey = "MultipleTest";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -5477,7 +5529,7 @@ void SaveMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
 		}
 		// 设置Multiple Test总数
 		strKey = "Count";
-		oVariant = (long)pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.size();
+		oVariant = (long)pLineSetupData->m_oMultpleTestStructMap.size();
 		oElementParent.setAttribute(strKey, oVariant);
 		// 删除所有子节点
 		while(TRUE == oElementParent.hasChildNodes())
@@ -5485,17 +5537,17 @@ void SaveMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
 			lpDispatch = oElementParent.get_firstChild();
 			oElementParent.removeChild(lpDispatch);
 		}
-		for (iter = pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.begin();
-			iter != pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.end(); iter++)
+		for (iter = pLineSetupData->m_oMultpleTestStructMap.begin();
+			iter != pLineSetupData->m_oMultpleTestStructMap.end(); iter++)
 		{
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabChild);
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabChild);
 			oElementParent.appendChild(lpDispatch);
-			lpDispatch = pCommInfo->m_oXMLDOMDocument.createElement(_T("TestSetup"));
+			lpDispatch = pLineSetupData->m_oXMLDOMDocument.createElement(_T("TestSetup"));
 			oElementChild.AttachDispatch(lpDispatch);
-			SaveMultipleTestList(pCommInfo, &oElementChild, iter, uiTabCount + 1);
+			SaveMultipleTestList(pLineSetupData, &oElementChild, iter, uiTabCount + 1);
 			oElementParent.appendChild(lpDispatch);		
 		}
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.createTextNode(strTabParent);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.createTextNode(strTabParent);
 		oElementParent.appendChild(lpDispatch);
 	}
 	catch (CMemoryException* e)
@@ -5510,38 +5562,38 @@ void SaveMultipleTestMap(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存Multiple Test设置数据
-void SaveMultipleTestSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveMultipleTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存Multiple Test设置索引数据
-		SaveMultipleTestMap(pCommInfo);
+		SaveMultipleTestMap(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Multiple Test设置数据
-void SetMultipleTestSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetMultipleTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	m_oMultipleTestKeyStruct oMultipleTestKeyStruct;
 	m_oMultipleTestTaskStruct oMultipleTestTaskStruct;
 	list<m_oMultipleTestTaskStruct> olsMultipleTestTaskStruct;
 	int iCount = 0;
 	unsigned int uiPos = 0;
-	OnResetMultipleTestMap(pCommInfo);
+	OnResetMultipleTestMap(pLineSetupData);
 	while(uiPos < uiSize)
 	{
 		memcpy(&oMultipleTestKeyStruct.m_uiNb, &pChar[uiPos], 4);
@@ -5586,17 +5638,17 @@ void SetMultipleTestSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCom
 			uiPos += 4;
 			olsMultipleTestTaskStruct.push_back(oMultipleTestTaskStruct);
 		}
-		EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-		pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.insert(
+		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+		pLineSetupData->m_oMultpleTestStructMap.insert(
 			map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::value_type (oMultipleTestKeyStruct, olsMultipleTestTaskStruct));
-		LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveMultipleTestSetupData(pCommInfo);
+	SaveMultipleTestSetupData(pLineSetupData);
 }
 // 加载SeisMonitor设置数据
-void LoadSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSeisMonitor(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -5606,12 +5658,12 @@ void LoadSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到SeisMonitor Test设置区
 		strKey = "SeisMonitorTest";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
@@ -5620,10 +5672,10 @@ void LoadSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
 		strKey = "AbsoluteSpread";
 		str = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
 		strConv = (CStringA)str;
-		pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize = (unsigned short)(strConv.size() + 1);
-		pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread = new char[pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize];
-		memcpy(pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread, strConv.c_str(), 
-			pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize);
+		pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize = (unsigned short)(strConv.size() + 1);
+		pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread = new char[pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize];
+		memcpy(pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread, strConv.c_str(), 
+			pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize);
 	}
 	catch (CMemoryException* e)
 	{
@@ -5637,32 +5689,32 @@ void LoadSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 加载SeisMonitor设置数据
-void LoadSeisMonitorSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadSeisMonitorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置SeisMonitor
-	OnResetSeisMonitor(pCommInfo);
+	OnResetSeisMonitor(pLineSetupData);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 加载SeisMonitor设置队列数据
-		LoadSeisMonitor(pCommInfo);
+		LoadSeisMonitor(pLineSetupData);
 	}
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存SeisMonitor设置数据
-void SaveSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSeisMonitor(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
@@ -5673,19 +5725,19 @@ void SaveSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
 	LPDISPATCH lpDispatch;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	try
 	{
 		// 找到SeisMonitor Test设置区
 		strKey = "SeisMonitorTest";
-		lpDispatch = pCommInfo->m_oXMLDOMDocument.getElementsByTagName(strKey);
+		lpDispatch = pLineSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
 		lpDispatch = oNodeList.get_item(0);
 		oElement.AttachDispatch(lpDispatch);
 
 		strKey = "AbsoluteSpread";
-		strConv = pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread;
+		strConv = pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread;
 		str = strConv.c_str();
 		oVariant = str;
 		oElement.setAttribute(strKey, oVariant);
@@ -5702,151 +5754,151 @@ void SaveSeisMonitor(m_oInstrumentCommInfoStruct* pCommInfo)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 保存SeisMonitor设置数据
-void SaveSeisMonitorSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveSeisMonitorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	COleVariant oVariant;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
-	if (TRUE == OpenAppXMLFile(pCommInfo, pCommInfo->m_strLineXMLFilePath))
+	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
 	{
 		// 保存SeisMonitor设置数据
-		SaveSeisMonitor(pCommInfo);
+		SaveSeisMonitor(pLineSetupData);
 	}
-	oVariant = (CString)(pCommInfo->m_strLineXMLFilePath.c_str());
-	pCommInfo->m_oXMLDOMDocument.save(oVariant);
+	oVariant = (CString)(pLineSetupData->m_strLineXMLFilePath.c_str());
+	pLineSetupData->m_oXMLDOMDocument.save(oVariant);
 	// 关闭程序配置文件
-	CloseAppXMLFile(pCommInfo);
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	CloseLineClientXMLFile(pLineSetupData);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置SeisMonitor设置数据
-void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oInstrumentCommInfoStruct* pCommInfo)
+void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
 {
 	unsigned int uiPos = 0;
-	OnResetSeisMonitor(pCommInfo);
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	OnResetSeisMonitor(pLineSetupData);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	while(uiPos < uiSize)
 	{
-		memcpy(&pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize, &pChar[uiPos], 2);
+		memcpy(&pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize, &pChar[uiPos], 2);
 		uiPos += 2;
-		pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread = new char[pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize];
-		memcpy(&pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread, &pChar[uiPos], 
-			pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize);
-		uiPos += pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize;
+		pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread = new char[pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize];
+		memcpy(&pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread, &pChar[uiPos], 
+			pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize);
+		uiPos += pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
-	SaveSeisMonitorSetupData(pCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	SaveSeisMonitorSetupData(pLineSetupData);
 }
 // 加载测线客户端程序设置数据
-void LoadLineAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void LoadLineAppSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	// 加载Survery设置数据
-	LoadSurverySetupData(pCommInfo);
+	LoadSurverySetupData(pLineSetupData);
 	// 加载Point Code设置数据
-	LoadPointCodeSetupData(pCommInfo);
+	LoadPointCodeSetupData(pLineSetupData);
 	// 加载Sensor设置数据
-	LoadSensorSetupData(pCommInfo);
+	LoadSensorSetupData(pLineSetupData);
 	// 加载Marker设置数据
-	LoadMarkerSetupData(pCommInfo);
+	LoadMarkerSetupData(pLineSetupData);
 	// 加载Aux设置数据
-	LoadAuxSetupData(pCommInfo);
+	LoadAuxSetupData(pLineSetupData);
 	// 加载Detour设置数据
-	LoadDetourSetupData(pCommInfo);
+	LoadDetourSetupData(pLineSetupData);
 	// 加载Mute设置数据
-	LoadMuteSetupData(pCommInfo);
+	LoadMuteSetupData(pLineSetupData);
 	// 加载BlastMachine设置数据
-	LoadBlastMachineSetupData(pCommInfo);
+	LoadBlastMachineSetupData(pLineSetupData);
 	// 加载Absolute设置数据
-	LoadAbsoluteSetupData(pCommInfo);
+	LoadAbsoluteSetupData(pLineSetupData);
 	// 加载Generic设置数据
-	LoadGenericSetupData(pCommInfo);
+	LoadGenericSetupData(pLineSetupData);
 	// 加载Look设置数据
-	LoadLookSetupData(pCommInfo);
+	LoadLookSetupData(pLineSetupData);
 	// 加载LAULeakage设置数据
-	LoadLAULeakageSetupData(pCommInfo);
+	LoadLAULeakageSetupData(pLineSetupData);
 	// 加载FormLine设置数据
-	LoadFormLineSetupData(pCommInfo);
+	LoadFormLineSetupData(pLineSetupData);
 	// 加载InstrumentTestBase设置数据
-	LoadInstrument_SensorTestBaseSetupData(true, pCommInfo);
+	LoadInstrument_SensorTestBaseSetupData(true, pLineSetupData);
 	// 加载SensorTestBase设置数据
-	LoadInstrument_SensorTestBaseSetupData(false, pCommInfo);
+	LoadInstrument_SensorTestBaseSetupData(false, pLineSetupData);
 	// 加载InstrumentTestLimit设置数据
-	LoadInstrument_SensorTestLimitSetupData(true, pCommInfo);
+	LoadInstrument_SensorTestLimitSetupData(true, pLineSetupData);
 	// 加载SensorTestLimit设置数据
-	LoadInstrument_SensorTestLimitSetupData(false, pCommInfo);
+	LoadInstrument_SensorTestLimitSetupData(false, pLineSetupData);
 	// 加载Instrument Test设置数据
-	LoadInstrumentTestSetupData(pCommInfo);
+	LoadInstrumentTestSetupData(pLineSetupData);
 	// 加载Sensor Test设置数据
-	LoadSensorTestSetupData(pCommInfo);
+	LoadSensorTestSetupData(pLineSetupData);
 	// 加载Multiple Test设置数据
-	LoadMultipleTestSetupData(pCommInfo);
+	LoadMultipleTestSetupData(pLineSetupData);
 	// 加载SeisMonitor设置数据
-	LoadSeisMonitorSetupData(pCommInfo);
+	LoadSeisMonitorSetupData(pLineSetupData);
 }
 
 // 保存测线客户端程序设置数据
-void SaveLineAppSetupData(m_oInstrumentCommInfoStruct* pCommInfo)
+void SaveLineAppSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pCommInfo == NULL)
+	if (pLineSetupData == NULL)
 	{
 		return;
 	}
 	// 保存Survery设置数据
-	SaveSurverySetupData(pCommInfo);
+	SaveSurverySetupData(pLineSetupData);
 	// 保存Point Code设置数据
-	SavePointCodeSetupData(pCommInfo);
+	SavePointCodeSetupData(pLineSetupData);
 	// 保存Sensor设置数据
-	SaveSensorSetupData(pCommInfo);
+	SaveSensorSetupData(pLineSetupData);
 	// 保存Marker设置数据
-	SaveMarkerSetupData(pCommInfo);
+	SaveMarkerSetupData(pLineSetupData);
 	// 保存Aux设置数据
-	SaveAuxSetupData(pCommInfo);
+	SaveAuxSetupData(pLineSetupData);
 	// 保存Detour设置数据
-	SaveDetourSetupData(pCommInfo);
+	SaveDetourSetupData(pLineSetupData);
 	// 保存Mute设置数据
-	SaveMuteSetupData(pCommInfo);
+	SaveMuteSetupData(pLineSetupData);
 	// 保存BlastMachine设置数据
-	SaveBlastMachineSetupData(pCommInfo);
+	SaveBlastMachineSetupData(pLineSetupData);
 	// 保存Absolute设置数据
-	SaveAbsoluteSetupData(pCommInfo);
+	SaveAbsoluteSetupData(pLineSetupData);
 	// 保存Generic设置数据
-	SaveGenericSetupData(pCommInfo);
+	SaveGenericSetupData(pLineSetupData);
 	// 保存Look设置数据
-	SaveLookSetupData(pCommInfo);
+	SaveLookSetupData(pLineSetupData);
 	// 保存LAULeakage设置数据
-	SaveLAULeakageSetupData(pCommInfo);
+	SaveLAULeakageSetupData(pLineSetupData);
 	// 保存FormLine设置数据
-	SaveFormLineSetupData(pCommInfo);
+	SaveFormLineSetupData(pLineSetupData);
 	// 保存InstrumentTestBase设置数据
-	SaveInstrument_SensorTestBaseSetupData(true, pCommInfo);
+	SaveInstrument_SensorTestBaseSetupData(true, pLineSetupData);
 	// 保存SensorTestBase设置数据
-	SaveInstrument_SensorTestBaseSetupData(false, pCommInfo);
+	SaveInstrument_SensorTestBaseSetupData(false, pLineSetupData);
 	// 保存InstrumentTestLimit设置数据
-	SaveInstrument_SensorTestLimitSetupData(true, pCommInfo);
+	SaveInstrument_SensorTestLimitSetupData(true, pLineSetupData);
 	// 保存SensorTestLimit设置数据
-	SaveInstrument_SensorTestLimitSetupData(false, pCommInfo);
+	SaveInstrument_SensorTestLimitSetupData(false, pLineSetupData);
 	// 保存Instrument Test设置数据
-	SaveInstrumentTestSetupData(pCommInfo);
+	SaveInstrumentTestSetupData(pLineSetupData);
 	// 保存Sensor Test设置数据
-	SaveSensorTestSetupData(pCommInfo);
+	SaveSensorTestSetupData(pLineSetupData);
 	// 保存Multiple Test设置数据
-	SaveMultipleTestSetupData(pCommInfo);
+	SaveMultipleTestSetupData(pLineSetupData);
 	// 保存SeisMonitor设置数据
-	SaveSeisMonitorSetupData(pCommInfo);
+	SaveSeisMonitorSetupData(pLineSetupData);
 }
 
 // 得到测线接收区域
-void GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oInstrumentCommInfoStruct* pCommInfo)
+void GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oSurveryStruct>::iterator iter;
 	string str = "";
@@ -5857,9 +5909,9 @@ void GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oIn
 	unsigned int uiType = 0;
 	uiLineNum = 0;
 	uiColumnNum = 0;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsSurveryStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsSurveryStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsSurveryStruct.begin();
+		iter != pLineSetupData->m_olsSurveryStruct.end(); iter++)
 	{
 		if (iter->m_uiLine > uiLineNum)
 		{
@@ -5873,16 +5925,16 @@ void GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oIn
 			uiColumnNum = uiEnd - uiBegin + 1;
 		}
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 SurveyXML 文件信息
-void QuerySurverySetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QuerySurverySetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oSurveryStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsSurveryStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsSurveryStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsSurveryStruct.begin();
+		iter != pLineSetupData->m_olsSurveryStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiLine, 4);
 		iPos += 4;
@@ -5891,16 +5943,16 @@ void QuerySurverySetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruc
 		memcpy(&cProcBuf[iPos], iter->m_pcReceiverSection, iter->m_usReceiverSectionSize);
 		iPos += iter->m_usReceiverSectionSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 PointCode XML文件信息
-void QueryPointCodeSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryPointCodeSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oPointCodeStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsPointCodeStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsPointCodeStruct.begin();
+		iter != pLineSetupData->m_olsPointCodeStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
 		iPos += 4;
@@ -5913,16 +5965,16 @@ void QueryPointCodeSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStr
 		memcpy(&cProcBuf[iPos], iter->m_pcSensorType, iter->m_usSensorTypeSize);
 		iPos += iter->m_usSensorTypeSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 Sensor XML文件信息
-void QuerySensorSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QuerySensorSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oSensorStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsSensorStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsSensorStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsSensorStruct.begin();
+		iter != pLineSetupData->m_olsSensorStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
 		iPos += 4;
@@ -5943,16 +5995,16 @@ void QuerySensorSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct
 		memcpy(&cProcBuf[iPos], &iter->m_uiSEGDCode, 4);
 		iPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 Marker XML文件信息
-void QueryMarkerSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryMarkerSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oMarkerStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsMarkerStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsMarkerStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsMarkerStruct.begin();
+		iter != pLineSetupData->m_olsMarkerStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiBoxType, 4);
 		iPos += 4;
@@ -5969,16 +6021,16 @@ void QueryMarkerSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct
 		memcpy(&cProcBuf[iPos], &iter->m_uiReversed, 4);
 		iPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 Aux XML文件信息
-void QueryAuxSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryAuxSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oAuxStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsAuxStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsAuxStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsAuxStruct.begin();
+		iter != pLineSetupData->m_olsAuxStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
 		iPos += 4;
@@ -6001,16 +6053,16 @@ void QueryAuxSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* p
 		memcpy(&cProcBuf[iPos], iter->m_pcComments, iter->m_usCommentsSize);
 		iPos += iter->m_usCommentsSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 Detour XML文件信息
-void QueryDetourSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryDetourSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oDetourStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsDetourStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsDetourStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsDetourStruct.begin();
+		iter != pLineSetupData->m_olsDetourStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiLowBoxType, 4);
 		iPos += 4;
@@ -6027,32 +6079,32 @@ void QueryDetourSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct
 		memcpy(&cProcBuf[iPos], &iter->m_uiStopMarking, 4);
 		iPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 Mute XML文件信息
-void QueryMuteSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryMuteSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oMuteStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsMuteStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsMuteStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsMuteStruct.begin();
+		iter != pLineSetupData->m_olsMuteStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiLineName, 4);
 		iPos += 4;
 		memcpy(&cProcBuf[iPos], &iter->m_uiPointNb, 4);
 		iPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 BlastMachine XML文件信息
-void QueryBlastMachineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryBlastMachineSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oBlastMachineStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsBlastMachineStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsBlastMachineStruct.begin();
+		iter != pLineSetupData->m_olsBlastMachineStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
 		iPos += 4;
@@ -6075,18 +6127,18 @@ void QueryBlastMachineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfo
 		memcpy(&cProcBuf[iPos], iter->m_pcComments, iter->m_usCommentsSize);
 		iPos += iter->m_usCommentsSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 Absolute XML文件信息
-void QueryAbsoluteSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryAbsoluteSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	map<unsigned int, list<m_oAbsoluteStruct>>::iterator iterMap;
 	list<m_oAbsoluteStruct>::iterator iter;
 	unsigned int uiSize = 0;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iterMap = pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.begin();
-		iterMap != pCommInfo->m_oLineSetupData.m_oAbsoluteStructMap.end(); iterMap++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iterMap = pLineSetupData->m_oAbsoluteStructMap.begin();
+		iterMap != pLineSetupData->m_oAbsoluteStructMap.end(); iterMap++)
 	{
 		memcpy(&cProcBuf[iPos], &iterMap->first, 4);
 		iPos += 4;
@@ -6107,16 +6159,16 @@ void QueryAbsoluteSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStru
 			iPos += iter->m_usAbsoluteSpreadSize;
 		}
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 Generic XML文件信息
-void QueryGenericSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryGenericSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oGenericStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsGenericStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsGenericStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsGenericStruct.begin();
+		iter != pLineSetupData->m_olsGenericStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
 		iPos += 4;
@@ -6133,40 +6185,40 @@ void QueryGenericSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruc
 		memcpy(&cProcBuf[iPos], iter->m_pcSpread, iter->m_usSpreadSize);
 		iPos += iter->m_usSpreadSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 Look XML文件信息
-void QueryLookSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryLookSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLook.m_uiAutoLook, 4);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	memcpy(&cProcBuf[iPos], &pLineSetupData->m_oLook.m_uiAutoLook, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLook.m_uiResistance, 4);
+	memcpy(&cProcBuf[iPos], &pLineSetupData->m_oLook.m_uiResistance, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLook.m_uiTilt, 4);
+	memcpy(&cProcBuf[iPos], &pLineSetupData->m_oLook.m_uiTilt, 4);
 	iPos += 4;
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLook.m_uiLeakage, 4);
+	memcpy(&cProcBuf[iPos], &pLineSetupData->m_oLook.m_uiLeakage, 4);
 	iPos += 4;
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 LAULeakage XML文件信息
-void QueryLAULeakageSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryLAULeakageSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oLAULeakage.m_uiLimit, 4);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	memcpy(&cProcBuf[iPos], &pLineSetupData->m_oLAULeakage.m_uiLimit, 4);
 	iPos += 4;
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 FormLine XML文件信息
-void QueryFormLineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryFormLineSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oFormLineStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsFormLineStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsFormLineStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsFormLineStruct.begin();
+		iter != pLineSetupData->m_olsFormLineStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
 		iPos += 4;
@@ -6175,23 +6227,23 @@ void QueryFormLineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStru
 		memcpy(&cProcBuf[iPos], &iter->m_uiSN, 4);
 		iPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 Instrument_SensorTestBase XML文件信息
-void QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oInstrumentTestBaseStruct>::iterator iter;
 	list<m_oInstrumentTestBaseStruct>* pList = NULL;
 	if (bInstrument == true)
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestBaseStruct;
+		pList = &pLineSetupData->m_olsInstrumentTestBaseStruct;
 	}
 	else
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestBaseStruct;
+		pList = &pLineSetupData->m_olsSensorTestBaseStruct;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	for (iter = pList->begin();iter != pList->end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
@@ -6215,23 +6267,23 @@ void QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bIn
 		memcpy(&cProcBuf[iPos], &iter->m_uiSamplingLength, 4);
 		iPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 InstrumentTestLimit XML文件信息
-void QueryInstrument_SensorTestLimitSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryInstrument_SensorTestLimitSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oInstrumentTestLimitStruct>::iterator iter;
 	list<m_oInstrumentTestLimitStruct>* pList = NULL;
 	if (bInstrument == true)
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct;
+		pList = &pLineSetupData->m_olsInstrumentTestLimitStruct;
 	}
 	else
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct;
+		pList = &pLineSetupData->m_olsSensorTestLimitStruct;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	for (iter = pList->begin(); iter != pList->end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
@@ -6251,16 +6303,16 @@ void QueryInstrument_SensorTestLimitSetupData(char* cProcBuf, int& iPos, bool bI
 		memcpy(&cProcBuf[iPos], &iter->m_fLimit, 4);
 		iPos += 4;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 InstrumentTest XML文件信息
-void QueryInstrumentTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryInstrumentTestSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oInstrumentTestStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsInstrumentTestStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsInstrumentTestStruct.begin();
+		iter != pLineSetupData->m_olsInstrumentTestStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
 		iPos += 4;
@@ -6281,16 +6333,16 @@ void QueryInstrumentTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommIn
 		memcpy(&cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
 		iPos += iter->m_usAbsoluteSpreadSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 SensorTest XML文件信息
-void QuerySensorTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QuerySensorTestSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	list<m_oSensorTestStruct>::iterator iter;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iter = pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.begin();
-		iter != pCommInfo->m_oLineSetupData.m_olsSensorTestStruct.end(); iter++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iter = pLineSetupData->m_olsSensorTestStruct.begin();
+		iter != pLineSetupData->m_olsSensorTestStruct.end(); iter++)
 	{
 		memcpy(&cProcBuf[iPos], &iter->m_uiNb, 4);
 		iPos += 4;
@@ -6303,18 +6355,18 @@ void QuerySensorTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoSt
 		memcpy(&cProcBuf[iPos], iter->m_pcAbsoluteSpread, iter->m_usAbsoluteSpreadSize);
 		iPos += iter->m_usAbsoluteSpreadSize;
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 MultipleTest XML文件信息
-void QueryMultipleTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QueryMultipleTestSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
 	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::iterator iterMap;
 	list<m_oMultipleTestTaskStruct>::iterator iter;
 	unsigned int uiSize = 0;
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	for (iterMap = pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.begin();
-		iterMap != pCommInfo->m_oLineSetupData.m_oMultpleTestStructMap.end(); iterMap++)
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	for (iterMap = pLineSetupData->m_oMultpleTestStructMap.begin();
+		iterMap != pLineSetupData->m_oMultpleTestStructMap.end(); iterMap++)
 	{
 		memcpy(&cProcBuf[iPos], &iterMap->first.m_uiNb, 4);
 		iPos += 4;
@@ -6355,37 +6407,37 @@ void QueryMultipleTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfo
 			iPos += 4;
 		}
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 查询 SeisMonitorTest XML文件信息
-void QuerySeisMonitorSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo)
+void QuerySeisMonitorSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
 {
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
-	memcpy(&cProcBuf[iPos], &pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize, 2);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	memcpy(&cProcBuf[iPos], &pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize, 2);
 	iPos += 2;
 	memcpy(&cProcBuf[iPos], 
-		&pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_pcAbsoluteSpread, 
-		pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize);
-	iPos += pCommInfo->m_oLineSetupData.m_oSeisMonitor.m_usAbsoluteSpreadSize;
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+		&pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread, 
+		pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize);
+	iPos += pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize;
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 
 // 从XML配置文件得到测试数据限制值
-float QueryTestDataLimit(bool bInstrument, string str, m_oInstrumentCommInfoStruct* pCommInfo)
+float QueryTestDataLimit(bool bInstrument, string str, m_oLineSetupDataStruct* pLineSetupData)
 {
 	float fReturn = 0;
 	list<m_oInstrumentTestLimitStruct>::iterator iter;
 	list<m_oInstrumentTestLimitStruct>* pList = NULL;
 	if (bInstrument == true)
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsInstrumentTestLimitStruct;
+		pList = &pLineSetupData->m_olsInstrumentTestLimitStruct;
 	}
 	else
 	{
-		pList = &pCommInfo->m_oLineSetupData.m_olsSensorTestLimitStruct;
+		pList = &pLineSetupData->m_olsSensorTestLimitStruct;
 	}
-	EnterCriticalSection(&pCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	for (iter = pList->begin(); iter != pList->end(); iter++)
 	{
 		if (0 == strcmp(iter->m_pcDescr, str.c_str()))
@@ -6394,6 +6446,6 @@ float QueryTestDataLimit(bool bInstrument, string str, m_oInstrumentCommInfoStru
 			break;
 		}
 	}
-	LeaveCriticalSection(&pCommInfo->m_oSecCommInfo);
+	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	return fReturn;
 }

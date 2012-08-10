@@ -837,7 +837,159 @@ void CMatrixDllCall::Dll_QueryFormLineSetupData(char* cProcBuf, int& iPos)
 		(*Dll_Query_FormLineSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
 	}
 }
-
+// 查询Delay设置数据
+void CMatrixDllCall::Dll_QueryDelaySetupData(char* cProcBuf, int& iPos)
+{
+	Query_DelaySetupData Dll_Query_DelaySetupData = NULL;
+	Dll_Query_DelaySetupData = (Query_DelaySetupData)GetProcAddress(m_hDllMod, "QueryDelaySetupData");
+	if (!Dll_Query_DelaySetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_DelaySetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 查询SourceShot设置数据
+void CMatrixDllCall::Dll_QuerySourceShotSetupData(char* cProcBuf, int& iPos)
+{
+	Query_SourceShotSetupData Dll_Query_SourceShotSetupData = NULL;
+	Dll_Query_SourceShotSetupData = (Query_SourceShotSetupData)GetProcAddress(m_hDllMod, "QuerySourceShotSetupData");
+	if (!Dll_Query_SourceShotSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_SourceShotSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 查询Explo设置数据
+void CMatrixDllCall::Dll_QueryExploSetupData(char* cProcBuf, int& iPos)
+{
+	Query_ExploSetupData Dll_Query_ExploSetupData = NULL;
+	Dll_Query_ExploSetupData = (Query_ExploSetupData)GetProcAddress(m_hDllMod, "QueryExploSetupData");
+	if (!Dll_Query_ExploSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_ExploSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 查询Vibro设置数据
+void CMatrixDllCall::Dll_QueryVibroSetupData(char* cProcBuf, int& iPos)
+{
+	Query_VibroSetupData Dll_Query_VibroSetupData = NULL;
+	Dll_Query_VibroSetupData = (Query_VibroSetupData)GetProcAddress(m_hDllMod, "QueryVibroSetupData");
+	if (!Dll_Query_VibroSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_VibroSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 查询ProcessRecord设置数据
+void CMatrixDllCall::Dll_QueryProcessRecordSetupData(char* cProcBuf, int& iPos)
+{
+	Query_ProcessRecordSetupData Dll_Query_ProcessRecordSetupData = NULL;
+	Dll_Query_ProcessRecordSetupData = (Query_ProcessRecordSetupData)GetProcAddress(m_hDllMod, "QueryProcessRecordSetupData");
+	if (!Dll_Query_ProcessRecordSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_ProcessRecordSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 查询ProcessAux设置数据
+void CMatrixDllCall::Dll_QueryProcessAuxSetupData(char* cProcBuf, int& iPos)
+{
+	Query_ProcessAuxSetupData Dll_Query_ProcessAuxSetupData = NULL;
+	Dll_Query_ProcessAuxSetupData = (Query_ProcessAuxSetupData)GetProcAddress(m_hDllMod, "QueryProcessAuxSetupData");
+	if (!Dll_Query_ProcessAuxSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_ProcessAuxSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 查询ProcessAcq设置数据
+void CMatrixDllCall::Dll_QueryProcessAcqSetupData(char* cProcBuf, int& iPos)
+{
+	Query_ProcessAcqSetupData Dll_Query_ProcessAcqSetupData = NULL;
+	Dll_Query_ProcessAcqSetupData = (Query_ProcessAcqSetupData)GetProcAddress(m_hDllMod, "QueryProcessAcqSetupData");
+	if (!Dll_Query_ProcessAcqSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_ProcessAcqSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 查询ProcessType设置数据
+void CMatrixDllCall::Dll_QueryProcessTypeSetupData(char* cProcBuf, int& iPos)
+{
+	Query_ProcessTypeSetupData Dll_Query_ProcessTypeSetupData = NULL;
+	Dll_Query_ProcessTypeSetupData = (Query_ProcessTypeSetupData)GetProcAddress(m_hDllMod, "QueryProcessTypeSetupData");
+	if (!Dll_Query_ProcessTypeSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_ProcessTypeSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
+// 查询ProcessComments设置数据
+void CMatrixDllCall::Dll_ProcessCommentsSetupData(char* cProcBuf, int& iPos)
+{
+	Query_ProcessCommentsSetupData Dll_Query_ProcessCommentsSetupData = NULL;
+	Dll_Query_ProcessCommentsSetupData = (Query_ProcessCommentsSetupData)GetProcAddress(m_hDllMod, "QueryProcessCommentsSetupData");
+	if (!Dll_Query_ProcessCommentsSetupData)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_ProcessCommentsSetupData)(cProcBuf, iPos, m_pEnv->m_pInstrumentCommInfo);
+	}
+}
 
 // 查询Instrument_SensorTestBase设置数据
 void CMatrixDllCall::Dll_QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument)

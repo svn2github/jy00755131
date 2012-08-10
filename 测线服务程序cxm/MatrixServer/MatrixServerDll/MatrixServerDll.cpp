@@ -621,7 +621,7 @@ void OnInit(m_oEnvironmentStruct* pEnv)
 	// 初始化常量信息结构体
 	OnInitConstVar(pEnv->m_pConstVar, pEnv->m_pLogOutPutOpt);
 	// 初始化仪器通讯信息结构体
-	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo, pEnv->m_pLogOutPutOpt);
+	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
 	// 初始化日志输出线程
 	OnInit_LogOutPutThread(pEnv);
 	// 初始化心跳线程
