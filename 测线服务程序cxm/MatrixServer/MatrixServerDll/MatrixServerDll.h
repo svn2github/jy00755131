@@ -460,11 +460,11 @@ typedef struct ServerSetupData_Struct
 typedef struct InstrumentCommInfo_Struct
 {
 	/** 服务端信息*/
-	m_oServerSetupDataStruct m_oServerSetupData;
+	m_oServerSetupDataStruct* m_pServerSetupData;
 	/** 测线客户端信息*/
-	m_oLineSetupDataStruct m_oLineSetupData;
+	m_oLineSetupDataStruct* m_pLineSetupData;
 	/** 施工客户端信息*/
-	m_oOptSetupDataStruct m_oOptSetupData;
+	m_oOptSetupDataStruct* m_pOptSetupData;
 }m_oInstrumentCommInfoStruct;
 
 /**
@@ -1784,6 +1784,8 @@ MatrixServerDll_API void SaveServerParameter(m_oServerSetupDataStruct* pServerSe
 MatrixServerDll_API void LoadServerParameterSetupData(m_oServerSetupDataStruct* pServerSetupData);
 // 保存服务器端参数设置数据
 MatrixServerDll_API void SaveServerParameterSetupData(m_oServerSetupDataStruct* pServerSetupData);
+// 创建服务端通讯信息结构体
+MatrixServerDll_API m_oServerSetupDataStruct* OnCreateServerAppSetupData(void);
 // 加载服务端程序设置数据
 MatrixServerDll_API void LoadServerAppSetupData(m_oServerSetupDataStruct* pServerSetupData);
 
@@ -2055,6 +2057,8 @@ MatrixServerDll_API void SaveSeisMonitor(m_oLineSetupDataStruct* pLineSetupData)
 MatrixServerDll_API void SaveSeisMonitorSetupData(m_oLineSetupDataStruct* pLineSetupData);
 // 设置SeisMonitor设置数据
 MatrixServerDll_API void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData);
+// 创建测线客户端通讯信息结构体
+MatrixServerDll_API m_oLineSetupDataStruct* OnCreateLineAppSetupData(void);
 // 加载测线客户端程序设置数据
 MatrixServerDll_API void LoadLineAppSetupData(m_oLineSetupDataStruct* pLineSetupData);
 // 保存测线客户端程序设置数据
@@ -2201,6 +2205,8 @@ MatrixServerDll_API void SetProcessCommentsSetupData(char* pChar, unsigned int u
 // 查询 ProcessComments XML文件信息
 MatrixServerDll_API void QueryProcessCommentsSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
 
+// 创建施工客户端通讯信息结构体
+MatrixServerDll_API m_oOptSetupDataStruct* OnCreateOptAppSetupData(void);
 // 加载施工客户端程序设置数据
 MatrixServerDll_API void LoadOptAppSetupData(m_oOptSetupDataStruct* pOptSetupData);
 // 保存施工客户端程序设置数据
@@ -2209,50 +2215,54 @@ MatrixServerDll_API void SaveOptAppSetupData(m_oOptSetupDataStruct* pOptSetupDat
 MatrixServerDll_API void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo);
 // 释放服务端参数设置信息结构体缓冲区
 MatrixServerDll_API void OnFreeServerXMLSetupData(m_oServerSetupDataStruct* pServerSetupData);
+// 释放测线客户端参数设置信息结构体缓冲区
+MatrixServerDll_API void OnFreeLineXMLSetupData(m_oLineSetupDataStruct* pLineSetupData);
+// 释放施工客户端参数设置信息结构体缓冲区
+MatrixServerDll_API void OnFreeOptXMLSetupData(m_oOptSetupDataStruct* pOptSetupData);
 // 释放仪器通讯信息结构体
 MatrixServerDll_API void OnFreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo);
 // 得到测线接收区域
-MatrixServerDll_API void GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 SurveyXML 文件信息
-MatrixServerDll_API void QuerySurverySetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QuerySurverySetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 PointCode XML文件信息
-MatrixServerDll_API void QueryPointCodeSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryPointCodeSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 Sensor XML文件信息
-MatrixServerDll_API void QuerySensorSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QuerySensorSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 Marker XML文件信息
-MatrixServerDll_API void QueryMarkerSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryMarkerSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 Aux XML文件信息
-MatrixServerDll_API void QueryAuxSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryAuxSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 Detour XML文件信息
-MatrixServerDll_API void QueryDetourSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryDetourSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 Mute XML文件信息
-MatrixServerDll_API void QueryMuteSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryMuteSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 BlastMachine XML文件信息
-MatrixServerDll_API void QueryBlastMachineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryBlastMachineSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 Absolute XML文件信息
-MatrixServerDll_API void QueryAbsoluteSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryAbsoluteSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 Generic XML文件信息
-MatrixServerDll_API void QueryGenericSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryGenericSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 Look XML文件信息
-MatrixServerDll_API void QueryLookSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryLookSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 LAULeakage XML文件信息
-MatrixServerDll_API void QueryLAULeakageSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryLAULeakageSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 FormLine XML文件信息
-MatrixServerDll_API void QueryFormLineSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryFormLineSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 Instrument_SensorTestBase XML文件信息
-MatrixServerDll_API void QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryInstrument_SensorTestBaseSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 InstrumentTestLimit XML文件信息
-MatrixServerDll_API void QueryInstrument_SensorTestLimitSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryInstrument_SensorTestLimitSetupData(char* cProcBuf, int& iPos, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 InstrumentTest XML文件信息
-MatrixServerDll_API void QueryInstrumentTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryInstrumentTestSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 SensorTest XML文件信息
-MatrixServerDll_API void QuerySensorTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QuerySensorTestSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 MultipleTest XML文件信息
-MatrixServerDll_API void QueryMultipleTestSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QueryMultipleTestSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 查询 SeisMonitorTest XML文件信息
-MatrixServerDll_API void QuerySeisMonitorSetupData(char* cProcBuf, int& iPos, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API void QuerySeisMonitorSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
 // 从XML配置文件得到测试数据限制值
-MatrixServerDll_API float QueryTestDataLimit(bool bInstrument, string str, m_oInstrumentCommInfoStruct* pCommInfo);
+MatrixServerDll_API float QueryTestDataLimit(bool bInstrument, string str, m_oLineSetupDataStruct* pLineSetupData);
 /************************************************************************/
 /* 心跳帧                                                               */
 /************************************************************************/

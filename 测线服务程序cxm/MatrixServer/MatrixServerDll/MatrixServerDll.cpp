@@ -318,9 +318,9 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
 	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
-	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	iSampleRate = pEnv->m_pInstrumentCommInfo->m_oXMLADCSetupData.m_iSampleRate;
-	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
+	iSampleRate = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate;
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	pEnv->m_pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
 	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
@@ -857,10 +857,10 @@ unsigned int OnWork(m_oEnvironmentStruct* pEnv)
 	CTimeSpan timeWait;
 	int nDays, nHours, nMins, nSecs;
 	// 从配置文件中读出上一次FieldOff时间
-	LoadServerParameterSetupData(pEnv->m_pInstrumentCommInfo);
-	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	timeFieldOff = pEnv->m_pInstrumentCommInfo->m_oXMLParameterSetupData.m_oTimeFieldOff;
-	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
+	LoadServerParameterSetupData(pEnv->m_pInstrumentCommInfo->m_pServerSetupData);
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
+	timeFieldOff = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_oTimeFieldOff;
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
 	nDays = pEnv->m_pConstVar->m_uiFieldOnWaitTimeLimit / (24 * 3600);
 	nHours = pEnv->m_pConstVar->m_uiFieldOnWaitTimeLimit / 3600;
 	nMins = pEnv->m_pConstVar->m_uiFieldOnWaitTimeLimit / 60;
@@ -950,10 +950,10 @@ void OnStop(m_oEnvironmentStruct* pEnv)
 		return;
 	}
 	// 将FieldOff时间写入配置文件
-	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	pEnv->m_pInstrumentCommInfo->m_oXMLParameterSetupData.m_oTimeFieldOff = CTime::GetCurrentTime();
-	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_oSecCommInfo);
-	SaveServerParameterSetupData(pEnv->m_pInstrumentCommInfo);
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
+	pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_oTimeFieldOff = CTime::GetCurrentTime();
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
+	SaveServerParameterSetupData(pEnv->m_pInstrumentCommInfo->m_pServerSetupData);
 
 	pEnv->m_bFieldOff = true;
 	// 日志输出线程停止工作

@@ -21,7 +21,6 @@ void CCommSndFrame::MakeReturnFrame(m_oCommFrameStructPtr ptrFrame)
 	m_oCommFrameStructPtr pFrameStruct = NULL;
 	EnterCriticalSection(&m_oSecClientFrame);
 	pFrameStruct = GetFreeFrameStruct();
-	TRACE(_T("%d\n"), m_uiCountFree);
 	pFrameStruct->m_cCmdType = CmdTypeReturn;
 	pFrameStruct->m_usCmd = ptrFrame->m_usCmd;
 	pFrameStruct->m_uiSrcTimeStep = GetTickCount();
@@ -52,7 +51,6 @@ void CCommSndFrame::MakeSetFrame(unsigned short usCmd, char* pChar, unsigned int
 	for (unsigned int i=0; i<uiFrameNum; i++)
 	{
 		pFrameStruct = GetFreeFrameStruct();
-		TRACE(_T("%d\n"), m_uiCountFree);
 		pFrameStruct->m_cCmdType = CmdTypeSet;
 		pFrameStruct->m_usCmd = usCmd;
 		pFrameStruct->m_uiSrcTimeStep = GetTickCount();

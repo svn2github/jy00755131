@@ -113,6 +113,8 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	m_oMatrixDllCall.OnInit(_T("MatrixServerDll.dll"));
 	// 初始化与客户端通讯连接
 	m_oComDll.m_pMatrixDllCall = &m_oMatrixDllCall;
+	m_oComDll.m_oCommServerDll.m_pMatrixDllCall = &m_oMatrixDllCall;
+	m_oComDll.m_oCommLineDll.m_pMatrixDllCall = &m_oMatrixDllCall;
 	m_oComDll.OnInit(_T("MatrixCommDll.dll"));
 	GetDlgItem(IDC_BN_START)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BN_STOP)->EnableWindow(FALSE);
@@ -173,7 +175,7 @@ void CMatrixServerDlg::OnBnClickedBnStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL开始工作
-	unsigned int uiFieldOnWaitTime = m_oMatrixDllCall.Dll_Work();
+	unsigned int uiFieldOnWaitTime = m_oMatrixDllCall.m_oMatrixServer.Dll_Work();
 	CString str = _T("");
 	if (uiFieldOnWaitTime == 0)
 	{
@@ -193,7 +195,7 @@ void CMatrixServerDlg::OnBnClickedBnStop()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL停止工作
-	m_oMatrixDllCall.Dll_Stop();
+	m_oMatrixDllCall.m_oMatrixServer.Dll_Stop();
 	GetDlgItem(IDC_BN_START)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BN_STOP)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BN_ADCSET_ALL)->EnableWindow(FALSE);
@@ -217,7 +219,7 @@ void CMatrixServerDlg::OnBnClickedButtonStartsampleAll()
 	CString str = _T("");
 	GetDlgItem(IDC_COMBO_SAMPLERATE)->GetWindowText(str);
 	// DLL开始AD数据采集
-	m_oMatrixDllCall.Dll_StartSample(_ttoi(str));
+	m_oMatrixDllCall.m_oMatrixServer.Dll_StartSample(_ttoi(str));
 	GetDlgItem(IDC_BN_STARTSAMPLE_ALL)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(TRUE);
 }
@@ -225,7 +227,7 @@ void CMatrixServerDlg::OnBnClickedButtonStopsampleAll()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// DLL停止AD数据采集
-	m_oMatrixDllCall.Dll_StopSample();
+	m_oMatrixDllCall.m_oMatrixServer.Dll_StopSample();
 	GetDlgItem(IDC_BN_STARTSAMPLE_ALL)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BN_STOPSAMPLE_ALL)->EnableWindow(FALSE);
 }
@@ -235,14 +237,14 @@ void CMatrixServerDlg::OnBnClickedBnAdcsetAll()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// AD参数设置
-	m_oMatrixDllCall.Dll_ADCSet();
+	m_oMatrixDllCall.m_oMatrixServer.Dll_ADCSet();
 }
 
 
 void CMatrixServerDlg::OnBnClickedBnAdcsetByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LINEINDEX), GetDlgItemInt(IDC_EDIT_POINTINDEX), 
+	m_oMatrixDllCall.m_oMatrixServer.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LINEINDEX), GetDlgItemInt(IDC_EDIT_POINTINDEX), 
 		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 1);
 }
 
@@ -250,7 +252,7 @@ void CMatrixServerDlg::OnBnClickedBnAdcsetByrout()
 void CMatrixServerDlg::OnBnClickedBnStartsampleByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LINEINDEX), GetDlgItemInt(IDC_EDIT_POINTINDEX), 
+	m_oMatrixDllCall.m_oMatrixServer.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LINEINDEX), GetDlgItemInt(IDC_EDIT_POINTINDEX), 
 		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 2, 4000);
 }
 
@@ -258,7 +260,7 @@ void CMatrixServerDlg::OnBnClickedBnStartsampleByrout()
 void CMatrixServerDlg::OnBnClickedBnStopsampleByrout()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_oMatrixDllCall.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LINEINDEX), GetDlgItemInt(IDC_EDIT_POINTINDEX), 
+	m_oMatrixDllCall.m_oMatrixServer.Dll_ADCSetPart(GetDlgItemInt(IDC_EDIT_LINEINDEX), GetDlgItemInt(IDC_EDIT_POINTINDEX), 
 		GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION), 3);
 }
 
@@ -266,7 +268,7 @@ void CMatrixServerDlg::OnBnClickedBnStopsampleByrout()
 void CMatrixServerDlg::OnBnClickedBtnOpenroutpower()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_oMatrixDllCall.Dll_OpenLAUXRoutPower_ByHand(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
+	m_oMatrixDllCall.m_oMatrixServer.Dll_OpenLAUXRoutPower_ByHand(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
 		GetDlgItemInt(IDC_EDIT_POINTINDEX), static_cast<unsigned char>(GetDlgItemInt(IDC_EDIT_OPENROUTPOWER)));
 }
 
@@ -275,7 +277,7 @@ void CMatrixServerDlg::OnBnClickedBtnGetroutinstrumentnum()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	
-	unsigned int uiInstrumentNum = m_oMatrixDllCall.Dll_GetRoutInstrumentNum(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
+	unsigned int uiInstrumentNum = m_oMatrixDllCall.m_oMatrixServer.Dll_GetRoutInstrumentNum(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
 		GetDlgItemInt(IDC_EDIT_POINTINDEX), GetDlgItemInt(IDC_EDIT_ROUT_DIRECTION));
 	CString str = _T("");
 	str.Format(_T("该方向仪器个数为%d"), uiInstrumentNum);

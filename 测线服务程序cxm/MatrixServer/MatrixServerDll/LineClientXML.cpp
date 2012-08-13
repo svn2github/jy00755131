@@ -4,13 +4,22 @@
 // 初始化测线客户程序设置信息
 void OnInitLineClientXMLSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	InitializeCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	pLineSetupData->m_strLineXMLFilePath = "..\\parameter\\MatrixLine.XML";
 	pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread = NULL;
 	// 重置测线客户端信息
 	OnResetLineClientXMLSetupData(pLineSetupData);
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+}
+// 创建测线客户端通讯信息结构体
+m_oLineSetupDataStruct* OnCreateLineAppSetupData(void)
+{
+	m_oLineSetupDataStruct* pLineSetupData = NULL;
+	pLineSetupData = new m_oLineSetupDataStruct;
+	InitializeCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	// 初始化测线客户程序设置信息
+	OnInitLineClientXMLSetupData(pLineSetupData);
+	return pLineSetupData;
 }
 // 打开测线客户端程序配置文件
 BOOL OpenLineClientXMLFile(m_oLineSetupDataStruct* pLineSetupData)
@@ -6448,4 +6457,14 @@ float QueryTestDataLimit(bool bInstrument, string str, m_oLineSetupDataStruct* p
 	}
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	return fReturn;
+}
+
+// 释放测线客户端参数设置信息结构体缓冲区
+void OnFreeLineXMLSetupData(m_oLineSetupDataStruct* pLineSetupData)
+{
+	// 重置测线客户端信息
+	OnResetLineClientXMLSetupData(pLineSetupData);
+	DeleteCriticalSection(&pLineSetupData->m_oSecCommInfo);
+	delete pLineSetupData;
+	pLineSetupData = NULL;
 }

@@ -37,32 +37,32 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	}
 	pADCSetFrame->m_pCommandStructSet = new m_oInstrumentCommandStruct;
 	// 源地址
-	pADCSetFrame->m_pCommandStructSet->m_uiSrcIP = pCommInfo->m_oXMLIPSetupData.m_uiSrcIP;
+	pADCSetFrame->m_pCommandStructSet->m_uiSrcIP = pCommInfo->m_pServerSetupData->m_oXMLIPSetupData.m_uiSrcIP;
 	// 目的地址
-	pADCSetFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_oXMLIPSetupData.m_uiAimIP;
+	pADCSetFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_pServerSetupData->m_oXMLIPSetupData.m_uiAimIP;
 	// 目标IP地址端口号
-	pADCSetFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_oXMLPortSetupData.m_usAimPort;
+	pADCSetFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort;
 	// ADC参数设置发送缓冲区帧数设定为仪器个数
 	pADCSetFrame->m_uiSndBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iSndFrameSize;
 	// ADC参数设置应答接收缓冲区帧数设定为仪器个数
 	pADCSetFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// ADC参数设置返回端口
-	pADCSetFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_oXMLPortSetupData.m_usADCSetReturnPort;
+	pADCSetFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usADCSetReturnPort;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pADCSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
 	// 重置帧内容解析变量
 	ResetInstrumentFramePacket(pADCSetFrame->m_pCommandStructSet);
 	// ADC数据返回地址
-	pADCSetFrame->m_pCommandStructSet->m_uiADCDataReturnAddr = pCommInfo->m_oXMLIPSetupData.m_uiADCDataReturnAddr;
+	pADCSetFrame->m_pCommandStructSet->m_uiADCDataReturnAddr = pCommInfo->m_pServerSetupData->m_oXMLIPSetupData.m_uiADCDataReturnAddr;
 	// ADC数据返回端口
-	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPort = pCommInfo->m_oXMLPortSetupData.m_usADCDataReturnPort;
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usADCDataReturnPort;
 	// 自动数据返回命令，ad_cmd(7)=1，端口递增；=0，端口不变
 	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnCmd = pConstVar->m_usSendADCCmd;
 	// 端口递增下限
-	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitLow = pCommInfo->m_oXMLPortSetupData.m_usADCDataReturnPort;
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitLow = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usADCDataReturnPort;
 	// 端口递增上限
-	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitHigh = pCommInfo->m_oXMLPortSetupData.m_usADCDataReturnPort;
+	pADCSetFrame->m_pCommandStructSet->m_usADCDataReturnPortLimitHigh = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usADCDataReturnPort;
 	// 清空发送帧缓冲区
 	if (pADCSetFrame->m_cpSndFrameData != NULL)
 	{

@@ -4,12 +4,21 @@
 // 初始化施工客户程序设置信息
 void OnInitOptClientXMLSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	InitializeCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	pOptSetupData->m_strOptXMLFilePath = "..\\parameter\\MatrixOperation.XML";
 	// 重置施工客户端信息
 	OnResetOptClientXMLSetupData(pOptSetupData);
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
+}
+// 创建施工客户端通讯信息结构体
+m_oOptSetupDataStruct* OnCreateOptAppSetupData(void)
+{
+	m_oOptSetupDataStruct* pOptSetupData = NULL;
+	pOptSetupData = new m_oOptSetupDataStruct;
+	InitializeCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	// 初始化施工客户程序设置信息
+	OnInitOptClientXMLSetupData(pOptSetupData);
+	return pOptSetupData;
 }
 // 打开施工客户端程序配置文件
 BOOL OpenOptClientXMLFile(m_oOptSetupDataStruct* pOptSetupData)
@@ -2820,4 +2829,14 @@ void SaveOptAppSetupData(m_oOptSetupDataStruct* pOptSetupData)
 	SaveProcessTypeSetupData(pOptSetupData);
 	// 保存ProcessComments设置数据
 	SaveProcessCommentsSetupData(pOptSetupData);
+}
+
+// 释放施工客户端参数设置信息结构体缓冲区
+void OnFreeOptXMLSetupData(m_oOptSetupDataStruct* pOptSetupData)
+{
+	// 重置施工客户端信息
+	OnResetOptClientXMLSetupData(pOptSetupData);
+	DeleteCriticalSection(&pOptSetupData->m_oSecCommInfo);
+	delete pOptSetupData;
+	pOptSetupData = NULL;
 }

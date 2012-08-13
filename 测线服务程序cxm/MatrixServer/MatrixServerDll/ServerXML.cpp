@@ -4,7 +4,6 @@
 // 初始化服务程序设置信息
 void OnInitServerXMLSetupData(m_oServerSetupDataStruct* pServerSetupData)
 {
-	InitializeCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	pServerSetupData->m_strServerXMLFilePath = "..\\parameter\\MatrixServer.XML";
 	pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSetSine = NULL;
@@ -21,6 +20,16 @@ void OnInitServerXMLSetupData(m_oServerSetupDataStruct* pServerSetupData)
 	pServerSetupData->m_oXMLADCSetupData.m_iSampleRate = 1000;	// 默认1K采样率
 	pServerSetupData->m_oXMLADCSetupData.m_bHPFOpen = true;	// 高通滤波器默认开启
 	LeaveCriticalSection(&pServerSetupData->m_oSecCommInfo);
+}
+// 创建服务端通讯信息结构体
+m_oServerSetupDataStruct* OnCreateServerAppSetupData(void)
+{
+	m_oServerSetupDataStruct* pServerSetupData = NULL;
+	pServerSetupData = new m_oServerSetupDataStruct;
+	InitializeCriticalSection(&pServerSetupData->m_oSecCommInfo);
+	// 初始化服务程序设置信息
+	OnInitServerXMLSetupData(pServerSetupData);
+	return pServerSetupData;
 }
 // 打开服务程序配置文件
 BOOL OpenServerXMLFile(m_oServerSetupDataStruct* pServerSetupData)
@@ -601,4 +610,7 @@ void OnFreeServerXMLSetupData(m_oServerSetupDataStruct* pServerSetupData)
 		pServerSetupData->m_oXMLADCSetupData.m_cpSetADCReadContinuous = NULL;
 	}
 	LeaveCriticalSection(&pServerSetupData->m_oSecCommInfo);
+	DeleteCriticalSection(&pServerSetupData->m_oSecCommInfo);
+	delete pServerSetupData;
+	pServerSetupData = NULL;
 }

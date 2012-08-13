@@ -80,10 +80,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置正弦波命令
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSetSine;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCSetSineSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSetSine;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCSetSineSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -91,10 +91,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -102,10 +102,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB电源低位
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCOpenTBPowerLow;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCOpenTBPowerLowSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCOpenTBPowerLow;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCOpenTBPowerLowSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -113,10 +113,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB电源高位
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCOpenTBPowerHigh;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCOpenTBPowerHighSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCOpenTBPowerHigh;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCOpenTBPowerHighSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -124,10 +124,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB开关低位
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCOpenSwitchTBLow;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCOpenSwitchTBLowSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCOpenSwitchTBLow;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCOpenSwitchTBLowSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -135,10 +135,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB开关高位
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCOpenSwitchTBHigh;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCOpenSwitchTBHighSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCOpenSwitchTBHigh;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCOpenSwitchTBHighSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -146,10 +146,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -157,10 +157,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置写寄存器
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCRegisterWrite;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCRegisterWriteSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCRegisterWrite;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCRegisterWriteSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -168,10 +168,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置读寄存器
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCRegisterRead;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCRegisterReadSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCRegisterRead;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCRegisterReadSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -193,10 +193,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置打开TB开关
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCTBSwitchOpen;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCTBSwitchOpenSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCTBSwitchOpen;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCTBSwitchOpenSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -204,10 +204,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -225,85 +225,85 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置ADC数据采样率等参数
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		// 采用高通滤波
-		if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_bHPFOpen == true)
+		if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_bHPFOpen == true)
 		{
-			if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 250)
+			if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 250)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 67;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = 86;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 19;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 67;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[6] = 86;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[7] = 19;
 			}
-			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 500)
+			else if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 500)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 75;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = -89;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 9;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 75;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[6] = -89;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[7] = 9;
 			}
-			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 1000)
+			else if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 1000)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 83;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = -45;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 4;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 83;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[6] = -45;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[7] = 4;
 			}
-			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 2000)
+			else if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 2000)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 91;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = 105;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 2;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 91;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[6] = 105;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[7] = 2;
 			}
-			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 4000)
+			else if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 4000)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 99;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = 52;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 1;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 99;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[6] = 52;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[7] = 1;
 			}
 			else
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 83;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[6] = -45;
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[7] = 4;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 83;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[6] = -45;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[7] = 4;
 			}
-			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[8] = 0;
-			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[9] = 0;
-			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[10] = 0;
-			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[11] = 0;
-			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[12] = 0;
-			pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[13] = 64;
+			pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[8] = 0;
+			pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[9] = 0;
+			pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[10] = 0;
+			pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[11] = 0;
+			pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[12] = 0;
+			pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[13] = 64;
 		}
 		else
 		{
 			// 不经过高通滤波
-			if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 250)
+			if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 250)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 66;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 66;
 			}
-			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 500)
+			else if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 500)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 74;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 74;
 			}
-			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 1000)
+			else if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 1000)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
 			}
-			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 2000)
+			else if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 2000)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 90;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 90;
 			}
-			else if (pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSampleRate == 4000)
+			else if (pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate == 4000)
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 98;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 98;
 			}
 			// 如果不在所选采样率则按照1000采样率采样
 			else
 			{
-				pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
+				pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample[4] = 82;
 			}
 		}
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCSampleSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCSampleSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -311,10 +311,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置连续采样命令
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCReadContinuous;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCReadContinuousSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCReadContinuous;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCReadContinuousSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -367,10 +367,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -378,10 +378,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
@@ -389,10 +389,10 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// ADC设置停止采样命令
-		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_cpSetADCStopSample;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
-		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_oSecCommInfo);
+		EnterCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_cpADCSet = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_cpSetADCStopSample;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_iADCSetNum = pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSetADCStopSampleSize;
+		LeaveCriticalSection(&pADCSetThread->m_pCommInfo->m_pServerSetupData->m_oSecCommInfo);
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdADCSet;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
