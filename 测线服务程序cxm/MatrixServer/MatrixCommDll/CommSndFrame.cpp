@@ -131,7 +131,6 @@ void CCommSndFrame::MakeSendFrame(m_oCommFrameStructPtr ptrFrame)
 		ptrFrame->m_usFrameInfoSize + FrameHeadSize + FrameLengthSize + FrameTailSize + FrameHeadInfoSize);
 }
 
-
 // 重发过期帧
 bool CCommSndFrame::OnReSendFrame(void)
 {

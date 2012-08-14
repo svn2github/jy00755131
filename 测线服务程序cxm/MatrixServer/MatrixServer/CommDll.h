@@ -9,7 +9,6 @@ public:
 	CCommDll(void);
 	~CCommDll(void);
 public:
-	CMatrixDllCall* m_pMatrixDllCall;
 	/** 通讯类指针*/
 	CMatrixCommDll*	m_pMatrixCommDll;
 	/** 服务端通讯类指针*/

@@ -47,7 +47,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_CONNECT, &CMainFrame::OnConnectServer)
 	ON_UPDATE_COMMAND_UI(IDS_CONNECTSERVER_ICON, &CMainFrame::OnConnectServer)
 	ON_REGISTERED_MESSAGE(BCGM_RESETTOOLBAR, &CMainFrame::OnToolbarReset)
-	ON_WM_DESTROY()
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -82,7 +82,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create menubar\n");
 		return -1;      // fail to create
 	}
-
 	m_wndMenuBar.SetBarStyle(m_wndMenuBar.GetBarStyle() | CBRS_SIZE_DYNAMIC);
 
 	// Detect color depth. 256 color toolbars can be used in the
@@ -192,9 +191,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 	
-
-
-	
 	CString strToolbarTitle;
 	strToolbarTitle.LoadString (IDS_MAIN_TOOLBAR);
 	m_wndToolBar.SetWindowText (strToolbarTitle);
@@ -257,6 +253,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	OnInitSocketLib();
 	m_oComDll.OnInit(_T("MatrixCommDll.dll"));
+	m_oComDll.m_oXMLDllOpt.OnInit(_T("MatrixServerDll.dll"));
 	return 0;
 }
 
@@ -423,16 +420,6 @@ void CMainFrame::OnConnectServer(CCmdUI* pCmdUI)
 	}
 }
 
-void CMainFrame::OnDestroy()
-{
-	CBCGPFrameWnd::OnDestroy();
-
-	// TODO: 在此处添加消息处理程序代码
-	// 关闭与客户端通讯连接
-	m_oComDll.OnClose();
-	OnCloseSocketLib();
-}
-
 // 初始化套接字库
 void CMainFrame::OnInitSocketLib(void)
 {
@@ -454,4 +441,14 @@ void CMainFrame::OnCloseSocketLib(void)
 		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
 		AfxMessageBox(str);
 	}
+}
+
+void CMainFrame::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	// 关闭与客户端通讯连接
+	m_oComDll.m_oXMLDllOpt.OnClose();
+	m_oComDll.OnClose();
+	OnCloseSocketLib();
+	CBCGPFrameWnd::OnClose();
 }

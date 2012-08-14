@@ -84,6 +84,15 @@
     <ClCompile Include="CommDll.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\MatrixServer\CommOptDll.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MatrixServer\MatrixOptDllCall.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLDOMTool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -162,6 +171,30 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CommDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MatrixServer\CommOptDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MatrixServer\MatrixOptDllCall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CXMLDOMDocument.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CXMLDOMElement.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CXMLDOMNode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CXMLDOMNodeList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLDOMTool.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

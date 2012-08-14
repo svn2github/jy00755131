@@ -4,7 +4,7 @@
 
 CCommServerDll::CCommServerDll(void)
 {
-	m_pMatrixDllCall = NULL;
+	m_pMatrixServer = NULL;
 }
 
 
@@ -16,7 +16,7 @@ CCommServerDll::~CCommServerDll(void)
 void CCommServerDll::OnProcSetFieldOn(CCommRecThread* pRecThread)
 {
 	unsigned int uiFieldOnNeedTime = 0;;
-	uiFieldOnNeedTime = m_pMatrixDllCall->m_oMatrixServer.Dll_Work();
+	uiFieldOnNeedTime = m_pMatrixServer->Dll_Work();
 	memcpy(pRecThread->m_pCommSndFrame->m_cProcBuf, &uiFieldOnNeedTime, 4);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(CmdFieldOnWaitTime, 
 		pRecThread->m_pCommSndFrame->m_cProcBuf, 4);
@@ -24,6 +24,6 @@ void CCommServerDll::OnProcSetFieldOn(CCommRecThread* pRecThread)
 // ´¦Àí¶Ïµç
 void CCommServerDll::OnProcSetFieldOff(CCommRecThread* pRecThread)
 {
-	m_pMatrixDllCall->m_oMatrixServer.Dll_Stop();
+	m_pMatrixServer->Dll_Stop();
 	pRecThread->m_oInstrumentWholeTableMap.clear();
 }

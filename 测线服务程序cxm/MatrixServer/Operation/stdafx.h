@@ -55,7 +55,11 @@
 
 #include <afxsock.h>		// MFC socket extensions
 
-
+#include "CXMLDOMDocument.h"
+#include "CXMLDOMNodeList.h"
+#include "CXMLDOMNode.h"
+#include "CXMLDOMElement.h"
+#include "XMLDOMTool.h"
 
 
 

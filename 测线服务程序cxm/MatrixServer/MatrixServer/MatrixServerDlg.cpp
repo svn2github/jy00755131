@@ -112,9 +112,11 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	// 初始化动态链接库
 	m_oMatrixDllCall.OnInit(_T("MatrixServerDll.dll"));
 	// 初始化与客户端通讯连接
-	m_oComDll.m_pMatrixDllCall = &m_oMatrixDllCall;
-	m_oComDll.m_oCommServerDll.m_pMatrixDllCall = &m_oMatrixDllCall;
-	m_oComDll.m_oCommLineDll.m_pMatrixDllCall = &m_oMatrixDllCall;
+	m_oComDll.m_oCommServerDll.m_pMatrixServer = &m_oMatrixDllCall.m_oMatrixServer;
+	m_oComDll.m_oCommLineDll.m_pMatrixLine = &m_oMatrixDllCall.m_oMatrixLine;
+	m_oComDll.m_oCommLineDll.m_pLineSetupData = m_oMatrixDllCall.m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData;
+	m_oComDll.m_oCommOptDll.m_pMatrixOpt = &m_oMatrixDllCall.m_oMatrixOpt;
+	m_oComDll.m_oCommOptDll.m_pOptSetupData = m_oMatrixDllCall.m_pEnv->m_pInstrumentCommInfo->m_pOptSetupData;
 	m_oComDll.OnInit(_T("MatrixCommDll.dll"));
 	GetDlgItem(IDC_BN_START)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BN_STOP)->EnableWindow(FALSE);
@@ -292,7 +294,7 @@ void CMatrixServerDlg::OnBnClickedBtnGetsnbylocation()
 	CString str = _T("");
 	bool bFind = false;
 	EnterCriticalSection(&m_oMatrixDllCall.m_pEnv->m_pLineList->m_oSecLineList);
-	pInstrument = m_oMatrixDllCall.Dll_GetInstrumentFromLocationMap(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
+	pInstrument = m_oMatrixDllCall.m_oMatrixLine.Dll_GetInstrumentFromLocationMap(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
 		GetDlgItemInt(IDC_EDIT_POINTINDEX), &m_oMatrixDllCall.m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (pInstrument != NULL)
 	{

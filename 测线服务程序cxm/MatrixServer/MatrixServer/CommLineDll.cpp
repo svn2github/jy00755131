@@ -18,20 +18,34 @@ CCommLineDll::CCommLineDll(void)
 	, m_fSensorTiltModelLimit(0)
 	, m_fSeisMonitorLimit(0)
 {
-	m_pMatrixDllCall = NULL;
+	m_pMatrixLine = NULL;
+	m_pLineSetupData = NULL;
 }
 
 
 CCommLineDll::~CCommLineDll(void)
 {
 }
-
+// 初始化
+void CCommLineDll::OnInit(CString strPath)
+{
+	m_pMatrixLine = new CMatrixLineDllCall;
+	m_pMatrixLine->LoadMatrixServerDll(strPath);
+	m_pLineSetupData = m_pMatrixLine->Dll_Create_Instance();
+}
+// 关闭
+void CCommLineDll::OnClose(void)
+{
+	m_pMatrixLine->Dll_Free_Instance(m_pLineSetupData);
+	m_pMatrixLine->FreeMatrixServerDll();
+	delete m_pMatrixLine;
+}
 // 处理查询接收区域命令
 void CCommLineDll::OnProcQueryRevSection(CCommRecThread* pRecThread)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_GetLineRevSection(m_uiLineNum, m_uiColumnNum, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_GetLineRevSection(m_uiLineNum, m_uiColumnNum, 
+		m_pLineSetupData);
 	memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &m_uiLineNum, 4);
 	iPos += 4;
 	memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &m_uiColumnNum, 4);
@@ -83,7 +97,7 @@ void CCommLineDll::OnProcInstrumentTableUpdate(CCommRecThread* pRecThread)
 	InstrumentWholeTableMap.clear();
 	InstrumentUpdateArea.clear();
 	// 将SN索引表与客户端的仪器位置索引表相对照
-	m_pMatrixDllCall->Dll_QueryInstrumentLocation(pRecThread->m_pCommSndFrame->m_cProcBuf, iSize);
+	m_pMatrixLine->Dll_QueryInstrumentLocation(pRecThread->m_pCommSndFrame->m_cProcBuf, iSize);
 	for (int i=0; i<iSize;)
 	{
 		memcpy(&iLineIndex, &pRecThread->m_pCommSndFrame->m_cProcBuf[i], 4);
@@ -113,13 +127,13 @@ void CCommLineDll::OnProcInstrumentTableUpdate(CCommRecThread* pRecThread)
 		}
 	}
 	InstrumentWholeTableMap.swap(pRecThread->m_oInstrumentWholeTableMap);
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pLineList->m_oSecLineList);
+	EnterCriticalSection(&m_pMatrixLine->m_pEnv->m_pLineList->m_oSecLineList);
 	// 将客户端的仪器位置索引表与SN索引表相对照
 	for (iterLocation = InstrumentWholeTableMap.begin(); iterLocation != InstrumentWholeTableMap.end();)
 	{
 		// 仪器位置索引表找不到该设备
-		if (FALSE == m_pMatrixDllCall->Dll_IfLocationExistInMap(iterLocation->first.m_iLineIndex, 
-			iterLocation->first.m_iPointIndex, &m_pMatrixDllCall->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap))
+		if (FALSE == m_pMatrixLine->Dll_IfLocationExistInMap(iterLocation->first.m_iLineIndex, 
+			iterLocation->first.m_iPointIndex, &m_pMatrixLine->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap))
 		{
 			// 增加对象到索引表
 			GetAreaFromPoint(iterLocation->first.m_iLineIndex, iterLocation->first.m_iPointIndex, &oAreaStruct);
@@ -128,8 +142,8 @@ void CCommLineDll::OnProcInstrumentTableUpdate(CCommRecThread* pRecThread)
 		}
 		else
 		{
-			uiSN = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iterLocation->first.m_iLineIndex, 
-				iterLocation->first.m_iPointIndex, &m_pMatrixDllCall->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap)->m_uiSN;
+			uiSN = m_pMatrixLine->Dll_GetInstrumentFromLocationMap(iterLocation->first.m_iLineIndex, 
+				iterLocation->first.m_iPointIndex, &m_pMatrixLine->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap)->m_uiSN;
 			// SN不同则更新
 			if (uiSN != iterLocation->second)
 			{
@@ -138,7 +152,7 @@ void CCommLineDll::OnProcInstrumentTableUpdate(CCommRecThread* pRecThread)
 			iterLocation++;
 		}
 	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pLineList->m_oSecLineList);
+	LeaveCriticalSection(&m_pMatrixLine->m_pEnv->m_pLineList->m_oSecLineList);
 	pRecThread->m_oInstrumentWholeTableMap.swap(InstrumentWholeTableMap);
 
 	// 对照后客户端仪器索引表与服务端仪器SN索引表一致，将变化区域发送到客户端
@@ -152,8 +166,8 @@ void CCommLineDll::OnProcInstrumentTableUpdate(CCommRecThread* pRecThread)
 		iPos += 4;
 		for (int i = iPointMinIndex; i <= iPointMaxIndex; i++)
 		{
-			pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iLineIndex, i, 
-				&m_pMatrixDllCall->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
+			pInstrument = m_pMatrixLine->Dll_GetInstrumentFromLocationMap(iLineIndex, i, 
+				&m_pMatrixLine->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 			if (pInstrument != NULL)
 			{
 				memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &pInstrument->m_uiSN, 4);
@@ -211,14 +225,14 @@ unsigned int CCommLineDll::QueryByArea(CCommRecThread* pRecThread, m_oAreaStruct
 	int iPointMaxIndex = 0;
 	// 由区域号得到线号及点号范围
 	GetPointRangeFromArea(&iLineIndex, &iPointMinIndex, &iPointMaxIndex, pArea);
-	EnterCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pLineList->m_oSecLineList);
+	EnterCriticalSection(&m_pMatrixLine->m_pEnv->m_pLineList->m_oSecLineList);
 	for (int i = iPointMinIndex; i <= iPointMaxIndex; i++)
 	{
-		pInstrument = m_pMatrixDllCall->Dll_GetInstrumentFromLocationMap(iLineIndex, i, 
-			&m_pMatrixDllCall->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
+		pInstrument = m_pMatrixLine->Dll_GetInstrumentFromLocationMap(iLineIndex, i, 
+			&m_pMatrixLine->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 		uiPos = (this->*ptrFun)(pInstrument, uiPos, pRecThread);
 	}
-	LeaveCriticalSection(&m_pMatrixDllCall->m_pEnv->m_pLineList->m_oSecLineList);
+	LeaveCriticalSection(&m_pMatrixLine->m_pEnv->m_pLineList->m_oSecLineList);
 	return uiPos;
 }
 
@@ -298,8 +312,7 @@ unsigned int CCommLineDll::QueryInstrumentInfoByArea(m_oInstrumentStruct* pInstr
 void CCommLineDll::OnProcQuerySurveyXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QuerySurverySetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QuerySurverySetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -307,8 +320,7 @@ void CCommLineDll::OnProcQuerySurveyXMLInfo(CCommRecThread* pRecThread, unsigned
 void CCommLineDll::OnProcQueryPointCodeXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryPointCodeSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryPointCodeSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -316,8 +328,7 @@ void CCommLineDll::OnProcQueryPointCodeXMLInfo(CCommRecThread* pRecThread, unsig
 void CCommLineDll::OnProcQuerySensorXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QuerySensorSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QuerySensorSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -325,8 +336,7 @@ void CCommLineDll::OnProcQuerySensorXMLInfo(CCommRecThread* pRecThread, unsigned
 void CCommLineDll::OnProcQueryMarkerXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryMarkerSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryMarkerSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -334,8 +344,7 @@ void CCommLineDll::OnProcQueryMarkerXMLInfo(CCommRecThread* pRecThread, unsigned
 void CCommLineDll::OnProcQueryAuxXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryAuxSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryAuxSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -343,8 +352,7 @@ void CCommLineDll::OnProcQueryAuxXMLInfo(CCommRecThread* pRecThread, unsigned sh
 void CCommLineDll::OnProcQueryDetourXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryDetourSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryDetourSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -352,8 +360,7 @@ void CCommLineDll::OnProcQueryDetourXMLInfo(CCommRecThread* pRecThread, unsigned
 void CCommLineDll::OnProcQueryMuteXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryMuteSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryMuteSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -361,8 +368,7 @@ void CCommLineDll::OnProcQueryMuteXMLInfo(CCommRecThread* pRecThread, unsigned s
 void CCommLineDll::OnProcQueryBlastMachineXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryBlastMachineSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryBlastMachineSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -371,8 +377,7 @@ void CCommLineDll::OnProcQueryBlastMachineXMLInfo(CCommRecThread* pRecThread, un
 void CCommLineDll::OnProcQueryAbsoluteXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryAbsoluteSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryAbsoluteSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -380,8 +385,7 @@ void CCommLineDll::OnProcQueryAbsoluteXMLInfo(CCommRecThread* pRecThread, unsign
 void CCommLineDll::OnProcQueryGenericXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryGenericSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryGenericSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -389,8 +393,7 @@ void CCommLineDll::OnProcQueryGenericXMLInfo(CCommRecThread* pRecThread, unsigne
 void CCommLineDll::OnProcQueryLookXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryLookSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryLookSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -398,8 +401,7 @@ void CCommLineDll::OnProcQueryLookXMLInfo(CCommRecThread* pRecThread, unsigned s
 void CCommLineDll::OnProcQueryInstrumentTestBaseXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryInstrument_SensorTestBaseSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, true, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryInstrument_SensorTestBaseSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, true, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -407,8 +409,7 @@ void CCommLineDll::OnProcQueryInstrumentTestBaseXMLInfo(CCommRecThread* pRecThre
 void CCommLineDll::OnProcQuerySensorTestBaseXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryInstrument_SensorTestBaseSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, false, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryInstrument_SensorTestBaseSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, false, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -416,8 +417,7 @@ void CCommLineDll::OnProcQuerySensorTestBaseXMLInfo(CCommRecThread* pRecThread, 
 void CCommLineDll::OnProcQueryInstrumentTestLimitXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryInstrument_SensorTestLimitSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, true, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryInstrument_SensorTestLimitSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, true, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -425,8 +425,7 @@ void CCommLineDll::OnProcQueryInstrumentTestLimitXMLInfo(CCommRecThread* pRecThr
 void CCommLineDll::OnProcQuerySensorTestLimitXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryInstrument_SensorTestLimitSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, false, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryInstrument_SensorTestLimitSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, false, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -434,8 +433,7 @@ void CCommLineDll::OnProcQuerySensorTestLimitXMLInfo(CCommRecThread* pRecThread,
 void CCommLineDll::OnProcQueryInstrumentTestXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryInstrumentTestSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryInstrumentTestSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -443,8 +441,7 @@ void CCommLineDll::OnProcQueryInstrumentTestXMLInfo(CCommRecThread* pRecThread, 
 void CCommLineDll::OnProcQuerySensorTestXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QuerySensorTestSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QuerySensorTestSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -453,8 +450,7 @@ void CCommLineDll::OnProcQuerySensorTestXMLInfo(CCommRecThread* pRecThread, unsi
 void CCommLineDll::OnProcQueryMultipleTestXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryMultipleTestSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryMultipleTestSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -462,8 +458,7 @@ void CCommLineDll::OnProcQueryMultipleTestXMLInfo(CCommRecThread* pRecThread, un
 void CCommLineDll::OnProcQuerySeisMonitorTestXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QuerySeisMonitorSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QuerySeisMonitorSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -471,8 +466,7 @@ void CCommLineDll::OnProcQuerySeisMonitorTestXMLInfo(CCommRecThread* pRecThread,
 void CCommLineDll::OnProcQueryLAULeakageXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryLAULeakageSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryLAULeakageSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -480,8 +474,7 @@ void CCommLineDll::OnProcQueryLAULeakageXMLInfo(CCommRecThread* pRecThread, unsi
 void CCommLineDll::OnProcQueryFormLineXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 {
 	int iPos = 0;
-	m_pMatrixDllCall->m_oMatrixLine.Dll_QueryFormLineSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	m_pMatrixLine->Dll_QueryFormLineSetupData(pRecThread->m_pCommSndFrame->m_cProcBuf, iPos, m_pLineSetupData);
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 
@@ -902,15 +895,120 @@ unsigned int CCommLineDll::QuerySeisMonitorTestByArea(m_oInstrumentStruct* pInst
 
 
 // 从XML配置文件得到测试数据限制值
-float CCommLineDll::GetTestDataLimitFromXML(bool bInstrument, string str)
+float CCommLineDll::QueryTestDataLimitFromXML(bool bInstrument, string str)
 {
-	return m_pMatrixDllCall->m_oMatrixLine.Dll_QueryTestDataLimit(bInstrument, str, 
-		m_pMatrixDllCall->m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData);
+	return m_pMatrixLine->Dll_QueryTestDataLimit(bInstrument, str, m_pLineSetupData);
 }
 
 
 // 计算测试数据的算术均方根
 float CCommLineDll::CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument)
 {
-	return (float)m_pMatrixDllCall->Dll_CalMeanSquare(pInstrument);
+	return (float)m_pMatrixLine->Dll_CalMeanSquare(pInstrument);
+}
+
+// 设置 SurveyXML 文件信息
+void CCommLineDll::OnProcSetSurveyXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetSurverySetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 PointCode XML文件信息
+void CCommLineDll::OnProcSetPointCodeXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetPointCodeSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 Sensor XML文件信息
+void CCommLineDll::OnProcSetSensorXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetSensorSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 Marker XML文件信息
+void CCommLineDll::OnProcSetMarkerXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetMarkerSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 Aux XML文件信息
+void CCommLineDll::OnProcSetAuxXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetAuxSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 Detour XML文件信息
+void CCommLineDll::OnProcSetDetourXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetDetourSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 Mute XML文件信息
+void CCommLineDll::OnProcSetMuteXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetMuteSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 BlastMachine XML文件信息
+void CCommLineDll::OnProcSetBlastMachineXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetBlastMachineSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 Absolute XML文件信息
+void CCommLineDll::OnProcSetAbsoluteXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetAbsoluteSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 Generic XML文件信息
+void CCommLineDll::OnProcSetGenericXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetGenericSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 Look XML文件信息
+void CCommLineDll::OnProcSetLookXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetLookSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 InstrumentTestBase XML文件信息
+void CCommLineDll::OnProcSetInstrumentTestBaseXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetInstrument_SensorTestBaseSetupData(pChar, uiSize, true, m_pLineSetupData);
+}	
+// 设置 SensorTestBase XML文件信息
+void CCommLineDll::OnProcSetSensorTestBaseXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetInstrument_SensorTestBaseSetupData(pChar, uiSize, false, m_pLineSetupData);
+}	
+// 设置 InstrumentTestLimit XML文件信息
+void CCommLineDll::OnProcSetInstrumentTestLimitXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetInstrument_SensorTestLimitSetupData(pChar, uiSize, true, m_pLineSetupData);
+}
+// 设置 SensorTestLimit XML文件信息
+void CCommLineDll::OnProcSetSensorTestLimitXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetInstrument_SensorTestLimitSetupData(pChar, uiSize, false, m_pLineSetupData);
+}
+// 设置 InstrumentTest XML文件信息
+void CCommLineDll::OnProcSetInstrumentTestXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetInstrumentTestSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 SensorTest XML文件信息
+void CCommLineDll::OnProcSetSensorTestXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetSensorSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 MultipleTest XML文件信息
+void CCommLineDll::OnProcSetMultipleTestXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetMultipleTestSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 SeisMonitorTest XML文件信息
+void CCommLineDll::OnProcSetSeisMonitorTestXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetSeisMonitorSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 LAULeakage XML文件信息
+void CCommLineDll::OnProcSetLAULeakageXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetLAULeakageSetupData(pChar, uiSize, m_pLineSetupData);
+}
+// 设置 FormLine XML文件信息
+void CCommLineDll::OnProcSetFormLineXMLInfo(char* pChar, unsigned int uiSize)
+{
+	m_pMatrixLine->Dll_SetFormLineSetupData(pChar, uiSize, m_pLineSetupData);
 }

@@ -1,6 +1,10 @@
 #include "StdAfx.h"
 #include "MatrixOptDllCall.h"
 
+// 创建施工客户端通讯信息结构体
+typedef m_oOptSetupDataStruct* (*Create_OptAppSetupData)(void);
+// 释放施工客户端参数设置信息结构体缓冲区
+typedef void (*Free_OptXMLSetupData)(m_oOptSetupDataStruct* pOptSetupData);
 // 查询Delay设置数据
 typedef void (*Query_DelaySetupData)(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
 // 查询SourceShot设置数据
@@ -47,6 +51,59 @@ CMatrixOptDllCall::~CMatrixOptDllCall(void)
 {
 }
 
+// DLL创建实例
+m_oOptSetupDataStruct* CMatrixOptDllCall::Dll_Create_Instance(void)
+{
+	m_oOptSetupDataStruct* pOptSetupData = NULL;
+	Create_OptAppSetupData Dll_On_Create = NULL;
+	Dll_On_Create = (Create_OptAppSetupData)GetProcAddress(m_hDllMod, "OnCreateOptAppSetupData");
+	if (!Dll_On_Create)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		pOptSetupData = (*Dll_On_Create)();
+	}
+	return pOptSetupData;
+}
+// DLL释放实例
+void CMatrixOptDllCall::Dll_Free_Instance(m_oOptSetupDataStruct* pOptSetupData)
+{
+	Free_OptXMLSetupData Dll_On_Free = NULL;
+	Dll_On_Free = (Free_OptXMLSetupData)GetProcAddress(m_hDllMod, "OnFreeOptXMLSetupData");
+	if (!Dll_On_Free)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_On_Free)(pOptSetupData);
+	}
+}
+// 载入MatrixServerDll动态链接库
+void CMatrixOptDllCall::LoadMatrixServerDll(CString strPath)
+{
+	CString str = _T("");
+	m_hDllMod = ::LoadLibrary(strPath);
+	if (m_hDllMod == NULL)
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
+		PostQuitMessage(0);
+	}
+}
+// 释放MatrixServerDll动态链接库
+void CMatrixOptDllCall::FreeMatrixServerDll(void)
+{
+	::FreeLibrary(m_hDllMod);
+}
 // 查询Delay设置数据
 void CMatrixOptDllCall::Dll_QueryDelaySetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
@@ -183,8 +240,8 @@ void CMatrixOptDllCall::Dll_QueryProcessTypeSetupData(char* cProcBuf, int& iPos,
 		(*Dll_Query_ProcessTypeSetupData)(cProcBuf, iPos, pOptSetupData);
 	}
 }
-// 查询ProcessComments设置数据
-void CMatrixOptDllCall::Dll_ProcessCommentsSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
+// 查询Comments设置数据
+void CMatrixOptDllCall::Dll_QueryCommentsSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
 {
 	Query_ProcessCommentsSetupData Dll_Query_ProcessCommentsSetupData = NULL;
 	Dll_Query_ProcessCommentsSetupData = (Query_ProcessCommentsSetupData)GetProcAddress(m_hDllMod, "QueryProcessCommentsSetupData");
@@ -336,8 +393,8 @@ void CMatrixOptDllCall::Dll_SetProcessTypeSetupData(char* pChar, unsigned int ui
 		(*Dll_Set_ProcessTypeSetupData)(pChar, uiSize, pOptSetupData);
 	}
 }
-// 设置ProcessComments设置数据
-void CMatrixOptDllCall::Dll_SetProcessCommentsSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+// 设置Comments设置数据
+void CMatrixOptDllCall::Dll_SetCommentsSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
 {
 	Set_ProcessCommentsSetupData Dll_Set_ProcessCommentsSetupData = NULL;
 	Dll_Set_ProcessCommentsSetupData = (Set_ProcessCommentsSetupData)GetProcAddress(m_hDllMod, "SetProcessCommentsSetupData");

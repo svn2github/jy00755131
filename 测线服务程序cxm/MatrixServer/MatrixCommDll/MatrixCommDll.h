@@ -595,11 +595,6 @@ public:
 	*/
 	virtual CCommClient* CreateCommClient(void);
 	/**
-	* @fn void DeleteCommClient(CCommClient* pClass)
-	* @detail 释放客户端
-	*/
-	virtual void DeleteCommClient(CCommClient* pClass);
-	/**
 	* @fn CCommServer* CreateCommServer(void)
 	* @detail 创建客户端
 	*/

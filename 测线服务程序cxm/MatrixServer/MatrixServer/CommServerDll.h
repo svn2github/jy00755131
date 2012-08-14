@@ -1,5 +1,5 @@
 #pragma once
-#include "MatrixDllCall.h"
+#include "MatrixServerDllCall.h"
 #include "..\MatrixCommDll\MatrixCommDll.h"
 class CCommServerDll
 {
@@ -7,9 +7,9 @@ public:
 	CCommServerDll(void);
 	~CCommServerDll(void);
 public:
-	CMatrixDllCall* m_pMatrixDllCall;
+	CMatrixServerDllCall* m_pMatrixServer;
 public:
-		/**
+	/**
 	* @fn void OnProcSetFieldOn(CCommRecThread* pRecThread)
 	* @detail 处理上电
 	* @param[in] CCommRecThread*

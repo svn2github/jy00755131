@@ -195,8 +195,6 @@ void CClientSocket::OnClose(void)
 // 连接服务器
 void CClientSocket::ConnectServer(void)
 {
-	int iError = 0;
-	CString str = _T("");
 	Connect(m_strServerIP, m_uiServerPort);
 }
 
@@ -204,12 +202,12 @@ void CClientSocket::OnConnect(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	CString str = _T("");
+	HWND hWnd;
+	hWnd = ::FindWindow(NULL, _T("Operation - 天津海泰光电科技有限公司"));
 	if (nErrorCode != 0)
 	{
-		str.Format(_T("Client can not connect to Server, Error is %d!"), nErrorCode);
-		AfxMessageBox(str);
-		// @@@@调试时暂时注销掉下面这行
-//		PostQuitMessage(nErrorCode);
+		::SendMessage(hWnd, WM_CLOSE, 0, nErrorCode);
+		ConnectServer();
 	}
 	else
 	{

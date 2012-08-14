@@ -114,6 +114,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\MatrixServer\CommOptDll.cpp" />
+    <ClCompile Include="..\MatrixServer\MatrixOptDllCall.cpp" />
     <ClCompile Include="ActiveAcqBar.cpp" />
     <ClCompile Include="ActiveSourceCtrl.cpp" />
     <ClCompile Include="AllVPBar.cpp" />
@@ -140,14 +142,22 @@
     <ClCompile Include="VPDoneBar.cpp" />
     <ClCompile Include="VPToDoBar.cpp" />
     <ClCompile Include="WorkSpaceBar.cpp" />
+    <ClCompile Include="XMLDOMTool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\MatrixCommDll\MatrixCommDll.h" />
+    <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h" />
+    <ClInclude Include="..\MatrixServer\CommOptDll.h" />
+    <ClInclude Include="..\MatrixServer\MatrixOptDllCall.h" />
     <ClInclude Include="ActiveAcqBar.h" />
     <ClInclude Include="ActiveSourceCtrl.h" />
     <ClInclude Include="AllVPBar.h" />
     <ClInclude Include="ButtonItem.h" />
     <ClInclude Include="CommDll.h" />
+    <ClInclude Include="CXMLDOMDocument.h" />
+    <ClInclude Include="CXMLDOMElement.h" />
+    <ClInclude Include="CXMLDOMNode.h" />
+    <ClInclude Include="CXMLDOMNodeList.h" />
     <ClInclude Include="DlgCommentTypeSetup.h" />
     <ClInclude Include="DlgDelaySetup.h" />
     <ClInclude Include="DlgProcessTypeSetup.h" />
@@ -168,6 +178,7 @@
     <ClInclude Include="VPDoneBar.h" />
     <ClInclude Include="VPToDoBar.h" />
     <ClInclude Include="WorkSpaceBar.h" />
+    <ClInclude Include="XMLDOMTool.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\bitmap1.bmp" />

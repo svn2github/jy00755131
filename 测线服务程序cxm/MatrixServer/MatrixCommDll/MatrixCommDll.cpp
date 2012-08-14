@@ -71,13 +71,6 @@ CCommClient* CMatrixCommDll::CreateCommClient(void)
 	pCommClient->m_pComClientMap = &m_oComClientMap;
 	return pCommClient;
 }
-void CMatrixCommDll::DeleteCommClient(CCommClient* pClass)
-{
-	if (pClass != NULL)
-	{
-		delete pClass;
-	}
-}
 
 CCommServer* CMatrixCommDll::CreateCommServer(void)
 {

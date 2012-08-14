@@ -9,16 +9,6 @@ typedef void (*Free_Instance)(m_oEnvironmentStruct* pEnv);
 typedef void (*Init_Instance)(m_oEnvironmentStruct* pEnv);
 // 关闭实例
 typedef void (*Close_Instance)(m_oEnvironmentStruct* pEnv);
-// 计算测试数据的算术均方根
-typedef float (*Cal_MeanSquare)(m_oInstrumentStruct* pInstrument);
-// 判断仪器位置索引号是否已加入索引表
-typedef BOOL (*IfLocation_ExistInMap)(int iLineIndex, int iPointIndex, 
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-// 根据输入索引号，由索引表得到仪器指针
-typedef m_oInstrumentStruct* (*Get_InstrumentFromLocationMap)(int iLineIndex, int iPointIndex, 
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-// 得到在线仪器位置
-typedef void (*Query_InstrumentLocation)(char* pChar, int& iPos, m_oLineListStruct* pLineList);
 
 CMatrixDllCall::CMatrixDllCall(void)
 {
@@ -124,6 +114,7 @@ void CMatrixDllCall::OnInit(CString strPath)
 	Dll_Create_Instance();
 	m_oMatrixServer.m_pEnv = m_pEnv;
 	m_oMatrixServer.m_hDllMod = m_hDllMod;
+	m_oMatrixLine.m_pEnv = m_pEnv;
 	m_oMatrixLine.m_hDllMod = m_hDllMod;
 	m_oMatrixOpt.m_hDllMod = m_hDllMod;
 	// DLL手动设置AD
@@ -142,82 +133,4 @@ void CMatrixDllCall::OnClose(void)
 	Dll_Free_Instance();
 	// 释放MatrixServerDll动态链接库
 	FreeMatrixServerDll();
-}
-
-// 判断仪器位置索引号是否已加入索引表
-BOOL CMatrixDllCall::Dll_IfLocationExistInMap(int iLineIndex, int iPointIndex, 
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
-{
-	BOOL bReturn = FALSE;
-	IfLocation_ExistInMap Dll_IfLocation_ExistInMap = NULL;
-	Dll_IfLocation_ExistInMap = (IfLocation_ExistInMap)GetProcAddress(m_hDllMod, "IfLocationExistInMap");
-	if (!Dll_IfLocation_ExistInMap)
-	{
-		// handle the error
-		FreeLibrary(m_hDllMod);
-		PostQuitMessage(0);
-	}
-	else
-	{
-		// call the function
-		bReturn = (*Dll_IfLocation_ExistInMap)(iLineIndex, iPointIndex, pMap);
-	}
-	return bReturn;
-}
-// 根据输入索引号，由索引表得到仪器指针
-m_oInstrumentStruct* CMatrixDllCall::Dll_GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
-	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
-{
-	m_oInstrumentStruct* pInstrument = NULL;
-	Get_InstrumentFromLocationMap Dll_Get_InstrumentFromLocationMap = NULL;
-	Dll_Get_InstrumentFromLocationMap = (Get_InstrumentFromLocationMap)GetProcAddress(m_hDllMod, "GetInstrumentFromLocationMap");
-	if (!Dll_Get_InstrumentFromLocationMap)
-	{
-		// handle the error
-		FreeLibrary(m_hDllMod);
-		PostQuitMessage(0);
-	}
-	else
-	{
-		// call the function
-		pInstrument = (*Dll_Get_InstrumentFromLocationMap)(iLineIndex, iPointIndex, pMap);
-	}
-	return pInstrument;
-}
-// 计算测试数据的算术均方根
-double CMatrixDllCall::Dll_CalMeanSquare(m_oInstrumentStruct* pInstrument)
-{
-	double dbReturn = 0;
-	Cal_MeanSquare Dll_Cal_MeanSquare = NULL;
-	Dll_Cal_MeanSquare = (Cal_MeanSquare)GetProcAddress(m_hDllMod, "CalMeanSquare");
-	if (!Dll_Cal_MeanSquare)
-	{
-		// handle the error
-		FreeLibrary(m_hDllMod);
-		PostQuitMessage(0);
-	}
-	else
-	{
-		// call the function
-		dbReturn = (*Dll_Cal_MeanSquare)(pInstrument);
-	}
-	return dbReturn;
-}
-
-// 得到在线仪器位置
-void CMatrixDllCall::Dll_QueryInstrumentLocation(char* pChar, int& iPos)
-{
-	Query_InstrumentLocation Dll_Query_InstrumentLocation = NULL;
-	Dll_Query_InstrumentLocation = (Query_InstrumentLocation)GetProcAddress(m_hDllMod, "QueryInstrumentLocation");
-	if (!Dll_Query_InstrumentLocation)
-	{
-		// handle the error
-		FreeLibrary(m_hDllMod);
-		PostQuitMessage(0);
-	}
-	else
-	{
-		// call the function
-		(*Dll_Query_InstrumentLocation)(pChar, iPos, m_pEnv->m_pLineList);
-	}
 }

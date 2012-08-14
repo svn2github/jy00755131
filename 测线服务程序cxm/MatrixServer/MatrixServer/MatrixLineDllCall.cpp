@@ -1,6 +1,11 @@
 #include "StdAfx.h"
 #include "MatrixLineDllCall.h"
 
+// 创建测线客户端通讯信息结构体
+typedef m_oLineSetupDataStruct* (*Create_LineAppSetupData)(void);
+// 释放测线客户端参数设置信息结构体缓冲区
+typedef void (*Free_LineXMLSetupData)(m_oLineSetupDataStruct* pLineSetupData);
+
 // 载入配置文件
 // 查询Survery设置数据
 typedef void (*Query_SurverySetupData)(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData);
@@ -84,13 +89,78 @@ typedef void (*Set_MultipleTestSetupData)(char* pChar, unsigned int uiSize, m_oL
 // 设置SeisMonitor设置数据
 typedef void (*Set_SeisMonitorSetupData)(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData);
 
+// 计算测试数据的算术均方根
+typedef float (*Cal_MeanSquare)(m_oInstrumentStruct* pInstrument);
+// 判断仪器位置索引号是否已加入索引表
+typedef BOOL (*IfLocation_ExistInMap)(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+// 根据输入索引号，由索引表得到仪器指针
+typedef m_oInstrumentStruct* (*Get_InstrumentFromLocationMap)(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+// 得到在线仪器位置
+typedef void (*Query_InstrumentLocation)(char* pChar, int& iPos, m_oLineListStruct* pLineList);
 CMatrixLineDllCall::CMatrixLineDllCall(void)
 {
+	m_pEnv = NULL;
 }
 
 
 CMatrixLineDllCall::~CMatrixLineDllCall(void)
 {
+}
+
+// DLL创建实例
+m_oLineSetupDataStruct* CMatrixLineDllCall::Dll_Create_Instance(void)
+{
+	m_oLineSetupDataStruct* pLineSetupData = NULL;
+	Create_LineAppSetupData Dll_On_Create = NULL;
+	Dll_On_Create = (Create_LineAppSetupData)GetProcAddress(m_hDllMod, "OnCreateLineAppSetupData");
+	if (!Dll_On_Create)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		pLineSetupData = (*Dll_On_Create)();
+	}
+	return pLineSetupData;
+}
+// DLL释放实例
+void CMatrixLineDllCall::Dll_Free_Instance(m_oLineSetupDataStruct* pLineSetupData)
+{
+	Free_LineXMLSetupData Dll_On_Free = NULL;
+	Dll_On_Free = (Free_LineXMLSetupData)GetProcAddress(m_hDllMod, "OnFreeLineXMLSetupData");
+	if (!Dll_On_Free)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_On_Free)(pLineSetupData);
+	}
+}
+// 载入MatrixServerDll动态链接库
+void CMatrixLineDllCall::LoadMatrixServerDll(CString strPath)
+{
+	CString str = _T("");
+	m_hDllMod = ::LoadLibrary(strPath);
+	if (m_hDllMod == NULL)
+	{
+		str.Format(_T("载入失败！错误码为%d。"), GetLastError());
+		AfxMessageBox(str);
+		PostQuitMessage(0);
+	}
+}
+// 释放MatrixServerDll动态链接库
+void CMatrixLineDllCall::FreeMatrixServerDll(void)
+{
+	::FreeLibrary(m_hDllMod);
 }
 
 // 查询Survery设置数据
@@ -777,5 +847,83 @@ void CMatrixLineDllCall::Dll_SetSeisMonitorSetupData(char* pChar, unsigned int u
 	{
 		// call the function
 		(*Dll_Set_SeisMonitorSetupData)(pChar, uiSize, pLineSetupData);
+	}
+}
+
+// 判断仪器位置索引号是否已加入索引表
+BOOL CMatrixLineDllCall::Dll_IfLocationExistInMap(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	BOOL bReturn = FALSE;
+	IfLocation_ExistInMap Dll_IfLocation_ExistInMap = NULL;
+	Dll_IfLocation_ExistInMap = (IfLocation_ExistInMap)GetProcAddress(m_hDllMod, "IfLocationExistInMap");
+	if (!Dll_IfLocation_ExistInMap)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		bReturn = (*Dll_IfLocation_ExistInMap)(iLineIndex, iPointIndex, pMap);
+	}
+	return bReturn;
+}
+// 根据输入索引号，由索引表得到仪器指针
+m_oInstrumentStruct* CMatrixLineDllCall::Dll_GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
+	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
+{
+	m_oInstrumentStruct* pInstrument = NULL;
+	Get_InstrumentFromLocationMap Dll_Get_InstrumentFromLocationMap = NULL;
+	Dll_Get_InstrumentFromLocationMap = (Get_InstrumentFromLocationMap)GetProcAddress(m_hDllMod, "GetInstrumentFromLocationMap");
+	if (!Dll_Get_InstrumentFromLocationMap)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		pInstrument = (*Dll_Get_InstrumentFromLocationMap)(iLineIndex, iPointIndex, pMap);
+	}
+	return pInstrument;
+}
+// 计算测试数据的算术均方根
+double CMatrixLineDllCall::Dll_CalMeanSquare(m_oInstrumentStruct* pInstrument)
+{
+	double dbReturn = 0;
+	Cal_MeanSquare Dll_Cal_MeanSquare = NULL;
+	Dll_Cal_MeanSquare = (Cal_MeanSquare)GetProcAddress(m_hDllMod, "CalMeanSquare");
+	if (!Dll_Cal_MeanSquare)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		dbReturn = (*Dll_Cal_MeanSquare)(pInstrument);
+	}
+	return dbReturn;
+}
+
+// 得到在线仪器位置
+void CMatrixLineDllCall::Dll_QueryInstrumentLocation(char* pChar, int& iPos)
+{
+	Query_InstrumentLocation Dll_Query_InstrumentLocation = NULL;
+	Dll_Query_InstrumentLocation = (Query_InstrumentLocation)GetProcAddress(m_hDllMod, "QueryInstrumentLocation");
+	if (!Dll_Query_InstrumentLocation)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_Query_InstrumentLocation)(pChar, iPos, m_pEnv->m_pLineList);
 	}
 }

@@ -74,7 +74,6 @@ void CCommDll::OnDeleteClientComm()
 	{
 		m_pCommClient->OnClose();
 		m_pMatrixCommDll->OnClose();
-		m_pMatrixCommDll->DeleteCommClient(m_pCommClient);
 		(*pfn)(m_pMatrixCommDll);
 	}
 }

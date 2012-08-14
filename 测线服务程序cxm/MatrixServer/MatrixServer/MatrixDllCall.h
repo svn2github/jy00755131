@@ -40,15 +40,5 @@ public:
 	void OnInit(CString strPath);
 	// 关闭
 	void OnClose(void);
-	// 计算测试数据的算术均方根
-	double Dll_CalMeanSquare(m_oInstrumentStruct* pInstrument);
-	// 得到在线仪器位置
-	void Dll_QueryInstrumentLocation(char* pChar, int& iPos);
-	// 判断仪器位置索引号是否已加入索引表
-	BOOL Dll_IfLocationExistInMap(int iLineIndex, int iPointIndex, 
-		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
-	// 根据输入索引号，由索引表得到仪器指针
-	m_oInstrumentStruct* Dll_GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
-		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
 };
 

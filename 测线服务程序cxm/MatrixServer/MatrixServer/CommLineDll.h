@@ -1,5 +1,5 @@
 #pragma once
-#include "MatrixDllCall.h"
+#include "MatrixLineDllCall.h"
 #include "..\MatrixCommDll\MatrixCommDll.h"
 class CCommLineDll
 {
@@ -7,7 +7,15 @@ public:
 	CCommLineDll(void);
 	~CCommLineDll(void);
 public:
-	CMatrixDllCall* m_pMatrixDllCall;
+	CMatrixLineDllCall* m_pMatrixLine;
+	/** 测线客户端信息*/
+	m_oLineSetupDataStruct* m_pLineSetupData;
+public:
+public:
+	/** 初始化*/
+	void OnInit(CString strPath);
+	/** 关闭*/
+	void OnClose();
 public:
 	/** 接收区域——行数*/
 	unsigned int m_uiLineNum;
@@ -40,30 +48,6 @@ public:
 public:
 	// 处理查询接收区域命令
 	void OnProcQueryRevSection(CCommRecThread* pRecThread);
-	// 由线号和点号得到区域位置
-	void GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct);
-	// 由区域号得到线号及点号范围
-	void GetPointRangeFromArea(int* iLineIndex, int* iPointMinIndex, int* iPointMaxIndex, 
-		m_oAreaStruct* pAreaStruct);
-	// 处理仪器设备表更新
-	void OnProcInstrumentTableUpdate(CCommRecThread* pRecThread);
-
-	// 判断仪器更新区域是否已加入索引表
-	BOOL IfAreaExistInMap(map<m_oAreaStruct, m_oAreaStruct>* pmap, m_oAreaStruct oAreaStruct);
-	// 增加对象到索引表
-	void AddAreaToMap(map<m_oAreaStruct, m_oAreaStruct>* pmap, m_oAreaStruct oAreaStruct);
-	// 处理仪器信息查询
-	void OnProcQueryByArea(CCommRecThread* pRecThread, char* pChar, unsigned int uiSize, 
-		unsigned int(CCommLineDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
-		unsigned int uiStartPos, CCommRecThread* pRecThread));
-	// 处理全部信息查询
-	void OnProcQueryInfoAll(CCommRecThread* pRecThread, 
-		unsigned int(CCommLineDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
-		unsigned int uiStartPos, CCommRecThread* pRecThread));
-	// 按区域查询仪器信息
-	unsigned int QueryByArea(CCommRecThread* pRecThread, m_oAreaStruct* pArea, 
-		unsigned int uiStartPos, unsigned int(CCommLineDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
-		unsigned int uiStartPos, CCommRecThread* pRecThread));
 	/**
 	* @fn void OnProcQuerySurveyXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
 	* @detail 查询 SurveyXML 文件信息
@@ -232,6 +216,175 @@ public:
 	* @return void
 	*/
 	void OnProcQueryFormLineXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd);
+	/**
+	* @fn void OnProcSetSurveyXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 SurveyXML 文件信息
+	* @param[in] pRecThread 客户端接收线程指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetSurveyXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetPointCodeXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 PointCode XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetPointCodeXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetSensorXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 Sensor XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetSensorXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetMarkerXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 Marker XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetMarkerXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetAuxXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 Aux XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetAuxXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetDetourXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 Detour XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetDetourXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetMuteXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 Mute XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetMuteXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetBlastMachineXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 BlastMachine XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetBlastMachineXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetAbsoluteXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 Absolute XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetAbsoluteXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetGenericXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 Generic XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetGenericXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetLookXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 Look XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetLookXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetInstrumentTestBaseXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 InstrumentTestBase XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetInstrumentTestBaseXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetSensorTestBaseXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 SensorTestBase XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetSensorTestBaseXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetInstrumentTestLimitXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 InstrumentTestLimit XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetInstrumentTestLimitXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetSensorTestLimitXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 SensorTestLimit XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetSensorTestLimitXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetInstrumentTestXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 InstrumentTest XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetInstrumentTestXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetSensorTestXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 SensorTest XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetSensorTestXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetMultipleTestXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 MultipleTest XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetMultipleTestXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetSeisMonitorTestXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 SeisMonitorTest XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetSeisMonitorTestXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetLAULeakageXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 LAULeakage XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetLAULeakageXMLInfo(char* pChar, unsigned int uiSize);
+	/**
+	* @fn void OnProcSetFormLineXMLInfo(char* pChar, unsigned int uiSize)
+	* @detail 设置 FormLine XML文件信息
+	* @param[in] pChar 缓冲区指针
+	* @param[in] uiSize 缓冲区大小
+	* @return void
+	*/
+	void OnProcSetFormLineXMLInfo(char* pChar, unsigned int uiSize);
+	
 	// 按区域查询仪器信息
 	unsigned int QueryInstrumentInfoByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域仪器噪声测试数据和测试结果
@@ -258,8 +411,33 @@ public:
 	unsigned int QuerySeisMonitorTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 
 	// 从XML配置文件得到测试数据限制值
-	float GetTestDataLimitFromXML(bool bInstrument, string str);
+	float QueryTestDataLimitFromXML(bool bInstrument, string str);
 	// 计算测试数据的算术均方根
 	float CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument);
+
+	// 由线号和点号得到区域位置
+	void GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct);
+	// 由区域号得到线号及点号范围
+	void GetPointRangeFromArea(int* iLineIndex, int* iPointMinIndex, int* iPointMaxIndex, 
+		m_oAreaStruct* pAreaStruct);
+	// 处理仪器设备表更新
+	void OnProcInstrumentTableUpdate(CCommRecThread* pRecThread);
+
+	// 判断仪器更新区域是否已加入索引表
+	BOOL IfAreaExistInMap(map<m_oAreaStruct, m_oAreaStruct>* pmap, m_oAreaStruct oAreaStruct);
+	// 增加对象到索引表
+	void AddAreaToMap(map<m_oAreaStruct, m_oAreaStruct>* pmap, m_oAreaStruct oAreaStruct);
+	// 处理仪器信息查询
+	void OnProcQueryByArea(CCommRecThread* pRecThread, char* pChar, unsigned int uiSize, 
+		unsigned int(CCommLineDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
+		unsigned int uiStartPos, CCommRecThread* pRecThread));
+	// 处理全部信息查询
+	void OnProcQueryInfoAll(CCommRecThread* pRecThread, 
+		unsigned int(CCommLineDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
+		unsigned int uiStartPos, CCommRecThread* pRecThread));
+	// 按区域查询仪器信息
+	unsigned int QueryByArea(CCommRecThread* pRecThread, m_oAreaStruct* pArea, 
+		unsigned int uiStartPos, unsigned int(CCommLineDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
+		unsigned int uiStartPos, CCommRecThread* pRecThread));
 };
 
