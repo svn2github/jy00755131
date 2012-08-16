@@ -40,7 +40,7 @@ void CCommDll::FreeMatrixCommDll(void)
 }
 
 // 创建客户端通讯
-void CCommDll::OnCreateClientComm()
+void CCommDll::OnCreateClientComm(unsigned int uiPort, CString strIP, HWND hWnd)
 {
 	CREATEFN pfn = NULL;
 	CString str = _T("");
@@ -56,7 +56,8 @@ void CCommDll::OnCreateClientComm()
 		m_pMatrixCommDll->OnInit();
 		m_pCommClient = m_pMatrixCommDll->CreateCommClient();
 		m_pCommClient->m_oProcRecCmdCallBack = ProcRecCmd;
-		m_pCommClient->OnInit(true);
+		m_pCommClient->m_bClient = true;
+		m_pCommClient->OnInit(uiPort, strIP, hWnd);
 	}
 }
 
@@ -79,10 +80,10 @@ void CCommDll::OnDeleteClientComm()
 }
 
 // 初始化
-void CCommDll::OnInit(CString strPath)
+void CCommDll::OnInit(CString strPath, unsigned int uiPort, CString strIP, HWND hWnd)
 {
 	LoadMatrixCommDll(strPath);
-	OnCreateClientComm();
+	OnCreateClientComm(uiPort, strIP, hWnd);
 }
 // 关闭
 void CCommDll::OnClose(void)

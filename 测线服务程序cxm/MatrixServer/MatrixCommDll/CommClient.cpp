@@ -4,6 +4,7 @@
 CCommClient::CCommClient()
 {
 	m_pComClientMap = NULL;
+	m_bClient = false;
 }
 
 CCommClient::~CCommClient()
@@ -11,9 +12,9 @@ CCommClient::~CCommClient()
 }
 
 // 创建一个客户端连接信息
-void CCommClient::OnInit(bool bClient)
+void CCommClient::OnInit(unsigned int uiPort, CString strIP, HWND hWnd)
 {
-	if (bClient == true)
+	if (m_bClient == true)
 	{
 		if ( FALSE == m_oClientSocket.Create(0, SOCK_STREAM, 
 			FD_CONNECT|FD_READ|FD_WRITE|FD_CLOSE))
@@ -23,6 +24,8 @@ void CCommClient::OnInit(bool bClient)
 		}
 	}
 	m_oClientSocket.OnInit(this, CommSndBufferSize, CommRecBufferSize);
+	m_oClientSocket.m_hWnd = hWnd;
+	m_oClientSocket.m_bClient = m_bClient;
 	m_oRecFrame.OnInit();
 	m_oRecThread.m_pComClientMap = m_pComClientMap;
 	m_oRecThread.m_pCommRecFrame = &m_oRecFrame;
@@ -33,10 +36,12 @@ void CCommClient::OnInit(bool bClient)
 	m_oSndFrame.m_pClientSocket = &m_oClientSocket;
 	m_oSndThread.m_pCommSndFrame = &m_oSndFrame;
 	m_oSndThread.OnInit();
-	if (bClient == true)
+	if (m_bClient == true)
 	{
 		m_oHeartBeatThread.m_pCommSndFrame = &m_oSndFrame;
 		m_oHeartBeatThread.OnInit();
+		m_oClientSocket.m_uiServerPort = uiPort;
+		m_oClientSocket.m_strServerIP = strIP;
 		// 连接服务器
 		m_oClientSocket.ConnectServer();
 	}
@@ -47,7 +52,7 @@ void CCommClient::OnClose(void)
 {
 	m_oSndThread.OnClose();
 	m_oRecThread.OnClose();
-	if (m_oHeartBeatThread.m_hThread != INVALID_HANDLE_VALUE)
+	if (m_bClient == true)
 	{
 		m_oHeartBeatThread.OnClose();
 	}

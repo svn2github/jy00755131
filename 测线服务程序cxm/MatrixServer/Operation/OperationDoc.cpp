@@ -5,7 +5,7 @@
 #include "Operation.h"
 
 #include "OperationDoc.h"
-
+#include "..\MatrixCommDll\Parameter.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -76,3 +76,11 @@ void COperationDoc::Dump(CDumpContext& dc) const
 
 
 // COperationDoc commands
+
+
+void COperationDoc::SetTitle(LPCTSTR lpszTitle)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	CDocument::SetTitle(ClientTitle);
+}

@@ -60,12 +60,12 @@ int COutputBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	GetClientRect(&rect);
 	m_wndList.InsertColumn(0, _T(""));
 	m_wndList.SetColumnWidth(0, rect.Width()-18);
-	CString str = _T("");
-	for (int i= 0; i<210; i++)
-	{
-		str.Format(_T("%d"), i);
-		AppendLog(str);
-	}
+// 	CString str = _T("");
+// 	for (int i= 0; i<210; i++)
+// 	{
+// 		str.Format(_T("%d"), i);
+// 		AppendLog(str);
+// 	}
 	return 0;
 }
 

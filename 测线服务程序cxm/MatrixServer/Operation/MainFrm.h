@@ -54,6 +54,10 @@ public:
 	bool					m_bServerConnected;
 	/** 与客户端通讯类成员*/
 	CCommDll m_oComDll;
+	/** 服务器监听端口*/
+	unsigned int m_uiServerPort;
+	/** 服务器IP*/
+	CString m_strServerIP;
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -78,6 +82,7 @@ private:
 	void OnCloseSocketLib(void);
 public:
 	afx_msg void OnClose();
+	afx_msg LRESULT OnConnectSuccess(WPARAM wParam, LPARAM lParam);
 };
 
 

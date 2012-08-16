@@ -35,6 +35,8 @@ protected:
 // Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual void SetTitle(LPCTSTR lpszTitle);
 };
 
 

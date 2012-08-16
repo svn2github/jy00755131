@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MatrixCommDll.h"
-
+#include "Parameter.h"
 CClientSocket::CClientSocket()
 {
 	memset(m_cRecBuf, 0, ServerRecBufSize);
@@ -8,8 +8,10 @@ CClientSocket::CClientSocket()
 	m_iPosProc = 0;
 	m_usFrameInfoSize = 0;
 	m_pComClient = NULL;
-	m_strServerIP = ServerIP;
-	m_uiServerPort = ServerListenPort;
+	m_strServerIP = _T("");
+	m_uiServerPort = 0;
+	m_hWnd = NULL;
+	m_bClient = false;
 }
 
 CClientSocket::~CClientSocket()
@@ -154,7 +156,14 @@ void CClientSocket::OnReceive(int nErrorCode)
 void CClientSocket::OnClose(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	m_pComClient->OnClose();
+	if (m_bClient == true)
+	{
+		::PostMessage(m_hWnd, WM_CLOSE, 0, nErrorCode);
+	}
+	else
+	{
+		m_pComClient->OnClose();
+	}
 	CAsyncSocket::OnClose(nErrorCode);
 }
 // 设置Socket缓冲区大小
@@ -201,18 +210,16 @@ void CClientSocket::ConnectServer(void)
 void CClientSocket::OnConnect(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类
-	CString str = _T("");
-	HWND hWnd;
-	hWnd = ::FindWindow(NULL, _T("Operation - 天津海泰光电科技有限公司"));
 	if (nErrorCode != 0)
 	{
-		::SendMessage(hWnd, WM_CLOSE, 0, nErrorCode);
 		ConnectServer();
 	}
 	else
 	{
 		// 发送验证码
 		m_pComClient->m_oSndFrame.MakeSetFrame(CmdClientConnect, CommCheck, strlen(CommCheck));
+		// 发送客户端连接的消息
+		::PostMessage(m_hWnd, WM_CONNECT_SERVER, 0, 0);
 	}
 	CAsyncSocket::OnConnect(nErrorCode);
 }

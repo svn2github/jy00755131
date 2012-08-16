@@ -609,7 +609,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "Operation\n天津海泰光电科技有限公司\nOperation\n\n\nOperation.Document\nOperation.Document"
+    IDR_MAINFRAME           "Operation\n\n\nOperation.Document\nOperation.Document"
 END
 
 STRINGTABLE

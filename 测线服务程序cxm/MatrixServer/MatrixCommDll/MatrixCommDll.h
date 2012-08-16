@@ -483,6 +483,10 @@ public:
 	CString m_strServerIP;
 	/** 服务器端口*/
 	unsigned int m_uiServerPort;
+	/** 客户端窗体句柄*/
+	HWND m_hWnd;
+	/** 是否是客户端程序*/
+	bool m_bClient;
 public:
 	// 初始化
 	void OnInit(CCommClient* pComClient,int iSndBufferSize, int iRcvBufferSize);
@@ -536,9 +540,11 @@ public:
 	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
 	/** 回调函数-接收数据处理*/
 	ProcRecCmdCallBack m_oProcRecCmdCallBack;
+	/** 是否是客户端程序*/
+	bool m_bClient;
 public:
 	// 创建一个客户端连接信息
-	virtual void OnInit(bool bClient = false);
+	virtual void OnInit(unsigned int uiPort = 0, CString strIP = _T(""), HWND hWnd = NULL);
 	// 释放一个客户端连接信息
 	virtual void OnClose();
 };

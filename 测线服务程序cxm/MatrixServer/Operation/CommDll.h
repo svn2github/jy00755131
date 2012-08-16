@@ -21,11 +21,11 @@ public:
 	// 释放MatrixCommDll动态链接库
 	void FreeMatrixCommDll(void);
 	// 创建客户端通讯
-	void OnCreateClientComm();
+	void OnCreateClientComm(unsigned int uiPort, CString strIP, HWND hWnd = NULL);
 	// 释放客户端通讯
 	void OnDeleteClientComm();
 	// 初始化
-	void OnInit(CString strPath);
+	void OnInit(CString strPath, unsigned int uiPort = 0, CString strIP = _T(""), HWND hWnd = NULL);
 	// 关闭
 	void OnClose(void);
 	/** 接收帧命令字处理*/

@@ -3,9 +3,6 @@
 
 CCommFrame::CCommFrame(void)
 {
-	m_uiCountFree = 0;
-	m_uiPacketIndex = 0;
-	m_uiCmdIndex = 0;
 }
 
 CCommFrame::~CCommFrame(void)
@@ -17,13 +14,15 @@ void CCommFrame::OnResetFrameStruct(m_oCommFrameStructPtr pFrameStruct)
 {
 	memset(pFrameStruct, 0, sizeof(m_oCommFrameStruct));
 }
-
 // 初始化
 void CCommFrame::OnInit(void)
 {
-	m_uiCountFree = FrameStructNumMax;
-	m_olsCommFrameFree.clear();
 	InitializeCriticalSection(&m_oSecClientFrame);
+	EnterCriticalSection(&m_oSecClientFrame);
+	m_uiCountFree = FrameStructNumMax;
+	m_uiPacketIndex = 0;
+	m_uiCmdIndex = 0;
+	m_olsCommFrameFree.clear();
 	m_olsCommWorkFrame.clear();
 	OnResetProcBuf();
 	for(unsigned int i = 0; i < FrameStructNumMax; i++)
@@ -33,6 +32,7 @@ void CCommFrame::OnInit(void)
 		// 仪器加在空闲接收帧结构体队列尾部
 		m_olsCommFrameFree.push_back(&m_oCommFrameArray[i]);
 	}
+	LeaveCriticalSection(&m_oSecClientFrame);
 }
 
 // 得到一个空闲接收帧结构体

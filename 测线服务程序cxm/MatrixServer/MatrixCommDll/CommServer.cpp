@@ -43,7 +43,7 @@ void CCommServer::OnInit(unsigned int uiSocketPort, int iSocketType, LPCTSTR lps
 		FD_ACCEPT|FD_READ|FD_WRITE|FD_CLOSE, lpszSocketAddress);
 	if (!bFlag)
 	{
-		AfxMessageBox(_T("Server Socket Create Error!"));
+		AfxMessageBox(_T("Server Socket Create Error or Server already exists!"));
 		PostQuitMessage(0);
 		return;
 	}

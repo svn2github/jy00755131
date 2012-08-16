@@ -44,6 +44,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_WM_CREATE()
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
 	ON_COMMAND_RANGE(ID_VPSHOT_FROM, ID_VPSHOT_FROM + ActiveSourceNumLimit * 3 - 1, &CMainFrame::OnSelectActiveSource)
+	ON_MESSAGE(WM_CONNECT_SERVER, &CMainFrame::OnConnectSuccess)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_CONNECT, &CMainFrame::OnConnectServer)
 	ON_UPDATE_COMMAND_UI(IDS_CONNECTSERVER_ICON, &CMainFrame::OnConnectServer)
 	ON_REGISTERED_MESSAGE(BCGM_RESETTOOLBAR, &CMainFrame::OnToolbarReset)
@@ -63,6 +64,8 @@ CMainFrame::CMainFrame()
 {
 	// TODO: add member initialization code here
 	m_bServerConnected = false;
+	m_uiServerPort = ServerListenPort;
+	m_strServerIP = ServerIP;
 }
 
 CMainFrame::~CMainFrame()
@@ -250,9 +253,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	ShowControlBar (&m_wndActiveAcq, FALSE, FALSE, TRUE);
 	ShowControlBar (&m_wndVPToDo, FALSE, FALSE, TRUE);
 	ShowControlBar (&m_wndVPDone, FALSE, FALSE, TRUE);
-
 	OnInitSocketLib();
-	m_oComDll.OnInit(_T("MatrixCommDll.dll"));
+	// @@@命令行参数解析
+
+	m_oComDll.OnInit(_T("MatrixCommDll.dll"), m_uiServerPort, m_strServerIP, this->m_hWnd);
 	m_oComDll.m_oXMLDllOpt.OnInit(_T("MatrixServerDll.dll"));
 	return 0;
 }
@@ -390,13 +394,17 @@ void CMainFrame::OnConnectServer(CCmdUI* pCmdUI)
 {
 	CClientDC dc (this);
 	CString str = _T("");
+	CString strTemp = _T("");
 	CSize sz;
 	int index = m_wndStatusBar.CommandToIndex(pCmdUI->m_nID);
 	pCmdUI->Enable(TRUE);
 	switch (pCmdUI->m_nID)
 	{
 	case ID_INDICATOR_CONNECT:
-		str = _T("Connected to server 192.168.100.22:8080");
+		str = _T("Connected to server ");
+		str += m_strServerIP;
+		strTemp.Format(_T(":%d"), m_uiServerPort);
+		str += strTemp;
 		//设置一个CClientDC对象来获取str的长度
 		sz = dc.GetTextExtent(str, 33);
 		//设置状态栏宽度
@@ -405,7 +413,7 @@ void CMainFrame::OnConnectServer(CCmdUI* pCmdUI)
 		m_wndStatusBar.SetPaneText(index, str);
 		break;
 	case IDS_CONNECTSERVER_ICON:
-		m_wndStatusBar.SetPaneInfo(index, ID_INDICATOR_CONNECT, SBPS_POPOUT, 0);
+		m_wndStatusBar.SetPaneInfo(index, IDS_CONNECTSERVER_ICON, SBPS_POPOUT, 0);
 		if (m_bServerConnected)
 		{
 			m_wndStatusBar.SetPaneIcon (index, m_bmpIconConnected);
@@ -451,4 +459,29 @@ void CMainFrame::OnClose()
 	m_oComDll.OnClose();
 	OnCloseSocketLib();
 	CBCGPFrameWnd::OnClose();
+}
+
+LRESULT CMainFrame::OnConnectSuccess(WPARAM wParam, LPARAM lParam)
+{
+	m_bServerConnected = true;
+	m_wndOutput.AppendLog(_T("Connect to Server!"));
+	// 查询 OperationDelay XML文件信息（帧内容为空）
+	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryDelayOptXMLInfo, NULL, 0);
+	// 查询 炮表 XML文件信息（帧内容为空）
+	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySourceShotOptXMLInfo, NULL, 0);
+	// 查询 Explo震源类型 XML文件信息（帧内容为空）
+	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryExploOptXMLInfo, NULL, 0);
+	// 查询 Vibro震源类型 XML文件信息（帧内容为空）
+	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryVibroOptXMLInfo, NULL, 0);
+	// 查询 ProcessRecord XML文件信息（帧内容为空）
+	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessRecordOptXMLInfo, NULL, 0);
+	// 查询 ProcessAux XML文件信息（帧内容为空）
+	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessAuxOptXMLInfo, NULL, 0);
+	// 查询 ProcessAcq XML文件信息（帧内容为空）
+	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessAcqOptXMLInfo, NULL, 0);
+	// 查询 ProcessType XML文件信息（帧内容为空）
+	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessTypeOptXMLInfo, NULL, 0);
+	// 查询 注释 XML文件信息（帧内容为空）
+	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryCommentsOptXMLInfo, NULL, 0);
+	return TRUE;
 }

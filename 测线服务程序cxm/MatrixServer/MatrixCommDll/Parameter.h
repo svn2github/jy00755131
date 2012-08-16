@@ -1,3 +1,10 @@
+#ifndef _MatrixCommParameter_H
+#define _MatrixCommParameter_H
+/**
+* @brief 自定义消息
+*/
+/** 客户端连接到服务器的消息*/
+#define WM_CONNECT_SERVER		(WM_USER + 10)
 /**
 * @brief 常量设置
 */
@@ -96,7 +103,8 @@
 #define TestResultNull						0x03
 /** 客户端向服务端发送验证码*/
 #define CommCheck							"天津海泰光电科技有限公司"
-
+/** 客户端标题*/
+#define ClientTitle							_T("天津海泰光电科技有限公司")
 typedef struct CommFrame_Struct
 {
 	// 	/** 帧头*/
@@ -336,3 +344,5 @@ typedef struct InstrumentNet_Struct
 	/** 仪器IP*/
 	unsigned int m_uiIP;
 }m_oInstrumentNetStruct;
+
+#endif

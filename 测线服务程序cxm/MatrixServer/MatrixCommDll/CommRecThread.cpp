@@ -17,7 +17,6 @@ CCommRecThread::~CCommRecThread(void)
 {
 	m_oInstrumentWholeTableMap.clear();
 }
-
 // ´¦Àíº¯Êý
 void CCommRecThread::OnProc(void)
 {
