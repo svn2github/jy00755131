@@ -1,5 +1,5 @@
 #pragma once
-#include "Parameter.h"
+#include "OptParam.h"
 #include "SetupGridCtrl.h"
 // CDlgProcessTypeSetup ¶Ô»°¿ò
 

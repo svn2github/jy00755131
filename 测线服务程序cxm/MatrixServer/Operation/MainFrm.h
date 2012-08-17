@@ -9,7 +9,7 @@
 #include "VPToDoBar.h"
 #include "ActiveAcqBar.h"
 #include "OutputBar.h"
-#include "CommDll.h"
+#include "OptCommDll.h"
 class CMainFrame : public CBCGPFrameWnd
 {
 	
@@ -53,7 +53,7 @@ public:
 	CBitmap					m_bmpIconDisConnected;
 	bool					m_bServerConnected;
 	/** 与客户端通讯类成员*/
-	CCommDll m_oComDll;
+	COptCommDll m_oComDll;
 	/** 服务器监听端口*/
 	unsigned int m_uiServerPort;
 	/** 服务器IP*/
@@ -70,19 +70,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	BOOL CreateStatusBar ();
-	/**
-	* @fn void OnInitSocketLib(void)
-	* @detail 初始化套接字库
-	*/
-	void OnInitSocketLib(void);
-	/**
-	* @fn void OnCloseSocketLib(void)
-	* @detail 释放套接字库
-	*/
-	void OnCloseSocketLib(void);
 public:
 	afx_msg void OnClose();
-	afx_msg LRESULT OnConnectSuccess(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnMsgClient(WPARAM wParam, LPARAM lParam);
 };
 
 

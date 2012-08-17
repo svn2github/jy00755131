@@ -5,7 +5,7 @@
 #include "Operation.h"
 #include "DlgSourceShotSetup.h"
 #include "afxdialogex.h"
-#include "Parameter.h"
+#include "OptParam.h"
 
 // CDlgSourceShotSetup ¶Ô»°¿ò
 

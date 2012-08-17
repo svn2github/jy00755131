@@ -120,7 +120,7 @@
     <ClCompile Include="ActiveSourceCtrl.cpp" />
     <ClCompile Include="AllVPBar.cpp" />
     <ClCompile Include="ButtonItem.cpp" />
-    <ClCompile Include="CommDll.cpp" />
+    <ClCompile Include="OptCommDll.cpp" />
     <ClCompile Include="DlgCommentTypeSetup.cpp" />
     <ClCompile Include="DlgDelaySetup.cpp" />
     <ClCompile Include="DlgProcessTypeSetup.cpp" />
@@ -153,7 +153,7 @@
     <ClInclude Include="ActiveSourceCtrl.h" />
     <ClInclude Include="AllVPBar.h" />
     <ClInclude Include="ButtonItem.h" />
-    <ClInclude Include="CommDll.h" />
+    <ClInclude Include="OptCommDll.h" />
     <ClInclude Include="CXMLDOMDocument.h" />
     <ClInclude Include="CXMLDOMElement.h" />
     <ClInclude Include="CXMLDOMNode.h" />
@@ -170,7 +170,7 @@
     <ClInclude Include="OperationDoc.h" />
     <ClInclude Include="OperationView.h" />
     <ClInclude Include="OutputBar.h" />
-    <ClInclude Include="Parameter.h" />
+    <ClInclude Include="OptParam.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SetupGridCtrl.h" />
     <ClInclude Include="stdafx.h" />

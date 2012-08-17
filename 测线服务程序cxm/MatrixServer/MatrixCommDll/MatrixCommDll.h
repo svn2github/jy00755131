@@ -7,7 +7,7 @@
 
 #ifndef _MatrixCommDll_H
 #define _MatrixCommDll_H
-#include "Parameter.h"
+#include "CommParam.h"
 #include <list>
 #include <map>
 #include <hash_map>
@@ -614,6 +614,17 @@ public:
 	virtual void OnInit(void);
 	/** 关闭*/
 	virtual void OnClose(void);
+private:
+	/**
+	* @fn void OnInitSocketLib(void)
+	* @detail 初始化套接字库
+	*/
+	void OnInitSocketLib(void);
+	/**
+	* @fn void OnCloseSocketLib(void)
+	* @detail 释放套接字库
+	*/
+	void OnCloseSocketLib(void);
 };
 
 extern MATRIXCOMMDLL_API int nMatrixCommDll;

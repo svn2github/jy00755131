@@ -5,7 +5,7 @@
 #include "Operation.h"
 #include "DlgSourceVibroSetup.h"
 #include "afxdialogex.h"
-#include "Parameter.h"
+#include "OptParam.h"
 
 // CDlgSourceVibroSetup ¶Ô»°¿ò
 

@@ -1,11 +1,11 @@
 #pragma once
 #include "..\MatrixCommDll\MatrixCommDll.h"
-#include "..\MatrixServer\CommOptDll.h"
-class CCommDll
+#include "..\MatrixServer\CommLineDll.h"
+class CLineCommDll
 {
 public:
-	CCommDll(void);
-	~CCommDll(void);
+	CLineCommDll(void);
+	~CLineCommDll(void);
 public:
 	/** 通讯类指针*/
 	CMatrixCommDll*	m_pMatrixCommDll;
@@ -13,8 +13,10 @@ public:
 	CCommClient* m_pCommClient;
 	/** Dll句柄*/
 	HINSTANCE m_hCommDll;
-	/** 施工客户端参数类成员*/
-	CCommOptDll m_oXMLDllOpt;
+ 	/** 测线客户端参数类成员*/
+ 	CCommLineDll m_oXMLDllLine;
+	/** 客户端界面句柄*/
+	HWND m_hWnd;
 public:
 	// 载入MatrixCommDll动态链接库
 	void LoadMatrixCommDll(CString strPath);

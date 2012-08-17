@@ -3,11 +3,11 @@
 #include "CommServerDll.h"
 #include "CommLineDll.h"
 #include "CommOptDll.h"
-class CCommDll
+class CServerCommDll
 {
 public:
-	CCommDll(void);
-	~CCommDll(void);
+	CServerCommDll(void);
+	~CServerCommDll(void);
 public:
 	/** 通讯类指针*/
 	CMatrixCommDll*	m_pMatrixCommDll;

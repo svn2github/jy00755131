@@ -1,10 +1,10 @@
-#ifndef _MatrixCommParameter_H
-#define _MatrixCommParameter_H
+#ifndef _MatrixCommParam_H
+#define _MatrixCommParam_H
 /**
 * @brief 自定义消息
 */
-/** 客户端连接到服务器的消息*/
-#define WM_CONNECT_SERVER		(WM_USER + 10)
+/** 客户端接收到的消息*/
+#define WM_MSG_CLIENT		(WM_USER + 10)
 /**
 * @brief 常量设置
 */

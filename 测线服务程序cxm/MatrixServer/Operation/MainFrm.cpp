@@ -44,7 +44,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_WM_CREATE()
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
 	ON_COMMAND_RANGE(ID_VPSHOT_FROM, ID_VPSHOT_FROM + ActiveSourceNumLimit * 3 - 1, &CMainFrame::OnSelectActiveSource)
-	ON_MESSAGE(WM_CONNECT_SERVER, &CMainFrame::OnConnectSuccess)
+	ON_MESSAGE(WM_MSG_CLIENT, &CMainFrame::OnMsgClient)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_CONNECT, &CMainFrame::OnConnectServer)
 	ON_UPDATE_COMMAND_UI(IDS_CONNECTSERVER_ICON, &CMainFrame::OnConnectServer)
 	ON_REGISTERED_MESSAGE(BCGM_RESETTOOLBAR, &CMainFrame::OnToolbarReset)
@@ -253,11 +253,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	ShowControlBar (&m_wndActiveAcq, FALSE, FALSE, TRUE);
 	ShowControlBar (&m_wndVPToDo, FALSE, FALSE, TRUE);
 	ShowControlBar (&m_wndVPDone, FALSE, FALSE, TRUE);
-	OnInitSocketLib();
-	// @@@命令行参数解析
+	// @@@端口和IP的命令行参数解析
 
 	m_oComDll.OnInit(_T("MatrixCommDll.dll"), m_uiServerPort, m_strServerIP, this->m_hWnd);
 	m_oComDll.m_oXMLDllOpt.OnInit(_T("MatrixServerDll.dll"));
+	m_oComDll.m_hWnd = m_hWnd;
 	return 0;
 }
 
@@ -428,60 +428,68 @@ void CMainFrame::OnConnectServer(CCmdUI* pCmdUI)
 	}
 }
 
-// 初始化套接字库
-void CMainFrame::OnInitSocketLib(void)
-{
-	WSADATA wsaData;
-	CString str = _T("");
-	if (WSAStartup(0x0202, &wsaData) != 0)
-	{
-		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-	}
-}
-// 释放套接字库
-void CMainFrame::OnCloseSocketLib(void)
-{
-	CString str = _T("");
-	// 释放套接字库
-	if (WSACleanup() != 0)
-	{
-		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-	}
-}
-
 void CMainFrame::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	// 关闭与客户端通讯连接
 	m_oComDll.m_oXMLDllOpt.OnClose();
 	m_oComDll.OnClose();
-	OnCloseSocketLib();
 	CBCGPFrameWnd::OnClose();
 }
 
-LRESULT CMainFrame::OnConnectSuccess(WPARAM wParam, LPARAM lParam)
+LRESULT CMainFrame::OnMsgClient(WPARAM wParam, LPARAM lParam)
 {
-	m_bServerConnected = true;
-	m_wndOutput.AppendLog(_T("Connect to Server!"));
-	// 查询 OperationDelay XML文件信息（帧内容为空）
-	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryDelayOptXMLInfo, NULL, 0);
-	// 查询 炮表 XML文件信息（帧内容为空）
-	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySourceShotOptXMLInfo, NULL, 0);
-	// 查询 Explo震源类型 XML文件信息（帧内容为空）
-	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryExploOptXMLInfo, NULL, 0);
-	// 查询 Vibro震源类型 XML文件信息（帧内容为空）
-	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryVibroOptXMLInfo, NULL, 0);
-	// 查询 ProcessRecord XML文件信息（帧内容为空）
-	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessRecordOptXMLInfo, NULL, 0);
-	// 查询 ProcessAux XML文件信息（帧内容为空）
-	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessAuxOptXMLInfo, NULL, 0);
-	// 查询 ProcessAcq XML文件信息（帧内容为空）
-	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessAcqOptXMLInfo, NULL, 0);
-	// 查询 ProcessType XML文件信息（帧内容为空）
-	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessTypeOptXMLInfo, NULL, 0);
-	// 查询 注释 XML文件信息（帧内容为空）
-	m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryCommentsOptXMLInfo, NULL, 0);
+	switch(wParam)
+	{
+	case CmdClientConnect:
+		m_bServerConnected = true;
+		m_wndOutput.AppendLog(_T("Connect to Server!"));
+		// 查询 OperationDelay XML文件信息（帧内容为空）
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryDelayOptXMLInfo, NULL, 0);
+		// 查询 炮表 XML文件信息（帧内容为空）
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySourceShotOptXMLInfo, NULL, 0);
+		// 查询 Explo震源类型 XML文件信息（帧内容为空）
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryExploOptXMLInfo, NULL, 0);
+		// 查询 Vibro震源类型 XML文件信息（帧内容为空）
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryVibroOptXMLInfo, NULL, 0);
+		// 查询 ProcessRecord XML文件信息（帧内容为空）
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessRecordOptXMLInfo, NULL, 0);
+		// 查询 ProcessAux XML文件信息（帧内容为空）
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessAuxOptXMLInfo, NULL, 0);
+		// 查询 ProcessAcq XML文件信息（帧内容为空）
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessAcqOptXMLInfo, NULL, 0);
+		// 查询 ProcessType XML文件信息（帧内容为空）
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessTypeOptXMLInfo, NULL, 0);
+		// 查询 注释 XML文件信息（帧内容为空）
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryCommentsOptXMLInfo, NULL, 0);
+		break;
+	case CmdSetDelayOptXMLInfo:
+		m_wndOutput.AppendLog(_T("Receive the information of delay setup !"));
+		break;
+	case CmdSetSourceShotOptXMLInfo:
+		m_wndOutput.AppendLog(_T("Receive the information of source shot setup !"));
+		break;
+	case CmdSetExploOptXMLInfo:
+		m_wndOutput.AppendLog(_T("Receive the information of explo setup !"));
+		break;
+	case CmdSetVibroOptXMLInfo:
+		m_wndOutput.AppendLog(_T("Receive the information of vibro setup !"));
+		break;
+	case CmdSetProcessRecordOptXMLInfo:
+		break;
+	case CmdSetProcessAuxOptXMLInfo:
+		break;
+	case CmdSetProcessAcqOptXMLInfo:
+		break;
+	case CmdSetProcessTypeOptXMLInfo:
+		m_wndOutput.AppendLog(_T("Receive the information of process setup !"));
+		break;
+	case CmdSetCommentsOptXMLInfo:
+		m_wndOutput.AppendLog(_T("Receive the information of comments setup !"));
+		break;
+	default:
+		break;
+	}
+
 	return TRUE;
 }

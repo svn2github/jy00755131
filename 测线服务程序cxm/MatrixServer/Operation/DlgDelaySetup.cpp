@@ -5,7 +5,7 @@
 #include "Operation.h"
 #include "DlgDelaySetup.h"
 #include "afxdialogex.h"
-#include "Parameter.h"
+#include "OptParam.h"
 
 // CDlgDelaySetup ¶Ô»°¿ò
 

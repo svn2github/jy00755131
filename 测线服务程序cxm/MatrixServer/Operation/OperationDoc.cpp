@@ -5,7 +5,7 @@
 #include "Operation.h"
 
 #include "OperationDoc.h"
-#include "..\MatrixCommDll\Parameter.h"
+#include "..\MatrixCommDll\CommParam.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif

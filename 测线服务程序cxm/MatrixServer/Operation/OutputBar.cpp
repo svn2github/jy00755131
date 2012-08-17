@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Operation.h"
 #include "outputbar.h"
-#include "Parameter.h"
+#include "OptParam.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE

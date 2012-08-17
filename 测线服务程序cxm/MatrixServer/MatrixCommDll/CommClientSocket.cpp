@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MatrixCommDll.h"
-#include "Parameter.h"
+#include "CommParam.h"
 CClientSocket::CClientSocket()
 {
 	memset(m_cRecBuf, 0, ServerRecBufSize);
@@ -219,7 +219,7 @@ void CClientSocket::OnConnect(int nErrorCode)
 		// 发送验证码
 		m_pComClient->m_oSndFrame.MakeSetFrame(CmdClientConnect, CommCheck, strlen(CommCheck));
 		// 发送客户端连接的消息
-		::PostMessage(m_hWnd, WM_CONNECT_SERVER, 0, 0);
+		::PostMessage(m_hWnd, WM_MSG_CLIENT, CmdClientConnect, 0);
 	}
 	CAsyncSocket::OnConnect(nErrorCode);
 }

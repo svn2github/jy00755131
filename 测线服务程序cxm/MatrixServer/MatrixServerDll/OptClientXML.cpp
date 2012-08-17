@@ -4,6 +4,7 @@
 // 初始化施工客户程序设置信息
 void OnInitOptClientXMLSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
+	InitializeCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	pOptSetupData->m_strOptXMLFilePath = "..\\parameter\\MatrixOperation.XML";
 	// 重置施工客户端信息
@@ -15,7 +16,6 @@ m_oOptSetupDataStruct* OnCreateOptAppSetupData(void)
 {
 	m_oOptSetupDataStruct* pOptSetupData = NULL;
 	pOptSetupData = new m_oOptSetupDataStruct;
-	InitializeCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 初始化施工客户程序设置信息
 	OnInitOptClientXMLSetupData(pOptSetupData);
 	return pOptSetupData;
@@ -359,7 +359,7 @@ void SaveDelaySetupData(m_oOptSetupDataStruct* pOptSetupData)
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置Delay设置数据
-void SetDelaySetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+void SetDelaySetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave)
 {
 	unsigned int uiPos = 0;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
@@ -379,7 +379,10 @@ void SetDelaySetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* 
 		uiPos += 4;
 	}
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
-	SaveDelaySetupData(pOptSetupData);
+	if (bSave == true)
+	{
+		SaveDelaySetupData(pOptSetupData);
+	}
 }
 // 查询 Delay XML文件信息
 void QueryDelaySetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
@@ -679,7 +682,7 @@ void SaveSourceShotSetupData(m_oOptSetupDataStruct* pOptSetupData)
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置SourceShot设置数据
-void SetSourceShotSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+void SetSourceShotSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave)
 {
 	m_oSourceShotStruct oSourceShotStruct;
 	unsigned int uiPos = 0;
@@ -709,13 +712,16 @@ void SetSourceShotSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStr
 		memcpy(&oSourceShotStruct.m_usCommentsSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oSourceShotStruct.m_pcComments = new char[oSourceShotStruct.m_usCommentsSize];
-		memcpy(&oSourceShotStruct.m_pcComments, &pChar[uiPos], oSourceShotStruct.m_usCommentsSize);
+		memcpy(oSourceShotStruct.m_pcComments, &pChar[uiPos], oSourceShotStruct.m_usCommentsSize);
 		uiPos += oSourceShotStruct.m_usCommentsSize;
 		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 		pOptSetupData->m_olsSourceShot.push_back(oSourceShotStruct);
 		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveSourceShotSetupData(pOptSetupData);
+	if (bSave == true)
+	{
+		SaveSourceShotSetupData(pOptSetupData);
+	}
 }
 // 查询 SourceShot XML文件信息
 void QuerySourceShotSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
@@ -1013,7 +1019,7 @@ void SaveExploSetupData(m_oOptSetupDataStruct* pOptSetupData)
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置Explo设置数据
-void SetExploSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+void SetExploSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave)
 {
 	m_oSourceExploStruct oSourceExploStruct;
 	unsigned int uiPos = 0;
@@ -1027,7 +1033,7 @@ void SetExploSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* 
 		memcpy(&oSourceExploStruct.m_usLabelSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oSourceExploStruct.m_pcLabel = new char[oSourceExploStruct.m_usLabelSize];
-		memcpy(&oSourceExploStruct.m_pcLabel, &pChar[uiPos], oSourceExploStruct.m_usLabelSize);
+		memcpy(oSourceExploStruct.m_pcLabel, &pChar[uiPos], oSourceExploStruct.m_usLabelSize);
 		uiPos += oSourceExploStruct.m_usLabelSize;
 		memcpy(&oSourceExploStruct.m_uiShooterSN, &pChar[uiPos], 4);
 		uiPos += 4;
@@ -1036,13 +1042,16 @@ void SetExploSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* 
 		memcpy(&oSourceExploStruct.m_usCommentsSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oSourceExploStruct.m_pcComments = new char[oSourceExploStruct.m_usCommentsSize];
-		memcpy(&oSourceExploStruct.m_pcComments, &pChar[uiPos], oSourceExploStruct.m_usCommentsSize);
+		memcpy(oSourceExploStruct.m_pcComments, &pChar[uiPos], oSourceExploStruct.m_usCommentsSize);
 		uiPos += oSourceExploStruct.m_usCommentsSize;
 		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 		pOptSetupData->m_olsExploStruct.push_back(oSourceExploStruct);
 		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveExploSetupData(pOptSetupData);
+	if (bSave == true)
+	{
+		SaveExploSetupData(pOptSetupData);
+	}
 }
 // 查询 Explo XML文件信息
 void QueryExploSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
@@ -1346,7 +1355,7 @@ void SaveVibroSetupData(m_oOptSetupDataStruct* pOptSetupData)
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置Vibro设置数据
-void SetVibroSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+void SetVibroSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave)
 {
 	m_oSourceVibroStruct oSourceVibroStruct;
 	unsigned int uiPos = 0;
@@ -1360,7 +1369,7 @@ void SetVibroSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* 
 		memcpy(&oSourceVibroStruct.m_usLabelSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oSourceVibroStruct.m_pcLabel = new char[oSourceVibroStruct.m_usLabelSize];
-		memcpy(&oSourceVibroStruct.m_pcLabel, &pChar[uiPos], oSourceVibroStruct.m_usLabelSize);
+		memcpy(oSourceVibroStruct.m_pcLabel, &pChar[uiPos], oSourceVibroStruct.m_usLabelSize);
 		uiPos += oSourceVibroStruct.m_usLabelSize;
 		memcpy(&oSourceVibroStruct.m_uiFleetNb, &pChar[uiPos], 4);
 		uiPos += 4;
@@ -1375,13 +1384,16 @@ void SetVibroSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* 
 		memcpy(&oSourceVibroStruct.m_usCommentsSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oSourceVibroStruct.m_pcComments = new char[oSourceVibroStruct.m_usCommentsSize];
-		memcpy(&oSourceVibroStruct.m_pcComments, &pChar[uiPos], oSourceVibroStruct.m_usCommentsSize);
+		memcpy(oSourceVibroStruct.m_pcComments, &pChar[uiPos], oSourceVibroStruct.m_usCommentsSize);
 		uiPos += oSourceVibroStruct.m_usCommentsSize;
 		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 		pOptSetupData->m_olsVibroStruct.push_back(oSourceVibroStruct);
 		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveVibroSetupData(pOptSetupData);
+	if (bSave == true)
+	{
+		SaveVibroSetupData(pOptSetupData);
+	}
 }
 // 查询 Vibro XML文件信息
 void QueryVibroSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
@@ -1584,7 +1596,7 @@ void SaveProcessRecordSetupData(m_oOptSetupDataStruct* pOptSetupData)
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessRecord设置数据
-void SetProcessRecordSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+void SetProcessRecordSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave)
 {
 	unsigned int uiPos = 0;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
@@ -1612,7 +1624,10 @@ void SetProcessRecordSetupData(char* pChar, unsigned int uiSize, m_oOptSetupData
 		uiPos += 4;
 	}
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
-	SaveProcessRecordSetupData(pOptSetupData);
+	if (bSave == true)
+	{
+		SaveProcessRecordSetupData(pOptSetupData);
+	}
 }
 // 查询 ProcessRecord XML文件信息
 void QueryProcessRecordSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
@@ -1885,7 +1900,7 @@ void SaveProcessAuxSetupData(m_oOptSetupDataStruct* pOptSetupData)
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessAux设置数据
-void SetProcessAuxSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+void SetProcessAuxSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave)
 {
 	m_oProcessAuxStruct oProcessAuxStruct;
 	unsigned int uiPos = 0;
@@ -1901,13 +1916,16 @@ void SetProcessAuxSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStr
 		memcpy(&oProcessAuxStruct.m_usAuxProcessingSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oProcessAuxStruct.m_pcAuxProcessing = new char[oProcessAuxStruct.m_usAuxProcessingSize];
-		memcpy(&oProcessAuxStruct.m_pcAuxProcessing, &pChar[uiPos], oProcessAuxStruct.m_usAuxProcessingSize);
+		memcpy(oProcessAuxStruct.m_pcAuxProcessing, &pChar[uiPos], oProcessAuxStruct.m_usAuxProcessingSize);
 		uiPos += oProcessAuxStruct.m_usAuxProcessingSize;
 		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 		pOptSetupData->m_olsProcessAuxStruct.push_back(oProcessAuxStruct);
 		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveProcessAuxSetupData(pOptSetupData);
+	if (bSave == true)
+	{
+		SaveProcessAuxSetupData(pOptSetupData);
+	}
 }
 // 查询 ProcessAux XML文件信息
 void QueryProcessAuxSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
@@ -2173,7 +2191,7 @@ void SaveProcessAcqSetupData(m_oOptSetupDataStruct* pOptSetupData)
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessAcq设置数据
-void SetProcessAcqSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+void SetProcessAcqSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave)
 {
 	m_oProcessAcqStruct oProcessAcqStruct;
 	unsigned int uiPos = 0;
@@ -2194,7 +2212,10 @@ void SetProcessAcqSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStr
 		pOptSetupData->m_olsProcessAcqStruct.push_back(oProcessAcqStruct);
 		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveProcessAcqSetupData(pOptSetupData);
+	if (bSave == true)
+	{
+		SaveProcessAcqSetupData(pOptSetupData);
+	}
 }
 // 查询 ProcessAcq XML文件信息
 void QueryProcessAcqSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
@@ -2451,7 +2472,7 @@ void SaveProcessTypeSetupData(m_oOptSetupDataStruct* pOptSetupData)
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessType设置数据
-void SetProcessTypeSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+void SetProcessTypeSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave)
 {
 	m_oProcessTypeStruct oProcessTypeStruct;
 	unsigned int uiPos = 0;
@@ -2462,13 +2483,17 @@ void SetProcessTypeSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataSt
 		uiPos += 4;
 		memcpy(&oProcessTypeStruct.m_usLabelSize, &pChar[uiPos], 2);
 		uiPos += 2;
-		memcpy(&oProcessTypeStruct.m_pcLabel, &pChar[uiPos], oProcessTypeStruct.m_usLabelSize);
+		oProcessTypeStruct.m_pcLabel = new char[oProcessTypeStruct.m_usLabelSize];
+		memcpy(oProcessTypeStruct.m_pcLabel, &pChar[uiPos], oProcessTypeStruct.m_usLabelSize);
 		uiPos += oProcessTypeStruct.m_usLabelSize;
 		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 		pOptSetupData->m_olsProcessTypeStruct.push_back(oProcessTypeStruct);
 		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveProcessTypeSetupData(pOptSetupData);
+	if (bSave == true)
+	{
+		SaveProcessTypeSetupData(pOptSetupData);
+	}
 }
 // 查询 ProcessType XML文件信息
 void QueryProcessTypeSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)
@@ -2732,7 +2757,7 @@ void SaveProcessCommentsSetupData(m_oOptSetupDataStruct* pOptSetupData)
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 }
 // 设置ProcessComments设置数据
-void SetProcessCommentsSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData)
+void SetProcessCommentsSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave)
 {
 	m_oOperationCommentStruct oCommentStruct;
 	unsigned int uiPos = 0;
@@ -2743,17 +2768,22 @@ void SetProcessCommentsSetupData(char* pChar, unsigned int uiSize, m_oOptSetupDa
 		uiPos += 4;
 		memcpy(&oCommentStruct.m_usLabelSize, &pChar[uiPos], 2);
 		uiPos += 2;
-		memcpy(&oCommentStruct.m_pcLabel, &pChar[uiPos], oCommentStruct.m_usLabelSize);
+		oCommentStruct.m_pcLabel = new char[oCommentStruct.m_usLabelSize];
+		memcpy(oCommentStruct.m_pcLabel, &pChar[uiPos], oCommentStruct.m_usLabelSize);
 		uiPos += oCommentStruct.m_usLabelSize;
 		memcpy(&oCommentStruct.m_usCommentsSize, &pChar[uiPos], 2);
 		uiPos += 2;
-		memcpy(&oCommentStruct.m_pcComments, &pChar[uiPos], oCommentStruct.m_usCommentsSize);
+		oCommentStruct.m_pcComments = new char[oCommentStruct.m_usCommentsSize];
+		memcpy(oCommentStruct.m_pcComments, &pChar[uiPos], oCommentStruct.m_usCommentsSize);
 		uiPos += oCommentStruct.m_usCommentsSize;
 		EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 		pOptSetupData->m_olsComment.push_back(oCommentStruct);
 		LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	}
-	SaveProcessCommentsSetupData(pOptSetupData);
+	if (bSave == true)
+	{
+		SaveProcessCommentsSetupData(pOptSetupData);
+	}
 }
 // 查询 ProcessComments XML文件信息
 void QueryProcessCommentsSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData)

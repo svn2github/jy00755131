@@ -467,6 +467,29 @@ void OnOutPutResult(m_oEnvironmentStruct* pEnv)
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnClose", strConv);
 }
+// 初始化套接字库
+void OnInitSocketLib(void)
+{
+	WSADATA wsaData;
+	CString str = _T("");
+	if (WSAStartup(0x0202, &wsaData) != 0)
+	{
+		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
+}
+// 释放套接字库
+void OnCloseSocketLib(void)
+{
+	CString str = _T("");
+	// 释放套接字库
+	if (WSACleanup() != 0)
+	{
+		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
+}
+
 // 创建实例，并返回实例指针
 m_oEnvironmentStruct* OnCreateInstance(void)
 {
@@ -618,6 +641,9 @@ void OnInit(m_oEnvironmentStruct* pEnv)
 	EnterCriticalSection(&pEnv->m_pOptTaskArray->m_oSecOptTaskArray);
 	pEnv->m_pOptTaskArray->m_SaveLogFolderPath = (CStringA)(strPath + ADCDataLogFolderPath);
 	LeaveCriticalSection(&pEnv->m_pOptTaskArray->m_oSecOptTaskArray);
+
+	// 初始化套接字库
+	OnInitSocketLib();
 	// 初始化常量信息结构体
 	OnInitConstVar(pEnv->m_pConstVar, pEnv->m_pLogOutPutOpt);
 	// 初始化仪器通讯信息结构体
@@ -831,6 +857,8 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 	OnCloseADCDataBufArray(pEnv->m_pADCDataBufArray);
 	// 关闭施工任务数组结构体
 	OnCloseOptTaskArray(pEnv->m_pOptTaskArray);
+	// 释放套接字库
+	OnCloseSocketLib();
 
 	// 关闭操作日志文件
 	OnCloseLogOutPut(pEnv->m_pLogOutPutOpt);

@@ -5,7 +5,7 @@
 #include "Operation.h"
 #include "DlgCommentTypeSetup.h"
 #include "afxdialogex.h"
-#include "Parameter.h"
+#include "OptParam.h"
 
 // CDlgCommentTypeSetup ¶Ô»°¿ò
 

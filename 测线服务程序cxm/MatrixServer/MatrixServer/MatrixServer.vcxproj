@@ -106,7 +106,7 @@
   <ItemGroup>
     <ClInclude Include="..\MatrixCommDll\MatrixCommDll.h" />
     <ClInclude Include="..\MatrixServerDll\MatrixServerDll.h" />
-    <ClInclude Include="CommDll.h" />
+    <ClInclude Include="ServerCommDll.h" />
     <ClInclude Include="CommLineDll.h" />
     <ClInclude Include="CommOptDll.h" />
     <ClInclude Include="CommServerDll.h" />
@@ -126,7 +126,7 @@
     <ClInclude Include="XMLDOMTool.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CommDll.cpp" />
+    <ClCompile Include="ServerCommDll.cpp" />
     <ClCompile Include="CommLineDll.cpp" />
     <ClCompile Include="CommOptDll.cpp" />
     <ClCompile Include="CommServerDll.cpp" />

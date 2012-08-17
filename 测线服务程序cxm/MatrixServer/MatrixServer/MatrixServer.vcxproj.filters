@@ -63,9 +63,6 @@
     <ClInclude Include="..\MatrixCommDll\MatrixCommDll.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CommDll.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MatrixServerDllCall.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -84,6 +81,9 @@
     <ClInclude Include="CommOptDll.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ServerCommDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MatrixDllCall.cpp">
@@ -96,9 +96,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MatrixServerDlg.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CommDll.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MatrixServerDllCall.cpp">
@@ -117,6 +114,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CommOptDll.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerCommDll.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

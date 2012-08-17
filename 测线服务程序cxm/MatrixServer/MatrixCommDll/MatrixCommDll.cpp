@@ -89,10 +89,35 @@ void CMatrixCommDll::DeleteCommServer(CCommServer* pClass)
 
 void CMatrixCommDll::OnInit(void)
 {
+	OnInitSocketLib();
 	m_oComClientMap.clear();
 }
 
 void CMatrixCommDll::OnClose(void)
 {
+	OnCloseSocketLib();
 	m_oComClientMap.clear();
+}
+
+// 初始化套接字库
+void CMatrixCommDll::OnInitSocketLib(void)
+{
+	WSADATA wsaData;
+	CString str = _T("");
+	if (WSAStartup(0x0202, &wsaData) != 0)
+	{
+		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
+}
+// 释放套接字库
+void CMatrixCommDll::OnCloseSocketLib(void)
+{
+	CString str = _T("");
+	// 释放套接字库
+	if (WSACleanup() != 0)
+	{
+		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
+		AfxMessageBox(str);
+	}
 }

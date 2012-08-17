@@ -108,7 +108,6 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	OnInitSocketLib();
 	// 初始化动态链接库
 	m_oMatrixDllCall.OnInit(_T("MatrixServerDll.dll"));
 	// 初始化与客户端通讯连接
@@ -213,7 +212,6 @@ void CMatrixServerDlg::OnDestroy()
 	m_oComDll.OnClose();
 	// 关闭动态链接库
 	m_oMatrixDllCall.OnClose();
-	OnCloseSocketLib();
 }
 void CMatrixServerDlg::OnBnClickedButtonStartsampleAll()
 {
@@ -308,29 +306,6 @@ void CMatrixServerDlg::OnBnClickedBtnGetsnbylocation()
 	}
 	else
 	{
-		AfxMessageBox(str);
-	}
-}
-
-// 初始化套接字库
-void CMatrixServerDlg::OnInitSocketLib(void)
-{
-	WSADATA wsaData;
-	CString str = _T("");
-	if (WSAStartup(0x0202, &wsaData) != 0)
-	{
-		str.Format(_T("WSAStartup() failed with error %d"), WSAGetLastError());
-		AfxMessageBox(str);
-	}
-}
-// 释放套接字库
-void CMatrixServerDlg::OnCloseSocketLib(void)
-{
-	CString str = _T("");
-	// 释放套接字库
-	if (WSACleanup() != 0)
-	{
-		str.Format(_T("WSACleanup() failed with error %d"), WSAGetLastError());
 		AfxMessageBox(str);
 	}
 }

@@ -4,6 +4,7 @@
 // 初始化服务程序设置信息
 void OnInitServerXMLSetupData(m_oServerSetupDataStruct* pServerSetupData)
 {
+	InitializeCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	pServerSetupData->m_strServerXMLFilePath = "..\\parameter\\MatrixServer.XML";
 	pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSetSine = NULL;
@@ -26,7 +27,6 @@ m_oServerSetupDataStruct* OnCreateServerAppSetupData(void)
 {
 	m_oServerSetupDataStruct* pServerSetupData = NULL;
 	pServerSetupData = new m_oServerSetupDataStruct;
-	InitializeCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	// 初始化服务程序设置信息
 	OnInitServerXMLSetupData(pServerSetupData);
 	return pServerSetupData;

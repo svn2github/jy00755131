@@ -1,9 +1,9 @@
 #include "StdAfx.h"
-#include "CommDll.h"
+#include "ServerCommDll.h"
 
 typedef CMatrixCommDll* (*CREATEFN)(void);
 typedef void (*DELETEFN)(CMatrixCommDll*);
-static CCommDll* m_pCommDll;
+static CServerCommDll* m_pCommDll;
 // 处理查询接收区域命令
 void CALLBACK ProcRecCmd(unsigned short usCmd, char* pChar, 
 	unsigned int uiSize, CCommRecThread* pRecThread)
@@ -11,7 +11,7 @@ void CALLBACK ProcRecCmd(unsigned short usCmd, char* pChar,
 	m_pCommDll->OnProcRecCmd(usCmd, pChar, uiSize, pRecThread);
 }
 
-CCommDll::CCommDll(void)
+CServerCommDll::CServerCommDll(void)
 {
 	m_pMatrixCommDll = NULL;
 	m_pCommServer = NULL;
@@ -19,11 +19,11 @@ CCommDll::CCommDll(void)
 }
 
 
-CCommDll::~CCommDll(void)
+CServerCommDll::~CServerCommDll(void)
 {
 }
 // 载入MatrixServerDll动态链接库
-void CCommDll::LoadMatrixCommDll(CString strPath)
+void CServerCommDll::LoadMatrixCommDll(CString strPath)
 {
 	CString str = _T("");
 	m_hCommDll = ::LoadLibrary(strPath);
@@ -35,13 +35,13 @@ void CCommDll::LoadMatrixCommDll(CString strPath)
 	}
 }
 // 释放MatrixServerDll动态链接库
-void CCommDll::FreeMatrixCommDll(void)
+void CServerCommDll::FreeMatrixCommDll(void)
 {
 	::FreeLibrary(m_hCommDll);
 }
 
 // 创建服务端通讯
-void CCommDll::OnCreateServerComm()
+void CServerCommDll::OnCreateServerComm()
 {
 	CREATEFN pfn = NULL;
 	pfn = (CREATEFN)GetProcAddress(m_hCommDll, "CreateMatrixCommDll");
@@ -60,7 +60,7 @@ void CCommDll::OnCreateServerComm()
 	}
 }
 // 释放服务端通讯
-void CCommDll::OnDeleteServerComm()
+void CServerCommDll::OnDeleteServerComm()
 {
 	DELETEFN pfn = NULL;
 	pfn = (DELETEFN)GetProcAddress(m_hCommDll, "DeleteMatrixCommDll");
@@ -78,19 +78,19 @@ void CCommDll::OnDeleteServerComm()
 	}
 }
 // 初始化
-void CCommDll::OnInit(CString strPath)
+void CServerCommDll::OnInit(CString strPath)
 {
 	LoadMatrixCommDll(strPath);
 	OnCreateServerComm();
 }
 // 关闭
-void CCommDll::OnClose(void)
+void CServerCommDll::OnClose(void)
 {
 	OnDeleteServerComm();
 	FreeMatrixCommDll();
 }
 /** 命令字解析*/
-void CCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize, CCommRecThread* pRecThread)
+void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize, CCommRecThread* pRecThread)
 {
 	// 客户端登陆验证（帧内容为验证码）
 	if (usCmd == CmdClientConnect)

@@ -4,6 +4,7 @@
 // 初始化测线客户程序设置信息
 void OnInitLineClientXMLSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
+	InitializeCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	pLineSetupData->m_strLineXMLFilePath = "..\\parameter\\MatrixLine.XML";
 	pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread = NULL;
@@ -16,7 +17,6 @@ m_oLineSetupDataStruct* OnCreateLineAppSetupData(void)
 {
 	m_oLineSetupDataStruct* pLineSetupData = NULL;
 	pLineSetupData = new m_oLineSetupDataStruct;
-	InitializeCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 初始化测线客户程序设置信息
 	OnInitLineClientXMLSetupData(pLineSetupData);
 	return pLineSetupData;
@@ -456,7 +456,6 @@ void LoadSurvery(m_oSurveryStruct* pSurveryStruct,CXMLDOMElement* pElement)
 		str = CXMLDOMTool::GetElementAttributeString(pElement, strKey);
 		strConv = (CStringA)str;
 		pSurveryStruct->m_usReceiverSectionSize = (unsigned short)(strConv.size() + 1);
-		pSurveryStruct->m_pcReceiverSection = NULL;
 		pSurveryStruct->m_pcReceiverSection = new char[pSurveryStruct->m_usReceiverSectionSize];
 //		pSurveryStruct->m_pcReceiverSection = (char*)strConv.data();
 		memcpy(pSurveryStruct->m_pcReceiverSection, strConv.c_str(), pSurveryStruct->m_usReceiverSectionSize);
@@ -678,7 +677,7 @@ void SaveSurverySetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Survery设置数据
-void SetSurverySetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetSurverySetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oSurveryStruct oSurveryStruct;
 	unsigned int uiPos = 0;
@@ -690,13 +689,16 @@ void SetSurverySetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruc
 		memcpy(&oSurveryStruct.m_usReceiverSectionSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oSurveryStruct.m_pcReceiverSection = new char[oSurveryStruct.m_usReceiverSectionSize];
-		memcpy(&oSurveryStruct.m_pcReceiverSection, &pChar[uiPos], oSurveryStruct.m_usReceiverSectionSize);
+		memcpy(oSurveryStruct.m_pcReceiverSection, &pChar[uiPos], oSurveryStruct.m_usReceiverSectionSize);
 		uiPos += oSurveryStruct.m_usReceiverSectionSize;
 		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 		pLineSetupData->m_olsSurveryStruct.push_back(oSurveryStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveSurverySetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveSurverySetupData(pLineSetupData);
+	}
 }
 // 加载Point Code设置数据
 void LoadPointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement)
@@ -943,7 +945,7 @@ void SavePointCodeSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Point Code设置数据
-void SetPointCodeSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetPointCodeSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oPointCodeStruct oPointCodeStruct;
 	unsigned int uiPos = 0;
@@ -955,18 +957,21 @@ void SetPointCodeSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStr
 		memcpy(&oPointCodeStruct.m_usLabelSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oPointCodeStruct.m_pcLabel = new char[oPointCodeStruct.m_usLabelSize];
-		memcpy(&oPointCodeStruct.m_pcLabel, &pChar[uiPos], oPointCodeStruct.m_usLabelSize);
+		memcpy(oPointCodeStruct.m_pcLabel, &pChar[uiPos], oPointCodeStruct.m_usLabelSize);
 		uiPos += oPointCodeStruct.m_usLabelSize;
 		memcpy(&oPointCodeStruct.m_usSensorTypeSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oPointCodeStruct.m_pcSensorType = new char[oPointCodeStruct.m_usSensorTypeSize];
-		memcpy(&oPointCodeStruct.m_pcSensorType, &pChar[uiPos], oPointCodeStruct.m_usSensorTypeSize);
+		memcpy(oPointCodeStruct.m_pcSensorType, &pChar[uiPos], oPointCodeStruct.m_usSensorTypeSize);
 		uiPos += oPointCodeStruct.m_usSensorTypeSize;
 		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 		pLineSetupData->m_olsPointCodeStruct.push_back(oPointCodeStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SavePointCodeSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SavePointCodeSetupData(pLineSetupData);
+	}
 }
 // 加载Sensor设置数据
 void LoadSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement)
@@ -1232,7 +1237,7 @@ void SaveSensorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Sensor设置数据
-void SetSensorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetSensorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oSensorStruct oSensorStruct;
 	unsigned int uiPos = 0;
@@ -1244,7 +1249,7 @@ void SetSensorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct
 		memcpy(&oSensorStruct.m_usLabelSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oSensorStruct.m_pcLabel = new char[oSensorStruct.m_usLabelSize];
-		memcpy(&oSensorStruct.m_pcLabel, &pChar[uiPos], oSensorStruct.m_usLabelSize);
+		memcpy(oSensorStruct.m_pcLabel, &pChar[uiPos], oSensorStruct.m_usLabelSize);
 		uiPos += oSensorStruct.m_usLabelSize;
 		memcpy(&oSensorStruct.m_fContinuityMin, &pChar[uiPos], 4);
 		uiPos += 4;
@@ -1262,7 +1267,10 @@ void SetSensorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct
 		pLineSetupData->m_olsSensorStruct.push_back(oSensorStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveSensorSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveSensorSetupData(pLineSetupData);
+	}
 }
 // 加载Marker设置数据
 void LoadMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElement* pElement)
@@ -1517,7 +1525,7 @@ void SaveMarkerSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Marker设置数据
-void SetMarkerSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetMarkerSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oMarkerStruct oMarkerStruct;
 	unsigned int uiPos = 0;
@@ -1542,7 +1550,10 @@ void SetMarkerSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct
 		pLineSetupData->m_olsMarkerStruct.push_back(oMarkerStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveMarkerSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveMarkerSetupData(pLineSetupData);
+	}
 }
 // 加载Aux设置数据
 void LoadAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement)
@@ -1814,7 +1825,7 @@ void SaveAuxSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Aux设置数据
-void SetAuxSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetAuxSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oAuxStruct oAuxStruct;
 	unsigned int uiPos = 0;
@@ -1826,7 +1837,7 @@ void SetAuxSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* p
 		memcpy(&oAuxStruct.m_usLabelSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oAuxStruct.m_pcLabel = new char[oAuxStruct.m_usLabelSize];
-		memcpy(&oAuxStruct.m_pcLabel, &pChar[uiPos], oAuxStruct.m_usLabelSize);
+		memcpy(oAuxStruct.m_pcLabel, &pChar[uiPos], oAuxStruct.m_usLabelSize);
 		uiPos += oAuxStruct.m_usLabelSize;
 		memcpy(&oAuxStruct.m_uiBoxType, &pChar[uiPos], 4);
 		uiPos += 4;
@@ -1841,13 +1852,16 @@ void SetAuxSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* p
 		memcpy(&oAuxStruct.m_usCommentsSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oAuxStruct.m_pcComments = new char[oAuxStruct.m_usCommentsSize];
-		memcpy(&oAuxStruct.m_pcComments, &pChar[uiPos], oAuxStruct.m_usCommentsSize);
+		memcpy(oAuxStruct.m_pcComments, &pChar[uiPos], oAuxStruct.m_usCommentsSize);
 		uiPos += oAuxStruct.m_usCommentsSize;
 		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 		pLineSetupData->m_olsAuxStruct.push_back(oAuxStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveAuxSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveAuxSetupData(pLineSetupData);
+	}
 }
 // 加载Detour设置数据
 void LoadDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElement* pElement)
@@ -2102,7 +2116,7 @@ void SaveDetourSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Detour设置数据
-void SetDetourSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetDetourSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oDetourStruct oDetourStruct;
 	unsigned int uiPos = 0;
@@ -2127,7 +2141,10 @@ void SetDetourSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct
 		pLineSetupData->m_olsDetourStruct.push_back(oDetourStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveDetourSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveDetourSetupData(pLineSetupData);
+	}
 }
 // 加载Mute设置数据
 void LoadMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pElement)
@@ -2357,7 +2374,7 @@ void SaveMuteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Mute设置数据
-void SetMuteSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetMuteSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oMuteStruct oMuteStruct;
 	unsigned int uiPos = 0;
@@ -2372,7 +2389,10 @@ void SetMuteSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* 
 		pLineSetupData->m_olsMuteStruct.push_back(oMuteStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveMuteSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveMuteSetupData(pLineSetupData);
+	}
 }
 // 加载BlastMachine设置数据
 void LoadBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement* pElement)
@@ -2644,7 +2664,7 @@ void SaveBlastMachineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置BlastMachine设置数据
-void SetBlastMachineSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetBlastMachineSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oBlastMachineStruct oBlastMachineStruct;
 	unsigned int uiPos = 0;
@@ -2656,7 +2676,7 @@ void SetBlastMachineSetupData(char* pChar, unsigned int uiSize, m_oLineSetupData
 		memcpy(&oBlastMachineStruct.m_usLabelSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oBlastMachineStruct.m_pcLabel = new char[oBlastMachineStruct.m_usLabelSize];
-		memcpy(&oBlastMachineStruct.m_pcLabel, &pChar[uiPos], oBlastMachineStruct.m_usLabelSize);
+		memcpy(oBlastMachineStruct.m_pcLabel, &pChar[uiPos], oBlastMachineStruct.m_usLabelSize);
 		uiPos += oBlastMachineStruct.m_usLabelSize;
 		memcpy(&oBlastMachineStruct.m_uiBoxType, &pChar[uiPos], 4);
 		uiPos += 4;
@@ -2671,13 +2691,16 @@ void SetBlastMachineSetupData(char* pChar, unsigned int uiSize, m_oLineSetupData
 		memcpy(&oBlastMachineStruct.m_usCommentsSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oBlastMachineStruct.m_pcComments = new char[oBlastMachineStruct.m_usCommentsSize];
-		memcpy(&oBlastMachineStruct.m_pcComments, &pChar[uiPos], oBlastMachineStruct.m_usCommentsSize);
+		memcpy(oBlastMachineStruct.m_pcComments, &pChar[uiPos], oBlastMachineStruct.m_usCommentsSize);
 		uiPos += oBlastMachineStruct.m_usCommentsSize;
 		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 		pLineSetupData->m_olsBlastMachineStruct.push_back(oBlastMachineStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveBlastMachineSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveBlastMachineSetupData(pLineSetupData);
+	}
 }
 // 加载Absolute设置数据
 void LoadAbsolute(m_oAbsoluteStruct* pAbsoluteStruct,CXMLDOMElement* pElement)
@@ -3050,7 +3073,7 @@ void SaveAbsoluteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Absolute设置数据
-void SetAbsoluteSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetAbsoluteSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oAbsoluteStruct oAbsoluteStruct;
 	list<m_oAbsoluteStruct> olsAbsoluteStruct;
@@ -3072,12 +3095,12 @@ void SetAbsoluteSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStru
 			memcpy(&oAbsoluteStruct.m_usLabelSize, &pChar[uiPos], 2);
 			uiPos += 2;
 			oAbsoluteStruct.m_pcLabel = new char[oAbsoluteStruct.m_usLabelSize];
-			memcpy(&oAbsoluteStruct.m_pcLabel, &pChar[uiPos], oAbsoluteStruct.m_usLabelSize);
+			memcpy(oAbsoluteStruct.m_pcLabel, &pChar[uiPos], oAbsoluteStruct.m_usLabelSize);
 			uiPos += oAbsoluteStruct.m_usLabelSize;
 			memcpy(&oAbsoluteStruct.m_usAbsoluteSpreadSize, &pChar[uiPos], 2);
 			uiPos += 2;
 			oAbsoluteStruct.m_pcAbsoluteSpread = new char[oAbsoluteStruct.m_usAbsoluteSpreadSize];
-			memcpy(&oAbsoluteStruct.m_pcAbsoluteSpread, &pChar[uiPos], oAbsoluteStruct.m_usAbsoluteSpreadSize);
+			memcpy(oAbsoluteStruct.m_pcAbsoluteSpread, &pChar[uiPos], oAbsoluteStruct.m_usAbsoluteSpreadSize);
 			uiPos += oAbsoluteStruct.m_usAbsoluteSpreadSize;
 			olsAbsoluteStruct.push_back(oAbsoluteStruct);
 		}
@@ -3086,7 +3109,10 @@ void SetAbsoluteSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStru
 			map<unsigned int, list<m_oAbsoluteStruct>>::value_type (uiShotPoint, olsAbsoluteStruct));
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveAbsoluteSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveAbsoluteSetupData(pLineSetupData);
+	}
 }
 // 加载Generic设置数据
 void LoadGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMElement* pElement)
@@ -3344,7 +3370,7 @@ void SaveGenericSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Generic设置数据
-void SetGenericSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetGenericSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oGenericStruct oGenericStruct;
 	unsigned int uiPos = 0;
@@ -3356,23 +3382,26 @@ void SetGenericSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruc
 		memcpy(&oGenericStruct.m_usLabelSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oGenericStruct.m_pcLabel = new char[oGenericStruct.m_usLabelSize];
-		memcpy(&oGenericStruct.m_pcLabel, &pChar[uiPos], oGenericStruct.m_usLabelSize);
+		memcpy(oGenericStruct.m_pcLabel, &pChar[uiPos], oGenericStruct.m_usLabelSize);
 		uiPos += oGenericStruct.m_usLabelSize;
 		memcpy(&oGenericStruct.m_usLineSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oGenericStruct.m_pcLine = new char[oGenericStruct.m_usLineSize];
-		memcpy(&oGenericStruct.m_pcLine, &pChar[uiPos], oGenericStruct.m_usLineSize);
+		memcpy(oGenericStruct.m_pcLine, &pChar[uiPos], oGenericStruct.m_usLineSize);
 		uiPos += oGenericStruct.m_usLineSize;
 		memcpy(&oGenericStruct.m_usSpreadSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oGenericStruct.m_pcSpread = new char[oGenericStruct.m_usSpreadSize];
-		memcpy(&oGenericStruct.m_pcSpread, &pChar[uiPos], oGenericStruct.m_usSpreadSize);
+		memcpy(oGenericStruct.m_pcSpread, &pChar[uiPos], oGenericStruct.m_usSpreadSize);
 		uiPos += oGenericStruct.m_usSpreadSize;
 		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 		pLineSetupData->m_olsGenericStruct.push_back(oGenericStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveGenericSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveGenericSetupData(pLineSetupData);
+	}
 }
 // 加载Look设置数据
 void LoadLook(m_oLineSetupDataStruct* pLineSetupData)
@@ -3509,7 +3538,7 @@ void SaveLookSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Look设置数据
-void SetLookSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetLookSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	unsigned int uiPos = 0;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
@@ -3525,7 +3554,10 @@ void SetLookSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* 
 		uiPos += 4;
 	}
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
-	SaveLookSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveLookSetupData(pLineSetupData);
+	}
 }
 // 加载LAULeakage设置数据
 void LoadLAULeakage(m_oLineSetupDataStruct* pLineSetupData)
@@ -3647,7 +3679,7 @@ void SaveLAULeakageSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置LAULeakage设置数据
-void SetLAULeakageSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetLAULeakageSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	unsigned int uiPos = 0;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
@@ -3657,7 +3689,10 @@ void SetLAULeakageSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataSt
 		uiPos += 4;
 	}
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
-	SaveLAULeakageSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveLAULeakageSetupData(pLineSetupData);
+	}
 }
 // 加载FormLine设置数据
 void LoadFormLine(m_oFormLineStruct* pFormLineStruct,CXMLDOMElement* pElement)
@@ -3890,7 +3925,7 @@ void SaveFormLineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置FormLine设置数据
-void SetFormLineSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetFormLineSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oFormLineStruct oFormLineStruct;
 	unsigned int uiPos = 0;
@@ -3907,7 +3942,10 @@ void SetFormLineSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStru
 		pLineSetupData->m_olsFormLineStruct.push_back(oFormLineStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveFormLineSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveFormLineSetupData(pLineSetupData);
+	}
 }
 // 加载Instrument_SensorTestBase设置数据
 void LoadInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument_SensorTestBaseStruct,
@@ -4227,7 +4265,7 @@ void SaveInstrument_SensorTestBaseSetupData(bool bInstrument, m_oLineSetupDataSt
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Instrument_SensorTestBase设置数据
-void SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
+void SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oInstrumentTestBaseStruct oInstrument_SensorTestBaseStruct;
 	unsigned int uiPos = 0;
@@ -4241,7 +4279,7 @@ void SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, boo
 		memcpy(&oInstrument_SensorTestBaseStruct.m_usDescrSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oInstrument_SensorTestBaseStruct.m_pcDescr = new char[oInstrument_SensorTestBaseStruct.m_usDescrSize];
-		memcpy(&oInstrument_SensorTestBaseStruct.m_pcDescr, &pChar[uiPos], oInstrument_SensorTestBaseStruct.m_usDescrSize);
+		memcpy(oInstrument_SensorTestBaseStruct.m_pcDescr, &pChar[uiPos], oInstrument_SensorTestBaseStruct.m_usDescrSize);
 		uiPos += oInstrument_SensorTestBaseStruct.m_usDescrSize;
 		memcpy(&oInstrument_SensorTestBaseStruct.m_uiTestType, &pChar[uiPos], 4);
 		uiPos += 4;
@@ -4268,7 +4306,10 @@ void SetInstrument_SensorTestBaseSetupData(char* pChar, unsigned int uiSize, boo
 		}
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveInstrument_SensorTestBaseSetupData(bInstrument, pLineSetupData);
+	if (bSave == true)
+	{
+		SaveInstrument_SensorTestBaseSetupData(bInstrument, pLineSetupData);
+	}
 }
 // 加载Instrument_SensorTestLimit设置数据
 void LoadInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrument_SensorTestLimitStruct,CXMLDOMElement* pElement)
@@ -4573,7 +4614,7 @@ void SaveInstrument_SensorTestLimitSetupData(bool bInstrument, m_oLineSetupDataS
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Instrument_SensorTestLimit设置数据
-void SetInstrument_SensorTestLimitSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
+void SetInstrument_SensorTestLimitSetupData(char* pChar, unsigned int uiSize, bool bInstrument, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oInstrumentTestLimitStruct oInstrument_SensorTestLimitStruct;
 	unsigned int uiPos = 0;
@@ -4585,12 +4626,12 @@ void SetInstrument_SensorTestLimitSetupData(char* pChar, unsigned int uiSize, bo
 		memcpy(&oInstrument_SensorTestLimitStruct.m_usDescrSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oInstrument_SensorTestLimitStruct.m_pcDescr = new char[oInstrument_SensorTestLimitStruct.m_usDescrSize];
-		memcpy(&oInstrument_SensorTestLimitStruct.m_pcDescr, &pChar[uiPos], oInstrument_SensorTestLimitStruct.m_usDescrSize);
+		memcpy(oInstrument_SensorTestLimitStruct.m_pcDescr, &pChar[uiPos], oInstrument_SensorTestLimitStruct.m_usDescrSize);
 		uiPos += oInstrument_SensorTestLimitStruct.m_usDescrSize;
 		memcpy(&oInstrument_SensorTestLimitStruct.m_usUnitSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oInstrument_SensorTestLimitStruct.m_pcUnit = new char[oInstrument_SensorTestLimitStruct.m_usUnitSize];
-		memcpy(&oInstrument_SensorTestLimitStruct.m_pcUnit, &pChar[uiPos], oInstrument_SensorTestLimitStruct.m_usUnitSize);
+		memcpy(oInstrument_SensorTestLimitStruct.m_pcUnit, &pChar[uiPos], oInstrument_SensorTestLimitStruct.m_usUnitSize);
 		uiPos += oInstrument_SensorTestLimitStruct.m_usUnitSize;
 		memcpy(&oInstrument_SensorTestLimitStruct.m_uiTestAim, &pChar[uiPos], 4);
 		uiPos += 4;
@@ -4610,7 +4651,10 @@ void SetInstrument_SensorTestLimitSetupData(char* pChar, unsigned int uiSize, bo
 		}
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveInstrument_SensorTestLimitSetupData(bInstrument, pLineSetupData);
+	if (bSave == true)
+	{
+		SaveInstrument_SensorTestLimitSetupData(bInstrument, pLineSetupData);
+	}
 }
 // 加载Instrument Test设置数据
 void LoadInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct,CXMLDOMElement* pElement)
@@ -4876,7 +4920,7 @@ void SaveInstrumentTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Instrument Test设置数据
-void SetInstrumentTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetInstrumentTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oInstrumentTestStruct oInstrumentTestStruct;
 	unsigned int uiPos = 0;
@@ -4896,19 +4940,22 @@ void SetInstrumentTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDa
 		memcpy(&oInstrumentTestStruct.m_usAuxiliaryDescrSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oInstrumentTestStruct.m_pcAuxiliaryDescr = new char[oInstrumentTestStruct.m_usAuxiliaryDescrSize];
-		memcpy(&oInstrumentTestStruct.m_pcAuxiliaryDescr, &pChar[uiPos], oInstrumentTestStruct.m_usAuxiliaryDescrSize);
+		memcpy(oInstrumentTestStruct.m_pcAuxiliaryDescr, &pChar[uiPos], oInstrumentTestStruct.m_usAuxiliaryDescrSize);
 		uiPos += oInstrumentTestStruct.m_usAuxiliaryDescrSize;
 		memcpy(&oInstrumentTestStruct.m_usAbsoluteSpreadSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oInstrumentTestStruct.m_pcAbsoluteSpread = new char[oInstrumentTestStruct.m_usAbsoluteSpreadSize];
-		memcpy(&oInstrumentTestStruct.m_pcAbsoluteSpread, &pChar[uiPos], oInstrumentTestStruct.m_usAbsoluteSpreadSize);
+		memcpy(oInstrumentTestStruct.m_pcAbsoluteSpread, &pChar[uiPos], oInstrumentTestStruct.m_usAbsoluteSpreadSize);
 		uiPos += oInstrumentTestStruct.m_usAbsoluteSpreadSize;
 
 		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 		pLineSetupData->m_olsInstrumentTestStruct.push_back(oInstrumentTestStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveInstrumentTestSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveInstrumentTestSetupData(pLineSetupData);
+	}
 }
 // 加载Sensor Test设置数据
 void LoadSensorTest(m_oSensorTestStruct* pSensorTestStruct,CXMLDOMElement* pElement)
@@ -5153,7 +5200,7 @@ void SaveSensorTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Sensor Test设置数据
-void SetSensorTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetSensorTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oSensorTestStruct oSensorTestStruct;
 	unsigned int uiPos = 0;
@@ -5169,14 +5216,17 @@ void SetSensorTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataSt
 		memcpy(&oSensorTestStruct.m_usAbsoluteSpreadSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oSensorTestStruct.m_pcAbsoluteSpread = new char[oSensorTestStruct.m_usAbsoluteSpreadSize];
-		memcpy(&oSensorTestStruct.m_pcAbsoluteSpread, &pChar[uiPos], oSensorTestStruct.m_usAbsoluteSpreadSize);
+		memcpy(oSensorTestStruct.m_pcAbsoluteSpread, &pChar[uiPos], oSensorTestStruct.m_usAbsoluteSpreadSize);
 		uiPos += oSensorTestStruct.m_usAbsoluteSpreadSize;
 
 		EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 		pLineSetupData->m_olsSensorTestStruct.push_back(oSensorTestStruct);
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveSensorTestSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveSensorTestSetupData(pLineSetupData);
+	}
 }
 // 加载Multiple Test设置数据
 void LoadMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDOMElement* pElement)
@@ -5595,7 +5645,7 @@ void SaveMultipleTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置Multiple Test设置数据
-void SetMultipleTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetMultipleTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	m_oMultipleTestKeyStruct oMultipleTestKeyStruct;
 	m_oMultipleTestTaskStruct oMultipleTestTaskStruct;
@@ -5610,17 +5660,17 @@ void SetMultipleTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupData
 		memcpy(&oMultipleTestKeyStruct.m_usTestNameSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oMultipleTestKeyStruct.m_pcTestName = new char[oMultipleTestKeyStruct.m_usTestNameSize];
-		memcpy(&oMultipleTestKeyStruct.m_pcTestName, &pChar[uiPos], oMultipleTestKeyStruct.m_usTestNameSize);
+		memcpy(oMultipleTestKeyStruct.m_pcTestName, &pChar[uiPos], oMultipleTestKeyStruct.m_usTestNameSize);
 		uiPos += oMultipleTestKeyStruct.m_usTestNameSize;
 		memcpy(&oMultipleTestKeyStruct.m_usAuxiliaryDescrSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oMultipleTestKeyStruct.m_pcAuxiliaryDescr = new char[oMultipleTestKeyStruct.m_usAuxiliaryDescrSize];
-		memcpy(&oMultipleTestKeyStruct.m_pcAuxiliaryDescr, &pChar[uiPos], oMultipleTestKeyStruct.m_usAuxiliaryDescrSize);
+		memcpy(oMultipleTestKeyStruct.m_pcAuxiliaryDescr, &pChar[uiPos], oMultipleTestKeyStruct.m_usAuxiliaryDescrSize);
 		uiPos += oMultipleTestKeyStruct.m_usAuxiliaryDescrSize;
 		memcpy(&oMultipleTestKeyStruct.m_usAbsoluteSpreadSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		oMultipleTestKeyStruct.m_pcAbsoluteSpread = new char[oMultipleTestKeyStruct.m_usAbsoluteSpreadSize];
-		memcpy(&oMultipleTestKeyStruct.m_pcAbsoluteSpread, &pChar[uiPos], oMultipleTestKeyStruct.m_usAbsoluteSpreadSize);
+		memcpy(oMultipleTestKeyStruct.m_pcAbsoluteSpread, &pChar[uiPos], oMultipleTestKeyStruct.m_usAbsoluteSpreadSize);
 		uiPos += oMultipleTestKeyStruct.m_usAbsoluteSpreadSize;
 		memcpy(&oMultipleTestKeyStruct.m_uiDelayBetweenTest, &pChar[uiPos], 4);
 		uiPos += 4;
@@ -5652,7 +5702,10 @@ void SetMultipleTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupData
 			map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::value_type (oMultipleTestKeyStruct, olsMultipleTestTaskStruct));
 		LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	}
-	SaveMultipleTestSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveMultipleTestSetupData(pLineSetupData);
+	}
 }
 // 加载SeisMonitor设置数据
 void LoadSeisMonitor(m_oLineSetupDataStruct* pLineSetupData)
@@ -5787,7 +5840,7 @@ void SaveSeisMonitorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
 }
 // 设置SeisMonitor设置数据
-void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData)
+void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave)
 {
 	unsigned int uiPos = 0;
 	OnResetSeisMonitor(pLineSetupData);
@@ -5797,12 +5850,15 @@ void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataS
 		memcpy(&pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize, &pChar[uiPos], 2);
 		uiPos += 2;
 		pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread = new char[pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize];
-		memcpy(&pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread, &pChar[uiPos], 
+		memcpy(pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread, &pChar[uiPos], 
 			pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize);
 		uiPos += pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize;
 	}
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
-	SaveSeisMonitorSetupData(pLineSetupData);
+	if (bSave == true)
+	{
+		SaveSeisMonitorSetupData(pLineSetupData);
+	}
 }
 // 加载测线客户端程序设置数据
 void LoadLineAppSetupData(m_oLineSetupDataStruct* pLineSetupData)

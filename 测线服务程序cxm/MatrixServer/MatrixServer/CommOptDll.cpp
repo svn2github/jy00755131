@@ -17,7 +17,8 @@ void CCommOptDll::OnInit(CString strPath)
 {
 	m_pMatrixOpt = new CMatrixOptDllCall;
 	m_pMatrixOpt->LoadMatrixServerDll(strPath);
-	m_pOptSetupData = m_pMatrixOpt->Dll_Create_Instance();
+	m_pOptSetupData = new m_oOptSetupDataStruct;
+	m_pMatrixOpt->Dll_Init_Instance(m_pOptSetupData);
 }
 // 关闭
 void CCommOptDll::OnClose(void)
@@ -34,9 +35,9 @@ void CCommOptDll::OnProcQueryDelayOptXMLInfo(CCommRecThread* pRecThread, unsigne
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 设置 OperationDelay XML文件信息
-void CCommOptDll::OnProcSetDelayOptXMLInfo(char* pChar, unsigned int uiSize)
+void CCommOptDll::OnProcSetDelayOptXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixOpt->Dll_SetDelaySetupData(pChar, uiSize, m_pOptSetupData);
+	m_pMatrixOpt->Dll_SetDelaySetupData(pChar, uiSize, m_pOptSetupData, bSave);
 }
 // 查询 炮表 XML文件信息
 void CCommOptDll::OnProcQuerySourceShotOptXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
@@ -46,9 +47,9 @@ void CCommOptDll::OnProcQuerySourceShotOptXMLInfo(CCommRecThread* pRecThread, un
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 设置 炮表 XML文件信息
-void CCommOptDll::OnProcSetSourceShotOptXMLInfo(char* pChar, unsigned int uiSize)
+void CCommOptDll::OnProcSetSourceShotOptXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixOpt->Dll_SetSourceShotSetupData(pChar, uiSize, m_pOptSetupData);
+	m_pMatrixOpt->Dll_SetSourceShotSetupData(pChar, uiSize, m_pOptSetupData, bSave);
 }
 // 查询 Explo震源类型 XML文件信息
 void CCommOptDll::OnProcQueryExploOptXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
@@ -58,9 +59,9 @@ void CCommOptDll::OnProcQueryExploOptXMLInfo(CCommRecThread* pRecThread, unsigne
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 设置 Explo震源类型 XML文件信息
-void CCommOptDll::OnProcSetExploOptXMLInfo(char* pChar, unsigned int uiSize)
+void CCommOptDll::OnProcSetExploOptXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixOpt->Dll_SetExploSetupData(pChar, uiSize, m_pOptSetupData);
+	m_pMatrixOpt->Dll_SetExploSetupData(pChar, uiSize, m_pOptSetupData, bSave);
 }
 // 查询 Vibro震源类型 XML文件信息
 void CCommOptDll::OnProcQueryVibroOptXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
@@ -70,9 +71,9 @@ void CCommOptDll::OnProcQueryVibroOptXMLInfo(CCommRecThread* pRecThread, unsigne
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 设置 Vibro震源类型 XML文件信息
-void CCommOptDll::OnProcSetVibroOptXMLInfo(char* pChar, unsigned int uiSize)
+void CCommOptDll::OnProcSetVibroOptXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixOpt->Dll_SetVibroSetupData(pChar, uiSize, m_pOptSetupData);
+	m_pMatrixOpt->Dll_SetVibroSetupData(pChar, uiSize, m_pOptSetupData, bSave);
 }
 // 查询 ProcessRecord XML文件信息
 void CCommOptDll::OnProcQueryProcessRecordOptXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
@@ -82,9 +83,9 @@ void CCommOptDll::OnProcQueryProcessRecordOptXMLInfo(CCommRecThread* pRecThread,
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 设置 ProcessRecord XML文件信息
-void CCommOptDll::OnProcSetProcessRecordOptXMLInfo(char* pChar, unsigned int uiSize)
+void CCommOptDll::OnProcSetProcessRecordOptXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixOpt->Dll_SetProcessRecordSetupData(pChar, uiSize, m_pOptSetupData);
+	m_pMatrixOpt->Dll_SetProcessRecordSetupData(pChar, uiSize, m_pOptSetupData, bSave);
 }
 // 查询 ProcessAux XML文件信息
 void CCommOptDll::OnProcQueryProcessAuxOptXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
@@ -94,9 +95,9 @@ void CCommOptDll::OnProcQueryProcessAuxOptXMLInfo(CCommRecThread* pRecThread, un
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 设置 ProcessAux XML文件信息
-void CCommOptDll::OnProcSetProcessAuxOptXMLInfo(char* pChar, unsigned int uiSize)
+void CCommOptDll::OnProcSetProcessAuxOptXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixOpt->Dll_SetProcessAuxSetupData(pChar, uiSize, m_pOptSetupData);
+	m_pMatrixOpt->Dll_SetProcessAuxSetupData(pChar, uiSize, m_pOptSetupData, bSave);
 }
 // 查询 ProcessAcq XML文件信息
 void CCommOptDll::OnProcQueryProcessAcqOptXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
@@ -106,9 +107,9 @@ void CCommOptDll::OnProcQueryProcessAcqOptXMLInfo(CCommRecThread* pRecThread, un
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 设置 ProcessAcq XML文件信息
-void CCommOptDll::OnProcSetProcessAcqOptXMLInfo(char* pChar, unsigned int uiSize)
+void CCommOptDll::OnProcSetProcessAcqOptXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixOpt->Dll_SetProcessAcqSetupData(pChar, uiSize, m_pOptSetupData);
+	m_pMatrixOpt->Dll_SetProcessAcqSetupData(pChar, uiSize, m_pOptSetupData, bSave);
 }
 // 查询 ProcessType XML文件信息
 void CCommOptDll::OnProcQueryProcessTypeOptXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
@@ -118,9 +119,9 @@ void CCommOptDll::OnProcQueryProcessTypeOptXMLInfo(CCommRecThread* pRecThread, u
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 设置 ProcessType XML文件信息
-void CCommOptDll::OnProcSetProcessTypeOptXMLInfo(char* pChar, unsigned int uiSize)
+void CCommOptDll::OnProcSetProcessTypeOptXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixOpt->Dll_SetProcessTypeSetupData(pChar, uiSize, m_pOptSetupData);
+	m_pMatrixOpt->Dll_SetProcessTypeSetupData(pChar, uiSize, m_pOptSetupData, bSave);
 }
 // 查询 注释 XML文件信息
 void CCommOptDll::OnProcQueryCommentsOptXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd)
@@ -130,7 +131,7 @@ void CCommOptDll::OnProcQueryCommentsOptXMLInfo(CCommRecThread* pRecThread, unsi
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 设置 注释 XML文件信息
-void CCommOptDll::OnProcSetCommentsOptXMLInfo(char* pChar, unsigned int uiSize)
+void CCommOptDll::OnProcSetCommentsOptXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixOpt->Dll_SetCommentsSetupData(pChar, uiSize, m_pOptSetupData);
+	m_pMatrixOpt->Dll_SetCommentsSetupData(pChar, uiSize, m_pOptSetupData, bSave);
 }
