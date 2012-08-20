@@ -741,6 +741,14 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 		return;
 	}
 	CString str = _T("");
+	if (pEnv->m_bFieldOn == true)
+	{
+		// 将FieldOff时间写入配置文件
+		EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_oTimeFieldOff = CTime::GetCurrentTime();
+		LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
+		SaveServerParameterSetupData(pEnv->m_pInstrumentCommInfo->m_pServerSetupData);
+	}
 	// 线程关闭标志位为true
 	EnterCriticalSection(&pEnv->m_pLogOutPutThread->m_oSecLogOutPutThread);
 	pEnv->m_pLogOutPutThread->m_pThread->m_bClose = true;

@@ -292,7 +292,7 @@ void CMatrixServerDlg::OnBnClickedBtnGetsnbylocation()
 	CString str = _T("");
 	bool bFind = false;
 	EnterCriticalSection(&m_oMatrixDllCall.m_pEnv->m_pLineList->m_oSecLineList);
-	pInstrument = m_oMatrixDllCall.m_oMatrixLine.Dll_GetInstrumentFromLocationMap(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
+	pInstrument = m_oMatrixDllCall.m_oMatrixServer.Dll_GetInstrumentFromLocationMap(GetDlgItemInt(IDC_EDIT_LINEINDEX), 
 		GetDlgItemInt(IDC_EDIT_POINTINDEX), &m_oMatrixDllCall.m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (pInstrument != NULL)
 	{

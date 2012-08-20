@@ -272,53 +272,163 @@ void CMainFrame::OnClose()
 
 LRESULT CMainFrame::OnMsgClient(WPARAM wParam, LPARAM lParam)
 {
+	CString str = _T("");
 	switch(wParam)
 	{
 	case CmdClientConnect:
 		m_wndOutput.m_wndOutputBuild.AddString(_T("Connect to Server!"));
-// 		// 查询 OperationDelay XML文件信息（帧内容为空）
-// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryDelayOptXMLInfo, NULL, 0);
-// 		// 查询 炮表 XML文件信息（帧内容为空）
-// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySourceShotOptXMLInfo, NULL, 0);
-// 		// 查询 Explo震源类型 XML文件信息（帧内容为空）
-// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryExploOptXMLInfo, NULL, 0);
-// 		// 查询 Vibro震源类型 XML文件信息（帧内容为空）
-// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryVibroOptXMLInfo, NULL, 0);
-// 		// 查询 ProcessRecord XML文件信息（帧内容为空）
-// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessRecordOptXMLInfo, NULL, 0);
-// 		// 查询 ProcessAux XML文件信息（帧内容为空）
-// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessAuxOptXMLInfo, NULL, 0);
-// 		// 查询 ProcessAcq XML文件信息（帧内容为空）
-// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessAcqOptXMLInfo, NULL, 0);
-// 		// 查询 ProcessType XML文件信息（帧内容为空）
-// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryProcessTypeOptXMLInfo, NULL, 0);
-// 		// 查询 注释 XML文件信息（帧内容为空）
-// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryCommentsOptXMLInfo, NULL, 0);
-// 		break;
-// 	case CmdSetDelayOptXMLInfo:
-// 		m_wndOutput.AppendLog(_T("Receive the information of delay setup !"));
-// 		break;
-// 	case CmdSetSourceShotOptXMLInfo:
-// 		m_wndOutput.AppendLog(_T("Receive the information of source shot setup !"));
-// 		break;
-// 	case CmdSetExploOptXMLInfo:
-// 		m_wndOutput.AppendLog(_T("Receive the information of explo setup !"));
-// 		break;
-// 	case CmdSetVibroOptXMLInfo:
-// 		m_wndOutput.AppendLog(_T("Receive the information of vibro setup !"));
-// 		break;
-// 	case CmdSetProcessRecordOptXMLInfo:
-// 		break;
-// 	case CmdSetProcessAuxOptXMLInfo:
-// 		break;
-// 	case CmdSetProcessAcqOptXMLInfo:
-// 		break;
-// 	case CmdSetProcessTypeOptXMLInfo:
-// 		m_wndOutput.AppendLog(_T("Receive the information of process setup !"));
-// 		break;
-// 	case CmdSetCommentsOptXMLInfo:
-// 		m_wndOutput.AppendLog(_T("Receive the information of comments setup !"));
-// 		break;
+		// 查询接收区域（帧内容为行数（4个字节）+列数（4个字节））
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryRevSection, NULL, 0);
+		// 查询 SurveyXML 文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySurveyXMLInfo, NULL, 0);
+		// 查询 PointCode 文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryPointCodeXMLInfo, NULL, 0);
+		// 查询 Sensor XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySensorXMLInfo, NULL, 0);
+		// 查询 Marker XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryMarkerXMLInfo, NULL, 0);
+		// 查询 Aux XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryAuxXMLInfo, NULL, 0);
+		// 查询 Detour XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryDetourXMLInfo, NULL, 0);
+		// 查询 Mute XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryMuteXMLInfo, NULL, 0);
+		// 查询 BlastMachine XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryBlastMachineXMLInfo, NULL, 0);
+		// 查询 Absolute XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryAbsoluteXMLInfo, NULL, 0);
+		// 查询 Generic XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryGenericXMLInfo, NULL, 0);
+		// 查询 Look XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryLookXMLInfo, NULL, 0);
+		// 查询 InstrumentTestBase XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryInstrumentTestBaseXMLInfo, NULL, 0);
+		// 查询 SensorTestBase XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySensorTestBaseXMLInfo, NULL, 0);
+		// 查询 InstrumentTestLimit XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryInstrumentTestLimitXMLInfo, NULL, 0);
+		// 查询 SensorTestLimit XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySensorTestLimitXMLInfo, NULL, 0);
+		// 查询 InstrumentTest XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryInstrumentTestXMLInfo, NULL, 0);
+		// 查询 SensorTest XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySensorTestXMLInfo, NULL, 0);
+		// 查询 MultipleTest XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryMultipleTestXMLInfo, NULL, 0);
+		// 查询 SeisMonitorTest XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySeisMonitorTestXMLInfo, NULL, 0);
+		// 查询 LAULeakage XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryLAULeakageXMLInfo, NULL, 0);
+		// 查询 FormLine XML文件信息
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryFormLineXMLInfo, NULL, 0);
+
+		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdSetFieldOn, NULL, 0);
+		break;
+		// 查询接收区域
+	case CmdQueryRevSection:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the size of receive section!"));
+		break;
+	case CmdSetFieldOn:
+		// 上电
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the command of Field On return!"));
+		break;
+	case CmdSetFieldOff:
+		// 断电
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the command of Field On return!"));
+		break;
+		// Field On需要等待的时间（帧内容为执行FieldOn剩余时间，为0表示无需等待）
+	case CmdFieldOnWaitTime:
+		str.Format(_T("Field on needs to wait about %ds!"), lParam);
+		m_wndOutput.m_wndOutputBuild.AddString(str);
+		if (lParam != 0)
+		{
+			AfxMessageBox(str);
+		}
+		break;
+		// 设置 SurveyXML 文件信息（帧内容为信息结构体）
+	case CmdSetSurveyXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of survey setup!"));
+		break;
+		// 设置 PointCode XML文件信息（帧内容为信息结构体）
+	case CmdSetPointCodeXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of point code setup!"));
+		break;
+		// 设置 Sensor XML文件信息（帧内容为信息结构体）
+	case CmdSetSensorXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of sensor setup!"));
+		break;
+		// 设置 Marker XML文件信息（帧内容为信息结构体）
+	case CmdSetMarkerXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of marker setup!"));
+		break;
+		// 设置 Aux XML文件信息（帧内容为信息结构体）
+	case CmdSetAuxXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of aux setup!"));
+		break;
+		// 设置 Detour XML文件信息（帧内容为信息结构体）
+	case CmdSetDetourXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of detour setup!"));
+		break;
+		// 设置 Mute XML文件信息（帧内容为信息结构体）
+	case CmdSetMuteXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of mute setup!"));
+		break;
+		// 设置 BlastMachine XML文件信息（帧内容为信息结构体）
+	case CmdSetBlastMachineXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of blastmachine setup!"));
+		break;
+		// 设置 Absolute XML文件信息（帧内容为信息结构体）
+	case CmdSetAbsoluteXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of absolute setup!"));
+		break;
+		// 设置 Generic XML文件信息（帧内容为信息结构体）
+	case CmdSetGenericXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of generic setup!"));
+		break;
+		// 设置 Look XML文件信息（帧内容为信息结构体）
+	case CmdSetLookXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of look setup!"));
+		break;
+		// 设置 InstrumentTestBase XML文件信息（帧内容为信息结构体）
+	case CmdSetInstrumentTestBaseXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of instrument test base setup!"));
+		break;
+		// 设置 SensorTestBase XML文件信息（帧内容为信息结构体）
+	case CmdSetSensorTestBaseXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of sensor test base setup!"));
+		break;
+		// 设置 InstrumentTestLimit XML文件信息（帧内容为信息结构体）
+	case CmdSetInstrumentTestLimitXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of instrument test limit setup!"));
+		break;
+	case CmdSetSensorTestLimitXMLInfo:
+		// 设置 SensorTestLimit XML文件信息（帧内容为信息结构体）
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of sensor test limit setup!"));
+		break;
+		// 设置 InstrumentTest XML文件信息（帧内容为信息结构体）
+	case CmdSetInstrumentTestXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of instrument test setup!"));
+		break;
+		// 设置 SensorTest XML文件信息（帧内容为信息结构体）
+	case CmdSetSensorTestXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of sensor test setup!"));
+		break;
+		// 设置 MultipleTest XML文件信息（帧内容为信息结构体）
+	case CmdSetMultipleTestXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of multiple test setup!"));
+		break;
+		// 设置 SeisMonitorTest XML文件信息（帧内容为信息结构体）
+	case CmdSetSeisMonitorTestXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of seismonitor setup!"));
+		break;
+		// 设置 LAULeakage XML文件信息（帧内容为信息结构体）
+	case CmdSetLAULeakageXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of lauleakage setup!"));
+		break;
+		// 设置 FormLine XML文件信息（帧内容为信息结构体）
+	case CmdSetFormLineXMLInfo:
+		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of form line setup!"));
+		break;
 	default:
 		break;
 	}

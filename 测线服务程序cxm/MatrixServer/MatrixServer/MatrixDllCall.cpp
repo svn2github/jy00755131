@@ -114,7 +114,6 @@ void CMatrixDllCall::OnInit(CString strPath)
 	Dll_Create_Instance();
 	m_oMatrixServer.m_pEnv = m_pEnv;
 	m_oMatrixServer.m_hDllMod = m_hDllMod;
-	m_oMatrixLine.m_pEnv = m_pEnv;
 	m_oMatrixLine.m_hDllMod = m_hDllMod;
 	m_oMatrixOpt.m_hDllMod = m_hDllMod;
 	// DLL ÷∂Ø…Ë÷√AD

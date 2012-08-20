@@ -95,72 +95,184 @@ void CLineCommDll::OnClose(void)
 /** 接收帧命令字处理*/
 void CLineCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize, CCommRecThread* pRecThread)
 {
-// 	switch (usCmd)
-// 	{
-// 		// 查询 OperationDelay XML文件信息
-// 	case CmdQueryDelayOptXMLInfo:
-// 		// 设置 OperationDelay XML文件信息
-// 	case CmdSetDelayOptXMLInfo:
-// 		m_oXMLDllOpt.OnProcSetDelayOptXMLInfo(pChar, uiSize, false);
-// 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetDelayOptXMLInfo, 0);
-// 		break;
-// 		// 查询 炮表 XML文件信息
-// 	case CmdQuerySourceShotOptXMLInfo:
-// 		// 设置 炮表 XML文件信息
-// 	case CmdSetSourceShotOptXMLInfo:
-// 		m_oXMLDllOpt.OnProcSetSourceShotOptXMLInfo(pChar, uiSize, false);
-// 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetSourceShotOptXMLInfo, 0);
-// 		break;
-// 		// 查询 Explo震源类型 XML文件信息
-// 	case CmdQueryExploOptXMLInfo:
-// 		// 设置 Explo震源类型 XML文件信息
-// 	case CmdSetExploOptXMLInfo:
-// 		m_oXMLDllOpt.OnProcSetExploOptXMLInfo(pChar, uiSize, false);
-// 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetExploOptXMLInfo, 0);
-// 		break;
-// 		// 查询 Vibro震源类型 XML文件信息
-// 	case CmdQueryVibroOptXMLInfo:
-// 		// 设置 Vibro震源类型 XML文件信息
-// 	case CmdSetVibroOptXMLInfo:
-// 		m_oXMLDllOpt.OnProcSetVibroOptXMLInfo(pChar, uiSize, false);
-// 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetVibroOptXMLInfo, 0);
-// 		break;
-// 		// 查询 ProcessRecord XML文件信息
-// 	case CmdQueryProcessRecordOptXMLInfo:
-// 		// 设置 ProcessRecord XML文件信息
-// 	case CmdSetProcessRecordOptXMLInfo:
-// 		m_oXMLDllOpt.OnProcSetProcessRecordOptXMLInfo(pChar, uiSize, false);
-// 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetProcessRecordOptXMLInfo, 0);
-// 		break;
-// 		// 查询 ProcessAux XML文件信息
-// 	case CmdQueryProcessAuxOptXMLInfo:
-// 		// 设置 ProcessAux XML文件信息
-// 	case CmdSetProcessAuxOptXMLInfo:
-// 		m_oXMLDllOpt.OnProcSetProcessAuxOptXMLInfo(pChar, uiSize, false);
-// 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetProcessAuxOptXMLInfo, 0);
-// 		break;
-// 		// 查询 ProcessAcq XML文件信息
-// 	case CmdQueryProcessAcqOptXMLInfo:
-// 		// 设置 ProcessAcq XML文件信息
-// 	case CmdSetProcessAcqOptXMLInfo:
-// 		m_oXMLDllOpt.OnProcSetProcessAcqOptXMLInfo(pChar, uiSize, false);
-// 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetProcessAcqOptXMLInfo, 0);
-// 		break;
-// 		// 查询 ProcessType XML文件信息
-// 	case CmdQueryProcessTypeOptXMLInfo:
-// 		// 设置 ProcessType XML文件信息
-// 	case CmdSetProcessTypeOptXMLInfo:
-// 		m_oXMLDllOpt.OnProcSetProcessTypeOptXMLInfo(pChar, uiSize, false);
-// 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetProcessTypeOptXMLInfo, 0);
-// 		break;
-// 		// 查询 注释 XML文件信息
-// 	case CmdQueryCommentsOptXMLInfo:
-// 		// 设置 注释 XML文件信息
-// 	case CmdSetCommentsOptXMLInfo:
-// 		m_oXMLDllOpt.OnProcSetCommentsOptXMLInfo(pChar, uiSize, false);
-// 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetCommentsOptXMLInfo, 0);
-// 		break;
-// 	default:
-// 		break;
-// 	}
+	unsigned int uiFieldOnLeftTime = 0;
+	switch (usCmd)
+	{
+		// 查询接收区域（帧内容为行数（4个字节）+列数（4个字节））
+	case CmdQueryRevSection:
+		memcpy(&m_oXMLDllLine.m_uiLineNum, &pChar[0], 4);
+		memcpy(&m_oXMLDllLine.m_uiColumnNum, &pChar[4], 4);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdQueryRevSection, 0);
+		break;
+		// 上电
+	case CmdSetFieldOn:
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetFieldOn, 0);
+		break;
+		// 断电
+	case CmdSetFieldOff:
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetFieldOff, 0);
+		break;
+		// Field On需要等待的时间（帧内容为执行FieldOn剩余时间，为0表示无需等待）
+	case CmdFieldOnWaitTime:
+		memcpy(&uiFieldOnLeftTime, pChar, uiSize);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdFieldOnWaitTime, uiFieldOnLeftTime);
+		// @@@@查询所选仪器全部信息（帧内容为行号+区域号）
+	case CmdQueryInstrumentInfo:
+		break;
+		// @@@@查询全部仪器的全部信息（帧内容为仪器结构体）
+	case CmdQueryInstrumentInfoAll:
+		break;
+		// @@@@查询Update Table（帧内容为行号+区域号+ 仪器SN+仪器IP，SN = 0表明无仪器）
+	case CmdQueryUpdateTable:
+		break;
+		// 查询 SurveyXML 文件信息
+	case CmdQuerySurveyXMLInfo:
+		// 设置 SurveyXML 文件信息
+	case CmdSetSurveyXMLInfo:
+		m_oXMLDllLine.OnProcSetSurveyXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetSurveyXMLInfo, 0);
+		break;
+		// 查询 PointCode XML文件信息
+	case CmdQueryPointCodeXMLInfo:
+		// 设置 PointCode XML文件信息
+	case CmdSetPointCodeXMLInfo:
+		m_oXMLDllLine.OnProcSetPointCodeXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetPointCodeXMLInfo, 0);
+		break;
+		// 查询 Sensor XML文件信息
+	case CmdQuerySensorXMLInfo:
+		// 设置 Sensor XML文件信息
+	case CmdSetSensorXMLInfo:
+		m_oXMLDllLine.OnProcSetSensorXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetSensorXMLInfo, 0);
+		break;
+		// 查询 Marker XML文件信息
+	case CmdQueryMarkerXMLInfo:
+		// 设置 Marker XML文件信息
+	case CmdSetMarkerXMLInfo:
+		m_oXMLDllLine.OnProcSetMarkerXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetMarkerXMLInfo, 0);
+		break;
+		// 查询 Aux XML文件信息
+	case CmdQueryAuxXMLInfo:
+		// 设置 Aux XML文件信息
+	case CmdSetAuxXMLInfo:
+		m_oXMLDllLine.OnProcSetAuxXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetAuxXMLInfo, 0);
+		break;
+		// 查询 Detour XML文件信息
+	case CmdQueryDetourXMLInfo:
+		// 设置 Detour XML文件信息
+	case CmdSetDetourXMLInfo:
+		m_oXMLDllLine.OnProcSetDetourXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetDetourXMLInfo, 0);
+		break;
+		// 查询 Mute XML文件信息
+	case CmdQueryMuteXMLInfo:
+		// 设置 Mute XML文件信息
+	case CmdSetMuteXMLInfo:
+		m_oXMLDllLine.OnProcSetMuteXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetMuteXMLInfo, 0);
+		break;
+		// 查询 BlastMachine XML文件信息
+	case CmdQueryBlastMachineXMLInfo:
+		// 设置 BlastMachine XML文件信息
+	case CmdSetBlastMachineXMLInfo:
+		m_oXMLDllLine.OnProcSetBlastMachineXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetBlastMachineXMLInfo, 0);
+		break;
+		// 查询 Absolute XML文件信息
+	case CmdQueryAbsoluteXMLInfo:
+		// 设置 Absolute XML文件信息
+	case CmdSetAbsoluteXMLInfo:
+		m_oXMLDllLine.OnProcSetAbsoluteXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetAbsoluteXMLInfo, 0);
+		break;
+		// 查询 Generic XML文件信息
+	case CmdQueryGenericXMLInfo:
+		// 设置 Generic XML文件信息
+	case CmdSetGenericXMLInfo:
+		m_oXMLDllLine.OnProcSetGenericXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetGenericXMLInfo, 0);
+		break;
+		// 查询 Look XML文件信息
+	case CmdQueryLookXMLInfo:
+		// 设置 Look XML文件信息
+	case CmdSetLookXMLInfo:
+		m_oXMLDllLine.OnProcSetLookXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetLookXMLInfo, 0);
+		break;
+		// 查询 InstrumentTestBase XML文件信息
+	case CmdQueryInstrumentTestBaseXMLInfo:
+		// 设置 InstrumentTestBase XML文件信息
+	case CmdSetInstrumentTestBaseXMLInfo:
+		m_oXMLDllLine.OnProcSetInstrumentTestBaseXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetInstrumentTestBaseXMLInfo, 0);
+		break;
+		// 查询 SensorTestBase XML文件信息
+	case CmdQuerySensorTestBaseXMLInfo:
+		// 设置 SensorTestBase XML文件信息
+	case CmdSetSensorTestBaseXMLInfo:
+		m_oXMLDllLine.OnProcSetSensorTestBaseXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetSensorTestBaseXMLInfo, 0);
+		break;
+		// 查询 InstrumentTestLimit XML文件信息
+	case CmdQueryInstrumentTestLimitXMLInfo:
+		// 设置 InstrumentTestLimit XML文件信息
+	case CmdSetInstrumentTestLimitXMLInfo:
+		m_oXMLDllLine.OnProcSetInstrumentTestLimitXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetInstrumentTestLimitXMLInfo, 0);
+		break;
+		// 查询 SensorTestLimit XML文件信息
+	case CmdQuerySensorTestLimitXMLInfo:
+		// 设置 SensorTestLimit XML文件信息
+	case CmdSetSensorTestLimitXMLInfo:
+		m_oXMLDllLine.OnProcSetSensorTestLimitXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetSensorTestLimitXMLInfo, 0);
+		break;
+		// 查询 InstrumentTest XML文件信息
+	case CmdQueryInstrumentTestXMLInfo:
+		// 设置 InstrumentTest XML文件信息
+	case CmdSetInstrumentTestXMLInfo:
+		m_oXMLDllLine.OnProcSetInstrumentTestXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetInstrumentTestXMLInfo, 0);
+		break;
+		// 查询 SensorTest XML文件信息
+	case CmdQuerySensorTestXMLInfo:
+		// 设置 SensorTest XML文件信息
+	case CmdSetSensorTestXMLInfo:
+		m_oXMLDllLine.OnProcSetSensorTestXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetSensorTestXMLInfo, 0);
+		break;
+		// 查询 MultipleTest XML文件信息
+	case CmdQueryMultipleTestXMLInfo:
+		// 设置 MultipleTest XML文件信息
+	case CmdSetMultipleTestXMLInfo:
+		m_oXMLDllLine.OnProcSetMultipleTestXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetMultipleTestXMLInfo, 0);
+		break;
+		// 查询 SeisMonitorTest XML文件信息
+	case CmdQuerySeisMonitorTestXMLInfo:
+		// 设置 SeisMonitorTest XML文件信息
+	case CmdSetSeisMonitorTestXMLInfo:
+		m_oXMLDllLine.OnProcSetSeisMonitorTestXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetSeisMonitorTestXMLInfo, 0);
+		break;
+		// 查询 LAULeakage XML文件信息
+	case CmdQueryLAULeakageXMLInfo:
+		// 设置 LAULeakage XML文件信息
+	case CmdSetLAULeakageXMLInfo:
+		m_oXMLDllLine.OnProcSetLAULeakageXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetLAULeakageXMLInfo, 0);
+		break;
+		// 查询 FormLine XML文件信息
+	case CmdQueryFormLineXMLInfo:
+		// 设置 FormLine XML文件信息
+	case CmdSetFormLineXMLInfo:
+		m_oXMLDllLine.OnProcSetFormLineXMLInfo(pChar, uiSize, false);
+		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetFormLineXMLInfo, 0);
+		break;
+	default:
+		break;
+	}
 }
