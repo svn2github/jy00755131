@@ -27,24 +27,25 @@
 #define ClientRecBufferSize					8192000
 /** C/S发送缓冲区大小*/
 #define ClientSndBufferSize					8192000
+/** 界面定时器序号1、2已被BCG占用*/
 /** 界面刷新定时器序号*/
-#define AcqReloadTimerID			1
+#define AcqReloadTimerID			10
 /** 界面刷新定时器时间*/
 #define AcqReloadTime				1000
 /** 界面刷新定时器序号*/
-#define ActiveSourceReloadTimerID	1
+#define ActiveSourceReloadTimerID	10
 /** 界面刷新定时器时间*/
 #define ActiveSourceReloadTime		1000
 /** 界面刷新定时器序号*/
-#define AllVPReloadTimerID			1
+#define AllVPReloadTimerID			10
 /** 界面刷新定时器时间*/
 #define AllVPReloadTime				1000
 /** 界面刷新定时器序号*/
-#define VPToDoReloadTimerID			1
+#define VPToDoReloadTimerID			10
 /** 界面刷新定时器时间*/
 #define VPToDoReloadTime			1000
 /** 界面刷新定时器序号*/
-#define VPDoneReloadTimerID			1
+#define VPDoneReloadTimerID			10
 /** 界面刷新定时器时间*/
 #define VPDoneReloadTime			1000
 /** 将标题栏设置在居中位置，在前面添加空格*/

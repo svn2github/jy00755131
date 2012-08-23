@@ -56,7 +56,7 @@ int CActiveAcqBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetGridHead();
 	m_ImageList.Create (IDB_BITMAP_ACQ, 16, 0, RGB (255, 0, 255));
 	m_GridView.SetImageList (&m_ImageList);
-//	SetTimer(AcqReloadTimerID, AcqReloadTime, NULL);
+	SetTimer(AcqReloadTimerID, AcqReloadTime, NULL);
 	return 0;
 }
 
@@ -89,17 +89,17 @@ bool CActiveAcqBar::SetGridHead(void)
 		return false;
 	m_GridView.InsertColumn (0, _T("¿Ú"), 50);
 	m_GridView.InsertColumn (1, _T("Shot#"), 150);
-	m_GridView.SetHeaderAlign (1, HDF_LEFT);
+	m_GridView.SetHeaderAlign (1, HDF_CENTER);
 	m_GridView.SetColumnAlign (1, HDF_RIGHT);
 	m_GridView.InsertColumn (2, _T("Acq Nb"), 150);
-	m_GridView.SetHeaderAlign (2, HDF_LEFT);
+	m_GridView.SetHeaderAlign (2, HDF_CENTER);
 	m_GridView.SetColumnAlign (2, HDF_RIGHT);
 	m_GridView.InsertColumn (3, _T("Acq Type"), 150);
-	m_GridView.SetHeaderAlign (3, HDF_LEFT);
+	m_GridView.SetHeaderAlign (3, HDF_CENTER);
 	m_GridView.SetColumnAlign (3, HDF_RIGHT);
 	m_GridView.InsertColumn (4, _T("Dump"), 150);
-	m_GridView.SetHeaderAlign (4, HDF_LEFT);
-	m_GridView.SetColumnAlign (4, HDF_RIGHT);
+	m_GridView.SetHeaderAlign (4, HDF_CENTER);
+	m_GridView.SetColumnAlign (4, HDF_LEFT);
 	return true;
 }
 
@@ -133,7 +133,6 @@ void CActiveAcqBar::LoadAcqInfo(m_oProcessAcqStruct* pStruct)
 {
 	CBCGPGridRow* pRow = m_GridView.CreateRow (m_GridView.GetColumnCount());
 	pRow->GetItem (0)->SetImage(pStruct->m_uiAcqStatus);
-/*	pRow->GetItem (1)->SetValue (1);*/
 	pRow->GetItem (2)->SetValue (pStruct->m_uiAcqNb);
 	pRow->GetItem (3)->SetValue (pStruct->m_uiAcqType);
 	if (pStruct->m_uiOutPut == 0)

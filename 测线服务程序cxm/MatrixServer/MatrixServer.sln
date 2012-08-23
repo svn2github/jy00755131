@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MatrixCommDll", "MatrixComm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Line", "Line\Line.vcxproj", "{60989A20-86BF-4A98-BBB9-C901A4BC0059}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SocketSend", "SocketSend\SocketSend.vcxproj", "{C446AB6D-3333-4426-8E4E-38AF141BB1C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -43,6 +45,10 @@ Global
 		{60989A20-86BF-4A98-BBB9-C901A4BC0059}.Debug|Win32.Build.0 = Debug|Win32
 		{60989A20-86BF-4A98-BBB9-C901A4BC0059}.Release|Win32.ActiveCfg = Release|Win32
 		{60989A20-86BF-4A98-BBB9-C901A4BC0059}.Release|Win32.Build.0 = Release|Win32
+		{C446AB6D-3333-4426-8E4E-38AF141BB1C3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C446AB6D-3333-4426-8E4E-38AF141BB1C3}.Debug|Win32.Build.0 = Debug|Win32
+		{C446AB6D-3333-4426-8E4E-38AF141BB1C3}.Release|Win32.ActiveCfg = Release|Win32
+		{C446AB6D-3333-4426-8E4E-38AF141BB1C3}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
