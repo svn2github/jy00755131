@@ -1,5 +1,6 @@
 #pragma once
 #include "bcgpdockingcontrolbar.h"
+#include "..\\MatrixServerDll\\ConfigOperationXml.h"
 class CActiveAcqBar : public CBCGPDockingControlBar
 {
 public:
@@ -18,7 +19,12 @@ public:
 	// 载入全部Acq信息
 	void LoadAcqInfos(void);
 	// 载入单条Acq信息
-	void LoadAcqInfo(void);
+	void LoadAcqInfo(m_oProcessAcqStruct* pStruct);
 	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	// 是否需要重新载入数据
+	bool m_bReload;
+	/** 施工客户端信息*/
+	m_oOptSetupDataStruct* m_pOptSetupData;
 };
 

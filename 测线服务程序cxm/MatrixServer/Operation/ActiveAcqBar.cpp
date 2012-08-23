@@ -1,9 +1,11 @@
 #include "StdAfx.h"
 #include "Operation.h"
 #include "ActiveAcqBar.h"
-
+#include "OptParam.h"
 
 CActiveAcqBar::CActiveAcqBar(void)
+	: m_bReload(true)
+	, m_pOptSetupData(NULL)
 {
 }
 
@@ -16,6 +18,7 @@ BEGIN_MESSAGE_MAP(CActiveAcqBar, CBCGPDockingControlBar)
 	ON_WM_SIZE()
 	ON_WM_DESTROY()
 	ON_WM_CONTEXTMENU()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -53,6 +56,7 @@ int CActiveAcqBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetGridHead();
 	m_ImageList.Create (IDB_BITMAP_ACQ, 16, 0, RGB (255, 0, 255));
 	m_GridView.SetImageList (&m_ImageList);
+//	SetTimer(AcqReloadTimerID, AcqReloadTime, NULL);
 	return 0;
 }
 
@@ -75,6 +79,7 @@ void CActiveAcqBar::OnDestroy()
 
 	// TODO: 在此处添加消息处理程序代码
 	m_GridView.RemoveAll();
+	KillTimer(AcqReloadTimerID);
 }
 
 // 设置表头
@@ -102,23 +107,47 @@ bool CActiveAcqBar::SetGridHead(void)
 // 载入全部Acq信息
 void CActiveAcqBar::LoadAcqInfos(void)
 {
-	m_GridView.RemoveAll();
-	for (int i =0; i<5; i++)
+	if (m_bReload == false)
 	{
-		LoadAcqInfo();
+		return;
 	}
+	list<m_oProcessAcqStruct>::iterator iter;
+	m_bReload = false;
+	m_GridView.RemoveAll();
+	if (m_pOptSetupData == NULL)
+	{
+		return;
+	}
+	EnterCriticalSection(&m_pOptSetupData->m_oSecCommInfo);
+	for (iter = m_pOptSetupData->m_olsProcessAcqStruct.begin();
+		iter != m_pOptSetupData->m_olsProcessAcqStruct.end(); iter++)
+	{
+		LoadAcqInfo(&(*iter));
+	}
+	LeaveCriticalSection(&m_pOptSetupData->m_oSecCommInfo);
 }
 
 
 // 载入单条Acq信息
-void CActiveAcqBar::LoadAcqInfo(void)
+void CActiveAcqBar::LoadAcqInfo(m_oProcessAcqStruct* pStruct)
 {
 	CBCGPGridRow* pRow = m_GridView.CreateRow (m_GridView.GetColumnCount());
-	pRow->GetItem (0)->SetImage(1);
-	pRow->GetItem (1)->SetValue (1);
-	pRow->GetItem (2)->SetValue (1);
-	pRow->GetItem (3)->SetValue (1);
-	pRow->GetItem (4)->SetValue (1);
+	pRow->GetItem (0)->SetImage(pStruct->m_uiAcqStatus);
+/*	pRow->GetItem (1)->SetValue (1);*/
+	pRow->GetItem (2)->SetValue (pStruct->m_uiAcqNb);
+	pRow->GetItem (3)->SetValue (pStruct->m_uiAcqType);
+	if (pStruct->m_uiOutPut == 0)
+	{
+		pRow->GetItem (4)->SetValue (_T("No Op"));
+	}
+	else if (pStruct->m_uiOutPut == 1)
+	{
+		pRow->GetItem (4)->SetValue (_T("Dump"));
+	}
+	else if (pStruct->m_uiOutPut == 2)
+	{
+		pRow->GetItem (4)->SetValue (_T("Xdump"));
+	}
 	m_GridView.AddRow (pRow, TRUE);
 }
 
@@ -126,4 +155,15 @@ void CActiveAcqBar::LoadAcqInfo(void)
 void CActiveAcqBar::OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/)
 {
 	// TODO: 在此处添加消息处理程序代码
+}
+
+
+void CActiveAcqBar::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (nIDEvent == AcqReloadTimerID)
+	{
+		LoadAcqInfos();
+	}
+	CBCGPDockingControlBar::OnTimer(nIDEvent);
 }

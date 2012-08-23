@@ -257,6 +257,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_oComDll.OnInit(_T("MatrixCommDll.dll"), m_uiServerPort, m_strServerIP, this->m_hWnd);
 	m_oComDll.m_oXMLDllOpt.OnInit(_T("MatrixServerDll.dll"));
+	m_wndActiveAcq.m_pOptSetupData = m_oComDll.m_oXMLDllOpt.m_pOptSetupData;
 	m_oComDll.m_hWnd = m_hWnd;
 	return 0;
 }
@@ -480,6 +481,7 @@ LRESULT CMainFrame::OnMsgClient(WPARAM wParam, LPARAM lParam)
 	case CmdSetProcessAuxOptXMLInfo:
 		break;
 	case CmdSetProcessAcqOptXMLInfo:
+		m_wndActiveAcq.m_bReload = true;
 		break;
 	case CmdSetProcessTypeOptXMLInfo:
 		m_wndOutput.AppendLog(_T("Receive the information of process setup !"));

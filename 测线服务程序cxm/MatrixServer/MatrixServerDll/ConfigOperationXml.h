@@ -1,3 +1,5 @@
+#ifndef _ConfigOptXml_H
+#define _ConfigOptXml_H
 #include <list>
 #include <map>
 using std::list;
@@ -236,3 +238,4 @@ typedef struct OptSetupData_Struct
 	/** 施工XML配置文件路径*/
 	string m_strOptXMLFilePath;
 }m_oOptSetupDataStruct;
+#endif

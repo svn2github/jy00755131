@@ -110,9 +110,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 		switch (usCmd)
 		{
 		case CmdQueryRevSection:
-			m_oCommLineDll.OnProcQueryRevSection(pRecThread);
-			m_oCommServerDll.m_uiLineNum = m_oCommLineDll.m_uiLineNum;
-			m_oCommServerDll.m_uiColumnNum = m_oCommLineDll.m_uiColumnNum;
+			m_oCommServerDll.OnProcQueryRevSection(pRecThread);
 			break;
 			// 客户端心跳命令（帧内容为空）
 		case CmdSetHeartBeat:
@@ -141,7 +139,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 
 			// 查询 SurveyXML 文件信息（帧内容为空）
 		case CmdQuerySurveyXMLInfo:
-			m_oCommLineDll.OnProcQuerySurveyXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQuerySurveyXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 SurveyXML 文件信息（帧内容为信息结构体）
 		case CmdSetSurveyXMLInfo:
@@ -150,7 +148,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 PointCode XML文件信息（帧内容为空）
 		case CmdQueryPointCodeXMLInfo:
-			m_oCommLineDll.OnProcQueryPointCodeXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryPointCodeXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 PointCode XML文件信息（帧内容为信息结构体）
 		case CmdSetPointCodeXMLInfo:
@@ -159,7 +157,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 Sensor XML文件信息（帧内容为空）
 		case CmdQuerySensorXMLInfo:
-			m_oCommLineDll.OnProcQuerySensorXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQuerySensorXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Sensor XML文件信息（帧内容为信息结构体）
 		case CmdSetSensorXMLInfo:
@@ -168,7 +166,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 Marker XML文件信息（帧内容为空）
 		case CmdQueryMarkerXMLInfo:
-			m_oCommLineDll.OnProcQueryMarkerXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryMarkerXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Marker XML文件信息（帧内容为信息结构体）
 		case CmdSetMarkerXMLInfo:
@@ -177,7 +175,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 Aux XML文件信息（帧内容为空）
 		case CmdQueryAuxXMLInfo:
-			m_oCommLineDll.OnProcQueryAuxXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryAuxXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Aux XML文件信息（帧内容为信息结构体）
 		case CmdSetAuxXMLInfo:
@@ -186,7 +184,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 Detour XML文件信息（帧内容为空）
 		case CmdQueryDetourXMLInfo:
-			m_oCommLineDll.OnProcQueryDetourXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryDetourXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Detour XML文件信息（帧内容为信息结构体）
 		case CmdSetDetourXMLInfo:
@@ -195,7 +193,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 Mute XML文件信息（帧内容为空）
 		case CmdQueryMuteXMLInfo:
-			m_oCommLineDll.OnProcQueryMuteXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryMuteXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Mute XML文件信息（帧内容为信息结构体）
 		case CmdSetMuteXMLInfo:
@@ -204,7 +202,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 BlastMachine XML文件信息（帧内容为空）
 		case CmdQueryBlastMachineXMLInfo:
-			m_oCommLineDll.OnProcQueryBlastMachineXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryBlastMachineXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 BlastMachine XML文件信息（帧内容为信息结构体）
 		case CmdSetBlastMachineXMLInfo:
@@ -213,7 +211,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 Absolute XML文件信息（帧内容为空）
 		case CmdQueryAbsoluteXMLInfo:
-			m_oCommLineDll.OnProcQueryAbsoluteXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryAbsoluteXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Absolute XML文件信息（帧内容为信息结构体）
 		case CmdSetAbsoluteXMLInfo:
@@ -222,7 +220,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break; 
 			// 查询 Generic XML文件信息（帧内容为空）
 		case CmdQueryGenericXMLInfo:
-			m_oCommLineDll.OnProcQueryGenericXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryGenericXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Generic XML文件信息（帧内容为信息结构体）
 		case CmdSetGenericXMLInfo:
@@ -231,7 +229,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 Look XML文件信息（帧内容为空）
 		case CmdQueryLookXMLInfo:
-			m_oCommLineDll.OnProcQueryLookXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryLookXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Look XML文件信息（帧内容为信息结构体）
 		case CmdSetLookXMLInfo:
@@ -240,7 +238,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 InstrumentTestBase XML文件信息（帧内容为空）
 		case CmdQueryInstrumentTestBaseXMLInfo:
-			m_oCommLineDll.OnProcQueryInstrumentTestBaseXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryInstrumentTestBaseXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 InstrumentTestBase XML文件信息（帧内容为信息结构体）
 		case CmdSetInstrumentTestBaseXMLInfo:
@@ -249,7 +247,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 SensorTestBase XML文件信息（帧内容为空）
 		case CmdQuerySensorTestBaseXMLInfo:
-			m_oCommLineDll.OnProcQuerySensorTestBaseXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQuerySensorTestBaseXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 SensorTestBase XML文件信息（帧内容为信息结构体）
 		case CmdSetSensorTestBaseXMLInfo:
@@ -258,7 +256,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 InstrumentTestLimit XML文件信息（帧内容为空）
 		case CmdQueryInstrumentTestLimitXMLInfo:
-			m_oCommLineDll.OnProcQueryInstrumentTestLimitXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryInstrumentTestLimitXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 InstrumentTestLimit XML文件信息（帧内容为信息结构体）
 		case CmdSetInstrumentTestLimitXMLInfo:
@@ -267,7 +265,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 SensorTestLimit XML文件信息（帧内容为空）
 		case CmdQuerySensorTestLimitXMLInfo:
-			m_oCommLineDll.OnProcQuerySensorTestLimitXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQuerySensorTestLimitXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 SensorTestLimit XML文件信息（帧内容为信息结构体）
 		case CmdSetSensorTestLimitXMLInfo:
@@ -276,7 +274,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 InstrumentTest XML文件信息（帧内容为空）
 		case CmdQueryInstrumentTestXMLInfo:
-			m_oCommLineDll.OnProcQueryInstrumentTestXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryInstrumentTestXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 InstrumentTest XML文件信息（帧内容为信息结构体）
 		case CmdSetInstrumentTestXMLInfo:
@@ -285,7 +283,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 SensorTest XML文件信息（帧内容为空）
 		case CmdQuerySensorTestXMLInfo:
-			m_oCommLineDll.OnProcQuerySensorTestXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQuerySensorTestXMLInfo(pRecThread, usCmd);
 			break;
 			// SensorTest XML文件信息（帧内容为信息结构体）
 		case CmdSetSensorTestXMLInfo:
@@ -294,7 +292,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 MultipleTest XML文件信息（帧内容为空）
 		case CmdQueryMultipleTestXMLInfo:
-			m_oCommLineDll.OnProcQueryMultipleTestXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryMultipleTestXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 MultipleTest XML文件信息（帧内容为信息结构体）
 		case CmdSetMultipleTestXMLInfo:
@@ -303,7 +301,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 SeisMonitorTest XML文件信息（帧内容为空）
 		case CmdQuerySeisMonitorTestXMLInfo:
-			m_oCommLineDll.OnProcQuerySeisMonitorTestXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQuerySeisMonitorTestXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 SeisMonitorTest XML文件信息（帧内容为信息结构体）
 		case CmdSetSeisMonitorTestXMLInfo:
@@ -312,7 +310,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 LAULeakage XML文件信息（帧内容为空）
 		case CmdQueryLAULeakageXMLInfo:
-			m_oCommLineDll.OnProcQueryLAULeakageXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryLAULeakageXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 LAULeakage XML文件信息（帧内容为信息结构体）
 		case CmdSetLAULeakageXMLInfo:
@@ -321,7 +319,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 FormLine XML文件信息（帧内容为空）
 		case CmdQueryFormLineXMLInfo:
-			m_oCommLineDll.OnProcQueryFormLineXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryFormLineXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 FormLine XML文件信息（帧内容为信息结构体）
 		case CmdSetFormLineXMLInfo:
@@ -332,119 +330,119 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 
 			// 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrNoiseTestArea:
-			m_oCommServerDll.m_fInstrumentNoiseLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "Noise");
+			m_oCommServerDll.m_fInstrumentNoiseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Noise");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrNoiseTestByArea);
 			break;
 			// 查询全部仪器的仪器噪声测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrNoiseTestAll:
-			m_oCommServerDll.m_fInstrumentNoiseLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "Noise");
+			m_oCommServerDll.m_fInstrumentNoiseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Noise");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrNoiseTestByArea);
 			break;
 			// 查询所选区域仪器失真测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrDistortionTestArea:
-			m_oCommServerDll.m_fInstrumentDistortionLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "Distortion");
+			m_oCommServerDll.m_fInstrumentDistortionLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Distortion");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrDistortionTestByArea);
 			break;
 			// 查询全部仪器失真测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrDistortionTestAll:
-			m_oCommServerDll.m_fInstrumentDistortionLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "Distortion");
+			m_oCommServerDll.m_fInstrumentDistortionLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Distortion");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrDistortionTestByArea);
 			break;
 			// 查询所选区域仪器串扰测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrCrosstalkTestArea:
-			m_oCommServerDll.m_fInstrumentCrosstalkLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "Crosstalk");
+			m_oCommServerDll.m_fInstrumentCrosstalkLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Crosstalk");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrCrosstalkTestByArea);
 			break;
 			// 查询全部仪器串扰测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrCrosstalkTestAll:
-			m_oCommServerDll.m_fInstrumentCrosstalkLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "Crosstalk");
+			m_oCommServerDll.m_fInstrumentCrosstalkLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Crosstalk");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrCrosstalkTestByArea);
 			break;
 			// 查询所选区域仪器共模抑制比测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrCMRRTestArea:
-			m_oCommServerDll.m_fInstrumentCMRRLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "CMRR");
+			m_oCommServerDll.m_fInstrumentCMRRLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "CMRR");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrCMRRTestByArea);
 			break;
 			// 查询全部仪器共模抑制比测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrCMRRTestAll:
-			m_oCommServerDll.m_fInstrumentCMRRLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "CMRR");
+			m_oCommServerDll.m_fInstrumentCMRRLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "CMRR");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrCMRRTestByArea);
 			break;
 			// 查询所选区域仪器增益相位测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrGainPhaseTestArea:
-			m_oCommServerDll.m_fInstrumentGainPhaseLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "GainPhase");
+			m_oCommServerDll.m_fInstrumentGainPhaseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "GainPhase");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrGainPhaseTestByArea);
 			break;
 			// 查询全部仪器增益相位测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrGainPhaseTestAll:
-			m_oCommServerDll.m_fInstrumentGainPhaseLimit = m_oCommLineDll.QueryTestDataLimitFromXML(true, "GainPhase");
+			m_oCommServerDll.m_fInstrumentGainPhaseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "GainPhase");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrGainPhaseTestByArea);
 			break;
 			// 查询所选区域检波器阻抗测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorResistanceTestArea:
-			m_oCommServerDll.m_fSensorResistanceLimitMin = m_oCommLineDll.QueryTestDataLimitFromXML(false, "ResistanceMin");
-			m_oCommServerDll.m_fSensorResistanceLimitMax = m_oCommLineDll.QueryTestDataLimitFromXML(false, "ResistanceMax");
+			m_oCommServerDll.m_fSensorResistanceLimitMin = m_oCommServerDll.QueryTestDataLimitFromXML(false, "ResistanceMin");
+			m_oCommServerDll.m_fSensorResistanceLimitMax = m_oCommServerDll.QueryTestDataLimitFromXML(false, "ResistanceMax");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorResistanceTestByArea);
 			break;
 			// 查询全部检波器阻抗测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorResistanceTestAll:
-			m_oCommServerDll.m_fSensorResistanceLimitMin = m_oCommLineDll.QueryTestDataLimitFromXML(false, "ResistanceMin");
-			m_oCommServerDll.m_fSensorResistanceLimitMax = m_oCommLineDll.QueryTestDataLimitFromXML(false, "ResistanceMax");
+			m_oCommServerDll.m_fSensorResistanceLimitMin = m_oCommServerDll.QueryTestDataLimitFromXML(false, "ResistanceMin");
+			m_oCommServerDll.m_fSensorResistanceLimitMax = m_oCommServerDll.QueryTestDataLimitFromXML(false, "ResistanceMax");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorResistanceTestByArea);
 			break;
 			// 查询所选区域检波器漏电测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorLeakageTestArea:
-			m_oCommServerDll.m_fSensorLeakageLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Leakage");
+			m_oCommServerDll.m_fSensorLeakageLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Leakage");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorLeakageTestByArea);
 			break;
 			// 查询全部检波器漏电测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorLeakageTestAll:
-			m_oCommServerDll.m_fSensorLeakageLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Leakage");
+			m_oCommServerDll.m_fSensorLeakageLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Leakage");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorLeakageTestByArea);
 			break;
 			// 查询所选区域检波器噪声测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorNoiseTestArea:
-			m_oCommServerDll.m_fSensorNoiseLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Noise");
+			m_oCommServerDll.m_fSensorNoiseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Noise");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorNoiseTestByArea);
 			break;
 			// 查询全部检波器噪声测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorNoiseTestAll:
-			m_oCommServerDll.m_fSensorNoiseLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Noise");
+			m_oCommServerDll.m_fSensorNoiseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Noise");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorNoiseTestByArea);
 			break;
 			// 查询所选区域检波器倾斜度测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorTiltTestArea:
-			m_oCommServerDll.m_fSensorTiltLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Tilt");
+			m_oCommServerDll.m_fSensorTiltLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Tilt");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorTiltTestByArea);
 			break;
 			// 查询全部检波器倾斜度测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorTiltTestAll:
-			m_oCommServerDll.m_fSensorTiltLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Tilt");
+			m_oCommServerDll.m_fSensorTiltLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Tilt");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorTiltTestByArea);
 			break;
 			// 查询所选区域检波器倾斜度模式测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorTiltModelTestArea:
-			m_oCommServerDll.m_fSensorTiltModelLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Tilt Model");
+			m_oCommServerDll.m_fSensorTiltModelLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Tilt Model");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorTiltModelTestByArea);
 			break;
 			// 查询全部检波器倾斜度模式测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorTiltModelTestAll:
-			m_oCommServerDll.m_fSensorTiltModelLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Tilt Model");
+			m_oCommServerDll.m_fSensorTiltModelLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Tilt Model");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorTiltModelTestByArea);
 			break;
 			// 查询所选区域地震监测测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySeisMonitorTestArea:
-			m_oCommServerDll.m_fSeisMonitorLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Seismonitor");
+			m_oCommServerDll.m_fSeisMonitorLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Seismonitor");
 			m_oCommServerDll.OnProcQueryByArea(pRecThread, pChar, uiSize, &CCommServerDll::QuerySeisMonitorTestByArea);
 			break;
 			// 查询全部地震监测测试数据和测试结果（帧内容为空）
 		case CmdQuerySeisMonitorTestAll:
-			m_oCommServerDll.m_fSeisMonitorLimit = m_oCommLineDll.QueryTestDataLimitFromXML(false, "Seismonitor");
+			m_oCommServerDll.m_fSeisMonitorLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Seismonitor");
 			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySeisMonitorTestByArea);
 			break;
 			// 查询 OperationDelay XML文件信息（帧内容为空）
 		case CmdQueryDelayOptXMLInfo:
-			m_oCommOptDll.OnProcQueryDelayOptXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryDelayOptXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 OperationDelay XML文件信息（帧内容为信息结构体）
 		case CmdSetDelayOptXMLInfo:
@@ -453,7 +451,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 炮表 XML文件信息（帧内容为空）
 		case CmdQuerySourceShotOptXMLInfo:
-			m_oCommOptDll.OnProcQuerySourceShotOptXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQuerySourceShotOptXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 炮表 XML文件信息（帧内容为信息结构体）
 		case CmdSetSourceShotOptXMLInfo:
@@ -462,7 +460,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 Explo震源类型 XML文件信息（帧内容为空）
 		case CmdQueryExploOptXMLInfo:
-			m_oCommOptDll.OnProcQueryExploOptXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryExploOptXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Explo震源类型 XML文件信息（帧内容为信息结构体）
 		case CmdSetExploOptXMLInfo:
@@ -471,7 +469,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 Vibro震源类型 XML文件信息（帧内容为空）
 		case CmdQueryVibroOptXMLInfo:
-			m_oCommOptDll.OnProcQueryVibroOptXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryVibroOptXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 Vibro震源类型 XML文件信息（帧内容为信息结构体）
 		case CmdSetVibroOptXMLInfo:
@@ -480,7 +478,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 ProcessRecord XML文件信息（帧内容为空）
 		case CmdQueryProcessRecordOptXMLInfo:
-			m_oCommOptDll.OnProcQueryProcessRecordOptXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryProcessRecordOptXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 ProcessRecord XML文件信息（帧内容为信息结构体）
 		case CmdSetProcessRecordOptXMLInfo:
@@ -489,7 +487,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 ProcessAux XML文件信息（帧内容为空）
 		case CmdQueryProcessAuxOptXMLInfo:
-			m_oCommOptDll.OnProcQueryProcessAuxOptXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryProcessAuxOptXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 ProcessAux XML文件信息（帧内容为信息结构体）
 		case CmdSetProcessAuxOptXMLInfo:
@@ -498,7 +496,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 ProcessAcq XML文件信息（帧内容为空）
 		case CmdQueryProcessAcqOptXMLInfo:
-			m_oCommOptDll.OnProcQueryProcessAcqOptXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryProcessAcqOptXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 ProcessAcq XML文件信息（帧内容为信息结构体）
 		case CmdSetProcessAcqOptXMLInfo:
@@ -507,7 +505,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 ProcessType XML文件信息（帧内容为空）
 		case CmdQueryProcessTypeOptXMLInfo:
-			m_oCommOptDll.OnProcQueryProcessTypeOptXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryProcessTypeOptXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 ProcessType XML文件信息（帧内容为信息结构体）
 		case CmdSetProcessTypeOptXMLInfo:
@@ -516,7 +514,7 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询 注释 XML文件信息（帧内容为空）
 		case CmdQueryCommentsOptXMLInfo:
-			m_oCommOptDll.OnProcQueryCommentsOptXMLInfo(pRecThread, usCmd);
+			m_oCommServerDll.OnProcQueryCommentsOptXMLInfo(pRecThread, usCmd);
 			break;
 			// 设置 注释 XML文件信息（帧内容为信息结构体）
 		case CmdSetCommentsOptXMLInfo:

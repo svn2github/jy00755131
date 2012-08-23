@@ -1,9 +1,15 @@
+#ifndef _ConfigLineXml_H
+#define _ConfigLineXml_H
 
 #include <list>
 #include <map>
 using std::list;
 using std::map;
 using std::string;
+/**
+* @file ConfigLineXml.h
+* @brief 测线配置文件结构体
+*/
 /**
 * @struct Survery_Struct
 * @brief Survery SETUP结构体
@@ -421,3 +427,4 @@ typedef struct LineSetupData_Struct
 	/** 测线XML配置文件路径*/
 	string m_strLineXMLFilePath;
 }m_oLineSetupDataStruct;
+#endif

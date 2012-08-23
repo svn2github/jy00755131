@@ -321,8 +321,6 @@ LRESULT CMainFrame::OnMsgClient(WPARAM wParam, LPARAM lParam)
 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryLAULeakageXMLInfo, NULL, 0);
 		// 查询 FormLine XML文件信息
 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryFormLineXMLInfo, NULL, 0);
-
-		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdSetFieldOn, NULL, 0);
 		break;
 		// 查询接收区域
 	case CmdQueryRevSection:

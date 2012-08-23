@@ -1,6 +1,10 @@
 #pragma once
 #include "..\MatrixCommDll\MatrixCommDll.h"
 #include "..\MatrixServer\CommLineDll.h"
+/**
+* @class CLineCommDll
+* @detail 测线客户端通讯类
+*/
 class CLineCommDll
 {
 public:

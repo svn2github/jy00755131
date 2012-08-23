@@ -1,6 +1,10 @@
 #ifndef _MatrixCommParam_H
 #define _MatrixCommParam_H
 /**
+* @file CommParam.h
+* @brief 测线客户端和服务器通讯协议
+*/
+/**
 * @brief 自定义消息
 */
 /** 客户端接收到的消息*/

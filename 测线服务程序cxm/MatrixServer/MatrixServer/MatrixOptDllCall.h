@@ -1,5 +1,5 @@
 #pragma once
-#include "..\\MatrixServerDll\\MatrixServerDll.h"
+#include "..\\MatrixServerDll\\ConfigOperationXml.h"
 class CMatrixOptDllCall
 {
 public:
@@ -18,24 +18,6 @@ public:
 	// 释放MatrixServerDll动态链接库
 	void FreeMatrixServerDll(void);
 public:
-	/** 查询Delay设置数据*/
-	void Dll_QueryDelaySetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
-	/** 查询SourceShot设置数据*/
-	void Dll_QuerySourceShotSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
-	/** 查询Explo设置数据*/
-	void Dll_QueryExploSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
-	/** 查询Vibro设置数据*/
-	void Dll_QueryVibroSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
-	/** 查询ProcessRecord设置数据*/
-	void Dll_QueryProcessRecordSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
-	/** 查询ProcessAux设置数据*/
-	void Dll_QueryProcessAuxSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
-	/** 查询ProcessAcq设置数据*/
-	void Dll_QueryProcessAcqSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
-	/** 查询ProcessType设置数据*/
-	void Dll_QueryProcessTypeSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
-	/** 查询Comments设置数据*/
-	void Dll_QueryCommentsSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
 	/** 设置Delay设置数据*/
 	void Dll_SetDelaySetupData(char* pChar, unsigned int uiSize, m_oOptSetupDataStruct* pOptSetupData, bool bSave = true);
 	/** 设置SourceShot设置数据*/
