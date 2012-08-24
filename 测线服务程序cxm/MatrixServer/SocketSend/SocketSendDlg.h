@@ -32,7 +32,6 @@ protected:
 public:
 	// 目标端口
 	UINT m_uiDstPort;
-	afx_msg void OnBnClickedButtonStart();
 	// 是否广播
 	BOOL m_bBroadCast;
 	// 接收缓冲
@@ -47,7 +46,8 @@ public:
 	char m_cFrameData[256];
 	// 发送计数
 	unsigned int m_uiCount;
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	afx_msg void OnBnClickedButtonStop();
-	afx_msg void OnBnClickedButtonClearcount();
+	// 发送帧数
+	UINT m_uiSndNum;
+public:
+	afx_msg void OnBnClickedButtonStart();
 };

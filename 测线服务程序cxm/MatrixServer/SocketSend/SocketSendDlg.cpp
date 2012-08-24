@@ -56,6 +56,7 @@ CSocketSendDlg::CSocketSendDlg(CWnd* pParent /*=NULL*/)
 	, m_uiSndBuf(0)
 	, m_SocketSnd(INVALID_SOCKET)
 	, m_uiCount(0)
+	, m_uiSndNum(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -67,6 +68,7 @@ void CSocketSendDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_BROADCAST, m_bBroadCast);
 	DDX_Text(pDX, IDC_EDIT_RCVBUF, m_uiRcvBuf);
 	DDX_Text(pDX, IDC_EDIT_SNDBUF, m_uiSndBuf);
+	DDX_Text(pDX, IDC_EDIT_SNDNUM, m_uiSndNum);
 }
 
 BEGIN_MESSAGE_MAP(CSocketSendDlg, CDialogEx)
@@ -74,9 +76,6 @@ BEGIN_MESSAGE_MAP(CSocketSendDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_START, &CSocketSendDlg::OnBnClickedButtonStart)
-	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_BUTTON_STOP, &CSocketSendDlg::OnBnClickedButtonStop)
-	ON_BN_CLICKED(IDC_BUTTON_CLEARCOUNT, &CSocketSendDlg::OnBnClickedButtonClearcount)
 END_MESSAGE_MAP()
 
 
@@ -115,7 +114,8 @@ BOOL CSocketSendDlg::OnInitDialog()
 	m_uiDstPort = 36666;
 	m_bBroadCast = FALSE;
 	m_uiRcvBuf = 4000000;
-	m_uiSndBuf = 0;
+	m_uiSndBuf = 4000000;
+	m_uiSndNum = 2000000;
 	UpdateData(FALSE);
 	GetDlgItem(IDC_IPADDRESS_DST)->SetWindowText(_T("192.168.100.19"));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -178,20 +178,18 @@ void CSocketSendDlg::OnBnClickedButtonStart()
 	UpdateData(TRUE);
 	CString str = _T("");
 	string strConv = "";
-	sockaddr_in oAddr;
+	int ret = 0;
+	timeval time_val = {0};
+	fd_set write_fds;
 	int	iOptval = 0;
 	int iOptlen = 0;
+	int iCount = 0;
+	LARGE_INTEGER liFrq;
+	LARGE_INTEGER liCountOld;
+	LARGE_INTEGER liCountNow;
+	double dbTime = 0;
 	// 填充套接字地址结构
 	m_SocketSnd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	oAddr.sin_family = AF_INET;
-	oAddr.sin_port = htons(36500);
-	oAddr.sin_addr.S_un.S_addr = INADDR_ANY;
-	// 绑定本地地址
-	if (SOCKET_ERROR == bind(m_SocketSnd, reinterpret_cast<sockaddr*>(&oAddr), 
-		sizeof(oAddr)))
-	{
-		AfxMessageBox(_T("绑定端口失败！"));
-	}
 	if (m_bBroadCast == TRUE)
 	{
 		//设置广播模式
@@ -220,45 +218,29 @@ void CSocketSendDlg::OnBnClickedButtonStart()
 	GetDlgItem(IDC_IPADDRESS_DST)->GetWindowText(str);
 	strConv = (CStringA)str;
 	m_addrSend.sin_addr.S_un.S_addr = inet_addr(strConv.c_str());
-	SetTimer(1, 1, NULL);
-}
-
-
-
-void CSocketSendDlg::OnTimer(UINT_PTR nIDEvent)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	int iCount = 0;
-	if (nIDEvent == 1)
-	{
-		KillTimer(1);
-		for (int i=0; i<20000; i++)
-		{
-			iCount = sendto(m_SocketSnd, m_cFrameData, 256, 0, 
-				reinterpret_cast<sockaddr*>(&m_addrSend), sizeof(m_addrSend));
-			if (iCount == 256)
-			{
-				m_uiCount++;
-			}
-		}
-		SetTimer(1, 1, NULL);
-	}
-	CDialogEx::OnTimer(nIDEvent);
-}
-
-
-void CSocketSendDlg::OnBnClickedButtonStop()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	KillTimer(1);
-	CString str;
-	str.Format(_T("已发送 %d 帧!"), m_uiCount);
-	AfxMessageBox(str);
-}
-
-
-void CSocketSendDlg::OnBnClickedButtonClearcount()
-{
-	// TODO: 在此添加控件通知处理程序代码
 	m_uiCount = 0;
+	QueryPerformanceFrequency(&liFrq);
+	QueryPerformanceCounter(&liCountOld);
+	while(m_uiCount < m_uiSndNum)
+	{
+		FD_ZERO(&write_fds);
+		FD_SET(m_SocketSnd, &write_fds);
+		ret = select(NULL, NULL, &write_fds, NULL, &time_val);
+
+		if((ret == 0) || (ret == SOCKET_ERROR))
+		{
+			continue;
+		}
+		iCount = sendto(m_SocketSnd, m_cFrameData, 256, 0, 
+			reinterpret_cast<sockaddr*>(&m_addrSend), sizeof(m_addrSend));
+		if (iCount == 256)
+		{
+			m_uiCount++;
+		}
+	}
+	QueryPerformanceCounter(&liCountNow);
+	dbTime = (double)(liCountNow.LowPart - liCountOld.LowPart);
+	dbTime /= liFrq.LowPart;
+	str.Format(_T("已发送 %d 帧，用时%.5f秒!"), m_uiCount, dbTime);
+	AfxMessageBox(str);
 }
