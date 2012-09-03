@@ -49,7 +49,7 @@ void netd_socket_snd_thread::run()
 
 			//	memcpy(&remote_ip.sin_addr.s_addr, i_d.buf_ + netd_application::DEST_IP_BEGIN_POS, sizeof(unsigned int));
 				memcpy(&remote_ip.sin_port, i_d.buf_ + netd_application::DEST_PORT_BEGIN_POS, sizeof(unsigned short));
-				remote_ip.sin_port = htons(remote_ip.sin_port + netd_application::ADDITION_PORT_VALUE);
+				remote_ip.sin_port = htons(remote_ip.sin_port + socket_service_ptr_->application_ptr_->m_uiPortMove);
 				socket_service_ptr_->send((char*)i_d.buf_, sizeof(i_d.buf_), (SOCKADDR*)&remote_ip);
 				InterlockedIncrement(&socket_service_ptr_->application_ptr_->socket_data_sent_num_);
 			}

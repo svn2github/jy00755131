@@ -72,7 +72,9 @@ public:
 	bool send(pcap_t* handle, unsigned int src_ip, unsigned short src_port, 
 			unsigned int dest_ip, unsigned short dest_port, unsigned char* buf, 
 			unsigned int buf_len);
-
+public:
+	u_char m_cNetMacAddr[6];
+	u_char m_cLCIMacAddr[6];
 private:
 	friend class netd_pcap_recv_thread;
 	friend class netd_pcap_snd_thread;

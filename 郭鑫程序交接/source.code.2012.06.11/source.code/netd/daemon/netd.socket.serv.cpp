@@ -50,7 +50,7 @@ bool netd_socket_service::start()
 				r_ip, ntohs(application_ptr_->matrix_service_listen_port_),
 				application_ptr_->netd_recv_buffer_size_, application_ptr_->netd_snd_buffer_size_);
 	if(!is_ok){
-		application_ptr_->output_log(__TEXT("创建socket失败!"));
+		application_ptr_->output_log("创建socket失败!");
 		return is_ok;
 	}
 

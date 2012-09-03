@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)dist\bin"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			CharacterSet="1"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -89,7 +89,7 @@
 			OutputDirectory="$(SolutionDir)dist\bin"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			CharacterSet="1"
+			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -166,10 +166,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\install.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\netd.application.cpp"
 				>
 			</File>
@@ -237,10 +233,6 @@
 			>
 			<File
 				RelativePath=".\netd.h"
-				>
-			</File>
-			<File
-				RelativePath=".\public.h"
 				>
 			</File>
 			<File

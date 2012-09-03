@@ -14,9 +14,10 @@
 #include <Commdlg.h>
 #include <shlwapi.h>
 #include "resource.h"
-
+#include <iostream>
 #include "../Include/pcap/remote-ext.h"
-
+using std::cout;
+using std::endl;
 #pragma comment(lib, "shlwapi")
 #pragma comment(lib, "Ws2_32")
 #pragma comment(lib, "../lib/wpcap")
@@ -25,59 +26,25 @@ netd_application::netd_application(int argc, char_t **argv, char_t **envp)
 			:matrix_application(argc, argv, envp), status_dialog_(NULL),
 			instance_(NULL),status_dialog_state_(0),event_id_(1)
 {
+	CString str = "";
 	InterlockedExchange(&pcap_data_inp_num_, 0);
 	InterlockedExchange(&pcap_data_outp_num_, 0);
 	InterlockedExchange(&socket_data_sent_num_, 0);
 	InterlockedExchange(&socket_data_received_num_, 0);
 
-	netcard_id_ = 0;
-	lci_ip_ = inet_addr("192.168.0.252");
-
-//	lci_inp_port_ = htons(36888);//<! pcap读取LCI 端口
-	lci_inp_port_size_ = 9;
-	lci_inp_port_ = new unsigned int[9];
-	lci_inp_port_[0] = htons(28672);
-	lci_inp_port_[1] = htons(32768);
-	lci_inp_port_[2] = htons(36864);
-	lci_inp_port_[3] = htons(37120);
-	lci_inp_port_[4] = htons(37376);
-	lci_inp_port_[5] = htons(37632);
-	lci_inp_port_[6] = htons(37888);
-	lci_inp_port_[7] = htons(38144);
-	lci_inp_port_[8] = htons(38400);
-
-
-	lci_outp_port_ = htons(36866);//<! pcap写入端口
-
-	netd_ip_ = inet_addr("192.168.0.19"); //!< 中转程序ip地址
-	netd_listen_port_ = htons(36666); //!< 中转程序监听端口
-	netd_outp_port_ = htons(1111);
-
-	netd_recv_buffer_size_ = 10485760;//<! 10485760 #socket上位机接受缓冲
-	netd_snd_buffer_size_ = 10485760;//<! 10485760 #socket上位机发送缓冲
-	pcap_buff_size_ = 1024*1024*25; //<! pcap缓冲大小
-	pcap_max_package_size_ = 512;//!< pcap指定最大数据包大小
-	pcap_timeout_ = 100;	//!< pcap操作超时时间以毫秒为单位
-	pcap_outp_poll_time_ = 10; //!< pcap写入LCI时,轮询outp_queue队列时间
-
+	for (int i=1; i<argc; i++)
+	{
+		str = argv[i];
+		cout << "\t" << str << endl;
+		PhraseCommandLine(str);
+	}
 	strcpy_s(pcap_filter_, strlen("udp") + 1, "udp"); //!< 指定当前pcap使用的过滤器参数
-
-	inp_queue_size_ = 100000;//!< 存放pcap输入(读取)队列缓冲大小 
-	outp_queue_size_ = 10000;//!< 存放pcap输出(写入)队列缓冲大小
-
-	netd_recv_poll_time_ = 10;//<! 10 #中转程序从上位机接受数据的轮询时间
-	netd_snd_poll_time_ = 10;//<! 10 #中转程序向上位机发送数据时,轮询缓冲队列时间
-
-	matrix_service_ip_ = inet_addr("192.168.0.19");//!< 上位机ip地址(socket监听该ip,并将LCI上行数据包发送到该ip)
-	matrix_service_listen_port_ = htons(39321);//<! 39321 #socket写入上位机端口
 
 	inp_queue_ = NULL; //!< pcap输入(读取)数据
 	outp_queue_ = NULL; //!< pcap的输出(写入)数据
-
 	socket_service_ptr_ = NULL;
 	pcap_service_ptr_ = NULL;
 	netd_service_be_started_ = false;
-
 }
 
 netd_application::~netd_application()
@@ -88,7 +55,148 @@ netd_application::~netd_application()
 		lci_inp_port_size_ = 0x0;
 	}
 }
-
+void netd_application::PhraseCommandLine(CString str)
+{
+	int iPos = 0;
+	int iCount = 0;
+	CString strCmd = "";
+	CString strTemp = "";
+	iPos = str.Find('=');
+	strCmd = str.Left(iPos);
+	strTemp = str.Right(str.GetLength() - (iPos + 1));
+	if (strCmd == "NetCardId")	// 网卡序号，从0开始
+	{
+		netcard_id_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "RcvLCIPortNum")
+	{
+		lci_inp_port_size_ = _ttoi(strTemp);
+		lci_inp_port_ = new unsigned int[lci_inp_port_size_];
+	}
+	else if (strCmd == "RcvLCIPort")
+	{
+		str = strTemp;
+		while(1)
+		{
+			iPos = str.Find(',');
+			if (iPos == -1)
+			{
+				lci_inp_port_[iCount] = htons(_ttoi(str));
+				break;
+			}
+			strTemp = str.Left(iPos);
+			lci_inp_port_[iCount] = htons(_ttoi(strTemp));
+			str = str.Right(str.GetLength() - (iPos + 1));
+			iCount++;
+		}
+	}
+	else if (strCmd == "SndLCIPort")	//!< pcap写入端
+	{
+		lci_outp_port_ = htons(_ttoi(strTemp));
+	}
+	else if (strCmd == "RcvServerPort")	//!< 中转程序监听端口
+	{
+		netd_listen_port_ = htons(_ttoi(strTemp));
+	}
+	else if (strCmd == "NetSndLCIPort")	//!< 写入LCI的端口号
+	{
+		netd_outp_port_ = htons(_ttoi(strTemp));
+	}
+	else if (strCmd == "NetSndServerPort")	//!< 39321 #socket写入上位机端口
+	{
+		matrix_service_listen_port_ = htons(_ttoi(strTemp));
+	}
+	else if (strCmd == "NetRcvBufSize")	//!< 10485760 #socket上位机接受缓冲
+	{
+		netd_recv_buffer_size_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "NetSndBufSize")	//!< 10485760 #socket上位机发送缓冲
+	{
+		netd_snd_buffer_size_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "WinpcapBufSize")	//!< pcap缓冲大小
+	{
+		pcap_buff_size_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "LCIIP")	//<! LCI的IP地址
+	{
+		lci_ip_ = inet_addr(strTemp);
+	}
+	else if (strCmd == "ServerIP")	//!< 上位机ip地址(socket监听该ip,并将LCI上行数据包发送到该ip)
+	{
+		matrix_service_ip_ = inet_addr(strTemp);
+	}
+	else if (strCmd == "NetIP")	//!< 中转程序ip地址
+	{
+		netd_ip_ = inet_addr(strTemp);
+	}
+	else if (strCmd == "NetMacAddr")	//!< 中转程序的网卡Mac地址
+	{
+		str = strTemp;
+		while(1)
+		{
+			iPos = str.Find(',');
+			if (iPos == -1)
+			{
+				m_cNetMacAddr[iCount] = _ttoi(str);
+				break;
+			}
+			strTemp = str.Left(iPos);
+			m_cNetMacAddr[iCount] = _ttoi(strTemp);
+			str = str.Right(str.GetLength() - (iPos + 1));
+			iCount++;
+		}
+	}
+	else if (strCmd == "LCIMacAddr")	//!< LCI的网卡Mac地址
+	{
+		str = strTemp;
+		while(1)
+		{
+			iPos = str.Find(',');
+			if (iPos == -1)
+			{
+				m_cLCIMacAddr[iCount] = _ttoi(str);
+				break;
+			}
+			strTemp = str.Left(iPos);
+			m_cLCIMacAddr[iCount] = _ttoi(strTemp);
+			str = str.Right(str.GetLength() - (iPos + 1));
+			iCount++;
+		}
+	}
+	else if (strCmd == "PortMove")	//!<中转程序端口偏移
+	{
+		m_uiPortMove = _ttoi(strTemp);
+	}
+	else if (strCmd == "MaxPackageSize")	//!< pcap指定最大数据包大小
+	{
+		pcap_max_package_size_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "PcapTimeOut")	//!< pcap操作超时时间以毫秒为单位
+	{
+		pcap_timeout_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "PcapOutPollTime")	//!< pcap写入LCI时,轮询outp_queue队列时间
+	{
+		pcap_outp_poll_time_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "PcapInpQueueSize")	//!< 存放pcap输入(读取)队列缓冲大小
+	{
+		inp_queue_size_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "PcapOutpQueueSize")	//!< 存放pcap输出(写入)队列缓冲大小
+	{
+		outp_queue_size_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "NetRcvPollTime")	//<! 10 #中转程序从上位机接受数据的轮询时间
+	{
+		netd_recv_poll_time_ = _ttoi(strTemp);
+	}
+	else if (strCmd == "NetSndPollTime")	//<! 10 #中转程序向上位机发送数据时,轮询缓冲队列时间
+	{
+		netd_snd_poll_time_ = _ttoi(strTemp);
+	}
+}
 /**
 @fn void clear_console()
 @brief 清空当前控制台内容
@@ -108,7 +216,7 @@ void netd_application::clear_console()
 	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
 
 	/* fill the entire screen with blanks */ 
-	FillConsoleOutputCharacter( console_handle, __TEXT(' '), dwConSize, coordScreen, &cCharsWritten); 
+	FillConsoleOutputCharacter( console_handle, ' ', dwConSize, coordScreen, &cCharsWritten); 
 
 	/* get the current text attribute */
 	GetConsoleScreenBufferInfo( console_handle, &csbi); 
@@ -131,21 +239,21 @@ void netd_application::clear_console()
 void netd_application::show_helper(bool first_running, TCHAR cmd_char)
 {
 	EnterCriticalSection(&log_critial_section_);
-	_cputts(__TEXT("\n\t1. 输入o, 进行设置...\n"));
+	cout << "\n\t1. 输入o, 进行设置...\n";
 
-	if(status_dialog_state_ == 0 || status_dialog_state_ == 2)	_cputts(__TEXT("\t2. 输入d, 显示统计数据...\n"));
-	else														_cputts(__TEXT("\t2. 输入d, 隐藏统计数据...\n"));
+	if(status_dialog_state_ == 0 || status_dialog_state_ == 2)	cout << "\t2. 输入d, 显示统计数据...\n";
+	else														cout << "\t2. 输入d, 隐藏统计数据...\n";
 	
 	if(first_running){
-		_cputts(__TEXT("\t3. 输入s, 开始运行...\n"));
+		cout << "\t3. 输入s, 开始运行...\n";
 	}
 	else{
-		if(!netd_service_be_started_)	_cputts(__TEXT("\t3. 输入s, 开始运行...\n"));
-		else							_cputts(__TEXT("\t3. 输入x, 停止运行...\n"));
+		if(!netd_service_be_started_)	cout << "\t3. 输入s, 开始运行...\n";
+		else							cout << "\t3. 输入x, 停止运行...\n";
 	}
 
-	_cputts(__TEXT("\t4. 输入q, 退出程序...\n\n\n\n"));
-	_cputts(__TEXT("\t输入指令信息: "));
+	cout << "\t4. 输入q, 退出程序...\n\n\n\n";
+	cout << "\t输入指令信息: ";
 	_puttch(cmd_char);
 	LeaveCriticalSection(&log_critial_section_);
 }
@@ -441,7 +549,7 @@ int netd_application::run_private()
 	TCHAR ch = 0;
 	bool be_running_first = true;
 
-	show_helper(be_running_first, __TEXT(' '));
+	show_helper(be_running_first, ' ');
 	while(true){
 
 		if(_kbhit() == 0){ 
@@ -452,18 +560,18 @@ int netd_application::run_private()
 		ch = _gettch();
 		_puttch(ch);
 		switch(ch){
-			case __TEXT('O'):
-			case __TEXT('o'):
+			case 'O':
+			case 'o':
 			{	read_opt();	 goto GOTO; }
 			break;
 
-			case __TEXT('d'):
-			case __TEXT('D'): 
+			case 'd':
+			case 'D': 
 			{	show_status_dialog(); goto GOTO; }
 			break;
 
-			case __TEXT('s'):
-			case __TEXT('S'):
+			case 's':
+			case 'S':
 			{	
 				be_running_first = false; 
 				start(); 
@@ -471,17 +579,17 @@ int netd_application::run_private()
 			}
 			break;	
 
-			case __TEXT('X'):
-			case __TEXT('x'):
+			case 'X':
+			case 'x':
 			{	stop(); goto GOTO;	}
 
-			case __TEXT('Q'):
-			case __TEXT('q'):
+			case 'Q':
+			case 'q':
 			{ if(netd_service_be_started_) stop();}
 			return 0;
 
-			case __TEXT('H'):
-			case __TEXT('h'): 
+			case 'H':
+			case 'h': 
 			{
 GOTO:			clear_console();
 				show_helper(be_running_first, ch);
@@ -523,11 +631,10 @@ void netd_application::release_instance_private()
 	DeleteCriticalSection(&log_critial_section_);
 }
 
-void netd_application::output_log(TCHAR* log)
+void netd_application::output_log(char* log)
 {
 	EnterCriticalSection(&log_critial_section_);
-	_cputts(log);
-	_cputts(__TEXT("\r\n"));
+	cout << log << endl;
 	LeaveCriticalSection(&log_critial_section_);
 }
 

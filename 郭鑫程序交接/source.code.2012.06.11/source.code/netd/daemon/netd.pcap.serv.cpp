@@ -19,6 +19,8 @@ netd_pcap_service::netd_pcap_service(netd_application* application_ptr)
 {
 	snd_thread_ptr_ = new netd_pcap_snd_thread(this);
 	recv_thread_ptr_ = new netd_pcap_recv_thread(this);
+	memcpy(m_cNetMacAddr, application_ptr->m_cNetMacAddr, 6);
+	memcpy(m_cLCIMacAddr, application_ptr->m_cLCIMacAddr, 6);
 }
 
 netd_pcap_service::~netd_pcap_service()
@@ -75,19 +77,19 @@ bool netd_pcap_service::send(pcap_t* handle, unsigned int src_ip, unsigned short
 	int i = 0;
 
 	eh.type = 0x08;
-	eh.source[0] = 0;
-	eh.source[1] = 0x30;
-	eh.source[2] = 0x67;
-	eh.source[3] = 0x6b;
-	eh.source[4] = 0xe4;
-	eh.source[5] = 0xca;
+	eh.source[0] = m_cNetMacAddr[0];
+	eh.source[1] = m_cNetMacAddr[1];
+	eh.source[2] = m_cNetMacAddr[2];
+	eh.source[3] = m_cNetMacAddr[3];
+	eh.source[4] = m_cNetMacAddr[4];
+	eh.source[5] = m_cNetMacAddr[5];
 
-	eh.dest[0] = 0;
-	eh.dest[1] = 0xa;
-	eh.dest[2] = 0x35;
-	eh.dest[3] = 0x00;
-	eh.dest[4] = 0x01;
-	eh.dest[5] = 0x02;
+	eh.dest[0] = m_cLCIMacAddr[0];
+	eh.dest[1] = m_cLCIMacAddr[1];
+	eh.dest[2] = m_cLCIMacAddr[2];
+	eh.dest[3] = m_cLCIMacAddr[3];
+	eh.dest[4] = m_cLCIMacAddr[4];
+	eh.dest[5] = m_cLCIMacAddr[5];
 	
 
 	memcpy(tmp_buf, &eh, sizeof(eh));
@@ -134,14 +136,18 @@ bool netd_pcap_service::start()
 
 	/* Retrieve the interfaces list */
 	pcap_findalldevs(&alldevs, errbuf);
-
-	if(application_ptr_->netcard_id_ == 0){	d = alldevs;}
-	else{
-		for(unsigned i = 0; i < application_ptr_->netcard_id_; ++i)	d = alldevs->next;
+	d = alldevs;
+	for (unsigned i = 0; i < application_ptr_->netcard_id_; i++)
+	{
+		d = d->next;
 	}
+// 	if(application_ptr_->netcard_id_ == 0){	d = alldevs;}
+// 	else{
+// 		for(unsigned i = 0; i < application_ptr_->netcard_id_; ++i)	d = alldevs->next;
+// 	}
 
 	pcap_handle_ptr_  = pcap_open_live(d->name, application_ptr_->pcap_max_package_size_, 
-										1, application_ptr_->pcap_timeout_, errbuf);
+										PCAP_OPENFLAG_PROMISCUOUS, application_ptr_->pcap_timeout_, errbuf);
 	pcap_setbuff(pcap_handle_ptr_, application_ptr_->pcap_buff_size_);
 
 	if(d->addresses != NULL)

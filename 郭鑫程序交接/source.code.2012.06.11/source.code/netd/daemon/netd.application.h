@@ -12,7 +12,7 @@
 #define __NETD_APPLICATION_H__
 
 class netd_application;
-
+#include <atlstr.h>
 #include "..\core\matrix.application.h"
 #include "..\core\matrix.queue.h"
 #include "netd.socket.serv.h"
@@ -93,15 +93,14 @@ public:
 	{
 		DEST_IP_BEGIN_POS = 20,		//!< LCI上行数据包中目标IP位置
 		DEST_PORT_BEGIN_POS = 24, //!< LCI上行数据包中目标端口位置
-		ADDITION_PORT_VALUE = 50,//!< 转发后在原端口上加入该值
 	};
 public:
 	netd_application(int argc, char_t **argv, char_t **envp = NULL);
 	~netd_application();
 
 public:
-	void output_log(TCHAR* log);
-
+	void output_log(char* log);
+	void PhraseCommandLine(CString str);
 protected:
 	int run_private();
 	bool init_instance_private();
@@ -155,7 +154,9 @@ public:
 
 	matrix_queue<inp_data>* inp_queue_; //!< pcap输入(读取)数据
 	matrix_queue<outp_data>* outp_queue_; //!< pcap的输出(写入)数据
-
+	u_char m_cNetMacAddr[6];
+	u_char m_cLCIMacAddr[6];
+	unsigned int m_uiPortMove;	//!< 转发后在原端口上加入该值
 private:
 	HWND status_dialog_;//!< 统计对话框 
 	HINSTANCE instance_;//!< 当前进程实例句柄
