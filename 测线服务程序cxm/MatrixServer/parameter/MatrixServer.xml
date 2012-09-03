@@ -5,7 +5,7 @@
 			<LineServerAppIPSetup IPForInstrument="192.168.100.22" IPForADCData="192.168.100.22" IPLCI="255.255.255.255"/>
 			<LineServerAppPortSetSetup PortLCI="36866" PortForHeartBeatSet="28672" PortForHeadFrameSet="32768" PortForTailFrameSet="36864" PortForIPSetSet="37120" PortForTailTimeFrameSet="37376" PortForTimeSetSet="37632" PortForADCSetSet="37888" PortForADCDataSet="38144" PortForErrorCodeSet="38400"/>
 			<LineServerAppBufferSizeSetup InstrumentCountAll="20000" IPTempCountAll="2000" LineCountAll="50" PointCountAll="20000" ChannelCountAll="20000" TestElementCountAll="20000"/>
-			<LineServerAppParameterSetup FieldOffTime="2012.8.23 12:16:38"/>
+			<LineServerAppParameterSetup FieldOffTime="2012.9.3 16:16:9"/>
 		</LineServerAppSetup>
 		<ParameterSetup>
 			<ADCSetSetup SetADCSetSineSize="4" SetADCSetSine="0xb2,0x00,0x80,0x00" SetADCStopSampleSize="4" SetADCStopSample="0x81,0x11,0x00,0x00" SetADCOpenTBPowerLowSize="4" SetADCOpenTBPowerLow="0xa3,0x00,0x30,0x00" SetADCOpenTBPowerHighSize="4" SetADCOpenTBPowerHigh="0xa3,0x00,0x30,0x40" SetADCOpenSwitchTBLowSize="4" SetADCOpenSwitchTBLow="0xa3,0x00,0xf0,0x00" SetADCOpenSwitchTBHighSize="4" SetADCOpenSwitchTBHigh="0xa3,0x00,0xf0,0x40" SetADCRegisterReadSize="4" SetADCRegisterRead="0x82,0x20,0x0a,0x00" SetADCRegisterWriteSize="16" SetADCRegisterWrite="0x8d,0x40,0x0a,0x00,0x52,0x08,0x32,0x03,0x6f,0x0c,0xff,0x7d,0x52,0x40,0x00,0x00" SetADCTBSwitchOpenSize="4" SetADCTBSwitchOpen="0xa3,0x05,0xf8,0x40" SetADCSampleSize="16" SetADCSample="0x87,0x40,0x04,0x00,0x52,0x08,0x32,0x03,0x6f,0x0c,0xff,0x7d,0x52,0x40,0x00,0x00" SetADCReadContinuousSize="4" SetADCReadContinuous="0x81,0x10,0x00,0x00"/>

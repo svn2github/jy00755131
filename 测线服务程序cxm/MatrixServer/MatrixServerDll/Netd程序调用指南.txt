@@ -1,0 +1,59 @@
+// Netd程序调用指南
+// 2012/9/3
+// 程显明
+/** 配置文件需要将PortLCI="36866"改为36666*/
+/** 程序中 define NetedPortMove	0改为define NetedPortMove	50
+/** 需要加入成员变量*/
+/** Netd程序的进程信息*/
+PROCESS_INFORMATION m_piNetd;
+/** 需要加入的函数*/
+/**
+* @fn void OnCreateNetdProcess(BOOL bShow)
+* @brief 调用netd程序
+* @param[in] bShow 是否显示netd控制台程序
+* @note szCommandLine[] 命令行参数:
+*			第一个参数为netd程序的路径
+*			NetCardId 为网卡序列号，为0表示第一个网卡
+*			RcvLCIPortNum 为转发程序接收LCI的UDP帧的端口数
+*			RcvLCIPort 为转发程序接收LCI的UDP帧的端口
+*			RcvServerPort 为服务程序向中转程序发送UDP帧的端口号
+*			LCIIP 为LCI的IP地址
+*			ServerIP 为服务程序的IP地址
+*			NetIP 为中转程序的IP地址
+*			NetMacAddr 为中转程序所在PC机网卡的Mac地址
+*			PortMove 为中转程序转发过程中端口偏移量
+*/
+void OnCreateNetdProcess(BOOL bShow)
+{
+	if (_taccess(NetdExePath, 0) == -1)
+	{
+		AfxMessageBox(_T("The exe file of netd.exe is not exist!"));
+		return;
+	}
+	char szCommandLine[] = "netd.exe NetCardId=2 RcvLCIPortNum=9 RcvLCIPort=28672,32768,36864,37120,37376,37632,37888,38144,38400 SndLCIPort=36866 RcvServerPort=36666 NetSndLCIPort=1111 NetSndServerPort=39321 NetRcvBufSize=10485760 NetSndBufSize=10485760 WinpcapBufSize=26214400 LCIIP=192.168.100.252 ServerIP=192.168.100.22 NetIP=192.168.100.22 NetMacAddr=0,48,103,107,228,202 LCIMacAddr=0,10,53,0,1,2 PortMove=50 MaxPackageSize=512 PcapTimeOut=100 PcapOutPollTime=10 PcapInpQueueSize=100000 PcapOutpQueueSize=10000 NetRcvPollTime=10 NetSndPollTime=10";
+	STARTUPINFOA si = {0};
+	si.dwFlags = STARTF_USESHOWWINDOW; // 指定wShowWindow成员有效
+	si.wShowWindow = bShow; // 此成员设为TRUE的话则显示新建进程的主窗口
+	BOOL bRet = CreateProcessA (NULL,// 不在此指定可执行文件的文件名
+		szCommandLine, // 命令行参数
+		NULL, // 默认进程安全性
+		NULL, // 默认进程安全性
+		FALSE, // 指定当前进程内句柄不可以被子进程继承
+		0, // 为新进程创建一个新的控制台窗口
+		NULL, // 使用本进程的环境变量
+		NULL, // 使用本进程的驱动器和目录
+		&si,
+		&m_piNetd);
+	if(!bRet)
+	{
+		AfxMessageBox(_T("CreateProcess netd.exe failed!"));
+	}
+}
+/**
+* @fn void OnCloseNetdProcess(void)
+* @brief 关闭netd程序
+*/
+void OnCloseNetdProcess(void)
+{
+	TerminateProcess(m_piNetd.hProcess, 0);
+}

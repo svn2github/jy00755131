@@ -45,7 +45,8 @@ using stdext::hash_map;
 #define ADCFrameTimeLogFolderPath	_T("\\采样数据帧时间及偏移量")
 /** ADC数据帧*/
 #define ADCDataLogFolderPath		_T("\\采样数据")
-
+/** netd程序路径*/
+#define NetdExePath					_T("netd.exe")
 /** 输出选择:Debug输出则为0，Release输出则为1*/
 #define OutPutSelect				0
 /** 输出错误日志上限*/
@@ -62,8 +63,8 @@ enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
 typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex, int *_piData,
 	int _iSize, unsigned int _uiSN);
 /** 从neted程序得到的端口位移*/
-/*#define NetedPortMove	50*/
-#define NetedPortMove	0
+#define NetedPortMove	50
+/*#define NetedPortMove	0*/
 /**
 * @struct LogOutPut_Struct
 * @brief 日志输出结构
@@ -1597,6 +1598,8 @@ typedef struct Environment_Struct
 	bool m_bFieldOn;
 	/** Field Off*/
 	bool m_bFieldOff;
+	/** Netd程序的进程信息*/
+	PROCESS_INFORMATION m_piNetd;
 }m_oEnvironmentStruct;
 
 /** functions declarations*/

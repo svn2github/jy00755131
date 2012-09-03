@@ -586,7 +586,41 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 	pEnv->m_bFieldOn = false;
 	// Field Off
 	pEnv->m_bFieldOff = true;
+	// Netd程序的进程信息
+	memset(&pEnv->m_piNetd, 0 ,sizeof(PROCESS_INFORMATION));
 	return pEnv;
+}
+// 调用netd程序
+void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv, BOOL bShow)
+{
+	if (_taccess(NetdExePath, 0) == -1)
+	{
+		AfxMessageBox(_T("The exe file of netd.exe is not exist!"));
+		return;
+	}
+	char szCommandLine[] = "netd.exe NetCardId=2 RcvLCIPortNum=9 RcvLCIPort=28672,32768,36864,37120,37376,37632,37888,38144,38400 SndLCIPort=36866 RcvServerPort=36666 NetSndLCIPort=1111 NetSndServerPort=39321 NetRcvBufSize=10485760 NetSndBufSize=10485760 WinpcapBufSize=26214400 LCIIP=192.168.100.252 ServerIP=192.168.100.22 NetIP=192.168.100.22 NetMacAddr=0,48,103,107,228,202 LCIMacAddr=0,10,53,0,1,2 PortMove=50 MaxPackageSize=512 PcapTimeOut=100 PcapOutPollTime=10 PcapInpQueueSize=100000 PcapOutpQueueSize=10000 NetRcvPollTime=10 NetSndPollTime=10";
+	STARTUPINFOA si = {0};
+	si.dwFlags = STARTF_USESHOWWINDOW; // 指定wShowWindow成员有效
+	si.wShowWindow = bShow; // 此成员设为TRUE的话则显示新建进程的主窗口
+	BOOL bRet = CreateProcessA (NULL,// 不在此指定可执行文件的文件名
+		szCommandLine, // 命令行参数
+		NULL, // 默认进程安全性
+		NULL, // 默认进程安全性
+		FALSE, // 指定当前进程内句柄不可以被子进程继承
+		0, // 为新进程创建一个新的控制台窗口
+		NULL, // 使用本进程的环境变量
+		NULL, // 使用本进程的驱动器和目录
+		&si,
+		&pEnv->m_piNetd);
+	if(!bRet)
+	{
+		AfxMessageBox(_T("CreateProcess netd.exe failed!"));
+	}
+}
+// 关闭netd程序
+void OnCloseNetdProcess(m_oEnvironmentStruct* pEnv)
+{
+	TerminateProcess(pEnv->m_piNetd.hProcess, 0);
 }
 // 初始化实例
 void OnInit(m_oEnvironmentStruct* pEnv)
@@ -648,6 +682,8 @@ void OnInit(m_oEnvironmentStruct* pEnv)
 	OnInitConstVar(pEnv->m_pConstVar, pEnv->m_pLogOutPutOpt);
 	// 初始化仪器通讯信息结构体
 	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
+	// 调用netd程序
+	OnCreateNetdProcess(pEnv, TRUE);
 	// 初始化日志输出线程
 	OnInit_LogOutPutThread(pEnv);
 	// 初始化心跳线程
@@ -876,6 +912,8 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 	OnCloseLogOutPut(pEnv->m_pLogOutPutErrorCode);
 	// 关闭ADC数据帧时间日志文件
 	OnCloseLogOutPut(pEnv->m_pLogOutPutADCFrameTime);
+	// 关闭Netd程序
+	OnCloseNetdProcess(pEnv);
 }
 // 工作
 unsigned int OnWork(m_oEnvironmentStruct* pEnv)

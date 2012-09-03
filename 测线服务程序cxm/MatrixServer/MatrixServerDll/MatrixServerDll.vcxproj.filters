@@ -29,6 +29,7 @@
   <ItemGroup>
     <None Include="ReadMe.txt" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="Netd程序调用指南.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
