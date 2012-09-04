@@ -591,18 +591,18 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 	return pEnv;
 }
 // 调用netd程序
-void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv, BOOL bShow)
+void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv)
 {
 	if (_taccess(NetdExePath, 0) == -1)
 	{
-		AfxMessageBox(_T("The exe file of netd.exe is not exist!"));
+		AfxMessageBox(_T("The pcap exe file is not exist!"));
 		return;
 	}
-	char szCommandLine[] = "netd.exe NetCardId=2 RcvLCIPortNum=9 RcvLCIPort=28672,32768,36864,37120,37376,37632,37888,38144,38400 SndLCIPort=36866 RcvServerPort=36666 NetSndLCIPort=1111 NetSndServerPort=39321 NetRcvBufSize=10485760 NetSndBufSize=10485760 WinpcapBufSize=26214400 LCIIP=192.168.100.252 ServerIP=192.168.100.22 NetIP=192.168.100.22 NetMacAddr=0,48,103,107,228,202 LCIMacAddr=0,10,53,0,1,2 PortMove=50 MaxPackageSize=512 PcapTimeOut=100 PcapOutPollTime=10 PcapInpQueueSize=100000 PcapOutpQueueSize=10000 NetRcvPollTime=10 NetSndPollTime=10";
-	STARTUPINFOA si = {0};
+	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=2 RcvSndPortNum=10 Rcv_SndPort=36666_36866,28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetSrcPort=39320 NetRcvBufSize=10485760 NetSndBufSize=10485760 WinpcapBufSize=26214400 DownStreamIP=192.168.100.252 UpStreamIP=192.168.100.22 NetIP=192.168.100.22 DownStreamMacAddr=0,10,53,0,1,2 UpStreamMacAddr=0,48,103,107,228,202 NetMacAddr=0,48,103,107,228,202 MaxPackageSize=512 PcapTimeOut=100 PcapSndWaitTime=10 PcapRcvWaitTime=1 PcapQueueSize=100000");
+	STARTUPINFO si = {0};
 	si.dwFlags = STARTF_USESHOWWINDOW; // 指定wShowWindow成员有效
-	si.wShowWindow = bShow; // 此成员设为TRUE的话则显示新建进程的主窗口
-	BOOL bRet = CreateProcessA (NULL,// 不在此指定可执行文件的文件名
+	si.wShowWindow = SW_SHOW; // 此成员设定是否显示新建进程的主窗口
+	BOOL bRet = CreateProcess (NULL,// 不在此指定可执行文件的文件名
 		szCommandLine, // 命令行参数
 		NULL, // 默认进程安全性
 		NULL, // 默认进程安全性
@@ -614,13 +614,30 @@ void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv, BOOL bShow)
 		&pEnv->m_piNetd);
 	if(!bRet)
 	{
-		AfxMessageBox(_T("CreateProcess netd.exe failed!"));
+		AfxMessageBox(_T("CreateProcess NetWinPcap.exe failed!"));
 	}
+}
+// 由进程ID获取窗口句柄
+BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
+{ 
+	long id;
+	HWND thwnd;
+	id = GetWindowThreadProcessId(hwnd,NULL);
+	if (id == lParam)
+	{
+		while((thwnd=GetParent(hwnd)) != NULL)
+		{
+			hwnd = thwnd;
+		}
+		PostMessage(hwnd, WM_CLOSE, NULL, NULL);
+		return false;
+	}
+	return true;
 }
 // 关闭netd程序
 void OnCloseNetdProcess(m_oEnvironmentStruct* pEnv)
 {
-	TerminateProcess(pEnv->m_piNetd.hProcess, 0);
+	EnumWindows(EnumWindowsProc,pEnv->m_piNetd.dwThreadId);
 }
 // 初始化实例
 void OnInit(m_oEnvironmentStruct* pEnv)
@@ -683,7 +700,7 @@ void OnInit(m_oEnvironmentStruct* pEnv)
 	// 初始化仪器通讯信息结构体
 	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
 	// 调用netd程序
-	OnCreateNetdProcess(pEnv, TRUE);
+	OnCreateNetdProcess(pEnv);
 	// 初始化日志输出线程
 	OnInit_LogOutPutThread(pEnv);
 	// 初始化心跳线程

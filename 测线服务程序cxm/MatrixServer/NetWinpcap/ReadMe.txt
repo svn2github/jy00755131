@@ -1,36 +1,77 @@
-ï»¿========================================================================
-    æŽ§åˆ¶å°åº”ç”¨ç¨‹åºï¼šNetWinpcap é¡¹ç›®æ¦‚è¿°
-========================================================================
+================================================================================
+MICROSOFT »ù´¡Àà¿â: NetWinPcap ÏîÄ¿¸ÅÊö
+===============================================================================
 
-åº”ç”¨ç¨‹åºå‘å¯¼å·²ä¸ºæ‚¨åˆ›å»ºäº†æ­¤ NetWinpcap åº”ç”¨ç¨‹åºã€‚
+Ó¦ÓÃ³ÌÐòÏòµ¼ÒÑÎªÄú´´½¨ÁËÕâ¸ö NetWinPcap Ó¦ÓÃ³ÌÐò¡£´ËÓ¦ÓÃ³ÌÐò²»½öÑÝÊ¾ Microsoft »ù´¡ÀàµÄ»ù±¾Ê¹ÓÃ·½·¨£¬»¹¿É×÷ÎªÄú±àÐ´Ó¦ÓÃ³ÌÐòµÄÆðµã¡£
 
-æœ¬æ–‡ä»¶æ¦‚è¦ä»‹ç»ç»„æˆ NetWinpcap åº”ç”¨ç¨‹åºçš„æ¯ä¸ªæ–‡ä»¶çš„å†…å®¹ã€‚
+±¾ÎÄ¼þ¸ÅÒª½éÉÜ×é³É NetWinPcap Ó¦ÓÃ³ÌÐòµÄÃ¿¸öÎÄ¼þµÄÄÚÈÝ¡£
 
+NetWinPcap.vcxproj
+ÕâÊÇÊ¹ÓÃÓ¦ÓÃ³ÌÐòÏòµ¼Éú³ÉµÄ VC++ ÏîÄ¿µÄÖ÷ÏîÄ¿ÎÄ¼þ¡£ 
+Ëü°üº¬Éú³É¸ÃÎÄ¼þµÄ Visual C++ µÄ°æ±¾ÐÅÏ¢£¬ÒÔ¼°ÓÐ¹ØÊ¹ÓÃÓ¦ÓÃ³ÌÐòÏòµ¼Ñ¡ÔñµÄÆ½Ì¨¡¢ÅäÖÃºÍÏîÄ¿¹¦ÄÜµÄÐÅÏ¢¡£
 
-NetWinpcap.vcxproj
-    è¿™æ˜¯ä½¿ç”¨åº”ç”¨ç¨‹åºå‘å¯¼ç”Ÿæˆçš„ VC++ é¡¹ç›®çš„ä¸»é¡¹ç›®æ–‡ä»¶ï¼Œ
-    å…¶ä¸­åŒ…å«ç”Ÿæˆè¯¥æ–‡ä»¶çš„ Visual C++ 
-    çš„ç‰ˆæœ¬ä¿¡æ¯ï¼Œä»¥åŠæœ‰å…³ä½¿ç”¨åº”ç”¨ç¨‹åºå‘å¯¼é€‰æ‹©çš„å¹³å°ã€é…ç½®å’Œé¡¹ç›®åŠŸèƒ½çš„ä¿¡æ¯ã€‚
+NetWinPcap.vcxproj.filters
+    ÕâÊÇÊ¹ÓÃ¡°Ó¦ÓÃ³ÌÐòÏòµ¼¡±Éú³ÉµÄ VC++ ÏîÄ¿É¸Ñ¡Æ÷ÎÄ¼þ¡£
+    Ëü°üº¬ÓÐ¹ØÏîÄ¿ÎÄ¼þÓëÉ¸Ñ¡Æ÷Ö®¼äµÄ¹ØÁªÐÅÏ¢¡£ÔÚ IDE ÖÐ£¬Í¨¹ýÕâÖÖ¹ØÁª£¬ÔÚÌØ¶¨½ÚµãÏÂÒÔ·Ö×éÐÎÊ½ÏÔÊ¾¾ßÓÐÏàËÆÀ©Õ¹ÃûµÄÎÄ¼þ¡£ÀýÈç£¬¡°.cpp¡±ÎÄ¼þÓë¡°Ô´ÎÄ¼þ¡±É¸Ñ¡Æ÷¹ØÁª¡£
 
-NetWinpcap.vcxproj.filters
-    è¿™æ˜¯ä½¿ç”¨â€œåº”ç”¨ç¨‹åºå‘å¯¼â€ç”Ÿæˆçš„ VC++ é¡¹ç›®ç­›é€‰å™¨æ–‡ä»¶ã€‚ 
-    å®ƒåŒ…å«æœ‰å…³é¡¹ç›®æ–‡ä»¶ä¸Žç­›é€‰å™¨ä¹‹é—´çš„å…³è”ä¿¡æ¯ã€‚ åœ¨ IDE 
-    ä¸­ï¼Œé€šè¿‡è¿™ç§å…³è”ï¼Œåœ¨ç‰¹å®šèŠ‚ç‚¹ä¸‹ä»¥åˆ†ç»„å½¢å¼æ˜¾ç¤ºå…·æœ‰ç›¸ä¼¼æ‰©å±•åçš„æ–‡ä»¶ã€‚
-    ä¾‹å¦‚ï¼Œâ€œ.cppâ€æ–‡ä»¶ä¸Žâ€œæºæ–‡ä»¶â€ç­›é€‰å™¨å…³è”ã€‚
+NetWinPcap.h
+ÕâÊÇÓ¦ÓÃ³ÌÐòµÄÖ÷ÒªÍ·ÎÄ¼þ¡£Ëü°üÀ¨ÆäËûÏîÄ¿ÌØ¶¨µÄÍ·ÎÄ¼þ(°üÀ¨ Resource.h)£¬²¢ÉùÃ÷ CNetWinPcapApp Ó¦ÓÃ³ÌÐòÀà¡£
 
-NetWinpcap.cpp
-    è¿™æ˜¯ä¸»åº”ç”¨ç¨‹åºæºæ–‡ä»¶ã€‚
+NetWinPcap.cpp
+ÕâÊÇ°üº¬Ó¦ÓÃ³ÌÐòÀà CNetWinPcapApp µÄÖ÷ÒªÓ¦ÓÃ³ÌÐòÔ´ÎÄ¼þ¡£
+
+NetWinPcap.rc
+ÕâÊÇ³ÌÐòÊ¹ÓÃµÄËùÓÐ Microsoft Windows ×ÊÔ´µÄÁÐ±í¡£Ëü°üÀ¨ RES ×ÓÄ¿Â¼ÖÐ´æ´¢µÄÍ¼±ê¡¢Î»Í¼ºÍ¹â±ê¡£´ËÎÄ¼þ¿ÉÒÔÖ±½ÓÔÚ Microsoft Visual C++ ÖÐ½øÐÐ±à¼­¡£ÏîÄ¿×ÊÔ´Î»ÓÚ 2052 ÖÐ¡£
+
+res\NetWinPcap.ico
+ÕâÊÇÓÃ×÷Ó¦ÓÃ³ÌÐòÍ¼±êµÄÍ¼±êÎÄ¼þ¡£´ËÍ¼±ê°üÀ¨ÔÚÖ÷Òª×ÊÔ´ÎÄ¼þ NetWinPcap.rc ÖÐ¡£
+
+res\NetWinPcap.rc2
+´ËÎÄ¼þ°üº¬²»ÔÚ Microsoft Visual C++ ÖÐ½øÐÐ±à¼­µÄ×ÊÔ´¡£ÄúÓ¦¸Ã½«²»¿ÉÓÉ×ÊÔ´±à¼­Æ÷±à¼­µÄËùÓÐ×ÊÔ´·ÅÔÚ´ËÎÄ¼þÖÐ¡£
+
 
 /////////////////////////////////////////////////////////////////////////////
-å…¶ä»–æ ‡å‡†æ–‡ä»¶ï¼š
 
-StdAfx.hï¼ŒStdAfx.cpp
-    è¿™äº›æ–‡ä»¶ç”¨äºŽç”Ÿæˆåä¸º NetWinpcap.pch çš„é¢„ç¼–è¯‘å¤´ (PCH) æ–‡ä»¶å’Œ
-    åä¸º StdAfx.obj çš„é¢„ç¼–è¯‘ç±»åž‹æ–‡ä»¶ã€‚
+Ó¦ÓÃ³ÌÐòÏòµ¼´´½¨Ò»¸ö¶Ô»°¿òÀà:
+
+NetWinPcapDlg.h£¬NetWinPcapDlg.cpp - ¶Ô»°¿ò
+ÕâÐ©ÎÄ¼þ°üº¬ CNetWinPcapDlg Àà¡£¸ÃÀà¶¨ÒåÓ¦ÓÃ³ÌÐòÖ÷¶Ô»°¿òµÄÐÐÎª¡£¸Ã¶Ô»°¿òµÄÄ£°åÎ»ÓÚ NetWinPcap.rc ÖÐ£¬¸ÃÎÄ¼þ¿ÉÒÔÔÚ Microsoft Visual C++ ÖÐ½øÐÐ±à¼­¡£
+
 
 /////////////////////////////////////////////////////////////////////////////
-å…¶ä»–æ³¨é‡Šï¼š
 
-åº”ç”¨ç¨‹åºå‘å¯¼ä½¿ç”¨â€œTODO:â€æ³¨é‡Šæ¥æŒ‡ç¤ºåº”æ·»åŠ æˆ–è‡ªå®šä¹‰çš„æºä»£ç éƒ¨åˆ†ã€‚
+ÆäËû¹¦ÄÜ:
+
+ActiveX ¿Ø¼þ
+Ó¦ÓÃ³ÌÐò°üÀ¨¶ÔÊ¹ÓÃ ActiveX ¿Ø¼þµÄÖ§³Ö¡£
+
+Windows Sockets
+Ó¦ÓÃ³ÌÐòÖ§³ÖÍ¨¹ý TCP/IP ÍøÂç½¨Á¢Í¨ÐÅ¡£
+
+/////////////////////////////////////////////////////////////////////////////
+
+ÆäËû±ê×¼ÎÄ¼þ:
+
+StdAfx.h£¬StdAfx.cpp
+ÕâÐ©ÎÄ¼þÓÃÓÚÉú³ÉÃûÎª NetWinPcap.pch µÄÔ¤±àÒëÍ· (PCH) ÎÄ¼þºÍÃûÎª StdAfx.obj µÄÔ¤±àÒëÀàÐÍÎÄ¼þ¡£
+
+Resource.h
+ÕâÊÇ±ê×¼Í·ÎÄ¼þ£¬Ëü¶¨ÒåÐÂµÄ×ÊÔ´ ID¡£
+Microsoft Visual C++ ¶ÁÈ¡²¢¸üÐÂ´ËÎÄ¼þ¡£
+
+NetWinPcap.manifest
+	Ó¦ÓÃ³ÌÐòÇåµ¥ÎÄ¼þ¹© Windows XP ÓÃÀ´ÃèÊöÓ¦ÓÃ³ÌÐò
+	¶ÔÌØ¶¨°æ±¾²¢ÐÐ³ÌÐò¼¯µÄÒÀÀµÐÔ¡£¼ÓÔØ³ÌÐòÊ¹ÓÃ´Ë
+	ÐÅÏ¢´Ó³ÌÐò¼¯»º´æ¼ÓÔØÊÊµ±µÄ³ÌÐò¼¯»ò
+	´ÓÓ¦ÓÃ³ÌÐò¼ÓÔØË½ÓÐÐÅÏ¢¡£Ó¦ÓÃ³ÌÐòÇåµ¥¿ÉÄÜÎªÁËÖØÐÂ·Ö·¢¶ø×÷Îª
+	ÓëÓ¦ÓÃ³ÌÐò¿ÉÖ´ÐÐÎÄ¼þ°²×°ÔÚÏàÍ¬ÎÄ¼þ¼ÐÖÐµÄÍâ²¿ .manifest ÎÄ¼þ°üÀ¨£¬
+	Ò²¿ÉÄÜÒÔ×ÊÔ´µÄÐÎÊ½°üÀ¨ÔÚ¸Ã¿ÉÖ´ÐÐÎÄ¼þÖÐ¡£ 
+/////////////////////////////////////////////////////////////////////////////
+
+ÆäËû×¢ÊÍ:
+
+Ó¦ÓÃ³ÌÐòÏòµ¼Ê¹ÓÃ¡°TODO:¡±Ö¸Ê¾Ó¦Ìí¼Ó»ò×Ô¶¨ÒåµÄÔ´´úÂë²¿·Ö¡£
+
+Èç¹ûÓ¦ÓÃ³ÌÐòÔÚ¹²ÏíµÄ DLL ÖÐÊ¹ÓÃ MFC£¬ÔòÐèÒªÖØÐÂ·¢²¼ÕâÐ© MFC DLL£»Èç¹ûÓ¦ÓÃ³ÌÐòËùÓÃµÄÓïÑÔÓë²Ù×÷ÏµÍ³µÄµ±Ç°ÇøÓòÉèÖÃ²»Í¬£¬Ôò»¹ÐèÒªÖØÐÂ·¢²¼¶ÔÓ¦µÄ±¾µØ»¯×ÊÔ´ MFC100XXX.DLL¡£ÓÐ¹ØÕâÁ½¸öÖ÷ÌâµÄ¸ü¶àÐÅÏ¢£¬Çë²Î¼û MSDN ÎÄµµÖÐÓÐ¹Ø Redistributing Visual C++ applications (ÖØÐÂ·¢²¼ Visual C++ Ó¦ÓÃ³ÌÐò)µÄÕÂ½Ú¡£
 
 /////////////////////////////////////////////////////////////////////////////

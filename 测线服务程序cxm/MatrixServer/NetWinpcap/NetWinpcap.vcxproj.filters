@@ -16,27 +16,62 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="res\NetWinPcap.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\NetWinPcap.ico">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="NetWinPcap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="NetWinPcapDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="NetApp.h">
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PcapRcvThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PcapSndThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CommThread.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NetWinPcap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetWinPcapDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="NetWinpcap.cpp">
+    <ClCompile Include="PcapRcvThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="NetApp.cpp">
+    <ClCompile Include="PcapSndThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CommThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NetWinPcap.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

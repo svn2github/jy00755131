@@ -46,7 +46,7 @@ using stdext::hash_map;
 /** ADC数据帧*/
 #define ADCDataLogFolderPath		_T("\\采样数据")
 /** netd程序路径*/
-#define NetdExePath					_T("netd.exe")
+#define NetdExePath					_T("..\\Debug\\NetWinPcap.exe")
 /** 输出选择:Debug输出则为0，Release输出则为1*/
 #define OutPutSelect				0
 /** 输出错误日志上限*/
