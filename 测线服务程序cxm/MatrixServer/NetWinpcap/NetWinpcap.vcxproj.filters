@@ -48,6 +48,12 @@
     <ClInclude Include="CommThread.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="NetPcapComm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="NetFrameHeader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetWinPcap.cpp">
@@ -66,6 +72,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CommThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetPcapComm.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

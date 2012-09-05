@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CNetWinPcapDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_WINDOWPOSCHANGING()
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -46,7 +47,11 @@ BOOL CNetWinPcapDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 	// TODO: 在此添加额外的初始化代码
-
+	m_oNetPcapComm.OnInit();
+	m_oPcapRcvThread.m_pNetPcapComm = &m_oNetPcapComm;
+	m_oPcapRcvThread.OnInit();
+	m_oPcapSndThread.m_pNetPcapComm = &m_oNetPcapComm;
+	m_oPcapSndThread.OnInit();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -89,20 +94,169 @@ HCURSOR CNetWinPcapDlg::OnQueryDragIcon()
 // 命令行参数解析
 void CNetWinPcapDlg::PhraseCommandLine(CString str)
 {
+	int iPos = 0;
+	int iCount = 0;
+	CString strCmd = _T("");
+	CString strTemp = _T("");
+	iPos = str.Find('=');
+	strCmd = str.Left(iPos);
+	strTemp = str.Right(str.GetLength() - (iPos + 1));
+	if (strCmd == _T("NetCardId"))	// 网卡序号，从0开始
+	{
+		m_oNetPcapComm.m_uiNetCardId = _ttoi(strTemp);
+	}
+	else if (strCmd == _T("DownStreamRcvSndPort"))
+	{
+		str = strTemp;
+		while(1)
+		{
+			iPos = str.Find(',');
+			if (iPos == -1)
+			{
+				m_oNetPcapComm.PhraseRcvSndPort(str, &m_oNetPcapComm.m_oDownStreamRcvSndPortMap);
+				break;
+			}
+			strTemp = str.Left(iPos);
 
+			m_oNetPcapComm.PhraseRcvSndPort(strTemp, &m_oNetPcapComm.m_oDownStreamRcvSndPortMap);
+			str = str.Right(str.GetLength() - (iPos + 1));
+		}
+	}
+	else if (strCmd == _T("UpStreamRcvSndPort"))
+	{
+		str = strTemp;
+		while(1)
+		{
+			iPos = str.Find(',');
+			if (iPos == -1)
+			{
+				m_oNetPcapComm.PhraseRcvSndPort(str, &m_oNetPcapComm.m_oUpStreamRcvSndPortMap);
+				break;
+			}
+			strTemp = str.Left(iPos);
+
+			m_oNetPcapComm.PhraseRcvSndPort(strTemp, &m_oNetPcapComm.m_oUpStreamRcvSndPortMap);
+			str = str.Right(str.GetLength() - (iPos + 1));
+		}
+	}
+	else if (strCmd == _T("NetDownStreamSrcPort"))
+	{
+		m_oNetPcapComm.m_usPcapDownStreamSrcPort = htons(_ttoi(strTemp));
+	}
+	else if (strCmd == _T("NetUpStreamSrcPort"))
+	{
+		m_oNetPcapComm.m_usPcapUpStreamSrcPort = htons(_ttoi(strTemp));
+	}
+	else if (strCmd == _T("WinpcapBufSize"))
+	{
+		m_oNetPcapComm.m_uiPcapBufSize = _ttoi(strTemp);
+	}
+	else if (strCmd == _T("DownStreamIP"))
+	{
+		m_oNetPcapComm.m_uiDownStreamIP = inet_addr((CStringA)strTemp);
+	}
+	else if (strCmd == _T("UpStreamIP"))
+	{
+		m_oNetPcapComm.m_uiUpStreamIP = inet_addr((CStringA)strTemp);
+	}
+	else if (strCmd == _T("NetIP"))
+	{
+		m_oNetPcapComm.m_uiNetIP = inet_addr((CStringA)strTemp);
+	}
+	else if (strCmd == _T("DownStreamMacAddr"))
+	{
+		str = strTemp;
+		while(1)
+		{
+			iPos = str.Find(',');
+			if (iPos == -1)
+			{
+				m_oNetPcapComm.m_ucDownStreamMacAddr[iCount] = _ttoi(str);
+				break;
+			}
+			strTemp = str.Left(iPos);
+			m_oNetPcapComm.m_ucDownStreamMacAddr[iCount] = _ttoi(strTemp);
+			str = str.Right(str.GetLength() - (iPos + 1));
+			iCount++;
+		}
+	}
+	else if (strCmd == _T("UpStreamMacAddr"))
+	{
+		str = strTemp;
+		while(1)
+		{
+			iPos = str.Find(',');
+			if (iPos == -1)
+			{
+				m_oNetPcapComm.m_ucUpStreamMacAddr[iCount] = _ttoi(str);
+				break;
+			}
+			strTemp = str.Left(iPos);
+			m_oNetPcapComm.m_ucUpStreamMacAddr[iCount] = _ttoi(strTemp);
+			str = str.Right(str.GetLength() - (iPos + 1));
+			iCount++;
+		}
+	}
+	else if (strCmd == _T("NetMacAddr"))
+	{
+		str = strTemp;
+		while(1)
+		{
+			iPos = str.Find(',');
+			if (iPos == -1)
+			{
+				m_oNetPcapComm.m_ucNetMacAddr[iCount] = _ttoi(str);
+				break;
+			}
+			strTemp = str.Left(iPos);
+			m_oNetPcapComm.m_ucNetMacAddr[iCount] = _ttoi(strTemp);
+			str = str.Right(str.GetLength() - (iPos + 1));
+			iCount++;
+		}
+	}
+	else if (strCmd == _T("MaxPackageSize"))
+	{
+		m_oNetPcapComm.m_uiPcapPacketMaxSize = _ttoi(strTemp);
+	}
+	else if (strCmd == _T("PcapTimeOut"))
+	{
+		m_oNetPcapComm.m_uiPcapTimeOut = _ttoi(strTemp);
+	}
+	else if (strCmd == _T("PcapQueueSize"))
+	{
+		m_oNetPcapComm.m_uiPcapQueueSize = _ttoi(strTemp);
+	}
+	else if (strCmd == _T("PcapSndWaitTime"))
+	{
+		m_oPcapSndThread.m_uiThreadSleepTime = _ttoi(strTemp);
+	}
+	else if (strCmd == _T("PcapRcvWaitTime"))
+	{
+		m_oPcapRcvThread.m_uiThreadSleepTime = _ttoi(strTemp);
+	}
 }
 // 隐藏对话框程序界面
 void CNetWinPcapDlg::OnWindowPosChanging(WINDOWPOS* lpwndpos)
 {
 	// TODO: 在此处添加消息处理程序代码
-	if(lpwndpos-> flags & SWP_SHOWWINDOW)
-	{
-		lpwndpos-> flags &= ~SWP_SHOWWINDOW;
-		PostMessage(WM_WINDOWPOSCHANGING, 0, (LPARAM)lpwndpos); 
-		ShowWindow(SW_HIDE); 
-	} 
-	else
-	{
-		CDialog::OnWindowPosChanging(lpwndpos);
-	}
+// 	if(lpwndpos-> flags & SWP_SHOWWINDOW)
+// 	{
+// 		lpwndpos-> flags &= ~SWP_SHOWWINDOW;
+// 		PostMessage(WM_WINDOWPOSCHANGING, 0, (LPARAM)lpwndpos); 
+// 		ShowWindow(SW_HIDE); 
+// 	} 
+// 	else
+// 	{
+		CDialogEx::OnWindowPosChanging(lpwndpos);
+//	}
+}
+
+
+void CNetWinPcapDlg::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	m_oPcapRcvThread.OnClose();
+	m_oPcapSndThread.OnClose();
+	m_oNetPcapComm.OnClose();
+	CDialogEx::OnClose();
 }

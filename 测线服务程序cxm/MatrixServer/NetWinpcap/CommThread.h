@@ -9,15 +9,13 @@ protected:
 	DWORD m_dwThreadID;
 	/** 线程关闭事件*/
 	HANDLE m_hThreadClose;
-	/** 线程关闭标志位*/
-	bool m_bClose;
+	/** 线程停止事件*/
+	HANDLE m_hThreadStop;
 public:
 	/** 线程句柄*/
 	HANDLE m_hThread;
 	/** 线程函数等待一次的时间*/
 	unsigned int m_uiThreadSleepTime;
-	/** 线程函数等待的次数*/
-	unsigned int m_uiThreadSleepCount;
 public:
 	/**
 	* @fn void OnInit(void)

@@ -6,9 +6,8 @@ CCommThread::CCommThread(void)
 	: m_dwThreadID(0)
 	, m_hThread(INVALID_HANDLE_VALUE)
 	, m_hThreadClose(INVALID_HANDLE_VALUE)
-	, m_bClose(false)
-	, m_uiThreadSleepTime(0)
-	, m_uiThreadSleepCount(0)
+	, m_hThreadStop(INVALID_HANDLE_VALUE)
+	, m_uiThreadSleepTime(1)
 {
 }
 
@@ -32,7 +31,9 @@ DWORD WINAPI RunThread(CCommThread* pCommThread)
 void CCommThread::OnInit(void)
 {
 	m_hThreadClose = CreateEvent(false, false, NULL, NULL);
+	m_hThreadStop = CreateEvent(false, false, NULL, NULL);
 	ResetEvent(m_hThreadClose);
+	ResetEvent(m_hThreadStop);
 	m_hThread = CreateThread((LPSECURITY_ATTRIBUTES)NULL, 
 		0,
 		(LPTHREAD_START_ROUTINE)RunThread,
@@ -48,7 +49,7 @@ void CCommThread::OnClose(void)
 	{
 		return;
 	}
-	m_bClose = true;
+	SetEvent(m_hThreadStop);
 	if (WaitForSingleObject(m_hThreadClose, 100) != WAIT_OBJECT_0)
 	{
 		TerminateThread(m_hThread, 0);
@@ -59,33 +60,9 @@ void CCommThread::OnClose(void)
 		m_hThread = INVALID_HANDLE_VALUE;
 	}
 	CloseHandle(m_hThreadClose);
+	CloseHandle(m_hThreadStop);
 	m_hThreadClose = INVALID_HANDLE_VALUE;
-}
-
-// 线程等待函数
-void CCommThread::WaitForThread(void)
-{
-	// 初始化等待次数为0
-	int iWaitCount = 0;
-	// 循环
-	while(true)
-	{	// 休眠10毫秒
-		Sleep(m_uiThreadSleepTime);
-		// 等待次数加1
-		iWaitCount++;
-		// 判断是否可以处理的条件
-		if(m_bClose == true)
-		{
-			// 返回
-			return;
-		}
-		// 判断等待次数是否大于等于最多等待次数
-		if(iWaitCount == m_uiThreadSleepCount)
-		{
-			// 返回
-			return;
-		}		
-	}
+	m_hThreadStop = INVALID_HANDLE_VALUE;
 }
 
 // 线程函数
@@ -93,16 +70,8 @@ DWORD CCommThread::ThreadRunFunc(void)
 {
 	while (1)
 	{
-		if (m_bClose == true)
-		{
-			break;
-		}
 		OnProc();
-		if (m_bClose == true)
-		{
-			break;
-		}
-		WaitForThread();
+		WaitForSingleObject(m_hThreadStop, m_uiThreadSleepTime);
 	}
 	SetEvent(m_hThreadClose);
 	return 1;

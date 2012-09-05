@@ -224,7 +224,7 @@ void AddInstrumentToMap(unsigned int uiIndex, m_oInstrumentStruct* pInstrument,
 	{
 		return;
 	}
-	if (false == IfIndexExistInMap(uiIndex, pMap))
+	if (FALSE == IfIndexExistInMap(uiIndex, pMap))
 	{
 		pMap->insert(hash_map<unsigned int, m_oInstrumentStruct*>::value_type (uiIndex, pInstrument));
 	}

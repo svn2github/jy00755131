@@ -1,10 +1,14 @@
-#include "CommThread.h"
 #pragma once
+#include "CommThread.h"
+#include "NetPcapComm.h"
 class CPcapSndThread : public CCommThread
 {
 public:
 	CPcapSndThread(void);
 	~CPcapSndThread(void);
+public:
+	/** Pcap通讯类指针*/
+	CNetPcapComm* m_pNetPcapComm;
 public:
 	/**
 	* @fn void OnProc(void)
