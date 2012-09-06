@@ -30,13 +30,13 @@ void CPcapRcvThread::OnProc(void)
 		uiIPlength = (ih->ver_ihl & 0xf) * 4;
 		uh = (UDP_Header *)((u_char*)ih + uiIPlength);
 		if ((TRUE == m_pNetPcapComm->IfRcvPortExistInMap(uh->dport, &m_pNetPcapComm->m_oDownStreamRcvSndPortMap))
-			&& (ih->saddr == m_pNetPcapComm->m_uiDownStreamIP))
+			&& (ih->saddr == m_pNetPcapComm->m_uiHighStreamIP))
 		{
 			bDownStream = true;
 			usDstPort = m_pNetPcapComm->GetSndPortFromMap(uh->dport, &m_pNetPcapComm->m_oDownStreamRcvSndPortMap);
 		}
 		else if ((TRUE == m_pNetPcapComm->IfRcvPortExistInMap(uh->dport, &m_pNetPcapComm->m_oUpStreamRcvSndPortMap))
-			&& (ih->saddr == m_pNetPcapComm->m_uiUpStreamIP))
+			&& (ih->saddr == m_pNetPcapComm->m_uiLowStreamIP))
 		{
 			bDownStream = false;
 			usDstPort = m_pNetPcapComm->GetSndPortFromMap(uh->dport, &m_pNetPcapComm->m_oUpStreamRcvSndPortMap);
@@ -49,9 +49,9 @@ void CPcapRcvThread::OnProc(void)
 		pFrameData = m_pNetPcapComm->GetFreeFrameData();
 		pFrameData->m_bDownStream = bDownStream;
 		pFrameData->m_usDstPort = usDstPort;
-		pFrameData->m_uiLength = uh->len;
+		pFrameData->m_uiLength = htons(uh->len) - sizeof(UDP_Header);
 		memcpy(pFrameData->m_ucData, pkt_data + sizeof(Ethernet_Header) + sizeof(IP_Header)
-			+ sizeof(UDP_Header), uh->len);
+			+ sizeof(UDP_Header), pFrameData->m_uiLength);
 		m_pNetPcapComm->m_olsFrameDataWork.push_back(pFrameData);
 		LeaveCriticalSection(&m_pNetPcapComm->m_oSec);
 // 		InterlockedIncrement(&pcap_service_ptr_->application_ptr_->pcap_data_inp_num_);

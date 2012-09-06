@@ -14,11 +14,11 @@ CNetPcapComm::CNetPcapComm(void)
 	m_oUpStreamRcvSndPortMap.clear();
 	m_usPcapDownStreamSrcPort = 0;
 	m_usPcapUpStreamSrcPort = 0;
-	m_uiDownStreamIP = 0;
-	m_uiUpStreamIP = 0;
+	m_uiHighStreamIP = 0;
+	m_uiLowStreamIP = 0;
 	m_uiNetIP = 0;
-	memset(m_ucDownStreamMacAddr, 0, sizeof(m_ucDownStreamMacAddr));
-	memset(m_ucUpStreamMacAddr, 0, sizeof(m_ucUpStreamMacAddr));
+	memset(m_ucHighMacAddr, 0, sizeof(m_ucHighMacAddr));
+	memset(m_ucLowMacAddr, 0, sizeof(m_ucLowMacAddr));
 	memset(m_ucNetMacAddr, 0, sizeof(m_ucNetMacAddr));
 	m_uiPcapQueueSize = 0;
 	m_pFrameDataArray = NULL;
@@ -213,24 +213,24 @@ bool CNetPcapComm::SndFrameData(m_oFrameData* pFrameData)
 	eh.source[5] = m_ucNetMacAddr[5];
 	if (pFrameData->m_bDownStream == true)
 	{
-		eh.dest[0] = m_ucDownStreamMacAddr[0];
-		eh.dest[1] = m_ucDownStreamMacAddr[1];
-		eh.dest[2] = m_ucDownStreamMacAddr[2];
-		eh.dest[3] = m_ucDownStreamMacAddr[3];
-		eh.dest[4] = m_ucDownStreamMacAddr[4];
-		eh.dest[5] = m_ucDownStreamMacAddr[5];
-		ip.daddr = m_uiDownStreamIP;
+		eh.dest[0] = m_ucLowMacAddr[0];
+		eh.dest[1] = m_ucLowMacAddr[1];
+		eh.dest[2] = m_ucLowMacAddr[2];
+		eh.dest[3] = m_ucLowMacAddr[3];
+		eh.dest[4] = m_ucLowMacAddr[4];
+		eh.dest[5] = m_ucLowMacAddr[5];
+		ip.daddr = m_uiLowStreamIP;
 		dh.sport = m_usPcapDownStreamSrcPort;
 	}
 	else
 	{
-		eh.dest[0] = m_ucUpStreamMacAddr[0];
-		eh.dest[1] = m_ucUpStreamMacAddr[1];
-		eh.dest[2] = m_ucUpStreamMacAddr[2];
-		eh.dest[3] = m_ucUpStreamMacAddr[3];
-		eh.dest[4] = m_ucUpStreamMacAddr[4];
-		eh.dest[5] = m_ucUpStreamMacAddr[5];
-		ip.daddr = m_uiUpStreamIP;
+		eh.dest[0] = m_ucHighMacAddr[0];
+		eh.dest[1] = m_ucHighMacAddr[1];
+		eh.dest[2] = m_ucHighMacAddr[2];
+		eh.dest[3] = m_ucHighMacAddr[3];
+		eh.dest[4] = m_ucHighMacAddr[4];
+		eh.dest[5] = m_ucHighMacAddr[5];
+		ip.daddr = m_uiHighStreamIP;
 		dh.sport = m_usPcapUpStreamSrcPort;
 	}
 	ip.ver_ihl = 0x45;		// Version (4 bits) + Internet header length (4 bits)

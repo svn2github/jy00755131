@@ -151,19 +151,19 @@ void CNetWinPcapDlg::PhraseCommandLine(CString str)
 	{
 		m_oNetPcapComm.m_uiPcapBufSize = _ttoi(strTemp);
 	}
-	else if (strCmd == _T("DownStreamIP"))
+	else if (strCmd == _T("HighIP"))
 	{
-		m_oNetPcapComm.m_uiDownStreamIP = inet_addr((CStringA)strTemp);
+		m_oNetPcapComm.m_uiHighStreamIP = inet_addr((CStringA)strTemp);
 	}
-	else if (strCmd == _T("UpStreamIP"))
+	else if (strCmd == _T("LowIP"))
 	{
-		m_oNetPcapComm.m_uiUpStreamIP = inet_addr((CStringA)strTemp);
+		m_oNetPcapComm.m_uiLowStreamIP = inet_addr((CStringA)strTemp);
 	}
 	else if (strCmd == _T("NetIP"))
 	{
 		m_oNetPcapComm.m_uiNetIP = inet_addr((CStringA)strTemp);
 	}
-	else if (strCmd == _T("DownStreamMacAddr"))
+	else if (strCmd == _T("HighMacAddr"))
 	{
 		str = strTemp;
 		while(1)
@@ -171,16 +171,16 @@ void CNetWinPcapDlg::PhraseCommandLine(CString str)
 			iPos = str.Find(',');
 			if (iPos == -1)
 			{
-				m_oNetPcapComm.m_ucDownStreamMacAddr[iCount] = _ttoi(str);
+				m_oNetPcapComm.m_ucHighMacAddr[iCount] = _ttoi(str);
 				break;
 			}
 			strTemp = str.Left(iPos);
-			m_oNetPcapComm.m_ucDownStreamMacAddr[iCount] = _ttoi(strTemp);
+			m_oNetPcapComm.m_ucHighMacAddr[iCount] = _ttoi(strTemp);
 			str = str.Right(str.GetLength() - (iPos + 1));
 			iCount++;
 		}
 	}
-	else if (strCmd == _T("UpStreamMacAddr"))
+	else if (strCmd == _T("LowMacAddr"))
 	{
 		str = strTemp;
 		while(1)
@@ -188,11 +188,11 @@ void CNetWinPcapDlg::PhraseCommandLine(CString str)
 			iPos = str.Find(',');
 			if (iPos == -1)
 			{
-				m_oNetPcapComm.m_ucUpStreamMacAddr[iCount] = _ttoi(str);
+				m_oNetPcapComm.m_ucLowMacAddr[iCount] = _ttoi(str);
 				break;
 			}
 			strTemp = str.Left(iPos);
-			m_oNetPcapComm.m_ucUpStreamMacAddr[iCount] = _ttoi(strTemp);
+			m_oNetPcapComm.m_ucLowMacAddr[iCount] = _ttoi(strTemp);
 			str = str.Right(str.GetLength() - (iPos + 1));
 			iCount++;
 		}

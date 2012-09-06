@@ -63,8 +63,8 @@ enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
 typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex, int *_piData,
 	int _iSize, unsigned int _uiSN);
 /** 从neted程序得到的端口位移*/
-#define NetedPortMove	50
-/*#define NetedPortMove	0*/
+/*#define NetedPortMove	50*/
+#define NetedPortMove	0
 /**
 * @struct LogOutPut_Struct
 * @brief 日志输出结构

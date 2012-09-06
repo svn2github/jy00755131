@@ -34,15 +34,15 @@ public:
 	/** Pcap上行帧发送的源端口*/
 	unsigned short m_usPcapUpStreamSrcPort;
 	/** 下行PC的IP地址*/
-	unsigned int m_uiDownStreamIP;
+	unsigned int m_uiHighStreamIP;
 	/** 上行PC的IP地址*/
-	unsigned int m_uiUpStreamIP;
+	unsigned int m_uiLowStreamIP;
 	/** Net程序所在的PC的IP地址*/
 	unsigned int m_uiNetIP;
 	/** 下行PC的Mac地址*/
-	u_char m_ucDownStreamMacAddr[MacAddrSize];
+	u_char m_ucHighMacAddr[MacAddrSize];
 	/** 上行PC的Mac地址*/
-	u_char m_ucUpStreamMacAddr[MacAddrSize];
+	u_char m_ucLowMacAddr[MacAddrSize];
 	/** Net程序所在PC的Mac地址*/
 	u_char m_ucNetMacAddr[MacAddrSize];
 	/** 数据缓冲队列大小*/
