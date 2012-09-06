@@ -199,7 +199,7 @@ unsigned short CNetPcapComm::check_sum (unsigned short * addr, int len)
 bool CNetPcapComm::SndFrameData(m_oFrameData* pFrameData)
 {
 	unsigned char tmp_buf[FrameDataSize] = {0};
-	IP_Header ip;
+	IP_Header ip = {0};
 	Ethernet_Header eh = {0};
 	UDP_Header dh = {0};
 	int iPos = 0;
@@ -239,9 +239,11 @@ bool CNetPcapComm::SndFrameData(m_oFrameData* pFrameData)
 	ip.identification = htons(3347); // Identification
 	ip.flags_fo = 0x40;		// Flags (3 bits) + Fragment offset (13 bits)
 	ip.ttl = 0x80;			// Time to live
-	ip.proto = 17;			// Protocol
+	ip.proto = 0x11;			// Protocol
 	ip.saddr = m_uiNetIP;// Source address
 	ip.crc = check_sum((unsigned short*)&ip, sizeof(ip));// Header checksum
+	
+
 	dh.crc = 0;
 	dh.dport = pFrameData->m_usDstPort;
 	dh.len = htons(pFrameData->m_uiLength + sizeof(UDP_Header));
