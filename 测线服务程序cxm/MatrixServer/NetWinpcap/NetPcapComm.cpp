@@ -24,13 +24,39 @@ CNetPcapComm::CNetPcapComm(void)
 	m_pFrameDataArray = NULL;
 	m_uiFreeCount = 0;
 	m_olsFrameDataFree.clear();
-	m_olsFrameDataWork.clear();
+	m_olsFrameDataUpStream.clear();
+	m_olsFrameDataDownStream.clear();
 }
 
 CNetPcapComm::~CNetPcapComm(void)
 {
 }
+/** 创建Socket*/
+SOCKET CNetPcapComm::CreateSocket(unsigned int uiSrcPort, int iSndBufferSize)
+{
+	SOCKET oSocket = INVALID_SOCKET;
+	sockaddr_in oAddr;
+	DWORD bytes_returned = 0;
+	BOOL new_behavior = FALSE;
+	unsigned long arg = 1;
 
+	// 填充套接字地址结构
+	oSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	oAddr.sin_family = AF_INET;
+	oAddr.sin_port = htons(uiSrcPort);
+	oAddr.sin_addr.S_un.S_addr = INADDR_ANY;
+	//bind socket
+	bind(oSocket, (SOCKADDR*)&oAddr, sizeof(oAddr));
+	//set send buff
+	setsockopt(oSocket, SOL_SOCKET, SO_SNDBUF, (const char*)&iSndBufferSize, 
+		sizeof(int));
+	//set io control
+	ioctlsocket(oSocket, FIONBIO, &arg);
+	// disable  new behavior using IOCTL: SIO_UDP_CONNRESET
+	WSAIoctl(oSocket, SIO_UDP_CONNRESET,	&new_behavior, sizeof(new_behavior), 
+		NULL, 0, &bytes_returned,	NULL, NULL);
+	return oSocket;
+}
 void CNetPcapComm::OnInit()
 {
 	pcap_if_t *alldevs;
@@ -38,6 +64,8 @@ void CNetPcapComm::OnInit()
 	char errbuf[PCAP_ERRBUF_SIZE+1];
 	unsigned int netmask;
 	struct bpf_program fcode;
+	m_SocketDownStream = CreateSocket(m_usPcapDownStreamSrcPort, 20000*128);
+	m_SocketUpStream = CreateSocket(m_usPcapUpStreamSrcPort, 20000*256);
 
 	/* Retrieve the interfaces list */
 	pcap_findalldevs(&alldevs, errbuf);
@@ -75,6 +103,10 @@ void CNetPcapComm::OnInit()
 		OnResetFrameData(&m_pFrameDataArray[i]);
 		m_olsFrameDataFree.push_back(&m_pFrameDataArray[i]);
 	}
+	_InterlockedExchange(&m_lDownStreamNetRevFrameNum, 0);
+	_InterlockedExchange(&m_lDownStreamNetSndFrameNum, 0);
+	_InterlockedExchange(&m_lUpStreamNetRevFrameNum, 0);
+	_InterlockedExchange(&m_lUpStreamNetSndFrameNum, 0);
 }
 /** 解析接收发送端口*/
 void CNetPcapComm::PhraseRcvSndPort(CString str, hash_map<unsigned short, unsigned short>* pMap)
@@ -158,6 +190,10 @@ CNetPcapComm::m_oFrameData* CNetPcapComm::GetFreeFrameData()
 		m_olsFrameDataFree.pop_front();
 		m_uiFreeCount--;
 	}
+	else
+	{
+		AfxMessageBox(_T("PcapQueueSize is not big enough!"));
+	}
 	return pFrameData;
 }
 /** 将存储数据帧加入空闲列表*/
@@ -195,8 +231,8 @@ unsigned short CNetPcapComm::check_sum (unsigned short * addr, int len)
 	answer = ~sum;     /* truncate to 16 bits */
 	return (answer);
 }
-/** Pcap发送帧*/
-bool CNetPcapComm::SndFrameData(m_oFrameData* pFrameData)
+/** Pcap发送帧，缺点：发送速度慢！*/
+bool CNetPcapComm::PcapSndFrameData(m_oFrameData* pFrameData)
 {
 	unsigned char tmp_buf[FrameDataSize] = {0};
 	IP_Header ip = {0};
@@ -221,6 +257,7 @@ bool CNetPcapComm::SndFrameData(m_oFrameData* pFrameData)
 		eh.dest[5] = m_ucLowMacAddr[5];
 		ip.daddr = m_uiLowStreamIP;
 		dh.sport = m_usPcapDownStreamSrcPort;
+		_InterlockedIncrement(&m_lDownStreamNetSndFrameNum);
 	}
 	else
 	{
@@ -232,6 +269,7 @@ bool CNetPcapComm::SndFrameData(m_oFrameData* pFrameData)
 		eh.dest[5] = m_ucHighMacAddr[5];
 		ip.daddr = m_uiHighStreamIP;
 		dh.sport = m_usPcapUpStreamSrcPort;
+		_InterlockedIncrement(&m_lUpStreamNetSndFrameNum);
 	}
 	ip.ver_ihl = 0x45;		// Version (4 bits) + Internet header length (4 bits)
 	ip.tos = 0x0;			// Type of service 
@@ -255,8 +293,37 @@ bool CNetPcapComm::SndFrameData(m_oFrameData* pFrameData)
 	iPos += sizeof(dh);
 	memcpy(tmp_buf + iPos, pFrameData->m_ucData, pFrameData->m_uiLength);
 	iPos += pFrameData->m_uiLength;
-
 	return pcap_sendpacket(m_ptrPcap, tmp_buf, iPos) == 0 ? true : false;
+}
+/** Socket发送帧*/
+int CNetPcapComm::SocketSndFrameData(m_oFrameData* pFrameData)
+{
+	int ret = 0;
+	int iReturn = 0;
+	timeval time_val = {0};
+	fd_set write_fds;
+	SOCKADDR_IN socketaddr;
+	SOCKET oSocket;
+	SecureZeroMemory(&socketaddr, sizeof(socketaddr));
+	socketaddr.sin_family = AF_INET;
+	socketaddr.sin_port = pFrameData->m_usDstPort;
+	if (pFrameData->m_bDownStream == true)
+	{
+		socketaddr.sin_addr.s_addr = m_uiLowStreamIP;
+		oSocket = m_SocketDownStream;
+	}
+	else
+	{
+		socketaddr.sin_addr.s_addr = m_uiHighStreamIP;
+		oSocket = m_SocketUpStream;
+	}
+	FD_ZERO(&write_fds);
+	FD_SET(oSocket, &write_fds);
+	ret = select(NULL, NULL, &write_fds, NULL, &time_val);
+	if(ret == 0) return 0;
+	else if(ret == SOCKET_ERROR) return -1;
+	return sendto(oSocket, &pFrameData->m_ucData[0], 
+		pFrameData->m_uiLength, 0, (SOCKADDR*)&socketaddr, sizeof(SOCKADDR));
 }
 void CNetPcapComm::OnClose()
 {
@@ -264,9 +331,11 @@ void CNetPcapComm::OnClose()
 	m_oUpStreamRcvSndPortMap.clear();
 	EnterCriticalSection(&m_oSec);
 	m_olsFrameDataFree.clear();
-	m_olsFrameDataWork.clear();
+	m_olsFrameDataDownStream.clear();
+	m_olsFrameDataUpStream.clear();
 	delete[] m_pFrameDataArray;
 	m_pFrameDataArray = NULL;
 	LeaveCriticalSection(&m_oSec);
 	DeleteCriticalSection(&m_oSec);
+	pcap_close(m_ptrPcap);
 }

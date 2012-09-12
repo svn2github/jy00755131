@@ -45,8 +45,6 @@ using stdext::hash_map;
 #define ADCFrameTimeLogFolderPath	_T("\\采样数据帧时间及偏移量")
 /** ADC数据帧*/
 #define ADCDataLogFolderPath		_T("\\采样数据")
-/** netd程序路径*/
-#define NetdExePath					_T("..\\Debug\\NetWinPcap.exe")
 /** 输出选择:Debug输出则为0，Release输出则为1*/
 #define OutPutSelect				0
 /** 输出错误日志上限*/
@@ -131,12 +129,14 @@ typedef struct ConstVar_Struct
 	int m_iADCDataSaveSleepTimes;
 	/** 等待线程关闭的延时次数*/
 	int m_iCloseThreadSleepTimes;
-	/** 采集站之间的时统修正值*/
+	/** 采集站到采集站的时统修正值*/
 	int m_iTimeDelayFDUToFDU;
-	/** 采集站与LCI之间的时统修正值*/
-	int m_iTimeDelayFDUToLCI;
-	/** 采集站与LAUL之间的时统修正值*/
+	/** LCI到采集站的时统修正值*/
+	int m_iTimeDelayLCIToFDU;
+	/** 采集站到LAUL的时统修正值*/
 	int m_iTimeDelayFDUToLAUL;
+	/** LAUL到采集站的时统修正值*/
+	int m_iTimeDelayLAULToFDU;
 	/** 首包稳定计数*/
 	int m_iHeadFrameStableTimes;
 	/** IP地址重设次数*/

@@ -5,7 +5,9 @@
 #include "PcapRcvThread.h"
 #include "PcapSndThread.h"
 #include "NetPcapComm.h"
-
+#include "afxwin.h"
+#define RevSndFrameNumTimerEventID	1
+#define RevSndFrameNumTimer			1000
 // CNetWinPcapDlg 对话框
 class CNetWinPcapDlg : public CDialogEx
 {
@@ -26,6 +28,15 @@ public:
 	/** Pcap通讯类成员变量*/
 	CNetPcapComm m_oNetPcapComm;
 public:
+	// 控件IDC_EDIT_DOWNSTREAM_RCVNUM的数值变量
+	long m_lEditDownStreamRcvNum;
+	// 控件IDC_EDIT_DOWNSTREAM_SNDNUM的数值变量
+	long m_lEditDownStreamSndNum;
+	// 控件IDC_EDIT_UPSTREAM_RCVNUM的数值变量
+	long m_lEditUpStreamRcvNum;
+	// 控件IDC_EDIT_UPSTREAM_SNDNUM的数值变量
+	long m_lEditUpStreamSndNum;
+public:
 	/** 命令行参数解析*/
 	void PhraseCommandLine(CString str);
 // 实现
@@ -40,4 +51,6 @@ protected:
 public:
 	afx_msg void OnWindowPosChanging(WINDOWPOS* lpwndpos);
 	afx_msg void OnClose();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedButtonResetnum();
 };

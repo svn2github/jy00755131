@@ -347,23 +347,22 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		{
 			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToFDU;
 		}
-		if ((pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
+		else if ((pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
 			&& (pInstrumentNext->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU))
 		{
-			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToLCI;
+			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayLCIToFDU;
 		}
-		if ((pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+		else if ((pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
 			&& (pInstrumentNext->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUL))
 		{
 			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToLAUL;
 		}
-		itmp1 >>= 1;
-		/** 新硬件先以第一个采集站作为时间基准，相邻采集站尾包时刻的差值减去0x1007后作为时统低位修正值
-		itmp1 -= 0x1007;
-		if (pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
+		else if ((pInstrument->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUL)
+			&& (pInstrumentNext->m_iInstrumentType == pTimeDelayThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU))
 		{
-			itmp1 = 0;
-		}*/
+			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayLAULToFDU;
+		}
+		itmp1 >>= 1;
 		itmp2 += itmp1;
 		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻差值为 %d,	"), pInstrumentNext->m_uiIP, itmp1);
 		strOutPut = str;

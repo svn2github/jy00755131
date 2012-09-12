@@ -7,6 +7,12 @@ using std::list;
 #define MaxStringSize	260
 #define MacAddrSize		6
 #define FrameDataSize	512
+
+#pragma intrinsic (_InterlockedIncrement,	\
+					_InterlockedDecrement,	\
+					_InterlockedExchangeAdd,	\
+					_InterlockedExchange,	\
+					_InterlockedCompareExchange)
 class CNetPcapComm
 {
 public:
@@ -53,7 +59,7 @@ public:
 		/** 判断是否是下行帧*/
 		bool m_bDownStream;
 		/** 数据存储区指针*/
-		u_char m_ucData[FrameDataSize];
+		char m_ucData[FrameDataSize];
 		/** 存储的数据长度*/
 		unsigned int m_uiLength;
 		/** 目标端口*/
@@ -65,10 +71,24 @@ public:
 	unsigned int m_uiFreeCount;
 	/** 空闲数据帧指针队列*/
 	list<m_oFrameData*> m_olsFrameDataFree;
-	/** 工作的数据帧指针队列*/
-	list<m_oFrameData*> m_olsFrameDataWork;
+	/** 上行数据帧指针队列*/
+	list<m_oFrameData*> m_olsFrameDataUpStream;
+	/** 下行数据帧指针队列*/
+	list<m_oFrameData*> m_olsFrameDataDownStream;
 	/** 临界区变量*/
 	CRITICAL_SECTION m_oSec;
+	/** 下行数据Net程序接收帧*/
+	volatile long m_lDownStreamNetRevFrameNum;
+	/** 下行数据Net程序发送帧*/
+	volatile long m_lDownStreamNetSndFrameNum;
+	/** 上行数据Net程序接收帧*/
+	volatile long m_lUpStreamNetRevFrameNum;
+	/** 上行数据Net程序发送帧*/
+	volatile long m_lUpStreamNetSndFrameNum;
+	/** 下行Socket*/
+	SOCKET m_SocketDownStream;
+	/** 上行Socket*/
+	SOCKET m_SocketUpStream;
 public:
 	/** 初始化*/
 	void OnInit();
@@ -92,8 +112,12 @@ public:
 	/** 将存储数据帧加入空闲列表*/
 	void AddFreeFrameData(m_oFrameData* pFrameData);
 	/** Pcap发送帧*/
-	bool SndFrameData(m_oFrameData* pFrameData);
+	bool PcapSndFrameData(m_oFrameData* pFrameData);
 	/** 求校验和*/
 	unsigned short check_sum (unsigned short * addr, int len);
+	/** Socket发送帧*/
+	int SocketSndFrameData(m_oFrameData* pFrameData);
+	/** 创建Socket*/
+	SOCKET CreateSocket(unsigned int uiSrcPort, int iSndBufferSize);
 };
 

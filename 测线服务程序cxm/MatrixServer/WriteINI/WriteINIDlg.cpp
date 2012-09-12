@@ -231,16 +231,20 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("20");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("TimeDelayFDUToFDU");			// 采集站之间需要时统修正的值
-	strValue = _T("-8473");
+	strSectionKey=_T("TimeDelayFDUToFDU");			// 采集站到采集站需要时统修正的值
+	strValue = _T("-4089");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("TimeDelayFDUToLCI");			// 采集站与LCI之间需要时统修正的值
-	strValue = _T("-8501");
+	strSectionKey=_T("TimeDelayLCIToFDU");			// LCI到采集站需要时统修正的值
+	strValue = _T("-8211");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("TimeDelayFDUToLAUL");			// 采集站与电源站之间需要时统修正的值
-	strValue = _T("-8454");
+	strSectionKey=_T("TimeDelayFDUToLAUL");			// 采集站到电源站需要时统修正的值
+	strValue = _T("-4358");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("TimeDelayLAULToFDU");			// 电源站到采集站需要时统修正的值
+	strValue = _T("-8166");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TimeDelayCorrect");			// 时统修正值
@@ -397,7 +401,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("FieldOnWaitTimeLimit");		// FieldOn与上一次FieldOff的时间间隔
-	strValue = _T("120");
+	strValue = _T("12");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("SaveTestDataNum");			// 存储用于测试计算的数据个数

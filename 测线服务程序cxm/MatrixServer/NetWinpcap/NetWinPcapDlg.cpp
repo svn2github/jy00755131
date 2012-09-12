@@ -19,6 +19,9 @@
 
 CNetWinPcapDlg::CNetWinPcapDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CNetWinPcapDlg::IDD, pParent)
+	, m_lEditDownStreamRcvNum(0)
+	, m_lEditDownStreamSndNum(0)
+	, m_lEditUpStreamRcvNum(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -26,6 +29,10 @@ CNetWinPcapDlg::CNetWinPcapDlg(CWnd* pParent /*=NULL*/)
 void CNetWinPcapDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_DOWNSTREAM_RCVNUM, m_lEditDownStreamRcvNum);
+	DDX_Text(pDX, IDC_EDIT_DOWNSTREAM_SNDNUM, m_lEditDownStreamSndNum);
+	DDX_Text(pDX, IDC_EDIT_UPSTREAM_RCVNUM, m_lEditUpStreamRcvNum);
+	DDX_Text(pDX, IDC_EDIT_UPSTREAM_SNDNUM, m_lEditUpStreamSndNum);
 }
 
 BEGIN_MESSAGE_MAP(CNetWinPcapDlg, CDialogEx)
@@ -33,6 +40,8 @@ BEGIN_MESSAGE_MAP(CNetWinPcapDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_WM_WINDOWPOSCHANGING()
 	ON_WM_CLOSE()
+	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BUTTON_RESETNUM, &CNetWinPcapDlg::OnBnClickedButtonResetnum)
 END_MESSAGE_MAP()
 
 
@@ -52,6 +61,7 @@ BOOL CNetWinPcapDlg::OnInitDialog()
 	m_oPcapRcvThread.OnInit();
 	m_oPcapSndThread.m_pNetPcapComm = &m_oNetPcapComm;
 	m_oPcapSndThread.OnInit();
+	SetTimer(RevSndFrameNumTimerEventID, RevSndFrameNumTimer, NULL);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -258,5 +268,32 @@ void CNetWinPcapDlg::OnClose()
 	m_oPcapRcvThread.OnClose();
 	m_oPcapSndThread.OnClose();
 	m_oNetPcapComm.OnClose();
+	KillTimer(RevSndFrameNumTimerEventID);
 	CDialogEx::OnClose();
+}
+
+
+void CNetWinPcapDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	int iTemp = 0;
+	if (nIDEvent == RevSndFrameNumTimerEventID)
+	{
+		m_lEditDownStreamRcvNum = _InterlockedCompareExchange(&m_oNetPcapComm.m_lDownStreamNetRevFrameNum, 0, 0);
+		m_lEditDownStreamSndNum = _InterlockedCompareExchange(&m_oNetPcapComm.m_lDownStreamNetSndFrameNum, 0, 0);
+		m_lEditUpStreamRcvNum = _InterlockedCompareExchange(&m_oNetPcapComm.m_lUpStreamNetRevFrameNum, 0, 0);
+		m_lEditUpStreamSndNum = _InterlockedCompareExchange(&m_oNetPcapComm.m_lUpStreamNetSndFrameNum, 0, 0);
+		UpdateData(FALSE);
+	}
+	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void CNetWinPcapDlg::OnBnClickedButtonResetnum()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	_InterlockedExchange(&m_oNetPcapComm.m_lDownStreamNetRevFrameNum, 0);
+	_InterlockedExchange(&m_oNetPcapComm.m_lDownStreamNetSndFrameNum, 0);
+	_InterlockedExchange(&m_oNetPcapComm.m_lUpStreamNetRevFrameNum, 0);
+	_InterlockedExchange(&m_oNetPcapComm.m_lUpStreamNetSndFrameNum, 0);
 }

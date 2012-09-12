@@ -86,11 +86,14 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("TimeDelayFDUToFDU");			// 采集站之间需要时统修正的值
 		pConstVar->m_iTimeDelayFDUToFDU = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("TimeDelayFDUToLCI");			// 采集站与LCI之间需要时统修正的值
-		pConstVar->m_iTimeDelayFDUToLCI = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+		strSectionKey=_T("TimeDelayLCIToFDU");			// LCI到采集站之间需要时统修正的值
+		pConstVar->m_iTimeDelayLCIToFDU = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("TimeDelayFDUToLAUL");			// 采集站与电源站之间需要时统修正的值
+		strSectionKey=_T("TimeDelayFDUToLAUL");			// 采集站到电源站需要时统修正的值
 		pConstVar->m_iTimeDelayFDUToLAUL = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
+		strSectionKey=_T("TimeDelayLAULToFDU");			// 电源站到采集站需要时统修正的值
+		pConstVar->m_iTimeDelayLAULToFDU = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("HeadFrameStableNum");			// 首包稳定计数
 		pConstVar->m_iHeadFrameStableTimes = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);

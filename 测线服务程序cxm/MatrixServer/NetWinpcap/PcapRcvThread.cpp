@@ -34,12 +34,14 @@ void CPcapRcvThread::OnProc(void)
 		{
 			bDownStream = true;
 			usDstPort = m_pNetPcapComm->GetSndPortFromMap(uh->dport, &m_pNetPcapComm->m_oDownStreamRcvSndPortMap);
+			_InterlockedIncrement(&m_pNetPcapComm->m_lDownStreamNetRevFrameNum);
 		}
 		else if ((TRUE == m_pNetPcapComm->IfRcvPortExistInMap(uh->dport, &m_pNetPcapComm->m_oUpStreamRcvSndPortMap))
 			&& (ih->saddr == m_pNetPcapComm->m_uiLowStreamIP))
 		{
 			bDownStream = false;
 			usDstPort = m_pNetPcapComm->GetSndPortFromMap(uh->dport, &m_pNetPcapComm->m_oUpStreamRcvSndPortMap);
+			_InterlockedIncrement(&m_pNetPcapComm->m_lUpStreamNetRevFrameNum);
 		}
 		else
 		{
@@ -52,8 +54,14 @@ void CPcapRcvThread::OnProc(void)
 		pFrameData->m_uiLength = htons(uh->len) - sizeof(UDP_Header);
 		memcpy(pFrameData->m_ucData, pkt_data + sizeof(Ethernet_Header) + sizeof(IP_Header)
 			+ sizeof(UDP_Header), pFrameData->m_uiLength);
-		m_pNetPcapComm->m_olsFrameDataWork.push_back(pFrameData);
+		if (bDownStream == true)
+		{
+			m_pNetPcapComm->m_olsFrameDataDownStream.push_back(pFrameData);
+		}
+		else
+		{
+			m_pNetPcapComm->m_olsFrameDataUpStream.push_back(pFrameData);
+		}
 		LeaveCriticalSection(&m_pNetPcapComm->m_oSec);
-// 		InterlockedIncrement(&pcap_service_ptr_->application_ptr_->pcap_data_inp_num_);
 	}
 }

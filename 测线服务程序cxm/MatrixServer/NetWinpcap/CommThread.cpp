@@ -71,7 +71,7 @@ DWORD CCommThread::ThreadRunFunc(void)
 	while (1)
 	{
 		OnProc();
-		WaitForSingleObject(m_hThreadStop, m_uiThreadSleepTime);
+		if(WaitForSingleObject(m_hThreadStop, m_uiThreadSleepTime) == WAIT_OBJECT_0)	break;
 	}
 	SetEvent(m_hThreadClose);
 	return 1;
