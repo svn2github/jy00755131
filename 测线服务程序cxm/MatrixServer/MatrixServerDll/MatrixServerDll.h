@@ -48,7 +48,7 @@ using stdext::hash_map;
 /** 输出选择:Debug输出则为0，Release输出则为1*/
 #define OutPutSelect				0
 /** 输出错误日志上限*/
-#define OutPutLogErrorLimit			100
+#define OutPutLogErrorLimit			1000
 /** 日志文件单个文件输出信息条数*/
 #define OutPutLogFileInfoNumLimit	5000
 /** 日志输出类型*/
@@ -63,6 +63,10 @@ typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex
 /** 从neted程序得到的端口位移*/
 #define NetedPortMove	50
 /*#define NetedPortMove	0*/
+/** 时统低位修正值上限*/
+#define TimeDelayLowLimit	50
+/** 时统低位修正默认值*/
+#define TimeDelayDefault	32
 /**
 * @struct LogOutPut_Struct
 * @brief 日志输出结构
@@ -1172,6 +1176,8 @@ typedef struct LineList_Struct
 	bool m_bLineStableChange;
 	/** 测网系统发生变化的时间*/
 	unsigned int m_uiLineChangeTime;
+	/** TB时间高位*/
+	unsigned int m_uiTBHigh;
 }m_oLineListStruct;
 
 /**
@@ -1440,7 +1446,7 @@ typedef struct ADCSetThread_Struct
 	/** 仪器的系统时间*/
 	unsigned int m_uiLocalSysTime;
 	/** 上一次开始采样的采样时间*/
-	unsigned int m_uiTBTimeOld;
+	unsigned int m_uiLocalSysTimeOld;
 	/** 从XML文件中解析得到的信息*/
 	m_oInstrumentCommInfoStruct* m_pCommInfo;
 	/** 输出日志指针*/
@@ -1509,6 +1515,8 @@ typedef struct ADCDataRecThread_Struct
 	unsigned int m_uiADCDataFrameSysTime;
 	/** 存文件数据帧数计数*/
 	int m_iADCFrameCount;
+	/** 是否监测其它采集站接收数据帧情况标志位*/
+	bool m_bCheckFDUADCRec;
 	/** 采样数据回调函数*/
 	ProSampleDateCallBack m_oProSampleDataCallBack;
 }m_oADCDataRecThreadStruct;

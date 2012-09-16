@@ -126,6 +126,8 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	unsigned short usLAUXTailRecTimeLineB = 0;
 	unsigned short usTailSndTime = 0;
 	unsigned short usTailRecTime = 0;
+	unsigned int uiSysTime = 0;
+	unsigned int uiNetTime = 0;
 	EnterCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
 	uiSrcIP = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSrcIP;
 	usLAUXTailRecTimeLAUXLineA = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLAUXLineA;
@@ -134,6 +136,8 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	usLAUXTailRecTimeLineB = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLineB;
 	usTailRecTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailRecTime;
 	usTailSndTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTime;
+	uiSysTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSysTime;
+	uiNetTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiNetTime;
 	LeaveCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
 	EnterCriticalSection(&pTimeDelayThread->m_pLineList->m_oSecLineList);
 	// 判断仪器IP是否在SN索引表中
@@ -187,6 +191,8 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	}
 	// 尾包发送时刻
 	pInstrument->m_usSendTime = usTailSndTime;
+	pInstrument->m_uiSystemTime = uiSysTime;
+	pInstrument->m_uiNetTime = uiNetTime;
 	str.Format(_T("尾包发送时刻 = 0x%x"), pInstrument->m_usSendTime);
 	strOutPut += str;
 	strConv = (CStringA)strOutPut;
@@ -363,6 +369,10 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayLAULToFDU;
 		}
 		itmp1 >>= 1;
+		if (itmp1 > TimeDelayLowLimit)
+		{
+			itmp1 = TimeDelayDefault;
+		}
 		itmp2 += itmp1;
 		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻差值为 %d,	"), pInstrumentNext->m_uiIP, itmp1);
 		strOutPut = str;
@@ -370,7 +380,8 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		// 时间修正低位
 		pInstrumentNext->m_uiTimeLow = itmp2 & 0x3fff;
 		// 时间修正高位
-		pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;
+		/*pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;*/
+		pInstrumentNext->m_uiTimeHigh = 0;
 		// 在数据采集期间只针对未时统的仪器进行时统设置
 		if (((bADCStartSample == true) && (pInstrumentNext->m_iTimeSetReturnCount == 0))
 			|| (bADCStartSample == false))
@@ -382,8 +393,9 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 				pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext);
 			SendInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, 
 				pTimeDelayThread->m_pThread->m_pConstVar);
-			str.Format(_T("发送时统设置帧时统修正高位为 0x%x，时统修正低位为 0x%x"), 
-				pInstrumentNext->m_uiTimeHigh, pInstrumentNext->m_uiTimeLow);
+			str.Format(_T("发送时统设置帧时统修正高位为 0x%x，时统修正低位为 0x%x，本地时间为 0x%x，网络时间为0x%x"), 
+				pInstrumentNext->m_uiTimeHigh, pInstrumentNext->m_uiTimeLow, 
+				pInstrumentNext->m_uiSystemTime, pInstrumentNext->m_uiNetTime);
 			strOutPut += str;
 			strConv = (CStringA)strOutPut;
 			AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);

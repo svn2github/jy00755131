@@ -323,6 +323,7 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	pEnv->m_pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
+	pEnv->m_pADCDataRecThread->m_bCheckFDUADCRec = true;
 	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
 	pEnv->m_pADCDataRecThread->m_iADCSampleRate = iSampleRate;
 	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);

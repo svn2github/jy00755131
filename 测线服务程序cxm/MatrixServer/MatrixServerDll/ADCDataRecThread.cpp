@@ -84,6 +84,30 @@ void AddToADCDataWriteFileList(int iLineIndex, int iPointIndex, unsigned int uiF
 	pADCDataRecThread->m_pADCDataBufArray->m_olsADCDataToWrite.push_back(pADCDataBuf);
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 }
+// 查找没有接收到数据的采集站
+BOOL FindFDUNotRecADCData(m_oADCDataRecThreadStruct* pADCDataRecThread)
+{
+	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
+	CString str = _T("");
+	string strConv = "";
+	BOOL bReturn = FALSE;
+	EnterCriticalSection(&pADCDataRecThread->m_pLineList->m_oSecLineList);
+	for (iter = pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.begin();
+		iter != pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
+	{
+		if ((iter->second->m_uiADCDataActualRecFrameNum == 0)
+			&& (iter->second->m_iInstrumentType == pADCDataRecThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU))
+		{
+			str.Format(_T("未收到SN = 0x%x的采集站的ADC数据帧"), iter->second->m_uiSN);
+			strConv = (CStringA)str;
+			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "", 
+				strConv, ErrorType, IDS_ERR_ADCDATANOTREC);
+			bReturn = TRUE;
+		}
+	}
+	LeaveCriticalSection(&pADCDataRecThread->m_pLineList->m_oSecLineList);
+	return bReturn;
+}
 // 处理单个ADC数据帧
 void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
@@ -104,9 +128,11 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	int iADCFrameCount = 0;
 	unsigned int uiADCDataFrameSysTimeMove = 0;
 	unsigned int uiLostFrameNum = 0;
+	bool bCheckFDUADCRec = false;
 	int iADCDataInOneFrameNum = 0;
 	int iADCFrameSaveInOneFileNum = 0;
 	unsigned short usADCFramePointLimit = 0;
+	unsigned int uiTBHigh = 0;
 	ADCLostFrame_Struct* pADCLostFrame = NULL;
 	// 帧序号
 	unsigned int uiFrameNb = 0;
@@ -120,6 +146,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	uiADCDataFrameSysTimeOld = pADCDataRecThread->m_uiADCDataFrameSysTime;
 	iADCFrameCount = pADCDataRecThread->m_iADCFrameCount;
+	bCheckFDUADCRec = pADCDataRecThread->m_bCheckFDUADCRec;
 	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 
 	EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
@@ -134,6 +161,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 
 	EnterCriticalSection(&pADCDataRecThread->m_pLineList->m_oSecLineList);
+	uiTBHigh = pADCDataRecThread->m_pLineList->m_uiTBHigh;
 	// 仪器不在索引表中
 	if (FALSE == IfIndexExistInMap(uiIPInstrument, &pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -178,6 +206,16 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	}
 	if (pInstrument->m_uiADCDataActualRecFrameNum > 0)
 	{
+		// 收到第二帧数据检查其他站是否收到数据帧
+		if ((pInstrument->m_uiADCDataActualRecFrameNum == 1)
+			&& (bCheckFDUADCRec == true))
+		{
+			// 将未收到数据的采集站写入错误日志
+			if (TRUE == FindFDUNotRecADCData(pADCDataRecThread))
+			{
+				bCheckFDUADCRec = false;
+			}
+		}
 		if (usADCDataFramePointNow > usADCFramePointLimit)
 		{
 			LeaveCriticalSection(&pADCDataRecThread->m_pLineList->m_oSecLineList);
@@ -285,6 +323,17 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			pInstrument->m_olsADCDataSave.push_back(iTestData);
 		}
 	}
+	else
+	{
+		if (uiTBHigh + 789 != uiADCDataFrameSysTimeNow)
+		{
+			str.Format(_T("仪器SN = 0x%x，IP = 0x%x，第一帧的本地时间 = 0x%x"), pInstrument->m_uiSN, 
+				pInstrument->m_uiIP, uiADCDataFrameSysTimeNow);
+			strConv = (CStringA)str;
+			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne",
+				strConv, ErrorType, IDS_ERR_SAMPLETIME);
+		}
+	}
 	pInstrument->m_uiADCDataActualRecFrameNum++;
 	pInstrument->m_uiADCDataShouldRecFrameNum++;
 	pInstrument->m_usADCDataFramePoint = usADCDataFramePointNow;
@@ -306,6 +355,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	pADCDataRecThread->m_uiADCDataFrameSysTime = uiADCDataFrameSysTimeNow;
 	pADCDataRecThread->m_iADCFrameCount = iADCFrameCount;
+	pADCDataRecThread->m_bCheckFDUADCRec = bCheckFDUADCRec;
 	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 }
 // 处理ADC数据接收帧
@@ -466,6 +516,7 @@ bool OnInitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread,
 	pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
 	pADCDataRecThread->m_iADCFrameCount = 0;
 	pADCDataRecThread->m_iADCSampleRate = 1000;	// 默认为1K采样率
+	pADCDataRecThread->m_bCheckFDUADCRec = false;
 	// 设置事件对象为无信号状态
 	ResetEvent(pADCDataRecThread->m_pThread->m_hThreadClose);
 	// 创建线程

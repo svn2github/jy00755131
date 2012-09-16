@@ -27,12 +27,12 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 	unsigned int uiTemp = 0;
 	unsigned int uiADCSetOperationNb = 0;
 	unsigned int uiLocalSysTime = 0;
-	unsigned int uiTBTimeOld = 0;
+	unsigned int uiLocalSysTimeOld = 0;
 	bool bSetLocalSysTime = false;
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_iADCSetOperationNb;
 	uiLocalSysTime = pADCSetThread->m_uiLocalSysTime;
-	uiTBTimeOld = pADCSetThread->m_uiTBTimeOld;
+	uiLocalSysTimeOld = pADCSetThread->m_uiLocalSysTimeOld;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	// 查询命令字个数
@@ -324,18 +324,21 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 查询仪器的当前系统时间
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdLocalSysTime;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+		// 查询仪器的当前网络时间
+		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdNetTime;
+		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 18:
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置TB时间高位
-		if (uiLocalSysTime < uiTBTimeOld)
+		if (uiLocalSysTime < uiLocalSysTimeOld)
 		{
-			uiTemp = (0xffffffff - uiTBTimeOld + uiLocalSysTime) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
+			uiTemp = (0xffffffff - uiLocalSysTimeOld + uiLocalSysTime) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
 		}
 		else
 		{
-			uiTemp = (uiLocalSysTime - uiTBTimeOld) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
+			uiTemp = (uiLocalSysTime - uiLocalSysTimeOld) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
 		}
 		if (uiLocalSysTime < uiTemp)
 		{
@@ -420,9 +423,12 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 	if (bSetLocalSysTime == true)
 	{
 		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		pADCSetThread->m_uiTBTimeOld = uiLocalSysTime;
-		pADCSetThread->m_uiLocalSysTime = uiLocalSysTime;
+		pADCSetThread->m_uiLocalSysTimeOld = uiLocalSysTime;
 		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+		EnterCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
+		pADCSetThread->m_pLineList->m_uiTBHigh = pADCSetThread->m_pThread->m_pConstVar->m_uiTBSleepTimeHigh 
+			+ uiLocalSysTime;
+		LeaveCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 	}
 }
 // 手动发送ADC参数设置帧
@@ -548,6 +554,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	}
 	unsigned int uiIPInstrument = 0;
 	unsigned int uiSysTime = 0;
+	unsigned int uiNetTime = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
 	string strFrameData = "";
@@ -557,6 +564,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	uiIPInstrument = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiSrcIP;
 	uiSysTime = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiSysTime;
+	uiNetTime = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiNetTime;
 	LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_iADCSetOperationNb;
@@ -583,7 +591,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		pADCSetThread->m_uiLocalSysTime = uiSysTime;
 		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x"), uiIPInstrument, uiSysTime);
+		str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x网络时间为 = 0x%x"), uiIPInstrument, uiSysTime, uiNetTime);
 		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ProcADCSetReturnFrameOne", strConv);
 	}
@@ -969,7 +977,7 @@ bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread,
 	pADCSetThread->m_bADCStartSample = false;
 	pADCSetThread->m_bADCStopSample = false;
 	pADCSetThread->m_uiLocalSysTime = 0;
-	pADCSetThread->m_uiTBTimeOld = 0;
+	pADCSetThread->m_uiLocalSysTimeOld = 0;
 	if (false == OnInitThread(pADCSetThread->m_pThread, pLogOutPut, pConstVar))
 	{
 		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);

@@ -253,6 +253,12 @@ void MakeInstrumentTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTi
 	// 尾包接收/发送时刻
 	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdTailRecSndTime;
 	usPos ++;
+	// 本地时间
+	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalSysTime;
+	usPos ++;
+	// 网络时间
+	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdNetTime;
+	usPos ++;
 	// 查询命令字个数
 	pTailTimeFrame->m_usCommandWordNum = usPos;
 	MakeInstrumentFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 

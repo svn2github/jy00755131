@@ -27,6 +27,7 @@ void OnResetLineList(m_oLineListStruct* pLineList)
 	pLineList->m_bLineStableChange = false;
 	// 测网系统发生变化的时间
 	pLineList->m_uiLineChangeTime = 0;
+	pLineList->m_uiTBHigh = 0;
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 初始化测线队列结构体
@@ -51,6 +52,7 @@ void OnInitLineList(m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
 	pLineList->m_bLineStableChange = false;
 	// 测网系统发生变化的时间
 	pLineList->m_uiLineChangeTime = 0;
+	pLineList->m_uiTBHigh = 0;
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 关闭测线队列结构体
