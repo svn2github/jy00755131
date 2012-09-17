@@ -33,25 +33,5 @@ void CPcapSndThread::OnProc(void)
 		m_pNetPcapComm->m_olsFrameDataUpStream.pop_front();
 		m_pNetPcapComm->AddFreeFrameData(pFrameData);
 	}
-	iFrameNum = m_pNetPcapComm->m_olsFrameDataDownStream.size();
-	if (iFrameNum > 4)
-	{
-		iFrameNum = 4;
-	}
-	for (int i=0; i<iFrameNum; i++)
-	{
-		pFrameData = *m_pNetPcapComm->m_olsFrameDataDownStream.begin();
-		// 发送该帧
-		if (pFrameData->m_uiLength == m_pNetPcapComm->SocketSndFrameData(pFrameData))
-		{
-			_InterlockedIncrement(&m_pNetPcapComm->m_lDownStreamNetSndFrameNum);
-		}
-		else
-		{
-			OutputDebugString(_T("下行帧发送失败！"));
-		}
-		m_pNetPcapComm->m_olsFrameDataDownStream.pop_front();
-		m_pNetPcapComm->AddFreeFrameData(pFrameData);
-	}
 	LeaveCriticalSection(&m_pNetPcapComm->m_oSec);
 }

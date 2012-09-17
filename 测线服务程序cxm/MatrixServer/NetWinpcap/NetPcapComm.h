@@ -2,6 +2,7 @@
 #include "pcap\pcap.h"
 #include <hash_map>
 #include <list>
+#include <MMSystem.h>
 using std::hash_map;
 using std::list;
 #define MaxStringSize	260
@@ -89,6 +90,10 @@ public:
 	SOCKET m_SocketDownStream;
 	/** 上行Socket*/
 	SOCKET m_SocketUpStream;
+	/** 定时器分辨率*/
+	unsigned int m_uiTimeRes;
+	/** 定时器ID*/
+	MMRESULT m_TimerID;
 public:
 	/** 初始化*/
 	void OnInit();

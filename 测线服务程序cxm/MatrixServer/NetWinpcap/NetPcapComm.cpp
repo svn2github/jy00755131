@@ -2,6 +2,8 @@
 #include "NetPcapComm.h"
 #include "NetFrameHeader.h"
 #pragma comment(lib, "wpcap")
+#pragma comment(lib,"winmm")  //lib file
+//#pragma comment(lib,"MmTimer")  //lib file, WinCE
 CNetPcapComm::CNetPcapComm(void)
 {
 	m_ptrPcap = NULL;
@@ -57,6 +59,35 @@ SOCKET CNetPcapComm::CreateSocket(unsigned int uiSrcPort, int iSndBufferSize)
 		NULL, 0, &bytes_returned,	NULL, NULL);
 	return oSocket;
 }
+void CALLBACK TimerHandler(UINT id, UINT msg, DWORD dwUser, DWORD dw1, DWORD dw2)
+{
+	CNetPcapComm* pThis = (CNetPcapComm*)dwUser;
+	int iFrameNum = 0;
+	CNetPcapComm::FrameDataStruct* pFrameData = NULL;
+	EnterCriticalSection(&pThis->m_oSec);
+	iFrameNum = pThis->m_olsFrameDataDownStream.size();
+	if (iFrameNum > 4)
+	{
+		iFrameNum = 4;
+	}
+	for (int i=0; i<iFrameNum; i++)
+	{
+		pFrameData = *pThis->m_olsFrameDataDownStream.begin();
+		// 发送该帧
+		if (pFrameData->m_uiLength == pThis->SocketSndFrameData(pFrameData))
+		{
+			_InterlockedIncrement(&pThis->m_lDownStreamNetSndFrameNum);
+		}
+		else
+		{
+			OutputDebugString(_T("下行帧发送失败！"));
+		}
+		pThis->m_olsFrameDataDownStream.pop_front();
+		pThis->AddFreeFrameData(pFrameData);
+	}
+	LeaveCriticalSection(&pThis->m_oSec);
+	
+}
 void CNetPcapComm::OnInit()
 {
 	pcap_if_t *alldevs;
@@ -107,6 +138,22 @@ void CNetPcapComm::OnInit()
 	_InterlockedExchange(&m_lDownStreamNetSndFrameNum, 0);
 	_InterlockedExchange(&m_lUpStreamNetRevFrameNum, 0);
 	_InterlockedExchange(&m_lUpStreamNetSndFrameNum, 0);
+
+	m_uiTimeRes = 1;
+	// 设置定时器分辨率，1ms
+	timeBeginPeriod(m_uiTimeRes);
+	// 开启定时器
+	// 该函数定时精度为ms级，利用该函数可以实现周期性的函数调用。
+	// 该函数设置一个定时回调事件，此事件可以是一个一次性事件或周期性事件。事件一旦被激活，便调用指定的回调函数，
+	// 成功后返回事件的标识符代码，否则返回NULL
+	m_TimerID = timeSetEvent(
+		1,	// 以毫秒指定事件的周期
+		m_uiTimeRes,	// 以毫秒指定延时的精度，数值越小定时器事件分辨率越高，缺省值为1ms。
+		TimerHandler,	// 指向一个回调函数
+		(DWORD)this,	// 存放用户提供的回调数据
+		TIME_PERIODIC);	// 指定定时器事件类型：
+	// TIME_ONESHOT：uDelay毫秒后只产生一次事件
+	// TIME_PERIODIC ：每隔uDelay毫秒周期性地产生事件。
 }
 /** 解析接收发送端口*/
 void CNetPcapComm::PhraseRcvSndPort(CString str, hash_map<unsigned short, unsigned short>* pMap)
@@ -338,4 +385,6 @@ void CNetPcapComm::OnClose()
 	LeaveCriticalSection(&m_oSec);
 	DeleteCriticalSection(&m_oSec);
 	pcap_close(m_ptrPcap);
+	timeKillEvent(m_TimerID);
+	timeEndPeriod(m_uiTimeRes);
 }
