@@ -594,7 +594,8 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 // 调用netd程序
 void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv)
 {
-	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36666_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 NetIP=192.168.100.22 LowMacAddr=0,10,53,0,1,2 HighMacAddr=0,48,103,107,228,202 NetMacAddr=0,48,103,107,228,202 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=0 PcapQueueSize=100000");
+//	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36666_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 NetIP=192.168.100.22 LowMacAddr=0,10,53,0,1,2 HighMacAddr=0,48,103,107,228,202 NetMacAddr=0,48,103,107,228,202 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=0 PcapQueueSize=100000");
+	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36666_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 DownStreamSndBufSize=2560000 UpStreamSndBufSize=5120000 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=0 PcapQueueSize=100000");
 	STARTUPINFO si = {0};
 	si.dwFlags = STARTF_USESHOWWINDOW; // 指定wShowWindow成员有效
 	si.wShowWindow = SW_SHOW; // 此成员设定是否显示新建进程的主窗口

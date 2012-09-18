@@ -22,6 +22,7 @@
     <None Include="res\NetWinPcap.ico">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetWinPcap.h">

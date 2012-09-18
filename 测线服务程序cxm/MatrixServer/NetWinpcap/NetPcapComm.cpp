@@ -16,12 +16,14 @@ CNetPcapComm::CNetPcapComm(void)
 	m_oUpStreamRcvSndPortMap.clear();
 	m_usPcapDownStreamSrcPort = 0;
 	m_usPcapUpStreamSrcPort = 0;
+	m_uiDownStreamSndBufSize = 0;
+	m_uiUpStreamSndBufSize = 0;
 	m_uiHighStreamIP = 0;
 	m_uiLowStreamIP = 0;
-	m_uiNetIP = 0;
-	memset(m_ucHighMacAddr, 0, sizeof(m_ucHighMacAddr));
-	memset(m_ucLowMacAddr, 0, sizeof(m_ucLowMacAddr));
-	memset(m_ucNetMacAddr, 0, sizeof(m_ucNetMacAddr));
+//	m_uiNetIP = 0;
+// 	memset(m_ucHighMacAddr, 0, sizeof(m_ucHighMacAddr));
+// 	memset(m_ucLowMacAddr, 0, sizeof(m_ucLowMacAddr));
+// 	memset(m_ucNetMacAddr, 0, sizeof(m_ucNetMacAddr));
 	m_uiPcapQueueSize = 0;
 	m_pFrameDataArray = NULL;
 	m_uiFreeCount = 0;
@@ -95,8 +97,8 @@ void CNetPcapComm::OnInit()
 	char errbuf[PCAP_ERRBUF_SIZE+1];
 	unsigned int netmask;
 	struct bpf_program fcode;
-	m_SocketDownStream = CreateSocket(m_usPcapDownStreamSrcPort, 20000*128);
-	m_SocketUpStream = CreateSocket(m_usPcapUpStreamSrcPort, 20000*256);
+	m_SocketDownStream = CreateSocket(m_usPcapDownStreamSrcPort, m_uiDownStreamSndBufSize);
+	m_SocketUpStream = CreateSocket(m_usPcapUpStreamSrcPort, m_uiUpStreamSndBufSize);
 
 	/* Retrieve the interfaces list */
 	pcap_findalldevs(&alldevs, errbuf);
@@ -250,98 +252,98 @@ void CNetPcapComm::AddFreeFrameData(m_oFrameData* pFrameData)
 	m_olsFrameDataFree.push_back(pFrameData);
 	m_uiFreeCount++;
 }
-unsigned short CNetPcapComm::check_sum (unsigned short * addr, int len)
-{
-	int nleft = len;
-	unsigned sum = 0;
-	unsigned short *w = addr;
-	unsigned short answer = 0;
-
-	/*
-	* Our algorithm is simple, using a 32 bit accumulator (sum), we add
-	* sequential 16 bit words to it, and at the end, fold back all the
-	* carry bits from the top 16 bits into the lower 16 bits.
-	*/
-	while (nleft > 1) {
-		sum += *w++;
-		nleft -= 2;
-	}
-	/* mop up an odd byte, if necessary */
-	if (nleft == 1) {
-		* (unsigned char *) (&answer) = * (unsigned char *) w;
-		sum += answer;
-	}
-
-	/* add back carry outs from top 16 bits to low 16 bits */
-	sum = (sum >> 16) + (sum & 0xffff); /* add hi 16 to low 16 */
-	sum += (sum >> 16);     /* add carry */
-	answer = ~sum;     /* truncate to 16 bits */
-	return (answer);
-}
+// unsigned short CNetPcapComm::check_sum (unsigned short * addr, int len)
+// {
+// 	int nleft = len;
+// 	unsigned sum = 0;
+// 	unsigned short *w = addr;
+// 	unsigned short answer = 0;
+// 
+// 	/*
+// 	* Our algorithm is simple, using a 32 bit accumulator (sum), we add
+// 	* sequential 16 bit words to it, and at the end, fold back all the
+// 	* carry bits from the top 16 bits into the lower 16 bits.
+// 	*/
+// 	while (nleft > 1) {
+// 		sum += *w++;
+// 		nleft -= 2;
+// 	}
+// 	/* mop up an odd byte, if necessary */
+// 	if (nleft == 1) {
+// 		* (unsigned char *) (&answer) = * (unsigned char *) w;
+// 		sum += answer;
+// 	}
+// 
+// 	/* add back carry outs from top 16 bits to low 16 bits */
+// 	sum = (sum >> 16) + (sum & 0xffff); /* add hi 16 to low 16 */
+// 	sum += (sum >> 16);     /* add carry */
+// 	answer = ~sum;     /* truncate to 16 bits */
+// 	return (answer);
+// }
 /** Pcap发送帧，缺点：发送速度慢！*/
-bool CNetPcapComm::PcapSndFrameData(m_oFrameData* pFrameData)
-{
-	unsigned char tmp_buf[FrameDataSize] = {0};
-	IP_Header ip = {0};
-	Ethernet_Header eh = {0};
-	UDP_Header dh = {0};
-	int iPos = 0;
-
-	eh.type = 0x08;
-	eh.source[0] = m_ucNetMacAddr[0];
-	eh.source[1] = m_ucNetMacAddr[1];
-	eh.source[2] = m_ucNetMacAddr[2];
-	eh.source[3] = m_ucNetMacAddr[3];
-	eh.source[4] = m_ucNetMacAddr[4];
-	eh.source[5] = m_ucNetMacAddr[5];
-	if (pFrameData->m_bDownStream == true)
-	{
-		eh.dest[0] = m_ucLowMacAddr[0];
-		eh.dest[1] = m_ucLowMacAddr[1];
-		eh.dest[2] = m_ucLowMacAddr[2];
-		eh.dest[3] = m_ucLowMacAddr[3];
-		eh.dest[4] = m_ucLowMacAddr[4];
-		eh.dest[5] = m_ucLowMacAddr[5];
-		ip.daddr = m_uiLowStreamIP;
-		dh.sport = m_usPcapDownStreamSrcPort;
-		_InterlockedIncrement(&m_lDownStreamNetSndFrameNum);
-	}
-	else
-	{
-		eh.dest[0] = m_ucHighMacAddr[0];
-		eh.dest[1] = m_ucHighMacAddr[1];
-		eh.dest[2] = m_ucHighMacAddr[2];
-		eh.dest[3] = m_ucHighMacAddr[3];
-		eh.dest[4] = m_ucHighMacAddr[4];
-		eh.dest[5] = m_ucHighMacAddr[5];
-		ip.daddr = m_uiHighStreamIP;
-		dh.sport = m_usPcapUpStreamSrcPort;
-		_InterlockedIncrement(&m_lUpStreamNetSndFrameNum);
-	}
-	ip.ver_ihl = 0x45;		// Version (4 bits) + Internet header length (4 bits)
-	ip.tos = 0x0;			// Type of service 
-	ip.tlen = htons(pFrameData->m_uiLength + sizeof(IP_Header) + sizeof(UDP_Header));			// Total length 
-	ip.identification = htons(3347); // Identification
-	ip.flags_fo = 0x40;		// Flags (3 bits) + Fragment offset (13 bits)
-	ip.ttl = 0x80;			// Time to live
-	ip.proto = 0x11;			// Protocol
-	ip.saddr = m_uiNetIP;// Source address
-	ip.crc = check_sum((unsigned short*)&ip, sizeof(ip));// Header checksum
-	
-
-	dh.crc = 0;
-	dh.dport = pFrameData->m_usDstPort;
-	dh.len = htons(pFrameData->m_uiLength + sizeof(UDP_Header));
-	memcpy(tmp_buf, &eh, sizeof(eh));
-	iPos += sizeof(eh);
-	memcpy(tmp_buf + iPos, &ip, sizeof(ip));
-	iPos += sizeof(ip);
-	memcpy(tmp_buf + iPos, &dh, sizeof(dh));
-	iPos += sizeof(dh);
-	memcpy(tmp_buf + iPos, pFrameData->m_ucData, pFrameData->m_uiLength);
-	iPos += pFrameData->m_uiLength;
-	return pcap_sendpacket(m_ptrPcap, tmp_buf, iPos) == 0 ? true : false;
-}
+// bool CNetPcapComm::PcapSndFrameData(m_oFrameData* pFrameData)
+// {
+// 	unsigned char tmp_buf[FrameDataSize] = {0};
+// 	IP_Header ip = {0};
+// 	Ethernet_Header eh = {0};
+// 	UDP_Header dh = {0};
+// 	int iPos = 0;
+// 
+// 	eh.type = 0x08;
+// 	eh.source[0] = m_ucNetMacAddr[0];
+// 	eh.source[1] = m_ucNetMacAddr[1];
+// 	eh.source[2] = m_ucNetMacAddr[2];
+// 	eh.source[3] = m_ucNetMacAddr[3];
+// 	eh.source[4] = m_ucNetMacAddr[4];
+// 	eh.source[5] = m_ucNetMacAddr[5];
+// 	if (pFrameData->m_bDownStream == true)
+// 	{
+// 		eh.dest[0] = m_ucLowMacAddr[0];
+// 		eh.dest[1] = m_ucLowMacAddr[1];
+// 		eh.dest[2] = m_ucLowMacAddr[2];
+// 		eh.dest[3] = m_ucLowMacAddr[3];
+// 		eh.dest[4] = m_ucLowMacAddr[4];
+// 		eh.dest[5] = m_ucLowMacAddr[5];
+// 		ip.daddr = m_uiLowStreamIP;
+// 		dh.sport = m_usPcapDownStreamSrcPort;
+// 		_InterlockedIncrement(&m_lDownStreamNetSndFrameNum);
+// 	}
+// 	else
+// 	{
+// 		eh.dest[0] = m_ucHighMacAddr[0];
+// 		eh.dest[1] = m_ucHighMacAddr[1];
+// 		eh.dest[2] = m_ucHighMacAddr[2];
+// 		eh.dest[3] = m_ucHighMacAddr[3];
+// 		eh.dest[4] = m_ucHighMacAddr[4];
+// 		eh.dest[5] = m_ucHighMacAddr[5];
+// 		ip.daddr = m_uiHighStreamIP;
+// 		dh.sport = m_usPcapUpStreamSrcPort;
+// 		_InterlockedIncrement(&m_lUpStreamNetSndFrameNum);
+// 	}
+// 	ip.ver_ihl = 0x45;		// Version (4 bits) + Internet header length (4 bits)
+// 	ip.tos = 0x0;			// Type of service 
+// 	ip.tlen = htons(pFrameData->m_uiLength + sizeof(IP_Header) + sizeof(UDP_Header));			// Total length 
+// 	ip.identification = htons(3347); // Identification
+// 	ip.flags_fo = 0x40;		// Flags (3 bits) + Fragment offset (13 bits)
+// 	ip.ttl = 0x80;			// Time to live
+// 	ip.proto = 0x11;			// Protocol
+// 	ip.saddr = m_uiNetIP;// Source address
+// 	ip.crc = check_sum((unsigned short*)&ip, sizeof(ip));// Header checksum
+// 	
+// 
+// 	dh.crc = 0;
+// 	dh.dport = pFrameData->m_usDstPort;
+// 	dh.len = htons(pFrameData->m_uiLength + sizeof(UDP_Header));
+// 	memcpy(tmp_buf, &eh, sizeof(eh));
+// 	iPos += sizeof(eh);
+// 	memcpy(tmp_buf + iPos, &ip, sizeof(ip));
+// 	iPos += sizeof(ip);
+// 	memcpy(tmp_buf + iPos, &dh, sizeof(dh));
+// 	iPos += sizeof(dh);
+// 	memcpy(tmp_buf + iPos, pFrameData->m_ucData, pFrameData->m_uiLength);
+// 	iPos += pFrameData->m_uiLength;
+// 	return pcap_sendpacket(m_ptrPcap, tmp_buf, iPos) == 0 ? true : false;
+// }
 /** Socket发送帧*/
 int CNetPcapComm::SocketSndFrameData(m_oFrameData* pFrameData)
 {

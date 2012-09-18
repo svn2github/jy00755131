@@ -66,6 +66,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	char cLAUXErrorCodeCmdCount = 0;
 	char cFDUErrorCodeDataCount = 0;
 	char cFDUErrorCodeCmdCount = 0;
+	unsigned int uiSysTime = 0;
 	int iTemp = 0;
 	EnterCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
 	// 得到仪器IP
@@ -77,6 +78,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	cLAUXErrorCodeCmdCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeCmdCount;
 	cFDUErrorCodeDataCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeDataCount;
 	cFDUErrorCodeCmdCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeCmdCount;
+	uiSysTime = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_uiSysTime;
 	LeaveCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
 	EnterCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
 	// 仪器在索引表中
@@ -93,7 +95,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	}
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
 		&pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
-	str.Format(_T("仪器SN = 0x%x，IP = 0x%x；"), pInstrument->m_uiSN, pInstrument->m_uiIP);
+	str.Format(_T("仪器SN = 0x%x，IP = %d "), pInstrument->m_uiSN, pInstrument->m_uiIP);
 	strOutPut += str;
 	// 仪器类型为LCI或者交叉站
 	if ((pInstrument->m_iInstrumentType == pErrorCodeThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
@@ -222,8 +224,11 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		strOutPut += str;
 	}
 	pInstrument->m_uiErrorCodeReturnNum++;
-	str.Format(_T("接收帧数=%d"), pInstrument->m_uiErrorCodeReturnNum);
+	str.Format(_T("接收帧数=%d "), pInstrument->m_uiErrorCodeReturnNum);
 	LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
+	strOutPut += str;
+
+	str.Format(_T("本地时间 = %d"), uiSysTime);
 	strOutPut += str;
 	strConv = (CStringA)strOutPut;
 	AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);

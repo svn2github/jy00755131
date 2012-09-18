@@ -218,6 +218,9 @@ void MakeInstrumentErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	// 尾包接收/发送时刻
 	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXErrorCode2;
 	usPos ++;
+	// 本地时间
+	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalSysTime;
+	usPos ++;
 	// 查询命令字个数
 	pErrorCodeFrame->m_usCommandWordNum = usPos;
 	MakeInstrumentFrame(pErrorCodeFrame->m_pCommandStructSet, pConstVar, 

@@ -325,7 +325,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	}
 	else
 	{
-		if (uiTBHigh + 198 != uiADCDataFrameSysTimeNow)
+		if (uiTBHigh + 789 != uiADCDataFrameSysTimeNow)
 		{
 			str.Format(_T("仪器SN = 0x%x，IP = 0x%x，第一帧的本地时间 = 0x%x"), pInstrument->m_uiSN, 
 				pInstrument->m_uiIP, uiADCDataFrameSysTimeNow);

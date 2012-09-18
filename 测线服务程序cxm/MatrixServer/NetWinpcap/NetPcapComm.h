@@ -40,18 +40,22 @@ public:
 	unsigned short m_usPcapDownStreamSrcPort;
 	/** Pcap上行帧发送的源端口*/
 	unsigned short m_usPcapUpStreamSrcPort;
+	/** 下行发送缓冲区大小*/
+	unsigned int m_uiDownStreamSndBufSize;
+	/** 上行发送缓冲区大小*/
+	unsigned int m_uiUpStreamSndBufSize;
 	/** 下行PC的IP地址*/
 	unsigned int m_uiHighStreamIP;
 	/** 上行PC的IP地址*/
 	unsigned int m_uiLowStreamIP;
-	/** Net程序所在的PC的IP地址*/
-	unsigned int m_uiNetIP;
-	/** 下行PC的Mac地址*/
-	u_char m_ucHighMacAddr[MacAddrSize];
-	/** 上行PC的Mac地址*/
-	u_char m_ucLowMacAddr[MacAddrSize];
-	/** Net程序所在PC的Mac地址*/
-	u_char m_ucNetMacAddr[MacAddrSize];
+//	/** Net程序所在的PC的IP地址*/
+//	unsigned int m_uiNetIP;
+// 	/** 下行PC的Mac地址*/
+// 	u_char m_ucHighMacAddr[MacAddrSize];
+// 	/** 上行PC的Mac地址*/
+// 	u_char m_ucLowMacAddr[MacAddrSize];
+// 	/** Net程序所在PC的Mac地址*/
+// 	u_char m_ucNetMacAddr[MacAddrSize];
 	/** 数据缓冲队列大小*/
 	unsigned int m_uiPcapQueueSize;
 	/** 存储数据帧结构体*/
@@ -117,7 +121,7 @@ public:
 	/** 将存储数据帧加入空闲列表*/
 	void AddFreeFrameData(m_oFrameData* pFrameData);
 	/** Pcap发送帧*/
-	bool PcapSndFrameData(m_oFrameData* pFrameData);
+//	bool PcapSndFrameData(m_oFrameData* pFrameData);
 	/** 求校验和*/
 	unsigned short check_sum (unsigned short * addr, int len);
 	/** Socket发送帧*/
