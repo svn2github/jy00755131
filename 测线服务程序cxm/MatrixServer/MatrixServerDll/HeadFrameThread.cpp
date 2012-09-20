@@ -220,12 +220,21 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	unsigned int uiTimeHeadFrame = 0;
 	unsigned int uiRoutIP = 0;
 	unsigned int uiVersion = 0;
+	unsigned int uiHeadFrameCount = 0;
+	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
+	pHeadFrameThread->m_uiHeadFrameCount++;
+	uiHeadFrameCount = pHeadFrameThread->m_uiHeadFrameCount;
+	LeaveCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
+
 	EnterCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 	uiSN = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiSN;
 	uiTimeHeadFrame = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiTimeHeadFrame;
 	uiRoutIP = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP;
 	uiVersion = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiVersion;
 	LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
+	str.Format(_T("接收到SN = 0x%x的仪器首包帧，首包时刻 = 0x%x，路由IP = 0x%x, 软件版本 = 0x%x，首包计数 = %d"), 
+		uiSN, uiTimeHeadFrame, uiRoutIP, uiVersion, uiHeadFrameCount);
+	OutputDebugString(str);
 	EnterCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
 	// 判断仪器SN是否在SN索引表中
 	if(FALSE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap))
@@ -341,9 +350,9 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	{
 		AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, &pHeadFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap);
 	}
-	str.Format(_T("接收到SN = 0x%x的仪器首包帧，首包时刻 = 0x%x，路由IP = 0x%x, 测线号 = %d，测点序号 = %d"), 
+	str.Format(_T("接收到SN = 0x%x的仪器首包帧，首包时刻 = 0x%x，路由IP = 0x%x, 测线号 = %d，测点序号 = %d，首包计数 = %d"), 
 		pInstrument->m_uiSN, pInstrument->m_uiTimeHeadFrame, pInstrument->m_uiRoutIP, 
-		pInstrument->m_iLineIndex, pInstrument->m_iPointIndex);
+		pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, uiHeadFrameCount);
 	LeaveCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", strConv);

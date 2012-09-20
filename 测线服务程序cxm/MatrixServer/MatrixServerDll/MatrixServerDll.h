@@ -1363,6 +1363,8 @@ typedef struct HeadFrameThread_Struct
 	m_oHeadFrameStruct* m_pHeadFrame;
 	/** 测线队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
+	/** 首包计数*/
+	unsigned int m_uiHeadFrameCount;
 }m_oHeadFrameThreadStruct;
 
 /**
@@ -1395,6 +1397,8 @@ typedef struct TailFrameThread_Struct
 	m_oTailFrameStruct* m_pTailFrame;
 	/** 仪器队列结构体指针*/
 	m_oLineListStruct* m_pLineList;
+	/** 尾包计数*/
+	unsigned int m_uiTailFrameCount;
 }m_oTailFrameThreadStruct;
 
 /**

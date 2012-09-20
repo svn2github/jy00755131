@@ -246,11 +246,20 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	string strConv = "";
 	unsigned int uiSN = 0;
 	unsigned int uiRoutIP = 0;
+	unsigned int uiTailFrameCount = 0;
+	EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
+	pTailFrameThread->m_uiTailFrameCount++;
+	uiTailFrameCount = pTailFrameThread->m_uiTailFrameCount;
+	LeaveCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	EnterCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 	uiSN = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSN;
 	uiRoutIP = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiRoutIP;
 	LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
-	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包"), uiSN, uiRoutIP);
+	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包，尾包计数 = %d"), 
+		uiSN, uiRoutIP, uiTailFrameCount);
+	strConv = (CStringA)str;
+	AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", strConv);
+	OutputDebugString(str);
 	EnterCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
 	// 判断仪器SN是否在SN索引表中
 	if(TRUE == IfIndexExistInMap(uiSN, &pTailFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap))
@@ -276,8 +285,6 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		// 在路由索引表中找到该尾包所在的路由
 		if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 		{
-			strConv = (CStringA)str;
-			AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", strConv);
 			// 由路由IP得到路由对象
 			pRout = GetRout(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 			// 更新路由对象的路由时间
@@ -305,12 +312,6 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 			AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne",
 				strFrameData,	ErrorType, IDS_ERR_ROUT_NOTEXIT);
 		}
-	}
-	else
-	{
-		strConv = (CStringA)str;
-		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, 
-			"ProcTailFrameOne", strConv);
 	}
 	LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
 }

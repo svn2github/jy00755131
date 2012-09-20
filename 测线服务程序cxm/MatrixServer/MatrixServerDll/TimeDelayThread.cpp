@@ -399,7 +399,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 			strOutPut += str;
 			strConv = (CStringA)strOutPut;
 			AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
-			OutputDebugString(strOutPut);
+/*			OutputDebugString(strOutPut);*/
 		}
 		pInstrument = pInstrumentNext;
 	} while (pInstrumentNext != pRout->m_pTail);

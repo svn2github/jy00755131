@@ -14,7 +14,6 @@ CPcapRcvThread::~CPcapRcvThread(void)
 // ´¦Àíº¯Êý
 void CPcapRcvThread::OnProc(void)
 {
-	int status = 0;
 	IP_Header* ih = NULL;
 	UDP_Header* uh = NULL;
 	unsigned int uiIPlength = 0;
@@ -23,8 +22,7 @@ void CPcapRcvThread::OnProc(void)
 	unsigned short usDstPort = 0;
 	bool bDownStream = false;
 	CNetPcapComm::FrameDataStruct* pFrameData = NULL;
-	status = pcap_next_ex(m_pNetPcapComm->m_ptrPcap, &pkt_header, &pkt_data);
-	if(status == 1)
+	while(1 == pcap_next_ex(m_pNetPcapComm->m_ptrPcap, &pkt_header, &pkt_data))
 	{
 		ih = (IP_Header *)(pkt_data + sizeof(Ethernet_Header));
 		uiIPlength = (ih->ver_ihl & 0xf) * 4;
@@ -45,7 +43,7 @@ void CPcapRcvThread::OnProc(void)
 		}
 		else
 		{
-			return;
+			continue;
 		}
 		EnterCriticalSection(&m_pNetPcapComm->m_oSec);
 		pFrameData = m_pNetPcapComm->GetFreeFrameData();

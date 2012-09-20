@@ -57,6 +57,8 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
 	CString strOutPut = _T("");
+	CString strDebug = _T("");
+	bool bStrDebug = false;
 	string strFrameData = "";
 	string strConv = "";
 	char cLAUXErrorCodeDataLineACount = 0;
@@ -97,6 +99,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		&pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 	str.Format(_T("仪器SN = 0x%x，IP = %d "), pInstrument->m_uiSN, pInstrument->m_uiIP);
 	strOutPut += str;
+	strDebug += str;
 	// 仪器类型为LCI或者交叉站
 	if ((pInstrument->m_iInstrumentType == pErrorCodeThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
 		|| (pInstrument->m_iInstrumentType == pErrorCodeThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
@@ -117,6 +120,10 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		pInstrument->m_cLAUXErrorCodeDataLineACountOld = cLAUXErrorCodeDataLineACount;
 		str.Format(_T("大线A数据故障数=%d，"),iTemp);
 		strOutPut += str;
+		if (iTemp != 0)
+		{
+			strDebug += str;
+		}
 		// 交叉站大线B数据故障
 		if (pInstrument->m_uiErrorCodeReturnNum != 0)
 		{
@@ -133,6 +140,10 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		pInstrument->m_cLAUXErrorCodeDataLineBCountOld = cLAUXErrorCodeDataLineBCount;
 		str.Format(_T("大线B数据故障数=%d，"), iTemp);
 		strOutPut += str;
+		if (iTemp != 0)
+		{
+			strDebug += str;
+		}
 		// 交叉站交叉线A数据故障
 		if (pInstrument->m_uiErrorCodeReturnNum != 0)
 		{
@@ -149,6 +160,10 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		pInstrument->m_cLAUXErrorCodeDataLAUXLineACountOld = cLAUXErrorCodeDataLAUXLineACount;
 		str.Format(_T("交叉线A数据故障数=%d，"), iTemp);
 		strOutPut += str;
+		if (iTemp != 0)
+		{
+			strDebug += str;
+		}
 		// 交叉站交叉线B数据故障
 		if (pInstrument->m_uiErrorCodeReturnNum != 0)
 		{
@@ -165,6 +180,10 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		pInstrument->m_cLAUXErrorCodeDataLAUXLineBCountOld = cLAUXErrorCodeDataLAUXLineBCount;
 		str.Format(_T("交叉线B数据故障数=%d，"), iTemp);
 		strOutPut += str;
+		if (iTemp != 0)
+		{
+			strDebug += str;
+		}
 		// 交叉站命令口故障
 		if (pInstrument->m_uiErrorCodeReturnNum != 0)
 		{
@@ -186,6 +205,10 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		pInstrument->m_cLAUXErrorCodeCmdCountOld = cLAUXErrorCodeCmdCount;
 		str.Format(_T("命令口故障数=%d；"), iTemp);
 		strOutPut += str;
+		if (iTemp != 0)
+		{
+			strDebug += str;
+		}
 	}
 	// 仪器类型为采集站或者电源站
 	else
@@ -206,6 +229,10 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		pInstrument->m_cFDUErrorCodeDataCountOld = cFDUErrorCodeDataCount;
 		str.Format(_T("网络数据错误计数=%d，"), iTemp);
 		strOutPut += str;
+		if (iTemp != 0)
+		{
+			strDebug += str;
+		}
 		// 采集站和电源站命令错误计数
 		if (pInstrument->m_uiErrorCodeReturnNum != 0)
 		{
@@ -222,16 +249,65 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		pInstrument->m_cFDUErrorCodeCmdCountOld = cFDUErrorCodeCmdCount;
 		str.Format(_T("命令错误计数=%d；"), iTemp);
 		strOutPut += str;
+		if (iTemp != 0)
+		{
+			strDebug += str;
+		}
 	}
 	pInstrument->m_uiErrorCodeReturnNum++;
 	str.Format(_T("接收帧数=%d "), pInstrument->m_uiErrorCodeReturnNum);
-	LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
 	strOutPut += str;
-
+	if (pInstrument->m_iLAUXErrorCodeDataLineACount != 0)
+	{
+		str.Format(_T("大线A数据故障总数=%d，"),pInstrument->m_iLAUXErrorCodeDataLineACount);
+		strDebug += str;
+		bStrDebug = true;
+	}
+	if (pInstrument->m_iLAUXErrorCodeDataLineBCount != 0)
+	{
+		str.Format(_T("大线B数据故障总数=%d，"),pInstrument->m_iLAUXErrorCodeDataLineBCount);
+		strDebug += str;
+		bStrDebug = true;
+	}
+	if (pInstrument->m_iLAUXErrorCodeDataLAUXLineACount != 0)
+	{
+		str.Format(_T("交叉线A数据故障总数=%d，"),pInstrument->m_iLAUXErrorCodeDataLAUXLineACount);
+		strDebug += str;
+		bStrDebug = true;
+	}
+	if (pInstrument->m_iLAUXErrorCodeDataLAUXLineBCount != 0)
+	{
+		str.Format(_T("交叉线B数据故障总数=%d，"),pInstrument->m_iLAUXErrorCodeDataLAUXLineBCount);
+		strDebug += str;
+		bStrDebug = true;
+	}
+	if (pInstrument->m_iLAUXErrorCodeCmdCount != 0)
+	{
+		str.Format(_T("命令口故障总数=%d，"),pInstrument->m_iLAUXErrorCodeCmdCount);
+		strDebug += str;
+		bStrDebug = true;
+	}
+	if (pInstrument->m_iFDUErrorCodeDataCount != 0)
+	{
+		str.Format(_T("网络数据错误计数总数=%d，"),pInstrument->m_iFDUErrorCodeDataCount);
+		strDebug += str;
+		bStrDebug = true;
+	}
+	if (pInstrument->m_iFDUErrorCodeCmdCount != 0)
+	{
+		str.Format(_T("命令错误计数总数=%d，"),pInstrument->m_iFDUErrorCodeCmdCount);
+		strDebug += str;
+		bStrDebug = true;
+	}
+	LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
 	str.Format(_T("本地时间 = %d"), uiSysTime);
 	strOutPut += str;
 	strConv = (CStringA)strOutPut;
 	AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);
+	if (bStrDebug == true)
+	{
+		OutputDebugString(strDebug);
+	}
 }
 // 处理误码查询应答帧
 void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
