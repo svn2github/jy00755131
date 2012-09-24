@@ -89,7 +89,10 @@ void AddMsgToLogOutPutList(m_oLogOutPutStruct* pLogOutPut, string pFuncName,
 		str += strTemp;
 		str += pVarName;
 	}
-	//	str += '\r';
+	if ((byErrorType == ErrorType) || (byErrorType == WarningType))
+	{
+		OutputDebugString((CString)str.c_str());
+	}
 	str += '\n';
 	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
 	if (pLogOutPut->m_uiErrorCount > OutPutLogErrorLimit)

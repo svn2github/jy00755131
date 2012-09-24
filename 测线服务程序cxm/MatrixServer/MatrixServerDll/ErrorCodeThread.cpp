@@ -97,7 +97,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	}
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
 		&pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
-	str.Format(_T("仪器SN = 0x%x，IP = %d "), pInstrument->m_uiSN, pInstrument->m_uiIP);
+	str.Format(_T("仪器SN = 0x%x，IP = %d，仪器位置 = %d "), pInstrument->m_uiSN, pInstrument->m_uiIP, pInstrument->m_iPointIndex);
 	strOutPut += str;
 	strDebug += str;
 	// 仪器类型为LCI或者交叉站

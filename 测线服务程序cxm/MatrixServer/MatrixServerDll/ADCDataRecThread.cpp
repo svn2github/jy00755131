@@ -183,7 +183,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 			strConv);
-
+		OutputDebugString(str);
 		pADCLostFrame = GetFromADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
 			&pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oADCLostFrameMap);
 		if (pADCLostFrame->m_bReturnOk == false)
@@ -236,15 +236,24 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		{
 			uiADCDataFramePointMove = usADCDataFramePointNow - pInstrument->m_usADCDataFramePoint;
 		}
-
+		//@@@@ 32位本地时间计数能够运行12天，暂不考虑超过12天的情况
 		if (uiADCDataFrameSysTimeNow < pInstrument->m_uiADCDataFrameSysTime)
 		{
-			uiADCDataFrameSysTimeMove = 0xffffffff - pInstrument->m_uiADCDataFrameSysTime 
-				+ uiADCDataFrameSysTimeNow;
-		}
-		else
-		{
-			uiADCDataFrameSysTimeMove = uiADCDataFrameSysTimeNow - pInstrument->m_uiADCDataFrameSysTime;
+			LeaveCriticalSection(&pADCDataRecThread->m_pLineList->m_oSecLineList);
+			EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+			GetFrameInfo(pADCDataRecThread->m_pADCDataFrame->m_cpRcvFrameData,
+				pADCDataRecThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+			LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
+				strFrameData, ErrorType, IDS_ERR_ADCFRAMESYSTIME_ERROR);
+			str.Format(_T("当前帧本地时间为%d， 前一帧的本地时间为%d"), uiADCDataFrameSysTimeNow, 
+				pInstrument->m_uiADCDataFrameSysTime);
+			strConv = (CStringA)str;
+			AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
+				strConv, ErrorType, IDS_ERR_ADCFRAMESYSTIME_ERROR);
+			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
+				strConv, ErrorType, IDS_ERR_ADCFRAMESYSTIME_ERROR);
+			return;
 		}
 		if (uiADCDataFramePointMove % iADCDataInOneFrameNum != 0)
 		{
@@ -258,6 +267,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			str.Format(_T("指针偏移量出错，偏移量差值为%d"), uiADCDataFramePointMove);
 			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
+				strConv, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
+			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 				strConv, ErrorType, IDS_ERR_FRAMEPOINT_ERROR);
 			return;
 		}
@@ -325,7 +336,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	}
 	else
 	{
-		if (uiTBHigh + 789 != uiADCDataFrameSysTimeNow)
+		if (uiTBHigh != uiADCDataFrameSysTimeNow)
 		{
 			str.Format(_T("仪器SN = 0x%x，IP = 0x%x，第一帧的本地时间 = 0x%x"), pInstrument->m_uiSN, 
 				pInstrument->m_uiIP, uiADCDataFrameSysTimeNow);

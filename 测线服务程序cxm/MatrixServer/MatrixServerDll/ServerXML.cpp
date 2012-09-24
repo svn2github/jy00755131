@@ -99,7 +99,7 @@ void LoadServerIP(m_oServerSetupDataStruct* pServerSetupData)
 	try
 	{
 		// 找到IP地址设置区
-		strKey = _T("LineServerAppIPSetup");
+		strKey = _T("ServerAppIPSetup");
 		lpDispatch = pServerSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
@@ -107,7 +107,7 @@ void LoadServerIP(m_oServerSetupDataStruct* pServerSetupData)
 		oElement.AttachDispatch(lpDispatch);
 
 		// 和现场仪器通讯的本机IP地址
-		strKey = _T("IPForInstrument");
+		strKey = _T("ServerIP");
 		csSrcIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
 		strConv = (CStringA)csSrcIP;
 		pServerSetupData->m_oXMLIPSetupData.m_uiSrcIP = inet_addr(strConv.c_str());
@@ -117,7 +117,7 @@ void LoadServerIP(m_oServerSetupDataStruct* pServerSetupData)
 		strConv = (CStringA)csDstIP;
 		pServerSetupData->m_oXMLIPSetupData.m_uiAimIP = inet_addr(strConv.c_str());
 		// ADC数据返回地址
-		strKey = _T("IPForADCData");
+		strKey = _T("IPForADCDataReturn");
 		csDstIP = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
 		strConv = (CStringA)csDstIP;
 		pServerSetupData->m_oXMLIPSetupData.m_uiADCDataReturnAddr = inet_addr(strConv.c_str());
@@ -151,7 +151,7 @@ void LoadServerPort(m_oServerSetupDataStruct* pServerSetupData)
 	try
 	{
 		// 找到IP地址设置区
-		strKey = _T("LineServerAppPortSetSetup");
+		strKey = _T("ServerAppPortSetSetup");
 		lpDispatch = pServerSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
@@ -209,7 +209,7 @@ void LoadServerADCSet(m_oServerSetupDataStruct* pServerSetupData)
 	try
 	{
 		// 找到ADC参数设置区
-		strKey = _T("ADCSetSetup");
+		strKey = _T("ServerAppADCSetSetup");
 		lpDispatch = pServerSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
@@ -368,7 +368,7 @@ void LoadServerParameter(m_oServerSetupDataStruct* pServerSetupData)
 	try
 	{
 		// 找到参数设置区
-		strKey = _T("LineServerAppParameterSetup");
+		strKey = _T("ServerAppParameterSetup");
 		lpDispatch = pServerSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
@@ -413,7 +413,7 @@ void SaveServerParameter(m_oServerSetupDataStruct* pServerSetupData)
 	try
 	{
 		// 找到参数设置区
-		strKey = _T("LineServerAppParameterSetup");
+		strKey = _T("ServerAppParameterSetup");
 		lpDispatch = pServerSetupData->m_oXMLDOMDocument.getElementsByTagName(strKey);
 		oNodeList.AttachDispatch(lpDispatch);
 		// 找到入口
