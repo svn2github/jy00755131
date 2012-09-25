@@ -13,6 +13,7 @@ m_oTailTimeFrameStruct* OnCreateInstrumentTailTimeFrame(void)
 	pTailTimeFrame->m_oTailTimeFrameSocket = INVALID_SOCKET;
 	pTailTimeFrame->m_pCommandStructSet = NULL;
 	pTailTimeFrame->m_pCommandStructReturn = NULL;
+	pTailTimeFrame->m_usPortMove = 0;
 	return pTailTimeFrame;
 }
 // 初始化尾包时刻帧
@@ -48,6 +49,8 @@ void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	pTailTimeFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// 尾包时刻查询返回端口
 	pTailTimeFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usTailTimeReturnPort;
+	// 尾包时刻查询接收端口偏移量
+	pTailTimeFrame->m_usPortMove = pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
@@ -148,7 +151,7 @@ void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruct* pTailTimeFrame, m
 	}
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 创建套接字
-	pTailTimeFrame->m_oTailTimeFrameSocket = CreateInstrumentSocket(pTailTimeFrame->m_pCommandStructSet->m_usReturnPort + NetedPortMove, 
+	pTailTimeFrame->m_oTailTimeFrameSocket = CreateInstrumentSocket(pTailTimeFrame->m_pCommandStructSet->m_usReturnPort + pTailTimeFrame->m_usPortMove, 
 		pTailTimeFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pTailTimeFrame->m_oTailTimeFrameSocket, pLogOutPut);

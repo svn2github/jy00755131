@@ -585,6 +585,8 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	}
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, &pADCSetThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 	pInstrument->m_bADCSetReturn = true;
+	// 更新路由对象的路由时间
+	UpdateRoutTime(pInstrument->m_uiRoutIP, &pADCSetThread->m_pLineList->m_pRoutList->m_oRoutMap);
 	LeaveCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 	if (uiADCSetOperationNb == 17)
 	{

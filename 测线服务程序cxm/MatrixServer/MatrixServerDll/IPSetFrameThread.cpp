@@ -38,6 +38,8 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pIPSetFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap))
 	{
 		pInstrument = GetInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap);
+		// 更新路由对象的路由时间
+		UpdateRoutTime(pInstrument->m_uiRoutIP, &pIPSetFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 		// 从IP地址设置索引表中删除仪器
 		DeleteInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap);
 		// 将仪器加入IP地址索引表

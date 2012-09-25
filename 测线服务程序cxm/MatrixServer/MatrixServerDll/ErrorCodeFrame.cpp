@@ -13,6 +13,7 @@ m_oErrorCodeFrameStruct* OnCreateInstrumentErrorCodeFrame(void)
 	pErrorCodeFrame->m_cpCommandWord = NULL;
 	pErrorCodeFrame->m_pCommandStructSet = NULL;
 	pErrorCodeFrame->m_pCommandStructReturn = NULL;
+	pErrorCodeFrame->m_usPortMove = 0;
 	return pErrorCodeFrame;
 }
 // 初始化误码查询帧
@@ -48,6 +49,8 @@ void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	pErrorCodeFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// 误码查询返回端口
 	pErrorCodeFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usErrorCodeReturnPort;
+	// 误码查询接收端口偏移量
+	pErrorCodeFrame->m_usPortMove = pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pErrorCodeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
@@ -149,7 +152,7 @@ void OnCreateAndSetErrorCodeFrameSocket(m_oErrorCodeFrameStruct* pErrorCodeFrame
 	}
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	// 创建套接字
-	pErrorCodeFrame->m_oErrorCodeFrameSocket = CreateInstrumentSocket(pErrorCodeFrame->m_pCommandStructSet->m_usReturnPort + NetedPortMove, 
+	pErrorCodeFrame->m_oErrorCodeFrameSocket = CreateInstrumentSocket(pErrorCodeFrame->m_pCommandStructSet->m_usReturnPort + pErrorCodeFrame->m_usPortMove, 
 		pErrorCodeFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pErrorCodeFrame->m_oErrorCodeFrameSocket, pLogOutPut);

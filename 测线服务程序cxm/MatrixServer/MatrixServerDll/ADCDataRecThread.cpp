@@ -174,6 +174,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	}
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
 		&pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
+	// 更新路由对象的路由时间
+	UpdateRoutTime(pInstrument->m_uiRoutIP, &pADCDataRecThread->m_pLineList->m_pRoutList->m_oRoutMap);
 	// 在丢帧索引表中找到
 	if (TRUE == IfIndexExistInADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
 		&pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oADCLostFrameMap))

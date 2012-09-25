@@ -13,6 +13,7 @@ m_oIPSetFrameStruct* OnCreateInstrumentIPSetFrame(void)
 	pIPSetFrame->m_oIPSetFrameSocket = INVALID_SOCKET;
 	pIPSetFrame->m_pCommandStructSet = NULL;
 	pIPSetFrame->m_pCommandStructReturn = NULL;
+	pIPSetFrame->m_usPortMove = 0;
 	return pIPSetFrame;
 }
 // 初始化IP地址设置
@@ -48,6 +49,8 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	pIPSetFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// IP地址设置返回端口
 	pIPSetFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usIPSetReturnPort;
+	// IP地址设置接收端口偏移量
+	pIPSetFrame->m_usPortMove = pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
@@ -146,7 +149,7 @@ void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame, m_oLogOutP
 	}
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	// 创建套接字
-	pIPSetFrame->m_oIPSetFrameSocket = CreateInstrumentSocket(pIPSetFrame->m_pCommandStructSet->m_usReturnPort + NetedPortMove, 
+	pIPSetFrame->m_oIPSetFrameSocket = CreateInstrumentSocket(pIPSetFrame->m_pCommandStructSet->m_usReturnPort + pIPSetFrame->m_usPortMove, 
 		pIPSetFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pIPSetFrame->m_oIPSetFrameSocket, pLogOutPut);

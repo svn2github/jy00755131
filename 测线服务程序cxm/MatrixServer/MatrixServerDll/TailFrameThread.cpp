@@ -255,11 +255,6 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	uiSN = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSN;
 	uiRoutIP = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiRoutIP;
 	LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
-	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包，尾包计数 = %d"), 
-		uiSN, uiRoutIP, uiTailFrameCount);
-	strConv = (CStringA)str;
-	AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", strConv);
-	OutputDebugString(str);
 	EnterCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
 	// 判断仪器SN是否在SN索引表中
 	if(TRUE == IfIndexExistInMap(uiSN, &pTailFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap))
@@ -280,15 +275,20 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		}
 		// 尾包计数器加一
 		pInstrument->m_iTailFrameCount++;
+		str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包，仪器位置= %d，尾包计数 = %d"), 
+			uiSN, uiRoutIP, pInstrument->m_iPointIndex, uiTailFrameCount);
+		strConv = (CStringA)str;
+		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", strConv);
+		OutputDebugString(str);
 		// 		// 更新尾包仪器的尾包时刻
 		// 		pInstrument->m_uiTailSysTime = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTime;
 		// 在路由索引表中找到该尾包所在的路由
+		// 更新路由对象的路由时间
+		UpdateRoutTime(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 		if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 		{
 			// 由路由IP得到路由对象
 			pRout = GetRout(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
-			// 更新路由对象的路由时间
-			UpdateRoutTime(pRout);
 			// 清除与该仪器路由方向相同的之前仪器的尾包计数
 			OnClearSameRoutTailCount(pInstrument, pRout, pTailFrameThread->m_pThread->m_pConstVar);
 			// 判断尾包计数器达到设定值则删除相同路由之后的仪器

@@ -153,6 +153,8 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 		return;
 	}
 	pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
+	// 更新路由对象的路由时间
+	UpdateRoutTime(pInstrument->m_uiRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap);
 	// @@@@@@@暂不判断尾包时刻过期的情况
 	// 接收到尾包时刻查询应答标志位设为true
 	pInstrument->m_bTailTimeQueryOK = true;
@@ -434,6 +436,8 @@ void ProcTimeDelayReturnFrameOne(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		return;
 	}
 	pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
+	// 更新路由对象的路由时间
+	UpdateRoutTime(pInstrument->m_uiRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap);
 	// 接收到时统设置应答标志位
 	pInstrument->m_bTimeSetOK = true;
 	pInstrument->m_iTimeSetReturnCount++;

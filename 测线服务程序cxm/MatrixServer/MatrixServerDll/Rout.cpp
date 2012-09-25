@@ -30,14 +30,33 @@ void OnRoutReset(m_oRoutStruct* pRout)
 	pRout->m_uiInstrumentNum = 0;
 }
 // 更新路由对象的路由时间
-void UpdateRoutTime(m_oRoutStruct* pRout)
+void UpdateRoutTime(unsigned int uiRoutIP, hash_map<unsigned int, m_oRoutStruct*>* pMap)
 {
-	if (pRout == NULL)
+	if (pMap == NULL)
 	{
 		return;
 	}
-	// 路由时刻
-	pRout->m_uiRoutTime = GetTickCount();
+	m_oRoutStruct* pRout = NULL;
+	unsigned int uiIP = 0;
+	uiIP = uiRoutIP;
+	while(1)
+	{
+		if (TRUE == IfIndexExistInRoutMap(uiIP, pMap))
+		{
+			pRout = GetRout(uiIP, pMap);
+			// 路由时刻
+			pRout->m_uiRoutTime = GetTickCount();
+			if (pRout->m_uiRoutIP == 0)
+			{
+				break;
+			}
+			uiIP = pRout->m_pHead->m_uiRoutIP;
+		}
+		else
+		{
+			break;
+		}
+	}
 }
 // 路由地址是否已加入索引表
 BOOL IfIndexExistInRoutMap(unsigned int uiRoutIP, 

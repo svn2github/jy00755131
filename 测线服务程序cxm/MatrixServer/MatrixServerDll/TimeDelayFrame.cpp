@@ -13,6 +13,7 @@ m_oTimeDelayFrameStruct* OnCreateInstrumentTimeDelayFrame(void)
 	pTimeDelayFrame->m_oTimeDelayFrameSocket = INVALID_SOCKET;
 	pTimeDelayFrame->m_pCommandStructSet = NULL;
 	pTimeDelayFrame->m_pCommandStructReturn = NULL;
+	pTimeDelayFrame->m_usPortMove = 0;
 	return pTimeDelayFrame;
 }
 // 初始化时统设置帧
@@ -48,6 +49,8 @@ void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	pTimeDelayFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// 时统设置返回端口
 	pTimeDelayFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usTimeDelayReturnPort;
+	// 时统设置接收端口偏移量
+	pTimeDelayFrame->m_usPortMove = pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pTimeDelayFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
@@ -148,7 +151,7 @@ void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStruct* pTimeDelayFrame
 	}
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	// 创建套接字
-	pTimeDelayFrame->m_oTimeDelayFrameSocket = CreateInstrumentSocket(pTimeDelayFrame->m_pCommandStructSet->m_usReturnPort + NetedPortMove, 
+	pTimeDelayFrame->m_oTimeDelayFrameSocket = CreateInstrumentSocket(pTimeDelayFrame->m_pCommandStructSet->m_usReturnPort + pTimeDelayFrame->m_usPortMove, 
 		pTimeDelayFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pTimeDelayFrame->m_oTimeDelayFrameSocket, pLogOutPut);

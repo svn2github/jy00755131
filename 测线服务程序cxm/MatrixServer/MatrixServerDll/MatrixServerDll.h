@@ -60,9 +60,6 @@ enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
 /** 回调函数-采集数据*/
 typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex, int *_piData,
 	int _iSize, unsigned int _uiSN);
-/** 从neted程序得到的端口位移*/
-#define NetedPortMove	50
-/*#define NetedPortMove	0*/
 /** 时统低位修正值上限*/
 #define TimeDelayLowLimit	50
 /** 时统低位修正默认值*/
@@ -435,6 +432,8 @@ typedef struct XMLADCSetupData_Struct
 typedef struct XMLParameterSetupData_Struct
 {
 	CTime m_oTimeFieldOff;
+	/** 端口转发程序接收端口偏移量*/
+	unsigned short m_usNetRcvPortMove;
 }m_oXMLParameterSetupDataStruct;
 
 /** 
@@ -605,6 +604,8 @@ typedef struct HeartBeatFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStruct;
 	/** 心跳Socket套接字*/
 	SOCKET m_oHeartBeatSocket;
+	/** 接收端口偏移量*/
+	unsigned short m_usPortMove;
 }m_oHeartBeatFrameStruct;
 
 /**
@@ -623,6 +624,8 @@ typedef struct HeadFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStruct;
 	/** 首包Socket套接字*/
 	SOCKET m_oHeadFrameSocket;
+	/** 接收端口偏移量*/
+	unsigned short m_usPortMove;
 }m_oHeadFrameStruct;
 
 /**
@@ -651,6 +654,8 @@ typedef struct IPSetFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructReturn;
 	/** IP地址设置Socket套接字*/
 	SOCKET m_oIPSetFrameSocket;
+	/** 接收端口偏移量*/
+	unsigned short m_usPortMove;
 }m_oIPSetFrameStruct;
 
 /**
@@ -669,6 +674,8 @@ typedef struct TailFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStruct;
 	/** 尾包Socket套接字*/
 	SOCKET m_oTailFrameSocket;
+	/** 接收端口偏移量*/
+	unsigned short m_usPortMove;
 }m_oTailFrameStruct;
 
 /**
@@ -697,6 +704,8 @@ typedef struct TailTimeFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	/** 尾包时刻Socket套接字*/
 	SOCKET m_oTailTimeFrameSocket;
+	/** 接收端口偏移量*/
+	unsigned short m_usPortMove;
 }m_oTailTimeFrameStruct;
 
 /**
@@ -725,6 +734,8 @@ typedef struct TimeDelayFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	/** 时统设置Socket套接字*/
 	SOCKET m_oTimeDelayFrameSocket;
+	/** 接收端口偏移量*/
+	unsigned short m_usPortMove;
 }m_oTimeDelayFrameStruct;
 
 /**
@@ -753,6 +764,8 @@ typedef struct ADCSetFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	/** ADC参数设置Socket套接字*/
 	SOCKET m_oADCSetFrameSocket;
+	/** 接收端口偏移量*/
+	unsigned short m_usPortMove;
 }m_oADCSetFrameStruct;
 
 /**
@@ -781,6 +794,8 @@ typedef struct ErrorCodeFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	/** 误码查询Socket套接字*/
 	SOCKET m_oErrorCodeFrameSocket;
+	/** 接收端口偏移量*/
+	unsigned short m_usPortMove;
 }m_oErrorCodeFrameStruct;
 
 /**
@@ -805,6 +820,8 @@ typedef struct ADCDataFrame_Struct
 	m_oInstrumentCommandStruct* m_pCommandStructSet;
 	/** ADC数据接收和重发Socket套接字*/
 	SOCKET m_oADCDataFrameSocket;
+	/** 接收端口偏移量*/
+	unsigned short m_usPortMove;
 }m_oADCDataFrameStruct;
 
 /**
@@ -2587,7 +2604,7 @@ MatrixServerDll_API void UpdateLineChangeTime(m_oLineListStruct* pLineList);
 // 重置路由信息
 MatrixServerDll_API void OnRoutReset(m_oRoutStruct* pRout);
 // 更新路由对象的路由时间
-MatrixServerDll_API void UpdateRoutTime(m_oRoutStruct* pRout);
+MatrixServerDll_API void UpdateRoutTime(unsigned int uiRoutIP, hash_map<unsigned int, m_oRoutStruct*>* pMap);
 // 路由地址是否已加入索引表
 MatrixServerDll_API BOOL IfIndexExistInRoutMap(unsigned int uiRoutIP, 
 	hash_map<unsigned int, m_oRoutStruct*>* pRoutMap);

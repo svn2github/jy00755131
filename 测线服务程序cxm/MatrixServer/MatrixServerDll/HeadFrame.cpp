@@ -10,6 +10,7 @@ m_oHeadFrameStruct* OnCreateInstrumentHeadFrame(void)
 	pHeadFrame->m_cpRcvFrameData = NULL;
 	pHeadFrame->m_oHeadFrameSocket = INVALID_SOCKET;
 	pHeadFrame->m_pCommandStruct = NULL;
+	pHeadFrame->m_usPortMove = 0;
 	return pHeadFrame;
 }
 // 初始化首包
@@ -41,6 +42,8 @@ void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame,
 	pHeadFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// 接收端口
 	pHeadFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usHeadFramePort;
+	// 首包接收端口偏移量
+	pHeadFrame->m_usPortMove = pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 重置帧内容解析变量
 	ResetInstrumentFramePacket(pHeadFrame->m_pCommandStruct);
 	// 清空接收帧缓冲区
@@ -93,7 +96,7 @@ void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame, m_oLogOutPutS
 	}
 	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	// 创建套接字
-	pHeadFrame->m_oHeadFrameSocket = CreateInstrumentSocket(pHeadFrame->m_pCommandStruct->m_usReturnPort + NetedPortMove, 
+	pHeadFrame->m_oHeadFrameSocket = CreateInstrumentSocket(pHeadFrame->m_pCommandStruct->m_usReturnPort + pHeadFrame->m_usPortMove, 
 		pHeadFrame->m_pCommandStruct->m_uiSrcIP, pLogOutPut);
 	// 设置接收缓冲区
 	SetRcvBufferSize(pHeadFrame->m_oHeadFrameSocket, pHeadFrame->m_uiRcvBufferSize, pLogOutPut);

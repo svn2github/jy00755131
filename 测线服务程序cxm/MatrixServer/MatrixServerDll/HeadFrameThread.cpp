@@ -198,10 +198,10 @@ void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection,
 		// 设置路由尾
 		pRout->m_pTail = NULL;
 	}
-	// 更新路由对象的路由时间
-	UpdateRoutTime(pRout);
 	// 路由对象加入路由索引表
 	AddRout(pRout->m_uiRoutIP, pRout,&pRoutList->m_oRoutMap);
+	// 更新路由对象的路由时间
+	UpdateRoutTime(pRout->m_uiRoutIP, &pRoutList->m_oRoutMap);
 }
 // 处理单个首包帧
 void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
@@ -232,9 +232,6 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	uiRoutIP = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiRoutIP;
 	uiVersion = pHeadFrameThread->m_pHeadFrame->m_pCommandStruct->m_uiVersion;
 	LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
-	str.Format(_T("接收到SN = 0x%x的仪器首包帧，首包时刻 = 0x%x，路由IP = 0x%x, 软件版本 = 0x%x，首包计数 = %d"), 
-		uiSN, uiTimeHeadFrame, uiRoutIP, uiVersion, uiHeadFrameCount);
-	OutputDebugString(str);
 	EnterCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
 	// 判断仪器SN是否在SN索引表中
 	if(FALSE == IfIndexExistInMap(uiSN, &pHeadFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap))
@@ -324,12 +321,12 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		EnterCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
 		pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
 	}
+	// 更新路由对象的路由时间
+	UpdateRoutTime(pInstrument->m_uiRoutIP, &pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 	if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
 		&pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 	{
 		pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
-		// 更新路由对象的路由时间
-		UpdateRoutTime(pRout);
 		// 仪器位置按照首包时刻排序
 		InstrumentLocationSort(pInstrument, pRout, pHeadFrameThread->m_pThread->m_pConstVar);
 	}
@@ -350,12 +347,13 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 	{
 		AddInstrumentToMap(pInstrument->m_uiIP, pInstrument, &pHeadFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap);
 	}
-	str.Format(_T("接收到SN = 0x%x的仪器首包帧，首包时刻 = 0x%x，路由IP = 0x%x, 测线号 = %d，测点序号 = %d，首包计数 = %d"), 
-		pInstrument->m_uiSN, pInstrument->m_uiTimeHeadFrame, pInstrument->m_uiRoutIP, 
+	str.Format(_T("接收到SN = 0x%x的仪器首包帧，首包时刻 = 0x%x，路由IP = 0x%x, 软件版本 = 0x%x，测线号 = %d，测点序号 = %d，首包计数 = %d"), 
+		pInstrument->m_uiSN, pInstrument->m_uiTimeHeadFrame, pInstrument->m_uiRoutIP, uiVersion, 
 		pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, uiHeadFrameCount);
 	LeaveCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ProcHeadFrameOne", strConv);
+	OutputDebugString(str);
 }
 // 处理首包帧
 void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThread)

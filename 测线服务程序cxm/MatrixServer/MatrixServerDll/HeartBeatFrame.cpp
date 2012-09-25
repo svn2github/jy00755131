@@ -11,6 +11,7 @@ m_oHeartBeatFrameStruct* OnCreateInstrumentHeartBeat(void)
 	pHeartBeatFrame->m_cpCommandWord = NULL;
 	pHeartBeatFrame->m_oHeartBeatSocket = INVALID_SOCKET;
 	pHeartBeatFrame->m_pCommandStruct = NULL;
+	pHeartBeatFrame->m_usPortMove = 0;
 	return pHeartBeatFrame;
 }
 // 初始化心跳
@@ -42,6 +43,8 @@ void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame,
 	pHeartBeatFrame->m_pCommandStruct->m_usAimPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort;
 	// 心跳返回端口
 	pHeartBeatFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usHeartBeatReturnPort;
+	// 心跳接收端口偏移量
+	pHeartBeatFrame->m_usPortMove = pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pHeartBeatFrame->m_pCommandStruct->m_usCommand = pConstVar->m_usSendQueryCmd;
@@ -114,7 +117,7 @@ void OnCreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame, m_o
 	}
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	// 创建套接字
-	pHeartBeatFrame->m_oHeartBeatSocket = CreateInstrumentSocket(pHeartBeatFrame->m_pCommandStruct->m_usReturnPort + NetedPortMove, 
+	pHeartBeatFrame->m_oHeartBeatSocket = CreateInstrumentSocket(pHeartBeatFrame->m_pCommandStruct->m_usReturnPort + pHeartBeatFrame->m_usPortMove, 
 		pHeartBeatFrame->m_pCommandStruct->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pHeartBeatFrame->m_oHeartBeatSocket, pLogOutPut);

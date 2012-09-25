@@ -97,6 +97,8 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	}
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
 		&pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
+	// 更新路由对象的路由时间
+	UpdateRoutTime(pInstrument->m_uiRoutIP, &pErrorCodeThread->m_pLineList->m_pRoutList->m_oRoutMap);
 	str.Format(_T("仪器SN = 0x%x，IP = %d，仪器位置 = %d "), pInstrument->m_uiSN, pInstrument->m_uiIP, pInstrument->m_iPointIndex);
 	strOutPut += str;
 	strDebug += str;

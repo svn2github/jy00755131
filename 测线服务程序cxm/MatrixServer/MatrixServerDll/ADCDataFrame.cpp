@@ -11,6 +11,7 @@ m_oADCDataFrameStruct* OnCreateInstrumentADCDataFrame(void)
 	pADCDataFrame->m_oADCDataFrameSocket = INVALID_SOCKET;
 	pADCDataFrame->m_pCommandStructSet = NULL;
 	pADCDataFrame->m_pCommandStructReturn = NULL;
+	pADCDataFrame->m_usPortMove = 0;
 	return pADCDataFrame;
 }
 // 初始化ADC数据帧
@@ -46,6 +47,8 @@ void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	pADCDataFrame->m_uiRcvBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iRcvFrameSize;
 	// ADC数据帧返回端口
 	pADCDataFrame->m_pCommandStructSet->m_usReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usADCDataReturnPort;
+	// ADC数据帧接收端口偏移量
+	pADCDataFrame->m_usPortMove = pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 重置帧内通讯信息
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pADCDataFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendADCCmd;
@@ -134,7 +137,7 @@ void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, m_oL
 	}
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	// 创建套接字
-	pADCDataFrame->m_oADCDataFrameSocket = CreateInstrumentSocket(pADCDataFrame->m_pCommandStructSet->m_usReturnPort + NetedPortMove, 
+	pADCDataFrame->m_oADCDataFrameSocket = CreateInstrumentSocket(pADCDataFrame->m_pCommandStructSet->m_usReturnPort + pADCDataFrame->m_usPortMove, 
 		pADCDataFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
 	SetInstrumentSocketBroadCast(pADCDataFrame->m_oADCDataFrameSocket, pLogOutPut);
