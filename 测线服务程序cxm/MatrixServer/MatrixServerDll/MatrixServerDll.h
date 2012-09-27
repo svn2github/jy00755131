@@ -9,6 +9,7 @@
 #define _MatrixServerDll_H
 #include "ConfigLineXml.h"
 #include "ConfigOperationXml.h"
+#include "ConfigPcapXml.h"
 #include <list>
 #include <map>
 #include <hash_map>
@@ -435,7 +436,6 @@ typedef struct XMLParameterSetupData_Struct
 	/** 端口转发程序接收端口偏移量*/
 	unsigned short m_usNetRcvPortMove;
 }m_oXMLParameterSetupDataStruct;
-
 /** 
 * @struct ServerSetupData_Struct
 * @brief 从服务程序XML文件中解析得到的信息结构体
@@ -469,6 +469,8 @@ typedef struct InstrumentCommInfo_Struct
 	m_oLineSetupDataStruct* m_pLineSetupData;
 	/** 施工客户端信息*/
 	m_oOptSetupDataStruct* m_pOptSetupData;
+	/** Pcap程序信息*/
+	m_oNetPcapSetupDataStruct* m_pPcapSetupData;
 }m_oInstrumentCommInfoStruct;
 
 /**
@@ -1749,6 +1751,8 @@ MatrixServerDll_API void OnInitServerXMLSetupData(m_oServerSetupDataStruct* pSer
 MatrixServerDll_API void OnInitLineClientXMLSetupData(m_oLineSetupDataStruct* pLineSetupData);
 // 初始化施工客户程序设置信息
 MatrixServerDll_API void OnInitOptClientXMLSetupData(m_oOptSetupDataStruct* pOptSetupData);
+// 初始化Pcap程序配置信息结构体
+MatrixServerDll_API void OnInitPcapXMLSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData);
 // 重置Survery
 MatrixServerDll_API void OnResetSurveryList(m_oInstrumentCommInfoStruct* pCommInfo);
 // 重置Point Code
@@ -2255,6 +2259,30 @@ MatrixServerDll_API void LoadOptAppSetupData(m_oOptSetupDataStruct* pOptSetupDat
 MatrixServerDll_API void SaveOptAppSetupData(m_oOptSetupDataStruct* pOptSetupData);
 // 初始化仪器通讯信息结构体
 MatrixServerDll_API void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo);
+
+// 创建Pcap程序信息结构体
+MatrixServerDll_API m_oNetPcapSetupDataStruct* OnCreatePcapAppSetupData(void);
+// 打开Pcap程序配置文件
+MatrixServerDll_API BOOL OpenPcapXMLFile(m_oNetPcapSetupDataStruct* pPcapSetupData);
+// 关闭Pcap程序配置文件
+MatrixServerDll_API void ClosePcapXMLFile(m_oNetPcapSetupDataStruct* pPcapSetupData);
+// 加载IP设置数据
+MatrixServerDll_API void LoadPcapIP(m_oNetPcapSetupDataStruct* pPcapSetupData);
+// 加载PcapIP设置数据
+MatrixServerDll_API void LoadPcapIPSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData);
+// 加载端口设置数据
+MatrixServerDll_API void LoadPcapPort(m_oNetPcapSetupDataStruct* pPcapSetupData);
+// 加载Pcap端口设置数据
+MatrixServerDll_API void LoadPcapPortSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData);
+// 加载参数设置数据
+MatrixServerDll_API void LoadPcapParam(m_oNetPcapSetupDataStruct* pPcapSetupData);
+// 加载Pcap参数设置数据
+MatrixServerDll_API void LoadPcapParamSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData);
+// 加载Pcap程序配置信息
+MatrixServerDll_API void LoadPcapAppSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData);
+// 释放Pcap程序配置信息结构体缓冲区
+MatrixServerDll_API void OnFreePcapXMLSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData);
+
 // 释放服务端参数设置信息结构体缓冲区
 MatrixServerDll_API void OnFreeServerXMLSetupData(m_oServerSetupDataStruct* pServerSetupData);
 // 释放测线客户端参数设置信息结构体缓冲区

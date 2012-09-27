@@ -40,7 +40,8 @@ void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame,
 	// 目的地址
 	pHeartBeatFrame->m_pCommandStruct->m_uiAimIP = pCommInfo->m_pServerSetupData->m_oXMLIPSetupData.m_uiAimIP;
 	// 目标IP地址端口号
-	pHeartBeatFrame->m_pCommandStruct->m_usAimPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort;
+	pHeartBeatFrame->m_pCommandStruct->m_usAimPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort
+		+ pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 心跳返回端口
 	pHeartBeatFrame->m_pCommandStruct->m_usReturnPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usHeartBeatReturnPort;
 	// 心跳接收端口偏移量

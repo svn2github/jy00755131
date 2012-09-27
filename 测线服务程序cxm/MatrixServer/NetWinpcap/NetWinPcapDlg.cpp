@@ -22,6 +22,7 @@ CNetWinPcapDlg::CNetWinPcapDlg(CWnd* pParent /*=NULL*/)
 	, m_lEditDownStreamRcvNum(0)
 	, m_lEditDownStreamSndNum(0)
 	, m_lEditUpStreamRcvNum(0)
+	, m_lEditUpStreamSndNum(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }

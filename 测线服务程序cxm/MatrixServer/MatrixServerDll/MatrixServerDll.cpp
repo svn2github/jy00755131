@@ -594,11 +594,41 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 // 调用netd程序
 void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv)
 {
-//	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36666_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 NetIP=192.168.100.22 LowMacAddr=0,10,53,0,1,2 HighMacAddr=0,48,103,107,228,202 NetMacAddr=0,48,103,107,228,202 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=0 PcapQueueSize=100000");
-	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36666_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 DownStreamSndBufSize=2560000 UpStreamSndBufSize=5120000 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=1 PcapQueueSize=100000");
+//	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36916_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 NetIP=192.168.100.22 LowMacAddr=0,10,53,0,1,2 HighMacAddr=0,48,103,107,228,202 NetMacAddr=0,48,103,107,228,202 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=0 PcapQueueSize=100000");
+	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36916_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 DownStreamSndBufSize=2560000 UpStreamSndBufSize=5120000 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=1 PcapQueueSize=100000");
+	CString str = _T("");
+	CString strTemp = _T("");
+	unsigned short usRcvPort = 0;
+	unsigned short usPortMove = 0;
 	STARTUPINFO si = {0};
 	si.dwFlags = STARTF_USESHOWWINDOW; // 指定wShowWindow成员有效
 	si.wShowWindow = SW_SHOW; // 此成员设定是否显示新建进程的主窗口
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oSecCommInfo);
+	str += pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_strPath.c_str();
+	strTemp.Format(_T(" NetCardId=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_usNetCardID);
+	str += strTemp;
+	strTemp.Format(_T(" WinpcapBufSize=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_uiPcapBufSize);
+	str += strTemp;
+	strTemp.Format(_T(" NetDownStreamSrcPort=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oXMLPortSetupData.m_usDownStreamPort);
+	str += strTemp;
+	strTemp.Format(_T(" NetUpStreamSrcPort=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oXMLPortSetupData.m_usUpStreamPort);
+	str += strTemp;
+	str += _T(" LowIP=");
+	str += pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oXMLIPSetupData.m_strLowIP.c_str();
+	str += _T(" HighIP=");
+	str += pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oXMLIPSetupData.m_strHighIP.c_str();
+//  DownStreamSndBufSize=2560000 UpStreamSndBufSize=5120000 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=1 PcapQueueSize=100000
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oSecCommInfo);
+
+	// @@@@@@@@端口
+	// UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450
+	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort;
+	usPortMove = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
+	strTemp.Format(_T(" DownStreamRcvSndPort=%d_%d"), usRcvPort + usPortMove, usRcvPort);
+	str += strTemp;
+	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
+
 	BOOL bRet = CreateProcess (NULL,// 不在此指定可执行文件的文件名
 		szCommandLine, // 命令行参数
 		NULL, // 默认进程安全性
@@ -696,8 +726,11 @@ void OnInit(m_oEnvironmentStruct* pEnv)
 	OnInitConstVar(pEnv->m_pConstVar, pEnv->m_pLogOutPutOpt);
 	// 初始化仪器通讯信息结构体
 	OnInitInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
-	// 调用netd程序
-	OnCreateNetdProcess(pEnv);
+	if (pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove != 0)
+	{
+		// 调用netd程序
+		OnCreateNetdProcess(pEnv);
+	}
 	// 初始化日志输出线程
 	OnInit_LogOutPutThread(pEnv);
 	// 初始化心跳线程
@@ -926,8 +959,11 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 	OnCloseLogOutPut(pEnv->m_pLogOutPutErrorCode);
 	// 关闭ADC数据帧时间日志文件
 	OnCloseLogOutPut(pEnv->m_pLogOutPutADCFrameTime);
-	// 关闭Netd程序
-	OnCloseNetdProcess(pEnv);
+	if (pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove != 0)
+	{
+		// 关闭Netd程序
+		OnCloseNetdProcess(pEnv);
+	}
 }
 // 工作
 unsigned int OnWork(m_oEnvironmentStruct* pEnv)

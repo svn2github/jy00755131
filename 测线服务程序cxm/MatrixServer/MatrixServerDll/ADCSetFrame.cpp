@@ -42,7 +42,8 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	// 目的地址
 	pADCSetFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_pServerSetupData->m_oXMLIPSetupData.m_uiAimIP;
 	// 目标IP地址端口号
-	pADCSetFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort;
+	pADCSetFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort
+		+ pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// ADC参数设置发送缓冲区帧数设定为仪器个数
 	pADCSetFrame->m_uiSndBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iSndFrameSize;
 	// ADC参数设置应答接收缓冲区帧数设定为仪器个数

@@ -381,8 +381,7 @@ void LoadServerParameter(m_oServerSetupDataStruct* pServerSetupData)
 		CTime time(nYear, nMonth, nDay, nHour, nMin, nSec);
 		pServerSetupData->m_oXMLParameterSetupData.m_oTimeFieldOff = time;
 		strKey = _T("NetRcvPortMove");
-		str = CXMLDOMTool::GetElementAttributeString(&oElement, strKey);
-		pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove = _ttoi(str);
+		pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove = CXMLDOMTool::GetElementAttributeUnsignedShort(&oElement, strKey);
 	}
 	catch (CMemoryException* e)
 	{

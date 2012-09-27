@@ -113,7 +113,7 @@ void CCommLineDll::OnProcSetInstrumentTestXMLInfo(char* pChar, unsigned int uiSi
 // 设置 SensorTest XML文件信息
 void CCommLineDll::OnProcSetSensorTestXMLInfo(char* pChar, unsigned int uiSize, bool bSave)
 {
-	m_pMatrixLine->Dll_SetSensorSetupData(pChar, uiSize, m_pLineSetupData, bSave);
+	m_pMatrixLine->Dll_SetSensorTestSetupData(pChar, uiSize, m_pLineSetupData, bSave);
 }
 // 设置 MultipleTest XML文件信息
 void CCommLineDll::OnProcSetMultipleTestXMLInfo(char* pChar, unsigned int uiSize, bool bSave)

@@ -65,6 +65,9 @@
     <ClInclude Include="ConfigOperationXml.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigPcapXml.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -188,6 +191,9 @@
       <Filter>帧</Filter>
     </ClCompile>
     <ClCompile Include="OptClientXML.cpp">
+      <Filter>杂项\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="PcapXML.cpp">
       <Filter>杂项\XML</Filter>
     </ClCompile>
   </ItemGroup>

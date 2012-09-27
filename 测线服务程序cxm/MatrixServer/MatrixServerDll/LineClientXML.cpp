@@ -6437,15 +6437,15 @@ void QueryMultipleTestSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruc
 		iPos += 4;
 		memcpy(&cProcBuf[iPos], &iterMap->first.m_usTestNameSize, 2);
 		iPos += 2;
-		memcpy(&cProcBuf[iPos], &iterMap->first.m_pcTestName, iterMap->first.m_usTestNameSize);
+		memcpy(&cProcBuf[iPos], iterMap->first.m_pcTestName, iterMap->first.m_usTestNameSize);
 		iPos += iterMap->first.m_usTestNameSize;
 		memcpy(&cProcBuf[iPos], &iterMap->first.m_usAuxiliaryDescrSize, 2);
 		iPos += 2;
-		memcpy(&cProcBuf[iPos], &iterMap->first.m_pcAuxiliaryDescr, iterMap->first.m_usAuxiliaryDescrSize);
+		memcpy(&cProcBuf[iPos], iterMap->first.m_pcAuxiliaryDescr, iterMap->first.m_usAuxiliaryDescrSize);
 		iPos += iterMap->first.m_usAuxiliaryDescrSize;
 		memcpy(&cProcBuf[iPos], &iterMap->first.m_usAbsoluteSpreadSize, 2);
 		iPos += 2;
-		memcpy(&cProcBuf[iPos], &iterMap->first.m_pcAbsoluteSpread, iterMap->first.m_usAbsoluteSpreadSize);
+		memcpy(&cProcBuf[iPos], iterMap->first.m_pcAbsoluteSpread, iterMap->first.m_usAbsoluteSpreadSize);
 		iPos += iterMap->first.m_usAbsoluteSpreadSize;
 		memcpy(&cProcBuf[iPos], &iterMap->first.m_uiDelayBetweenTest, 4);
 		iPos += 4;
@@ -6482,7 +6482,7 @@ void QuerySeisMonitorSetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct
 	memcpy(&cProcBuf[iPos], &pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize, 2);
 	iPos += 2;
 	memcpy(&cProcBuf[iPos], 
-		&pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread, 
+		pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread, 
 		pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize);
 	iPos += pLineSetupData->m_oSeisMonitor.m_usAbsoluteSpreadSize;
 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);

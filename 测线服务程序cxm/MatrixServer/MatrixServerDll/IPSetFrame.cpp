@@ -42,7 +42,8 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	// 目的地址
 	pIPSetFrame->m_pCommandStructSet->m_uiAimIP = pCommInfo->m_pServerSetupData->m_oXMLIPSetupData.m_uiAimIP;
 	// 目标IP地址端口号
-	pIPSetFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort;
+	pIPSetFrame->m_pCommandStructSet->m_usAimPort = pCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort
+		+ pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// IP地址设置发送缓冲区帧数设定为仪器个数
 	pIPSetFrame->m_uiSndBufferSize = pConstVar->m_iInstrumentNum * pConstVar->m_iSndFrameSize;
 	// IP地址设置应答接收缓冲区帧数设定为仪器个数
