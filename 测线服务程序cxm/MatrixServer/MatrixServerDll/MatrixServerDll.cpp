@@ -595,7 +595,7 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv)
 {
 //	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36916_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 NetIP=192.168.100.22 LowMacAddr=0,10,53,0,1,2 HighMacAddr=0,48,103,107,228,202 NetMacAddr=0,48,103,107,228,202 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=0 PcapQueueSize=100000");
-	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36916_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 DownStreamSndBufSize=2560000 UpStreamSndBufSize=5120000 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=1 PcapQueueSize=100000");
+//	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36916_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 DownStreamSndBufSize=2560000 UpStreamSndBufSize=5120000 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=1 PcapQueueSize=100000");
 	CString str = _T("");
 	CString strTemp = _T("");
 	unsigned short usRcvPort = 0;
@@ -609,6 +609,20 @@ void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv)
 	str += strTemp;
 	strTemp.Format(_T(" WinpcapBufSize=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_uiPcapBufSize);
 	str += strTemp;
+	strTemp.Format(_T(" DownStreamSndBufSize=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_uiDownStreamSndBufSize);
+	str += strTemp;
+	strTemp.Format(_T(" UpStreamSndBufSize=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_uiUpStreamSndBufSize);
+	str += strTemp;
+	strTemp.Format(_T(" MaxPackageSize=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_uiPcapMaxPackageSize);
+	str += strTemp;
+	strTemp.Format(_T(" PcapTimeOut=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_uiPcapTimeOut);
+	str += strTemp;
+	strTemp.Format(_T(" PcapSndWaitTime=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_uiPcapSndWaitTime);
+	str += strTemp;
+	strTemp.Format(_T(" PcapRcvWaitTime=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_uiPcapRcvWaitTime);
+	str += strTemp;
+	strTemp.Format(_T(" PcapQueueSize=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oPcapParamSetupData.m_uiPcapQueueSize);
+	str += strTemp;
 	strTemp.Format(_T(" NetDownStreamSrcPort=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oXMLPortSetupData.m_usDownStreamPort);
 	str += strTemp;
 	strTemp.Format(_T(" NetUpStreamSrcPort=%d"), pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oXMLPortSetupData.m_usUpStreamPort);
@@ -617,20 +631,45 @@ void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv)
 	str += pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oXMLIPSetupData.m_strLowIP.c_str();
 	str += _T(" HighIP=");
 	str += pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oXMLIPSetupData.m_strHighIP.c_str();
-//  DownStreamSndBufSize=2560000 UpStreamSndBufSize=5120000 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=1 PcapQueueSize=100000
 	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pPcapSetupData->m_oSecCommInfo);
 
-	// @@@@@@@@端口
-	// UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450
 	EnterCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
 	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usAimPort;
 	usPortMove = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	strTemp.Format(_T(" DownStreamRcvSndPort=%d_%d"), usRcvPort + usPortMove, usRcvPort);
 	str += strTemp;
+	str += _T(" UpStreamRcvSndPort=");
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usHeartBeatReturnPort;
+	strTemp.Format(_T("%d_%d"), usRcvPort, usRcvPort + usPortMove);
+	str += strTemp;
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usHeadFramePort;
+	strTemp.Format(_T(",%d_%d"), usRcvPort, usRcvPort + usPortMove);
+	str += strTemp;
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usTailFramePort;
+	strTemp.Format(_T(",%d_%d"), usRcvPort, usRcvPort + usPortMove);
+	str += strTemp;
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usTailTimeReturnPort;
+	strTemp.Format(_T(",%d_%d"), usRcvPort, usRcvPort + usPortMove);
+	str += strTemp;
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usTimeDelayReturnPort;
+	strTemp.Format(_T(",%d_%d"), usRcvPort, usRcvPort + usPortMove);
+	str += strTemp;
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usIPSetReturnPort;
+	strTemp.Format(_T(",%d_%d"), usRcvPort, usRcvPort + usPortMove);
+	str += strTemp;
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usErrorCodeReturnPort;
+	strTemp.Format(_T(",%d_%d"), usRcvPort, usRcvPort + usPortMove);
+	str += strTemp;
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usADCSetReturnPort;
+	strTemp.Format(_T(",%d_%d"), usRcvPort, usRcvPort + usPortMove);
+	str += strTemp;
+	usRcvPort = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLPortSetupData.m_usADCDataReturnPort;
+	strTemp.Format(_T(",%d_%d"), usRcvPort, usRcvPort + usPortMove);
+	str += strTemp;
 	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
 
 	BOOL bRet = CreateProcess (NULL,// 不在此指定可执行文件的文件名
-		szCommandLine, // 命令行参数
+		str.GetBuffer(), // 命令行参数
 		NULL, // 默认进程安全性
 		NULL, // 默认进程安全性
 		FALSE, // 指定当前进程内句柄不可以被子进程继承
@@ -639,6 +678,7 @@ void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv)
 		NULL, // 使用本进程的驱动器和目录
 		&si,
 		&pEnv->m_piNetd);
+	str.ReleaseBuffer();
 	if(!bRet)
 	{
 		AfxMessageBox(_T("CreateProcess NetWinPcap.exe failed!"));
@@ -876,6 +916,7 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 	EnterCriticalSection(&pEnv->m_pADCDataSaveThread->m_oSecADCDataSaveThread);
 	pEnv->m_pADCDataSaveThread->m_pThread->m_bClose = true;
 	LeaveCriticalSection(&pEnv->m_pADCDataSaveThread->m_oSecADCDataSaveThread);
+	Sleep(1000);
 	// 关闭心跳线程
 	OnCloseHeartBeatThread(pEnv->m_pHeartBeatThread);
 	// 关闭首包接收线程
