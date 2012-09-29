@@ -61,7 +61,7 @@ void OnClearSameRoutTailCount(m_oInstrumentStruct* pInstrument,
 	}
 	// 下一个仪器指针为空
 	m_oInstrumentStruct* pInstrumentNext = NULL;
-	pInstrumentNext = GetNextInstrument(pInstrument->m_iRoutDirection, pRout->m_pHead, pConstVar);
+	pInstrumentNext = GetNextInstrument(pRout->m_pHead, pConstVar);
 	while(pInstrument != pInstrumentNext)
 	{
 		if (pInstrumentNext == NULL)
@@ -69,7 +69,7 @@ void OnClearSameRoutTailCount(m_oInstrumentStruct* pInstrument,
 			break;
 		}
 		pInstrumentNext->m_iTailFrameCount = 0;
-		pInstrumentNext = GetNextInstrument(pInstrumentNext->m_iRoutDirection, pInstrumentNext, pConstVar);
+		pInstrumentNext = GetNextInstrument(pInstrumentNext, pConstVar);
 	}
 }
 // 回收一个路由
@@ -168,8 +168,7 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		}
 		pInstrumentDelete = pInstrumentPrevious;
 		// 得到要删除仪器沿着路由方向的前一个仪器的指针
-		pInstrumentPrevious = GetPreviousInstrument(pInstrumentDelete->m_iRoutDirection, 
-			pInstrumentDelete, pConstVar);
+		pInstrumentPrevious = GetPreviousInstrument(pInstrumentDelete, pConstVar);
 		pRout->m_pTail = pInstrumentPrevious;
 		if (pRout->m_pTail == pRout->m_pHead)
 		{

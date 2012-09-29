@@ -961,7 +961,7 @@ bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection,
 	}
 	while(pInstrument != pRout->m_pTail)
 	{
-		pInstrument = GetNextInstrument(iDirection, pInstrument, pEnv->m_pConstVar);
+		pInstrument = GetNextInstrument(pInstrument, pEnv->m_pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;

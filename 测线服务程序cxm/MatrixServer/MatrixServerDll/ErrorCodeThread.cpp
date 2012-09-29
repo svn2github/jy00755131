@@ -99,7 +99,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		&pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 	// 更新路由对象的路由时间
 	UpdateRoutTime(pInstrument->m_uiRoutIP, &pErrorCodeThread->m_pLineList->m_pRoutList->m_oRoutMap);
-	if (NULL == GetNextInstrument(pInstrument->m_iRoutDirection, pInstrument, pErrorCodeThread->m_pThread->m_pConstVar))
+	if (NULL == GetNextInstrument(pInstrument, pErrorCodeThread->m_pThread->m_pConstVar))
 	{
 		LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
 		return;
@@ -384,8 +384,7 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			pInstrument = pRout->m_pHead;
 			do 
 			{
-				pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
-					pErrorCodeThread->m_pThread->m_pConstVar);
+				pInstrument = GetNextInstrument(pInstrument, pErrorCodeThread->m_pThread->m_pConstVar);
 				if (pInstrument == NULL)
 				{
 					break;

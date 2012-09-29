@@ -447,7 +447,7 @@ bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, boo
 	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (bRout == true)
 	{
-		pInstrumentNext = GetNextInstrument(iDirection, pInstrument, pEnv->m_pConstVar);
+		pInstrumentNext = GetNextInstrument(pInstrument, pEnv->m_pConstVar);
 		if (pInstrumentNext == NULL)
 		{
 			LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
@@ -519,8 +519,7 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 			pInstrument = iter->second->m_pHead;
 			do 
 			{
-				pInstrument = GetNextInstrument(iter->second->m_iRoutDirection, 
-					pInstrument, pADCSetThread->m_pThread->m_pConstVar);
+				pInstrument = GetNextInstrument(pInstrument, pADCSetThread->m_pThread->m_pConstVar);
 				if (pInstrument == NULL)
 				{
 					break;
@@ -714,8 +713,7 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 			pInstrument = iter->second->m_pHead;
 			do 
 			{
-				pInstrument = GetNextInstrument(iter->second->m_iRoutDirection, 
-					pInstrument, pADCSetThread->m_pThread->m_pConstVar);
+				pInstrument = GetNextInstrument(pInstrument, pADCSetThread->m_pThread->m_pConstVar);
 				if (pInstrument == NULL)
 				{
 					break;

@@ -186,7 +186,7 @@ void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, m_oConstVarStruct*
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
+		pInstrument = GetNextInstrument(pInstrument, pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;

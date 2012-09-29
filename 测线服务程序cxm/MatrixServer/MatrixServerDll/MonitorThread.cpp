@@ -65,7 +65,7 @@ void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout,
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
+		pInstrument = GetNextInstrument(pInstrument, pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -281,7 +281,7 @@ void GetADCTaskQueueByRout(bool bADCStartSample, bool bADCStopSample, m_oLineLis
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
+		pInstrument = GetNextInstrument(pInstrument, pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -363,7 +363,7 @@ void GetADCTaskQueueByRout(bool bADCStartSample, bool bADCStopSample, m_oLineLis
 		pInstrument = pRout->m_pHead;
 		do 
 		{
-			pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
+			pInstrument = GetNextInstrument(pInstrument, pConstVar);
 			if (pInstrument == NULL)
 			{
 				break;
@@ -538,8 +538,7 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
-			pTimeDelayThread->m_pThread->m_pConstVar);
+		pInstrument = GetNextInstrument(pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;

@@ -67,7 +67,7 @@ void PrepareTailTimeFrame(m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
 	pInstrument->m_iTailTimeQueryCount++;
 	do 
 	{
-		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, pConstVar);
+		pInstrument = GetNextInstrument(pInstrument, pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -267,8 +267,7 @@ bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDe
 	}
 	do 
 	{
-		pInstrument = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
-			pTimeDelayThread->m_pThread->m_pConstVar);
+		pInstrument = GetNextInstrument(pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -311,8 +310,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrumentNext = GetNextInstrument(pRout->m_iRoutDirection, pInstrument, 
-			pTimeDelayThread->m_pThread->m_pConstVar);
+		pInstrumentNext = GetNextInstrument(pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
 		if (pInstrumentNext == NULL)
 		{
 			break;

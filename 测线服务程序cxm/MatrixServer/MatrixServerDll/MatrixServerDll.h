@@ -1003,6 +1003,8 @@ typedef struct Instrument_Struct
 	unsigned int m_uiADCDataFrameSysTime;
 	/** ADC数据帧起始帧数*/
 	int m_iADCDataFrameStartNum;
+	/** 仪器存活时间*/
+	unsigned int m_uiActiveTime;
 }m_oInstrumentStruct;
 
 /**
@@ -2584,21 +2586,22 @@ MatrixServerDll_API BOOL DeleteInstrumentFromLocationMap(int iLineIndex, int iPo
 MatrixServerDll_API bool GetRoutIPBySn(unsigned int uiSN, int iDirection, 
 	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar, 
 	unsigned int& uiRoutIP);
-
+// 更新仪器的存活时间
+MatrixServerDll_API void UpdateInstrActiveTime(m_oInstrumentStruct* pInstrument, 
+	m_oInstrumentStruct* pRoutHead, m_oConstVarStruct* pConstVar);
 /**
 * 根据链接方向，得到连接的下一个仪器
 	* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
 	*/
-MatrixServerDll_API m_oInstrumentStruct* GetNextInstrument(int iRoutDirection, 
-m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
+MatrixServerDll_API m_oInstrumentStruct* GetNextInstrument(m_oInstrumentStruct* pInstrument, 
+	m_oConstVarStruct* pConstVar);
 /**
 * 根据链接方向，得到连接的前一个仪器
-	* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的前一个仪器不存在
 */
-MatrixServerDll_API m_oInstrumentStruct* GetPreviousInstrument(int iRoutDirection, 
-m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
+MatrixServerDll_API m_oInstrumentStruct* GetPreviousInstrument(m_oInstrumentStruct* pInstrument,
+	m_oConstVarStruct* pConstVar);
 
 
 

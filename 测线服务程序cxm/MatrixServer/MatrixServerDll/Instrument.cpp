@@ -194,6 +194,8 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 	pInstrument->m_uiADCDataFrameSysTime = 0;
 	// ADC数据帧起始帧数
 	pInstrument->m_iADCDataFrameStartNum = 0;
+	// 仪器存活时间
+	pInstrument->m_uiActiveTime = 0;
 }
 // 判断索引号是否已加入索引表
 BOOL IfIndexExistInMap(unsigned int uiIndex, 
@@ -384,11 +386,9 @@ bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 }
 /**
 * 根据链接方向，得到连接的下一个仪器
-* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
 */
-m_oInstrumentStruct* GetNextInstrument(int iRoutDirection, 
-	m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
+m_oInstrumentStruct* GetNextInstrument(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -400,21 +400,26 @@ m_oInstrumentStruct* GetNextInstrument(int iRoutDirection,
 			ErrorType, IDS_ERR_PTRISNULL);
 		return NULL;
 	}
+	if ((pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLAUX)
+		|| (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLCI))
+	{
+		return NULL;
+	}
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	// 判断方向
-	if (iRoutDirection == pConstVar->m_iDirectionTop)
+	if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionTop)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentTop;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionDown)
+	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionDown)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentDown;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionLeft)
+	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionLeft)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentLeft;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionRight)
+	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionRight)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentRight;
 	}
@@ -433,11 +438,9 @@ m_oInstrumentStruct* GetNextInstrument(int iRoutDirection,
 }
 /**
 * 根据链接方向，得到连接的前一个仪器
-* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的前一个仪器不存在
 */
-m_oInstrumentStruct* GetPreviousInstrument(int iRoutDirection, 
-	m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
+m_oInstrumentStruct* GetPreviousInstrument(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -449,21 +452,26 @@ m_oInstrumentStruct* GetPreviousInstrument(int iRoutDirection,
 			ErrorType, IDS_ERR_PTRISNULL);
 		return NULL;
 	}
+	if ((pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLAUX)
+		|| (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLCI))
+	{
+		return NULL;
+	}
 	m_oInstrumentStruct* pInstrumentPrevious = NULL;
 	// 判断方向
-	if (iRoutDirection == pConstVar->m_iDirectionTop)
+	if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionTop)
 	{
 		pInstrumentPrevious = pInstrument->m_pInstrumentDown;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionDown)
+	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionDown)
 	{
 		pInstrumentPrevious = pInstrument->m_pInstrumentTop;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionLeft)
+	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionLeft)
 	{
 		pInstrumentPrevious = pInstrument->m_pInstrumentRight;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionRight)
+	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionRight)
 	{
 		pInstrumentPrevious = pInstrument->m_pInstrumentLeft;
 	}
@@ -479,4 +487,20 @@ m_oInstrumentStruct* GetPreviousInstrument(int iRoutDirection,
 		}
 	}
 	return pInstrumentPrevious;
+}
+// 更新仪器的存活时间
+void UpdateInstrActiveTime(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
+{
+	if (pInstrument == NULL)
+	{
+		return;
+	}
+	unsigned int uiActiveTime = 0;
+	m_oInstrumentStruct* pInstrumentPrevious = pInstrument;
+	uiActiveTime = GetTickCount();
+	do 
+	{
+		pInstrumentPrevious->m_uiActiveTime = uiActiveTime;
+		pInstrumentPrevious = GetPreviousInstrument(pInstrument, pConstVar);
+	} while (pInstrumentPrevious != NULL);
 }
