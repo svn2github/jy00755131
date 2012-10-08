@@ -65,9 +65,7 @@ DWORD WINAPI RunHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 		}
 		if (bWork == true)
 		{
-			MakeInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
-				pHeartBeatThread->m_pThread->m_pConstVar);
-			SendInstrumentHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
+			MakeInstrHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
 				pHeartBeatThread->m_pThread->m_pConstVar);
 		}
 		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MatrixServerDll.h"
 // 创建ADC数据帧信息结构体
-m_oADCDataFrameStruct* OnCreateInstrumentADCDataFrame(void)
+m_oADCDataFrameStruct* OnCreateInstrADCDataFrame(void)
 {
 	m_oADCDataFrameStruct* pADCDataFrame = NULL;
 	pADCDataFrame = new m_oADCDataFrameStruct;
@@ -15,7 +15,7 @@ m_oADCDataFrameStruct* OnCreateInstrumentADCDataFrame(void)
 	return pADCDataFrame;
 }
 // 初始化ADC数据帧
-void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
+void OnInitInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -54,7 +54,7 @@ void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pADCDataFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendADCCmd;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(pADCDataFrame->m_pCommandStructSet);
+	ResetInstrFramePacket(pADCDataFrame->m_pCommandStructSet);
 	// 清空发送帧缓冲区
 	if (pADCDataFrame->m_cpSndFrameData != NULL)
 	{
@@ -71,7 +71,7 @@ void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 		pADCDataFrame->m_pCommandStructReturn = NULL;
 	}
 	pADCDataFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
-	ResetInstrumentFramePacket(pADCDataFrame->m_pCommandStructReturn);
+	ResetInstrFramePacket(pADCDataFrame->m_pCommandStructReturn);
 	pADCDataFrame->m_pCommandStructReturn->m_pADCData = new int[pConstVar->m_iADCDataInOneFrameNum];
 	// 清空接收帧缓冲区
 	if (pADCDataFrame->m_cpRcvFrameData != NULL)
@@ -84,7 +84,7 @@ void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	LeaveCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 }
 // 关闭ADC数据帧信息结构体
-void OnCloseInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
+void OnCloseInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 {
 	if (pADCDataFrame == NULL)
 	{
@@ -119,7 +119,7 @@ void OnCloseInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 	LeaveCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 }
 // 释放ADC数据帧信息结构体
-void OnFreeInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
+void OnFreeInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 {
 	if (pADCDataFrame == NULL)
 	{
@@ -138,10 +138,10 @@ void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, m_oL
 	}
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	// 创建套接字
-	pADCDataFrame->m_oADCDataFrameSocket = CreateInstrumentSocket(pADCDataFrame->m_pCommandStructSet->m_usReturnPort + pADCDataFrame->m_usPortMove, 
+	pADCDataFrame->m_oADCDataFrameSocket = CreateInstrSocket(pADCDataFrame->m_pCommandStructSet->m_usReturnPort + pADCDataFrame->m_usPortMove, 
 		pADCDataFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
-	SetInstrumentSocketBroadCast(pADCDataFrame->m_oADCDataFrameSocket, pLogOutPut);
+	SetInstrSocketBroadCast(pADCDataFrame->m_oADCDataFrameSocket, pLogOutPut);
 	// 设置发送缓冲区
 	SetSndBufferSize(pADCDataFrame->m_oADCDataFrameSocket, pADCDataFrame->m_uiSndBufferSize, pLogOutPut);
 	// 设置接收缓冲区大小
@@ -150,7 +150,7 @@ void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, m_oL
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetADCDataFrameSocket", "创建并设置ADC数据帧端口！");
 }
 // 解析ADC数据接收帧
-bool ParseInstrumentADCDataRecFrame(m_oADCDataFrameStruct* pADCDataFrame, m_oConstVarStruct* pConstVar)
+bool ParseInstrADCDataRecFrame(m_oADCDataFrameStruct* pADCDataFrame, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -164,13 +164,13 @@ bool ParseInstrumentADCDataRecFrame(m_oADCDataFrameStruct* pADCDataFrame, m_oCon
 	}
 	bool bReturn = false;
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
-	bReturn = ParseInstrumentFrame(pADCDataFrame->m_pCommandStructReturn, 
+	bReturn = ParseInstrFrame(pADCDataFrame->m_pCommandStructReturn, 
 		pADCDataFrame->m_cpRcvFrameData, pConstVar);
 	LeaveCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	return bReturn;
 }
 // 生成ADC数据查询帧
-void MakeInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame, 
+void MakeInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiIP, unsigned short usDataPoint)
 {
 	if (pConstVar == NULL)
@@ -188,23 +188,7 @@ void MakeInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	// 仪器IP地址
 	pADCDataFrame->m_pCommandStructSet->m_uiDstIP = uiIP;
 	pADCDataFrame->m_pCommandStructSet->m_usADCDataPoint = usDataPoint;
-	MakeInstrumentFrame(pADCDataFrame->m_pCommandStructSet, pConstVar, pADCDataFrame->m_cpSndFrameData);
-	LeaveCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
-}
-// 发送ADC数据查询帧
-void SendInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame, m_oConstVarStruct* pConstVar)
-{
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pADCDataFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "SendInstrumentADCDataFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
-	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
+	MakeInstrFrame(pADCDataFrame->m_pCommandStructSet, pConstVar, pADCDataFrame->m_cpSndFrameData);
 	SendFrame(pADCDataFrame->m_oADCDataFrameSocket, pADCDataFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pADCDataFrame->m_pCommandStructSet->m_usAimPort, 
 		pADCDataFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);

@@ -2,7 +2,7 @@
 #include "MatrixServerDll.h"
 
 // 创建尾包时刻帧信息结构体
-m_oTailTimeFrameStruct* OnCreateInstrumentTailTimeFrame(void)
+m_oTailTimeFrameStruct* OnCreateInstrTailTimeFrame(void)
 {
 	m_oTailTimeFrameStruct* pTailTimeFrame = NULL;
 	pTailTimeFrame = new m_oTailTimeFrameStruct;
@@ -17,7 +17,7 @@ m_oTailTimeFrameStruct* OnCreateInstrumentTailTimeFrame(void)
 	return pTailTimeFrame;
 }
 // 初始化尾包时刻帧
-void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
+void OnInitInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -56,7 +56,7 @@ void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(pTailTimeFrame->m_pCommandStructSet);
+	ResetInstrFramePacket(pTailTimeFrame->m_pCommandStructSet);
 	// 清空发送帧缓冲区
 	if (pTailTimeFrame->m_cpSndFrameData != NULL)
 	{
@@ -85,7 +85,7 @@ void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 		pTailTimeFrame->m_pCommandStructReturn = NULL;
 	}
 	pTailTimeFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
-	ResetInstrumentFramePacket(pTailTimeFrame->m_pCommandStructReturn);
+	ResetInstrFramePacket(pTailTimeFrame->m_pCommandStructReturn);
 	// 清空接收帧缓冲区
 	if (pTailTimeFrame->m_cpRcvFrameData != NULL)
 	{
@@ -98,7 +98,7 @@ void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 }
 // 关闭尾包时刻帧信息结构体
-void OnCloseInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
+void OnCloseInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 {
 	if (pTailTimeFrame == NULL)
 	{
@@ -133,7 +133,7 @@ void OnCloseInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 }
 // 释放尾包时刻帧信息结构体
-void OnFreeInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
+void OnFreeInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 {
 	if (pTailTimeFrame == NULL)
 	{
@@ -152,10 +152,10 @@ void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruct* pTailTimeFrame, m
 	}
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 创建套接字
-	pTailTimeFrame->m_oTailTimeFrameSocket = CreateInstrumentSocket(pTailTimeFrame->m_pCommandStructSet->m_usReturnPort + pTailTimeFrame->m_usPortMove, 
+	pTailTimeFrame->m_oTailTimeFrameSocket = CreateInstrSocket(pTailTimeFrame->m_pCommandStructSet->m_usReturnPort + pTailTimeFrame->m_usPortMove, 
 		pTailTimeFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
-	SetInstrumentSocketBroadCast(pTailTimeFrame->m_oTailTimeFrameSocket, pLogOutPut);
+	SetInstrSocketBroadCast(pTailTimeFrame->m_oTailTimeFrameSocket, pLogOutPut);
 	// 设置发送缓冲区
 	SetSndBufferSize(pTailTimeFrame->m_oTailTimeFrameSocket, 
 		pTailTimeFrame->m_uiSndBufferSize, pLogOutPut);
@@ -166,7 +166,7 @@ void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruct* pTailTimeFrame, m
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetTailTimeFrameSocket", "创建并设置尾包时刻查询帧端口！");
 }
 // 解析尾包时刻查询帧
-bool ParseInstrumentTailTimeReturnFrame(m_oTailTimeFrameStruct* pTailTimeFrame, 
+bool ParseInstrTailTimeReturnFrame(m_oTailTimeFrameStruct* pTailTimeFrame, 
 	m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -181,13 +181,13 @@ bool ParseInstrumentTailTimeReturnFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	}
 	bool bReturn = false;
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
-	bReturn = ParseInstrumentFrame(pTailTimeFrame->m_pCommandStructReturn, 
+	bReturn = ParseInstrFrame(pTailTimeFrame->m_pCommandStructReturn, 
 		pTailTimeFrame->m_cpRcvFrameData, pConstVar);
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	return bReturn;
 }
 // 按IP地址查询尾包时刻帧
-void MakeInstrumentTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
+void MakeInstrTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP)
 {
 	if (pConstVar == NULL)
@@ -218,12 +218,15 @@ void MakeInstrumentTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame
 	usPos ++;
 	// 查询命令字个数
 	pTailTimeFrame->m_usCommandWordNum = usPos;
-	MakeInstrumentFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 
+	MakeInstrFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 
 		pTailTimeFrame->m_cpCommandWord, pTailTimeFrame->m_usCommandWordNum);
+	SendFrame(pTailTimeFrame->m_oTailTimeFrameSocket, pTailTimeFrame->m_cpSndFrameData, 
+		pConstVar->m_iSndFrameSize, pTailTimeFrame->m_pCommandStructSet->m_usAimPort, 
+		pTailTimeFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 }
 // 广播查询尾包时刻帧
-void MakeInstrumentTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFrame, 
+void MakeInstrTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiBroadCastPort)
 {
 	if (pConstVar == NULL)
@@ -265,25 +268,8 @@ void MakeInstrumentTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTi
 	usPos ++;
 	// 查询命令字个数
 	pTailTimeFrame->m_usCommandWordNum = usPos;
-	MakeInstrumentFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 
+	MakeInstrFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 
 		pTailTimeFrame->m_cpCommandWord, pTailTimeFrame->m_usCommandWordNum);
-	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
-}
-// 发送尾包时刻查询帧
-void SendInstrumentTailTimeQueryFrame(m_oTailTimeFrameStruct* pTailTimeFrame, 
-	m_oConstVarStruct* pConstVar)
-{
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pTailTimeFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "SendInstrumentTailTimeQueryFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
-	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	SendFrame(pTailTimeFrame->m_oTailTimeFrameSocket, pTailTimeFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pTailTimeFrame->m_pCommandStructSet->m_usAimPort, 
 		pTailTimeFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);

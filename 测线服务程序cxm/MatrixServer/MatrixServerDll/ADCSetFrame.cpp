@@ -2,7 +2,7 @@
 #include "MatrixServerDll.h"
 
 // 创建ADC参数设置帧信息结构体
-m_oADCSetFrameStruct* OnCreateInstrumentADCSetFrame(void)
+m_oADCSetFrameStruct* OnCreateInstrADCSetFrame(void)
 {
 	m_oADCSetFrameStruct* pADCSetFrame = NULL;
 	pADCSetFrame = new m_oADCSetFrameStruct;
@@ -17,7 +17,7 @@ m_oADCSetFrameStruct* OnCreateInstrumentADCSetFrame(void)
 	return pADCSetFrame;
 }
 // 初始化ADC参数设置帧
-void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
+void OnInitInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -56,7 +56,7 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pADCSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(pADCSetFrame->m_pCommandStructSet);
+	ResetInstrFramePacket(pADCSetFrame->m_pCommandStructSet);
 	// ADC数据返回地址
 	pADCSetFrame->m_pCommandStructSet->m_uiADCDataReturnAddr = pCommInfo->m_pServerSetupData->m_oXMLIPSetupData.m_uiADCDataReturnAddr;
 	// ADC数据返回端口
@@ -93,7 +93,7 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 		pADCSetFrame->m_pCommandStructReturn = NULL;
 	}
 	pADCSetFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
-	ResetInstrumentFramePacket(pADCSetFrame->m_pCommandStructReturn);
+	ResetInstrFramePacket(pADCSetFrame->m_pCommandStructReturn);
 	pADCSetFrame->m_pCommandStructReturn->m_cpADCSet = new char[pConstVar->m_iSndFrameSize];
 	// 清空接收帧缓冲区
 	if (pADCSetFrame->m_cpRcvFrameData != NULL)
@@ -106,7 +106,7 @@ void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	LeaveCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 }
 // 关闭ADC参数设置帧信息结构体
-void OnCloseInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
+void OnCloseInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 {
 	if (pADCSetFrame == NULL)
 	{
@@ -146,7 +146,7 @@ void OnCloseInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 	LeaveCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 }
 // 释放ADC参数设置帧信息结构体
-void OnFreeInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
+void OnFreeInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 {
 	if (pADCSetFrame == NULL)
 	{
@@ -165,10 +165,10 @@ void OnCreateAndSetADCSetFrameSocket(m_oADCSetFrameStruct* pADCSetFrame, m_oLogO
 	}
 	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	// 创建套接字
-	pADCSetFrame->m_oADCSetFrameSocket = CreateInstrumentSocket(pADCSetFrame->m_pCommandStructSet->m_usReturnPort + pADCSetFrame->m_usPortMove, 
+	pADCSetFrame->m_oADCSetFrameSocket = CreateInstrSocket(pADCSetFrame->m_pCommandStructSet->m_usReturnPort + pADCSetFrame->m_usPortMove, 
 		pADCSetFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
-	SetInstrumentSocketBroadCast(pADCSetFrame->m_oADCSetFrameSocket, pLogOutPut);
+	SetInstrSocketBroadCast(pADCSetFrame->m_oADCSetFrameSocket, pLogOutPut);
 	// 设置发送缓冲区
 	SetSndBufferSize(pADCSetFrame->m_oADCSetFrameSocket, pADCSetFrame->m_uiSndBufferSize, pLogOutPut);
 	// 设置接收缓冲区大小
@@ -177,7 +177,7 @@ void OnCreateAndSetADCSetFrameSocket(m_oADCSetFrameStruct* pADCSetFrame, m_oLogO
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetADCSetFrameSocket", "创建并设置ADC参数设置帧端口！");
 }
 // 解析ADC参数设置应答帧
-bool ParseInstrumentADCSetReturnFrame(m_oADCSetFrameStruct* pADCSetFrame, m_oConstVarStruct* pConstVar)
+bool ParseInstrADCSetReturnFrame(m_oADCSetFrameStruct* pADCSetFrame, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -191,27 +191,8 @@ bool ParseInstrumentADCSetReturnFrame(m_oADCSetFrameStruct* pADCSetFrame, m_oCon
 	}
 	bool bReturn = false;
 	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
-	bReturn = ParseInstrumentFrame(pADCSetFrame->m_pCommandStructReturn, 
+	bReturn = ParseInstrFrame(pADCSetFrame->m_pCommandStructReturn, 
 		pADCSetFrame->m_cpRcvFrameData, pConstVar);
 	LeaveCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	return bReturn;
-}
-// 发送ADC参数设置帧
-void SendInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame, m_oConstVarStruct* pConstVar)
-{
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pADCSetFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "SendInstrumentADCSetFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
-	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
-	SendFrame(pADCSetFrame->m_oADCSetFrameSocket, pADCSetFrame->m_cpSndFrameData, 
-		pConstVar->m_iSndFrameSize, pADCSetFrame->m_pCommandStructSet->m_usAimPort, 
-		pADCSetFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
-	LeaveCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 }

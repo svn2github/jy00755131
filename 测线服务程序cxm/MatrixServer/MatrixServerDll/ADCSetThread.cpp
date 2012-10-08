@@ -412,13 +412,14 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 	default:
 		break;
 	}
-	MakeInstrumentFrame(pADCSetThread->m_pADCSetFrame->m_pCommandStructSet, 
+	MakeInstrFrame(pADCSetThread->m_pADCSetFrame->m_pCommandStructSet, 
 		pADCSetThread->m_pThread->m_pConstVar, 
 		pADCSetThread->m_pADCSetFrame->m_cpSndFrameData, 
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord, 
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum);
-	// 发送ADC参数设置帧
-	SendInstrumentADCSetFrame(pADCSetThread->m_pADCSetFrame, pADCSetThread->m_pThread->m_pConstVar);
+	SendFrame(pADCSetThread->m_pADCSetFrame->m_oADCSetFrameSocket, pADCSetThread->m_pADCSetFrame->m_cpSndFrameData, 
+		pADCSetThread->m_pThread->m_pConstVar->m_iSndFrameSize, pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usAimPort, 
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiAimIP, pADCSetThread->m_pThread->m_pConstVar->m_pLogOutPut);
 	LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	if (bSetLocalSysTime == true)
 	{
@@ -447,7 +448,7 @@ bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, boo
 	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (bRout == true)
 	{
-		pInstrumentNext = GetNextInstrument(pInstrument, pEnv->m_pConstVar);
+		pInstrumentNext = GetNextInstrAlongRout(pInstrument, iDirection, pEnv->m_pConstVar);
 		if (pInstrumentNext == NULL)
 		{
 			LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
@@ -490,10 +491,11 @@ bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, boo
 	pEnv->m_pADCSetFrame->m_cpCommandWord[pEnv->m_pADCSetFrame->m_usCommandWordNum] = pEnv->m_pConstVar->m_cCmdADCSet;
 	pEnv->m_pADCSetFrame->m_usCommandWordNum++;
 
-	MakeInstrumentFrame(pEnv->m_pADCSetFrame->m_pCommandStructSet, pEnv->m_pConstVar, pEnv->m_pADCSetFrame->m_cpSndFrameData, 
+	MakeInstrFrame(pEnv->m_pADCSetFrame->m_pCommandStructSet, pEnv->m_pConstVar, pEnv->m_pADCSetFrame->m_cpSndFrameData, 
 		pEnv->m_pADCSetFrame->m_cpCommandWord, pEnv->m_pADCSetFrame->m_usCommandWordNum);
-	// 发送ADC参数设置帧
-	SendInstrumentADCSetFrame(pEnv->m_pADCSetFrame, pEnv->m_pConstVar);
+	SendFrame(pEnv->m_pADCSetFrame->m_oADCSetFrameSocket, pEnv->m_pADCSetFrame->m_cpSndFrameData, 
+		pEnv->m_pConstVar->m_iSndFrameSize, pEnv->m_pADCSetFrame->m_pCommandStructSet->m_usAimPort, 
+		pEnv->m_pADCSetFrame->m_pCommandStructSet->m_uiAimIP, pEnv->m_pConstVar->m_pLogOutPut);
 	LeaveCriticalSection(&pEnv->m_pADCSetFrame->m_oSecADCSetFrame);
 	return true;
 }
@@ -519,7 +521,7 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 			pInstrument = iter->second->m_pHead;
 			do 
 			{
-				pInstrument = GetNextInstrument(pInstrument, pADCSetThread->m_pThread->m_pConstVar);
+				pInstrument = GetNextInstrAlongRout(pInstrument, iter->second->m_iRoutDirection, pADCSetThread->m_pThread->m_pConstVar);
 				if (pInstrument == NULL)
 				{
 					break;
@@ -584,8 +586,8 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	}
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, &pADCSetThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 	pInstrument->m_bADCSetReturn = true;
-	// 更新路由对象的路由时间
-	UpdateRoutTime(pInstrument->m_uiRoutIP, &pADCSetThread->m_pLineList->m_pRoutList->m_oRoutMap);
+	// 更新仪器的存活时间
+	UpdateInstrActiveTime(pInstrument, pADCSetThread->m_pThread->m_pConstVar);
 	LeaveCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 	if (uiADCSetOperationNb == 17)
 	{
@@ -713,7 +715,7 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 			pInstrument = iter->second->m_pHead;
 			do 
 			{
-				pInstrument = GetNextInstrument(pInstrument, pADCSetThread->m_pThread->m_pConstVar);
+				pInstrument = GetNextInstrAlongRout(pInstrument, iter->second->m_iRoutDirection, pADCSetThread->m_pThread->m_pConstVar);
 				if (pInstrument == NULL)
 				{
 					break;
@@ -819,7 +821,7 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 				continue;
 			}
 			LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
-			if (false == ParseInstrumentADCSetReturnFrame(pADCSetThread->m_pADCSetFrame, 
+			if (false == ParseInstrADCSetReturnFrame(pADCSetThread->m_pADCSetFrame, 
 				pADCSetThread->m_pThread->m_pConstVar))
 			{
 				AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ParseInstrumentADCSetReturnFrame",

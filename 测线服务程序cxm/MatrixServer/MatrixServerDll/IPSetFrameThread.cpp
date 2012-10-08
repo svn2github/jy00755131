@@ -38,8 +38,8 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	if (TRUE == IfIndexExistInMap(uiIPInstrument, &pIPSetFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap))
 	{
 		pInstrument = GetInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap);
-		// 更新路由对象的路由时间
-		UpdateRoutTime(pInstrument->m_uiRoutIP, &pIPSetFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
+		// 更新仪器的存活时间
+		UpdateInstrActiveTime(pInstrument, pIPSetFrameThread->m_pThread->m_pConstVar);
 		// 从IP地址设置索引表中删除仪器
 		DeleteInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap);
 		// 将仪器加入IP地址索引表
@@ -167,7 +167,7 @@ void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				continue;
 			}
 			LeaveCriticalSection(&pIPSetFrameThread->m_pIPSetFrame->m_oSecIPSetFrame);
-			if (false == ParseInstrumentIPSetReturnFrame(pIPSetFrameThread->m_pIPSetFrame, 
+			if (false == ParseInstrIPSetReturnFrame(pIPSetFrameThread->m_pIPSetFrame, 
 				pIPSetFrameThread->m_pThread->m_pConstVar))
 			{
 				AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, 
@@ -202,11 +202,8 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			if (iter->second->m_iIPSetCount == 0)
 			{
 				// 生成IP地址设置帧
-				MakeInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
+				MakeInstrIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
 					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second);
-				// 发送IP地址设置帧
-				SendInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
-					pIPSetFrameThread->m_pThread->m_pConstVar);
 				// 第几次设置IP地址
 				iter->second->m_iIPSetCount++;
 				iter++;
@@ -215,18 +212,11 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			else if (iter->second->m_iIPSetCount <= pIPSetFrameThread->m_pThread->m_pConstVar->m_iIPAddrResetTimes)
 			{
 				// 生成IP地址查询帧
-				MakeInstrumentIPQueryFrame(pIPSetFrameThread->m_pIPSetFrame, 
+				MakeInstrIPQueryFrame(pIPSetFrameThread->m_pIPSetFrame, 
 					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second->m_uiIP);
-				// 发送IP地址查询帧
-				SendInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
-					pIPSetFrameThread->m_pThread->m_pConstVar);
-
 				// 生成IP地址设置帧
-				MakeInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
+				MakeInstrIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
 					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second);
-				// 发送IP地址设置帧
-				SendInstrumentIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
-					pIPSetFrameThread->m_pThread->m_pConstVar);
 				// 第几次设置IP地址
 				iter->second->m_iIPSetCount++;
 				iter++;

@@ -174,8 +174,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	}
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
 		&pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
-	// 更新路由对象的路由时间
-	UpdateRoutTime(pInstrument->m_uiRoutIP, &pADCDataRecThread->m_pLineList->m_pRoutList->m_oRoutMap);
+	// 更新仪器的存活时间
+	UpdateInstrActiveTime(pInstrument, pADCDataRecThread->m_pThread->m_pConstVar);
 	// 在丢帧索引表中找到
 	if (TRUE == IfIndexExistInADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
 		&pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oADCLostFrameMap))
@@ -403,7 +403,7 @@ void ProcADCDataRecFrame(m_oADCDataRecThreadStruct* pADCDataRecThread)
 				continue;
 			}
 			LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
-			if (false == ParseInstrumentADCDataRecFrame(pADCDataRecThread->m_pADCDataFrame, 
+			if (false == ParseInstrADCDataRecFrame(pADCDataRecThread->m_pADCDataFrame, 
 					pADCDataRecThread->m_pThread->m_pConstVar))
 			{
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ParseInstrumentADCDataRecFrame",
@@ -438,10 +438,8 @@ void ProcADCRetransmission(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			&& (pLostFrame->m_bReturnOk == false))
 		{
 			// 生成ADC数据重发帧
-			MakeInstrumentADCDataFrame(pADCDataRecThread->m_pADCDataFrame, 
+			MakeInstrADCDataFrame(pADCDataRecThread->m_pADCDataFrame, 
 				pADCDataRecThread->m_pThread->m_pConstVar, iter->first.m_uiIP, iter->first.m_usADCFramePointNb);
-			SendInstrumentADCDataFrame(pADCDataRecThread->m_pADCDataFrame, 
-				pADCDataRecThread->m_pThread->m_pConstVar);
 			str.Format(_T("向仪器IP = 0x%x的仪器发送ADC数据重发帧，重发的指针偏移量 = %d"), iter->first.m_uiIP,
 				iter->first.m_usADCFramePointNb);
 			strConv = (CStringA)str;

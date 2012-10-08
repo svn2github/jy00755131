@@ -52,7 +52,7 @@ bool IfFileExist(CString str)
 	return true;
 }
 // 校验帧的同步码
-bool CheckInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize)
+bool CheckInstrFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize)
 {
 	if ((pFrameData == NULL) || (pFrameHeadCheck == NULL))
 	{
@@ -68,7 +68,7 @@ bool CheckInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iChec
 	return true;
 }
 // 生成帧的同步码
-bool MakeInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize)
+bool MakeInstrFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize)
 {
 	if ((pFrameData == NULL) || (pFrameHeadCheck == NULL))
 	{
@@ -78,7 +78,7 @@ bool MakeInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheck
 	return true;
 }
 // 重置帧内容解析变量
-bool ResetInstrumentFramePacket(m_oInstrumentCommandStruct* pCommand)
+bool ResetInstrFramePacket(m_oInstrumentCommandStruct* pCommand)
 {
 	if (pCommand == NULL)
 	{
@@ -178,7 +178,7 @@ bool ResetInstrumentFramePacket(m_oInstrumentCommandStruct* pCommand)
 	return true;
 }
 // 解析与设备通讯接收帧内容
-bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand, 
+bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand, 
 	char* pFrameData, m_oConstVarStruct* pConstVar)
 {
 	string strFrameData = "";
@@ -209,7 +209,7 @@ bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand,
 	iADCDataSize3B = pConstVar->m_iADCDataSize3B;
 
 	// 校验帧的同步码
-	if (false == CheckInstrumentFrameHead(pFrameData, pConstVar->m_cpFrameHeadCheck, 4))
+	if (false == CheckInstrFrameHead(pFrameData, pConstVar->m_cpFrameHeadCheck, 4))
 	{
 		GetFrameInfo(pFrameData, pConstVar->m_iRcvFrameSize, &strFrameData);
 		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", 
@@ -217,7 +217,7 @@ bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand,
 		return false;
 	}
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(pCommand);
+	ResetInstrFramePacket(pCommand);
 	iPos += pConstVar->m_iFrameHeadSize;
 	// 源IP地址
 	memcpy(&pCommand->m_uiSrcIP, &pFrameData[iPos], iFramePacketSize4B);
@@ -461,7 +461,7 @@ bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand,
 	return true;
 }
 // 生成与设备通讯帧
-bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pConstVar,
+bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pConstVar,
 	char* pFrameData, char* pCommandWord, unsigned short usCommandWordNum)
 {
 	if (pConstVar == NULL)
@@ -486,7 +486,7 @@ bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct
 	iFramePacketSize1B = pConstVar->m_iFramePacketSize1B;
 	iFrameCmdSize1B = pConstVar->m_iFrameCmdSize1B;
 	// 生成帧的同步码
-	MakeInstrumentFrameHead(pFrameData, pConstVar->m_cpFrameHeadCheck, pConstVar->m_iFrameHeadSize);
+	MakeInstrFrameHead(pFrameData, pConstVar->m_cpFrameHeadCheck, pConstVar->m_iFrameHeadSize);
 	iPos += pConstVar->m_iFrameHeadSize;
 	// 源IP地址
 	memcpy(&pFrameData[iPos], &pCommand->m_uiSrcIP, iFramePacketSize4B);
@@ -714,7 +714,7 @@ bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct
 	return true;
 }
 // 创建CSocket接收端口并绑定端口和IP地址
-SOCKET CreateInstrumentSocket(unsigned short usPort, unsigned int uiIP, m_oLogOutPutStruct* pLogOutPut)
+SOCKET CreateInstrSocket(unsigned short usPort, unsigned int uiIP, m_oLogOutPutStruct* pLogOutPut)
 {
 	SOCKET oSocket = INVALID_SOCKET;
 	CString str = _T("");
@@ -742,7 +742,7 @@ SOCKET CreateInstrumentSocket(unsigned short usPort, unsigned int uiIP, m_oLogOu
 	return oSocket;
 }
 // 设置广播模式
-void SetInstrumentSocketBroadCast(SOCKET oSocket, m_oLogOutPutStruct* pLogOutPut)
+void SetInstrSocketBroadCast(SOCKET oSocket, m_oLogOutPutStruct* pLogOutPut)
 {
 	//设置广播模式
 	int	iOptval = 0;
@@ -921,7 +921,7 @@ void OnClearSocketRcvBuf(SOCKET oSocket, int iRcvFrameSize)
 	pcRcvFrameData = NULL;
 }
 // 得到路由方向上仪器个数
-bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection, 
+bool OnGetRoutInstrNum(int iLineIndex, int iPointIndex, int iDirection, 
 	m_oEnvironmentStruct* pEnv, unsigned int& uiInstrumentNum)
 {
 	m_oRoutStruct* pRout = NULL;
@@ -961,7 +961,7 @@ bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection,
 	}
 	while(pInstrument != pRout->m_pTail)
 	{
-		pInstrument = GetNextInstrument(pInstrument, pEnv->m_pConstVar);
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pEnv->m_pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;

@@ -261,7 +261,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TailFrameStableTimes");	// 尾包稳定次数
-	strValue = _T("5");
+	strValue = _T("3");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("MonitorStableTime");	// 路由监视稳定时间

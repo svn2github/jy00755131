@@ -2,7 +2,7 @@
 #include "MatrixServerDll.h"
 
 // 创建尾包帧信息结构体
-m_oTailFrameStruct* OnCreateInstrumentTailFrame(void)
+m_oTailFrameStruct* OnCreateInstrTailFrame(void)
 {
 	m_oTailFrameStruct* pTailFrame = NULL;
 	pTailFrame = new m_oTailFrameStruct;
@@ -14,7 +14,7 @@ m_oTailFrameStruct* OnCreateInstrumentTailFrame(void)
 	return pTailFrame;
 }
 // 初始化尾包
-void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFrame, 
+void OnInitInstrTailFrame(m_oTailFrameStruct* pTailFrame, 
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -45,7 +45,7 @@ void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFrame,
 	// 尾包接收端口偏移量
 	pTailFrame->m_usPortMove = pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(pTailFrame->m_pCommandStruct);
+	ResetInstrFramePacket(pTailFrame->m_pCommandStruct);
 	// 清空接收帧缓冲区
 	if (pTailFrame->m_cpRcvFrameData != NULL)
 	{
@@ -57,7 +57,7 @@ void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFrame,
 	LeaveCriticalSection(&pTailFrame->m_oSecTailFrame);
 }
 // 关闭尾包帧信息结构体
-void OnCloseInstrumentTailFrame(m_oTailFrameStruct* pTailFrame)
+void OnCloseInstrTailFrame(m_oTailFrameStruct* pTailFrame)
 {
 	if (pTailFrame == NULL)
 	{
@@ -77,7 +77,7 @@ void OnCloseInstrumentTailFrame(m_oTailFrameStruct* pTailFrame)
 	LeaveCriticalSection(&pTailFrame->m_oSecTailFrame);
 }
 // 释放尾包帧信息结构体
-void OnFreeInstrumentTailFrame(m_oTailFrameStruct* pTailFrame)
+void OnFreeInstrTailFrame(m_oTailFrameStruct* pTailFrame)
 {
 	if (pTailFrame == NULL)
 	{
@@ -96,7 +96,7 @@ void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTailFrame, m_oLogOutPutS
 	}
 	EnterCriticalSection(&pTailFrame->m_oSecTailFrame);
 	// 创建套接字
-	pTailFrame->m_oTailFrameSocket = CreateInstrumentSocket(pTailFrame->m_pCommandStruct->m_usReturnPort + pTailFrame->m_usPortMove, 
+	pTailFrame->m_oTailFrameSocket = CreateInstrSocket(pTailFrame->m_pCommandStruct->m_usReturnPort + pTailFrame->m_usPortMove, 
 		pTailFrame->m_pCommandStruct->m_uiSrcIP, pLogOutPut);
 	// 设置接收缓冲区
 	SetRcvBufferSize(pTailFrame->m_oTailFrameSocket, pTailFrame->m_uiRcvBufferSize, pLogOutPut);
@@ -104,7 +104,7 @@ void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTailFrame, m_oLogOutPutS
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetTailFrameSocket", "创建并设置尾包端口！");
 }
 // 解析尾包帧
-bool ParseInstrumentTailFrame(m_oTailFrameStruct* pTailFrame, 
+bool ParseInstrTailFrame(m_oTailFrameStruct* pTailFrame, 
 	m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -119,7 +119,7 @@ bool ParseInstrumentTailFrame(m_oTailFrameStruct* pTailFrame,
 	}
 	bool bReturn = false;
 	EnterCriticalSection(&pTailFrame->m_oSecTailFrame);
-	bReturn = ParseInstrumentFrame(pTailFrame->m_pCommandStruct, 
+	bReturn = ParseInstrFrame(pTailFrame->m_pCommandStruct, 
 		pTailFrame->m_cpRcvFrameData, pConstVar);
 	LeaveCriticalSection(&pTailFrame->m_oSecTailFrame);
 	return bReturn;

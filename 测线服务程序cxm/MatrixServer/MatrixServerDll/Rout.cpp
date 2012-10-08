@@ -18,8 +18,6 @@ void OnRoutReset(m_oRoutStruct* pRout)
 	pRout->m_pTail = NULL;
 	// 路由仪器队列
 	pRout->m_olsRoutInstrument.clear();
-	// 路由时刻
-	pRout->m_uiRoutTime = 0xFFFF0000;
 	// 路由是否为交叉线路由
 	pRout->m_bRoutLaux = false;
 	// 路由是否接收到ADC设置参数应答
@@ -28,35 +26,6 @@ void OnRoutReset(m_oRoutStruct* pRout)
 	pRout->m_bADCSetRout = true;
 	// 该路由方向上仪器的个数
 	pRout->m_uiInstrumentNum = 0;
-}
-// 更新路由对象的路由时间
-void UpdateRoutTime(unsigned int uiRoutIP, hash_map<unsigned int, m_oRoutStruct*>* pMap)
-{
-	if (pMap == NULL)
-	{
-		return;
-	}
-	m_oRoutStruct* pRout = NULL;
-	unsigned int uiIP = 0;
-	uiIP = uiRoutIP;
-	while(1)
-	{
-		if (TRUE == IfIndexExistInRoutMap(uiIP, pMap))
-		{
-			pRout = GetRout(uiIP, pMap);
-			// 路由时刻
-			pRout->m_uiRoutTime = GetTickCount();
-			if (pRout->m_uiRoutIP == 0)
-			{
-				break;
-			}
-			uiIP = pRout->m_pHead->m_uiRoutIP;
-		}
-		else
-		{
-			break;
-		}
-	}
 }
 // 路由地址是否已加入索引表
 BOOL IfIndexExistInRoutMap(unsigned int uiRoutIP, 

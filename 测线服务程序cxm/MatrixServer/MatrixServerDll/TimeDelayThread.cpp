@@ -67,7 +67,7 @@ void PrepareTailTimeFrame(m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
 	pInstrument->m_iTailTimeQueryCount++;
 	do 
 	{
-		pInstrument = GetNextInstrument(pInstrument, pConstVar);
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -90,18 +90,14 @@ void ProcTailTimeFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDela
 	// 准备工作
 	PrepareTailTimeFrame(pRout, pTimeDelayThread->m_pThread->m_pConstVar);
 	// 按IP查询路由头仪器的尾包时刻
-	MakeInstrumentTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
+	MakeInstrTailTimeQueryFramebyIP(pTimeDelayThread->m_pTailTimeFrame,
 		pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pHead->m_uiIP);
-	SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
-		pTimeDelayThread->m_pThread->m_pConstVar);
 	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送尾包时刻查询帧"), pRout->m_pHead->m_uiIP);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
 	// 广播查询路由仪器的尾包时刻
-	MakeInstrumentTailTimeQueryFramebyBroadCast(pTimeDelayThread->m_pTailTimeFrame,
+	MakeInstrTailTimeQueryFramebyBroadCast(pTimeDelayThread->m_pTailTimeFrame,
 		pTimeDelayThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiBroadCastPort);
-	SendInstrumentTailTimeQueryFrame(pTimeDelayThread->m_pTailTimeFrame,
-		pTimeDelayThread->m_pThread->m_pConstVar);
 	str.Format(_T("向广播端口 = 0x%x 的仪器广播发送尾包时刻查询帧"), pRout->m_pTail->m_uiBroadCastPort);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
@@ -153,8 +149,8 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 		return;
 	}
 	pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
-	// 更新路由对象的路由时间
-	UpdateRoutTime(pInstrument->m_uiRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap);
+	// 更新仪器的存活时间
+	UpdateInstrActiveTime(pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
 	// @@@@@@@暂不判断尾包时刻过期的情况
 	// 接收到尾包时刻查询应答标志位设为true
 	pInstrument->m_bTailTimeQueryOK = true;
@@ -233,7 +229,7 @@ void ProcTailTimeReturnFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTi
 				continue;
 			}
 			LeaveCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
-			if (false == ParseInstrumentTailTimeReturnFrame(pTimeDelayThread->m_pTailTimeFrame, 
+			if (false == ParseInstrTailTimeReturnFrame(pTimeDelayThread->m_pTailTimeFrame, 
 				pTimeDelayThread->m_pThread->m_pConstVar))
 			{
 				AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "ParseInstrumentTailTimeReturnFrame", 
@@ -267,7 +263,7 @@ bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDe
 	}
 	do 
 	{
-		pInstrument = GetNextInstrument(pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pTimeDelayThread->m_pThread->m_pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -310,7 +306,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrumentNext = GetNextInstrument(pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
+		pInstrumentNext = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pTimeDelayThread->m_pThread->m_pConstVar);
 		if (pInstrumentNext == NULL)
 		{
 			break;
@@ -389,10 +385,8 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 			// 时统设置次数加一
 			pInstrumentNext->m_iTimeSetCount++;
 			// 生成并发送时统设置帧
-			MakeInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, 
+			MakeInstrDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, 
 				pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext);
-			SendInstrumentDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, 
-				pTimeDelayThread->m_pThread->m_pConstVar);
 			str.Format(_T("发送时统设置帧时统修正高位为 0x%x，时统修正低位为 0x%x，本地时间为 0x%x，网络时间为0x%x"), 
 				pInstrumentNext->m_uiTimeHigh, pInstrumentNext->m_uiTimeLow, 
 				pInstrumentNext->m_uiSystemTime, pInstrumentNext->m_uiNetTime);
@@ -434,8 +428,8 @@ void ProcTimeDelayReturnFrameOne(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		return;
 	}
 	pInstrument = GetInstrumentFromMap(uiSrcIP, &pTimeDelayThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
-	// 更新路由对象的路由时间
-	UpdateRoutTime(pInstrument->m_uiRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap);
+	// 更新仪器的存活时间
+	UpdateInstrActiveTime(pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
 	// 接收到时统设置应答标志位
 	pInstrument->m_bTimeSetOK = true;
 	pInstrument->m_iTimeSetReturnCount++;
@@ -476,7 +470,7 @@ void ProcTimeDelayReturnFrame(m_oTimeDelayThreadStruct* pTimeDelayThread)
 				continue;
 			}
 			LeaveCriticalSection(&pTimeDelayThread->m_pTimeDelayFrame->m_oSecTimeDelayFrame);
-			if (false == ParseInstrumentTimeDelayReturnFrame(pTimeDelayThread->m_pTimeDelayFrame, 
+			if (false == ParseInstrTimeDelayReturnFrame(pTimeDelayThread->m_pTimeDelayFrame, 
 				pTimeDelayThread->m_pThread->m_pConstVar))
 			{
 				AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, 
@@ -537,7 +531,7 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 					}
 					else
 					{
-						str.Format(_T("路由IP = 0x%x"), pRout->m_uiRoutIP);
+						str.Format(_T("路由IP = 0x%x"), uiProcRoutIP);
 						strConv = (CStringA)str;
 						AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "RunTimeDelayThread", 
 							strConv, ErrorType, IDS_ERR_ROUT_NOTEXIT);

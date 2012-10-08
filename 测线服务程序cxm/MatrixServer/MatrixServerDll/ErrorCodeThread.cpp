@@ -55,6 +55,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	}
 	unsigned int uiIPInstrument = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
+	m_oRoutStruct* pRout = NULL;
 	CString str = _T("");
 	CString strOutPut = _T("");
 	CString strDebug = _T("");
@@ -97,9 +98,20 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	}
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
 		&pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
-	// 更新路由对象的路由时间
-	UpdateRoutTime(pInstrument->m_uiRoutIP, &pErrorCodeThread->m_pLineList->m_pRoutList->m_oRoutMap);
-	if (NULL == GetNextInstrument(pInstrument, pErrorCodeThread->m_pThread->m_pConstVar))
+	if (FALSE == GetRoutByRoutIP(pInstrument->m_uiRoutIP, pErrorCodeThread->m_pLineList->m_pRoutList, &pRout))
+	{
+		LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
+		EnterCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
+		GetFrameInfo(pErrorCodeThread->m_pErrorCodeFrame->m_cpRcvFrameData,
+			pErrorCodeThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+		LeaveCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
+		AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, "ProcErrorCodeReturnFrameOne",
+			strFrameData, ErrorType, IDS_ERR_ROUT_NOTEXIT);
+		return;
+	}
+	// 更新仪器的存活时间
+	UpdateInstrActiveTime(pInstrument, pErrorCodeThread->m_pThread->m_pConstVar);
+	if (NULL == GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pErrorCodeThread->m_pThread->m_pConstVar))
 	{
 		LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
 		return;
@@ -348,7 +360,7 @@ void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 				continue;
 			}
 			LeaveCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
-			if (false == ParseInstrumentErrorCodeReturnFrame(pErrorCodeThread->m_pErrorCodeFrame, 
+			if (false == ParseInstrErrorCodeReturnFrame(pErrorCodeThread->m_pErrorCodeFrame, 
 				pErrorCodeThread->m_pThread->m_pConstVar))
 			{
 				AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, 
@@ -384,7 +396,7 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			pInstrument = pRout->m_pHead;
 			do 
 			{
-				pInstrument = GetNextInstrument(pInstrument, pErrorCodeThread->m_pThread->m_pConstVar);
+				pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pErrorCodeThread->m_pThread->m_pConstVar);
 				if (pInstrument == NULL)
 				{
 					break;
@@ -392,10 +404,8 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 				pInstrument->m_uiErrorCodeQueryNum++;
 			} while (pInstrument != pRout->m_pTail);
 			// 广播发送误码查询帧
-			MakeInstrumentErrorCodeQueryFrame(pErrorCodeThread->m_pErrorCodeFrame,
+			MakeInstrErrorCodeQueryFrame(pErrorCodeThread->m_pErrorCodeFrame,
 				pErrorCodeThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiBroadCastPort);
-			SendInstrumentErrorCodeFrame(pErrorCodeThread->m_pErrorCodeFrame,
-				pErrorCodeThread->m_pThread->m_pConstVar);
 			str.Format(_T("向路由IP = 0x%x广播发送误码查询帧"), pRout->m_uiRoutIP);
 			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);

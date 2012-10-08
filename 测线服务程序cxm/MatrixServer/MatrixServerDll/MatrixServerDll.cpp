@@ -186,7 +186,7 @@ void OnResetADCSetLableByRout(m_oRoutStruct* pRout, int iOpt, m_oConstVarStruct*
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrument = GetNextInstrument(pInstrument, pConstVar);
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -537,23 +537,23 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 	// 创建仪器通讯信息结构体
 	pEnv->m_pInstrumentCommInfo = OnCreateInstrumentCommInfo();
 	// 创建心跳帧信息结构体
-	pEnv->m_pHeartBeatFrame = OnCreateInstrumentHeartBeat();
+	pEnv->m_pHeartBeatFrame = OnCreateInstrHeartBeat();
 	// 创建首包帧信息结构体
-	pEnv->m_pHeadFrame = OnCreateInstrumentHeadFrame();
+	pEnv->m_pHeadFrame = OnCreateInstrHeadFrame();
 	// 创建IP地址设置帧信息结构体
-	pEnv->m_pIPSetFrame = OnCreateInstrumentIPSetFrame();
+	pEnv->m_pIPSetFrame = OnCreateInstrIPSetFrame();
 	// 创建尾包帧信息结构体
-	pEnv->m_pTailFrame = OnCreateInstrumentTailFrame();
+	pEnv->m_pTailFrame = OnCreateInstrTailFrame();
 	// 创建尾包时刻帧信息结构体
-	pEnv->m_pTailTimeFrame = OnCreateInstrumentTailTimeFrame();
+	pEnv->m_pTailTimeFrame = OnCreateInstrTailTimeFrame();
 	// 创建时统设置帧信息结构体
-	pEnv->m_pTimeDelayFrame = OnCreateInstrumentTimeDelayFrame();
+	pEnv->m_pTimeDelayFrame = OnCreateInstrTimeDelayFrame();
 	// 创建ADC参数设置帧信息结构体
-	pEnv->m_pADCSetFrame = OnCreateInstrumentADCSetFrame();
+	pEnv->m_pADCSetFrame = OnCreateInstrADCSetFrame();
 	// 创建误码查询帧信息结构体
-	pEnv->m_pErrorCodeFrame = OnCreateInstrumentErrorCodeFrame();
+	pEnv->m_pErrorCodeFrame = OnCreateInstrErrorCodeFrame();
 	// 创建ADC数据帧信息结构体
-	pEnv->m_pADCDataFrame = OnCreateInstrumentADCDataFrame();
+	pEnv->m_pADCDataFrame = OnCreateInstrADCDataFrame();
 	// 创建测线队列结构体
 	pEnv->m_pLineList = OnCreateLineList();
 	// 创建数据存储缓冲区结构体
@@ -795,23 +795,23 @@ void OnInit(m_oEnvironmentStruct* pEnv)
 	OnInit_ADCDataSaveThread(pEnv);
 
 	// 初始化心跳
-	OnInitInstrumentHeartBeat(pEnv->m_pHeartBeatFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	OnInitInstrHeartBeat(pEnv->m_pHeartBeatFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化首包
-	OnInitInstrumentHeadFrame(pEnv->m_pHeadFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	OnInitInstrHeadFrame(pEnv->m_pHeadFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化IP地址设置
-	OnInitInstrumentIPSetFrame(pEnv->m_pIPSetFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	OnInitInstrIPSetFrame(pEnv->m_pIPSetFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化尾包
-	OnInitInstrumentTailFrame(pEnv->m_pTailFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	OnInitInstrTailFrame(pEnv->m_pTailFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化尾包时刻
-	OnInitInstrumentTailTimeFrame(pEnv->m_pTailTimeFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	OnInitInstrTailTimeFrame(pEnv->m_pTailTimeFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化时统设置
-	OnInitInstrumentTimeDelayFrame(pEnv->m_pTimeDelayFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	OnInitInstrTimeDelayFrame(pEnv->m_pTimeDelayFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化ADC参数设置
-	OnInitInstrumentADCSetFrame(pEnv->m_pADCSetFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	OnInitInstrADCSetFrame(pEnv->m_pADCSetFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化误码查询
-	OnInitInstrumentErrorCodeFrame(pEnv->m_pErrorCodeFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	OnInitInstrErrorCodeFrame(pEnv->m_pErrorCodeFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化ADC数据帧
-	OnInitInstrumentADCDataFrame(pEnv->m_pADCDataFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
+	OnInitInstrADCDataFrame(pEnv->m_pADCDataFrame, pEnv->m_pInstrumentCommInfo, pEnv->m_pConstVar);
 	// 初始化测线队列结构体
 	OnInitLineList(pEnv->m_pLineList, pEnv->m_pConstVar);
 	// 初始化数据存储缓冲区结构体
@@ -964,23 +964,23 @@ void OnClose(m_oEnvironmentStruct* pEnv)
 	// 释放常量资源
 	OnCloseConstVar(pEnv->m_pConstVar);
 	// 释放心跳资源
-	OnCloseInstrumentHeartBeat(pEnv->m_pHeartBeatFrame);
+	OnCloseInstrHeartBeat(pEnv->m_pHeartBeatFrame);
 	// 释放首包资源
-	OnCloseInstrumentHeadFrame(pEnv->m_pHeadFrame);
+	OnCloseInstrHeadFrame(pEnv->m_pHeadFrame);
 	// 释放IP地址设置资源
-	OnCloseInstrumentIPSetFrame(pEnv->m_pIPSetFrame);
+	OnCloseInstrIPSetFrame(pEnv->m_pIPSetFrame);
 	// 释放尾包资源
-	OnCloseInstrumentTailFrame(pEnv->m_pTailFrame);
+	OnCloseInstrTailFrame(pEnv->m_pTailFrame);
 	// 释放尾包时刻资源
-	OnCloseInstrumentTailTimeFrame(pEnv->m_pTailTimeFrame);
+	OnCloseInstrTailTimeFrame(pEnv->m_pTailTimeFrame);
 	// 释放时统设置资源
-	OnCloseInstrumentTimeDelayFrame(pEnv->m_pTimeDelayFrame);
+	OnCloseInstrTimeDelayFrame(pEnv->m_pTimeDelayFrame);
 	// 释放ADC参数设置资源
-	OnCloseInstrumentADCSetFrame(pEnv->m_pADCSetFrame);
+	OnCloseInstrADCSetFrame(pEnv->m_pADCSetFrame);
 	// 释放误码查询资源
-	OnCloseInstrumentErrorCodeFrame(pEnv->m_pErrorCodeFrame);
+	OnCloseInstrErrorCodeFrame(pEnv->m_pErrorCodeFrame);
 	// 释放ADC数据帧资源
-	OnCloseInstrumentADCDataFrame(pEnv->m_pADCDataFrame);
+	OnCloseInstrADCDataFrame(pEnv->m_pADCDataFrame);
 	// 释放测线队列资源
 	OnCloseLineList(pEnv->m_pLineList);
 	// 关闭施工数据文件
@@ -1192,23 +1192,23 @@ void OnFreeInstance(m_oEnvironmentStruct* pEnv)
 	// 释放XML文件导入的通讯信息设置结构体资源
 	OnFreeInstrumentCommInfo(pEnv->m_pInstrumentCommInfo);
 	// 释放心跳帧结构体资源
-	OnFreeInstrumentHeartBeat(pEnv->m_pHeartBeatFrame);
+	OnFreeInstrHeartBeat(pEnv->m_pHeartBeatFrame);
 	// 释放首包帧结构体资源
-	OnFreeInstrumentHeadFrame(pEnv->m_pHeadFrame);
+	OnFreeInstrHeadFrame(pEnv->m_pHeadFrame);
 	// 释放IP地址设置帧结构体资源
-	OnFreeInstrumentIPSetFrame(pEnv->m_pIPSetFrame);
+	OnFreeInstrIPSetFrame(pEnv->m_pIPSetFrame);
 	// 释放尾包帧结构体资源
-	OnFreeInstrumentTailFrame(pEnv->m_pTailFrame);
+	OnFreeInstrTailFrame(pEnv->m_pTailFrame);
 	// 释放尾包时刻帧结构体资源
-	OnFreeInstrumentTailTimeFrame(pEnv->m_pTailTimeFrame);
+	OnFreeInstrTailTimeFrame(pEnv->m_pTailTimeFrame);
 	// 释放时统设置帧结构体资源
-	OnFreeInstrumentTimeDelayFrame(pEnv->m_pTimeDelayFrame);
+	OnFreeInstrTimeDelayFrame(pEnv->m_pTimeDelayFrame);
 	// 释放ADC参数设置帧结构体资源
-	OnFreeInstrumentADCSetFrame(pEnv->m_pADCSetFrame);
+	OnFreeInstrADCSetFrame(pEnv->m_pADCSetFrame);
 	// 释放误码帧结构体资源
-	OnFreeInstrumentErrorCodeFrame(pEnv->m_pErrorCodeFrame);
+	OnFreeInstrErrorCodeFrame(pEnv->m_pErrorCodeFrame);
 	// 释放ADC数据帧结构体资源
-	OnFreeInstrumentADCDataFrame(pEnv->m_pADCDataFrame);
+	OnFreeInstrADCDataFrame(pEnv->m_pADCDataFrame);
 	// 释放测线队列结构体资源
 	OnFreeLineList(pEnv->m_pLineList);
 	// 释放数据存储缓冲区结构体

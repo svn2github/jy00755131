@@ -10,6 +10,7 @@ m_oMonitorThreadStruct* OnCreateMonitorThread(void)
 	pMonitorThread->m_pTimeDelayThread = NULL;
 	pMonitorThread->m_pADCSetThread = NULL;
 	pMonitorThread->m_pErrorCodeThread = NULL;
+	pMonitorThread->m_pIPSetFrame = NULL;
 	pMonitorThread->m_pLineList = NULL;
 	InitializeCriticalSection(&pMonitorThread->m_oSecMonitorThread);
 	return pMonitorThread;
@@ -65,7 +66,7 @@ void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout,
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrument = GetNextInstrument(pInstrument, pConstVar);
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -281,7 +282,7 @@ void GetADCTaskQueueByRout(bool bADCStartSample, bool bADCStopSample, m_oLineLis
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrument = GetNextInstrument(pInstrument, pConstVar);
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -363,7 +364,7 @@ void GetADCTaskQueueByRout(bool bADCStartSample, bool bADCStopSample, m_oLineLis
 		pInstrument = pRout->m_pHead;
 		do 
 		{
-			pInstrument = GetNextInstrument(pInstrument, pConstVar);
+			pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pConstVar);
 			if (pInstrument == NULL)
 			{
 				break;
@@ -464,35 +465,39 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 	string strConv = "";
 	unsigned int uiRoutIP = 0;
 	m_oRoutStruct* pRoutDelete = NULL;
+	m_oInstrumentStruct* pInstrument = NULL;
+	m_oInstrumentStruct* pInstrumentNext = NULL;
 	EnterCriticalSection(&pMonitorThread->m_pLineList->m_oSecLineList);
 	// 删除过期仪器，将过期路由加入路由删除索引表
 	for(iter = pMonitorThread->m_pLineList->m_pRoutList->m_oRoutMap.begin();
 		iter != pMonitorThread->m_pLineList->m_pRoutList->m_oRoutMap.end(); iter++)
 	{
-		if ((uiTimeNow > (iter->second->m_uiRoutTime + pMonitorThread->m_pThread->m_pConstVar->m_iMonitorStableTime))
-			&& (iter->second->m_pTail != NULL))
+		if (iter->second->m_pTail == NULL)
 		{
-			str.Format(_T("路由IP = 0x%x的路由时间过期，删除该路由方向上的仪器"), iter->second->m_uiRoutIP);
-			strConv = (CStringA)str;
-			AddMsgToLogOutPutList(pMonitorThread->m_pThread->m_pLogOutPut, "ProcMonitor", strConv);
-			// 如果路由尾仪器为LCI则表明要删除的是LCI本身
-			if (iter->second->m_pTail->m_iInstrumentType == pMonitorThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
-			{
-				// 回收一个仪器
-				if (iter->second->m_olsRoutInstrument.size() > 0)
-				{
-					iter->second->m_olsRoutInstrument.pop_back();
-				}
-				FreeInstrumentFromMap(iter->second->m_pHead, pMonitorThread->m_pLineList, 
-					pMonitorThread->m_pThread->m_pConstVar);
-				iter->second->m_uiInstrumentNum = 0;
-			}
-			else
-			{
-				DeleteInstrumentAlongRout(iter->second->m_pHead, iter->second, 
-					pMonitorThread->m_pLineList, pMonitorThread->m_pThread->m_pConstVar);
-			}
+			continue;
 		}
+		pInstrument = iter->second->m_pHead;
+		do 
+		{
+			pInstrumentNext = GetNextInstrAlongRout(pInstrument, iter->second->m_iRoutDirection, pMonitorThread->m_pThread->m_pConstVar);
+			// 判断尾包计数器达到设定值则删除相同路由之后的仪器
+			if (pInstrumentNext->m_iTailFrameCount > pMonitorThread->m_pThread->m_pConstVar->m_iTailFrameStableTimes)
+			{
+				DeleteInstrumentAlongRout(pInstrument, iter->second, 
+					pMonitorThread->m_pLineList, pMonitorThread->m_pThread->m_pConstVar);
+				break;
+			}
+			if (uiTimeNow > (pInstrumentNext->m_uiActiveTime + pMonitorThread->m_pThread->m_pConstVar->m_iMonitorStableTime))
+			{
+				// 生成IP地址查询帧
+				MakeInstrIPQueryFrame(pMonitorThread->m_pIPSetFrame, 
+					pMonitorThread->m_pThread->m_pConstVar, pInstrumentNext->m_uiIP);
+				// 尾包计数器加一
+				pInstrumentNext->m_iTailFrameCount++;
+				break;
+			}
+			pInstrument = pInstrumentNext;
+		} while (pInstrument != iter->second->m_pTail);
 	}
 	// 删除路由删除索引表中的仪器
 	while(1)
@@ -538,7 +543,7 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 	pInstrument = pRout->m_pHead;
 	do 
 	{
-		pInstrument = GetNextInstrument(pInstrument, pTimeDelayThread->m_pThread->m_pConstVar);
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pTimeDelayThread->m_pThread->m_pConstVar);
 		if (pInstrument == NULL)
 		{
 			break;
@@ -853,6 +858,7 @@ bool OnInit_MonitorThread(m_oEnvironmentStruct* pEnv)
 	pEnv->m_pMonitorThread->m_pTimeDelayThread = pEnv->m_pTimeDelayThread;
 	pEnv->m_pMonitorThread->m_pADCSetThread = pEnv->m_pADCSetThread;
 	pEnv->m_pMonitorThread->m_pErrorCodeThread = pEnv->m_pErrorCodeThread;
+	pEnv->m_pMonitorThread->m_pIPSetFrame = pEnv->m_pIPSetFrame;
 	return OnInitMonitorThread(pEnv->m_pMonitorThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
 }
 // 关闭路由监视线程

@@ -2,7 +2,7 @@
 #include "MatrixServerDll.h"
 
 // 创建IP地址设置帧信息结构体
-m_oIPSetFrameStruct* OnCreateInstrumentIPSetFrame(void)
+m_oIPSetFrameStruct* OnCreateInstrIPSetFrame(void)
 {
 	m_oIPSetFrameStruct* pIPSetFrame = NULL;
 	pIPSetFrame = new m_oIPSetFrameStruct;
@@ -17,7 +17,7 @@ m_oIPSetFrameStruct* OnCreateInstrumentIPSetFrame(void)
 	return pIPSetFrame;
 }
 // 初始化IP地址设置
-void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
+void OnInitInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -56,7 +56,7 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(pIPSetFrame->m_pCommandStructSet);
+	ResetInstrFramePacket(pIPSetFrame->m_pCommandStructSet);
 	// 清空发送帧缓冲区
 	if (pIPSetFrame->m_cpSndFrameData != NULL)
 	{
@@ -84,7 +84,7 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 		pIPSetFrame->m_pCommandStructReturn = NULL;
 	}
 	pIPSetFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
-	ResetInstrumentFramePacket(pIPSetFrame->m_pCommandStructReturn);
+	ResetInstrFramePacket(pIPSetFrame->m_pCommandStructReturn);
 	// 清空接收帧缓冲区
 	if (pIPSetFrame->m_cpRcvFrameData != NULL)
 	{
@@ -96,7 +96,7 @@ void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
 // 关闭IP地址设置帧信息结构体
-void OnCloseInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
+void OnCloseInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
 {
 	if (pIPSetFrame == NULL)
 	{
@@ -131,7 +131,7 @@ void OnCloseInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }
 // 释放IP地址设置帧信息结构体
-void OnFreeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
+void OnFreeInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
 {
 	if (pIPSetFrame == NULL)
 	{
@@ -150,10 +150,10 @@ void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame, m_oLogOutP
 	}
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	// 创建套接字
-	pIPSetFrame->m_oIPSetFrameSocket = CreateInstrumentSocket(pIPSetFrame->m_pCommandStructSet->m_usReturnPort + pIPSetFrame->m_usPortMove, 
+	pIPSetFrame->m_oIPSetFrameSocket = CreateInstrSocket(pIPSetFrame->m_pCommandStructSet->m_usReturnPort + pIPSetFrame->m_usPortMove, 
 		pIPSetFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
-	SetInstrumentSocketBroadCast(pIPSetFrame->m_oIPSetFrameSocket, pLogOutPut);
+	SetInstrSocketBroadCast(pIPSetFrame->m_oIPSetFrameSocket, pLogOutPut);
 	// 设置发送缓冲区
 	SetSndBufferSize(pIPSetFrame->m_oIPSetFrameSocket, pIPSetFrame->m_uiSndBufferSize, pLogOutPut);
 	// 设置接收缓冲区大小
@@ -162,7 +162,7 @@ void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame, m_oLogOutP
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetIPSetFrameSocket", "创建并设置IP地址设置端口！");
 }
 // 解析IP地址设置应答帧
-bool ParseInstrumentIPSetReturnFrame(m_oIPSetFrameStruct* pIPSetFrame, 
+bool ParseInstrIPSetReturnFrame(m_oIPSetFrameStruct* pIPSetFrame, 
 	m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -177,13 +177,13 @@ bool ParseInstrumentIPSetReturnFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	}
 	bool bReturn = false;
 	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
-	bReturn = ParseInstrumentFrame(pIPSetFrame->m_pCommandStructReturn, 
+	bReturn = ParseInstrFrame(pIPSetFrame->m_pCommandStructReturn, 
 		pIPSetFrame->m_cpRcvFrameData, pConstVar);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	return bReturn;
 }
 // 生成IP地址查询帧
-void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame, 
+void MakeInstrIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP)
 {
 	if (pConstVar == NULL)
@@ -209,8 +209,11 @@ void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	usPos ++;
 	// 查询命令字个数
 	pIPSetFrame->m_usCommandWordNum = usPos;
-	MakeInstrumentFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_cpSndFrameData, 
+	MakeInstrFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_cpSndFrameData, 
 		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
+	SendFrame(pIPSetFrame->m_oIPSetFrameSocket, pIPSetFrame->m_cpSndFrameData, 
+		pConstVar->m_iSndFrameSize, pIPSetFrame->m_pCommandStructSet->m_usAimPort,
+		pIPSetFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	str.Format(_T("向仪器IP地址 = 0x%x 的仪器发送IP地址查询帧"), uiInstrumentIP);
 	strConv = (CStringA)str;
@@ -249,14 +252,16 @@ bool OpenLAUXRoutPower(int iLineIndex, int iPointIndex, unsigned char ucLAUXRout
 	usPos ++;
 	// 命令字个数
 	pEnv->m_pIPSetFrame->m_usCommandWordNum = usPos;
-	MakeInstrumentFrame(pEnv->m_pIPSetFrame->m_pCommandStructSet, pEnv->m_pConstVar, pEnv->m_pIPSetFrame->m_cpSndFrameData, 
+	MakeInstrFrame(pEnv->m_pIPSetFrame->m_pCommandStructSet, pEnv->m_pConstVar, pEnv->m_pIPSetFrame->m_cpSndFrameData, 
 		pEnv->m_pIPSetFrame->m_cpCommandWord, pEnv->m_pIPSetFrame->m_usCommandWordNum);
-	SendInstrumentIPSetFrame(pEnv->m_pIPSetFrame, pEnv->m_pConstVar);
+	SendFrame(pEnv->m_pIPSetFrame->m_oIPSetFrameSocket, pEnv->m_pIPSetFrame->m_cpSndFrameData, 
+		pEnv->m_pConstVar->m_iSndFrameSize, pEnv->m_pIPSetFrame->m_pCommandStructSet->m_usAimPort,
+		pEnv->m_pIPSetFrame->m_pCommandStructSet->m_uiAimIP, pEnv->m_pConstVar->m_pLogOutPut);
 	LeaveCriticalSection(&pEnv->m_pIPSetFrame->m_oSecIPSetFrame);
 	return true;
 }
 // 生成IP地址设置帧
-void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, 
+void MakeInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, 
 	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument)
 {
 	if (pConstVar == NULL)
@@ -342,30 +347,14 @@ void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	}
 	// IP地址设置命令
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
-	MakeInstrumentFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_cpSndFrameData, 
+	MakeInstrFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_cpSndFrameData, 
 		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
+	SendFrame(pIPSetFrame->m_oIPSetFrameSocket, pIPSetFrame->m_cpSndFrameData, 
+		pConstVar->m_iSndFrameSize, pIPSetFrame->m_pCommandStructSet->m_usAimPort,
+		pIPSetFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
 	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	str.Format(_T("向仪器SN = 0x%x，IP地址 = 0x%x 的仪器发送IP地址设置帧"), 
 		pInstrument->m_uiSN, pInstrument->m_uiIP);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentIPSetFrame", strConv);
-}
-// 发送IP地址设置帧
-void SendInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, m_oConstVarStruct* pConstVar)
-{
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pIPSetFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "SendInstrumentIPSetFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
-	EnterCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
-	SendFrame(pIPSetFrame->m_oIPSetFrameSocket, pIPSetFrame->m_cpSndFrameData, 
-		pConstVar->m_iSndFrameSize, pIPSetFrame->m_pCommandStructSet->m_usAimPort,
-		pIPSetFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
-	LeaveCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 }

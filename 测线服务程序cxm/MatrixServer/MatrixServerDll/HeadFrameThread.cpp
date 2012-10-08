@@ -200,8 +200,8 @@ void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection,
 	}
 	// 路由对象加入路由索引表
 	AddRout(pRout->m_uiRoutIP, pRout,&pRoutList->m_oRoutMap);
-	// 更新路由对象的路由时间
-	UpdateRoutTime(pRout->m_uiRoutIP, &pRoutList->m_oRoutMap);
+	// 更新仪器的存活时间
+	UpdateInstrActiveTime(pInstrument, pConstVar);
 }
 // 处理单个首包帧
 void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
@@ -321,8 +321,8 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		EnterCriticalSection(&pHeadFrameThread->m_pLineList->m_oSecLineList);
 		pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
 	}
-	// 更新路由对象的路由时间
-	UpdateRoutTime(pInstrument->m_uiRoutIP, &pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
+	// 更新仪器的存活时间
+	UpdateInstrActiveTime(pInstrument, pHeadFrameThread->m_pThread->m_pConstVar);
 	if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
 		&pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 	{
@@ -387,7 +387,7 @@ void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThread)
 				continue;
 			}
 			LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
-			if (false == ParseInstrumentHeadFrame(pHeadFrameThread->m_pHeadFrame, 
+			if (false == ParseInstrHeadFrame(pHeadFrameThread->m_pHeadFrame, 
 				pHeadFrameThread->m_pThread->m_pConstVar))
 			{
 				AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ParseInstrumentHeadFrame", 

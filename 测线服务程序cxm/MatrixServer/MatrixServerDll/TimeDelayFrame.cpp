@@ -2,7 +2,7 @@
 #include "MatrixServerDll.h"
 
 // 创建时统设置帧信息结构体
-m_oTimeDelayFrameStruct* OnCreateInstrumentTimeDelayFrame(void)
+m_oTimeDelayFrameStruct* OnCreateInstrTimeDelayFrame(void)
 {
 	m_oTimeDelayFrameStruct* pTimeDelayFrame = NULL;
 	pTimeDelayFrame = new m_oTimeDelayFrameStruct;
@@ -17,7 +17,7 @@ m_oTimeDelayFrameStruct* OnCreateInstrumentTimeDelayFrame(void)
 	return pTimeDelayFrame;
 }
 // 初始化时统设置帧
-void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
+void OnInitInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -56,7 +56,7 @@ void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 	pTimeDelayFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(pTimeDelayFrame->m_pCommandStructSet);
+	ResetInstrFramePacket(pTimeDelayFrame->m_pCommandStructSet);
 	// 清空发送帧缓冲区
 	if (pTimeDelayFrame->m_cpSndFrameData != NULL)
 	{
@@ -85,7 +85,7 @@ void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 		pTimeDelayFrame->m_pCommandStructReturn = NULL;
 	}
 	pTimeDelayFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
-	ResetInstrumentFramePacket(pTimeDelayFrame->m_pCommandStructReturn);
+	ResetInstrFramePacket(pTimeDelayFrame->m_pCommandStructReturn);
 	// 清空接收帧缓冲区
 	if (pTimeDelayFrame->m_cpRcvFrameData != NULL)
 	{
@@ -98,7 +98,7 @@ void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 }
 // 关闭时统设置帧信息结构体
-void OnCloseInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
+void OnCloseInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 {
 	if (pTimeDelayFrame == NULL)
 	{
@@ -133,7 +133,7 @@ void OnCloseInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 }
 // 释放时统设置帧信息结构体
-void OnFreeInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
+void OnFreeInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 {
 	if (pTimeDelayFrame == NULL)
 	{
@@ -152,10 +152,10 @@ void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStruct* pTimeDelayFrame
 	}
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	// 创建套接字
-	pTimeDelayFrame->m_oTimeDelayFrameSocket = CreateInstrumentSocket(pTimeDelayFrame->m_pCommandStructSet->m_usReturnPort + pTimeDelayFrame->m_usPortMove, 
+	pTimeDelayFrame->m_oTimeDelayFrameSocket = CreateInstrSocket(pTimeDelayFrame->m_pCommandStructSet->m_usReturnPort + pTimeDelayFrame->m_usPortMove, 
 		pTimeDelayFrame->m_pCommandStructSet->m_uiSrcIP, pLogOutPut);
 	// 设置为广播端口
-	SetInstrumentSocketBroadCast(pTimeDelayFrame->m_oTimeDelayFrameSocket, pLogOutPut);
+	SetInstrSocketBroadCast(pTimeDelayFrame->m_oTimeDelayFrameSocket, pLogOutPut);
 	// 设置发送缓冲区
 	SetSndBufferSize(pTimeDelayFrame->m_oTimeDelayFrameSocket, 
 		pTimeDelayFrame->m_uiSndBufferSize, pLogOutPut);
@@ -166,7 +166,7 @@ void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStruct* pTimeDelayFrame
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetTimeDelayFrameSocket", "创建并设置时统设置帧端口！");
 }
 // 解析时统设置应答帧
-bool ParseInstrumentTimeDelayReturnFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
+bool ParseInstrTimeDelayReturnFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
 	m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -181,13 +181,13 @@ bool ParseInstrumentTimeDelayReturnFrame(m_oTimeDelayFrameStruct* pTimeDelayFram
 	}
 	bool bReturn = false;
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
-	bReturn = ParseInstrumentFrame(pTimeDelayFrame->m_pCommandStructReturn, 
+	bReturn = ParseInstrFrame(pTimeDelayFrame->m_pCommandStructReturn, 
 		pTimeDelayFrame->m_cpRcvFrameData, pConstVar);
 	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	return bReturn;
 }
 // 生成时统设置帧
-void MakeInstrumentDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
+void MakeInstrDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
 	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument)
 {
 	if (pConstVar == NULL)
@@ -222,25 +222,8 @@ void MakeInstrumentDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	usPos ++;
 	// 设置命令字个数
 	pTimeDelayFrame->m_usCommandWordNum = usPos;
-	MakeInstrumentFrame(pTimeDelayFrame->m_pCommandStructSet, pConstVar, pTimeDelayFrame->m_cpSndFrameData, 
+	MakeInstrFrame(pTimeDelayFrame->m_pCommandStructSet, pConstVar, pTimeDelayFrame->m_cpSndFrameData, 
 		pTimeDelayFrame->m_cpCommandWord, pTimeDelayFrame->m_usCommandWordNum);
-	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
-}
-// 发送时统设置帧
-void SendInstrumentDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
-	m_oConstVarStruct* pConstVar)
-{
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pTimeDelayFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "SendInstrumentDelayTimeFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
-	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	SendFrame(pTimeDelayFrame->m_oTimeDelayFrameSocket, pTimeDelayFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pTimeDelayFrame->m_pCommandStructSet->m_usAimPort, 
 		pTimeDelayFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);

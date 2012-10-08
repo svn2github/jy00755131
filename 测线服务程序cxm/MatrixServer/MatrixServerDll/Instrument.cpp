@@ -388,7 +388,7 @@ bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 * 根据链接方向，得到连接的下一个仪器
 * @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
 */
-m_oInstrumentStruct* GetNextInstrument(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
+m_oInstrumentStruct* GetNextInstrAlongRout(m_oInstrumentStruct* pInstrument, int iRoutDirection, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -400,26 +400,21 @@ m_oInstrumentStruct* GetNextInstrument(m_oInstrumentStruct* pInstrument, m_oCons
 			ErrorType, IDS_ERR_PTRISNULL);
 		return NULL;
 	}
-	if ((pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLAUX)
-		|| (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLCI))
-	{
-		return NULL;
-	}
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	// 判断方向
-	if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionTop)
+	if (iRoutDirection == pConstVar->m_iDirectionTop)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentTop;
 	}
-	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionDown)
+	else if (iRoutDirection == pConstVar->m_iDirectionDown)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentDown;
 	}
-	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionLeft)
+	else if (iRoutDirection == pConstVar->m_iDirectionLeft)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentLeft;
 	}
-	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionRight)
+	else if (iRoutDirection == pConstVar->m_iDirectionRight)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentRight;
 	}
@@ -440,7 +435,7 @@ m_oInstrumentStruct* GetNextInstrument(m_oInstrumentStruct* pInstrument, m_oCons
 * 根据链接方向，得到连接的前一个仪器
 * @return CInstrument* 仪器指针 NLLL：连接的前一个仪器不存在
 */
-m_oInstrumentStruct* GetPreviousInstrument(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
+m_oInstrumentStruct* GetPreviousInstr(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
 	{
@@ -450,11 +445,6 @@ m_oInstrumentStruct* GetPreviousInstrument(m_oInstrumentStruct* pInstrument, m_o
 	{
 		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetPreviousInstrument", "",
 			ErrorType, IDS_ERR_PTRISNULL);
-		return NULL;
-	}
-	if ((pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLAUX)
-		|| (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLCI))
-	{
 		return NULL;
 	}
 	m_oInstrumentStruct* pInstrumentPrevious = NULL;
@@ -477,7 +467,7 @@ m_oInstrumentStruct* GetPreviousInstrument(m_oInstrumentStruct* pInstrument, m_o
 	}
 	else
 	{
-		pInstrumentPrevious = pInstrument;
+		return NULL;
 	}
 	if (pInstrumentPrevious != NULL)
 	{
@@ -501,6 +491,7 @@ void UpdateInstrActiveTime(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* 
 	do 
 	{
 		pInstrumentPrevious->m_uiActiveTime = uiActiveTime;
-		pInstrumentPrevious = GetPreviousInstrument(pInstrument, pConstVar);
+		pInstrumentPrevious->m_iTailFrameCount = 0;
+		pInstrumentPrevious = GetPreviousInstr(pInstrumentPrevious, pConstVar);
 	} while (pInstrumentPrevious != NULL);
 }

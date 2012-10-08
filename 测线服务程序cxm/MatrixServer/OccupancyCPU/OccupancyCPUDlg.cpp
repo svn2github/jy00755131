@@ -110,7 +110,7 @@ void COccupancyCPUDlg::OnBnClickedButtonStart()
 		return;
 	}
 	m_pThreadArray = new CThread[m_uiThreadNum];
-	for (int i=0; i<m_uiThreadNum; i++)
+	for (unsigned int i=0; i<m_uiThreadNum; i++)
 	{
 		m_pThreadArray[i].CreateThread();
 	}
@@ -122,7 +122,7 @@ void COccupancyCPUDlg::OnBnClickedButtonStop()
 	// TODO: 在此添加控件通知处理程序代码
 	if (m_pThreadArray != NULL)
 	{
-		for (int i=0; i<m_uiThreadNum; i++)
+		for (unsigned int i=0; i<m_uiThreadNum; i++)
 		{
 			m_pThreadArray[i].Close();
 		}

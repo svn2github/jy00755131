@@ -45,33 +45,6 @@ void WaitTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 		}		
 	}
 }
-// 清除与该仪器路由方向相同的之前仪器的尾包计数
-void OnClearSameRoutTailCount(m_oInstrumentStruct* pInstrument, 
-	m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
-{
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pInstrument == NULL) || (pRout == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnClearSameRoutTailCount", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
-	// 下一个仪器指针为空
-	m_oInstrumentStruct* pInstrumentNext = NULL;
-	pInstrumentNext = GetNextInstrument(pRout->m_pHead, pConstVar);
-	while(pInstrument != pInstrumentNext)
-	{
-		if (pInstrumentNext == NULL)
-		{
-			break;
-		}
-		pInstrumentNext->m_iTailFrameCount = 0;
-		pInstrumentNext = GetNextInstrument(pInstrumentNext, pConstVar);
-	}
-}
 // 回收一个路由
 void FreeRoutFromMap(unsigned int uiRoutIP, m_oRoutListStruct* pRoutList)
 {
@@ -156,11 +129,24 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		return;
 	}
 	// 前一个仪器指针为路由尾仪器
-	m_oInstrumentStruct* pInstrumentPrevious = pRout->m_pTail;
+	m_oInstrumentStruct* pInstrumentPrevious = NULL;
 	m_oInstrumentStruct* pInstrumentDelete = NULL;
 	CString str = _T("");
 	EnterCriticalSection(&pLineList->m_oSecLineList);
-	while (pInstrument != pInstrumentPrevious)
+	pInstrumentPrevious = pRout->m_pTail;
+	if (pInstrument == pRout->m_pHead)
+	{
+		// 不是LCI路由
+		if (pRout->m_pHead != pRout->m_pTail)
+		{
+			pRout->m_pTail = NULL;
+		}
+	}
+	else
+	{
+		pRout->m_pTail = pInstrument;
+	}
+	do 
 	{
 		if (pInstrumentPrevious == NULL)
 		{
@@ -168,24 +154,19 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		}
 		pInstrumentDelete = pInstrumentPrevious;
 		// 得到要删除仪器沿着路由方向的前一个仪器的指针
-		pInstrumentPrevious = GetPreviousInstrument(pInstrumentDelete, pConstVar);
-		pRout->m_pTail = pInstrumentPrevious;
-		if (pRout->m_pTail == pRout->m_pHead)
-		{
-			pRout->m_pTail = NULL;
-		}
+		pInstrumentPrevious = GetPreviousInstr(pInstrumentDelete, pConstVar);
 		if (pInstrumentDelete->m_bIPSetOK == true)
 		{
 			pRout->m_uiInstrumentNum--;
 		}
 		// 回收一个仪器
-		FreeInstrumentFromMap(pInstrumentDelete, pLineList, pConstVar);
-		// 回收一个仪器
 		if (pRout->m_olsRoutInstrument.size() > 0)
 		{
 			pRout->m_olsRoutInstrument.pop_back();
 		}
-	}
+		// 回收一个仪器
+		FreeInstrumentFromMap(pInstrumentDelete, pLineList, pConstVar);
+	} while (pInstrument != pInstrumentPrevious);
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 在路由方向上删除该仪器之后的全部仪器
@@ -272,35 +253,15 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 				strFrameData, ErrorType, IDS_ERR_ROUT_CHANGE);
 			return;
 		}
-		// 尾包计数器加一
-		pInstrument->m_iTailFrameCount++;
 		str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包，仪器位置= %d，尾包计数 = %d"), 
 			uiSN, uiRoutIP, pInstrument->m_iPointIndex, uiTailFrameCount);
 		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", strConv);
 		OutputDebugString(str);
-		// 		// 更新尾包仪器的尾包时刻
-		// 		pInstrument->m_uiTailSysTime = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTime;
 		// 在路由索引表中找到该尾包所在的路由
-		// 更新路由对象的路由时间
-		UpdateRoutTime(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
-		if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
-		{
-			// 由路由IP得到路由对象
-			pRout = GetRout(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
-			// 清除与该仪器路由方向相同的之前仪器的尾包计数
-			OnClearSameRoutTailCount(pInstrument, pRout, pTailFrameThread->m_pThread->m_pConstVar);
-			// 判断尾包计数器达到设定值则删除相同路由之后的仪器
-			if (pInstrument->m_iTailFrameCount > pTailFrameThread->m_pThread->m_pConstVar->m_iTailFrameStableTimes)
-			{
-				// 在路由方向上删除该仪器之后的全部仪器
-				DeleteAllInstrumentAlongRout(pInstrument, pRout, pTailFrameThread->m_pLineList, 
-					pTailFrameThread->m_pThread->m_pConstVar, 
-					pTailFrameThread->m_pThread->m_pLogOutPut);
-				pInstrument->m_iTailFrameCount = 0;
-			}
-		}
-		else
+		// 更新仪器的存活时间
+		UpdateInstrActiveTime(pInstrument, pTailFrameThread->m_pThread->m_pConstVar);
+		if (FALSE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 		{
 			LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
 			EnterCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
@@ -346,7 +307,7 @@ void ProcTailFrame(m_oTailFrameThreadStruct* pTailFrameThread)
 				continue;
 			}
 			LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
-			if (false == ParseInstrumentTailFrame(pTailFrameThread->m_pTailFrame, 
+			if (false == ParseInstrTailFrame(pTailFrameThread->m_pTailFrame, 
 				pTailFrameThread->m_pThread->m_pConstVar))
 			{
 				AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, 

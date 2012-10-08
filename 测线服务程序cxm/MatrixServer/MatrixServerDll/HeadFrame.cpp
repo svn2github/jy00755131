@@ -2,7 +2,7 @@
 #include "MatrixServerDll.h"
 
 // 创建首包帧信息结构体
-m_oHeadFrameStruct* OnCreateInstrumentHeadFrame(void)
+m_oHeadFrameStruct* OnCreateInstrHeadFrame(void)
 {
 	m_oHeadFrameStruct* pHeadFrame = NULL;
 	pHeadFrame = new m_oHeadFrameStruct;
@@ -14,7 +14,7 @@ m_oHeadFrameStruct* OnCreateInstrumentHeadFrame(void)
 	return pHeadFrame;
 }
 // 初始化首包
-void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
+void OnInitInstrHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -45,7 +45,7 @@ void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame,
 	// 首包接收端口偏移量
 	pHeadFrame->m_usPortMove = pCommInfo->m_pServerSetupData->m_oXMLParameterSetupData.m_usNetRcvPortMove;
 	// 重置帧内容解析变量
-	ResetInstrumentFramePacket(pHeadFrame->m_pCommandStruct);
+	ResetInstrFramePacket(pHeadFrame->m_pCommandStruct);
 	// 清空接收帧缓冲区
 	if (pHeadFrame->m_cpRcvFrameData != NULL)
 	{
@@ -57,7 +57,7 @@ void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame,
 	LeaveCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 }
 // 关闭首包帧信息结构体
-void OnCloseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame)
+void OnCloseInstrHeadFrame(m_oHeadFrameStruct* pHeadFrame)
 {
 	if (pHeadFrame == NULL)
 	{
@@ -77,7 +77,7 @@ void OnCloseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame)
 	LeaveCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 }
 // 释放首包帧信息结构体
-void OnFreeInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame)
+void OnFreeInstrHeadFrame(m_oHeadFrameStruct* pHeadFrame)
 {
 	if (pHeadFrame == NULL)
 	{
@@ -96,7 +96,7 @@ void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame, m_oLogOutPutS
 	}
 	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	// 创建套接字
-	pHeadFrame->m_oHeadFrameSocket = CreateInstrumentSocket(pHeadFrame->m_pCommandStruct->m_usReturnPort + pHeadFrame->m_usPortMove, 
+	pHeadFrame->m_oHeadFrameSocket = CreateInstrSocket(pHeadFrame->m_pCommandStruct->m_usReturnPort + pHeadFrame->m_usPortMove, 
 		pHeadFrame->m_pCommandStruct->m_uiSrcIP, pLogOutPut);
 	// 设置接收缓冲区
 	SetRcvBufferSize(pHeadFrame->m_oHeadFrameSocket, pHeadFrame->m_uiRcvBufferSize, pLogOutPut);
@@ -104,7 +104,7 @@ void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame, m_oLogOutPutS
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetHeadFrameSocket", "创建并设置首包端口！");
 }
 // 解析首包帧
-bool ParseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
+bool ParseInstrHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
 	m_oConstVarStruct* pConstVar)
 {
 	if (pConstVar == NULL)
@@ -119,7 +119,7 @@ bool ParseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame,
 	}
 	bool bReturn = false;
 	EnterCriticalSection(&pHeadFrame->m_oSecHeadFrame);
-	bReturn = ParseInstrumentFrame(pHeadFrame->m_pCommandStruct, 
+	bReturn = ParseInstrFrame(pHeadFrame->m_pCommandStruct, 
 		pHeadFrame->m_cpRcvFrameData, pConstVar);
 	LeaveCriticalSection(&pHeadFrame->m_oSecHeadFrame);
 	return bReturn;

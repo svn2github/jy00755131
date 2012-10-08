@@ -1143,8 +1143,6 @@ typedef struct Rout_Struct
 	m_oInstrumentStruct* m_pTail;
 	/** 路由仪器队列*/
 	list<m_oInstrumentStruct*> m_olsRoutInstrument;
-	/** 路由时刻*/
-	unsigned int m_uiRoutTime;
 	/** 路由是否为交叉线路由*/
 	bool m_bRoutLaux;
 	/** 路由是否接收到ADC设置参数应答*/
@@ -1514,6 +1512,8 @@ typedef struct MonitorThread_Struct
 	m_oADCSetThreadStruct* m_pADCSetThread;
 	/** 误码查询线程*/
 	m_oErrorCodeThreadStruct* m_pErrorCodeThread;
+	/** IP地址设置帧结构*/
+	m_oIPSetFrameStruct* m_pIPSetFrame;
 }m_oMonitorThreadStruct;
 
 /**
@@ -1656,23 +1656,23 @@ MatrixServerDll_API void ParseCStringToArray(char** pData, int iSize, CString st
 // 判断文件是否存在
 MatrixServerDll_API bool IfFileExist(CString str);
 // 校验帧的同步码
-MatrixServerDll_API bool CheckInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize);
+MatrixServerDll_API bool CheckInstrFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize);
 // 生成帧的同步码
-MatrixServerDll_API bool MakeInstrumentFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize);
+MatrixServerDll_API bool MakeInstrFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize);
 // 重置帧内容解析变量
-MatrixServerDll_API bool ResetInstrumentFramePacket(m_oInstrumentCommandStruct* pCommand);
+MatrixServerDll_API bool ResetInstrFramePacket(m_oInstrumentCommandStruct* pCommand);
 // 解析与设备通讯接收帧内容
-MatrixServerDll_API bool ParseInstrumentFrame(m_oInstrumentCommandStruct* pCommand, 
+MatrixServerDll_API bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand, 
 	char* pFrameData, m_oConstVarStruct* pConstVar);
 // 生成与设备通讯帧
-MatrixServerDll_API bool MakeInstrumentFrame(m_oInstrumentCommandStruct* pCommand, 
+MatrixServerDll_API bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, 
 	m_oConstVarStruct* pConstVar,char* pFrameData, char* pCommandWord = NULL, 
 	unsigned short usCommandWordNum = 0);
 // 创建CSocket接收端口并绑定端口和IP地址
-MatrixServerDll_API SOCKET CreateInstrumentSocket(unsigned short usPort, 
+MatrixServerDll_API SOCKET CreateInstrSocket(unsigned short usPort, 
 	unsigned int uiIP, m_oLogOutPutStruct* pLogOutPut = NULL);
 // 设置广播模式
-MatrixServerDll_API void SetInstrumentSocketBroadCast(SOCKET oSocket, 
+MatrixServerDll_API void SetInstrSocketBroadCast(SOCKET oSocket, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 设置端口接收缓冲区接收帧数量
 MatrixServerDll_API void SetRcvBufferSize(SOCKET oSocket, int iRcvBufferSize, 
@@ -1697,7 +1697,7 @@ MatrixServerDll_API void OnCloseSocket(SOCKET oSocket);
 // 清空接收缓冲区
 MatrixServerDll_API void OnClearSocketRcvBuf(SOCKET oSocket, int iRcvFrameSize);
 // 得到路由方向上仪器个数
-MatrixServerDll_API bool OnGetRoutInstrumentNum(int iLineIndex, int iPointIndex, int iDirection, 
+MatrixServerDll_API bool OnGetRoutInstrNum(int iLineIndex, int iPointIndex, int iDirection, 
 	m_oEnvironmentStruct* pEnv, unsigned int& uiInstrumentNum);
 // 计算测试数据的算术均方根
 MatrixServerDll_API double CalMeanSquare(m_oInstrumentStruct* pInstrument);
@@ -2339,91 +2339,85 @@ MatrixServerDll_API float QueryTestDataLimit(bool bInstrument, string str, m_oLi
 /* 心跳帧                                                               */
 /************************************************************************/
 // 创建心跳帧信息结构体
-MatrixServerDll_API m_oHeartBeatFrameStruct* OnCreateInstrumentHeartBeat(void);
+MatrixServerDll_API m_oHeartBeatFrameStruct* OnCreateInstrHeartBeat(void);
 // 初始化心跳
-MatrixServerDll_API void OnInitInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
+MatrixServerDll_API void OnInitInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar);
 // 关闭心跳帧信息结构体
-MatrixServerDll_API void OnCloseInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame);
+MatrixServerDll_API void OnCloseInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame);
 // 释放心跳帧信息结构体
-MatrixServerDll_API void OnFreeInstrumentHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame);
+MatrixServerDll_API void OnFreeInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame);
 // 创建并设置心跳端口
 MatrixServerDll_API void OnCreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 生成心跳帧
-MatrixServerDll_API void MakeInstrumentHeartBeatFrame(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
-	m_oConstVarStruct* pConstVar);
-// 发送心跳帧
-MatrixServerDll_API void SendInstrumentHeartBeatFrame(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
+MatrixServerDll_API void MakeInstrHeartBeatFrame(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
 	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* 首包帧                                                               */
 /************************************************************************/
 // 创建首包帧信息结构体
-MatrixServerDll_API m_oHeadFrameStruct* OnCreateInstrumentHeadFrame(void);
+MatrixServerDll_API m_oHeadFrameStruct* OnCreateInstrHeadFrame(void);
 // 初始化首包
-MatrixServerDll_API void OnInitInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
+MatrixServerDll_API void OnInitInstrHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar);
 // 关闭首包帧信息结构体
-MatrixServerDll_API void OnCloseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame);
+MatrixServerDll_API void OnCloseInstrHeadFrame(m_oHeadFrameStruct* pHeadFrame);
 // 释放首包帧信息结构体
-MatrixServerDll_API void OnFreeInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame);
+MatrixServerDll_API void OnFreeInstrHeadFrame(m_oHeadFrameStruct* pHeadFrame);
 // 创建并设置首包端口
 MatrixServerDll_API void OnCreateAndSetHeadFrameSocket(m_oHeadFrameStruct* pHeadFrame, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析首包帧
-MatrixServerDll_API bool ParseInstrumentHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
+MatrixServerDll_API bool ParseInstrHeadFrame(m_oHeadFrameStruct* pHeadFrame, 
 	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* IP地址设置帧                                                         */
 /************************************************************************/
 // 创建IP地址设置帧信息结构体
-MatrixServerDll_API m_oIPSetFrameStruct* OnCreateInstrumentIPSetFrame(void);
+MatrixServerDll_API m_oIPSetFrameStruct* OnCreateInstrIPSetFrame(void);
 // 初始化IP地址设置
-MatrixServerDll_API void OnInitInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
+MatrixServerDll_API void OnInitInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar);
 // 关闭IP地址设置帧信息结构体
-MatrixServerDll_API void OnCloseInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame);
+MatrixServerDll_API void OnCloseInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame);
 // 释放IP地址设置帧信息结构体
-MatrixServerDll_API void OnFreeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame);
+MatrixServerDll_API void OnFreeInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame);
 // 创建并设置IP地址设置端口
 MatrixServerDll_API void OnCreateAndSetIPSetFrameSocket(m_oIPSetFrameStruct* pIPSetFrame, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析IP地址设置应答帧
-MatrixServerDll_API bool ParseInstrumentIPSetReturnFrame(m_oIPSetFrameStruct* pIPSetFrame, 
+MatrixServerDll_API bool ParseInstrIPSetReturnFrame(m_oIPSetFrameStruct* pIPSetFrame, 
 	m_oConstVarStruct* pConstVar);
 // 打开交叉站某一路由方向的电源
 MatrixServerDll_API bool OpenLAUXRoutPower(int iLineIndex, int iPointIndex, unsigned char ucLAUXRoutOpenSet, 
 	m_oEnvironmentStruct* pEnv);
 // 生成IP地址查询帧
-MatrixServerDll_API void MakeInstrumentIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame, 
+MatrixServerDll_API void MakeInstrIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP);
 // 生成IP地址设置帧
-MatrixServerDll_API void MakeInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, 
+MatrixServerDll_API void MakeInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, 
 	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument);
-// 发送IP地址设置帧
-MatrixServerDll_API void SendInstrumentIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame, 
-	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* 尾包帧                                                               */
 /************************************************************************/
 // 创建尾包帧信息结构体
-MatrixServerDll_API m_oTailFrameStruct* OnCreateInstrumentTailFrame(void);
+MatrixServerDll_API m_oTailFrameStruct* OnCreateInstrTailFrame(void);
 // 初始化尾包
-MatrixServerDll_API void OnInitInstrumentTailFrame(m_oTailFrameStruct* pTailFrame, 
+MatrixServerDll_API void OnInitInstrTailFrame(m_oTailFrameStruct* pTailFrame, 
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar);
 // 关闭尾包帧信息结构体
-MatrixServerDll_API void OnCloseInstrumentTailFrame(m_oTailFrameStruct* pTailFrame);
+MatrixServerDll_API void OnCloseInstrTailFrame(m_oTailFrameStruct* pTailFrame);
 // 释放尾包帧信息结构体
-MatrixServerDll_API void OnFreeInstrumentTailFrame(m_oTailFrameStruct* pTailFrame);
+MatrixServerDll_API void OnFreeInstrTailFrame(m_oTailFrameStruct* pTailFrame);
 // 创建并设置尾包端口
 MatrixServerDll_API void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTailFrame, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析尾包帧
-MatrixServerDll_API bool ParseInstrumentTailFrame(m_oTailFrameStruct* pTailFrame, 
+MatrixServerDll_API bool ParseInstrTailFrame(m_oTailFrameStruct* pTailFrame, 
 	m_oConstVarStruct* pConstVar);
 
 
@@ -2431,126 +2425,111 @@ MatrixServerDll_API bool ParseInstrumentTailFrame(m_oTailFrameStruct* pTailFrame
 /* 尾包时刻帧                                                           */
 /************************************************************************/
 // 创建尾包时刻帧信息结构体
-MatrixServerDll_API m_oTailTimeFrameStruct* OnCreateInstrumentTailTimeFrame(void);
+MatrixServerDll_API m_oTailTimeFrameStruct* OnCreateInstrTailTimeFrame(void);
 // 初始化尾包时刻帧
-MatrixServerDll_API void OnInitInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
+MatrixServerDll_API void OnInitInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar);
 // 关闭尾包时刻帧信息结构体
-MatrixServerDll_API void OnCloseInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame);
+MatrixServerDll_API void OnCloseInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame);
 // 释放尾包时刻帧信息结构体
-MatrixServerDll_API void OnFreeInstrumentTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame);
+MatrixServerDll_API void OnFreeInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame);
 // 创建并设置尾包时刻端口
 MatrixServerDll_API void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruct* pTailTimeFrame, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析尾包时刻查询帧
-MatrixServerDll_API bool ParseInstrumentTailTimeReturnFrame(m_oTailTimeFrameStruct* pTailTimeFrame, 
+MatrixServerDll_API bool ParseInstrTailTimeReturnFrame(m_oTailTimeFrameStruct* pTailTimeFrame, 
 	m_oConstVarStruct* pConstVar);
 // 按IP地址查询尾包时刻帧
-MatrixServerDll_API void MakeInstrumentTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
+MatrixServerDll_API void MakeInstrTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP);
 // 广播查询尾包时刻帧
-MatrixServerDll_API void MakeInstrumentTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFrame, 
+MatrixServerDll_API void MakeInstrTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiBroadCastPort);
-// 发送尾包时刻查询帧
-MatrixServerDll_API void SendInstrumentTailTimeQueryFrame(m_oTailTimeFrameStruct* pTailTimeFrame, 
-	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* 时统帧                                                               */
 /************************************************************************/
 // 创建时统设置帧信息结构体
-MatrixServerDll_API m_oTimeDelayFrameStruct* OnCreateInstrumentTimeDelayFrame(void);
+MatrixServerDll_API m_oTimeDelayFrameStruct* OnCreateInstrTimeDelayFrame(void);
 // 初始化时统设置帧
-MatrixServerDll_API void OnInitInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
+MatrixServerDll_API void OnInitInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar);
 // 关闭时统设置帧信息结构体
-MatrixServerDll_API void OnCloseInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame);
+MatrixServerDll_API void OnCloseInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame);
 // 释放时统设置帧信息结构体
-MatrixServerDll_API void OnFreeInstrumentTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame);
+MatrixServerDll_API void OnFreeInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame);
 // 创建并设置时统设置端口
 MatrixServerDll_API void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析时统设置应答帧
-MatrixServerDll_API bool ParseInstrumentTimeDelayReturnFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
+MatrixServerDll_API bool ParseInstrTimeDelayReturnFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
 	m_oConstVarStruct* pConstVar);
 // 生成时统设置帧
-MatrixServerDll_API void MakeInstrumentDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
+MatrixServerDll_API void MakeInstrDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
 	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument);
-// 发送时统设置帧
-MatrixServerDll_API void SendInstrumentDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
-	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* ADC参数设置帧                                                        */
 /************************************************************************/
 // 创建ADC参数设置帧信息结构体
-MatrixServerDll_API m_oADCSetFrameStruct* OnCreateInstrumentADCSetFrame(void);
+MatrixServerDll_API m_oADCSetFrameStruct* OnCreateInstrADCSetFrame(void);
 // 初始化ADC参数设置帧
-MatrixServerDll_API void OnInitInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
+MatrixServerDll_API void OnInitInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar);
 // 关闭ADC参数设置帧信息结构体
-MatrixServerDll_API void OnCloseInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame);
+MatrixServerDll_API void OnCloseInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame);
 // 释放ADC参数设置帧信息结构体
-MatrixServerDll_API void OnFreeInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame);
+MatrixServerDll_API void OnFreeInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame);
 // 创建并设置ADC参数设置端口
 MatrixServerDll_API void OnCreateAndSetADCSetFrameSocket(m_oADCSetFrameStruct* pADCSetFrame, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析ADC参数设置应答帧
-MatrixServerDll_API bool ParseInstrumentADCSetReturnFrame(m_oADCSetFrameStruct* pADCSetFrame,
-	m_oConstVarStruct* pConstVar);
-// 发送ADC参数设置帧
-MatrixServerDll_API void SendInstrumentADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame, 
+MatrixServerDll_API bool ParseInstrADCSetReturnFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* 误码查询帧                                                           */
 /************************************************************************/
 // 创建误码查询帧信息结构体
-MatrixServerDll_API m_oErrorCodeFrameStruct* OnCreateInstrumentErrorCodeFrame(void);
+MatrixServerDll_API m_oErrorCodeFrameStruct* OnCreateInstrErrorCodeFrame(void);
 // 初始化误码查询帧
-MatrixServerDll_API void OnInitInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
+MatrixServerDll_API void OnInitInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar);
 // 关闭误码查询帧信息结构体
-MatrixServerDll_API void OnCloseInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame);
+MatrixServerDll_API void OnCloseInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame);
 // 释放误码查询帧信息结构体
-MatrixServerDll_API void OnFreeInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame);
+MatrixServerDll_API void OnFreeInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame);
 // 创建并设置误码查询端口
 MatrixServerDll_API void OnCreateAndSetErrorCodeFrameSocket(m_oErrorCodeFrameStruct* pErrorCodeFrame, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析误码查询应答帧
-MatrixServerDll_API bool ParseInstrumentErrorCodeReturnFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame, 
+MatrixServerDll_API bool ParseInstrErrorCodeReturnFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame, 
 	m_oConstVarStruct* pConstVar);
 // 广播查询误码
-MatrixServerDll_API void MakeInstrumentErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame, 
+MatrixServerDll_API void MakeInstrErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiBroadCastPort);
-// 发送误码查询帧
-MatrixServerDll_API void SendInstrumentErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame, 
-	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* ADC数据帧                                                            */
 /************************************************************************/
 // 创建ADC数据帧信息结构体
-MatrixServerDll_API m_oADCDataFrameStruct* OnCreateInstrumentADCDataFrame(void);
+MatrixServerDll_API m_oADCDataFrameStruct* OnCreateInstrADCDataFrame(void);
 // 初始化ADC数据帧
-MatrixServerDll_API void OnInitInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
+MatrixServerDll_API void OnInitInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar);
 // 关闭ADC数据帧信息结构体
-MatrixServerDll_API void OnCloseInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame);
+MatrixServerDll_API void OnCloseInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame);
 // 释放ADC数据帧信息结构体
-MatrixServerDll_API void OnFreeInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame);
+MatrixServerDll_API void OnFreeInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame);
 // 创建并设置ADC数据帧端口
 MatrixServerDll_API void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, 
 	m_oLogOutPutStruct* pLogOutPut = NULL);
 // 解析ADC数据接收帧
-MatrixServerDll_API bool ParseInstrumentADCDataRecFrame(m_oADCDataFrameStruct* pADCDataFrame, 
+MatrixServerDll_API bool ParseInstrADCDataRecFrame(m_oADCDataFrameStruct* pADCDataFrame, 
 	m_oConstVarStruct* pConstVar);
 // 生成ADC数据查询帧
-MatrixServerDll_API void MakeInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame, 
+MatrixServerDll_API void MakeInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame, 
 	m_oConstVarStruct* pConstVar, unsigned int uiIP, unsigned short usDataPoint);
-// 发送ADC数据查询帧
-MatrixServerDll_API void SendInstrumentADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame, 
-	m_oConstVarStruct* pConstVar);
 
 /************************************************************************/
 /* 仪器结构体                                                           */
@@ -2587,20 +2566,19 @@ MatrixServerDll_API bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar, 
 	unsigned int& uiRoutIP);
 // 更新仪器的存活时间
-MatrixServerDll_API void UpdateInstrActiveTime(m_oInstrumentStruct* pInstrument, 
-	m_oInstrumentStruct* pRoutHead, m_oConstVarStruct* pConstVar);
+MatrixServerDll_API void UpdateInstrActiveTime(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar);
 /**
 * 根据链接方向，得到连接的下一个仪器
 	* @param unsigned int uiRoutDirection 方向 1-上；2-下；3-左；4右
 * @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
 	*/
-MatrixServerDll_API m_oInstrumentStruct* GetNextInstrument(m_oInstrumentStruct* pInstrument, 
+MatrixServerDll_API m_oInstrumentStruct* GetNextInstrAlongRout(m_oInstrumentStruct* pInstrument, int iRoutDirection,
 	m_oConstVarStruct* pConstVar);
 /**
 * 根据链接方向，得到连接的前一个仪器
 * @return CInstrument* 仪器指针 NLLL：连接的前一个仪器不存在
 */
-MatrixServerDll_API m_oInstrumentStruct* GetPreviousInstrument(m_oInstrumentStruct* pInstrument,
+MatrixServerDll_API m_oInstrumentStruct* GetPreviousInstr(m_oInstrumentStruct* pInstrument,
 	m_oConstVarStruct* pConstVar);
 
 
@@ -2634,8 +2612,6 @@ MatrixServerDll_API void UpdateLineChangeTime(m_oLineListStruct* pLineList);
 /************************************************************************/
 // 重置路由信息
 MatrixServerDll_API void OnRoutReset(m_oRoutStruct* pRout);
-// 更新路由对象的路由时间
-MatrixServerDll_API void UpdateRoutTime(unsigned int uiRoutIP, hash_map<unsigned int, m_oRoutStruct*>* pMap);
 // 路由地址是否已加入索引表
 MatrixServerDll_API BOOL IfIndexExistInRoutMap(unsigned int uiRoutIP, 
 	hash_map<unsigned int, m_oRoutStruct*>* pRoutMap);
@@ -2876,9 +2852,6 @@ MatrixServerDll_API void OnFreeIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSe
 MatrixServerDll_API m_oTailFrameThreadStruct* OnCreateTailFrameThread(void);
 // 线程等待函数
 MatrixServerDll_API void WaitTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread);
-// 清除与该仪器路由方向相同的之前仪器的尾包计数
-MatrixServerDll_API void OnClearSameRoutTailCount(m_oInstrumentStruct* pInstrument, 
-	m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar);
 // 回收一个路由
 MatrixServerDll_API void FreeRoutFromMap(unsigned int uiRoutIP, m_oRoutListStruct* pRoutList);
 // 回收一个仪器
