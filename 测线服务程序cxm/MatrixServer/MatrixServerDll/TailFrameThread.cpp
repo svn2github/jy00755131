@@ -220,7 +220,6 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	}
 	// ÐÂÒÇÆ÷Ö¸ÕëÎª¿Õ
 	m_oInstrumentStruct* pInstrument = NULL;
-	m_oRoutStruct* pRout = NULL;
 	CString str = _T("");
 	string strFrameData = "";
 	string strConv = "";

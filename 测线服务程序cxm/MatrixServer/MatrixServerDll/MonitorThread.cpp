@@ -465,6 +465,7 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 	string strConv = "";
 	unsigned int uiRoutIP = 0;
 	m_oRoutStruct* pRoutDelete = NULL;
+	m_oRoutStruct* pRout = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	EnterCriticalSection(&pMonitorThread->m_pLineList->m_oSecLineList);
@@ -472,18 +473,42 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 	for(iter = pMonitorThread->m_pLineList->m_pRoutList->m_oRoutMap.begin();
 		iter != pMonitorThread->m_pLineList->m_pRoutList->m_oRoutMap.end(); iter++)
 	{
-		if (iter->second->m_pTail == NULL)
+		pRout = iter->second;
+		if (pRout->m_pTail == NULL)
 		{
 			continue;
 		}
-		pInstrument = iter->second->m_pHead;
+		pInstrument = pRout->m_pHead;
+		if (pRout->m_pHead->m_bInUsed == false)
+		{
+			if (pRout->m_iRoutDirection == pMonitorThread->m_pThread->m_pConstVar->m_iDirectionTop)
+			{
+				pInstrument->m_pInstrumentTop = *(++pRout->m_olsRoutInstrument.begin());
+			}
+			else if (pRout->m_iRoutDirection == pMonitorThread->m_pThread->m_pConstVar->m_iDirectionDown)
+			{
+				pInstrument->m_pInstrumentDown = *(++pRout->m_olsRoutInstrument.begin());
+			}
+			else if (pRout->m_iRoutDirection == pMonitorThread->m_pThread->m_pConstVar->m_iDirectionLeft)
+			{
+				pInstrument->m_pInstrumentLeft = *(++pRout->m_olsRoutInstrument.begin());
+			}
+			else if (pRout->m_iRoutDirection == pMonitorThread->m_pThread->m_pConstVar->m_iDirectionRight)
+			{
+				pInstrument->m_pInstrumentRight = *(++pRout->m_olsRoutInstrument.begin());
+			}
+			else
+			{
+				continue;
+			}
+		}
 		do 
 		{
-			pInstrumentNext = GetNextInstrAlongRout(pInstrument, iter->second->m_iRoutDirection, pMonitorThread->m_pThread->m_pConstVar);
+			pInstrumentNext = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pMonitorThread->m_pThread->m_pConstVar);
 			// 判断尾包计数器达到设定值则删除相同路由之后的仪器
 			if (pInstrumentNext->m_iTailFrameCount > pMonitorThread->m_pThread->m_pConstVar->m_iTailFrameStableTimes)
 			{
-				DeleteInstrumentAlongRout(pInstrument, iter->second, 
+				DeleteInstrumentAlongRout(pInstrument, pRout, 
 					pMonitorThread->m_pLineList, pMonitorThread->m_pThread->m_pConstVar);
 				break;
 			}
@@ -497,7 +522,14 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 				break;
 			}
 			pInstrument = pInstrumentNext;
-		} while (pInstrument != iter->second->m_pTail);
+		} while (pInstrument != pRout->m_pTail);
+		if (pRout->m_pHead->m_bInUsed == false)
+		{
+			pRout->m_pHead->m_pInstrumentTop = NULL;
+			pRout->m_pHead->m_pInstrumentDown = NULL;
+			pRout->m_pHead->m_pInstrumentLeft = NULL;
+			pRout->m_pHead->m_pInstrumentRight = NULL;
+		}
 	}
 	// 删除路由删除索引表中的仪器
 	while(1)
@@ -509,8 +541,6 @@ void MonitorRoutAndInstrument(m_oMonitorThreadStruct* pMonitorThread)
 		iter = pMonitorThread->m_pLineList->m_pRoutList->m_oRoutDeleteMap.begin();
 		uiRoutIP = iter->first;
 		pRoutDelete = iter->second;
-		DeleteInstrumentAlongRout(pRoutDelete->m_pHead, pRoutDelete, pMonitorThread->m_pLineList, 
-			pMonitorThread->m_pThread->m_pConstVar);
 		// 路由索引表回收路由
 		DeleteRout(uiRoutIP, &pMonitorThread->m_pLineList->m_pRoutList->m_oRoutMap);
 		str.Format(_T("回收路由IP = 0x%x的过期路由"), uiRoutIP);

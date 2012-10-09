@@ -410,8 +410,8 @@ void ProcADCDataRecFrame(m_oADCDataRecThreadStruct* pADCDataRecThread)
 					"", ErrorType, IDS_ERR_PARSE_ADCDATARECFRAME);
 				continue;
 			}
-			// @@@@处理单个ADC数据帧
-//			ProcADCDataRecFrameOne(pADCDataRecThread);
+			// 处理单个ADC数据帧
+			ProcADCDataRecFrameOne(pADCDataRecThread);
 		}
 	}
 }
