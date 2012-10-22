@@ -14,10 +14,7 @@ m_oHeartBeatThreadStruct* OnCreateHeartBeatThread(void)
 // 线程等待函数
 void WaitHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 {
-	if (pHeartBeatThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pHeartBeatThread != NULL);
 	// 初始化等待次数为0
 	int iWaitCount = 0;
 	bool bClose = false;
@@ -47,10 +44,7 @@ void WaitHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 // 线程函数
 DWORD WINAPI RunHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 {
-	if (pHeartBeatThread == NULL)
-	{
-		return 0;
-	}
+	ASSERT(pHeartBeatThread != NULL);
 	bool bClose = false;
 	bool bWork = false;
 	while(true)
@@ -66,7 +60,7 @@ DWORD WINAPI RunHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 		if (bWork == true)
 		{
 			MakeInstrHeartBeatFrame(pHeartBeatThread->m_pHeartBeatFrame, 
-				pHeartBeatThread->m_pThread->m_pConstVar);
+				pHeartBeatThread->m_pThread->m_pConstVar, pHeartBeatThread->m_pThread->m_pLogOutPut);
 		}
 		EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 		bClose = pHeartBeatThread->m_pThread->m_bClose;
@@ -87,10 +81,7 @@ DWORD WINAPI RunHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 bool OnInitHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread, 
 	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pHeartBeatThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pHeartBeatThread != NULL);
 	EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	if (false == OnInitThread(pHeartBeatThread->m_pThread, pLogOutPut, pConstVar))
 	{
@@ -120,20 +111,14 @@ bool OnInitHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread,
 // 初始化心跳线程
 bool OnInit_HeartBeatThread(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv == NULL)
-	{
-		return false;
-	}
+	ASSERT(pEnv != NULL);
 	pEnv->m_pHeartBeatThread->m_pHeartBeatFrame = pEnv->m_pHeartBeatFrame;
 	return OnInitHeartBeatThread(pEnv->m_pHeartBeatThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
 }
 // 关闭心跳线程
 bool OnCloseHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 {
-	if (pHeartBeatThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pHeartBeatThread != NULL);
 	EnterCriticalSection(&pHeartBeatThread->m_oSecHeartBeatThread);
 	if(false == OnCloseThread(pHeartBeatThread->m_pThread))
 	{
@@ -150,10 +135,7 @@ bool OnCloseHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 // 释放心跳线程
 void OnFreeHeartBeatThread(m_oHeartBeatThreadStruct* pHeartBeatThread)
 {
-	if (pHeartBeatThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pHeartBeatThread != NULL);
 	if (pHeartBeatThread->m_pThread != NULL)
 	{
 		delete pHeartBeatThread->m_pThread;

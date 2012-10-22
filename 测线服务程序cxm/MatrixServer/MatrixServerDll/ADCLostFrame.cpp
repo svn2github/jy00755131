@@ -5,10 +5,7 @@
 BOOL IfIndexExistInADCFrameLostMap(unsigned int uiIP, unsigned short usFramePointNb, 
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pMap != NULL);
 	BOOL bResult = FALSE;
 	m_oADCLostFrameKeyStruct Key(uiIP, usFramePointNb);
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>::iterator iter;
@@ -27,10 +24,7 @@ BOOL IfIndexExistInADCFrameLostMap(unsigned int uiIP, unsigned short usFramePoin
 void AddToADCFrameLostMap(unsigned int uiIP, unsigned short usFramePointNb, 
 	m_oADCLostFrameStruct oLostFrame, map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return;
-	}
+	ASSERT(pMap != NULL);
 	m_oADCLostFrameKeyStruct Key(uiIP, usFramePointNb);
 	if (false == IfIndexExistInADCFrameLostMap(uiIP, usFramePointNb, pMap))
 	{
@@ -41,10 +35,7 @@ void AddToADCFrameLostMap(unsigned int uiIP, unsigned short usFramePointNb,
 ADCLostFrame_Struct* GetFromADCFrameLostMap(unsigned int uiIP, unsigned short usFramePointNb, 
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return NULL;
-	}
+	ASSERT(pMap != NULL);
 	m_oADCLostFrameKeyStruct Key(uiIP, usFramePointNb);
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct>::iterator iter;
 	iter = pMap->find(Key);

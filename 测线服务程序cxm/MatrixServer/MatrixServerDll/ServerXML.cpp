@@ -34,10 +34,7 @@ m_oServerSetupDataStruct* OnCreateServerAppSetupData(void)
 // 打开服务程序配置文件
 BOOL OpenServerXMLFile(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pServerSetupData != NULL);
 	CString strOLEObject;
 	COleException oError;
 	COleVariant oVariant;
@@ -71,10 +68,7 @@ BOOL OpenServerXMLFile(m_oServerSetupDataStruct* pServerSetupData)
 // 关闭服务程序配置文件
 void CloseServerXMLFile(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	pServerSetupData->m_oXMLDOMDocument.DetachDispatch();
 	// 释放COM库
@@ -84,10 +78,7 @@ void CloseServerXMLFile(m_oServerSetupDataStruct* pServerSetupData)
 // 加载IP地址设置数据
 void LoadServerIP(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -139,10 +130,7 @@ void LoadServerIP(m_oServerSetupDataStruct* pServerSetupData)
 // 加载端口设置数据
 void LoadServerPort(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -196,10 +184,7 @@ void LoadServerPort(m_oServerSetupDataStruct* pServerSetupData)
 // 加载ADC参数设置数据
 void LoadServerADCSet(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	CString strKey = _T("");
 	CString strValue = _T("");
 	CXMLDOMNodeList oNodeList;
@@ -354,10 +339,7 @@ void LoadServerADCSet(m_oServerSetupDataStruct* pServerSetupData)
 // 加载服务端参数设置数据
 void LoadServerParameter(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	CString strKey;
 	CString str = _T("");
 	CXMLDOMNodeList oNodeList;
@@ -400,10 +382,7 @@ void LoadServerParameter(m_oServerSetupDataStruct* pServerSetupData)
 // 保存服务端参数设置数据
 void SaveServerParameter(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	CString strKey;
 	CString str = _T("");
 	CXMLDOMNodeList oNodeList;
@@ -446,10 +425,7 @@ void SaveServerParameter(m_oServerSetupDataStruct* pServerSetupData)
 // 加载IP地址设置数据
 void LoadServerIPSetupData(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenServerXMLFile(pServerSetupData))
@@ -464,10 +440,7 @@ void LoadServerIPSetupData(m_oServerSetupDataStruct* pServerSetupData)
 // 加载端口设置数据
 void LoadServerPortSetupData(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenServerXMLFile(pServerSetupData))
@@ -482,10 +455,7 @@ void LoadServerPortSetupData(m_oServerSetupDataStruct* pServerSetupData)
 // 加载ADC参数设置数据
 void LoadServerADCSetSetupData(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenServerXMLFile(pServerSetupData))
@@ -500,10 +470,7 @@ void LoadServerADCSetSetupData(m_oServerSetupDataStruct* pServerSetupData)
 // 加载服务器端参数设置数据
 void LoadServerParameterSetupData(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenServerXMLFile(pServerSetupData))
@@ -518,10 +485,7 @@ void LoadServerParameterSetupData(m_oServerSetupDataStruct* pServerSetupData)
 // 保存服务器端参数设置数据
 void SaveServerParameterSetupData(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -551,10 +515,7 @@ void LoadServerAppSetupData(m_oServerSetupDataStruct* pServerSetupData)
 // 释放服务端参数设置信息结构体缓冲区
 void OnFreeServerXMLSetupData(m_oServerSetupDataStruct* pServerSetupData)
 {
-	if (pServerSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pServerSetupData != NULL);
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	if (pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSetSine != NULL)
 	{

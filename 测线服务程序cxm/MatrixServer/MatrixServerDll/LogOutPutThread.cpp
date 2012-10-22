@@ -16,10 +16,7 @@ m_oLogOutPutThreadStruct* OnCreateLogOutPutThread(void)
 // 线程等待函数
 void WaitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 {
-	if (pLogOutPutThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pLogOutPutThread != NULL);
 	// 初始化等待次数为0
 	int iWaitCount = 0;
 	bool bClose = false;
@@ -49,10 +46,7 @@ void WaitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 // 线程函数
 DWORD WINAPI RunLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 {
-	if (pLogOutPutThread == NULL)
-	{
-		return 0;
-	}
+	ASSERT(pLogOutPutThread != NULL);
 	bool bClose = false;
 	bool bWork = false;
 	while(true)
@@ -91,10 +85,7 @@ DWORD WINAPI RunLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 bool OnInitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread, 
 	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pLogOutPutThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pLogOutPutThread != NULL);
 	EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	if (false == OnInitThread(pLogOutPutThread->m_pThread, pLogOutPut, pConstVar))
 	{
@@ -125,10 +116,7 @@ bool OnInitLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread,
 // 初始化日志输出线程
 bool OnInit_LogOutPutThread(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv == NULL)
-	{
-		return false;
-	}
+	ASSERT(pEnv != NULL);
 	pEnv->m_pLogOutPutThread->m_pLogOutPutTimeDelay = pEnv->m_pLogOutPutTimeDelay;
 	pEnv->m_pLogOutPutThread->m_pLogOutPutErrorCode = pEnv->m_pLogOutPutErrorCode;
 	pEnv->m_pLogOutPutThread->m_pLogOutPutADCFrameTime = pEnv->m_pLogOutPutADCFrameTime;
@@ -138,10 +126,7 @@ bool OnInit_LogOutPutThread(m_oEnvironmentStruct* pEnv)
 // 关闭日志输出线程
 bool OnCloseLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 {
-	if (pLogOutPutThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pLogOutPutThread != NULL);
 	EnterCriticalSection(&pLogOutPutThread->m_oSecLogOutPutThread);
 	if (false == OnCloseThread(pLogOutPutThread->m_pThread))
 	{
@@ -158,10 +143,7 @@ bool OnCloseLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 // 释放日志输出线程
 void OnFreeLogOutPutThread(m_oLogOutPutThreadStruct* pLogOutPutThread)
 {
-	if (pLogOutPutThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pLogOutPutThread != NULL);
 	if (pLogOutPutThread->m_pThread != NULL)
 	{
 		delete pLogOutPutThread->m_pThread;

@@ -15,10 +15,7 @@ m_oIPSetFrameThreadStruct* OnCreateIPSetFrameThread(void)
 // 处理单个IP地址设置应答帧
 void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 {
-	if (pIPSetFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pIPSetFrameThread != NULL);
 	unsigned int uiIPInstrument = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oRoutStruct* pRout = NULL;
@@ -39,7 +36,7 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	{
 		pInstrument = GetInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap);
 		// 更新仪器的存活时间
-		UpdateInstrActiveTime(pInstrument, pIPSetFrameThread->m_pThread->m_pConstVar);
+		UpdateInstrActiveTime(pInstrument);
 		// 从IP地址设置索引表中删除仪器
 		DeleteInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pLineList->m_pInstrumentList->m_oIPSetInstrumentMap);
 		// 将仪器加入IP地址索引表
@@ -84,8 +81,8 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 	{
 		pInstrument = GetInstrumentFromMap(uiIPInstrument, &pIPSetFrameThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 		// 如果仪器类型为LCI或交叉站
-		if ((pInstrument->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
-			|| (pInstrument->m_iInstrumentType == pIPSetFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
+		if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
+			|| (pInstrument->m_iInstrumentType == InstrumentTypeLAUX))
 		{
 			// 关闭交叉线A电源
 			if (cLAUXRoutOpenSet & (0x01 << 7))
@@ -95,7 +92,6 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				pRout = GetRout(pInstrument->m_uiRoutIPDown, &pIPSetFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 				// 在路由方向上删除该仪器之后的全部仪器
 				DeleteAllInstrumentAlongRout(pInstrument, pRout, pIPSetFrameThread->m_pLineList, 
-					pIPSetFrameThread->m_pThread->m_pConstVar,
 					pIPSetFrameThread->m_pThread->m_pLogOutPut);
 			}
 			// 关闭交叉线B电源
@@ -106,7 +102,6 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				pRout = GetRout(pInstrument->m_uiRoutIPTop, &pIPSetFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 				// 在路由方向上删除该仪器之后的全部仪器
 				DeleteAllInstrumentAlongRout(pInstrument, pRout, pIPSetFrameThread->m_pLineList, 
-					pIPSetFrameThread->m_pThread->m_pConstVar,
 					pIPSetFrameThread->m_pThread->m_pLogOutPut);
 			}
 			// 关闭大线A电源
@@ -117,7 +112,6 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				pRout = GetRout(pInstrument->m_uiRoutIPRight, &pIPSetFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 				// 在路由方向上删除该仪器之后的全部仪器
 				DeleteAllInstrumentAlongRout(pInstrument, pRout, pIPSetFrameThread->m_pLineList, 
-					pIPSetFrameThread->m_pThread->m_pConstVar,
 					pIPSetFrameThread->m_pThread->m_pLogOutPut);
 			}
 			// 关闭大线B电源
@@ -128,7 +122,6 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 				pRout = GetRout(pInstrument->m_uiRoutIPLeft, &pIPSetFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 				// 在路由方向上删除该仪器之后的全部仪器
 				DeleteAllInstrumentAlongRout(pInstrument, pRout, pIPSetFrameThread->m_pLineList, 
-					pIPSetFrameThread->m_pThread->m_pConstVar,
 					pIPSetFrameThread->m_pThread->m_pLogOutPut);
 			}
 		}
@@ -138,10 +131,7 @@ void  ProcIPSetReturnFrameOne(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 // 处理IP地址设置应答帧
 void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 {
-	if (pIPSetFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pIPSetFrameThread != NULL);
 	// 帧数量设置为0
 	int iFrameCount = 0;
 	EnterCriticalSection(&pIPSetFrameThread->m_pIPSetFrame->m_oSecIPSetFrame);
@@ -168,7 +158,7 @@ void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			}
 			LeaveCriticalSection(&pIPSetFrameThread->m_pIPSetFrame->m_oSecIPSetFrame);
 			if (false == ParseInstrIPSetReturnFrame(pIPSetFrameThread->m_pIPSetFrame, 
-				pIPSetFrameThread->m_pThread->m_pConstVar))
+				pIPSetFrameThread->m_pThread->m_pConstVar, pIPSetFrameThread->m_pThread->m_pLogOutPut))
 			{
 				AddMsgToLogOutPutList(pIPSetFrameThread->m_pThread->m_pLogOutPut, 
 					"ParseInstrumentIPSetReturnFrame", "", ErrorType, IDS_ERR_PARSE_IPSETRETURNFRAME);
@@ -182,10 +172,7 @@ void ProcIPSetReturnFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 // 按照IP地址设置索引发送IP地址设置帧
 void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 {
-	if (pIPSetFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pIPSetFrameThread != NULL);
 	CString str = _T("");
 	string strConv = "";
 	// hash_map迭代器
@@ -203,7 +190,8 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			{
 				// 生成IP地址设置帧
 				MakeInstrIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
-					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second);
+					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second,
+					pIPSetFrameThread->m_pThread->m_pLogOutPut);
 				// 第几次设置IP地址
 				iter->second->m_iIPSetCount++;
 				iter++;
@@ -213,10 +201,12 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 			{
 				// 生成IP地址查询帧
 				MakeInstrIPQueryFrame(pIPSetFrameThread->m_pIPSetFrame, 
-					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second->m_uiIP);
+					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second->m_uiIP,
+					pIPSetFrameThread->m_pThread->m_pLogOutPut);
 				// 生成IP地址设置帧
 				MakeInstrIPSetFrame(pIPSetFrameThread->m_pIPSetFrame, 
-					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second);
+					pIPSetFrameThread->m_pThread->m_pConstVar, iter->second,
+					pIPSetFrameThread->m_pThread->m_pLogOutPut);
 				// 第几次设置IP地址
 				iter->second->m_iIPSetCount++;
 				iter++;
@@ -242,10 +232,7 @@ void ProcIPSetFrame(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 // 线程等待函数
 void WaitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 {
-	if (pIPSetFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pIPSetFrameThread != NULL);
 	// 初始化等待次数为0
 	int iWaitCount = 0;
 	bool bClose = false;
@@ -275,10 +262,7 @@ void WaitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 // 线程函数
 DWORD WINAPI RunIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 {
-	if (pIPSetFrameThread == NULL)
-	{
-		return 1;
-	}
+	ASSERT(pIPSetFrameThread != NULL);
 	bool bClose = false;
 	bool bWork = false;
 	while(true)
@@ -316,10 +300,7 @@ DWORD WINAPI RunIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 bool OnInitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread, 
 	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pIPSetFrameThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pIPSetFrameThread != NULL);
 	EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 	if (false == OnInitThread(pIPSetFrameThread->m_pThread, pLogOutPut, pConstVar))
 	{
@@ -349,10 +330,7 @@ bool OnInitIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread,
 // 初始化IP地址设置线程
 bool OnInit_IPSetFrameThread(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv == NULL)
-	{
-		return false;
-	}
+	ASSERT(pEnv != NULL);
 	pEnv->m_pIPSetFrameThread->m_pIPSetFrame = pEnv->m_pIPSetFrame;
 	pEnv->m_pIPSetFrameThread->m_pLineList = pEnv->m_pLineList;
 	return OnInitIPSetFrameThread(pEnv->m_pIPSetFrameThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
@@ -360,10 +338,7 @@ bool OnInit_IPSetFrameThread(m_oEnvironmentStruct* pEnv)
 // 关闭IP地址设置线程
 bool OnCloseIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 {
-	if (pIPSetFrameThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pIPSetFrameThread != NULL);
 	EnterCriticalSection(&pIPSetFrameThread->m_oSecIPSetFrameThread);
 	if (false == OnCloseThread(pIPSetFrameThread->m_pThread))
 	{
@@ -380,10 +355,7 @@ bool OnCloseIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 // 释放IP地址设置线程
 void OnFreeIPSetFrameThread(m_oIPSetFrameThreadStruct* pIPSetFrameThread)
 {
-	if (pIPSetFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pIPSetFrameThread != NULL);
 	if (pIPSetFrameThread->m_pThread != NULL)
 	{
 		delete pIPSetFrameThread->m_pThread;

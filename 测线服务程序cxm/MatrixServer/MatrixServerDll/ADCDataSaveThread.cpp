@@ -15,10 +15,7 @@ m_oADCDataSaveThreadStruct* OnCreateADCDataSaveThread(void)
 // 线程等待函数
 void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 {
-	if (pADCDataSaveThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataSaveThread != NULL);
 	// 初始化等待次数为0
 	int iWaitCount = 0;
 	bool bClose = false;
@@ -49,16 +46,9 @@ void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf, 
 	m_oOptTaskStruct* pOptTask, unsigned int uiLineIndex, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pOptTask == NULL) || (pADCDataBuf == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "WriteADCDataInOptTaskFile", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pOptTask != NULL);
+	ASSERT(pADCDataBuf != NULL);
+	ASSERT(pConstVar!= NULL);
 	unsigned int uiFileNb = 0;
 	unsigned int uiFrameInFileNb = 0;
 	CString strPath = _T("");
@@ -190,10 +180,7 @@ void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf,
 // 关闭所有的施工文件
 void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray)
 {
-	if (pOptTaskArray == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptTaskArray != NULL);
 	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	for (iter = pOptTaskArray->m_oOptTaskWorkMap.begin();
@@ -213,12 +200,8 @@ void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray)
 // 保存ADC数据到施工文件
 void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 {
-	if (pADCDataSaveThread == NULL)
-	{
-		return;
-	}
-	list<m_oADCDataBufStruct*>::iterator iter;
-	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter2;
+	ASSERT(pADCDataSaveThread != NULL);
+	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
 	// 行号
 	unsigned int uiLineIndex = 0;
 	m_oADCDataBufStruct* pADCDataBuf = NULL;
@@ -226,19 +209,18 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 	EnterCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
 	while(pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.empty() == false)
 	{
-		iter = pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.begin();
-		pADCDataBuf = *iter;
+		pADCDataBuf = *pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.begin();
 		pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.pop_front();
 		// 将数据按照施工任务写入文件
-		for (iter2 = pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.begin();
-			iter2 != pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.end(); iter2++)
+		for (iter = pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.begin();
+			iter != pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.end(); iter++)
 		{
 			// 仪器在施工任务仪器索引表中
-			if (TRUE == IfIndexExistInOptTaskSNMap(pADCDataBuf->m_uiSN, &iter2->second->m_oSNMap))
+			if (TRUE == IfIndexExistInOptTaskSNMap(pADCDataBuf->m_uiSN, &iter->second->m_oSNMap))
 			{
-				uiLineIndex = GetLineNbFromOptTaskSNMap(pADCDataBuf->m_uiSN, &iter2->second->m_oSNMap);
+				uiLineIndex = GetLineNbFromOptTaskSNMap(pADCDataBuf->m_uiSN, &iter->second->m_oSNMap);
 				// 将数据写入文件
-				WriteADCDataInOptTaskFile(pADCDataBuf, iter2->second, uiLineIndex, 
+				WriteADCDataInOptTaskFile(pADCDataBuf, iter->second, uiLineIndex, 
 					pADCDataSaveThread->m_pThread->m_pConstVar);
 			}
 		}
@@ -251,10 +233,7 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 // 线程函数
 DWORD WINAPI RunADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 {
-	if (pADCDataSaveThread == NULL)
-	{
-		return 1;
-	}
+	ASSERT(pADCDataSaveThread != NULL);
 	bool bClose = false;
 	bool bWork = false;
 	while(true)
@@ -291,10 +270,7 @@ DWORD WINAPI RunADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread
 bool OnInitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread, 
 	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pADCDataSaveThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pADCDataSaveThread != NULL);
 	EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	if (false == OnInitThread(pADCDataSaveThread->m_pThread, pLogOutPut, pConstVar))
 	{
@@ -325,10 +301,7 @@ bool OnInitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread,
 // 初始化施工放炮数据存储线程
 bool OnInit_ADCDataSaveThread(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv == NULL)
-	{
-		return false;
-	}
+	ASSERT(pEnv != NULL);
 	pEnv->m_pADCDataSaveThread->m_pADCDataBufArray = pEnv->m_pADCDataBufArray;
 	pEnv->m_pADCDataSaveThread->m_pOptTaskArray = pEnv->m_pOptTaskArray;
 	return OnInitADCDataSaveThread(pEnv->m_pADCDataSaveThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
@@ -336,10 +309,7 @@ bool OnInit_ADCDataSaveThread(m_oEnvironmentStruct* pEnv)
 // 关闭施工放炮数据存储线程
 bool OnCloseADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 {
-	if (pADCDataSaveThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pADCDataSaveThread != NULL);
 	EnterCriticalSection(&pADCDataSaveThread->m_oSecADCDataSaveThread);
 	if (false == OnCloseThread(pADCDataSaveThread->m_pThread))
 	{
@@ -356,10 +326,7 @@ bool OnCloseADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 // 释放施工放炮数据存储线程
 void OnFreeADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 {
-	if (pADCDataSaveThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataSaveThread != NULL);
 	if (pADCDataSaveThread->m_pThread != NULL)
 	{
 		delete pADCDataSaveThread->m_pThread;

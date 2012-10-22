@@ -7,10 +7,7 @@ void GetFrameInfo(char* pFrameData, int iSize, string* strFrameData)
 	CString cstr = _T("");
 	string strConv = "";
 	*strFrameData = "";
-	if (pFrameData == NULL)
-	{
-		return;
-	}
+	ASSERT(pFrameData != NULL);
 	for (int i=0; i<iSize; i++)
 	{
 		cstr.Format(_T("%02x"), (unsigned char)pFrameData[i]);
@@ -54,10 +51,8 @@ bool IfFileExist(CString str)
 // 校验帧的同步码
 bool CheckInstrFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize)
 {
-	if ((pFrameData == NULL) || (pFrameHeadCheck == NULL))
-	{
-		return false;
-	}
+	ASSERT(pFrameData != NULL);
+	ASSERT(pFrameHeadCheck != NULL);
 	for (int i=0; i<iCheckSize; i++)
 	{
 		if (pFrameData[i] != pFrameHeadCheck[i])
@@ -70,20 +65,15 @@ bool CheckInstrFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize
 // 生成帧的同步码
 bool MakeInstrFrameHead(char* pFrameData, char* pFrameHeadCheck, int iCheckSize)
 {
-	if ((pFrameData == NULL) || (pFrameHeadCheck == NULL))
-	{
-		return false;
-	}
+	ASSERT(pFrameData != NULL);
+	ASSERT(pFrameHeadCheck != NULL);
 	memcpy(pFrameData, pFrameHeadCheck, iCheckSize);
 	return true;
 }
 // 重置帧内容解析变量
 bool ResetInstrFramePacket(m_oInstrumentCommandStruct* pCommand)
 {
-	if (pCommand == NULL)
-	{
-		return false;
-	}
+	ASSERT(pCommand != NULL);
 	// SN，低8位为仪器类型，0x01为交叉站，0x02为电源站，0x03为采集站
 	pCommand->m_uiSN = 0;
 	// 首包时刻
@@ -179,19 +169,13 @@ bool ResetInstrFramePacket(m_oInstrumentCommandStruct* pCommand)
 }
 // 解析与设备通讯接收帧内容
 bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand, 
-	char* pFrameData, m_oConstVarStruct* pConstVar)
+	char* pFrameData, m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut)
 {
 	string strFrameData = "";
-	if (pConstVar == NULL)
-	{
-		return false;
-	}
-	if ((pCommand == NULL) || (pFrameData == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pCommand != NULL);
+	ASSERT(pFrameData != NULL);
+	ASSERT(pConstVar != NULL);
 	unsigned char	byCommandWord = 0;
 	unsigned int uiRoutAddrNum = 0;
 	int iPos = 0;
@@ -212,7 +196,7 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 	if (false == CheckInstrFrameHead(pFrameData, pConstVar->m_cpFrameHeadCheck, 4))
 	{
 		GetFrameInfo(pFrameData, pConstVar->m_iRcvFrameSize, &strFrameData);
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", 
+		AddMsgToLogOutPutList(pLogOutPut, "ParseInstrumentFrame", 
 			strFrameData, ErrorType, IDS_ERR_CHECKFRAMEHEAD);
 		return false;
 	}
@@ -237,7 +221,7 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 		|| (pCommand->m_usCommand == pConstVar->m_usSendADCCmd)))
 	{
 		GetFrameInfo(pFrameData, pConstVar->m_iRcvFrameSize, &strFrameData);
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentFrame", 
+		AddMsgToLogOutPutList(pLogOutPut, "ParseInstrumentFrame", 
 			strFrameData, ErrorType, IDS_ERR_CHECKFRAMECMD);
 		return false;
 	}
@@ -464,16 +448,9 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pConstVar,
 	char* pFrameData, char* pCommandWord, unsigned short usCommandWordNum)
 {
-	if (pConstVar == NULL)
-	{
-		return false;
-	}
-	if ((pCommand == NULL) || (pFrameData == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentFrame", "", 
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
+	ASSERT(pCommand != NULL);
+	ASSERT(pFrameData != NULL);
+	ASSERT(pConstVar != NULL);
 	int iFramePacketSize4B = 0;
 	int iFramePacketSize2B = 0;
 	int iFramePacketSize1B = 0;
@@ -934,8 +911,7 @@ bool OnGetRoutInstrNum(int iLineIndex, int iPointIndex, int iDirection,
 		return false;
 	}
 	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
-	if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pLineList->m_pInstrumentList, 
-		pEnv->m_pConstVar, uiRoutIP))
+	if (false == GetRoutIPBySn(pInstrument->m_uiSN, iDirection, pEnv->m_pLineList->m_pInstrumentList, uiRoutIP))
 	{
 		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 		return false;
@@ -948,7 +924,7 @@ bool OnGetRoutInstrNum(int iLineIndex, int iPointIndex, int iDirection,
 	}
 	uiInstrumentNum = 0;
 	pInstrument = pRout->m_pHead;
-	if ((pInstrument->m_bIPSetOK) && (iDirection == pEnv->m_pConstVar->m_iDirectionCenter))
+	if ((pInstrument->m_bIPSetOK) && (iDirection == DirectionCenter))
 	{
 		uiInstrumentNum = 1;
 		LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
@@ -961,7 +937,7 @@ bool OnGetRoutInstrNum(int iLineIndex, int iPointIndex, int iDirection,
 	}
 	while(pInstrument != pRout->m_pTail)
 	{
-		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pEnv->m_pConstVar);
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection);
 		if (pInstrument == NULL)
 		{
 			break;

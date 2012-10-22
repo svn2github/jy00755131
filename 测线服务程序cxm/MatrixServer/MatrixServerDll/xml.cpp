@@ -20,10 +20,7 @@ m_oInstrumentCommInfoStruct* OnCreateInstrumentCommInfo(void)
 // 初始化仪器通讯信息结构体
 void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
 {
-	if (pCommInfo == NULL)
-	{
-		return;
-	}
+	ASSERT(pCommInfo != NULL);
 	// 加载服务器程序设置数据
 	LoadServerAppSetupData(pCommInfo->m_pServerSetupData);
 	// 加载测线客户端程序设置数据
@@ -36,10 +33,7 @@ void OnInitInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
 // 释放仪器通讯信息结构体
 void OnFreeInstrumentCommInfo(m_oInstrumentCommInfoStruct* pCommInfo)
 {
-	if (pCommInfo == NULL)
-	{
-		return;
-	}
+	ASSERT(pCommInfo != NULL);
 	// 释放服务端参数设置信息结构体缓冲区
 	OnFreeServerXMLSetupData(pCommInfo->m_pServerSetupData);
 	// 保存测线客户端程序设置数据

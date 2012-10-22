@@ -15,10 +15,7 @@ m_oTailFrameThreadStruct* OnCreateTailFrameThread(void)
 // 线程等待函数
 void WaitTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 {
-	if (pTailFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailFrameThread != NULL);
 	// 初始化等待次数为0
 	int iWaitCount = 0;
 	bool bClose = false;
@@ -48,10 +45,7 @@ void WaitTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 // 回收一个路由
 void FreeRoutFromMap(unsigned int uiRoutIP, m_oRoutListStruct* pRoutList)
 {
-	if (pRoutList == NULL)
-	{
-		return;
-	}
+	ASSERT(pRoutList != NULL);
 	m_oRoutStruct* pRout = NULL;
 	CString str = _T("");
 	pRout = GetRout(uiRoutIP, &pRoutList->m_oRoutMap);
@@ -59,18 +53,11 @@ void FreeRoutFromMap(unsigned int uiRoutIP, m_oRoutListStruct* pRoutList)
 }
 // 回收一个仪器
 void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument, 
-	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
+	m_oLineListStruct* pLineList, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pLineList == NULL) || (pInstrument == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "FreeInstrumentFromMap", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pLineList != NULL);
+	ASSERT(pInstrument != NULL);
 	CString str = _T("");
 	string strConv = "";
 	EnterCriticalSection(&pLineList->m_oSecLineList);
@@ -87,13 +74,13 @@ void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 		&pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	str.Format(_T("删除仪器的SN = 0x%x，路由 = 0x%x"), pInstrument->m_uiSN, pInstrument->m_uiRoutIP);
 	strConv = (CStringA)str;
-	AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "FreeInstrumentFromMap", strConv);
+	AddMsgToLogOutPutList(pLogOutPut, "FreeInstrumentFromMap", strConv);
 
 	// 删除仪器的类型为LCI或交叉站
-	if ((pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLCI)
-		|| (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLAUX))
+	if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
+		|| (pInstrument->m_iInstrumentType == InstrumentTypeLAUX))
 	{
-		if (pInstrument->m_iInstrumentType == pConstVar->m_iInstrumentTypeLCI)
+		if (pInstrument->m_iInstrumentType == InstrumentTypeLCI)
 		{
 			FreeRoutFromMap(pInstrument->m_uiRoutIP, pLineList->m_pRoutList);
 		}
@@ -116,18 +103,12 @@ void FreeInstrumentFromMap(m_oInstrumentStruct* pInstrument,
 void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument, 
 	m_oRoutStruct* pRout, 
 	m_oLineListStruct* pLineList, 
-	m_oConstVarStruct* pConstVar)
+	m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pRout == NULL) || (pInstrument == NULL) || (pLineList == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "DeleteInstrumentAlongRout", 
-			"", ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pRout != NULL);
+	ASSERT(pInstrument != NULL);
+	ASSERT(pLineList != NULL);
 	// 前一个仪器指针为路由尾仪器
 	m_oInstrumentStruct* pInstrumentPrevious = NULL;
 	m_oInstrumentStruct* pInstrumentDelete = NULL;
@@ -154,7 +135,7 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		}
 		pInstrumentDelete = pInstrumentPrevious;
 		// 得到要删除仪器沿着路由方向的前一个仪器的指针
-		pInstrumentPrevious = GetPreviousInstr(pInstrumentDelete, pConstVar);
+		pInstrumentPrevious = GetPreviousInstr(pInstrumentDelete);
 		if (pInstrumentDelete->m_bIPSetOK == true)
 		{
 			pRout->m_uiInstrumentNum--;
@@ -165,7 +146,7 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 			pRout->m_olsRoutInstrument.pop_back();
 		}
 		// 回收一个仪器
-		FreeInstrumentFromMap(pInstrumentDelete, pLineList, pConstVar);
+		FreeInstrumentFromMap(pInstrumentDelete, pLineList, pLogOutPut);
 	} while (pInstrument != pInstrumentPrevious);
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
@@ -173,7 +154,6 @@ void DeleteInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument, 
 	m_oRoutStruct* pRout, 
 	m_oLineListStruct* pLineList, 
-	m_oConstVarStruct* pConstVar,
 	m_oLogOutPutStruct* pLogOutPut)
 {
 	hash_map <unsigned int, m_oRoutStruct*>  ::iterator iter;
@@ -181,11 +161,15 @@ void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 	string strConv = "";
 	unsigned int uiRoutIP = 0;
 	m_oRoutStruct* pRoutDelete = NULL;
+	ASSERT(pInstrument != NULL);
+	ASSERT(pRout != NULL);
+	ASSERT(pLineList != NULL);
+	ASSERT(pLogOutPut != NULL);
 	if (pRout->m_pTail == NULL)
 	{
 		return;
 	}
-	DeleteInstrumentAlongRout(pInstrument, pRout, pLineList, pConstVar);
+	DeleteInstrumentAlongRout(pInstrument, pRout, pLineList, pLogOutPut);
 	EnterCriticalSection(&pLineList->m_oSecLineList);
 	while(true)
 	{
@@ -196,7 +180,7 @@ void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 		iter = pLineList->m_pRoutList->m_oRoutDeleteMap.begin();
 		uiRoutIP = iter->first;
 		pRoutDelete = iter->second;
-		DeleteInstrumentAlongRout(pRoutDelete->m_pHead, pRoutDelete, pLineList, pConstVar);
+		DeleteInstrumentAlongRout(pRoutDelete->m_pHead, pRoutDelete, pLineList, pLogOutPut);
 		// 路由索引表回收路由
 		DeleteRout(uiRoutIP, &pLineList->m_pRoutList->m_oRoutMap);
 		str.Format(_T("回收路由IP = 0x%x的过期路由"), uiRoutIP);
@@ -214,10 +198,7 @@ void DeleteAllInstrumentAlongRout(m_oInstrumentStruct* pInstrument,
 // 处理单个尾包帧
 void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 {
-	if (pTailFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailFrameThread != NULL);
 	// 新仪器指针为空
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
@@ -259,7 +240,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		OutputDebugString(str);
 		// 在路由索引表中找到该尾包所在的路由
 		// 更新仪器的存活时间
-		UpdateInstrActiveTime(pInstrument, pTailFrameThread->m_pThread->m_pConstVar);
+		UpdateInstrActiveTime(pInstrument);
 		if (FALSE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 		{
 			LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
@@ -277,10 +258,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 // 处理尾包帧
 void ProcTailFrame(m_oTailFrameThreadStruct* pTailFrameThread)
 {
-	if (pTailFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailFrameThread != NULL);
 	// 帧数量设置为0
 	int iFrameCount = 0;
 	EnterCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
@@ -307,7 +285,7 @@ void ProcTailFrame(m_oTailFrameThreadStruct* pTailFrameThread)
 			}
 			LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 			if (false == ParseInstrTailFrame(pTailFrameThread->m_pTailFrame, 
-				pTailFrameThread->m_pThread->m_pConstVar))
+				pTailFrameThread->m_pThread->m_pConstVar, pTailFrameThread->m_pThread->m_pLogOutPut))
 			{
 				AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, 
 					"ParseInstrumentTailFrame", "", ErrorType, IDS_ERR_PARSE_TAILFRAME);
@@ -321,10 +299,7 @@ void ProcTailFrame(m_oTailFrameThreadStruct* pTailFrameThread)
 // 线程函数
 DWORD WINAPI RunTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 {
-	if (pTailFrameThread == NULL)
-	{
-		return 1;
-	}
+	ASSERT(pTailFrameThread != NULL);
 	bool bClose = false;
 	bool bWork = false;
 	while(true)
@@ -361,10 +336,7 @@ DWORD WINAPI RunTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 bool OnInitTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread, 
 	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pTailFrameThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pTailFrameThread != NULL);
 	EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	if (false == OnInitThread(pTailFrameThread->m_pThread, pLogOutPut, pConstVar))
 	{
@@ -395,10 +367,7 @@ bool OnInitTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread,
 // 初始化尾包接收线程
 bool OnInit_TailFrameThread(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv == NULL)
-	{
-		return false;
-	}
+	ASSERT(pEnv != NULL);
 	pEnv->m_pTailFrameThread->m_pTailFrame = pEnv->m_pTailFrame;
 	pEnv->m_pTailFrameThread->m_pLineList = pEnv->m_pLineList;
 	return OnInitTailFrameThread(pEnv->m_pTailFrameThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
@@ -406,10 +375,7 @@ bool OnInit_TailFrameThread(m_oEnvironmentStruct* pEnv)
 // 关闭尾包接收线程
 bool OnCloseTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 {
-	if (pTailFrameThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pTailFrameThread != NULL);
 	EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	if (false == OnCloseThread(pTailFrameThread->m_pThread))
 	{
@@ -426,10 +392,7 @@ bool OnCloseTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 // 释放尾包接收线程
 void OnFreeTailFrameThread(m_oTailFrameThreadStruct* pTailFrameThread)
 {
-	if (pTailFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailFrameThread != NULL);
 	if (pTailFrameThread->m_pThread != NULL)
 	{
 		delete pTailFrameThread->m_pThread;

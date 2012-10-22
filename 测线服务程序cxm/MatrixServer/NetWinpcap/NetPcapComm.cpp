@@ -175,10 +175,7 @@ void CNetPcapComm::PhraseRcvSndPort(CString str, hash_map<unsigned short, unsign
 BOOL CNetPcapComm::IfRcvPortExistInMap(unsigned short usRcvPort, 
 	hash_map<unsigned short, unsigned short>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pMap != NULL);
 	hash_map<unsigned short, unsigned short>::iterator iter;
 	iter = pMap->find(usRcvPort);
 	if (iter != pMap->end())
@@ -194,10 +191,7 @@ BOOL CNetPcapComm::IfRcvPortExistInMap(unsigned short usRcvPort,
 void CNetPcapComm::AddPortToMap(unsigned short usRcvPort, unsigned short usSndPort, 
 	hash_map<unsigned short, unsigned short>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return;
-	}
+	ASSERT(pMap != NULL);
 	if (FALSE == IfRcvPortExistInMap(usRcvPort, pMap))
 	{
 		pMap->insert(hash_map<unsigned short, unsigned short>::value_type (usRcvPort, usSndPort));
@@ -207,10 +201,7 @@ void CNetPcapComm::AddPortToMap(unsigned short usRcvPort, unsigned short usSndPo
 unsigned int CNetPcapComm::GetSndPortFromMap(unsigned short usRcvPort, 
 	hash_map<unsigned short, unsigned short>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return NULL;
-	}
+	ASSERT(pMap != NULL);
 	hash_map<unsigned short, unsigned short>::iterator iter;
 	iter = pMap->find(usRcvPort);
 	return iter->second;
@@ -218,10 +209,7 @@ unsigned int CNetPcapComm::GetSndPortFromMap(unsigned short usRcvPort,
 /** 重置存储的数据帧*/
 void CNetPcapComm::OnResetFrameData(m_oFrameData* pFrameData)
 {
-	if (pFrameData == NULL)
-	{
-		return;
-	}
+	ASSERT(pFrameData != NULL);
 	pFrameData->m_bDownStream = false;
 	memset(pFrameData->m_ucData, 0, FrameDataSize * sizeof(char));
 	pFrameData->m_uiLength = 0;

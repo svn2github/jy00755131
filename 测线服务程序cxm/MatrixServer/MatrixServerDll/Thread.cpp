@@ -4,10 +4,9 @@
 // 初始化线程函数
 bool OnInitThread(m_oThreadStruct* pThread, m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pThread != NULL);
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pConstVar != NULL);
 	pThread->m_bClose = false;
 	pThread->m_bWork = false;
 	pThread->m_dwThreadID = 0;
@@ -34,10 +33,7 @@ bool OnInitThread(m_oThreadStruct* pThread, m_oLogOutPutStruct* pLogOutPut, m_oC
 // 关闭线程函数
 bool OnCloseThread(m_oThreadStruct* pThread)
 {
-	if (pThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pThread != NULL);
 	int iResult = WaitForSingleObject(pThread->m_hThreadClose, 
 		pThread->m_pConstVar->m_iCloseThreadSleepTimes 
 		* pThread->m_pConstVar->m_iOneSleepTime);

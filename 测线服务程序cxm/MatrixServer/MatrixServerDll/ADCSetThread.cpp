@@ -18,10 +18,7 @@ m_oADCSetThreadStruct* OnCreateADCSetThread(void)
 void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout, 
 	unsigned int uiDstIP)
 {
-	if (pADCSetThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetThread != NULL);
 	CString str = _T("");
 	string strConv = "";
 	unsigned int uiTemp = 0;
@@ -419,7 +416,7 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum);
 	SendFrame(pADCSetThread->m_pADCSetFrame->m_oADCSetFrameSocket, pADCSetThread->m_pADCSetFrame->m_cpSndFrameData, 
 		pADCSetThread->m_pThread->m_pConstVar->m_iSndFrameSize, pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usAimPort, 
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiAimIP, pADCSetThread->m_pThread->m_pConstVar->m_pLogOutPut);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiAimIP, pADCSetThread->m_pThread->m_pLogOutPut);
 	LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	if (bSetLocalSysTime == true)
 	{
@@ -448,7 +445,7 @@ bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, boo
 	pInstrument = GetInstrumentFromLocationMap(iLineIndex, iPointIndex, &pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 	if (bRout == true)
 	{
-		pInstrumentNext = GetNextInstrAlongRout(pInstrument, iDirection, pEnv->m_pConstVar);
+		pInstrumentNext = GetNextInstrAlongRout(pInstrument, iDirection);
 		if (pInstrumentNext == NULL)
 		{
 			LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
@@ -495,17 +492,14 @@ bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, boo
 		pEnv->m_pADCSetFrame->m_cpCommandWord, pEnv->m_pADCSetFrame->m_usCommandWordNum);
 	SendFrame(pEnv->m_pADCSetFrame->m_oADCSetFrameSocket, pEnv->m_pADCSetFrame->m_cpSndFrameData, 
 		pEnv->m_pConstVar->m_iSndFrameSize, pEnv->m_pADCSetFrame->m_pCommandStructSet->m_usAimPort, 
-		pEnv->m_pADCSetFrame->m_pCommandStructSet->m_uiAimIP, pEnv->m_pConstVar->m_pLogOutPut);
+		pEnv->m_pADCSetFrame->m_pCommandStructSet->m_uiAimIP, pEnv->m_pLogOutPutOpt);
 	LeaveCriticalSection(&pEnv->m_pADCSetFrame->m_oSecADCSetFrame);
 	return true;
 }
 // 发送ADC命令设置帧
 void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetThread != NULL);
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	hash_map<unsigned int, m_oInstrumentStruct*> ::iterator iter2;
 	m_oInstrumentStruct* pInstrument = NULL;
@@ -521,7 +515,7 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 			pInstrument = iter->second->m_pHead;
 			do 
 			{
-				pInstrument = GetNextInstrAlongRout(pInstrument, iter->second->m_iRoutDirection, pADCSetThread->m_pThread->m_pConstVar);
+				pInstrument = GetNextInstrAlongRout(pInstrument, iter->second->m_iRoutDirection);
 				if (pInstrument == NULL)
 				{
 					break;
@@ -549,10 +543,7 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 // 处理ADC参数设置应答帧
 void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetThread != NULL);
 	unsigned int uiIPInstrument = 0;
 	unsigned int uiSysTime = 0;
 	unsigned int uiNetTime = 0;
@@ -587,7 +578,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, &pADCSetThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 	pInstrument->m_bADCSetReturn = true;
 	// 更新仪器的存活时间
-	UpdateInstrActiveTime(pInstrument, pADCSetThread->m_pThread->m_pConstVar);
+	UpdateInstrActiveTime(pInstrument);
 	LeaveCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 	if (uiADCSetOperationNb == 17)
 	{
@@ -602,10 +593,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 // 输出接收和发送帧的统计结果
 void OnOutPutADCDataRecResult(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetThread != NULL);
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	CString str = _T("");
 	string strConv = "";
@@ -623,7 +611,7 @@ void OnOutPutADCDataRecResult(m_oADCSetThreadStruct* pADCSetThread)
 	{
 		pInstrument = iter->second;
 		// 仪器类型为采集站
-		if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+		if (pInstrument->m_iInstrumentType == InstrumentTypeFDU)
 		{
 			str.Format(_T("仪器SN = 0x%x，仪器IP = 0x%x，应收ADC数据帧数 %d，实际接收帧数 %d（含重发帧 %d），丢失帧数%d"),
 				pInstrument->m_uiSN, pInstrument->m_uiIP, pInstrument->m_uiADCDataShouldRecFrameNum, 
@@ -651,10 +639,7 @@ void OnOutPutADCDataRecResult(m_oADCSetThreadStruct* pADCSetThread)
 // 命令应答接收完全后的操作
 void OnADCSetNextOpt(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetThread != NULL);
 	int iADCSetCmdNum = pADCSetThread->m_pThread->m_pConstVar->m_iADCSetCmdNum;
 	int iADCStartSampleCmdNum = pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleCmdNum;
 	int iADCStopSampleCmdNum = pADCSetThread->m_pThread->m_pConstVar->m_iADCStopSampleCmdNum;
@@ -686,10 +671,7 @@ void OnADCSetNextOpt(m_oADCSetThreadStruct* pADCSetThread)
 // 判断ADC参数设置应答是否接收完全
 bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pADCSetThread != NULL);
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	hash_map<unsigned int, m_oInstrumentStruct*> ::iterator iter2;
 	m_oInstrumentStruct* pInstrument = NULL;
@@ -715,7 +697,7 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 			pInstrument = iter->second->m_pHead;
 			do 
 			{
-				pInstrument = GetNextInstrAlongRout(pInstrument, iter->second->m_iRoutDirection, pADCSetThread->m_pThread->m_pConstVar);
+				pInstrument = GetNextInstrAlongRout(pInstrument, iter->second->m_iRoutDirection);
 				if (pInstrument == NULL)
 				{
 					break;
@@ -724,7 +706,7 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 				{
 					break;
 				}
-				if (pInstrument->m_iInstrumentType == pADCSetThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU)
+				if (pInstrument->m_iInstrumentType == InstrumentTypeFDU)
 				{
 					if (false == pInstrument->m_bADCSetReturn)
 					{
@@ -789,10 +771,7 @@ bool CheckADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 // 处理ADC参数设置应答帧
 void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetThread != NULL);
 	CString str = _T("");
 	string strConv = "";
 	unsigned int uiADCSetOperationNb = 0;
@@ -822,7 +801,7 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 			}
 			LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 			if (false == ParseInstrADCSetReturnFrame(pADCSetThread->m_pADCSetFrame, 
-				pADCSetThread->m_pThread->m_pConstVar))
+				pADCSetThread->m_pThread->m_pConstVar, pADCSetThread->m_pThread->m_pLogOutPut))
 			{
 				AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ParseInstrumentADCSetReturnFrame",
 					"", ErrorType, IDS_ERR_PARSE_ADCSETRETURNFRAME);
@@ -856,10 +835,7 @@ void ProcADCSetReturnFrame(m_oADCSetThreadStruct* pADCSetThread)
 // 线程等待函数
 void WaitADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetThread != NULL);
 	// 初始化等待次数为0
 	int iWaitCount = 0;
 	bool bClose = false;
@@ -889,10 +865,7 @@ void WaitADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 // 线程函数
 DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return 1;
-	}
+	ASSERT(pADCSetThread != NULL);
 	bool bClose = false;
 	bool bWork = false;
 	unsigned int uiADCSetOperationNb = 0;
@@ -970,10 +943,7 @@ DWORD WINAPI RunADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread, 
 	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pADCSetThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pADCSetThread != NULL);
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	pADCSetThread->m_iADCSetOperationNb = 0;
 	pADCSetThread->m_bADCStartSample = false;
@@ -1009,10 +979,7 @@ bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread,
 // 初始化ADC参数设置线程
 bool OnInit_ADCSetThread(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv == NULL)
-	{
-		return false;
-	}
+	ASSERT(pEnv != NULL);
 	pEnv->m_pADCSetThread->m_pADCSetFrame = pEnv->m_pADCSetFrame;
 	pEnv->m_pADCSetThread->m_pLineList = pEnv->m_pLineList;
 	pEnv->m_pADCSetThread->m_pLogOutPutADCFrameTime = pEnv->m_pLogOutPutADCFrameTime;
@@ -1022,10 +989,7 @@ bool OnInit_ADCSetThread(m_oEnvironmentStruct* pEnv)
 // 关闭ADC参数设置线程
 bool OnCloseADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pADCSetThread != NULL);
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	if (false == OnCloseThread(pADCSetThread->m_pThread))
 	{
@@ -1042,10 +1006,7 @@ bool OnCloseADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 // 释放ADC参数设置线程
 void OnFreeADCSetThread(m_oADCSetThreadStruct* pADCSetThread)
 {
-	if (pADCSetThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetThread != NULL);
 	if (pADCSetThread->m_pThread != NULL)
 	{
 		delete pADCSetThread->m_pThread;

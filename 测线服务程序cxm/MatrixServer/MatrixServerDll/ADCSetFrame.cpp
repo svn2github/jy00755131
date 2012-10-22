@@ -20,16 +20,9 @@ m_oADCSetFrameStruct* OnCreateInstrADCSetFrame(void)
 void OnInitInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pADCSetFrame == NULL) || (pCommInfo == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentADCSetFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pADCSetFrame != NULL);
+	ASSERT(pCommInfo != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	if (pADCSetFrame->m_pCommandStructSet != NULL)
 	{
@@ -108,10 +101,7 @@ void OnInitInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 // 关闭ADC参数设置帧信息结构体
 void OnCloseInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 {
-	if (pADCSetFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetFrame != NULL);
 	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	if (pADCSetFrame->m_cpSndFrameData != NULL)
 	{
@@ -148,10 +138,7 @@ void OnCloseInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 // 释放ADC参数设置帧信息结构体
 void OnFreeInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 {
-	if (pADCSetFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetFrame != NULL);
 	DeleteCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	delete pADCSetFrame;
 	pADCSetFrame = NULL;
@@ -159,10 +146,7 @@ void OnFreeInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 // 创建并设置ADC参数设置端口
 void OnCreateAndSetADCSetFrameSocket(m_oADCSetFrameStruct* pADCSetFrame, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pADCSetFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCSetFrame != NULL);
 	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	// 创建套接字
 	pADCSetFrame->m_oADCSetFrameSocket = CreateInstrSocket(pADCSetFrame->m_pCommandStructSet->m_usReturnPort + pADCSetFrame->m_usPortMove, 
@@ -177,22 +161,15 @@ void OnCreateAndSetADCSetFrameSocket(m_oADCSetFrameStruct* pADCSetFrame, m_oLogO
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetADCSetFrameSocket", "创建并设置ADC参数设置帧端口！");
 }
 // 解析ADC参数设置应答帧
-bool ParseInstrADCSetReturnFrame(m_oADCSetFrameStruct* pADCSetFrame, m_oConstVarStruct* pConstVar)
+bool ParseInstrADCSetReturnFrame(m_oADCSetFrameStruct* pADCSetFrame, m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return false;
-	}
-	if (pADCSetFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentADCSetReturnFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pADCSetFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	bool bReturn = false;
 	EnterCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	bReturn = ParseInstrFrame(pADCSetFrame->m_pCommandStructReturn, 
-		pADCSetFrame->m_cpRcvFrameData, pConstVar);
+		pADCSetFrame->m_cpRcvFrameData, pConstVar, pLogOutPut);
 	LeaveCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	return bReturn;
 }

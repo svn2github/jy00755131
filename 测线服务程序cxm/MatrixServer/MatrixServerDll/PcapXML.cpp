@@ -20,10 +20,7 @@ m_oNetPcapSetupDataStruct* OnCreatePcapAppSetupData(void)
 // 打开Pcap程序配置文件
 BOOL OpenPcapXMLFile(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
-	if (pPcapSetupData == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pPcapSetupData != NULL);
 	CString strOLEObject;
 	COleException oError;
 	COleVariant oVariant;
@@ -57,10 +54,7 @@ BOOL OpenPcapXMLFile(m_oNetPcapSetupDataStruct* pPcapSetupData)
 // 关闭Pcap程序配置文件
 void ClosePcapXMLFile(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
-	if (pPcapSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pPcapSetupData != NULL);
 	EnterCriticalSection(&pPcapSetupData->m_oSecCommInfo);
 	pPcapSetupData->m_oXMLDOMDocument.DetachDispatch();
 	// 释放COM库
@@ -70,10 +64,7 @@ void ClosePcapXMLFile(m_oNetPcapSetupDataStruct* pPcapSetupData)
 // 加载IP设置数据
 void LoadPcapIP(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
-	if (pPcapSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pPcapSetupData != NULL);
 	CString strKey;
 	string strConv = "";
 	CXMLDOMNodeList oNodeList;
@@ -112,10 +103,7 @@ void LoadPcapIP(m_oNetPcapSetupDataStruct* pPcapSetupData)
 // 加载PcapIP设置数据
 void LoadPcapIPSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
-	if (pPcapSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pPcapSetupData != NULL);
 	EnterCriticalSection(&pPcapSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenPcapXMLFile(pPcapSetupData))
@@ -130,10 +118,7 @@ void LoadPcapIPSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData)
 // 加载端口设置数据
 void LoadPcapPort(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
-	if (pPcapSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pPcapSetupData != NULL);
 	CString strKey;
 	string strConv = "";
 	CXMLDOMNodeList oNodeList;
@@ -172,10 +157,7 @@ void LoadPcapPort(m_oNetPcapSetupDataStruct* pPcapSetupData)
 // 加载Pcap端口设置数据
 void LoadPcapPortSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
-	if (pPcapSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pPcapSetupData != NULL);
 	EnterCriticalSection(&pPcapSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenPcapXMLFile(pPcapSetupData))
@@ -190,10 +172,7 @@ void LoadPcapPortSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData)
 // 加载参数设置数据
 void LoadPcapParam(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
-	if (pPcapSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pPcapSetupData != NULL);
 	CString strKey;
 	string strConv = "";
 	CXMLDOMNodeList oNodeList;
@@ -248,10 +227,7 @@ void LoadPcapParam(m_oNetPcapSetupDataStruct* pPcapSetupData)
 // 加载Pcap参数设置数据
 void LoadPcapParamSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
-	if (pPcapSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pPcapSetupData != NULL);
 	EnterCriticalSection(&pPcapSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenPcapXMLFile(pPcapSetupData))
@@ -266,10 +242,7 @@ void LoadPcapParamSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData)
 // 加载Pcap程序配置信息
 void LoadPcapAppSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
-	if (pPcapSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pPcapSetupData != NULL);
  	// 加载IP数据
  	LoadPcapIPSetupData(pPcapSetupData);
   	// 加载端口数据

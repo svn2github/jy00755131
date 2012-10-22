@@ -24,10 +24,7 @@ m_oLineSetupDataStruct* OnCreateLineAppSetupData(void)
 // 打开测线客户端程序配置文件
 BOOL OpenLineClientXMLFile(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strOLEObject;
 	COleException oError;
 	COleVariant oVariant;
@@ -61,10 +58,7 @@ BOOL OpenLineClientXMLFile(m_oLineSetupDataStruct* pLineSetupData)
 // 关闭测线客户端程序配置文件
 void CloseLineClientXMLFile(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	pLineSetupData->m_oXMLDOMDocument.DetachDispatch();
 	// 释放COM库
@@ -476,10 +470,7 @@ void LoadSurvery(m_oSurveryStruct* pSurveryStruct,CXMLDOMElement* pElement)
 // 加载Survery设置队列数据
 void LoadSurveryList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -530,10 +521,7 @@ void LoadSurveryList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Survery设置数据
 void LoadSurverySetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Survery
 	OnResetSurveryList(pLineSetupData);
@@ -581,10 +569,7 @@ void SaveSurvery(m_oSurveryStruct* pSurveryStruct,CXMLDOMElement* pElement)
 // 保存Survery设置队列数据
 void SaveSurveryList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -658,10 +643,7 @@ void SaveSurveryList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Survery设置数据
 void SaveSurverySetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -739,10 +721,7 @@ void LoadPointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement
 // 加载Point Code设置队列数据
 void LoadPointCodeList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -793,10 +772,7 @@ void LoadPointCodeList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Point Code设置数据
 void LoadPointCodeSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Point Code
 	OnResetPointCodeList(pLineSetupData);
@@ -849,10 +825,7 @@ void SavePointCode(m_oPointCodeStruct* pPointCodeStruct,CXMLDOMElement* pElement
 // 保存Point Code设置队列数据
 void SavePointCodeList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -926,10 +899,7 @@ void SavePointCodeList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Point Code设置数据
 void SavePointCodeSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -1018,10 +988,7 @@ void LoadSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement)
 // 加载Sensor设置队列数据
 void LoadSensorList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -1072,10 +1039,7 @@ void LoadSensorList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Sensor设置数据
 void LoadSensorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Sensor
 	OnResetSensorList(pLineSetupData);
@@ -1141,10 +1105,7 @@ void SaveSensor(m_oSensorStruct* pSensorStruct,CXMLDOMElement* pElement)
 // 保存Sensor设置队列数据
 void SaveSensorList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -1218,10 +1179,7 @@ void SaveSensorList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Sensor设置数据
 void SaveSensorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -1311,10 +1269,7 @@ void LoadMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElement* pElement)
 // 加载Marker设置队列数据
 void LoadMarkerList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -1365,10 +1320,7 @@ void LoadMarkerList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Marker设置数据
 void LoadMarkerSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Marker
 	OnResetMarkerList(pLineSetupData);
@@ -1429,10 +1381,7 @@ void SaveMarker(m_oMarkerStruct* pMarkerStruct,CXMLDOMElement* pElement)
 // 保存Marker设置队列数据
 void SaveMarkerList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -1506,10 +1455,7 @@ void SaveMarkerList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Marker设置数据
 void SaveMarkerSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -1604,10 +1550,7 @@ void LoadAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement)
 // 加载Aux设置队列数据
 void LoadAuxList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -1658,10 +1601,7 @@ void LoadAuxList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Aux设置数据
 void LoadAuxSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Aux
 	OnResetAuxList(pLineSetupData);
@@ -1729,10 +1669,7 @@ void SaveAux(m_oAuxStruct* pAuxStruct,CXMLDOMElement* pElement)
 // 保存Aux设置队列数据
 void SaveAuxList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -1806,10 +1743,7 @@ void SaveAuxList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Aux设置数据
 void SaveAuxSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -1902,10 +1836,7 @@ void LoadDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElement* pElement)
 // 加载Detour设置队列数据
 void LoadDetourList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -1956,10 +1887,7 @@ void LoadDetourList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Detour设置数据
 void LoadDetourSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Detour
 	OnResetDetourList(pLineSetupData);
@@ -2020,10 +1948,7 @@ void SaveDetour(m_oDetourStruct* pDetourStruct,CXMLDOMElement* pElement)
 // 保存Detour设置队列数据
 void SaveDetourList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -2097,10 +2022,7 @@ void SaveDetourList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Detour设置数据
 void SaveDetourSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -2175,10 +2097,7 @@ void LoadMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pElement)
 // 加载Mute设置队列数据
 void LoadMuteList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -2229,10 +2148,7 @@ void LoadMuteList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Mute设置数据
 void LoadMuteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Mute
 	OnResetMuteList(pLineSetupData);
@@ -2278,10 +2194,7 @@ void SaveMute(m_oMuteStruct* pMuteStruct,CXMLDOMElement* pElement)
 // 保存Mute设置队列数据
 void SaveMuteList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -2355,10 +2268,7 @@ void SaveMuteList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Mute设置数据
 void SaveMuteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -2443,10 +2353,7 @@ void LoadBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement*
 // 加载BlastMachine设置队列数据
 void LoadBlastMachineList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -2497,10 +2404,7 @@ void LoadBlastMachineList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载BlastMachine设置数据
 void LoadBlastMachineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置BlastMachine
 	OnResetBlastMachineList(pLineSetupData);
@@ -2568,10 +2472,7 @@ void SaveBlastMachine(m_oBlastMachineStruct* pBlastMachineStruct,CXMLDOMElement*
 // 保存BlastMachine设置队列数据
 void SaveBlastMachineList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -2645,10 +2546,7 @@ void SaveBlastMachineList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存BlastMachine设置数据
 void SaveBlastMachineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -2741,14 +2639,8 @@ void LoadAbsolute(m_oAbsoluteStruct* pAbsoluteStruct,CXMLDOMElement* pElement)
 // 加载Absolute设置队列数据
 void LoadAbsoluteList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pElement)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
-	if (pElement == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
+	ASSERT(pElement != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	LPDISPATCH lpDispatch;
@@ -2798,10 +2690,7 @@ void LoadAbsoluteList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pE
 // 加载Absolute设置索引数据
 void LoadAbsoluteMap(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -2847,10 +2736,7 @@ void LoadAbsoluteMap(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Absolute设置数据
 void LoadAbsoluteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Absolute
 	OnResetAbsoluteMap(pLineSetupData);
@@ -2904,14 +2790,8 @@ void SaveAbsolute(m_oAbsoluteStruct* pAbsoluteStruct, CXMLDOMElement* pElement)
 void SaveAbsoluteList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pElement, 
 	map<unsigned int, list<m_oAbsoluteStruct>>::iterator iter, unsigned int uiTabCount)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
-	if (pElement == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
+	ASSERT(pElement != NULL);
 	CString strKey;
 	string strConv = "";
 	CString str = _T("");
@@ -2974,10 +2854,7 @@ void SaveAbsoluteList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pE
 // 保存Absolute设置索引数据
 void SaveAbsoluteMap(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -3054,10 +2931,7 @@ void SaveAbsoluteMap(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Absolute设置数据
 void SaveAbsoluteSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -3159,10 +3033,7 @@ void LoadGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMElement* pElement)
 // 加载Generic设置队列数据
 void LoadGenericList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -3213,10 +3084,7 @@ void LoadGenericList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Generic设置数据
 void LoadGenericSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Generic
 	OnResetGenericList(pLineSetupData);
@@ -3274,10 +3142,7 @@ void SaveGeneric(m_oGenericStruct* pGenericStruct,CXMLDOMElement* pElement)
 // 保存Generic设置队列数据
 void SaveGenericList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -3351,10 +3216,7 @@ void SaveGenericList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Generic设置数据
 void SaveGenericSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -3406,10 +3268,7 @@ void SetGenericSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruc
 // 加载Look设置数据
 void LoadLook(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -3451,10 +3310,7 @@ void LoadLook(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Look设置数据
 void LoadLookSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
@@ -3469,10 +3325,7 @@ void LoadLookSetupData(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Look设置数据
 void SaveLook(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -3519,10 +3372,7 @@ void SaveLook(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Look设置数据
 void SaveLookSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -3562,10 +3412,7 @@ void SetLookSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* 
 // 加载LAULeakage设置数据
 void LoadLAULeakage(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -3601,10 +3448,7 @@ void LoadLAULeakage(m_oLineSetupDataStruct* pLineSetupData)
 // 加载LAULeakage设置数据
 void LoadLAULeakageSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenLineClientXMLFile(pLineSetupData))
@@ -3619,10 +3463,7 @@ void LoadLAULeakageSetupData(m_oLineSetupDataStruct* pLineSetupData)
 // 保存LAULeakage设置数据
 void SaveLAULeakage(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -3660,10 +3501,7 @@ void SaveLAULeakage(m_oLineSetupDataStruct* pLineSetupData)
 // 保存LAULeakage设置数据
 void SaveLAULeakageSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -3723,10 +3561,7 @@ void LoadFormLine(m_oFormLineStruct* pFormLineStruct,CXMLDOMElement* pElement)
 // 加载FormLine设置队列数据
 void LoadFormLineList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -3777,10 +3612,7 @@ void LoadFormLineList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载FormLine设置数据
 void LoadFormLineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置FormLine
 	OnResetFormLineList(pLineSetupData);
@@ -3829,10 +3661,7 @@ void SaveFormLine(m_oFormLineStruct* pFormLineStruct,CXMLDOMElement* pElement)
 // 保存FormLine设置队列数据
 void SaveFormLineList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -3906,10 +3735,7 @@ void SaveFormLineList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存FormLine设置数据
 void SaveFormLineSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -3997,10 +3823,7 @@ void LoadInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument
 // 加载Instrument_SensorTestBase设置队列数据
 void LoadInstrument_SensorTestBaseList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -4065,10 +3888,7 @@ void LoadInstrument_SensorTestBaseList(bool bInstrument, m_oLineSetupDataStruct*
 // 加载Instrument_SensorTestBase设置数据
 void LoadInstrument_SensorTestBaseSetupData(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Instrument_SensorTestBase
 	OnResetInstrument_SensorTestBaseList(bInstrument, pLineSetupData);
@@ -4140,10 +3960,7 @@ void SaveInstrument_SensorTestBase(Instrument_SensorTestBase_Struct* pInstrument
 // 保存Instrument_SensorTestBase设置队列数据
 void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -4246,10 +4063,7 @@ void SaveInstrument_SensorTestBaseList(bool bInstrument, m_oLineSetupDataStruct*
 // 保存Instrument_SensorTestBase设置数据
 void SaveInstrument_SensorTestBaseSetupData(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -4356,10 +4170,7 @@ void LoadInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrume
 // 加载Instrument_SensorTestLimit设置队列数据
 void LoadInstrument_SensorTestLimitList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -4424,10 +4235,7 @@ void LoadInstrument_SensorTestLimitList(bool bInstrument, m_oLineSetupDataStruct
 // 加载Instrument_SensorTestLimit设置数据
 void LoadInstrument_SensorTestLimitSetupData(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Instrument_SensorTestLimit
 	OnResetInstrument_SensorTestLimitList(bInstrument, pLineSetupData);
@@ -4489,10 +4297,7 @@ void SaveInstrument_SensorTestLimit(Instrument_SensorTestLimit_Struct* pInstrume
 // 保存Instrument_SensorTestLimit设置队列数据
 void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -4595,10 +4400,7 @@ void SaveInstrument_SensorTestLimitList(bool bInstrument, m_oLineSetupDataStruct
 // 保存Instrument_SensorTestLimit设置数据
 void SaveInstrument_SensorTestLimitSetupData(bool bInstrument, m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -4703,10 +4505,7 @@ void LoadInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct,CXMLDOMEl
 // 加载Instrument Test设置队列数据
 void LoadInstrumentTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -4757,10 +4556,7 @@ void LoadInstrumentTestList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Instrument Test设置数据
 void LoadInstrumentTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Instrument Test
 	OnResetInstrumentTestList(pLineSetupData);
@@ -4825,10 +4621,7 @@ void SaveInstrumentTest(m_oInstrumentTestStruct* pInstrumentTestStruct, CXMLDOME
 // 保存Instrument Test设置队列数据
 void SaveInstrumentTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -4901,10 +4694,7 @@ void SaveInstrumentTestList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Instrument Test设置数据
 void SaveInstrumentTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -4994,10 +4784,7 @@ void LoadSensorTest(m_oSensorTestStruct* pSensorTestStruct,CXMLDOMElement* pElem
 // 加载Sensor Test设置队列数据
 void LoadSensorTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -5048,10 +4835,7 @@ void LoadSensorTestList(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Sensor Test设置数据
 void LoadSensorTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Sensor Test
 	OnResetSensorTestList(pLineSetupData);
@@ -5105,10 +4889,7 @@ void SaveSensorTest(m_oSensorTestStruct* pSensorTestStruct, CXMLDOMElement* pEle
 // 保存Sensor Test设置队列数据
 void SaveSensorTestList(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -5181,10 +4962,7 @@ void SaveSensorTestList(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Sensor Test设置数据
 void SaveSensorTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -5261,14 +5039,8 @@ void LoadMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDO
 // 加载Multiple Test设置队列数据
 void LoadMultipleTestList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pElement)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
-	if (pElement == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
+	ASSERT(pElement != NULL);
 	CString strKey;
 	CString str = _T("");
 	string strConv = "";
@@ -5344,10 +5116,7 @@ void LoadMultipleTestList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement
 // 加载Multiple Test设置索引数据
 void LoadMultipleTestMap(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -5395,10 +5164,7 @@ void LoadMultipleTestMap(m_oLineSetupDataStruct* pLineSetupData)
 // 加载Multiple Test设置数据
 void LoadMultipleTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置Multiple Test
 	OnResetMultipleTestMap(pLineSetupData);
@@ -5454,14 +5220,8 @@ void SaveMultipleTest(m_oMultipleTestTaskStruct* pMultipleTestTaskStruct, CXMLDO
 void SaveMultipleTestList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement* pElement, 
 	map<m_oMultipleTestKeyStruct, list<m_oMultipleTestTaskStruct>>::iterator iter, unsigned int uiTabCount)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
-	if (pElement == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
+	ASSERT(pElement != NULL);
 	CString strKey;
 	string strConv = "";
 	CString str = _T("");
@@ -5550,10 +5310,7 @@ void SaveMultipleTestList(m_oLineSetupDataStruct* pLineSetupData, CXMLDOMElement
 // 保存Multiple Test设置索引数据
 void SaveMultipleTestMap(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -5626,10 +5383,7 @@ void SaveMultipleTestMap(m_oLineSetupDataStruct* pLineSetupData)
 // 保存Multiple Test设置数据
 void SaveMultipleTestSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -5710,10 +5464,7 @@ void SetMultipleTestSetupData(char* pChar, unsigned int uiSize, m_oLineSetupData
 // 加载SeisMonitor设置数据
 void LoadSeisMonitor(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	CString str = _T("");
 	string strConv = "";
@@ -5756,10 +5507,7 @@ void LoadSeisMonitor(m_oLineSetupDataStruct* pLineSetupData)
 // 加载SeisMonitor设置数据
 void LoadSeisMonitorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 重置SeisMonitor
 	OnResetSeisMonitor(pLineSetupData);
@@ -5776,10 +5524,7 @@ void LoadSeisMonitorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 // 保存SeisMonitor设置数据
 void SaveSeisMonitor(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	CString strKey;
 	string strConv = "";
 	CString str = _T("");
@@ -5821,10 +5566,7 @@ void SaveSeisMonitor(m_oLineSetupDataStruct* pLineSetupData)
 // 保存SeisMonitor设置数据
 void SaveSeisMonitorSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -5863,10 +5605,7 @@ void SetSeisMonitorSetupData(char* pChar, unsigned int uiSize, m_oLineSetupDataS
 // 加载测线客户端程序设置数据
 void LoadLineAppSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	// 加载Survery设置数据
 	LoadSurverySetupData(pLineSetupData);
 	// 加载Point Code设置数据
@@ -5914,10 +5653,7 @@ void LoadLineAppSetupData(m_oLineSetupDataStruct* pLineSetupData)
 // 保存测线客户端程序设置数据
 void SaveLineAppSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
-	if (pLineSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineSetupData != NULL);
 	// 保存Survery设置数据
 	SaveSurverySetupData(pLineSetupData);
 	// 保存Point Code设置数据

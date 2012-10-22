@@ -4,10 +4,7 @@
 // 重置路由信息
 void OnRoutReset(m_oRoutStruct* pRout)
 {
-	if (pRout == NULL)
-	{
-		return;
-	}
+	ASSERT(pRout != NULL);
 	// 仪器是否使用中
 	pRout->m_bInUsed = false;
 	// 路由方向 1-上；2-下；3-左；4右
@@ -31,10 +28,7 @@ void OnRoutReset(m_oRoutStruct* pRout)
 BOOL IfIndexExistInRoutMap(unsigned int uiRoutIP, 
 	hash_map<unsigned int, m_oRoutStruct*>* pRoutMap)
 {
-	if (pRoutMap == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pRoutMap != NULL);
 	BOOL bResult = FALSE;
 	hash_map<unsigned int, m_oRoutStruct*>::iterator iter;
 	iter = pRoutMap->find(uiRoutIP);
@@ -52,10 +46,8 @@ BOOL IfIndexExistInRoutMap(unsigned int uiRoutIP,
 void AddRout(unsigned int uiIndex, m_oRoutStruct* pRout, 
 	hash_map<unsigned int, m_oRoutStruct*>* pRoutMap)
 {
-	if ((pRout == NULL) || (pRoutMap == NULL))
-	{
-		return;
-	}
+	ASSERT(pRout != NULL);
+	ASSERT(pRoutMap != NULL);
 	if (false == IfIndexExistInRoutMap(uiIndex, pRoutMap))
 	{
 		pRoutMap->insert(hash_map<unsigned int, m_oRoutStruct*>::value_type (uiIndex, pRout));
@@ -65,10 +57,7 @@ void AddRout(unsigned int uiIndex, m_oRoutStruct* pRout,
 m_oRoutStruct* GetRout(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oRoutStruct*>* pRoutMap)
 {
-	if (pRoutMap == NULL)
-	{
-		return NULL;
-	}
+	ASSERT(pRoutMap != NULL);
 	hash_map<unsigned int, m_oRoutStruct*>::iterator iter;
 	iter = pRoutMap->find(uiIndex);
 	return iter->second;
@@ -78,10 +67,7 @@ m_oRoutStruct* GetRout(unsigned int uiIndex,
 void DeleteRout(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oRoutStruct*>* pRoutMap)
 {
-	if (pRoutMap == NULL)
-	{
-		return;
-	}
+	ASSERT(pRoutMap != NULL);
 	if (pRoutMap->size() == 0)
 	{
 		return;

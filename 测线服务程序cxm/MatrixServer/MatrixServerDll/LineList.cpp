@@ -14,10 +14,7 @@ m_oLineListStruct* OnCreateLineList(void)
 // 重置测线队列结构体
 void OnResetLineList(m_oLineListStruct* pLineList)
 {
-	if (pLineList == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineList != NULL);
 	EnterCriticalSection(&pLineList->m_oSecLineList);
 	// 重置仪器队列
 	OnResetInstrumentList(pLineList->m_pInstrumentList);
@@ -33,16 +30,8 @@ void OnResetLineList(m_oLineListStruct* pLineList)
 // 初始化测线队列结构体
 void OnInitLineList(m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pLineList == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitLineList", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pLineList != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pLineList->m_oSecLineList);
 	// 初始化仪器队列结构体
 	OnInitInstrumentList(pLineList->m_pInstrumentList, pConstVar);
@@ -58,10 +47,7 @@ void OnInitLineList(m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
 // 关闭测线队列结构体
 void OnCloseLineList(m_oLineListStruct* pLineList)
 {
-	if (pLineList == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineList != NULL);
 	EnterCriticalSection(&pLineList->m_oSecLineList);
 	// 释放仪器队列资源
 	OnCloseInstrumentList(pLineList->m_pInstrumentList);
@@ -72,10 +58,7 @@ void OnCloseLineList(m_oLineListStruct* pLineList)
 // 释放测线队列结构体
 void OnFreeLineList(m_oLineListStruct* pLineList)
 {
-	if (pLineList == NULL)
-	{
-		return;
-	}
+	ASSERT(pLineList != NULL);
 	EnterCriticalSection(&pLineList->m_oSecLineList);
 	// 释放仪器队列结构体资源
 	OnFreeInstrumentList(pLineList->m_pInstrumentList);

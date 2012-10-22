@@ -7,17 +7,13 @@ m_oConstVarStruct* OnCreateConstVar(void)
 	m_oConstVarStruct* pConstVar = NULL;
 	pConstVar = new m_oConstVarStruct;
 	pConstVar->m_cpFrameHeadCheck = NULL;
-	pConstVar->m_pLogOutPut = NULL;
 	pConstVar->m_strINIFilePath = "..\\parameter\\MatrixServerDLL.ini";
 	return pConstVar;
 }
 // 载入INI文件
-void LoadIniFile(m_oConstVarStruct* pConstVar)
+bool LoadIniFile(m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
+	ASSERT(pConstVar != NULL);
 	CString strSection	= _T("");
 	CString strSectionKey = _T("");
 	CString strValue = _T("");
@@ -26,9 +22,9 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 	strFilePath = pConstVar->m_strINIFilePath.c_str();
 	if (false == IfFileExist(strFilePath))
 	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "LoadIniFile", "", 
-			ErrorType, IDS_ERR_FILE_NOEXIST);
-		return;
+		strFilePath += _T("is not exist!");
+		AfxMessageBox(strFilePath);
+		return false;
 	}
 	try
 	{
@@ -110,14 +106,14 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("LineSysStableTime");		// 测网系统达到稳定状态时间
 		pConstVar->m_iLineSysStableTime = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("ADCSetOptNb");			// ADC参数设置操作序号
-		pConstVar->m_iADCSetOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("ADCSetOptNb");			// ADC参数设置操作序号
+// 		pConstVar->m_iADCSetOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("ADCStartSampleOptNb");	// ADC开始采集操作序号
-		pConstVar->m_iADCStartSampleOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("ADCStartSampleOptNb");	// ADC开始采集操作序号
+// 		pConstVar->m_iADCStartSampleOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("ADCStopSampleOptNb");		// ADC停止采集操作序号
-		pConstVar->m_iADCStopSampleOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("ADCStopSampleOptNb");		// ADC停止采集操作序号
+// 		pConstVar->m_iADCStopSampleOptNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCSetCmdNum");			// ADC参数设置命令数
 		pConstVar->m_iADCSetCmdNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
@@ -137,32 +133,32 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("ADCStopSampleBeginNb");	// ADC停止采集起始命令序号
 		pConstVar->m_iADCStopSampleBeginNb = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
-		pConstVar->m_iInstrumentTypeLAUX = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
+// 		pConstVar->m_iInstrumentTypeLAUX = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("InstrumentTypeLAUL");		// 仪器类型-电源站
-		pConstVar->m_iInstrumentTypeLAUL = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("InstrumentTypeLAUL");		// 仪器类型-电源站
+// 		pConstVar->m_iInstrumentTypeLAUL = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("InstrumentTypeFDU");		// 仪器类型-采集站
-		pConstVar->m_iInstrumentTypeFDU = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("InstrumentTypeFDU");		// 仪器类型-采集站
+// 		pConstVar->m_iInstrumentTypeFDU = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("InstrumentTypeLCI");		// 仪器类型-LCI
-		pConstVar->m_iInstrumentTypeLCI= GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("InstrumentTypeLCI");		// 仪器类型-LCI
+// 		pConstVar->m_iInstrumentTypeLCI= GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("DirectionTop");			// 方向上方
-		pConstVar->m_iDirectionTop = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("DirectionTop");			// 方向上方
+// 		pConstVar->m_iDirectionTop = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("DirectionDown");			// 方向下方
-		pConstVar->m_iDirectionDown = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("DirectionDown");			// 方向下方
+// 		pConstVar->m_iDirectionDown = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("DirectionLeft");			// 方向左方
-		pConstVar->m_iDirectionLeft = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
-
-		strSectionKey=_T("DirectionRight");			// 方向右方
-		pConstVar->m_iDirectionRight = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
-
-		strSectionKey=_T("DirectionCenter");		// 方向正中
-		pConstVar->m_iDirectionCenter = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("DirectionLeft");			// 方向左方
+// 		pConstVar->m_iDirectionLeft = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 
+// 		strSectionKey=_T("DirectionRight");			// 方向右方
+// 		pConstVar->m_iDirectionRight = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 
+// 		strSectionKey=_T("DirectionCenter");		// 方向正中
+// 		pConstVar->m_iDirectionCenter = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("IPSetAddrStart");			// IP地址设置的起始地址
 		pConstVar->m_iIPSetAddrStart = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
@@ -374,24 +370,18 @@ void LoadIniFile(m_oConstVarStruct* pConstVar)
 	{
 		e->ReportError(MB_OK, IDS_ERR_OTHER_EXCEPTION);
 	}
+	return true;
 }
 // 初始化常量信息结构体
-void OnInitConstVar(m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut)
+bool OnInitConstVar(m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	pConstVar->m_pLogOutPut = pLogOutPut;
-	LoadIniFile(pConstVar);
+	ASSERT(pConstVar != NULL);
+	return LoadIniFile(pConstVar);
 }
 // 关闭常量信息结构体
 void OnCloseConstVar(m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
+	ASSERT(pConstVar != NULL);
 	if (pConstVar->m_cpFrameHeadCheck != NULL)
 	{
 		delete[] pConstVar->m_cpFrameHeadCheck;
@@ -401,10 +391,7 @@ void OnCloseConstVar(m_oConstVarStruct* pConstVar)
 // 释放常量信息结构体
 void OnFreeConstVar(m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
+	ASSERT(pConstVar != NULL);
 	delete pConstVar;
 	pConstVar = NULL;
 }

@@ -4,10 +4,7 @@
 // 重置数据存储缓冲区信息
 void OnADCDataBufReset(m_oADCDataBufStruct* pADCDataBuf)
 {
-	if (pADCDataBuf == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataBuf != NULL);
 	// 是否使用中
 	pADCDataBuf->m_bInUsed = false;
 	// 数据存储帧序号，从0开始

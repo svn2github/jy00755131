@@ -16,10 +16,7 @@ m_oErrorCodeThreadStruct* OnCreateErrorCodeThread(void)
 // 线程等待函数
 void WaitErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 {
-	if (pErrorCodeThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pErrorCodeThread != NULL);
 	// 初始化等待次数为0
 	int iWaitCount = 0;
 	bool bClose = false;
@@ -49,10 +46,7 @@ void WaitErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 // 处理单个误码查询应答帧
 void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 {
-	if (pErrorCodeThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pErrorCodeThread != NULL);
 	unsigned int uiIPInstrument = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oRoutStruct* pRout = NULL;
@@ -110,8 +104,8 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		return;
 	}
 	// 更新仪器的存活时间
-	UpdateInstrActiveTime(pInstrument, pErrorCodeThread->m_pThread->m_pConstVar);
-	if (NULL == GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pErrorCodeThread->m_pThread->m_pConstVar))
+	UpdateInstrActiveTime(pInstrument);
+	if (NULL == GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection))
 	{
 		LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
 		return;
@@ -120,8 +114,8 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	strOutPut += str;
 	strDebug += str;
 	// 仪器类型为LCI或者交叉站
-	if ((pInstrument->m_iInstrumentType == pErrorCodeThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
-		|| (pInstrument->m_iInstrumentType == pErrorCodeThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
+	if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
+		|| (pInstrument->m_iInstrumentType == InstrumentTypeLAUX))
 	{
 		// 交叉站大线A数据故障
 		if (pInstrument->m_uiErrorCodeReturnNum != 0)
@@ -215,7 +209,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 				iTemp = cLAUXErrorCodeCmdCount - pInstrument->m_cLAUXErrorCodeCmdCountOld;
 			}
 			// LCI不计算命令误码
-			if (pInstrument->m_iInstrumentType == pErrorCodeThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
+			if (pInstrument->m_iInstrumentType == InstrumentTypeLCI)
 			{
 				iTemp = 0;
 			}
@@ -331,10 +325,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 // 处理误码查询应答帧
 void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 {
-	if (pErrorCodeThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pErrorCodeThread != NULL);
 	// 帧数量设置为0
 	int iFrameCount = 0;
 	// 得到首包接收网络端口帧数量
@@ -361,7 +352,7 @@ void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			}
 			LeaveCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
 			if (false == ParseInstrErrorCodeReturnFrame(pErrorCodeThread->m_pErrorCodeFrame, 
-				pErrorCodeThread->m_pThread->m_pConstVar))
+				pErrorCodeThread->m_pThread->m_pConstVar, pErrorCodeThread->m_pThread->m_pLogOutPut))
 			{
 				AddMsgToLogOutPutList(pErrorCodeThread->m_pThread->m_pLogOutPut, 
 					"ParseInstrumentErrorCodeReturnFrame","", 
@@ -376,10 +367,7 @@ void ProcErrorCodeReturnFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 // 发送误码查询帧
 void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 {
-	if (pErrorCodeThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pErrorCodeThread != NULL);
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	m_oRoutStruct* pRout = NULL;
 	m_oInstrumentStruct* pInstrument = NULL;
@@ -396,7 +384,7 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			pInstrument = pRout->m_pHead;
 			do 
 			{
-				pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection, pErrorCodeThread->m_pThread->m_pConstVar);
+				pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection);
 				if (pInstrument == NULL)
 				{
 					break;
@@ -405,7 +393,8 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			} while (pInstrument != pRout->m_pTail);
 			// 广播发送误码查询帧
 			MakeInstrErrorCodeQueryFrame(pErrorCodeThread->m_pErrorCodeFrame,
-				pErrorCodeThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiBroadCastPort);
+				pErrorCodeThread->m_pThread->m_pConstVar, pRout->m_pTail->m_uiBroadCastPort,
+				pErrorCodeThread->m_pThread->m_pLogOutPut);
 			str.Format(_T("向路由IP = 0x%x广播发送误码查询帧"), pRout->m_uiRoutIP);
 			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);
@@ -416,10 +405,7 @@ void ProcErrorCodeQueryFrame(m_oErrorCodeThreadStruct* pErrorCodeThread)
 // 线程函数
 DWORD WINAPI RunErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 {
-	if (pErrorCodeThread == NULL)
-	{
-		return 1;
-	}
+	ASSERT(pErrorCodeThread != NULL);
 	bool bClose = false;
 	bool bWork = false;
 	while(true)
@@ -458,10 +444,7 @@ DWORD WINAPI RunErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 bool OnInitErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread, 
 	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pErrorCodeThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pErrorCodeThread != NULL);
 	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	if (false == OnInitThread(pErrorCodeThread->m_pThread, pLogOutPut, pConstVar))
 	{
@@ -492,10 +475,7 @@ bool OnInitErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread,
 // 初始化误码查询线程
 bool OnInit_ErrorCodeThread(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv == NULL)
-	{
-		return false;
-	}
+	ASSERT(pEnv != NULL);
 	pEnv->m_pErrorCodeThread->m_pLogOutPutErrorCode = pEnv->m_pLogOutPutErrorCode;
 	pEnv->m_pErrorCodeThread->m_pErrorCodeFrame = pEnv->m_pErrorCodeFrame;
 	pEnv->m_pErrorCodeThread->m_pLineList = pEnv->m_pLineList;
@@ -504,10 +484,7 @@ bool OnInit_ErrorCodeThread(m_oEnvironmentStruct* pEnv)
 // 关闭误码查询线程
 bool OnCloseErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 {
-	if (pErrorCodeThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pErrorCodeThread != NULL);
 	EnterCriticalSection(&pErrorCodeThread->m_oSecErrorCodeThread);
 	if (false == OnCloseThread(pErrorCodeThread->m_pThread))
 	{
@@ -524,10 +501,7 @@ bool OnCloseErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 // 释放误码查询线程
 void OnFreeErrorCodeThread(m_oErrorCodeThreadStruct* pErrorCodeThread)
 {
-	if (pErrorCodeThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pErrorCodeThread != NULL);
 	if (pErrorCodeThread->m_pThread != NULL)
 	{
 		delete pErrorCodeThread->m_pThread;

@@ -17,10 +17,7 @@ m_oADCDataRecThreadStruct* OnCreateADCDataRecThread(void)
 // 线程等待函数
 void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	// 初始化等待次数为0
 	int iWaitCount = 0;
 	bool bClose = false;
@@ -50,10 +47,7 @@ void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 // 采样数据回调函数
 void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, ProSampleDateCallBack pCallBack)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	pADCDataRecThread->m_oProSampleDataCallBack = pCallBack;
 	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
@@ -62,10 +56,7 @@ void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, ProS
 void AddToADCDataWriteFileList(int iLineIndex, int iPointIndex, unsigned int uiFrameNb,
 	unsigned int uiSN, unsigned int uiSysTime, m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	m_oADCDataBufStruct* pADCDataBuf = NULL;
 	pADCDataBuf = GetFreeADCDataBuf(pADCDataRecThread->m_pADCDataBufArray);
 	pADCDataBuf->m_uiFrameNb = uiFrameNb;
@@ -96,7 +87,7 @@ BOOL FindFDUNotRecADCData(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		iter != pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
 	{
 		if ((iter->second->m_uiADCDataActualRecFrameNum == 0)
-			&& (iter->second->m_iInstrumentType == pADCDataRecThread->m_pThread->m_pConstVar->m_iInstrumentTypeFDU))
+			&& (iter->second->m_iInstrumentType == InstrumentTypeFDU))
 		{
 			str.Format(_T("未收到SN = 0x%x的采集站的ADC数据帧"), iter->second->m_uiSN);
 			strConv = (CStringA)str;
@@ -111,10 +102,7 @@ BOOL FindFDUNotRecADCData(m_oADCDataRecThreadStruct* pADCDataRecThread)
 // 处理单个ADC数据帧
 void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	unsigned int uiIPInstrument = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
@@ -175,7 +163,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
 		&pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 	// 更新仪器的存活时间
-	UpdateInstrActiveTime(pInstrument, pADCDataRecThread->m_pThread->m_pConstVar);
+	UpdateInstrActiveTime(pInstrument);
 	// 在丢帧索引表中找到
 	if (TRUE == IfIndexExistInADCFrameLostMap(uiIPInstrument, usADCDataFramePointNow, 
 		&pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oADCLostFrameMap))
@@ -374,10 +362,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 // 处理ADC数据接收帧
 void ProcADCDataRecFrame(m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	// 帧数量设置为0
 	int iFrameCount = 0;
 	// 得到首包接收网络端口帧数量
@@ -404,7 +389,7 @@ void ProcADCDataRecFrame(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			}
 			LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 			if (false == ParseInstrADCDataRecFrame(pADCDataRecThread->m_pADCDataFrame, 
-					pADCDataRecThread->m_pThread->m_pConstVar))
+					pADCDataRecThread->m_pThread->m_pConstVar, pADCDataRecThread->m_pThread->m_pLogOutPut))
 			{
 				AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ParseInstrumentADCDataRecFrame",
 					"", ErrorType, IDS_ERR_PARSE_ADCDATARECFRAME);
@@ -418,10 +403,7 @@ void ProcADCDataRecFrame(m_oADCDataRecThreadStruct* pADCDataRecThread)
 // 处理ADC数据重发
 void ProcADCRetransmission(m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct> ::iterator iter;
 	m_oADCLostFrameStruct* pLostFrame = NULL;
 	CString str = _T("");
@@ -439,7 +421,8 @@ void ProcADCRetransmission(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		{
 			// 生成ADC数据重发帧
 			MakeInstrADCDataFrame(pADCDataRecThread->m_pADCDataFrame, 
-				pADCDataRecThread->m_pThread->m_pConstVar, iter->first.m_uiIP, iter->first.m_usADCFramePointNb);
+				pADCDataRecThread->m_pThread->m_pConstVar, iter->first.m_uiIP, iter->first.m_usADCFramePointNb,
+				pADCDataRecThread->m_pThread->m_pLogOutPut);
 			str.Format(_T("向仪器IP = 0x%x的仪器发送ADC数据重发帧，重发的指针偏移量 = %d"), iter->first.m_uiIP,
 				iter->first.m_usADCFramePointNb);
 			strConv = (CStringA)str;
@@ -472,10 +455,7 @@ void ProcADCRetransmission(m_oADCDataRecThreadStruct* pADCDataRecThread)
 // 线程函数
 DWORD WINAPI RunADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return 1;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	bool bClose = false;
 	bool bWork = false;
 	while(true)
@@ -514,10 +494,7 @@ DWORD WINAPI RunADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 bool OnInitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread, 
 	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	if (false == OnInitThread(pADCDataRecThread->m_pThread, pLogOutPut, pConstVar))
 	{
@@ -552,10 +529,7 @@ bool OnInitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread,
 // 初始化ADC数据接收线程
 bool OnInit_ADCDataRecThread(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv == NULL)
-	{
-		return false;
-	}
+	ASSERT(pEnv != NULL);
 	pEnv->m_pADCDataRecThread->m_pLogOutPutADCFrameTime = pEnv->m_pLogOutPutADCFrameTime;
 	pEnv->m_pADCDataRecThread->m_pADCDataBufArray = pEnv->m_pADCDataBufArray;
 	pEnv->m_pADCDataRecThread->m_pADCDataFrame = pEnv->m_pADCDataFrame;
@@ -565,10 +539,7 @@ bool OnInit_ADCDataRecThread(m_oEnvironmentStruct* pEnv)
 // 关闭ADC数据接收线程
 bool OnCloseADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 	if (false == OnCloseThread(pADCDataRecThread->m_pThread))
 	{
@@ -585,10 +556,7 @@ bool OnCloseADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 // 释放ADC数据接收线程
 void OnFreeADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
-	if (pADCDataRecThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataRecThread != NULL);
 	if (pADCDataRecThread->m_pThread != NULL)
 	{
 		delete pADCDataRecThread->m_pThread;

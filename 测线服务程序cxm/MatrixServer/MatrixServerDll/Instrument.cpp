@@ -4,10 +4,7 @@
 // 仪器信息重置
 void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 {
-	if (pInstrument == NULL)
-	{
-		return;
-	}
+	ASSERT(pInstrument != NULL);
 	// 仪器是否使用中
 	pInstrument->m_bInUsed = false;
 	// 仪器设备号
@@ -201,10 +198,7 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 BOOL IfIndexExistInMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pMap != NULL);
 	BOOL bResult = FALSE;
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
@@ -222,10 +216,8 @@ BOOL IfIndexExistInMap(unsigned int uiIndex,
 void AddInstrumentToMap(unsigned int uiIndex, m_oInstrumentStruct* pInstrument, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
-	if ((pInstrument == NULL) || (pMap == NULL))
-	{
-		return;
-	}
+	ASSERT(pInstrument != NULL);
+	ASSERT(pMap != NULL);
 	if (FALSE == IfIndexExistInMap(uiIndex, pMap))
 	{
 		pMap->insert(hash_map<unsigned int, m_oInstrumentStruct*>::value_type (uiIndex, pInstrument));
@@ -235,10 +227,7 @@ void AddInstrumentToMap(unsigned int uiIndex, m_oInstrumentStruct* pInstrument,
 m_oInstrumentStruct* GetInstrumentFromMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return NULL;
-	}
+	ASSERT(pMap != NULL);
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
 	return iter->second;
@@ -247,10 +236,7 @@ m_oInstrumentStruct* GetInstrumentFromMap(unsigned int uiIndex,
 BOOL DeleteInstrumentFromMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pMap != NULL);
 	BOOL bResult = FALSE;
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
@@ -270,10 +256,7 @@ BOOL DeleteInstrumentFromMap(unsigned int uiIndex,
 BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pMap != NULL);
 	BOOL bResult = FALSE;
 	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
@@ -292,10 +275,8 @@ BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex,
 void AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pInstrument, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
 {
-	if ((pInstrument == NULL) || (pMap == NULL))
-	{
-		return;
-	}
+	ASSERT(pInstrument != NULL);
+	ASSERT(pMap != NULL);
 	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
 	if (false == IfLocationExistInMap(iLineIndex, iPointIndex, pMap))
 	{
@@ -306,10 +287,7 @@ void AddLocationToMap(int iLineIndex, int iPointIndex, m_oInstrumentStruct* pIns
 m_oInstrumentStruct* GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return NULL;
-	}
+	ASSERT(pMap != NULL);
 	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(Location);
@@ -323,10 +301,7 @@ m_oInstrumentStruct* GetInstrumentFromLocationMap(int iLineIndex, int iPointInde
 BOOL DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pMap != NULL);
 	BOOL bResult = FALSE;
 	m_oInstrumentLocationStruct Location(iLineIndex, iPointIndex);
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>::iterator iter;
@@ -345,31 +320,30 @@ BOOL DeleteInstrumentFromLocationMap(int iLineIndex, int iPointIndex,
 
 // 得到仪器在某一方向上的路由IP
 bool GetRoutIPBySn(unsigned int uiSN, int iDirection, 
-	m_oInstrumentListStruct* pInstrumentList, m_oConstVarStruct* pConstVar,
-	unsigned int& uiRoutIP)
+	m_oInstrumentListStruct* pInstrumentList, unsigned int& uiRoutIP)
 {
 	m_oInstrumentStruct* pInstrument = NULL;
 	
 	if (TRUE == IfIndexExistInMap(uiSN, &pInstrumentList->m_oSNInstrumentMap))
 	{
 		pInstrument = GetInstrumentFromMap(uiSN, &pInstrumentList->m_oSNInstrumentMap);
-		if (iDirection == pConstVar->m_iDirectionLeft)
+		if (iDirection == DirectionLeft)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIPLeft;
 		}
-		else if (iDirection == pConstVar->m_iDirectionRight)
+		else if (iDirection == DirectionRight)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIPRight;
 		}
-		else if (iDirection == pConstVar->m_iDirectionTop)
+		else if (iDirection == DirectionTop)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIPTop;
 		}
-		else if (iDirection == pConstVar->m_iDirectionDown)
+		else if (iDirection == DirectionDown)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIPDown;
 		}
-		else if (iDirection == pConstVar->m_iDirectionCenter)
+		else if (iDirection == DirectionCenter)
 		{
 			uiRoutIP = pInstrument->m_uiRoutIP;
 		}
@@ -388,33 +362,24 @@ bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 * 根据链接方向，得到连接的下一个仪器
 * @return CInstrument* 仪器指针 NLLL：连接的下一个仪器不存在
 */
-m_oInstrumentStruct* GetNextInstrAlongRout(m_oInstrumentStruct* pInstrument, int iRoutDirection, m_oConstVarStruct* pConstVar)
+m_oInstrumentStruct* GetNextInstrAlongRout(m_oInstrumentStruct* pInstrument, int iRoutDirection)
 {
-	if (pConstVar == NULL)
-	{
-		return NULL;
-	}
-	if (pInstrument == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetNextInstrument", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return NULL;
-	}
+	ASSERT(pInstrument != NULL);
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	// 判断方向
-	if (iRoutDirection == pConstVar->m_iDirectionTop)
+	if (iRoutDirection == DirectionTop)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentTop;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionDown)
+	else if (iRoutDirection == DirectionDown)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentDown;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionLeft)
+	else if (iRoutDirection == DirectionLeft)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentLeft;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionRight)
+	else if (iRoutDirection == DirectionRight)
 	{
 		pInstrumentNext = pInstrument->m_pInstrumentRight;
 	}
@@ -435,33 +400,24 @@ m_oInstrumentStruct* GetNextInstrAlongRout(m_oInstrumentStruct* pInstrument, int
 * 根据链接方向，得到连接的前一个仪器
 * @return CInstrument* 仪器指针 NLLL：连接的前一个仪器不存在
 */
-m_oInstrumentStruct* GetPreviousInstr(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
+m_oInstrumentStruct* GetPreviousInstr(m_oInstrumentStruct* pInstrument)
 {
-	if (pConstVar == NULL)
-	{
-		return NULL;
-	}
-	if (pInstrument == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "GetPreviousInstrument", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return NULL;
-	}
+	ASSERT(pInstrument != NULL);
 	m_oInstrumentStruct* pInstrumentPrevious = NULL;
 	// 判断方向
-	if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionTop)
+	if (pInstrument->m_iRoutDirection == DirectionTop)
 	{
 		pInstrumentPrevious = pInstrument->m_pInstrumentDown;
 	}
-	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionDown)
+	else if (pInstrument->m_iRoutDirection == DirectionDown)
 	{
 		pInstrumentPrevious = pInstrument->m_pInstrumentTop;
 	}
-	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionLeft)
+	else if (pInstrument->m_iRoutDirection == DirectionLeft)
 	{
 		pInstrumentPrevious = pInstrument->m_pInstrumentRight;
 	}
-	else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionRight)
+	else if (pInstrument->m_iRoutDirection == DirectionRight)
 	{
 		pInstrumentPrevious = pInstrument->m_pInstrumentLeft;
 	}
@@ -479,12 +435,9 @@ m_oInstrumentStruct* GetPreviousInstr(m_oInstrumentStruct* pInstrument, m_oConst
 	return pInstrumentPrevious;
 }
 // 更新仪器的存活时间
-void UpdateInstrActiveTime(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* pConstVar)
+void UpdateInstrActiveTime(m_oInstrumentStruct* pInstrument)
 {
-	if (pInstrument == NULL)
-	{
-		return;
-	}
+	ASSERT(pInstrument != NULL);
 	unsigned int uiActiveTime = 0;
 	m_oInstrumentStruct* pInstrumentPrevious = pInstrument;
 	uiActiveTime = GetTickCount();
@@ -492,6 +445,6 @@ void UpdateInstrActiveTime(m_oInstrumentStruct* pInstrument, m_oConstVarStruct* 
 	{
 		pInstrumentPrevious->m_uiActiveTime = uiActiveTime;
 		pInstrumentPrevious->m_iTailFrameCount = 0;
-		pInstrumentPrevious = GetPreviousInstr(pInstrumentPrevious, pConstVar);
+		pInstrumentPrevious = GetPreviousInstr(pInstrumentPrevious);
 	} while (pInstrumentPrevious != NULL);
 }

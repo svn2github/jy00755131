@@ -12,8 +12,8 @@ m_oLogOutPutStruct* OnCreateLogOutPut()
 // 打开日志输出文件
 int OpenLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 {
-	if ((pLogOutPut == NULL)
-		|| ((OutPutSelect == 1) && (pLogOutPut->m_cLogFileType != OptLogType)))
+	ASSERT(pLogOutPut != NULL);
+	if ((OutPutSelect == 1) && (pLogOutPut->m_cLogFileType != OptLogType))
 	{
 		return -1;
 	}
@@ -38,9 +38,8 @@ int OpenLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 void AddMsgToLogOutPutList(m_oLogOutPutStruct* pLogOutPut, string pFuncName, 
 	string pVarName, byte byErrorType, unsigned int uiErrorCode)
 {
-	if ((pLogOutPut == NULL)
-		|| ((OutPutSelect == 1) 
-		&& ((byErrorType != ErrorType) || (pLogOutPut->m_cLogFileType != OptLogType))))
+	ASSERT(pLogOutPut != NULL);
+	if ((OutPutSelect == 1) && ((byErrorType != ErrorType) || (pLogOutPut->m_cLogFileType != OptLogType)))
 	{
 		return;
 	}
@@ -124,8 +123,8 @@ void LogOutPutWriteInFile(FILE* pFile, string str, bool bFlush)
 // 写入日志输出文件
 void WriteLogOutPutListToFile(m_oLogOutPutStruct* pLogOutPut)
 {
-	if ((pLogOutPut == NULL)
-		|| ((OutPutSelect == 1) && (pLogOutPut->m_cLogFileType != OptLogType))
+	ASSERT(pLogOutPut != NULL);
+	if (((OutPutSelect == 1) && (pLogOutPut->m_cLogFileType != OptLogType))
 		|| (pLogOutPut->m_pFile == NULL))
 	{
 		return;
@@ -163,8 +162,8 @@ void WriteLogOutPutListToFile(m_oLogOutPutStruct* pLogOutPut)
 // 关闭日志输出文件
 void CloseLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 {
-	if ((pLogOutPut == NULL)
-		|| ((OutPutSelect == 1) && (pLogOutPut->m_cLogFileType != OptLogType))
+	ASSERT(pLogOutPut != NULL);
+	if (((OutPutSelect == 1) && (pLogOutPut->m_cLogFileType != OptLogType))
 		|| (pLogOutPut->m_pFile == NULL))
 	{
 		return;
@@ -178,8 +177,8 @@ void CloseLogOutPutFile(m_oLogOutPutStruct* pLogOutPut)
 // 初始化日志输出结构体
 void OnInitLogOutPut(m_oLogOutPutStruct* pLogOutPut)
 {
-	if ((pLogOutPut == NULL)
-		|| ((OutPutSelect == 1) && (pLogOutPut->m_cLogFileType != OptLogType)))
+	ASSERT(pLogOutPut != NULL);
+	if ((OutPutSelect == 1) && (pLogOutPut->m_cLogFileType != OptLogType))
 	{
 		return;
 	}
@@ -201,10 +200,7 @@ void OnInitLogOutPut(m_oLogOutPutStruct* pLogOutPut)
 // 关闭日志输出结构体
 void OnCloseLogOutPut(m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pLogOutPut == NULL)
-	{
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
 	EnterCriticalSection(&pLogOutPut->m_oSecLogFile);
 	// 关闭日志输出文件
 	CloseLogOutPutFile(pLogOutPut);
@@ -215,10 +211,7 @@ void OnCloseLogOutPut(m_oLogOutPutStruct* pLogOutPut)
 // 释放日志输出结构体
 void OnFreeLogOutPut(m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pLogOutPut == NULL)
-	{
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
 	DeleteCriticalSection(&pLogOutPut->m_oSecLogFile);
 	delete pLogOutPut;
 	pLogOutPut = NULL;

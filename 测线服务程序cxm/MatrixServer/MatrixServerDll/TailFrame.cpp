@@ -17,16 +17,9 @@ m_oTailFrameStruct* OnCreateInstrTailFrame(void)
 void OnInitInstrTailFrame(m_oTailFrameStruct* pTailFrame, 
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pTailFrame == NULL) || (pCommInfo == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentTailFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pTailFrame != NULL);
+	ASSERT(pCommInfo != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pTailFrame->m_oSecTailFrame);
 	if (pTailFrame->m_pCommandStruct != NULL)
 	{
@@ -59,10 +52,7 @@ void OnInitInstrTailFrame(m_oTailFrameStruct* pTailFrame,
 // 关闭尾包帧信息结构体
 void OnCloseInstrTailFrame(m_oTailFrameStruct* pTailFrame)
 {
-	if (pTailFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailFrame != NULL);
 	EnterCriticalSection(&pTailFrame->m_oSecTailFrame);
 	if (pTailFrame->m_cpRcvFrameData != NULL)
 	{
@@ -79,10 +69,7 @@ void OnCloseInstrTailFrame(m_oTailFrameStruct* pTailFrame)
 // 释放尾包帧信息结构体
 void OnFreeInstrTailFrame(m_oTailFrameStruct* pTailFrame)
 {
-	if (pTailFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailFrame != NULL);
 	DeleteCriticalSection(&pTailFrame->m_oSecTailFrame);
 	delete pTailFrame;
 	pTailFrame = NULL;
@@ -90,10 +77,7 @@ void OnFreeInstrTailFrame(m_oTailFrameStruct* pTailFrame)
 // 创建并设置尾包端口
 void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTailFrame, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pTailFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailFrame != NULL);
 	EnterCriticalSection(&pTailFrame->m_oSecTailFrame);
 	// 创建套接字
 	pTailFrame->m_oTailFrameSocket = CreateInstrSocket(pTailFrame->m_pCommandStruct->m_usReturnPort + pTailFrame->m_usPortMove, 
@@ -105,22 +89,15 @@ void OnCreateAndSetTailFrameSocket(m_oTailFrameStruct* pTailFrame, m_oLogOutPutS
 }
 // 解析尾包帧
 bool ParseInstrTailFrame(m_oTailFrameStruct* pTailFrame, 
-	m_oConstVarStruct* pConstVar)
+	m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return false;
-	}
-	if (pTailFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentTailFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pTailFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	bool bReturn = false;
 	EnterCriticalSection(&pTailFrame->m_oSecTailFrame);
 	bReturn = ParseInstrFrame(pTailFrame->m_pCommandStruct, 
-		pTailFrame->m_cpRcvFrameData, pConstVar);
+		pTailFrame->m_cpRcvFrameData, pConstVar, pLogOutPut);
 	LeaveCriticalSection(&pTailFrame->m_oSecTailFrame);
 	return bReturn;
 }

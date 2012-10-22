@@ -12,10 +12,7 @@ m_oRoutListStruct* OnCreateRoutList(void)
 // 重置路由队列结构体
 void OnResetRoutList(m_oRoutListStruct* pRoutList)
 {
-	if (pRoutList == NULL)
-	{
-		return;
-	}
+	ASSERT(pRoutList != NULL);
 	// 清空路由地址索引
 	pRoutList->m_oRoutMap.clear();
 	// 清空需要删除的路由地址索引
@@ -41,16 +38,8 @@ void OnResetRoutList(m_oRoutListStruct* pRoutList)
 // 初始化路由队列结构体
 void OnInitRoutList(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pRoutList == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitRoutList", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pRoutList != NULL);
+	ASSERT(pConstVar != NULL);
 	// 清空路由地址索引
 	pRoutList->m_oRoutMap.clear();
 	// 清空需要删除的路由地址索引
@@ -91,10 +80,7 @@ void OnInitRoutList(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
 // 关闭路由队列结构体
 void OnCloseRoutList(m_oRoutListStruct* pRoutList)
 {
-	if (pRoutList == NULL)
-	{
-		return;
-	}
+	ASSERT(pRoutList != NULL);
 	// 清空路由地址索引
 	pRoutList->m_oRoutMap.clear();
 	// 清空需要删除的路由地址索引
@@ -116,10 +102,7 @@ void OnCloseRoutList(m_oRoutListStruct* pRoutList)
 // 释放路由队列结构体
 void OnFreeRoutList(m_oRoutListStruct* pRoutList)
 {
-	if (pRoutList == NULL)
-	{
-		return;
-	}
+	ASSERT(pRoutList != NULL);
 	delete pRoutList;
 	pRoutList = NULL;
 }
@@ -127,10 +110,7 @@ void OnFreeRoutList(m_oRoutListStruct* pRoutList)
 // 得到一个空闲路由
 m_oRoutStruct* GetFreeRout(m_oRoutListStruct* pRoutList)
 {
-	if (pRoutList == NULL)
-	{
-		return NULL;
-	}
+	ASSERT(pRoutList != NULL);
 	m_oRoutStruct* pRout = NULL;
 	list <m_oRoutStruct*>::iterator iter;
 	if(pRoutList->m_uiCountFree > 0)	//有空闲路由
@@ -149,10 +129,8 @@ m_oRoutStruct* GetFreeRout(m_oRoutListStruct* pRoutList)
 // 增加一个空闲路由
 void AddFreeRout(m_oRoutStruct* pRout, m_oRoutListStruct* pRoutList)
 {
-	if ((pRout == NULL) || (pRoutList == NULL))
-	{
-		return;
-	}
+	ASSERT(pRout != NULL);
+	ASSERT(pRoutList != NULL);
 	//初始化路由
 	OnRoutReset(pRout);
 	//加入空闲队列

@@ -20,16 +20,9 @@ m_oTailTimeFrameStruct* OnCreateInstrTailTimeFrame(void)
 void OnInitInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pTailTimeFrame == NULL) || (pCommInfo == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentTailTimeFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pTailTimeFrame != NULL);
+	ASSERT(pCommInfo != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	if (pTailTimeFrame->m_pCommandStructSet != NULL)
 	{
@@ -100,10 +93,7 @@ void OnInitInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 // 关闭尾包时刻帧信息结构体
 void OnCloseInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 {
-	if (pTailTimeFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailTimeFrame != NULL);
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	if (pTailTimeFrame->m_cpSndFrameData != NULL)
 	{
@@ -135,10 +125,7 @@ void OnCloseInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 // 释放尾包时刻帧信息结构体
 void OnFreeInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 {
-	if (pTailTimeFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailTimeFrame != NULL);
 	DeleteCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	delete pTailTimeFrame;
 	pTailTimeFrame = NULL;
@@ -146,10 +133,7 @@ void OnFreeInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 // 创建并设置尾包时刻端口
 void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruct* pTailTimeFrame, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pTailTimeFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pTailTimeFrame != NULL);
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 创建套接字
 	pTailTimeFrame->m_oTailTimeFrameSocket = CreateInstrSocket(pTailTimeFrame->m_pCommandStructSet->m_usReturnPort + pTailTimeFrame->m_usPortMove, 
@@ -167,39 +151,25 @@ void OnCreateAndSetTailTimeFrameSocket(m_oTailTimeFrameStruct* pTailTimeFrame, m
 }
 // 解析尾包时刻查询帧
 bool ParseInstrTailTimeReturnFrame(m_oTailTimeFrameStruct* pTailTimeFrame, 
-	m_oConstVarStruct* pConstVar)
+	m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return false;
-	}
-	if (pTailTimeFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentTailTimeReturnFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pTailTimeFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	bool bReturn = false;
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	bReturn = ParseInstrFrame(pTailTimeFrame->m_pCommandStructReturn, 
-		pTailTimeFrame->m_cpRcvFrameData, pConstVar);
+		pTailTimeFrame->m_cpRcvFrameData, pConstVar, pLogOutPut);
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	return bReturn;
 }
 // 按IP地址查询尾包时刻帧
 void MakeInstrTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame, 
-	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP)
+	m_oConstVarStruct* pConstVar, unsigned int uiInstrumentIP, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pTailTimeFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentTailTimeQueryFramebyIP", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pTailTimeFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	unsigned short usPos = 0;
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 仪器IP地址
@@ -222,23 +192,16 @@ void MakeInstrTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame,
 		pTailTimeFrame->m_cpCommandWord, pTailTimeFrame->m_usCommandWordNum);
 	SendFrame(pTailTimeFrame->m_oTailTimeFrameSocket, pTailTimeFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pTailTimeFrame->m_pCommandStructSet->m_usAimPort, 
-		pTailTimeFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
+		pTailTimeFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 }
 // 广播查询尾包时刻帧
 void MakeInstrTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFrame, 
-	m_oConstVarStruct* pConstVar, unsigned int uiBroadCastPort)
+	m_oConstVarStruct* pConstVar, unsigned int uiBroadCastPort, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pTailTimeFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentTailTimeQueryFramebyBroadCast", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pTailTimeFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	unsigned short usPos = 0;
 	EnterCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	// 仪器IP地址
@@ -272,6 +235,6 @@ void MakeInstrTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFra
 		pTailTimeFrame->m_cpCommandWord, pTailTimeFrame->m_usCommandWordNum);
 	SendFrame(pTailTimeFrame->m_oTailTimeFrameSocket, pTailTimeFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pTailTimeFrame->m_pCommandStructSet->m_usAimPort, 
-		pTailTimeFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
+		pTailTimeFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);
 	LeaveCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 }

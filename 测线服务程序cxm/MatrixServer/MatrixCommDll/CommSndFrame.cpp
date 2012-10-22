@@ -166,10 +166,7 @@ bool CCommSndFrame::OnReSendFrame(void)
 BOOL CCommSndFrame::IfFramePtrExistInSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
 	unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pMap != NULL);
 	BOOL bResult = FALSE;
 	m_oSndFrameKey Key(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex);
 	map<m_oSndFrameKey, m_oCommFrameStructPtr>::iterator iter;
@@ -189,10 +186,8 @@ void CCommSndFrame::AddFramePtrToSndMap(unsigned short m_usCmd, unsigned int m_u
 	unsigned int m_uiPacketIndex, m_oCommFrameStructPtr pFrameStruct, 
 	map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap)
 {
-	if ((pFrameStruct == NULL) || (pMap == NULL))
-	{
-		return;
-	}
+	ASSERT(pFrameStruct != NULL);
+	ASSERT(pMap != NULL);
 	m_oSndFrameKey Key(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex);
 	if (false == IfFramePtrExistInSndMap(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex, pMap))
 	{
@@ -203,10 +198,7 @@ void CCommSndFrame::AddFramePtrToSndMap(unsigned short m_usCmd, unsigned int m_u
 m_oCommFrameStructPtr CCommSndFrame::GetFramePtrFromSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
 	unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return NULL;
-	}
+	ASSERT(pMap != NULL);
 	m_oSndFrameKey Key(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex);
 	map<m_oSndFrameKey, m_oCommFrameStructPtr>::iterator iter;
 	iter = pMap->find(Key);
@@ -220,10 +212,7 @@ m_oCommFrameStructPtr CCommSndFrame::GetFramePtrFromSndMap(unsigned short m_usCm
 BOOL CCommSndFrame::DeleteFramePtrFromSndMap(unsigned short m_usCmd, unsigned int m_uiServerTimeStep, 
 	unsigned int m_uiPacketIndex, map<m_oSndFrameKey, m_oCommFrameStructPtr>* pMap)
 {
-	if (pMap == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pMap != NULL);
 	BOOL bResult = FALSE;
 	m_oSndFrameKey Key(m_usCmd, m_uiServerTimeStep, m_uiPacketIndex);
 	map<m_oSndFrameKey, m_oCommFrameStructPtr>::iterator iter;

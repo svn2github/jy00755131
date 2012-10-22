@@ -20,16 +20,9 @@ m_oErrorCodeFrameStruct* OnCreateInstrErrorCodeFrame(void)
 void OnInitInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pErrorCodeFrame == NULL) || (pCommInfo == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentErrorCodeFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pErrorCodeFrame != NULL);
+	ASSERT(pCommInfo != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	if (pErrorCodeFrame->m_pCommandStructSet != NULL)
 	{
@@ -101,10 +94,7 @@ void OnInitInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 // 关闭误码查询帧信息结构体
 void OnCloseInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame)
 {
-	if (pErrorCodeFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pErrorCodeFrame != NULL);
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	if (pErrorCodeFrame->m_cpSndFrameData != NULL)
 	{
@@ -136,10 +126,7 @@ void OnCloseInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame)
 // 释放误码查询帧信息结构体
 void OnFreeInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame)
 {
-	if (pErrorCodeFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pErrorCodeFrame != NULL);
 	DeleteCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	delete pErrorCodeFrame;
 	pErrorCodeFrame = NULL;
@@ -147,10 +134,7 @@ void OnFreeInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame)
 // 创建并设置误码查询端口
 void OnCreateAndSetErrorCodeFrameSocket(m_oErrorCodeFrameStruct* pErrorCodeFrame, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pErrorCodeFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pErrorCodeFrame != NULL);
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	// 创建套接字
 	pErrorCodeFrame->m_oErrorCodeFrameSocket = CreateInstrSocket(pErrorCodeFrame->m_pCommandStructSet->m_usReturnPort + pErrorCodeFrame->m_usPortMove, 
@@ -168,39 +152,25 @@ void OnCreateAndSetErrorCodeFrameSocket(m_oErrorCodeFrameStruct* pErrorCodeFrame
 }
 // 解析误码查询应答帧
 bool ParseInstrErrorCodeReturnFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame, 
-	m_oConstVarStruct* pConstVar)
+	m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return false;
-	}
-	if (pErrorCodeFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentErrorCodeReturnFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pErrorCodeFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	bool bReturn = false;
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	bReturn = ParseInstrFrame(pErrorCodeFrame->m_pCommandStructReturn,
-		pErrorCodeFrame->m_cpRcvFrameData, pConstVar);
+		pErrorCodeFrame->m_cpRcvFrameData, pConstVar, pLogOutPut);
 	LeaveCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	return bReturn;
 }
 // 广播查询误码
 void MakeInstrErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame, 
-	m_oConstVarStruct* pConstVar, unsigned int uiBroadCastPort)
+	m_oConstVarStruct* pConstVar, unsigned int uiBroadCastPort, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pErrorCodeFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentErrorCodeQueryFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pErrorCodeFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	unsigned short usPos = 0;
 	EnterCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 	// 仪器IP地址
@@ -232,6 +202,6 @@ void MakeInstrErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 		pErrorCodeFrame->m_usCommandWordNum);
 	SendFrame(pErrorCodeFrame->m_oErrorCodeFrameSocket, pErrorCodeFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pErrorCodeFrame->m_pCommandStructSet->m_usAimPort, 
-		pErrorCodeFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
+		pErrorCodeFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);
 	LeaveCriticalSection(&pErrorCodeFrame->m_oSecErrorCodeFrame);
 }

@@ -13,10 +13,7 @@ m_oADCDataBufArrayStruct* OnCreateADCDataBufArray(void)
 // 重置数据存储缓冲区结构体
 void OnResetADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
-	if (pADCDataBufArray == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataBufArray != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	// 清空数据缓冲区队列
 	pADCDataBufArray->m_olsADCDataToWrite.clear();
@@ -35,19 +32,10 @@ void OnResetADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 	LeaveCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 }
 // 初始化数据存储缓冲区结构体
-void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray,
-	m_oConstVarStruct* pConstVar)
+void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pADCDataBufArray == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitADCDataBufArray", "", 
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pADCDataBufArray != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	// 清空数据缓冲区队列
 	pADCDataBufArray->m_olsADCDataToWrite.clear();
@@ -87,10 +75,7 @@ void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray,
 // 关闭数据存储缓冲区结构体
 void OnCloseADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
-	if (pADCDataBufArray == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataBufArray != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	// 清空数据缓冲区队列
 	pADCDataBufArray->m_olsADCDataToWrite.clear();
@@ -115,10 +100,7 @@ void OnCloseADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 // 释放数据存储缓冲区结构体
 void OnFreeADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
-	if (pADCDataBufArray == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataBufArray != NULL);
 	DeleteCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	delete pADCDataBufArray;
 	pADCDataBufArray = NULL;
@@ -126,10 +108,7 @@ void OnFreeADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 // 得到一个空闲数据存储缓冲区
 m_oADCDataBufStruct* GetFreeADCDataBuf(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
-	if (pADCDataBufArray == NULL)
-	{
-		return NULL;
-	}
+	ASSERT(pADCDataBufArray != NULL);
 	m_oADCDataBufStruct* pADCDataBuf = NULL;
 	list <m_oADCDataBufStruct*>::iterator iter;
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
@@ -151,10 +130,8 @@ m_oADCDataBufStruct* GetFreeADCDataBuf(m_oADCDataBufArrayStruct* pADCDataBufArra
 void AddFreeADCDataBuf(m_oADCDataBufStruct* pADCDataBuf, 
 	m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
-	if ((pADCDataBuf == NULL) || (pADCDataBufArray == NULL))
-	{
-		return;
-	}
+	ASSERT(pADCDataBuf != NULL);
+	ASSERT(pADCDataBufArray != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	//初始化数据存储缓冲区
 	OnADCDataBufReset(pADCDataBuf);

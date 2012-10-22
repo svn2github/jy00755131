@@ -18,16 +18,9 @@ m_oADCDataFrameStruct* OnCreateInstrADCDataFrame(void)
 void OnInitInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pADCDataFrame == NULL) || (pCommInfo == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentADCDataFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pADCDataFrame != NULL);
+	ASSERT(pCommInfo != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	if (pADCDataFrame->m_pCommandStructSet != NULL)
 	{
@@ -86,10 +79,7 @@ void OnInitInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 // 关闭ADC数据帧信息结构体
 void OnCloseInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 {
-	if (pADCDataFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataFrame != NULL);
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	if (pADCDataFrame->m_cpSndFrameData != NULL)
 	{
@@ -121,10 +111,7 @@ void OnCloseInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 // 释放ADC数据帧信息结构体
 void OnFreeInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 {
-	if (pADCDataFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataFrame != NULL);
 	DeleteCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	delete pADCDataFrame;
 	pADCDataFrame = NULL;
@@ -132,10 +119,7 @@ void OnFreeInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 // 创建并设置ADC数据帧端口
 void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pADCDataFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pADCDataFrame != NULL);
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	// 创建套接字
 	pADCDataFrame->m_oADCDataFrameSocket = CreateInstrSocket(pADCDataFrame->m_pCommandStructSet->m_usReturnPort + pADCDataFrame->m_usPortMove, 
@@ -150,47 +134,36 @@ void OnCreateAndSetADCDataFrameSocket(m_oADCDataFrameStruct* pADCDataFrame, m_oL
 	AddMsgToLogOutPutList(pLogOutPut, "OnCreateAndSetADCDataFrameSocket", "创建并设置ADC数据帧端口！");
 }
 // 解析ADC数据接收帧
-bool ParseInstrADCDataRecFrame(m_oADCDataFrameStruct* pADCDataFrame, m_oConstVarStruct* pConstVar)
+bool ParseInstrADCDataRecFrame(m_oADCDataFrameStruct* pADCDataFrame, m_oConstVarStruct* pConstVar, 
+	m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return false;
-	}
-	if (pADCDataFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentADCDataRecFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pADCDataFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	bool bReturn = false;
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	bReturn = ParseInstrFrame(pADCDataFrame->m_pCommandStructReturn, 
-		pADCDataFrame->m_cpRcvFrameData, pConstVar);
+		pADCDataFrame->m_cpRcvFrameData, pConstVar, pLogOutPut);
 	LeaveCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	return bReturn;
 }
 // 生成ADC数据查询帧
 void MakeInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame, 
-	m_oConstVarStruct* pConstVar, unsigned int uiIP, unsigned short usDataPoint)
+	m_oConstVarStruct* pConstVar, unsigned int uiIP, 
+	unsigned short usDataPoint, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pADCDataFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentADCDataFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pADCDataFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	CString str = _T("");
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 	// 仪器IP地址
 	pADCDataFrame->m_pCommandStructSet->m_uiDstIP = uiIP;
 	pADCDataFrame->m_pCommandStructSet->m_usADCDataPoint = usDataPoint;
-	MakeInstrFrame(pADCDataFrame->m_pCommandStructSet, pConstVar, pADCDataFrame->m_cpSndFrameData);
+	MakeInstrFrame(pADCDataFrame->m_pCommandStructSet, pConstVar, 
+		pADCDataFrame->m_cpSndFrameData);
 	SendFrame(pADCDataFrame->m_oADCDataFrameSocket, pADCDataFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pADCDataFrame->m_pCommandStructSet->m_usAimPort, 
-		pADCDataFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
+		pADCDataFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);
 	LeaveCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
 }

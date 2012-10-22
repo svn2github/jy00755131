@@ -18,16 +18,9 @@ m_oHeartBeatFrameStruct* OnCreateInstrHeartBeat(void)
 void OnInitInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pHeartBeatFrame == NULL) || (pCommInfo == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentHeartBeat", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pHeartBeatFrame != NULL);
+	ASSERT(pCommInfo != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	if (pHeartBeatFrame->m_pCommandStruct != NULL)
 	{
@@ -76,10 +69,7 @@ void OnInitInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame,
 // 关闭心跳帧信息结构体
 void OnCloseInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
 {
-	if (pHeartBeatFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pHeartBeatFrame != NULL);
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	if (pHeartBeatFrame->m_cpSndFrameData != NULL)
 	{
@@ -101,10 +91,7 @@ void OnCloseInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
 // 释放心跳帧信息结构体
 void OnFreeInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
 {
-	if (pHeartBeatFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pHeartBeatFrame != NULL);
 	DeleteCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	delete pHeartBeatFrame;
 	pHeartBeatFrame = NULL;
@@ -112,10 +99,7 @@ void OnFreeInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
 // 创建并设置心跳端口
 void OnCreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pHeartBeatFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pHeartBeatFrame != NULL);
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	// 创建套接字
 	pHeartBeatFrame->m_oHeartBeatSocket = CreateInstrSocket(pHeartBeatFrame->m_pCommandStruct->m_usReturnPort + pHeartBeatFrame->m_usPortMove, 
@@ -127,24 +111,17 @@ void OnCreateAndSetHeartBeatSocket(m_oHeartBeatFrameStruct* pHeartBeatFrame, m_o
 }
 // 生成心跳帧
 void MakeInstrHeartBeatFrame(m_oHeartBeatFrameStruct* pHeartBeatFrame, 
-	m_oConstVarStruct* pConstVar)
+	m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pHeartBeatFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentHeartBeatFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pHeartBeatFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	pHeartBeatFrame->m_pCommandStruct->m_uiDstIP = pConstVar->m_uiIPBroadcastAddr;
 	MakeInstrFrame(pHeartBeatFrame->m_pCommandStruct,  pConstVar, pHeartBeatFrame->m_cpSndFrameData,
 		pHeartBeatFrame->m_cpCommandWord, pHeartBeatFrame->m_usCommandWordNum);
 	SendFrame(pHeartBeatFrame->m_oHeartBeatSocket, pHeartBeatFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize,pHeartBeatFrame->m_pCommandStruct->m_usAimPort, 
-		pHeartBeatFrame->m_pCommandStruct->m_uiAimIP, pConstVar->m_pLogOutPut);
+		pHeartBeatFrame->m_pCommandStruct->m_uiAimIP, pLogOutPut);
 	LeaveCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 }

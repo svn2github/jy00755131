@@ -241,7 +241,7 @@ void CMatrixServerDllCall::Dll_ADCSetPart(int iLineIndex, int iPointIndex, int i
 	{
 		if (iOpt == 1)
 		{
-			iOperation = m_pEnv->m_pConstVar->m_iADCSetOptNb;
+			iOperation = ADCSetOptNb;
 		}
 		else if (iOpt == 2)
 		{
@@ -259,7 +259,7 @@ void CMatrixServerDllCall::Dll_ADCSetPart(int iLineIndex, int iPointIndex, int i
 			EnterCriticalSection(&m_pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 			m_pEnv->m_pTimeDelayThread->m_bADCStartSample = true;
 			LeaveCriticalSection(&m_pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
-			iOperation = m_pEnv->m_pConstVar->m_iADCStartSampleOptNb;
+			iOperation = ADCStartSampleOptNb;
 		}
 		else if (iOpt == 3)
 		{
@@ -270,7 +270,7 @@ void CMatrixServerDllCall::Dll_ADCSetPart(int iLineIndex, int iPointIndex, int i
 			EnterCriticalSection(&m_pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 			m_pEnv->m_pTimeDelayThread->m_bADCStartSample = false;
 			LeaveCriticalSection(&m_pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
-			iOperation = m_pEnv->m_pConstVar->m_iADCStopSampleOptNb;
+			iOperation = ADCStopSampleOptNb;
 		}
 		else
 		{

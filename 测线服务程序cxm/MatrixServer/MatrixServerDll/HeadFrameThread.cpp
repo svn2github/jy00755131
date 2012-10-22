@@ -17,31 +17,22 @@ bool CompareHeadFrameTime(m_oInstrumentStruct* pInstrumentFirst, m_oInstrumentSt
 	return (pInstrumentFirst->m_uiTimeHeadFrame < pInstrumentSecond->m_uiTimeHeadFrame);
 }
 // 仪器位置按照首包时刻排序
-void InstrumentLocationSort(m_oInstrumentStruct* pInstrument, 
-	m_oRoutStruct* pRout, m_oConstVarStruct* pConstVar)
+void InstrumentLocationSort(m_oInstrumentStruct* pInstrument, m_oRoutStruct* pRout)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pInstrument == NULL) || (pRout == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "InstrumentLocationSort", "", 
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pInstrument != NULL);
+	ASSERT(pRout != NULL);
 	list<m_oInstrumentStruct*>::iterator iter;
 	list<m_oInstrumentStruct*>::iterator iterOld;
 	list<m_oInstrumentStruct*>::iterator iterNew;
 	// 上方或下方
-	if ((pInstrument->m_iRoutDirection == pConstVar->m_iDirectionTop)
-		|| (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionDown))
+	if ((pInstrument->m_iRoutDirection == DirectionTop)
+		|| (pInstrument->m_iRoutDirection == DirectionDown))
 	{
 		pInstrument->m_iPointIndex = pRout->m_pHead->m_iPointIndex;
 	}
 	// 大线左方或右方
-	else if ((pInstrument->m_iRoutDirection == pConstVar->m_iDirectionLeft)
-		|| (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionRight))
+	else if ((pInstrument->m_iRoutDirection == DirectionLeft)
+		|| (pInstrument->m_iRoutDirection == DirectionRight))
 	{
 		pInstrument->m_iLineIndex = pRout->m_pHead->m_iLineIndex;
 	}
@@ -63,7 +54,7 @@ void InstrumentLocationSort(m_oInstrumentStruct* pInstrument,
 			break;
 		}
 		// 上方
-		if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionTop)
+		if (pInstrument->m_iRoutDirection == DirectionTop)
 		{
 			(*iterOld)->m_pInstrumentTop = *(iterNew);
 			(*iterNew)->m_pInstrumentDown = *(iterOld);
@@ -81,7 +72,7 @@ void InstrumentLocationSort(m_oInstrumentStruct* pInstrument,
 			}
 		}
 		// 下方
-		else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionDown)
+		else if (pInstrument->m_iRoutDirection == DirectionDown)
 		{
 			(*iterOld)->m_pInstrumentDown = *(iterNew);
 			(*iterNew)->m_pInstrumentTop = *(iterOld);
@@ -99,7 +90,7 @@ void InstrumentLocationSort(m_oInstrumentStruct* pInstrument,
 			}
 		}
 		// 左方
-		else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionLeft)
+		else if (pInstrument->m_iRoutDirection == DirectionLeft)
 		{
 			(*iterOld)->m_pInstrumentLeft = *(iterNew);
 			(*iterNew)->m_pInstrumentRight = *(iterOld);
@@ -117,7 +108,7 @@ void InstrumentLocationSort(m_oInstrumentStruct* pInstrument,
 			}
 		}
 		// 右方
-		else if (pInstrument->m_iRoutDirection == pConstVar->m_iDirectionRight)
+		else if (pInstrument->m_iRoutDirection == DirectionRight)
 		{
 			(*iterOld)->m_pInstrumentRight = *(iterNew);
 			(*iterNew)->m_pInstrumentLeft = *(iterOld);
@@ -142,39 +133,30 @@ void InstrumentLocationSort(m_oInstrumentStruct* pInstrument,
 * @param unsigned int uiRoutDirection 路由方向
 * @return void
 */
-void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection, 
-	m_oConstVarStruct* pConstVar, m_oRoutListStruct* pRoutList)
+void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection, m_oRoutListStruct* pRoutList)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pInstrument == NULL) || (pRoutList == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "SetCrossRout", "", 
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pInstrument != NULL);
+	ASSERT(pRoutList != NULL);
 	m_oRoutStruct* pRout = NULL;
 	pRout = GetFreeRout(pRoutList);
 	// 判断方向，设置仪器路由地址
-	if (iRoutDirection == pConstVar->m_iDirectionTop)
+	if (iRoutDirection == DirectionTop)
 	{
 		pInstrument->m_uiRoutIPTop = pRout->m_uiRoutIP;
 		// 路由为交叉线方向路由
 		pRout->m_bRoutLaux = true;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionDown)
+	else if (iRoutDirection == DirectionDown)
 	{
 		pInstrument->m_uiRoutIPDown = pRout->m_uiRoutIP;
 		// 路由为交叉线方向路由
 		pRout->m_bRoutLaux = true;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionLeft)
+	else if (iRoutDirection == DirectionLeft)
 	{
 		pInstrument->m_uiRoutIPLeft = pRout->m_uiRoutIP;
 	}
-	else if (iRoutDirection == pConstVar->m_iDirectionRight)
+	else if (iRoutDirection == DirectionRight)
 	{
 		pInstrument->m_uiRoutIPRight = pRout->m_uiRoutIP;
 	}
@@ -184,7 +166,7 @@ void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection,
 	pRout->m_olsRoutInstrument.push_back(pInstrument);
 	// 设置路由头
 	pRout->m_pHead = pInstrument;
-	if (iRoutDirection == pConstVar->m_iDirectionCenter)
+	if (iRoutDirection == DirectionCenter)
 	{
 		// 设置LCI路由
 		pRout->m_uiRoutIP = 0;
@@ -201,15 +183,12 @@ void SetCrossRout(m_oInstrumentStruct* pInstrument, int iRoutDirection,
 	// 路由对象加入路由索引表
 	AddRout(pRout->m_uiRoutIP, pRout,&pRoutList->m_oRoutMap);
 	// 更新仪器的存活时间
-	UpdateInstrActiveTime(pInstrument, pConstVar);
+	UpdateInstrActiveTime(pInstrument);
 }
 // 处理单个首包帧
 void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 {
-	if (pHeadFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pHeadFrameThread != NULL);
 	// 新仪器指针为空
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oRoutStruct* pRout = NULL;
@@ -253,12 +232,11 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		// 路由地址为0为LCI
 		if (pInstrument->m_uiRoutIP == 0)
 		{
-			pInstrument->m_iInstrumentType = pHeadFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI;
-			pInstrument->m_iRoutDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionCenter;
+			pInstrument->m_iInstrumentType = InstrumentTypeLCI;
+			pInstrument->m_iRoutDirection = DirectionCenter;
 			// 得到空闲路由对象
-			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionCenter;
-			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, 
-				pHeadFrameThread->m_pLineList->m_pRoutList);
+			iDirection = DirectionCenter;
+			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pLineList->m_pRoutList);
 		}
 		else
 		{
@@ -272,21 +250,21 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 			}
 		}
 
-		if ((pInstrument->m_iInstrumentType == pHeadFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLCI)
-			|| (pInstrument->m_iInstrumentType == pHeadFrameThread->m_pThread->m_pConstVar->m_iInstrumentTypeLAUX))
+		if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
+			|| (pInstrument->m_iInstrumentType == InstrumentTypeLAUX))
 		{
 			// 设置交叉站路由
-			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionTop;
-			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pLineList->m_pRoutList);
+			iDirection = DirectionTop;
+			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pLineList->m_pRoutList);
 			// 设置交叉站路由
-			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionDown;
-			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pLineList->m_pRoutList);
+			iDirection = DirectionDown;
+			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pLineList->m_pRoutList);
 			// 设置交叉站路由
-			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionLeft;
-			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pLineList->m_pRoutList);
+			iDirection = DirectionLeft;
+			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pLineList->m_pRoutList);
 			// 设置交叉站路由
-			iDirection = pHeadFrameThread->m_pThread->m_pConstVar->m_iDirectionRight;
-			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pLineList->m_pRoutList);
+			iDirection = DirectionRight;
+			SetCrossRout(pInstrument, iDirection, pHeadFrameThread->m_pLineList->m_pRoutList);
 		}
 		pInstrument->m_uiBroadCastPort = pHeadFrameThread->m_pThread->m_pConstVar->m_iBroadcastPortStart + pInstrument->m_uiRoutIP;
 		// 新仪器加入SN索引表
@@ -322,13 +300,13 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 		pInstrument ->m_uiTimeHeadFrame = uiTimeHeadFrame;
 	}
 	// 更新仪器的存活时间
-	UpdateInstrActiveTime(pInstrument, pHeadFrameThread->m_pThread->m_pConstVar);
+	UpdateInstrActiveTime(pInstrument);
 	if (TRUE == IfIndexExistInRoutMap(pInstrument->m_uiRoutIP, 
 		&pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 	{
 		pRout = GetRout(uiRoutIP, &pHeadFrameThread->m_pLineList->m_pRoutList->m_oRoutMap);
 		// 仪器位置按照首包时刻排序
-		InstrumentLocationSort(pInstrument, pRout, pHeadFrameThread->m_pThread->m_pConstVar);
+		InstrumentLocationSort(pInstrument, pRout);
 	}
 	else
 	{
@@ -358,10 +336,7 @@ void ProcHeadFrameOne(m_oHeadFrameThreadStruct* pHeadFrameThread)
 // 处理首包帧
 void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThread)
 {
-	if (pHeadFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pHeadFrameThread != NULL);
 	// 帧数量设置为0
 	int iFrameCount = 0;
 	EnterCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
@@ -388,7 +363,7 @@ void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThread)
 			}
 			LeaveCriticalSection(&pHeadFrameThread->m_pHeadFrame->m_oSecHeadFrame);
 			if (false == ParseInstrHeadFrame(pHeadFrameThread->m_pHeadFrame, 
-				pHeadFrameThread->m_pThread->m_pConstVar))
+				pHeadFrameThread->m_pThread->m_pConstVar, pHeadFrameThread->m_pThread->m_pLogOutPut))
 			{
 				AddMsgToLogOutPutList(pHeadFrameThread->m_pThread->m_pLogOutPut, "ParseInstrumentHeadFrame", 
 					"", ErrorType, IDS_ERR_PARSE_HEADFRAME);
@@ -404,10 +379,7 @@ void ProcHeadFrame(m_oHeadFrameThreadStruct* pHeadFrameThread)
 // 线程等待函数
 void WaitHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 {
-	if (pHeadFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pHeadFrameThread != NULL);
 	// 初始化等待次数为0
 	int iWaitCount = 0;
 	bool bClose = false;
@@ -437,10 +409,7 @@ void WaitHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 // 线程函数
 DWORD WINAPI RunHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 {
-	if (pHeadFrameThread == NULL)
-	{
-		return 1;
-	}
+	ASSERT(pHeadFrameThread != NULL);
 	bool bClose = false;
 	bool bWork = false;
 	while(true)
@@ -477,10 +446,7 @@ DWORD WINAPI RunHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 bool OnInitHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread, 
 	m_oLogOutPutStruct* pLogOutPut, m_oConstVarStruct* pConstVar)
 {
-	if (pHeadFrameThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pHeadFrameThread != NULL);
 	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	if (false == OnInitThread(pHeadFrameThread->m_pThread, pLogOutPut, pConstVar))
 	{
@@ -511,10 +477,7 @@ bool OnInitHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread,
 // 初始化首包接收线程
 bool OnInit_HeadFrameThread(m_oEnvironmentStruct* pEnv)
 {
-	if (pEnv == NULL)
-	{
-		return false;
-	}
+	ASSERT(pEnv != NULL);
 	pEnv->m_pHeadFrameThread->m_pHeadFrame = pEnv->m_pHeadFrame;
 	pEnv->m_pHeadFrameThread->m_pLineList = pEnv->m_pLineList;
 	return OnInitHeadFrameThread(pEnv->m_pHeadFrameThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
@@ -522,10 +485,7 @@ bool OnInit_HeadFrameThread(m_oEnvironmentStruct* pEnv)
 // 关闭首包接收线程
 bool OnCloseHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 {
-	if (pHeadFrameThread == NULL)
-	{
-		return false;
-	}
+	ASSERT(pHeadFrameThread != NULL);
 	EnterCriticalSection(&pHeadFrameThread->m_oSecHeadFrameThread);
 	if (false == OnCloseThread(pHeadFrameThread->m_pThread))
 	{
@@ -542,10 +502,7 @@ bool OnCloseHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 // 释放首包接收线程
 void OnFreeHeadFrameThread(m_oHeadFrameThreadStruct* pHeadFrameThread)
 {
-	if (pHeadFrameThread == NULL)
-	{
-		return;
-	}
+	ASSERT(pHeadFrameThread != NULL);
 	if (pHeadFrameThread->m_pThread != NULL)
 	{
 		delete pHeadFrameThread->m_pThread;

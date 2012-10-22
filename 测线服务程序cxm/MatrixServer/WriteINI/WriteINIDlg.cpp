@@ -272,17 +272,17 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("5000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("ADCSetOptNb");			// ADC参数设置操作序号
-	strValue = _T("1");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("ADCStartSampleOptNb");	// ADC开始采集操作序号
-	strValue = _T("2");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("ADCStopSampleOptNb");		// ADC停止采集操作序号
-	strValue = _T("3");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 	strSectionKey=_T("ADCSetOptNb");			// ADC参数设置操作序号
+// 	strValue = _T("1");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("ADCStartSampleOptNb");	// ADC开始采集操作序号
+// 	strValue = _T("2");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("ADCStopSampleOptNb");		// ADC停止采集操作序号
+// 	strValue = _T("3");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("ADCSetCmdNum");			// ADC参数设置命令数
 	strValue = _T("11");
@@ -308,41 +308,41 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("19");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
-	strValue = _T("1");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("InstrumentTypeLAUL");		// 仪器类型-电源站
-	strValue = _T("2");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("InstrumentTypeFDU");		// 仪器类型-采集站
-	strValue = _T("3");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("InstrumentTypeLCI");		// 仪器类型-LCI
-	strValue = _T("4");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("DirectionTop");			// 方向上方
-	strValue = _T("1");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("DirectionDown");			// 方向下方
-	strValue = _T("2");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("DirectionLeft");			// 方向左方
-	strValue = _T("3");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("DirectionRight");			// 方向右方
-	strValue = _T("4");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
-
-	strSectionKey=_T("DirectionCenter");		// 方向正中
-	strValue = _T("0");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 	strSectionKey=_T("InstrumentTypeLAUX");		// 仪器类型-交叉站
+// 	strValue = _T("1");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("InstrumentTypeLAUL");		// 仪器类型-电源站
+// 	strValue = _T("2");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("InstrumentTypeFDU");		// 仪器类型-采集站
+// 	strValue = _T("3");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("InstrumentTypeLCI");		// 仪器类型-LCI
+// 	strValue = _T("4");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("DirectionTop");			// 方向上方
+// 	strValue = _T("1");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("DirectionDown");			// 方向下方
+// 	strValue = _T("2");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("DirectionLeft");			// 方向左方
+// 	strValue = _T("3");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("DirectionRight");			// 方向右方
+// 	strValue = _T("4");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 
+// 	strSectionKey=_T("DirectionCenter");		// 方向正中
+// 	strValue = _T("0");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("IPSetAddrStart");			// IP地址设置的起始地址
 	strValue = _T("71");

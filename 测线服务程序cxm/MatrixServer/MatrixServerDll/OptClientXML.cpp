@@ -23,10 +23,7 @@ m_oOptSetupDataStruct* OnCreateOptAppSetupData(void)
 // 打开施工客户端程序配置文件
 BOOL OpenOptClientXMLFile(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return FALSE;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strOLEObject;
 	COleException oError;
 	COleVariant oVariant;
@@ -60,10 +57,7 @@ BOOL OpenOptClientXMLFile(m_oOptSetupDataStruct* pOptSetupData)
 // 关闭施工客户端程序配置文件
 void CloseOptClientXMLFile(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	pOptSetupData->m_oXMLDOMDocument.DetachDispatch();
 	// 释放COM库
@@ -215,10 +209,7 @@ void OnResetOptClientXMLSetupData(m_oOptSetupDataStruct* pOptSetupData)
 // 加载Delay设置数据
 void LoadDelay(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	string strConv = "";
 	CXMLDOMNodeList oNodeList;
@@ -265,10 +256,7 @@ void LoadDelay(m_oOptSetupDataStruct* pOptSetupData)
 // 加载Delay设置数据
 void LoadOptDelaySetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
@@ -283,10 +271,7 @@ void LoadOptDelaySetupData(m_oOptSetupDataStruct* pOptSetupData)
 // 保存Delay设置数据
 void SaveDelay(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	string strConv = "";
 	COleVariant oVariant;
@@ -340,10 +325,7 @@ void SaveDelay(m_oOptSetupDataStruct* pOptSetupData)
 // 保存Delay设置数据
 void SaveDelaySetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -454,10 +436,7 @@ void LoadSourceShot(m_oSourceShotStruct* pSourceShotStruct,CXMLDOMElement* pElem
 // 加载SourceShot设置队列数据
 void LoadSourceShotList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -508,10 +487,7 @@ void LoadSourceShotList(m_oOptSetupDataStruct* pOptSetupData)
 // 加载SourceShot设置数据
 void LoadSourceShotSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置SourceShot
 	OnResetOptSourceShotList(pOptSetupData);
@@ -586,10 +562,7 @@ void SaveSourceShot(m_oSourceShotStruct* pSourceShotStruct,CXMLDOMElement* pElem
 // 保存SourceShot设置队列数据
 void SaveSourceShotList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -663,10 +636,7 @@ void SaveSourceShotList(m_oOptSetupDataStruct* pOptSetupData)
 // 保存SourceShot设置数据
 void SaveSourceShotSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -804,10 +774,7 @@ void LoadExplo(m_oSourceExploStruct* pSourceExploStruct,CXMLDOMElement* pElement
 // 加载Explo设置队列数据
 void LoadExploList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -858,10 +825,7 @@ void LoadExploList(m_oOptSetupDataStruct* pOptSetupData)
 // 加载Explo设置数据
 void LoadExploSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置Explo
 	OnResetOptExploList(pOptSetupData);
@@ -923,10 +887,7 @@ void SaveExplo(m_oSourceExploStruct* pSourceExploStruct,CXMLDOMElement* pElement
 // 保存Explo设置队列数据
 void SaveExploList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -1000,10 +961,7 @@ void SaveExploList(m_oOptSetupDataStruct* pOptSetupData)
 // 保存Explo设置数据
 void SaveExploSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -1131,10 +1089,7 @@ void LoadVibro(m_oSourceVibroStruct* pSourceVibroStruct,CXMLDOMElement* pElement
 // 加载Vibro设置队列数据
 void LoadVibroList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -1185,10 +1140,7 @@ void LoadVibroList(m_oOptSetupDataStruct* pOptSetupData)
 // 加载Vibro设置数据
 void LoadVibroSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置Vibro
 	OnResetOptVibroList(pOptSetupData);
@@ -1259,10 +1211,7 @@ void SaveVibro(m_oSourceVibroStruct* pSourceVibroStruct,CXMLDOMElement* pElement
 // 保存Vibro设置队列数据
 void SaveVibroList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -1336,10 +1285,7 @@ void SaveVibroList(m_oOptSetupDataStruct* pOptSetupData)
 // 保存Vibro设置数据
 void SaveVibroSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -1432,10 +1378,7 @@ void QueryVibroSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptS
 // 加载ProcessRecord设置数据
 void LoadProcessRecord(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	string strConv = "";
 	CXMLDOMNodeList oNodeList;
@@ -1490,10 +1433,7 @@ void LoadProcessRecord(m_oOptSetupDataStruct* pOptSetupData)
 // 加载ProcessRecord设置数据
 void LoadOptProcessRecordSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
 	if (TRUE == OpenOptClientXMLFile(pOptSetupData))
@@ -1508,10 +1448,7 @@ void LoadOptProcessRecordSetupData(m_oOptSetupDataStruct* pOptSetupData)
 // 保存ProcessRecord设置数据
 void SaveProcessRecord(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	string strConv = "";
 	COleVariant oVariant;
@@ -1577,10 +1514,7 @@ void SaveProcessRecord(m_oOptSetupDataStruct* pOptSetupData)
 // 保存ProcessRecord设置数据
 void SaveProcessRecordSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -1689,10 +1623,7 @@ void LoadProcessAux(m_oProcessAuxStruct* pProcessAuxStruct,CXMLDOMElement* pElem
 // 加载ProcessAux设置队列数据
 void LoadProcessAuxList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -1747,10 +1678,7 @@ void LoadProcessAuxList(m_oOptSetupDataStruct* pOptSetupData)
 // 加载ProcessAux设置数据
 void LoadProcessAuxSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置ProcessAux
 	OnResetOptProcessAuxList(pOptSetupData);
@@ -1798,10 +1726,7 @@ void SaveProcessAux(m_oProcessAuxStruct* pProcessAuxStruct,CXMLDOMElement* pElem
 // 保存ProcessAux设置队列数据
 void SaveProcessAuxList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -1881,10 +1806,7 @@ void SaveProcessAuxList(m_oOptSetupDataStruct* pOptSetupData)
 // 保存ProcessAux设置数据
 void SaveProcessAuxSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -1983,10 +1905,7 @@ void LoadProcessAcq(m_oProcessAcqStruct* pProcessAcqStruct,CXMLDOMElement* pElem
 // 加载ProcessAcq设置队列数据
 void LoadProcessAcqList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -2037,10 +1956,7 @@ void LoadProcessAcqList(m_oOptSetupDataStruct* pOptSetupData)
 // 加载ProcessAcq设置数据
 void LoadProcessAcqSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置ProcessAcq
 	OnResetOptProcessAcqList(pOptSetupData);
@@ -2095,10 +2011,7 @@ void SaveProcessAcq(m_oProcessAcqStruct* pProcessAcqStruct,CXMLDOMElement* pElem
 // 保存ProcessAcq设置队列数据
 void SaveProcessAcqList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -2172,10 +2085,7 @@ void SaveProcessAcqList(m_oOptSetupDataStruct* pOptSetupData)
 // 保存ProcessAcq设置数据
 void SaveProcessAcqSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -2271,10 +2181,7 @@ void LoadProcessType(m_oProcessTypeStruct* pProcessTypeStruct,CXMLDOMElement* pE
 // 加载ProcessType设置队列数据
 void LoadProcessTypeList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -2325,10 +2232,7 @@ void LoadProcessTypeList(m_oOptSetupDataStruct* pOptSetupData)
 // 加载ProcessType设置数据
 void LoadProcessTypeSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置ProcessType
 	OnResetOptProcessTypeList(pOptSetupData);
@@ -2376,10 +2280,7 @@ void SaveProcessType(m_oProcessTypeStruct* pProcessTypeStruct,CXMLDOMElement* pE
 // 保存ProcessType设置队列数据
 void SaveProcessTypeList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -2453,10 +2354,7 @@ void SaveProcessTypeList(m_oOptSetupDataStruct* pOptSetupData)
 // 保存ProcessType设置数据
 void SaveProcessTypeSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -2551,10 +2449,7 @@ void LoadProcessComments(m_oOperationCommentStruct* pCommentsStruct,CXMLDOMEleme
 // 加载ProcessComments设置队列数据
 void LoadProcessCommentsList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	CXMLDOMNodeList oNodeList;
 	CXMLDOMElement oElement;
@@ -2605,10 +2500,7 @@ void LoadProcessCommentsList(m_oOptSetupDataStruct* pOptSetupData)
 // 加载ProcessComments设置数据
 void LoadProcessCommentsSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 重置ProcessComments
 	OnResetOptCommentList(pOptSetupData);
@@ -2661,10 +2553,7 @@ void SaveProcessComments(m_oOperationCommentStruct* pCommentsStruct,CXMLDOMEleme
 // 保存ProcessComments设置队列数据
 void SaveProcessCommentsList(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	CString strKey;
 	COleVariant oVariant;
 	CXMLDOMNodeList oNodeList;
@@ -2738,10 +2627,7 @@ void SaveProcessCommentsList(m_oOptSetupDataStruct* pOptSetupData)
 // 保存ProcessComments设置数据
 void SaveProcessCommentsSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	COleVariant oVariant;
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	// 打开程序配置文件
@@ -2810,10 +2696,7 @@ void QueryProcessCommentsSetupData(char* cProcBuf, int& iPos, m_oOptSetupDataStr
 // 加载施工客户端程序设置数据
 void LoadOptAppSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	// 加载Delay设置数据
 	LoadOptDelaySetupData(pOptSetupData);
 	// 加载SourceShot设置数据
@@ -2837,10 +2720,7 @@ void LoadOptAppSetupData(m_oOptSetupDataStruct* pOptSetupData)
 // 保存施工客户端程序设置数据
 void SaveOptAppSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
-	if (pOptSetupData == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptSetupData != NULL);
 	// 保存Delay设置数据
 	SaveDelaySetupData(pOptSetupData);
 	// 保存SourceShot设置数据

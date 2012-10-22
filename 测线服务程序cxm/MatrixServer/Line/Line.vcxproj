@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="res\bitmap1.bmp" />
     <None Include="res\classview.bmp" />
     <None Include="res\classview_hc.bmp" />
     <None Include="res\class_view.ico" />

@@ -269,10 +269,28 @@ void CMainFrame::OnClose()
 	m_oComDll.OnClose();
 	CFrameWndEx::OnClose();
 }
-
+// 查询 SurveyXML 文件信息
+// void QuerySurverySetupData(char* cProcBuf, int& iPos, m_oLineSetupDataStruct* pLineSetupData)
+// {
+// 	list<m_oSurveryStruct>::iterator iter;
+// 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
+// 	for (iter = pLineSetupData->m_olsSurveryStruct.begin();
+// 		iter != pLineSetupData->m_olsSurveryStruct.end(); iter++)
+// 	{
+// 		memcpy(&cProcBuf[iPos], &iter->m_uiLine, 4);
+// 		iPos += 4;
+// 		memcpy(&cProcBuf[iPos], &iter->m_usReceiverSectionSize, 2);
+// 		iPos += 2;
+// 		memcpy(&cProcBuf[iPos], iter->m_pcReceiverSection, iter->m_usReceiverSectionSize);
+// 		iPos += iter->m_usReceiverSectionSize;
+// 	}
+// 	LeaveCriticalSection(&pLineSetupData->m_oSecCommInfo);
+// }
 LRESULT CMainFrame::OnMsgClient(WPARAM wParam, LPARAM lParam)
 {
 	CString str = _T("");
+// 	int iPos = 0;
+// 	char cp[20000];
 	switch(wParam)
 	{
 	case CmdClientConnect:
@@ -426,6 +444,16 @@ LRESULT CMainFrame::OnMsgClient(WPARAM wParam, LPARAM lParam)
 		// 设置 FormLine XML文件信息（帧内容为信息结构体）
 	case CmdSetFormLineXMLInfo:
 		m_wndOutput.m_wndOutputBuild.AddString(_T("Receive the informations of form line setup!"));
+		// 测试写数据到服务器配置文件
+// 		m_oComDll.m_oXMLDllLine.m_pLineSetupData->m_olsSurveryStruct.begin()->m_pcReceiverSection[0] = '2';
+// 		m_oComDll.m_oXMLDllLine.m_pLineSetupData->m_olsSurveryStruct.begin()->m_pcReceiverSection[1] = '-';
+// 		m_oComDll.m_oXMLDllLine.m_pLineSetupData->m_olsSurveryStruct.begin()->m_pcReceiverSection[2] = '1';
+// 		m_oComDll.m_oXMLDllLine.m_pLineSetupData->m_olsSurveryStruct.begin()->m_pcReceiverSection[3] = '2';
+// 		m_oComDll.m_oXMLDllLine.m_pLineSetupData->m_olsSurveryStruct.begin()->m_pcReceiverSection[4] = '5';
+// 		m_oComDll.m_oXMLDllLine.m_pLineSetupData->m_olsSurveryStruct.begin()->m_pcReceiverSection[5] = 'p';
+// 		m_oComDll.m_oXMLDllLine.m_pLineSetupData->m_olsSurveryStruct.begin()->m_pcReceiverSection[6] = '2';
+// 		QuerySurverySetupData(cp, iPos, m_oComDll.m_oXMLDllLine.m_pLineSetupData);
+// 		m_oComDll.m_pCommClient->m_oSndFrame.MakeSetFrame(CmdSetSurveyXMLInfo, cp, iPos);
 		break;
 	default:
 		break;

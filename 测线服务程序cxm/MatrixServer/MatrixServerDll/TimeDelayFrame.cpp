@@ -20,16 +20,9 @@ m_oTimeDelayFrameStruct* OnCreateInstrTimeDelayFrame(void)
 void OnInitInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	m_oInstrumentCommInfoStruct* pCommInfo, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pTimeDelayFrame == NULL) || (pCommInfo == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitInstrumentTimeDelayFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pTimeDelayFrame != NULL);
+	ASSERT(pCommInfo != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	if (pTimeDelayFrame->m_pCommandStructSet != NULL)
 	{
@@ -100,10 +93,7 @@ void OnInitInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 // 关闭时统设置帧信息结构体
 void OnCloseInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 {
-	if (pTimeDelayFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pTimeDelayFrame != NULL);
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	if (pTimeDelayFrame->m_cpSndFrameData != NULL)
 	{
@@ -135,10 +125,7 @@ void OnCloseInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 // 释放时统设置帧信息结构体
 void OnFreeInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 {
-	if (pTimeDelayFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pTimeDelayFrame != NULL);
 	DeleteCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	delete pTimeDelayFrame;
 	pTimeDelayFrame = NULL;
@@ -146,10 +133,7 @@ void OnFreeInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 // 创建并设置时统设置端口
 void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStruct* pTimeDelayFrame, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pTimeDelayFrame == NULL)
-	{
-		return;
-	}
+	ASSERT(pTimeDelayFrame != NULL);
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	// 创建套接字
 	pTimeDelayFrame->m_oTimeDelayFrameSocket = CreateInstrSocket(pTimeDelayFrame->m_pCommandStructSet->m_usReturnPort + pTimeDelayFrame->m_usPortMove, 
@@ -167,39 +151,26 @@ void OnCreateAndSetTimeDelayFrameSocket(m_oTimeDelayFrameStruct* pTimeDelayFrame
 }
 // 解析时统设置应答帧
 bool ParseInstrTimeDelayReturnFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
-	m_oConstVarStruct* pConstVar)
+	m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return false;
-	}
-	if (pTimeDelayFrame == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "ParseInstrumentTimeDelayReturnFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return false;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pTimeDelayFrame != NULL);
+	ASSERT(pConstVar != NULL);
 	bool bReturn = false;
 	EnterCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	bReturn = ParseInstrFrame(pTimeDelayFrame->m_pCommandStructReturn, 
-		pTimeDelayFrame->m_cpRcvFrameData, pConstVar);
+		pTimeDelayFrame->m_cpRcvFrameData, pConstVar, pLogOutPut);
 	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	return bReturn;
 }
 // 生成时统设置帧
 void MakeInstrDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame, 
-	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument)
+	m_oConstVarStruct* pConstVar, m_oInstrumentStruct* pInstrument, m_oLogOutPutStruct* pLogOutPut)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if ((pTimeDelayFrame == NULL) || (pInstrument == NULL))
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "MakeInstrumentDelayTimeFrame", "",
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pLogOutPut != NULL);
+	ASSERT(pTimeDelayFrame != NULL);
+	ASSERT(pInstrument != NULL);
+	ASSERT(pConstVar != NULL);
 	CString str = _T("");
 	unsigned short usPos = 0;
 	// 接收到时统设置应答标志位
@@ -222,10 +193,10 @@ void MakeInstrDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	usPos ++;
 	// 设置命令字个数
 	pTimeDelayFrame->m_usCommandWordNum = usPos;
-	MakeInstrFrame(pTimeDelayFrame->m_pCommandStructSet, pConstVar, pTimeDelayFrame->m_cpSndFrameData, 
+	MakeInstrFrame(pTimeDelayFrame->m_pCommandStructSet, pConstVar, pTimeDelayFrame->m_cpSndFrameData,
 		pTimeDelayFrame->m_cpCommandWord, pTimeDelayFrame->m_usCommandWordNum);
 	SendFrame(pTimeDelayFrame->m_oTimeDelayFrameSocket, pTimeDelayFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pTimeDelayFrame->m_pCommandStructSet->m_usAimPort, 
-		pTimeDelayFrame->m_pCommandStructSet->m_uiAimIP, pConstVar->m_pLogOutPut);
+		pTimeDelayFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);
 	LeaveCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 }

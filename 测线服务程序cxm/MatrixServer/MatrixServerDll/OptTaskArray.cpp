@@ -13,10 +13,7 @@ m_oOptTaskArrayStruct* OnCreateOptTaskArray(void)
 // 重置施工任务数组结构体
 void OnResetOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray)
 {
-	if (pOptTaskArray == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptTaskArray != NULL);
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	// 清空施工任务索引
 	pOptTaskArray->m_oOptTaskWorkMap.clear();
@@ -35,19 +32,10 @@ void OnResetOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray)
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 }
 // 初始化施工任务数组结构体
-void OnInitOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray,
-	m_oConstVarStruct* pConstVar)
+void OnInitOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray, m_oConstVarStruct* pConstVar)
 {
-	if (pConstVar == NULL)
-	{
-		return;
-	}
-	if (pOptTaskArray == NULL)
-	{
-		AddMsgToLogOutPutList(pConstVar->m_pLogOutPut, "OnInitOptTaskArray", "", 
-			ErrorType, IDS_ERR_PTRISNULL);
-		return;
-	}
+	ASSERT(pOptTaskArray != NULL);
+	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	// 清空施工任务索引
 	pOptTaskArray->m_oOptTaskWorkMap.clear();
@@ -83,10 +71,7 @@ void OnInitOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray,
 // 关闭施工任务数组结构体
 void OnCloseOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray)
 {
-	if (pOptTaskArray == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptTaskArray != NULL);
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	// 清空施工任务索引
 	pOptTaskArray->m_oOptTaskWorkMap.clear();
@@ -103,10 +88,7 @@ void OnCloseOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray)
 // 释放施工任务数组结构体
 void OnFreeOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray)
 {
-	if (pOptTaskArray == NULL)
-	{
-		return;
-	}
+	ASSERT(pOptTaskArray != NULL);
 	DeleteCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	delete pOptTaskArray;
 	pOptTaskArray = NULL;
@@ -114,10 +96,7 @@ void OnFreeOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray)
 // 得到一个空闲施工任务
 m_oOptTaskStruct* GetFreeOptTask(m_oOptTaskArrayStruct* pOptTaskArray)
 {
-	if (pOptTaskArray == NULL)
-	{
-		return NULL;
-	}
+	ASSERT(pOptTaskArray != NULL);
 	m_oOptTaskStruct* pOptTask = NULL;
 	list <m_oOptTaskStruct*>::iterator iter;
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
@@ -138,10 +117,8 @@ m_oOptTaskStruct* GetFreeOptTask(m_oOptTaskArrayStruct* pOptTaskArray)
 // 增加一个空闲施工任务
 void AddFreeOptTask(m_oOptTaskStruct* pOptTask, m_oOptTaskArrayStruct* pOptTaskArray)
 {
-	if ((pOptTask == NULL) || (pOptTaskArray == NULL))
-	{
-		return;
-	}
+	ASSERT(pOptTask != NULL);
+	ASSERT(pOptTaskArray != NULL);
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	//初始化施工任务
 	OnOptTaskReset(pOptTask);
