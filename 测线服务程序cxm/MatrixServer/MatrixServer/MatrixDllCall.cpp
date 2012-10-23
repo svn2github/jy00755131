@@ -118,8 +118,8 @@ void CMatrixDllCall::OnInit(CString strPath)
 	m_oMatrixOpt.m_hDllMod = m_hDllMod;
 	// DLL手动设置AD
 //	Dll_ADCSet_ByHand();
-	// DLL得到采样数据处理的回调函数
-	m_oMatrixServer.Dll_GetProSampleData_CallBack();
+// 	// DLL得到采样数据处理的回调函数
+// 	m_oMatrixServer.Dll_GetProSampleData_CallBack();
 	// DLL初始化实例
 	Dll_Init_Instance();
 }

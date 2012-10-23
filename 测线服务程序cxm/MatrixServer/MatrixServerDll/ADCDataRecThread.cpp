@@ -45,31 +45,31 @@ void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	}
 }
 // 采样数据回调函数
-void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, ProSampleDateCallBack pCallBack)
-{
-	ASSERT(pADCDataRecThread != NULL);
-	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
-	pADCDataRecThread->m_oProSampleDataCallBack = pCallBack;
-	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
-}
+// void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, ProSampleDateCallBack pCallBack)
+// {
+// 	ASSERT(pADCDataRecThread != NULL);
+// 	EnterCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+// 	pADCDataRecThread->m_oProSampleDataCallBack = pCallBack;
+// 	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
+// }
 // 将ADC数据加入到任务列表
 void AddToADCDataWriteFileList(int iLineIndex, int iPointIndex, unsigned int uiFrameNb,
-	unsigned int uiSN, unsigned int uiSysTime, m_oADCDataRecThreadStruct* pADCDataRecThread)
+	unsigned int uiIP, unsigned int uiSysTime, m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
 	ASSERT(pADCDataRecThread != NULL);
 	m_oADCDataBufStruct* pADCDataBuf = NULL;
 	pADCDataBuf = GetFreeADCDataBuf(pADCDataRecThread->m_pADCDataBufArray);
 	pADCDataBuf->m_uiFrameNb = uiFrameNb;
-	pADCDataBuf->m_uiSN = uiSN;
+	pADCDataBuf->m_uiIP = uiIP;
 	pADCDataBuf->m_uiSysTime = uiSysTime;
 	EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 	memcpy(pADCDataBuf->m_pADCDataBuf, pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
 		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * sizeof(int));
 	// ADC数据处理的回调函数
-	(*pADCDataRecThread->m_oProSampleDataCallBack)(iLineIndex, iPointIndex, 
-		pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
-		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum,
-		uiSN);
+// 	(*pADCDataRecThread->m_oProSampleDataCallBack)(iLineIndex, iPointIndex, 
+// 		pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
+// 		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum,
+// 		uiSN);
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 	EnterCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 	pADCDataRecThread->m_pADCDataBufArray->m_olsADCDataToWrite.push_back(pADCDataBuf);
@@ -184,7 +184,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			// 将该应答帧数据写入文件
 			uiFrameNb = pADCLostFrame->m_uiFrameNb;
 			AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
-				uiFrameNb, pInstrument->m_uiSN, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
+				uiFrameNb, uiIPInstrument, pADCLostFrame->m_uiSysTime, pADCDataRecThread);
 			if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
 			{
 				pInstrument->m_olsADCDataSave.pop_front();
@@ -298,7 +298,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 					pInstrument->m_uiADCDataShouldRecFrameNum++;
 					// 在丢帧的位置写当前帧的内容
 					AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex,
-						ADCLostFrame.m_uiFrameNb, pInstrument->m_uiSN, ADCLostFrame.m_uiSysTime, 
+						ADCLostFrame.m_uiFrameNb, uiIPInstrument, ADCLostFrame.m_uiSysTime, 
 						pADCDataRecThread);
 					if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
 					{
@@ -316,7 +316,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			}
 			uiFrameNb = pInstrument->m_uiADCDataShouldRecFrameNum + pInstrument->m_iADCDataFrameStartNum;
 			AddToADCDataWriteFileList(pInstrument->m_iLineIndex, pInstrument->m_iPointIndex, 
-				uiFrameNb, pInstrument->m_uiSN, uiADCDataFrameSysTimeNow, pADCDataRecThread);
+				uiFrameNb, uiIPInstrument, uiADCDataFrameSysTimeNow, pADCDataRecThread);
 			if (pInstrument->m_olsADCDataSave.size() == pADCDataRecThread->m_pThread->m_pConstVar->m_uiSaveTestDataNum)
 			{
 				pInstrument->m_olsADCDataSave.pop_front();

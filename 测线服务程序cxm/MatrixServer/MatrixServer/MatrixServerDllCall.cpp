@@ -25,8 +25,8 @@ typedef bool (*On_OpenLAUXRoutPower)(int iLineIndex, int iPointIndex, unsigned c
 typedef bool (*On_GetRoutInstrumentNum)(int iLineIndex, int iPointIndex, int iDirection, 
 	m_oEnvironmentStruct* pEnv, unsigned int& uiInstrumentNum);
 // 采样数据回调函数
-typedef void (*Get_ProSampleDateCallBack)(m_oADCDataRecThreadStruct* pADCDataRecThread, 
-	ProSampleDateCallBack pCallBack);
+// typedef void (*Get_ProSampleDateCallBack)(m_oADCDataRecThreadStruct* pADCDataRecThread, 
+// 	ProSampleDateCallBack pCallBack);
 // 手动发送ADC参数设置帧
 typedef bool (*On_SetADCSetFrameByHand)(int iLineIndex, int iPointIndex, int iDirection, bool bRout, 
 	char* cpADCSet, int iADCSetNum, m_oEnvironmentStruct* pEnv);
@@ -364,22 +364,22 @@ void CMatrixServerDllCall::Dll_OnSetADCSetFrameByHand(int iLineIndex, int iPoint
 	}
 }
 // DLL得到采样数据处理的回调函数
-void CMatrixServerDllCall::Dll_GetProSampleData_CallBack(void)
-{
-	Get_ProSampleDateCallBack Dll_On_GetProSampleDataCallBack = NULL;
-	Dll_On_GetProSampleDataCallBack = (Get_ProSampleDateCallBack)GetProcAddress(m_hDllMod, "GetProSampleDateCallBack");
-	if (!Dll_On_GetProSampleDataCallBack)
-	{
-		// handle the error
-		FreeLibrary(m_hDllMod);
-		PostQuitMessage(0);
-	}
-	else
-	{
-		// call the function
-		(*Dll_On_GetProSampleDataCallBack)(m_pEnv->m_pADCDataRecThread, ProSampleDate);
-	}
-}
+// void CMatrixServerDllCall::Dll_GetProSampleData_CallBack(void)
+// {
+// 	Get_ProSampleDateCallBack Dll_On_GetProSampleDataCallBack = NULL;
+// 	Dll_On_GetProSampleDataCallBack = (Get_ProSampleDateCallBack)GetProcAddress(m_hDllMod, "GetProSampleDateCallBack");
+// 	if (!Dll_On_GetProSampleDataCallBack)
+// 	{
+// 		// handle the error
+// 		FreeLibrary(m_hDllMod);
+// 		PostQuitMessage(0);
+// 	}
+// 	else
+// 	{
+// 		// call the function
+// 		(*Dll_On_GetProSampleDataCallBack)(m_pEnv->m_pADCDataRecThread, ProSampleDate);
+// 	}
+// }
 // 判断仪器位置索引号是否已加入索引表
 BOOL CMatrixServerDllCall::Dll_IfLocationExistInMap(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap)

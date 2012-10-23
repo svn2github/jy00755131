@@ -47,7 +47,7 @@ void OnInitOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray, m_oConstVarStruct*
 	// 空闲施工任务总数
 	pOptTaskArray->m_uiCountFree = pOptTaskArray->m_uiCountAll;
 	// 施工任务数据存储文件夹计数
-	pOptTaskArray->m_uiADCDataFolderNb = 0;
+	pOptTaskArray->m_uiOptTaskNb = 0;
 	// 生成施工任务数组
 	if (pOptTaskArray->m_pArrayOptTask != NULL)
 	{
@@ -59,8 +59,8 @@ void OnInitOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray, m_oConstVarStruct*
 	// 加入空闲施工任务队列
 	for(unsigned int i = 0; i < pOptTaskArray->m_uiCountAll; i++)
 	{
-		// 施工任务在施工任务数组中的位置
-		pOptTaskArray->m_pArrayOptTask[i].m_uiIndex = i;
+// 		// 施工任务在施工任务数组中的位置
+// 		pOptTaskArray->m_pArrayOptTask[i].m_uiIndex = i;
 		// 重置施工任务
 		OnOptTaskReset(&pOptTaskArray->m_pArrayOptTask[i]);
 		// 施工任务加在空闲施工任务队列尾部

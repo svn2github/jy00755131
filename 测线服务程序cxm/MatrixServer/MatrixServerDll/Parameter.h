@@ -25,8 +25,8 @@ enum{OptLogType, TimeDelayLogType, ErrorCodeLogType, ADCFrameTimeLogType};
 /** INI文件读取关键字缓冲区大小*/
 #define INIFileStrBufSize			256
 /** 回调函数-采集数据*/
-typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex, int *_piData,
-	int _iSize, unsigned int _uiSN);
+// typedef void (CALLBACK* ProSampleDateCallBack)(int _iLineIndex, int _iPointIndex, int *_piData,
+// 	int _iSize, unsigned int _uiSN);
 /** 时统低位修正值上限*/
 #define TimeDelayLowLimit	50
 /** 时统低位修正默认值*/

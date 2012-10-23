@@ -7,8 +7,10 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	ASSERT(pOptTask != NULL);
 	// 任务是否使用中
 	pOptTask->m_bInUsed = false;
-	// 施工任务开始记录的数据帧数
-	pOptTask->m_uiStartFrame = 0;
+	// 施工任务开始记录的时间
+	pOptTask->m_uiTB = 0;
+	// 施工任务停止记录的时间
+	pOptTask->m_uiTS = 0;
 	// 施工数据输出文件指针
 	pOptTask->m_pFile = NULL;
 	// 施工数据输出前一个文件的文件指针
@@ -17,8 +19,8 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	pOptTask->m_uiFileSaveNb = 0;
 	// 施工任务索引表，关键字为SN，内容为行号
 	pOptTask->m_oSNMap.clear();
-	// 参与施工的仪器队列
-	pOptTask->m_olsOptInstrument.clear();
+// 	// 参与施工的仪器队列
+// 	pOptTask->m_olsOptInstrument.clear();
 }
 
 // 判断索引号是否已加入施工任务索引表

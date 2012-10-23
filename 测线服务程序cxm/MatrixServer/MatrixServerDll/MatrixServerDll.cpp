@@ -43,11 +43,10 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	return nRetCode;
 }
 // 产生一个施工任务
-void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame, 
-	m_oOptTaskArrayStruct* pOptTaskArray, m_oLineListStruct* pLineList)
+void GenOneOptTask(unsigned int uiTB, unsigned int uiTS, 
+	hash_map<unsigned int, m_oInstrumentStruct*>* pMap, m_oOptTaskArrayStruct* pOptTaskArray)
 {
 	ASSERT(pOptTaskArray != NULL);
-	ASSERT(pLineList != NULL);
 	m_oOptTaskStruct* pOptTask = NULL;
 	CString str = _T("");
 	CString str2 = _T("");
@@ -56,16 +55,16 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 	list<m_oOptInstrumentStruct>::iterator list_iter;
 	list<m_oOptInstrumentStruct> oOptInstrumentList;
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
-	pOptTaskArray->m_uiADCDataFolderNb++;
+	pOptTaskArray->m_uiOptTaskNb++;
 	// 得到一个空闲施工任务
 	pOptTask = GetFreeOptTask(pOptTaskArray);
+	pOptTask->m_uiIndex = pOptTaskArray->m_uiOptTaskNb;
 	// 加入施工任务索引
-	AddOptTaskToMap(uiIndex, pOptTask, &pOptTaskArray->m_oOptTaskWorkMap);
-	// 得到施工任务，如果已经有该任务则重置其仪器位置序号索引
-	pOptTask = GetOptTaskFromMap(uiIndex, &pOptTaskArray->m_oOptTaskWorkMap);
+	AddOptTaskToMap(pOptTask->m_uiIndex, pOptTask, &pOptTaskArray->m_oOptTaskWorkMap);
 	// 记录施工任务开始时ADC数据采样帧数
-	pOptTask->m_uiStartFrame = uiStartFrame;
-	str.Format(_T("\\施工任务%d"), pOptTaskArray->m_uiADCDataFolderNb);
+	pOptTask->m_uiTB = uiTB;
+	pOptTask->m_uiTS = uiTS;
+	str.Format(_T("\\施工任务%d"), pOptTask->m_uiIndex);
 	str2 = pOptTaskArray->m_SaveLogFolderPath.c_str();
 	str2 += str;
 	// 创建施工任务数据文件夹
@@ -73,36 +72,28 @@ void GenOneOptTask(unsigned int uiIndex, unsigned int uiStartFrame,
 	// 创建施工任务数据文件夹
 	pOptTask->m_SaveLogFilePath = (CStringA)str2;
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
-	
+
 	// @@@@参与施工任务的采集站排序后加入施工任务的仪器索引表
 	oOptInstrumentList.clear();
-	EnterCriticalSection(&pLineList->m_oSecLineList);
-	for (iter = pLineList->m_pInstrumentList->m_oIPInstrumentMap.begin(); 
-		iter != pLineList->m_pInstrumentList->m_oIPInstrumentMap.end(); iter++)
+	for (iter = pMap->begin(); iter != pMap->end(); iter++)
 	{
 		if (iter->second->m_iInstrumentType == InstrumentTypeFDU)
 		{
 			m_oOptInstrumentStruct oOptInstrument;
-			oOptInstrument.m_uiSN = iter->second->m_uiSN;
+			oOptInstrument.m_uiIP = iter->second->m_uiIP;
+			// @@@@此处应是标记线号和标记点号
 			oOptInstrument.m_iLineIndex = iter->second->m_iLineIndex;
 			oOptInstrument.m_iPointIndex = iter->second->m_iPointIndex;
 			oOptInstrumentList.push_back(oOptInstrument);
 		}
 	}
-	LeaveCriticalSection(&pLineList->m_oSecLineList);
+	oOptInstrumentList.sort();
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	for (list_iter = oOptInstrumentList.begin();
 		list_iter != oOptInstrumentList.end();
 		list_iter++)
 	{
-		pOptTask->m_olsOptInstrument.push_back(*list_iter);
-	}
-	pOptTask->m_olsOptInstrument.sort();
-	for (list_iter = pOptTask->m_olsOptInstrument.begin();
-		list_iter != pOptTask->m_olsOptInstrument.end();
-		list_iter++)
-	{
-		AddToOptTaskSNMap(list_iter->m_uiSN, uiLineNb, &pOptTask->m_oSNMap);
+		AddToOptTaskSNMap(list_iter->m_uiIP, uiLineNb, &pOptTask->m_oSNMap);
 		uiLineNb++;
 	}
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
@@ -289,7 +280,10 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	// @@@@调试用
 	// 产生一个施工任务
-	GenOneOptTask(1, 0, pEnv->m_pOptTaskArray, pEnv->m_pLineList);
+	hash_map <unsigned int, m_oInstrumentStruct*> OptMap;
+	// TB开始时间、TB结束时间、参与采集的仪器指针索引表
+	GenOneOptTask(2000, 4000, &OptMap, pEnv->m_pOptTaskArray);
+	OptMap.clear();
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
 }
 // ADC停止采集命令

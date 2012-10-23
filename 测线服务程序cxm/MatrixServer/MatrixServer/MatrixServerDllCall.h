@@ -33,8 +33,8 @@ public:
 	// DLL手动发送ADC参数设置帧
 	void Dll_OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, bool bRout, 
 		char* cpADCSet, int iADCSetNum);
-	// DLL得到采样数据处理的回调函数
-	void Dll_GetProSampleData_CallBack(void);
+// 	// DLL得到采样数据处理的回调函数
+// 	void Dll_GetProSampleData_CallBack(void);
 	// ADC参数设置线程开始工作
 	void Dll_ADCSetThreadWork(int iOpt);
 
