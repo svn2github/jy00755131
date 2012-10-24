@@ -71,8 +71,10 @@ typedef struct ConstVar_Struct
 	string m_strINIFilePath;
 	/** 仪器设备个数*/
 	unsigned int m_iInstrumentNum;
-	/** ADC数据缓冲区个数*/
-	int m_iADCDataCountAll;
+	/** SEGD数据缓冲区个数*/
+	int m_iSEGDDataBufCountAll;
+	/** SEGD数据缓冲区大小*/
+	int m_iSEGDDataBufSize;
 	/** 施工任务个数*/
 	int m_iOptTaskCountAll;
 	/** 一次休眠的时间*/
@@ -1081,7 +1083,9 @@ typedef struct InstrumentList_Struct
 	hash_map<unsigned int, m_oInstrumentStruct*> m_oADCSetInstrumentMap;
 	/** 仪器位置索引表*/
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*> m_oInstrumentLocationMap;
-	/** 丢帧索引表*/
+	/** 参与施工采集的仪器索引表*/
+	hash_map<unsigned int, m_oInstrumentStruct*> m_oOptInstrumentMap;
+	/** 采样丢帧索引表*/
 	map<m_oADCLostFrameKeyStruct, m_oADCLostFrameStruct> m_oADCLostFrameMap;
 	/** 仪器总数*/
 	unsigned int m_uiCountAll;
@@ -1176,13 +1180,13 @@ typedef struct ADCDataBuf_Struct
 	/** 缓冲区是否使用中*/
 	bool m_bInUsed;
 	/** ADC数据存储缓冲区*/
-	int* m_pADCDataBuf;
-	/** 数据存储帧序号，从0开始*/
+	char* m_pADCDataBuf;
+	/** 每个采集站数据存储帧数*/
 	unsigned int m_uiFrameNb;
-	/** 仪器IP地址*/
-	unsigned int m_uiIP;
-	/** 帧的本地时间*/
-	unsigned int m_uiSysTime;
+	/** SEGD协议头长度*/
+	unsigned int m_uiSEGDHeaderLen;
+	/** 采集站数据头长度*/
+	unsigned int m_uiDataHeaderLen;
 	/** 缓冲区序号*/
 	unsigned int m_uiIndex;
 }m_oADCDataBufStruct;
@@ -1199,8 +1203,8 @@ typedef struct ADCDataBufArray_Struct
 	m_oADCDataBufStruct* m_pArrayADCDataBuf;
 	/** 缓冲区队列*/
 	list<m_oADCDataBufStruct*> m_olsADCDataBufFree;
-	/** 写入文件的数据缓冲区队列*/
-	list<m_oADCDataBufStruct*> m_olsADCDataToWrite;
+//	/** 写入文件的数据缓冲区队列*/
+//	list<m_oADCDataBufStruct*> m_olsADCDataToWrite;
 	/** 缓冲区总数*/
 	unsigned int m_uiCountAll;
 	/** 空闲缓冲区数量*/
@@ -1219,6 +1223,8 @@ typedef struct OptInstrument_Struct
 	int m_iLineIndex;
 	/** 标记点号*/
 	int m_iPointIndex;
+	/** 仪器存储成SEGD的位置号*/
+	unsigned int m_uiLocation;
 	bool operator < (const OptInstrument_Struct& rhs) const
 	{
 		if (m_iLineIndex == rhs.m_iLineIndex)
@@ -1240,8 +1246,8 @@ typedef struct OptTask_Struct
 {
 	/** 任务是否使用中*/
 	bool m_bInUsed;
-	/** 任务序号*/
-	unsigned int m_uiIndex;
+	/** 施工炮号*/
+	unsigned int m_uiOptNo;
 	/** 施工任务开始记录的时间*/
 	unsigned int m_uiTB;
 	/** 施工任务停止记录的时间*/
@@ -1255,7 +1261,11 @@ typedef struct OptTask_Struct
 	/** 施工数据存储文件路径*/
 	string m_SaveLogFilePath;
 	/** 施工任务索引表，关键字为SN，内容为行号*/
-	hash_map<unsigned int, unsigned int> m_oSNMap;
+	hash_map<unsigned int, m_oOptInstrumentStruct*> m_oIPMap;
+	/** 分配存储单元标志位*/
+	bool m_bSaveBuf;
+	/** 分配存储单元序号*/
+	unsigned int m_uiSaveBufNo;
 // 	/** 参与施工的仪器队列*/
 // 	list<m_oOptInstrumentStruct> m_olsOptInstrument;
 }m_oOptTaskStruct;
@@ -2444,14 +2454,14 @@ MatrixServerDll_API void OnOptTaskReset(m_oOptTaskStruct* pOptTask);
 MatrixServerDll_API BOOL IfIndexExistInOptTaskMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oOptTaskStruct*>* pMap);
 // 判断仪器SN号是否已加入施工任务仪器索引表
-MatrixServerDll_API BOOL IfIndexExistInOptTaskSNMap(unsigned int uiIndex,
-	hash_map<unsigned int, unsigned int>* pMap);
+MatrixServerDll_API BOOL IfIndexExistInOptTaskIPMap(unsigned int uiIndex,
+	hash_map<unsigned int, m_oOptInstrumentStruct*>* pMap);
 // 从施工任务仪器索引表中得到仪器的行号
-MatrixServerDll_API unsigned int GetLineNbFromOptTaskSNMap(unsigned int uiIndex,
-	hash_map<unsigned int, unsigned int>* pMap);
+MatrixServerDll_API m_oOptInstrumentStruct GetLineNbFromOptTaskSNMap(unsigned int uiIndex,
+	hash_map<unsigned int, m_oOptInstrumentStruct>* pMap);
 // 向施工任务仪器索引表中加入仪器
-MatrixServerDll_API void AddToOptTaskSNMap(unsigned int uiIndex, unsigned int uiLineNb,
-	hash_map<unsigned int, unsigned int>* pMap);
+MatrixServerDll_API void AddToOptTaskIPMap(unsigned int uiIndex, m_oOptInstrumentStruct* pOptInstr,
+	hash_map<unsigned int, m_oOptInstrumentStruct*>* pMap);
 // 增加一个施工任务
 MatrixServerDll_API void AddOptTaskToMap(unsigned int uiIndex, m_oOptTaskStruct* pOptTask, 
 	hash_map<unsigned int, m_oOptTaskStruct*>* pMap);
@@ -2816,12 +2826,18 @@ MatrixServerDll_API void OnFreeADCDataSaveThread(m_oADCDataSaveThreadStruct* pAD
 /************************************************************************/
 /* 服务程序                                                             */
 /************************************************************************/
+// 将接收到的施工任务设备加入对列
+MatrixServerDll_API void AddInstrInOptList(unsigned int uiSN, int iLineIndex, int iPointIndex, list<m_oOptInstrumentStruct*>* pList, 
+	m_oLineListStruct* pLineList);
+// 产生参与施工仪器索引表
+MatrixServerDll_API void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTaskArrayStruct* pOptTaskArray);
 // 产生一个施工任务
-MatrixServerDll_API void GenOneOptTask(unsigned int uiTB, unsigned int uiTS, 
-	hash_map<unsigned int, m_oInstrumentStruct*>* pMap, m_oOptTaskArrayStruct* pOptTaskArray);
+MatrixServerDll_API void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int uiTSample, 
+	list<m_oOptInstrumentStruct*>* pList, m_oOptTaskArrayStruct* pOptTaskArray, 
+	m_oLineListStruct* pLineList);
 // 释放一个施工任务
 MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, 
-	m_oOptTaskArrayStruct* pOptTaskArray);
+	m_oOptTaskArrayStruct* pOptTaskArray, m_oLineListStruct* pLineList);
 // 按SN重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLableBySN(m_oInstrumentStruct* pInstrument, int iOpt);
 // 按路由重置ADC参数设置标志位

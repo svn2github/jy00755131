@@ -171,12 +171,17 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("20000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("ADCDataCountAll");			// ADC数据缓冲区个数
-	strValue = _T("200000");
+	strSectionKey=_T("SEGDDataBufCountAll");		// SEGD数据缓冲区个数
+	strValue = _T("4");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SEGDDataBufSize");			// SEGD数据缓冲区大小
+	// 每个站4000个点，每个点3个字节，20000个站
+	strValue = _T("240000000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("OptTaskCountAll");			// 施工任务个数
-	strValue = _T("20");
+	strValue = _T("2000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("OneSleepTime");				// 一次休眠的时间

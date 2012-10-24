@@ -15,10 +15,10 @@ void OnResetADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
 	ASSERT(pADCDataBufArray != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
-	// 清空数据缓冲区队列
-	pADCDataBufArray->m_olsADCDataToWrite.clear();
+// 	// 清空数据缓冲区队列
+// 	pADCDataBufArray->m_olsADCDataToWrite.clear();
 	// 清空空闲数据缓冲区队列
-	pADCDataBufArray->m_olsADCDataBufFree.clear();
+ 	pADCDataBufArray->m_olsADCDataBufFree.clear();
 	// 空闲数据缓冲区总数
 	pADCDataBufArray->m_uiCountFree = pADCDataBufArray->m_uiCountAll;
 	// 加入空闲数据缓冲区队列
@@ -37,13 +37,13 @@ void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray, m_oConstV
 	ASSERT(pADCDataBufArray != NULL);
 	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
-	// 清空数据缓冲区队列
-	pADCDataBufArray->m_olsADCDataToWrite.clear();
-	// 清空空闲数据缓冲区队列
-	pADCDataBufArray->m_olsADCDataBufFree.clear();
+// 	// 清空数据缓冲区队列
+// 	pADCDataBufArray->m_olsADCDataToWrite.clear();
+ 	// 清空空闲数据缓冲区队列
+ 	pADCDataBufArray->m_olsADCDataBufFree.clear();
 
 	// 数据缓冲区队列中路由个数
-	pADCDataBufArray->m_uiCountAll = pConstVar->m_iADCDataCountAll;
+	pADCDataBufArray->m_uiCountAll = pConstVar->m_iSEGDDataBufCountAll;
 	// 空闲数据缓冲区总数
 	pADCDataBufArray->m_uiCountFree = pADCDataBufArray->m_uiCountAll;
 	// 生成数据缓冲区数组
@@ -64,7 +64,7 @@ void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray, m_oConstV
 	{
 		// 缓冲区在缓冲区数组中的位置
 		pADCDataBufArray->m_pArrayADCDataBuf[i].m_uiIndex = i;
-		pADCDataBufArray->m_pArrayADCDataBuf[i].m_pADCDataBuf = new int[pConstVar->m_iADCDataInOneFrameNum];
+		pADCDataBufArray->m_pArrayADCDataBuf[i].m_pADCDataBuf = new char[pConstVar->m_iSEGDDataBufSize];
 		// 重置数据缓冲区
 		OnADCDataBufReset(&pADCDataBufArray->m_pArrayADCDataBuf[i]);
 		// 数据缓冲区加在空闲数据缓冲区队列尾部
@@ -77,10 +77,10 @@ void OnCloseADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
 	ASSERT(pADCDataBufArray != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
-	// 清空数据缓冲区队列
-	pADCDataBufArray->m_olsADCDataToWrite.clear();
-	// 清空空闲数据缓冲区队列
-	pADCDataBufArray->m_olsADCDataBufFree.clear();
+// 	// 清空数据缓冲区队列
+// 	pADCDataBufArray->m_olsADCDataToWrite.clear();
+ 	// 清空空闲数据缓冲区队列
+ 	pADCDataBufArray->m_olsADCDataBufFree.clear();
 	// 删除数据缓冲区数组
 	if (pADCDataBufArray->m_pArrayADCDataBuf != NULL)
 	{
@@ -110,16 +110,14 @@ m_oADCDataBufStruct* GetFreeADCDataBuf(m_oADCDataBufArrayStruct* pADCDataBufArra
 {
 	ASSERT(pADCDataBufArray != NULL);
 	m_oADCDataBufStruct* pADCDataBuf = NULL;
-	list <m_oADCDataBufStruct*>::iterator iter;
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	if(pADCDataBufArray->m_uiCountFree > 0)	//有空闲数据存储缓冲区
 	{
 		// 从空闲数据存储缓冲区队列头部得到一个空闲数据存储缓冲区
-		iter = pADCDataBufArray->m_olsADCDataBufFree.begin();
-		pADCDataBuf = *iter;
-		pADCDataBufArray->m_olsADCDataBufFree.pop_front();	
+		pADCDataBuf = *pADCDataBufArray->m_olsADCDataBufFree.begin();
 		// 数据存储缓冲区是否使用中
-		pADCDataBuf->m_bInUsed = true;	
+		pADCDataBuf->m_bInUsed = true;
+		pADCDataBufArray->m_olsADCDataBufFree.pop_front();
 		// 空闲数据存储缓冲区计数减1
 		pADCDataBufArray->m_uiCountFree--;
 	}

@@ -29,7 +29,8 @@ void OnResetInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	pInstrumentList->m_oInstrumentLocationMap.clear();
 	// 清空丢帧索引
 	pInstrumentList->m_oADCLostFrameMap.clear();
-
+	// 清空参与施工采集的仪器索引
+	pInstrumentList->m_oOptInstrumentMap.clear();
 
 	// 空闲仪器数量
 	pInstrumentList->m_uiCountFree = pInstrumentList->m_uiCountAll;
@@ -68,7 +69,8 @@ void OnInitInstrumentList(m_oInstrumentListStruct* pInstrumentList, m_oConstVarS
 	pInstrumentList->m_oInstrumentLocationMap.clear();
 	// 清空丢帧索引
 	pInstrumentList->m_oADCLostFrameMap.clear();
-
+	// 清空参与施工采集的仪器索引
+	pInstrumentList->m_oOptInstrumentMap.clear();
 
 	// 仪器队列中仪器个数
 	pInstrumentList->m_uiCountAll = pConstVar->m_iInstrumentNum;
@@ -113,6 +115,8 @@ void OnCloseInstrumentList(m_oInstrumentListStruct* pInstrumentList)
 	pInstrumentList->m_oInstrumentLocationMap.clear();
 	// 清空丢帧索引
 	pInstrumentList->m_oADCLostFrameMap.clear();
+	// 清空参与施工采集的仪器索引
+	pInstrumentList->m_oOptInstrumentMap.clear();
 	// 删除仪器数组
 	if (pInstrumentList->m_pArrayInstrument != NULL)
 	{

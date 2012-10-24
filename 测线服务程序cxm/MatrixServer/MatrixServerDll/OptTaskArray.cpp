@@ -105,9 +105,9 @@ m_oOptTaskStruct* GetFreeOptTask(m_oOptTaskArrayStruct* pOptTaskArray)
 		// 从空闲施工任务队列头部得到一个空闲施工任务
 		iter = pOptTaskArray->m_olsOptTaskFree.begin();
 		pOptTask = *iter;
-		pOptTaskArray->m_olsOptTaskFree.pop_front();	
+		pOptTaskArray->m_olsOptTaskFree.pop_front();
 		// 施工任务是否使用中
-		pOptTask->m_bInUsed = true;	
+		pOptTask->m_bInUsed = true;
 		// 空闲施工任务计数减1
 		pOptTaskArray->m_uiCountFree--;
 	}

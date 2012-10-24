@@ -5,6 +5,7 @@
 void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 {
 	ASSERT(pOptTask != NULL);
+	hash_map<unsigned int, m_oOptInstrumentStruct*>::iterator iter;
 	// 任务是否使用中
 	pOptTask->m_bInUsed = false;
 	// 施工任务开始记录的时间
@@ -18,7 +19,16 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	// 最新的文件存储序号
 	pOptTask->m_uiFileSaveNb = 0;
 	// 施工任务索引表，关键字为SN，内容为行号
-	pOptTask->m_oSNMap.clear();
+	for (iter = pOptTask->m_oIPMap.begin(); iter != pOptTask->m_oIPMap.end(); iter++);
+	{
+		delete iter->second;
+		iter->second = NULL;
+	}
+	pOptTask->m_oIPMap.clear();
+	// 分配存储单元标志位
+	pOptTask->m_bSaveBuf = false;
+	// 分配存储单元序号
+	pOptTask->m_uiSaveBufNo = 0;
 // 	// 参与施工的仪器队列
 // 	pOptTask->m_olsOptInstrument.clear();
 }
@@ -42,12 +52,12 @@ BOOL IfIndexExistInOptTaskMap(unsigned int uiIndex,
 	return bResult;
 }
 // 判断仪器SN号是否已加入施工任务仪器索引表
-BOOL IfIndexExistInOptTaskSNMap(unsigned int uiIndex,
-	hash_map<unsigned int, unsigned int>* pMap)
+BOOL IfIndexExistInOptTaskIPMap(unsigned int uiIndex,
+	hash_map<unsigned int, m_oOptInstrumentStruct*>* pMap)
 {
 	ASSERT(pMap != NULL);
 	BOOL bResult = FALSE;
-	hash_map<unsigned int, unsigned int>::iterator iter;
+	hash_map<unsigned int, m_oOptInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
 	if (iter != pMap->end())
 	{
@@ -69,13 +79,13 @@ unsigned int GetLineNbFromOptTaskSNMap(unsigned int uiIndex,
 	return iter->second;
 }
 // 向施工任务仪器索引表中加入仪器
-void AddToOptTaskSNMap(unsigned int uiIndex, unsigned int uiLineNb,
-	hash_map<unsigned int, unsigned int>* pMap)
+void AddToOptTaskIPMap(unsigned int uiIndex, m_oOptInstrumentStruct* pOptInstr,
+	hash_map<unsigned int, m_oOptInstrumentStruct*>* pMap)
 {
 	ASSERT(pMap != NULL);
-	if (FALSE == IfIndexExistInOptTaskSNMap(uiIndex, pMap))
+	if (FALSE == IfIndexExistInOptTaskIPMap(uiIndex, pMap))
 	{
-		pMap->insert(hash_map<unsigned int, unsigned int>::value_type (uiIndex, uiLineNb));
+		pMap->insert(hash_map<unsigned int, m_oOptInstrumentStruct*>::value_type (uiIndex, pOptInstr));
 	}
 }
 // 增加一个施工任务

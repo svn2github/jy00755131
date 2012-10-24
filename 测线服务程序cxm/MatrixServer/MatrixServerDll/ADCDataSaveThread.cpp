@@ -201,34 +201,34 @@ void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray)
 void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 {
 	ASSERT(pADCDataSaveThread != NULL);
-	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
-	// 行号
-	unsigned int uiLineIndex = 0;
-	m_oADCDataBufStruct* pADCDataBuf = NULL;
-	EnterCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
-	EnterCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
-	while(pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.empty() == false)
-	{
-		pADCDataBuf = *pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.begin();
-		pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.pop_front();
-		// 将数据按照施工任务写入文件
-		for (iter = pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.begin();
-			iter != pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.end(); iter++)
-		{
+// 	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
+// 	// 行号
+// 	unsigned int uiLineIndex = 0;
+// 	m_oADCDataBufStruct* pADCDataBuf = NULL;
+// 	EnterCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+// 	EnterCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
+// 	while(pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.empty() == false)
+// 	{
+// 		pADCDataBuf = *pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.begin();
+// 		pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.pop_front();
+// 		// 将数据按照施工任务写入文件
+// 		for (iter = pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.begin();
+// 			iter != pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.end(); iter++)
+// 		{
 			// 仪器在施工任务仪器索引表中
-			if (TRUE == IfIndexExistInOptTaskSNMap(pADCDataBuf->m_uiIP, &iter->second->m_oSNMap))
-			{
-				uiLineIndex = GetLineNbFromOptTaskSNMap(pADCDataBuf->m_uiIP, &iter->second->m_oSNMap);
-				// 将数据写入文件
-				WriteADCDataInOptTaskFile(pADCDataBuf, iter->second, uiLineIndex, 
-					pADCDataSaveThread->m_pThread->m_pConstVar);
-			}
-		}
-		// 将该数据缓冲加入空闲任务队列
-		AddFreeADCDataBuf(pADCDataBuf, pADCDataSaveThread->m_pADCDataBufArray);
-	}
-	LeaveCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
-	LeaveCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+// 			if (TRUE == IfIndexExistInOptTaskSNMap(pADCDataBuf->m_uiIP, &iter->second->m_oSNMap))
+// 			{
+// 				uiLineIndex = GetLineNbFromOptTaskSNMap(pADCDataBuf->m_uiIP, &iter->second->m_oSNMap);
+// 				// 将数据写入文件
+// 				WriteADCDataInOptTaskFile(pADCDataBuf, iter->second, uiLineIndex, 
+// 					pADCDataSaveThread->m_pThread->m_pConstVar);
+//			}
+// 		}
+// 		// 将该数据缓冲加入空闲任务队列
+// 		AddFreeADCDataBuf(pADCDataBuf, pADCDataSaveThread->m_pADCDataBufArray);
+// 	}
+// 	LeaveCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
+// 	LeaveCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 }
 // 线程函数
 DWORD WINAPI RunADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)

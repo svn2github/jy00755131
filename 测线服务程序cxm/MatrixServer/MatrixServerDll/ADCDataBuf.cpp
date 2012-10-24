@@ -7,10 +7,10 @@ void OnADCDataBufReset(m_oADCDataBufStruct* pADCDataBuf)
 	ASSERT(pADCDataBuf != NULL);
 	// 是否使用中
 	pADCDataBuf->m_bInUsed = false;
-	// 数据存储帧序号，从0开始
+	// 每个采集站数据存储帧数
 	pADCDataBuf->m_uiFrameNb = 0;
-	// 采样仪器SN
-	pADCDataBuf->m_uiIP = 0;
-	// 帧的本地时间
-	pADCDataBuf->m_uiSysTime = 0;
+	// SEGD协议头长度
+	pADCDataBuf->m_uiSEGDHeaderLen = 0;
+	// 采集站数据头长度
+	pADCDataBuf->m_uiDataHeaderLen = 0;
 }

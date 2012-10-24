@@ -57,23 +57,23 @@ void AddToADCDataWriteFileList(int iLineIndex, int iPointIndex, unsigned int uiF
 	unsigned int uiIP, unsigned int uiSysTime, m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
 	ASSERT(pADCDataRecThread != NULL);
-	m_oADCDataBufStruct* pADCDataBuf = NULL;
-	pADCDataBuf = GetFreeADCDataBuf(pADCDataRecThread->m_pADCDataBufArray);
-	pADCDataBuf->m_uiFrameNb = uiFrameNb;
-	pADCDataBuf->m_uiIP = uiIP;
-	pADCDataBuf->m_uiSysTime = uiSysTime;
-	EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
-	memcpy(pADCDataBuf->m_pADCDataBuf, pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
-		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * sizeof(int));
+// 	m_oADCDataBufStruct* pADCDataBuf = NULL;
+// 	pADCDataBuf = GetFreeADCDataBuf(pADCDataRecThread->m_pADCDataBufArray);
+// 	pADCDataBuf->m_uiFrameNb = uiFrameNb;
+// 	pADCDataBuf->m_uiIP = uiIP;
+// 	pADCDataBuf->m_uiSysTime = uiSysTime;
+// 	EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+// 	memcpy(pADCDataBuf->m_pADCDataBuf, pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
+// 		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * sizeof(int));
 	// ADC数据处理的回调函数
 // 	(*pADCDataRecThread->m_oProSampleDataCallBack)(iLineIndex, iPointIndex, 
 // 		pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCData,
 // 		pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum,
 // 		uiSN);
-	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
-	EnterCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
-	pADCDataRecThread->m_pADCDataBufArray->m_olsADCDataToWrite.push_back(pADCDataBuf);
-	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+// 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
+// 	EnterCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+// 	pADCDataRecThread->m_pADCDataBufArray->m_olsADCDataToWrite.push_back(pADCDataBuf);
+// 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 }
 // 查找没有接收到数据的采集站
 BOOL FindFDUNotRecADCData(m_oADCDataRecThreadStruct* pADCDataRecThread)

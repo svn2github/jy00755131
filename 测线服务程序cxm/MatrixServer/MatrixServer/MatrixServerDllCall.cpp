@@ -103,10 +103,10 @@ typedef void (*Query_ProcessAcqSetupData)(char* cProcBuf, int& iPos, m_oOptSetup
 typedef void (*Query_ProcessTypeSetupData)(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
 // 查询ProcessComments设置数据
 typedef void (*Query_ProcessCommentsSetupData)(char* cProcBuf, int& iPos, m_oOptSetupDataStruct* pOptSetupData);
-void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int _iSize, unsigned int _uiSN)
-{
-
-}
+// void CALLBACK ProSampleDate(int _iLineIndex, int _iPointIndex, int *_piData, int _iSize, unsigned int _uiSN)
+// {
+// 
+// }
 CMatrixServerDllCall::CMatrixServerDllCall(void)
 {
 	m_pEnv = NULL;
