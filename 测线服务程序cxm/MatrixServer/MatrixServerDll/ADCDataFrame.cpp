@@ -22,6 +22,7 @@ void OnInitInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	ASSERT(pCommInfo != NULL);
 	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pADCDataFrame->m_oSecADCDataFrame);
+	int iBufLen = 0;
 	if (pADCDataFrame->m_pCommandStructSet != NULL)
 	{
 		delete pADCDataFrame->m_pCommandStructSet;
@@ -65,7 +66,8 @@ void OnInitInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame,
 	}
 	pADCDataFrame->m_pCommandStructReturn = new m_oInstrumentCommandStruct;
 	ResetInstrFramePacket(pADCDataFrame->m_pCommandStructReturn);
-	pADCDataFrame->m_pCommandStructReturn->m_pADCData = new int[pConstVar->m_iADCDataInOneFrameNum];
+	iBufLen = pConstVar->m_iADCDataInOneFrameNum * pConstVar->m_iADCDataSize3B;
+	pADCDataFrame->m_pCommandStructReturn->m_pADCDataBuf = new char[iBufLen];
 	// 清空接收帧缓冲区
 	if (pADCDataFrame->m_cpRcvFrameData != NULL)
 	{
@@ -98,10 +100,10 @@ void OnCloseInstrADCDataFrame(m_oADCDataFrameStruct* pADCDataFrame)
 	}
 	if (pADCDataFrame->m_pCommandStructReturn != NULL)
 	{
-		if (pADCDataFrame->m_pCommandStructReturn->m_pADCData != NULL)
+		if (pADCDataFrame->m_pCommandStructReturn->m_pADCDataBuf != NULL)
 		{
-			delete[] pADCDataFrame->m_pCommandStructReturn->m_pADCData;
-			pADCDataFrame->m_pCommandStructReturn->m_pADCData = NULL;
+			delete[] pADCDataFrame->m_pCommandStructReturn->m_pADCDataBuf;
+			pADCDataFrame->m_pCommandStructReturn->m_pADCDataBuf = NULL;
 		}
 		delete pADCDataFrame->m_pCommandStructReturn;
 		pADCDataFrame->m_pCommandStructReturn = NULL;

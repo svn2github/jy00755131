@@ -181,8 +181,8 @@ bool LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("IPBroadcastAddr");		// 设置为广播IP
 		pConstVar->m_uiIPBroadcastAddr = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
-		strSectionKey=_T("ADCFrameSaveInOneFileNum");	// 一个文件内存储单个设备ADC数据帧数
-		pConstVar->m_iADCFrameSaveInOneFileNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+// 		strSectionKey=_T("ADCFrameSaveInOneFileNum");	// 一个文件内存储单个设备ADC数据帧数
+// 		pConstVar->m_iADCFrameSaveInOneFileNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
 		strSectionKey=_T("ADCSaveHeadLineNum");		// 存储ADC数据的文件头行数
 		pConstVar->m_iADCSaveHeadLineNum = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);

@@ -373,9 +373,9 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("4294967295");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("ADCFrameSaveInOneFileNum");	// 一个文件内存储单个设备ADC数据帧数
-	strValue = _T("200");
-	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+// 	strSectionKey=_T("ADCFrameSaveInOneFileNum");	// 一个文件内存储单个设备ADC数据帧数
+// 	strValue = _T("200");
+// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("ADCSaveHeadLineNum");		// 存储ADC数据的文件头行数
 	strValue = _T("3");

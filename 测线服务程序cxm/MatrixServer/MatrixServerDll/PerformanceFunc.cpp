@@ -185,7 +185,7 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 	int iFramePacketSize1B = 0;
 	int iFrameCmdSize1B = 0;
 	int iADCDataSize3B = 0;
-
+	int iBufLen = 0;
 	iFramePacketSize4B = pConstVar->m_iFramePacketSize4B;
 	iFramePacketSize2B = pConstVar->m_iFramePacketSize2B;
 	iFramePacketSize1B = pConstVar->m_iFramePacketSize1B;
@@ -235,17 +235,9 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 		memcpy(&pCommand->m_uiADCSampleSysTime, &pFrameData[iPos], iFramePacketSize4B);
 		iPos += iFramePacketSize4B;
 		iPos += iFramePacketSize2B;
-		for (int i=0; i<pConstVar->m_iADCDataInOneFrameNum; i++)
-		{
-			iTemp = 0;
-			memcpy(&iTemp, &pFrameData[iPos], iADCDataSize3B);
-			iPos += iADCDataSize3B;
-			if (iTemp > 0x800000)
-			{
-				iTemp = -(0xffffff - iTemp);
-			}
-			pCommand->m_pADCData[i] = iTemp;
-		}
+		iBufLen = pConstVar->m_iADCDataInOneFrameNum * iADCDataSize3B;
+		memcpy(pCommand->m_pADCDataBuf, &pFrameData[iPos], iBufLen);
+		iPos += iBufLen;
 		return true;
 	}
 	// ½âÎöÖ¡ÄÚÈÝ

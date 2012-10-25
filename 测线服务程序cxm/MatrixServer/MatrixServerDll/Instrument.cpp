@@ -186,11 +186,17 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 	// ADC采样数据（取每帧的第一个数据用于计算）
 	pInstrument->m_olsADCDataSave.clear();
 	// ADC数据帧的指针偏移量
-	pInstrument->m_usADCDataFramePoint = 0;
+	pInstrument->m_usADCDataFramePointNow = 0;
 	// ADC数据帧发送时的本地时间
-	pInstrument->m_uiADCDataFrameSysTime = 0;
-	// ADC数据帧起始帧数
-	pInstrument->m_iADCDataFrameStartNum = 0;
+	pInstrument->m_uiADCDataFrameSysTimeNow = 0;
+	// ADC数据帧的指针偏移量
+	pInstrument->m_usADCDataFramePointOld = 0;
+	// ADC数据帧发送时的本地时间
+	pInstrument->m_uiADCDataFrameSysTimeOld = 0;
+	// 仪器开始采样的TB时刻高位
+	pInstrument->m_uiTBHigh = 0;
+	// 检查是否晚或者没有收到ADC数据帧
+	pInstrument->m_bCheckADCFrameLate = true;
 	// 仪器存活时间
 	pInstrument->m_uiActiveTime = 0;
 }

@@ -145,8 +145,7 @@ void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int u
 	GenOptInstrMap(pLineList, pOptTaskArray);
 }
 // 释放一个施工任务
-void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray, 
-	m_oLineListStruct* pLineList)
+void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray)
 {
 	ASSERT(pOptTaskArray != NULL);
 	m_oOptTaskStruct* pOptTask = NULL;
@@ -168,8 +167,6 @@ void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray,
 	// 从施工任务索引表中删除
 	DeleteOptTaskFromMap(uiIndex, &pOptTaskArray->m_oOptTaskWorkMap);
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
-	// 重新产生施工仪器索引
-	GenOptInstrMap(pLineList, pOptTaskArray);
 }
 // 按SN重置ADC参数设置标志位
 void OnResetADCSetLableBySN(m_oInstrumentStruct* pInstrument, int iOpt)
@@ -319,9 +316,8 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	iSampleRate = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate;
 	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
-	pEnv->m_pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
-	pEnv->m_pADCDataRecThread->m_bCheckFDUADCRec = true;
-	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
+//	pEnv->m_pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
+//	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
 	pEnv->m_pADCDataRecThread->m_iADCSampleRate = iSampleRate;
 	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
@@ -355,7 +351,9 @@ void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 	ASSERT(pEnv != NULL);
 	// @@@@调试用
 	// 释放一个施工任务
-	FreeOneOptTask(100, pEnv->m_pOptTaskArray, pEnv->m_pLineList);
+	FreeOneOptTask(100, pEnv->m_pOptTaskArray);
+	// 重新产生施工仪器索引
+	GenOptInstrMap(pEnv->m_pLineList, pEnv->m_pOptTaskArray);
 	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
 	pEnv->m_pADCSetThread->m_bADCStartSample = false;
 	pEnv->m_pADCSetThread->m_bADCStopSample = true;

@@ -177,8 +177,8 @@ typedef struct ConstVar_Struct
 	int m_iBroadcastPortStart;
 	/** 设置为广播IP*/
 	unsigned int m_uiIPBroadcastAddr;
-	/** 一个文件内存储单个设备ADC数据帧数*/
-	int m_iADCFrameSaveInOneFileNum;
+// 	/** 一个文件内存储单个设备ADC数据帧数*/
+// 	int m_iADCFrameSaveInOneFileNum;
 	/** 存储ADC数据的文件头行数*/
 	int m_iADCSaveHeadLineNum;
 	/** 存储ADC数据的左侧预留信息字节数*/
@@ -555,7 +555,7 @@ typedef struct InstrumentCommand_Struct
 	/** ADC数据采集时仪器本地时间*/
 	unsigned int m_uiADCSampleSysTime;
 	/** ADC采样数据缓冲区指针*/
-	int* m_pADCData;
+	char* m_pADCDataBuf;
 }m_oInstrumentCommandStruct;
 
 /**
@@ -968,11 +968,17 @@ typedef struct Instrument_Struct
 	/** ADC采样数据（取每帧的第一个数据用于计算）*/
 	list<int> m_olsADCDataSave;
 	/** ADC数据帧的指针偏移量*/
-	unsigned short m_usADCDataFramePoint;
+	unsigned short m_usADCDataFramePointNow;
 	/** ADC数据帧发送时的本地时间*/
-	unsigned int m_uiADCDataFrameSysTime;
-	/** ADC数据帧起始帧数*/
-	int m_iADCDataFrameStartNum;
+	unsigned int m_uiADCDataFrameSysTimeNow;
+	/** ADC数据帧的指针偏移量*/
+	unsigned short m_usADCDataFramePointOld;
+	/** ADC数据帧发送时的本地时间*/
+	unsigned int m_uiADCDataFrameSysTimeOld;
+	/** 仪器开始采样的TB时刻高位*/
+	unsigned int m_uiTBHigh;
+	/** 检查是否晚或者没有收到ADC数据帧*/
+	bool m_bCheckADCFrameLate;
 	/** 仪器存活时间*/
 	unsigned int m_uiActiveTime;
 }m_oInstrumentStruct;
@@ -1055,8 +1061,8 @@ typedef struct ADCLostFrame_Struct
 {
 	/** 丢失帧重发次数*/
 	unsigned int m_uiCount;
-	/** 丢帧在文件内的帧序号，从0开始*/
-	unsigned int m_uiFrameNb;
+// 	/** 丢帧在文件内的帧序号，从0开始*/
+// 	unsigned int m_uiFrameNb;
 	/** 丢失帧的本地时间*/
 	unsigned int m_uiSysTime;
 	/** 是否已经收到应答*/
@@ -1516,12 +1522,10 @@ typedef struct ADCDataRecThread_Struct
 	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
 	/** 采样率设置*/
 	int m_iADCSampleRate;
-	/** 上一帧的本地时间*/
-	unsigned int m_uiADCDataFrameSysTime;
-	/** 存文件数据帧数计数*/
-	int m_iADCFrameCount;
-	/** 是否监测其它采集站接收数据帧情况标志位*/
-	bool m_bCheckFDUADCRec;
+//	/** 上一帧的本地时间*/
+//	unsigned int m_uiADCDataFrameSysTime;
+//	/** 存文件数据帧数计数*/
+//	int m_iADCFrameCount;
 // 	/** 采样数据回调函数*/
 // 	ProSampleDateCallBack m_oProSampleDataCallBack;
 }m_oADCDataRecThreadStruct;
@@ -2777,10 +2781,9 @@ MatrixServerDll_API void OnFreeMonitorThread(m_oMonitorThreadStruct* pMonitorThr
 MatrixServerDll_API m_oADCDataRecThreadStruct* OnCreateADCDataRecThread(void);
 // 线程等待函数
 MatrixServerDll_API void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread);
-// 将ADC数据加入到任务列表
-MatrixServerDll_API void AddToADCDataWriteFileList(int iLineIndex, int iPointIndex, 
-	unsigned int uiFrameNb, unsigned int uiIP, unsigned int uiSysTime, 
-	m_oADCDataRecThreadStruct* pADCDataRecThread);
+// 将ADC数据加入到任务缓冲区
+MatrixServerDll_API void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, char* pBuf, 
+	unsigned int uiLen, m_oADCDataRecThreadStruct* pADCDataRecThread);
 // 采样数据回调函数
 // MatrixServerDll_API void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, 
 // 	ProSampleDateCallBack pCallBack);
@@ -2836,8 +2839,7 @@ MatrixServerDll_API void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWi
 	list<m_oOptInstrumentStruct*>* pList, m_oOptTaskArrayStruct* pOptTaskArray, 
 	m_oLineListStruct* pLineList);
 // 释放一个施工任务
-MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, 
-	m_oOptTaskArrayStruct* pOptTaskArray, m_oLineListStruct* pLineList);
+MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray);
 // 按SN重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLableBySN(m_oInstrumentStruct* pInstrument, int iOpt);
 // 按路由重置ADC参数设置标志位
