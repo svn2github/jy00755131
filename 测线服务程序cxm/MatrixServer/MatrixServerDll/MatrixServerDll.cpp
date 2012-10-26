@@ -100,9 +100,9 @@ void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTaskArrayStruct* pOptTas
 	oIPList.clear();
 }
 // 产生一个施工任务
-void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int uiTSample, 
+void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int uiTSample,
 	list<m_oOptInstrumentStruct*>* pList, m_oOptTaskArrayStruct* pOptTaskArray, 
-	m_oLineListStruct* pLineList)
+	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
 {
 	ASSERT(pList != NULL);
 	ASSERT(pOptTaskArray != NULL);
@@ -110,11 +110,27 @@ void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int u
 	CString str = _T("");
 	CString str2 = _T("");
 	unsigned int uiLocation = 0;
+	unsigned int uiTBHigh = 0;
+	unsigned int uiTBHighOld = 0;
+	unsigned int uiSysTime = 0;
 	list<m_oOptInstrumentStruct*>::iterator iter;
 	if (pList->size() == 0)
 	{
 		return;
 	}
+	EnterCriticalSection(&pLineList->m_oSecLineList);
+	uiTBHighOld = pLineList->m_uiTBHigh;
+	uiSysTime = pLineList->m_uiLocalSysTime;
+	if (uiTBHighOld == 0)
+	{
+		// 1ms对应下位机本地时间计数器数值为4
+		uiTBHigh = uiSysTime + pConstVar->m_uiTBSleepTimeHigh + uiTBWindow * 4;
+	}
+	else
+	{
+		uiTBHigh = uiSysTime + uiTBWindow * 4;
+	}
+	LeaveCriticalSection(&pLineList->m_oSecLineList);
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	pOptTaskArray->m_uiOptTaskNb++;
 	// 得到一个空闲施工任务
@@ -123,8 +139,8 @@ void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int u
 	// 加入施工任务索引
 	AddOptTaskToMap(pOptTask->m_uiOptNo, pOptTask, &pOptTaskArray->m_oOptTaskWorkMap);
 	// @@@@记录施工任务开始和停止记录时间，根据当前时间和TB时间计算
-	pOptTask->m_uiTB = uiTBWindow;
-	pOptTask->m_uiTS = uiTSample;
+	pOptTask->m_uiTB = uiTBHigh;
+	pOptTask->m_uiTS = uiTBHigh + uiTSample * 4;
 	str.Format(_T("\\施工任务%d"), pOptTaskArray->m_uiOptTaskNb);
 	str2 = pOptTaskArray->m_SaveLogFolderPath.c_str();
 	str2 += str;
@@ -316,8 +332,6 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	iSampleRate = pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oXMLADCSetupData.m_iSampleRate;
 	LeaveCriticalSection(&pEnv->m_pInstrumentCommInfo->m_pServerSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
-//	pEnv->m_pADCDataRecThread->m_uiADCDataFrameSysTime = 0;
-//	pEnv->m_pADCDataRecThread->m_iADCFrameCount = 0;
 	pEnv->m_pADCDataRecThread->m_iADCSampleRate = iSampleRate;
 	LeaveCriticalSection(&pEnv->m_pADCDataRecThread->m_oSecADCDataRecThread);
 	EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
@@ -342,7 +356,7 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	}
 	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
 	// 炮号、TB开始时间、采样时间、参与采集的仪器指针索引表
-	GenOneOptTask(100, 2000, 4000, &oList, pEnv->m_pOptTaskArray, pEnv->m_pLineList);
+	GenOneOptTask(100, 2000, 4000, &oList, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
 }
 // ADC停止采集命令

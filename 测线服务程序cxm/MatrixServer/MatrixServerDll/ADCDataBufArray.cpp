@@ -15,8 +15,8 @@ void OnResetADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
 	ASSERT(pADCDataBufArray != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
-// 	// 清空数据缓冲区队列
-// 	pADCDataBufArray->m_olsADCDataToWrite.clear();
+ 	// 清空数据缓冲区索引
+ 	pADCDataBufArray->m_oADCDataToWriteMap.clear();
 	// 清空空闲数据缓冲区队列
  	pADCDataBufArray->m_olsADCDataBufFree.clear();
 	// 空闲数据缓冲区总数
@@ -37,8 +37,8 @@ void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray, m_oConstV
 	ASSERT(pADCDataBufArray != NULL);
 	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
-// 	// 清空数据缓冲区队列
-// 	pADCDataBufArray->m_olsADCDataToWrite.clear();
+ 	// 清空数据缓冲区队列
+ 	pADCDataBufArray->m_oADCDataToWriteMap.clear();
  	// 清空空闲数据缓冲区队列
  	pADCDataBufArray->m_olsADCDataBufFree.clear();
 
@@ -77,8 +77,8 @@ void OnCloseADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
 	ASSERT(pADCDataBufArray != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
-// 	// 清空数据缓冲区队列
-// 	pADCDataBufArray->m_olsADCDataToWrite.clear();
+	// 清空数据缓冲区队列
+	pADCDataBufArray->m_oADCDataToWriteMap.clear();
  	// 清空空闲数据缓冲区队列
  	pADCDataBufArray->m_olsADCDataBufFree.clear();
 	// 删除数据缓冲区数组
@@ -138,4 +138,60 @@ void AddFreeADCDataBuf(m_oADCDataBufStruct* pADCDataBuf,
 	// 空闲数据存储缓冲区计数加1
 	pADCDataBufArray->m_uiCountFree++;
 	LeaveCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
+}
+// 判断索引号是否已加入数据存储缓冲索引表
+BOOL IfIndexExistInADCDataBufMap(unsigned int uiIndex, 
+	hash_map<unsigned int, m_oADCDataBufStruct*>* pMap)
+{
+	ASSERT(pMap != NULL);
+	BOOL bResult = FALSE;
+	hash_map<unsigned int, m_oADCDataBufStruct*>::iterator iter;
+	iter = pMap->find(uiIndex);
+	if (iter != pMap->end())
+	{
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
+}
+// 向数据存储缓冲区索引表中加入缓冲区指针
+void AddToADCDataBufMap(unsigned int uiIndex, m_oADCDataBufStruct* pADCDataBuf,
+	hash_map<unsigned int, m_oADCDataBufStruct*>* pMap)
+{
+	ASSERT(pMap != NULL);
+	if (FALSE == IfIndexExistInADCDataBufMap(uiIndex, pMap))
+	{
+		pMap->insert(hash_map<unsigned int, m_oADCDataBufStruct*>::value_type (uiIndex, pADCDataBuf));
+	}
+}
+// 根据输入索引号，由索引表得到数据存储缓冲区指针
+m_oADCDataBufStruct* GetADCDataBufFromMap(unsigned int uiIndex, 
+	hash_map<unsigned int, m_oADCDataBufStruct*>* pMap)
+{
+	ASSERT(pMap != NULL);
+	hash_map<unsigned int, m_oADCDataBufStruct*>::iterator iter;
+	iter = pMap->find(uiIndex);
+	return iter->second;
+}
+// 从索引表删除索引号指向的数据存储缓冲区指针
+BOOL DeleteADCDataBufFromMap(unsigned int uiIndex, 
+	hash_map<unsigned int, m_oADCDataBufStruct*>* pMap)
+{
+	ASSERT(pMap != NULL);
+	BOOL bResult = FALSE;
+	hash_map<unsigned int, m_oADCDataBufStruct*>::iterator iter;
+	iter = pMap->find(uiIndex);
+	if (iter != pMap->end())
+	{
+		pMap->erase(iter);
+		bResult = TRUE;
+	}
+	else
+	{
+		bResult = FALSE;
+	}
+	return bResult;
 }

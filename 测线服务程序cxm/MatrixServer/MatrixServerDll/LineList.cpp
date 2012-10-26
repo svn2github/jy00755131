@@ -25,6 +25,7 @@ void OnResetLineList(m_oLineListStruct* pLineList)
 	// 测网系统发生变化的时间
 	pLineList->m_uiLineChangeTime = 0;
 	pLineList->m_uiTBHigh = 0;
+	pLineList->m_uiLocalSysTime = 0;
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 初始化测线队列结构体
@@ -42,6 +43,7 @@ void OnInitLineList(m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
 	// 测网系统发生变化的时间
 	pLineList->m_uiLineChangeTime = 0;
 	pLineList->m_uiTBHigh = 0;
+	pLineList->m_uiLocalSysTime = 0;
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 关闭测线队列结构体
@@ -86,5 +88,12 @@ void QueryInstrumentLocation(char* pChar, int& iPos, m_oLineListStruct* pLineLis
 		memcpy(&pChar[iPos], &iterLocation->second->m_uiSN, 4);
 		iPos += 4;
 	}
+	LeaveCriticalSection(&pLineList->m_oSecLineList);
+}
+// 更新底层仪器的本地系统时间
+void UpdataLocalSysTime(unsigned int uiSysTime, m_oLineListStruct* pLineList)
+{
+	EnterCriticalSection(&pLineList->m_oSecLineList);
+	pLineList->m_uiLocalSysTime = uiSysTime;
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }

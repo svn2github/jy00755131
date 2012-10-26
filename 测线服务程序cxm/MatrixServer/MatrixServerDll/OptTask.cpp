@@ -12,6 +12,8 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	pOptTask->m_uiTB = 0;
 	// 施工任务停止记录的时间
 	pOptTask->m_uiTS = 0;
+	// 存储一帧所需时间
+	pOptTask->m_uiOneFrameTime = 0;
 	// 施工数据输出文件指针
 	pOptTask->m_pFile = NULL;
 	// 施工数据输出前一个文件的文件指针
@@ -70,14 +72,14 @@ BOOL IfIndexExistInOptTaskIPMap(unsigned int uiIndex,
 	return bResult;
 }
 // 从施工任务仪器索引表中得到仪器的行号
-unsigned int GetLineNbFromOptTaskSNMap(unsigned int uiIndex,
-	hash_map<unsigned int, unsigned int>* pMap)
-{
-	ASSERT(pMap != NULL);
-	hash_map<unsigned int, unsigned int>::iterator iter;
-	iter = pMap->find(uiIndex);
-	return iter->second;
-}
+// unsigned int GetLineNbFromOptTaskSNMap(unsigned int uiIndex,
+// 	hash_map<unsigned int, unsigned int>* pMap)
+// {
+// 	ASSERT(pMap != NULL);
+// 	hash_map<unsigned int, unsigned int>::iterator iter;
+// 	iter = pMap->find(uiIndex);
+// 	return iter->second;
+// }
 // 向施工任务仪器索引表中加入仪器
 void AddToOptTaskIPMap(unsigned int uiIndex, m_oOptInstrumentStruct* pOptInstr,
 	hash_map<unsigned int, m_oOptInstrumentStruct*>* pMap)
@@ -105,6 +107,15 @@ m_oOptTaskStruct* GetOptTaskFromMap(unsigned int uiIndex,
 {
 	ASSERT(pMap != NULL);
 	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
+	iter = pMap->find(uiIndex);
+	return iter->second;
+}
+// 根据输入索引号，由索引表得到施工仪器指针
+m_oOptInstrumentStruct* GetOptTaskFromIPMap(unsigned int uiIndex, 
+	hash_map<unsigned int, m_oOptInstrumentStruct*>* pMap)
+{
+	ASSERT(pMap != NULL);
+	hash_map<unsigned int, m_oOptInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
 	return iter->second;
 }

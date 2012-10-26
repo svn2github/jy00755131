@@ -1175,6 +1175,8 @@ typedef struct LineList_Struct
 	unsigned int m_uiLineChangeTime;
 	/** TB时间高位*/
 	unsigned int m_uiTBHigh;
+	/** LCI的本地系统时间*/
+	unsigned int m_uiLocalSysTime;
 }m_oLineListStruct;
 
 /**
@@ -1209,8 +1211,8 @@ typedef struct ADCDataBufArray_Struct
 	m_oADCDataBufStruct* m_pArrayADCDataBuf;
 	/** 缓冲区队列*/
 	list<m_oADCDataBufStruct*> m_olsADCDataBufFree;
-//	/** 写入文件的数据缓冲区队列*/
-//	list<m_oADCDataBufStruct*> m_olsADCDataToWrite;
+	/** 写入文件的数据缓冲区索引*/
+	hash_map<unsigned int, m_oADCDataBufStruct*> m_oADCDataToWriteMap;
 	/** 缓冲区总数*/
 	unsigned int m_uiCountAll;
 	/** 空闲缓冲区数量*/
@@ -1258,6 +1260,8 @@ typedef struct OptTask_Struct
 	unsigned int m_uiTB;
 	/** 施工任务停止记录的时间*/
 	unsigned int m_uiTS;
+	/** 存储一帧所需时间*/
+	unsigned int m_uiOneFrameTime;
 	/** 施工数据输出文件指针*/
 	FILE* m_pFile;
 	/** 施工数据输出前一个文件的文件指针*/
@@ -1266,7 +1270,7 @@ typedef struct OptTask_Struct
 	unsigned int m_uiFileSaveNb;
 	/** 施工数据存储文件路径*/
 	string m_SaveLogFilePath;
-	/** 施工任务索引表，关键字为SN，内容为行号*/
+	/** 施工任务索引表，关键字为IP，内容为行号*/
 	hash_map<unsigned int, m_oOptInstrumentStruct*> m_oIPMap;
 	/** 分配存储单元标志位*/
 	bool m_bSaveBuf;
@@ -1452,10 +1456,8 @@ typedef struct ADCSetThread_Struct
 	bool m_bADCStartSample;
 	/** ADC停止数据采集标志位*/
 	bool m_bADCStopSample;
-	/** 仪器的系统时间*/
-	unsigned int m_uiLocalSysTime;
-	/** 上一次开始采样的采样时间*/
-	unsigned int m_uiLocalSysTimeOld;
+// 	/** 上一次开始采样的采样时间*/
+// 	unsigned int m_uiLocalSysTimeOld;
 	/** 从XML文件中解析得到的信息*/
 	m_oInstrumentCommInfoStruct* m_pCommInfo;
 	/** 输出日志指针*/
@@ -1518,8 +1520,10 @@ typedef struct ADCDataRecThread_Struct
 	m_oLineListStruct* m_pLineList;
 	/** 误码查询日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPutADCFrameTime;
-	/** 数据存储缓冲区结构体指针*/
+	/** 数据存储缓冲区数组结构体指针*/
 	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
+	/** 施工任务数组结构体指针*/
+	m_oOptTaskArrayStruct* m_pOptTaskArray;
 	/** 采样率设置*/
 	int m_iADCSampleRate;
 //	/** 上一帧的本地时间*/
@@ -2410,6 +2414,8 @@ MatrixServerDll_API void OnCloseLineList(m_oLineListStruct* pLineList);
 MatrixServerDll_API void OnFreeLineList(m_oLineListStruct* pLineList);
 // 得到在线仪器位置
 MatrixServerDll_API void QueryInstrumentLocation(char* pChar, int& iPos, m_oLineListStruct* pLineList);
+// 更新底层仪器的本地系统时间
+MatrixServerDll_API void UpdataLocalSysTime(unsigned int uiSysTime, m_oLineListStruct* pLineList);
 /************************************************************************/
 /* ADC数据存储缓冲                                                      */
 /************************************************************************/
@@ -2435,7 +2441,17 @@ MatrixServerDll_API m_oADCDataBufStruct* GetFreeADCDataBuf(m_oADCDataBufArrayStr
 // 增加一个空闲数据存储缓冲区
 MatrixServerDll_API void AddFreeADCDataBuf(m_oADCDataBufStruct* pADCDataBuf, 
 	m_oADCDataBufArrayStruct* pADCDataBufArray);
-
+// 判断索引号是否已加入数据存储缓冲索引表
+MatrixServerDll_API BOOL IfIndexExistInADCDataBufMap(unsigned int uiIndex, hash_map<unsigned int, m_oADCDataBufStruct*>* pMap);
+// 向数据存储缓冲区索引表中加入缓冲区指针
+MatrixServerDll_API void AddToADCDataBufMap(unsigned int uiIndex, m_oADCDataBufStruct* pADCDataBuf,
+	hash_map<unsigned int, m_oADCDataBufStruct*>* pMap);
+// 根据输入索引号，由索引表得到数据存储缓冲区指针
+MatrixServerDll_API m_oADCDataBufStruct* GetADCDataBufFromMap(unsigned int uiIndex, 
+	hash_map<unsigned int, m_oADCDataBufStruct*>* pMap);
+// 从索引表删除索引号指向的数据存储缓冲区指针
+MatrixServerDll_API BOOL DeleteADCDataBufFromMap(unsigned int uiIndex, 
+	hash_map<unsigned int, m_oADCDataBufStruct*>* pMap);
 /************************************************************************/
 /* 丢失帧结构体                                                         */
 /************************************************************************/
@@ -2461,8 +2477,8 @@ MatrixServerDll_API BOOL IfIndexExistInOptTaskMap(unsigned int uiIndex,
 MatrixServerDll_API BOOL IfIndexExistInOptTaskIPMap(unsigned int uiIndex,
 	hash_map<unsigned int, m_oOptInstrumentStruct*>* pMap);
 // 从施工任务仪器索引表中得到仪器的行号
-MatrixServerDll_API m_oOptInstrumentStruct GetLineNbFromOptTaskSNMap(unsigned int uiIndex,
-	hash_map<unsigned int, m_oOptInstrumentStruct>* pMap);
+// MatrixServerDll_API m_oOptInstrumentStruct GetLineNbFromOptTaskSNMap(unsigned int uiIndex,
+// 	hash_map<unsigned int, m_oOptInstrumentStruct>* pMap);
 // 向施工任务仪器索引表中加入仪器
 MatrixServerDll_API void AddToOptTaskIPMap(unsigned int uiIndex, m_oOptInstrumentStruct* pOptInstr,
 	hash_map<unsigned int, m_oOptInstrumentStruct*>* pMap);
@@ -2472,6 +2488,9 @@ MatrixServerDll_API void AddOptTaskToMap(unsigned int uiIndex, m_oOptTaskStruct*
 // 根据输入索引号，由索引表得到施工任务指针
 MatrixServerDll_API m_oOptTaskStruct* GetOptTaskFromMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oOptTaskStruct*>* pMap);
+// 根据输入索引号，由索引表得到施工仪器指针
+MatrixServerDll_API m_oOptInstrumentStruct* GetOptTaskFromIPMap(unsigned int uiIndex, 
+	hash_map<unsigned int, m_oOptInstrumentStruct*>* pMap);
 // 从索引表删除索引号指向的施工任务指针
 MatrixServerDll_API BOOL DeleteOptTaskFromMap(unsigned int uiIndex, 
 	hash_map<unsigned int, m_oOptTaskStruct*>* pMap);
@@ -2665,7 +2684,7 @@ MatrixServerDll_API void OnFreeTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDe
 MatrixServerDll_API m_oADCSetThreadStruct* OnCreateADCSetThread(void);
 // 发送ADC命令设置帧
 MatrixServerDll_API void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout, 
-	unsigned int uiDstIP);
+	unsigned int uiDstIP, unsigned int uiTBHigh);
 // 手动发送ADC参数设置帧
 MatrixServerDll_API bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, bool bRout, 
 	char* cpADCSet, int iADCSetNum, m_oEnvironmentStruct* pEnv);
@@ -2782,8 +2801,8 @@ MatrixServerDll_API m_oADCDataRecThreadStruct* OnCreateADCDataRecThread(void);
 // 线程等待函数
 MatrixServerDll_API void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread);
 // 将ADC数据加入到任务缓冲区
-MatrixServerDll_API void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, char* pBuf, 
-	unsigned int uiLen, m_oADCDataRecThreadStruct* pADCDataRecThread);
+MatrixServerDll_API void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPointTime, char* pBuf, 
+	unsigned int uiLen, m_oOptTaskArrayStruct* pOptTaskArray, m_oADCDataBufArrayStruct* pADCDataSaveBufArray, m_oConstVarStruct* pConstVar);
 // 采样数据回调函数
 // MatrixServerDll_API void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, 
 // 	ProSampleDateCallBack pCallBack);
@@ -2837,7 +2856,7 @@ MatrixServerDll_API void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTask
 // 产生一个施工任务
 MatrixServerDll_API void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int uiTSample, 
 	list<m_oOptInstrumentStruct*>* pList, m_oOptTaskArrayStruct* pOptTaskArray, 
-	m_oLineListStruct* pLineList);
+	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar);
 // 释放一个施工任务
 MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray);
 // 按SN重置ADC参数设置标志位

@@ -16,20 +16,14 @@ m_oADCSetThreadStruct* OnCreateADCSetThread(void)
 }
 // 发送ADC命令设置帧
 void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout, 
-	unsigned int uiDstIP)
+	unsigned int uiDstIP, unsigned int uiTBHigh)
 {
 	ASSERT(pADCSetThread != NULL);
 	CString str = _T("");
 	string strConv = "";
-	unsigned int uiTemp = 0;
 	unsigned int uiADCSetOperationNb = 0;
-	unsigned int uiLocalSysTime = 0;
-	unsigned int uiLocalSysTimeOld = 0;
-	bool bSetLocalSysTime = false;
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_iADCSetOperationNb;
-	uiLocalSysTime = pADCSetThread->m_uiLocalSysTime;
-	uiLocalSysTimeOld = pADCSetThread->m_uiLocalSysTimeOld;
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	// 查询命令字个数
@@ -329,25 +323,7 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置TB时间高位
-		if (uiLocalSysTime < uiLocalSysTimeOld)
-		{
-			uiTemp = (0xffffffff - uiLocalSysTimeOld + uiLocalSysTime) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
-		}
-		else
-		{
-			uiTemp = (uiLocalSysTime - uiLocalSysTimeOld) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
-		}
-		if (uiLocalSysTime < uiTemp)
-		{
-			uiLocalSysTime = 0xffffffff - uiTemp + uiLocalSysTime;
-		}
-		else
-		{
-			uiLocalSysTime -= uiTemp;
-		}
-		bSetLocalSysTime = true;
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBHigh = 
-			pADCSetThread->m_pThread->m_pConstVar->m_uiTBSleepTimeHigh + uiLocalSysTime;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBHigh = uiTBHigh;
 		pADCSetThread->m_pADCSetFrame->m_cpCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_cCmdTBHigh;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		// 设置TB时间低位
@@ -418,16 +394,6 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		pADCSetThread->m_pThread->m_pConstVar->m_iSndFrameSize, pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usAimPort, 
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiAimIP, pADCSetThread->m_pThread->m_pLogOutPut);
 	LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
-	if (bSetLocalSysTime == true)
-	{
-		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		pADCSetThread->m_uiLocalSysTimeOld = uiLocalSysTime;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		EnterCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
-		pADCSetThread->m_pLineList->m_uiTBHigh = pADCSetThread->m_pThread->m_pConstVar->m_uiTBSleepTimeHigh 
-			+ uiLocalSysTime;
-		LeaveCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
-	}
 }
 // 手动发送ADC参数设置帧
 bool OnSetADCSetFrameByHand(int iLineIndex, int iPointIndex, int iDirection, bool bRout,  char* cpADCSet, 
@@ -503,7 +469,41 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 	hash_map<unsigned int, m_oRoutStruct*> ::iterator iter;
 	hash_map<unsigned int, m_oInstrumentStruct*> ::iterator iter2;
 	m_oInstrumentStruct* pInstrument = NULL;
+	unsigned int uiTBHigh = 0;
+	unsigned int uiTBHighOld = 0;
+	unsigned int uiSysTime = 0;
+	unsigned int uiTemp = 0;
+	bool bTBSet = false;
+
+	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
+	if (pADCSetThread->m_iADCSetOperationNb == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleBeginNb)
+	{
+		bTBSet = true;
+	}
+	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	EnterCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
+	uiTBHighOld = pADCSetThread->m_pLineList->m_uiTBHigh;
+	uiSysTime = pADCSetThread->m_pLineList->m_uiLocalSysTime;
+	if (uiTBHighOld == 0)
+	{
+		uiTBHigh = uiSysTime + pADCSetThread->m_pThread->m_pConstVar->m_uiTBSleepTimeHigh;
+	}
+	else
+	{
+		if (uiTBHighOld > uiSysTime)
+		{
+			uiTemp = (0xffffffff - uiTBHighOld + uiSysTime) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
+		}
+		else
+		{
+			uiTemp = (uiSysTime - uiTBHighOld) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
+		}
+		uiTBHigh = uiTemp + uiSysTime;
+	}
+	if (bTBSet == true)
+	{
+		pADCSetThread->m_pLineList->m_uiTBHigh = uiTBHigh;
+	}
 	for (iter = pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap.begin();
 		iter != pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap.end(); iter++)
 	{
@@ -521,13 +521,17 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 					break;
 				}
 				pInstrument->m_bADCSetReturn = false;
+				if (bTBSet == true)
+				{
+					pInstrument->m_uiTBHigh = uiTBHigh;
+				}
 			} while (pInstrument != iter->second->m_pTail);
 			if (iter->second->m_pTail == NULL)
 			{
 				break;
 			}
 			// 选择ADC参数设置命令
-			OnSelectADCSetCmd(pADCSetThread, true, iter->second->m_pTail->m_uiBroadCastPort);
+			OnSelectADCSetCmd(pADCSetThread, true, iter->second->m_pTail->m_uiBroadCastPort, uiTBHigh);
 		}
 	}
 	for (iter2 = pADCSetThread->m_pLineList->m_pInstrumentList->m_oADCSetInstrumentMap.begin();
@@ -535,8 +539,12 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 	{
 		// 重置ADC参数设置应答标志位
 		iter2->second->m_bADCSetReturn = false;
+		if (bTBSet == true)
+		{
+			pInstrument->m_uiTBHigh = uiTBHigh;
+		}
 		// 选择ADC参数设置命令
-		OnSelectADCSetCmd(pADCSetThread, false, iter2->second->m_uiIP);
+		OnSelectADCSetCmd(pADCSetThread, false, iter2->second->m_uiIP, uiTBHigh);
 	}
 	LeaveCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 }
@@ -582,9 +590,6 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	LeaveCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 	if (uiADCSetOperationNb == 17)
 	{
-		EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-		pADCSetThread->m_uiLocalSysTime = uiSysTime;
-		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 		str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x网络时间为 = 0x%x"), uiIPInstrument, uiSysTime, uiNetTime);
 		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ProcADCSetReturnFrameOne", strConv);
@@ -948,8 +953,6 @@ bool OnInitADCSetThread(m_oADCSetThreadStruct* pADCSetThread,
 	pADCSetThread->m_iADCSetOperationNb = 0;
 	pADCSetThread->m_bADCStartSample = false;
 	pADCSetThread->m_bADCStopSample = false;
-	pADCSetThread->m_uiLocalSysTime = 0;
-	pADCSetThread->m_uiLocalSysTimeOld = 0;
 	if (false == OnInitThread(pADCSetThread->m_pThread, pLogOutPut, pConstVar))
 	{
 		LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);

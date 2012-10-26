@@ -206,6 +206,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	string strConv = "";
 	unsigned int uiSN = 0;
 	unsigned int uiRoutIP = 0;
+	unsigned int uiSysTime = 0;
 	unsigned int uiTailFrameCount = 0;
 	EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	pTailFrameThread->m_uiTailFrameCount++;
@@ -214,6 +215,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	EnterCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 	uiSN = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSN;
 	uiRoutIP = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiRoutIP;
+	uiSysTime = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTime;
 	LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 	EnterCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
 	// 判断仪器SN是否在SN索引表中
@@ -241,6 +243,11 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		// 在路由索引表中找到该尾包所在的路由
 		// 更新仪器的存活时间
 		UpdateInstrActiveTime(pInstrument);
+		// 仪器类型为LCI则更新本地时间
+		if (pInstrument->m_iInstrumentType == InstrumentTypeLCI)
+		{
+			UpdataLocalSysTime(uiSysTime, pTailFrameThread->m_pLineList);
+		}
 		if (FALSE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 		{
 			LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);

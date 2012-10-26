@@ -179,7 +179,6 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 	unsigned char	byCommandWord = 0;
 	unsigned int uiRoutAddrNum = 0;
 	int iPos = 0;
-	int iTemp = 0;
 	int iFramePacketSize4B = 0;
 	int iFramePacketSize2B = 0;
 	int iFramePacketSize1B = 0;
