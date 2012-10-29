@@ -15,10 +15,10 @@ void OnResetADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
 	ASSERT(pADCDataBufArray != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
- 	// 清空数据缓冲区索引
- 	pADCDataBufArray->m_oADCDataToWriteMap.clear();
+	// 清空数据缓冲区索引
+	pADCDataBufArray->m_oADCDataBufWorkMap.clear();
 	// 清空空闲数据缓冲区队列
- 	pADCDataBufArray->m_olsADCDataBufFree.clear();
+	pADCDataBufArray->m_olsADCDataBufFree.clear();
 	// 空闲数据缓冲区总数
 	pADCDataBufArray->m_uiCountFree = pADCDataBufArray->m_uiCountAll;
 	// 加入空闲数据缓冲区队列
@@ -37,10 +37,10 @@ void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray, m_oConstV
 	ASSERT(pADCDataBufArray != NULL);
 	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
- 	// 清空数据缓冲区队列
- 	pADCDataBufArray->m_oADCDataToWriteMap.clear();
- 	// 清空空闲数据缓冲区队列
- 	pADCDataBufArray->m_olsADCDataBufFree.clear();
+	// 清空数据缓冲区队列
+	pADCDataBufArray->m_oADCDataBufWorkMap.clear();
+	// 清空空闲数据缓冲区队列
+	pADCDataBufArray->m_olsADCDataBufFree.clear();
 
 	// 数据缓冲区队列中路由个数
 	pADCDataBufArray->m_uiCountAll = pConstVar->m_iSEGDDataBufCountAll;
@@ -78,9 +78,9 @@ void OnCloseADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 	ASSERT(pADCDataBufArray != NULL);
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	// 清空数据缓冲区队列
-	pADCDataBufArray->m_oADCDataToWriteMap.clear();
- 	// 清空空闲数据缓冲区队列
- 	pADCDataBufArray->m_olsADCDataBufFree.clear();
+	pADCDataBufArray->m_oADCDataBufWorkMap.clear();
+	// 清空空闲数据缓冲区队列
+	pADCDataBufArray->m_olsADCDataBufFree.clear();
 	// 删除数据缓冲区数组
 	if (pADCDataBufArray->m_pArrayADCDataBuf != NULL)
 	{
@@ -174,6 +174,10 @@ m_oADCDataBufStruct* GetADCDataBufFromMap(unsigned int uiIndex,
 	ASSERT(pMap != NULL);
 	hash_map<unsigned int, m_oADCDataBufStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
+	if (iter == pMap->end())
+	{
+		return NULL;
+	}
 	return iter->second;
 }
 // 从索引表删除索引号指向的数据存储缓冲区指针

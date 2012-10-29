@@ -1212,7 +1212,7 @@ typedef struct ADCDataBufArray_Struct
 	/** 缓冲区队列*/
 	list<m_oADCDataBufStruct*> m_olsADCDataBufFree;
 	/** 写入文件的数据缓冲区索引*/
-	hash_map<unsigned int, m_oADCDataBufStruct*> m_oADCDataToWriteMap;
+	hash_map<unsigned int, m_oADCDataBufStruct*> m_oADCDataBufWorkMap;
 	/** 缓冲区总数*/
 	unsigned int m_uiCountAll;
 	/** 空闲缓冲区数量*/
@@ -2415,7 +2415,7 @@ MatrixServerDll_API void OnFreeLineList(m_oLineListStruct* pLineList);
 // 得到在线仪器位置
 MatrixServerDll_API void QueryInstrumentLocation(char* pChar, int& iPos, m_oLineListStruct* pLineList);
 // 更新底层仪器的本地系统时间
-MatrixServerDll_API void UpdataLocalSysTime(unsigned int uiSysTime, m_oLineListStruct* pLineList);
+MatrixServerDll_API void UpdateLocalSysTime(unsigned int uiSysTime, m_oLineListStruct* pLineList);
 /************************************************************************/
 /* ADC数据存储缓冲                                                      */
 /************************************************************************/
@@ -2858,7 +2858,7 @@ MatrixServerDll_API void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWi
 	list<m_oOptInstrumentStruct*>* pList, m_oOptTaskArrayStruct* pOptTaskArray, 
 	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar);
 // 释放一个施工任务
-MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray);
+MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray, m_oADCDataBufArrayStruct* pADCDataBufArray);
 // 按SN重置ADC参数设置标志位
 MatrixServerDll_API void OnResetADCSetLableBySN(m_oInstrumentStruct* pInstrument, int iOpt);
 // 按路由重置ADC参数设置标志位

@@ -91,7 +91,7 @@ void QueryInstrumentLocation(char* pChar, int& iPos, m_oLineListStruct* pLineLis
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 }
 // 更新底层仪器的本地系统时间
-void UpdataLocalSysTime(unsigned int uiSysTime, m_oLineListStruct* pLineList)
+void UpdateLocalSysTime(unsigned int uiSysTime, m_oLineListStruct* pLineList)
 {
 	EnterCriticalSection(&pLineList->m_oSecLineList);
 	pLineList->m_uiLocalSysTime = uiSysTime;

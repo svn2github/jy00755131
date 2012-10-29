@@ -313,7 +313,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 		bStrDebug = true;
 	}
 	LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
-	str.Format(_T("本地时间 = %d"), uiSysTime);
+	str.Format(_T("本地时间 = 0x%x"), uiSysTime);
 	strOutPut += str;
 	strConv = (CStringA)strOutPut;
 	AddMsgToLogOutPutList(pErrorCodeThread->m_pLogOutPutErrorCode, "", strConv);

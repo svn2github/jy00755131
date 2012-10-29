@@ -6,6 +6,7 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 {
 	ASSERT(pOptTask != NULL);
 	hash_map<unsigned int, m_oOptInstrumentStruct*>::iterator iter;
+	m_oOptInstrumentStruct* pOptInstr = NULL;
 	// 任务是否使用中
 	pOptTask->m_bInUsed = false;
 	// 施工任务开始记录的时间
@@ -21,12 +22,13 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	// 最新的文件存储序号
 	pOptTask->m_uiFileSaveNb = 0;
 	// 施工任务索引表，关键字为SN，内容为行号
-	for (iter = pOptTask->m_oIPMap.begin(); iter != pOptTask->m_oIPMap.end(); iter++);
+	while(pOptTask->m_oIPMap.size() != 0)
 	{
-		delete iter->second;
-		iter->second = NULL;
+		pOptInstr = pOptTask->m_oIPMap.begin()->second;
+		delete pOptInstr;
+		pOptInstr = NULL;
+		pOptTask->m_oIPMap.erase(pOptTask->m_oIPMap.begin());
 	}
-	pOptTask->m_oIPMap.clear();
 	// 分配存储单元标志位
 	pOptTask->m_bSaveBuf = false;
 	// 分配存储单元序号
@@ -108,6 +110,10 @@ m_oOptTaskStruct* GetOptTaskFromMap(unsigned int uiIndex,
 	ASSERT(pMap != NULL);
 	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
+	if (iter == pMap->end())
+	{
+		return NULL;
+	}
 	return iter->second;
 }
 // 根据输入索引号，由索引表得到施工仪器指针
@@ -117,6 +123,10 @@ m_oOptInstrumentStruct* GetOptTaskFromIPMap(unsigned int uiIndex,
 	ASSERT(pMap != NULL);
 	hash_map<unsigned int, m_oOptInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
+	if (iter == pMap->end())
+	{
+		return NULL;
+	}
 	return iter->second;
 }
 // 从索引表删除索引号指向的施工任务指针

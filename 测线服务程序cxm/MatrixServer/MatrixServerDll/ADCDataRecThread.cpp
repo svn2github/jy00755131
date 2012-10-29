@@ -93,10 +93,18 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 				iter->second->m_bSaveBuf = true;
 				iter->second->m_uiSaveBufNo = pADCDataBuf->m_uiIndex;
 				// 将数据存储缓冲区加入索引表
-				AddToADCDataBufMap(pADCDataBuf->m_uiIndex, pADCDataBuf, &pADCDataSaveBufArray->m_oADCDataToWriteMap);
+				AddToADCDataBufMap(pADCDataBuf->m_uiIndex, pADCDataBuf, &pADCDataSaveBufArray->m_oADCDataBufWorkMap);
 			}
-			pADCDataBuf = GetADCDataBufFromMap(pADCDataBuf->m_uiIndex, &pADCDataSaveBufArray->m_oADCDataToWriteMap);
+			pADCDataBuf = GetADCDataBufFromMap(iter->second->m_uiSaveBufNo, &pADCDataSaveBufArray->m_oADCDataBufWorkMap);
+			if (pADCDataBuf == NULL)
+			{
+				continue;
+			}
 			pOptInstr = GetOptTaskFromIPMap(uiIP,  &iter->second->m_oIPMap);
+			if (pOptInstr == NULL)
+			{
+				continue;
+			}
 			uiPointNum = (iter->second->m_uiTS - iter->second->m_uiTB) / uiPointTime;
 			uiPos = pOptInstr->m_uiLocation * uiPointNum * pConstVar->m_iADCDataSize3B;
 			if (uiTime < iter->second->m_uiTB)
@@ -192,7 +200,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		return;
 	}
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
-	UpdataLocalSysTime(uiADCDataFrameSysTime, pADCDataRecThread->m_pLineList);
+	UpdateLocalSysTime(uiADCDataFrameSysTime, pADCDataRecThread->m_pLineList);
 	EnterCriticalSection(&pADCDataRecThread->m_pLineList->m_oSecLineList);
 	if (FALSE == IfIndexExistInMap(uiIPInstrument, &pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oOptInstrumentMap))
 	{
@@ -262,7 +270,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 		AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne", 
 			strFrameData, ErrorType, IDS_ERR_ADCFRAMESYSTIME_ERROR);
-		str.Format(_T("当前帧本地时间为%d， 前一帧的本地时间为%d"), pInstrument->m_uiADCDataFrameSysTimeNow, 
+		str.Format(_T("当前帧本地时间为0x%x， 前一帧的本地时间为0x%x"), pInstrument->m_uiADCDataFrameSysTimeNow, 
 			pInstrument->m_uiADCDataFrameSysTimeOld);
 		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", 
@@ -372,7 +380,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	str.Format(_T("接收帧的指针偏移量为 %d，差值为 %d；"), 
 		pInstrument->m_usADCDataFramePointNow, usADCDataFramePointMove);
 	strOut += str;
-	str.Format(_T("本地时间为 %d，差值为%d；"), pInstrument->m_uiADCDataFrameSysTimeNow, 
+	str.Format(_T("本地时间为 0x%x，差值为%d；"), pInstrument->m_uiADCDataFrameSysTimeNow, 
 		pInstrument->m_uiADCDataFrameSysTimeNow - pInstrument->m_uiADCDataFrameSysTimeOld);
 	strOut += str;
 	strConv = (CStringA)strOut;

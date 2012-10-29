@@ -246,7 +246,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		// 仪器类型为LCI则更新本地时间
 		if (pInstrument->m_iInstrumentType == InstrumentTypeLCI)
 		{
-			UpdataLocalSysTime(uiSysTime, pTailFrameThread->m_pLineList);
+			UpdateLocalSysTime(uiSysTime, pTailFrameThread->m_pLineList);
 		}
 		if (FALSE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 		{

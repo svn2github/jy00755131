@@ -474,34 +474,28 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 	unsigned int uiSysTime = 0;
 	unsigned int uiTemp = 0;
 	bool bTBSet = false;
-
+	unsigned int uiTBSleepTimeHigh = 0;
+	uiTBSleepTimeHigh = pADCSetThread->m_pThread->m_pConstVar->m_uiTBSleepTimeHigh;
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
-	if (pADCSetThread->m_iADCSetOperationNb == pADCSetThread->m_pThread->m_pConstVar->m_iADCStartSampleBeginNb)
+	if (pADCSetThread->m_iADCSetOperationNb == 18)
 	{
 		bTBSet = true;
 	}
 	LeaveCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	EnterCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
-	uiTBHighOld = pADCSetThread->m_pLineList->m_uiTBHigh;
-	uiSysTime = pADCSetThread->m_pLineList->m_uiLocalSysTime;
-	if (uiTBHighOld == 0)
+	if (bTBSet == true)
 	{
-		uiTBHigh = uiSysTime + pADCSetThread->m_pThread->m_pConstVar->m_uiTBSleepTimeHigh;
-	}
-	else
-	{
-		if (uiTBHighOld > uiSysTime)
+		uiTBHighOld = pADCSetThread->m_pLineList->m_uiTBHigh;
+		uiSysTime = pADCSetThread->m_pLineList->m_uiLocalSysTime;
+		if (uiTBHighOld > (uiSysTime + uiTBSleepTimeHigh))
 		{
-			uiTemp = (0xffffffff - uiTBHighOld + uiSysTime) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
+			uiTemp = (0xffffffff - uiTBHighOld + uiSysTime + uiTBSleepTimeHigh) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
 		}
 		else
 		{
-			uiTemp = (uiSysTime - uiTBHighOld) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
+			uiTemp = (uiTBSleepTimeHigh + uiSysTime - uiTBHighOld) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
 		}
-		uiTBHigh = uiTemp + uiSysTime;
-	}
-	if (bTBSet == true)
-	{
+		uiTBHigh = uiSysTime + uiTBSleepTimeHigh - uiTemp;
 		pADCSetThread->m_pLineList->m_uiTBHigh = uiTBHigh;
 	}
 	for (iter = pADCSetThread->m_pLineList->m_pRoutList->m_oADCSetRoutMap.begin();
@@ -541,7 +535,7 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 		iter2->second->m_bADCSetReturn = false;
 		if (bTBSet == true)
 		{
-			pInstrument->m_uiTBHigh = uiTBHigh;
+			iter2->second->m_uiTBHigh = uiTBHigh;
 		}
 		// 选择ADC参数设置命令
 		OnSelectADCSetCmd(pADCSetThread, false, iter2->second->m_uiIP, uiTBHigh);
@@ -590,6 +584,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	LeaveCriticalSection(&pADCSetThread->m_pLineList->m_oSecLineList);
 	if (uiADCSetOperationNb == 17)
 	{
+		UpdateLocalSysTime(uiSysTime, pADCSetThread->m_pLineList);
 		str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x网络时间为 = 0x%x"), uiIPInstrument, uiSysTime, uiNetTime);
 		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ProcADCSetReturnFrameOne", strConv);

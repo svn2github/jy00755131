@@ -73,8 +73,7 @@ void AddInstrInOptList(unsigned int uiSN, int iLineIndex, int iPointIndex, list<
 // 产生参与施工仪器索引表
 void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTaskArrayStruct* pOptTaskArray)
 {
-	list<unsigned int> oIPList;
-	list<unsigned int>::iterator iterList;
+	vector<unsigned int> oIPList;
 	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iterOpt;
 	hash_map<unsigned int, m_oOptInstrumentStruct*>::iterator iter;
 	m_oInstrumentStruct* pInstrument = NULL;
@@ -91,15 +90,15 @@ void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTaskArrayStruct* pOptTas
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	EnterCriticalSection(&pLineList->m_oSecLineList);
 	pLineList->m_pInstrumentList->m_oOptInstrumentMap.clear();
-	for (iterList = oIPList.begin(); iterList != oIPList.end(); iter++)
+	for (unsigned int i=0; i<oIPList.size() ; i++)
 	{
-		pInstrument = GetInstrumentFromMap(*iterList, &pLineList->m_pInstrumentList->m_oIPInstrumentMap);
-		AddInstrumentToMap(*iterList, pInstrument, &pLineList->m_pInstrumentList->m_oOptInstrumentMap);
+		pInstrument = GetInstrumentFromMap(oIPList[i], &pLineList->m_pInstrumentList->m_oIPInstrumentMap);
+		AddInstrumentToMap(oIPList[i], pInstrument, &pLineList->m_pInstrumentList->m_oOptInstrumentMap);
 	}
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 	oIPList.clear();
 }
-// 产生一个施工任务
+// 产生一个施工任务，采样时间和TB时间是以ms为单位的
 void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int uiTSample,
 	list<m_oOptInstrumentStruct*>* pList, m_oOptTaskArrayStruct* pOptTaskArray, 
 	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
@@ -108,7 +107,7 @@ void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int u
 	ASSERT(pOptTaskArray != NULL);
 	m_oOptTaskStruct* pOptTask = NULL;
 	CString str = _T("");
-	CString str2 = _T("");
+	CString strPath = _T("");
 	unsigned int uiLocation = 0;
 	unsigned int uiTBHigh = 0;
 	unsigned int uiTBHighOld = 0;
@@ -121,15 +120,8 @@ void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int u
 	EnterCriticalSection(&pLineList->m_oSecLineList);
 	uiTBHighOld = pLineList->m_uiTBHigh;
 	uiSysTime = pLineList->m_uiLocalSysTime;
-	if (uiTBHighOld == 0)
-	{
-		// 1ms对应下位机本地时间计数器数值为4
-		uiTBHigh = uiSysTime + pConstVar->m_uiTBSleepTimeHigh + uiTBWindow * 4;
-	}
-	else
-	{
-		uiTBHigh = uiSysTime + uiTBWindow * 4;
-	}
+	// 1ms对应下位机本地时间计数器数值为4
+	uiTBHigh = uiSysTime + pConstVar->m_uiTBSleepTimeHigh + uiTBWindow * 4;
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	pOptTaskArray->m_uiOptTaskNb++;
@@ -142,12 +134,12 @@ void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int u
 	pOptTask->m_uiTB = uiTBHigh;
 	pOptTask->m_uiTS = uiTBHigh + uiTSample * 4;
 	str.Format(_T("\\施工任务%d"), pOptTaskArray->m_uiOptTaskNb);
-	str2 = pOptTaskArray->m_SaveLogFolderPath.c_str();
-	str2 += str;
+	strPath = pOptTaskArray->m_SaveLogFolderPath.c_str();
+	strPath += str;
 	// 创建施工任务数据文件夹
-	CreateDirectory(str2, NULL);
+	CreateDirectory(strPath, NULL);
 	// 创建施工任务数据文件夹
-	pOptTask->m_SaveLogFilePath = (CStringA)str2;
+	pOptTask->m_SaveLogFilePath = (CStringA)strPath;
 	pList->sort();
 	for (iter = pList->begin(); iter != pList->end(); iter++)
 	{
@@ -159,17 +151,24 @@ void GenOneOptTask(unsigned int uiOptNo, unsigned int uiTBWindow, unsigned int u
 	pList->clear();
 	// 重新产生施工仪器索引
 	GenOptInstrMap(pLineList, pOptTaskArray);
+	TRACE(_T("施工任务记录数据开始时间%d, 结束时间%d\r\n"), pOptTask->m_uiTB, pOptTask->m_uiTS);
 }
 // 释放一个施工任务
-void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray)
+void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray, m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
 	ASSERT(pOptTaskArray != NULL);
+	ASSERT(pADCDataBufArray != NULL);
 	m_oOptTaskStruct* pOptTask = NULL;
-	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iterOpt;
-	hash_map<unsigned int, m_oOptInstrumentStruct*>::iterator iter;
+	m_oADCDataBufStruct* pADCDataBuf = NULL;
+	unsigned int uiSaveBufNo = 0;
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	// 得到施工任务
 	pOptTask = GetOptTaskFromMap(uiIndex, &pOptTaskArray->m_oOptTaskWorkMap);
+	if (pOptTask == NULL)
+	{
+		LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
+		return;
+	}
 	if (pOptTask->m_pPreviousFile != NULL)
 	{
 		fclose(pOptTask->m_pPreviousFile);
@@ -178,11 +177,22 @@ void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray)
 	{
 		fclose(pOptTask->m_pFile);
 	}
+	uiSaveBufNo = pOptTask->m_uiSaveBufNo;
 	// 将施工任务加入到空闲列表
 	AddFreeOptTask(pOptTask, pOptTaskArray);
 	// 从施工任务索引表中删除
 	DeleteOptTaskFromMap(uiIndex, &pOptTaskArray->m_oOptTaskWorkMap);
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
+	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
+	pADCDataBuf = GetADCDataBufFromMap(uiSaveBufNo, &pADCDataBufArray->m_oADCDataBufWorkMap);
+	if (pADCDataBuf == NULL)
+	{
+		LeaveCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
+		return;
+	}
+	AddFreeADCDataBuf(pADCDataBuf, pADCDataBufArray);
+	DeleteADCDataBufFromMap(uiSaveBufNo, &pADCDataBufArray->m_oADCDataBufWorkMap);
+	LeaveCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 }
 // 按SN重置ADC参数设置标志位
 void OnResetADCSetLableBySN(m_oInstrumentStruct* pInstrument, int iOpt)
@@ -365,7 +375,7 @@ void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 	ASSERT(pEnv != NULL);
 	// @@@@调试用
 	// 释放一个施工任务
-	FreeOneOptTask(100, pEnv->m_pOptTaskArray);
+	FreeOneOptTask(100, pEnv->m_pOptTaskArray, pEnv->m_pADCDataBufArray);
 	// 重新产生施工仪器索引
 	GenOptInstrMap(pEnv->m_pLineList, pEnv->m_pOptTaskArray);
 	EnterCriticalSection(&pEnv->m_pADCSetThread->m_oSecADCSetThread);
@@ -613,8 +623,8 @@ m_oEnvironmentStruct* OnCreateInstance(void)
 // 调用netd程序
 void OnCreateNetdProcess(m_oEnvironmentStruct* pEnv)
 {
-//	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36916_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 NetIP=192.168.100.22 LowMacAddr=0,10,53,0,1,2 HighMacAddr=0,48,103,107,228,202 NetMacAddr=0,48,103,107,228,202 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=0 PcapQueueSize=100000");
-//	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36916_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 DownStreamSndBufSize=2560000 UpStreamSndBufSize=5120000 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=1 PcapQueueSize=100000");
+	//	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36916_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 NetIP=192.168.100.22 LowMacAddr=0,10,53,0,1,2 HighMacAddr=0,48,103,107,228,202 NetMacAddr=0,48,103,107,228,202 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=0 PcapQueueSize=100000");
+	//	TCHAR szCommandLine[] = _T("NetWinPcap.exe NetCardId=0 DownStreamRcvSndPort=36916_36866 UpStreamRcvSndPort=28672_28722,32768_32818,36864_36914,37120_37170,37376_37426,37632_37682,37888_37938,38144_38194,38400_38450 NetDownStreamSrcPort=39320 NetUpStreamSrcPort=39321 WinpcapBufSize=26214400 LowIP=192.168.100.252 HighIP=192.168.100.22 DownStreamSndBufSize=2560000 UpStreamSndBufSize=5120000 MaxPackageSize=512 PcapTimeOut=1 PcapSndWaitTime=10 PcapRcvWaitTime=1 PcapQueueSize=100000");
 	CString str = _T("");
 	CString strTemp = _T("");
 	unsigned short usRcvPort = 0;
