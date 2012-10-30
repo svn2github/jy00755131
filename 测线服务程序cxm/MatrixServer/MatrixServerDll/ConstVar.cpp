@@ -40,6 +40,9 @@ bool LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("SEGDDataBufSize");			// SEGD数据缓冲区大小
 		pConstVar->m_iSEGDDataBufSize = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 
+		strSectionKey=_T("SEGDCheckFinishTime");		// 判断SEGD数据存储完成的时间
+		pConstVar->m_iSEGDCheckFinishTime = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
+
 		strSectionKey=_T("OptTaskCountAll");			// 施工任务个数
 		pConstVar->m_iOptTaskCountAll = GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath);
 

@@ -73,6 +73,11 @@ void OnCloseOptTaskArray(m_oOptTaskArrayStruct* pOptTaskArray)
 {
 	ASSERT(pOptTaskArray != NULL);
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
+	for(unsigned int i = 0; i < pOptTaskArray->m_uiCountAll; i++)
+	{
+		// 重置施工任务
+		OnOptTaskReset(&pOptTaskArray->m_pArrayOptTask[i]);
+	}
 	// 清空施工任务索引
 	pOptTaskArray->m_oOptTaskWorkMap.clear();
 	// 清空空闲施工任务队列

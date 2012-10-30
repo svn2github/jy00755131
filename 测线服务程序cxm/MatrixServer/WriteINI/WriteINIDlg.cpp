@@ -172,12 +172,16 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("SEGDDataBufCountAll");		// SEGD数据缓冲区个数
-	strValue = _T("4");
+	strValue = _T("20");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("SEGDDataBufSize");			// SEGD数据缓冲区大小
-	// 每个站4000个点，每个点3个字节，20000个站
-	strValue = _T("240000000");
+	// 每个站4000个点，每个点3个字节，5000个站
+	strValue = _T("60000000");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("SEGDCheckFinishTime");		// 判断SEGD数据存储完成的时间
+	strValue = _T("8192");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("OptTaskCountAll");			// 施工任务个数
@@ -208,7 +212,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("MonitorSleepTimes");		// 路由监视线程延时次数
+	strSectionKey=_T("MonitorSleepTimes");			// 路由监视线程延时次数
 	strValue = _T("10");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 

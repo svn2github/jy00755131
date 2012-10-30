@@ -5,7 +5,6 @@
 void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 {
 	ASSERT(pOptTask != NULL);
-	hash_map<unsigned int, m_oOptInstrumentStruct*>::iterator iter;
 	m_oOptInstrumentStruct* pOptInstr = NULL;
 	// 任务是否使用中
 	pOptTask->m_bInUsed = false;
@@ -13,15 +12,21 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	pOptTask->m_uiTB = 0;
 	// 施工任务停止记录的时间
 	pOptTask->m_uiTS = 0;
-	// 存储一帧所需时间
-	pOptTask->m_uiOneFrameTime = 0;
+	/** 每个站存储的数据点数*/
+	pOptTask->m_uiSavePointNum = 0;
+	/** 参与施工的采集站个数*/
+	pOptTask->m_uiOptInstrNum = 0;
+	/** 判断是否写入SEGD文件标志位*/
+	pOptTask->m_bSaveInSegd = false;
+// 	// 存储一帧所需时间
+// 	pOptTask->m_uiOneFrameTime = 0;
 	// 施工数据输出文件指针
 	pOptTask->m_pFile = NULL;
-	// 施工数据输出前一个文件的文件指针
-	pOptTask->m_pPreviousFile = NULL;
-	// 最新的文件存储序号
-	pOptTask->m_uiFileSaveNb = 0;
-	// 施工任务索引表，关键字为SN，内容为行号
+// 	// 施工数据输出前一个文件的文件指针
+// 	pOptTask->m_pPreviousFile = NULL;
+// 	// 最新的文件存储序号
+// 	pOptTask->m_uiFileSaveNb = 0;
+	// 施工任务IP索引表，关键字为IP，内容为施工仪器指针
 	while(pOptTask->m_oIPMap.size() != 0)
 	{
 		pOptInstr = pOptTask->m_oIPMap.begin()->second;

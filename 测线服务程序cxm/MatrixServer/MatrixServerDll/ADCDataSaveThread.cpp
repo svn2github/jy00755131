@@ -46,189 +46,100 @@ void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf, 
 	m_oOptTaskStruct* pOptTask, unsigned int uiLineIndex, m_oConstVarStruct* pConstVar)
 {
-// 	ASSERT(pOptTask != NULL);
-// 	ASSERT(pADCDataBuf != NULL);
-// 	ASSERT(pConstVar!= NULL);
-// 	unsigned int uiFileNb = 0;
-// 	unsigned int uiFrameInFileNb = 0;
-// 	CString strPath = _T("");
-// 	CString str = _T("");
-// 	string strOut = "";
-// 	string strConv = "";
-// 	FILE* pFile = NULL;
-// 	char pdata[100];
-// 	size_t strOutSize = 0;
-// 	long lOffSet = 0;
-// 	// 一行的长度（字符为单位）
-// 	unsigned int uiLineLength = 0;
-// 	// 行号
-// 	unsigned int uiLineNb = 0;
-// 	// 列号（字符为单位）
-// 	unsigned int uiRowNb = 0;
-// 	errno_t err;
-// 	uiFileNb = (pADCDataBuf->m_uiFrameNb - pOptTask->m_uiStartFrame) / pConstVar->m_iADCFrameSaveInOneFileNum;
-// 	if (uiFileNb > pOptTask->m_uiFileSaveNb)
-// 	{
-// 		pOptTask->m_uiFileSaveNb = uiFileNb;
-// 	}
-// 	uiFrameInFileNb = (pADCDataBuf->m_uiFrameNb - pOptTask->m_uiStartFrame) % pConstVar->m_iADCFrameSaveInOneFileNum;
-// 	// 得到文件路径
-// 	strPath.Format(_T("\\%d.txt"), uiFileNb);
-// 	str = pOptTask->m_SaveLogFilePath.c_str();
-// 	strPath = str + strPath;
-// 	// 一行的长度=左侧信息长度+（间隔长度+数据长度）*数据帧数*一帧数据个数 + 换行符长度
-// 	uiLineLength = pConstVar->m_iADCSaveLeftInfoBytes 
-// 		+ (pConstVar->m_iADCSaveDataIntervalBytes + pConstVar->m_iADCSaveDataBytes)
-// 		* pConstVar->m_iADCFrameSaveInOneFileNum * pConstVar->m_iADCDataInOneFrameNum + 2;
-// 	uiLineNb = pConstVar->m_iADCSaveHeadLineNum + uiLineIndex;
-// 	uiRowNb = pConstVar->m_iADCSaveLeftInfoBytes 
-// 		+ (pConstVar->m_iADCSaveDataIntervalBytes + pConstVar->m_iADCSaveDataBytes) 
-// 		* uiFrameInFileNb * pConstVar->m_iADCDataInOneFrameNum;
-// 	// 如果文件不存在则创建
-// 	if (false == IfFileExist(strPath))
-// 	{
-// 		pOptTask->m_pPreviousFile = pOptTask->m_pFile;
-// 		strConv = (CStringA)strPath;
-// 		err = fopen_s(&pOptTask->m_pFile, strConv.c_str(), "w+t, ccs=UNICODE");
-// 		if (pOptTask->m_pFile == NULL)
-// 		{
-// 			return;
-// 		}
-// 		lOffSet = uiLineLength - 2;
-// 		strOut = '\n';
-// 		strOutSize = strOut.length();
-// 		for (unsigned int i=0; i<(pOptTask->m_oSNMap.size()+pConstVar->m_iADCSaveHeadLineNum); i++)
-// 		{
-// 			fseek(pOptTask->m_pFile, lOffSet, SEEK_CUR);
-// 			fwrite(strOut.c_str(), sizeof(char), strOutSize, pOptTask->m_pFile);
-// 		}
-// 		// 文件刚创建，写前三行文件头信息：
-// 		// 第一行
-// 		str.Format(_T("施工任务数据存储从 %d 帧开始"), pOptTask->m_uiStartFrame);
-// 		fseek(pOptTask->m_pFile, 0, SEEK_SET);
-// 		strOut = (CStringA)str;
-// 		strOutSize = strOut.length();
-// 		fwrite(strOut.c_str(), sizeof(char), strOutSize, pOptTask->m_pFile);
-// 		// 第三行左侧信息
-// 		lOffSet = uiLineLength * (pConstVar->m_iADCSaveHeadLineNum - 1);
-// 		fseek(pOptTask->m_pFile, lOffSet, SEEK_SET);
-// 		strOut = "";
-// 		for (int i=0; i<(pConstVar->m_iADCSaveLeftInfoBytes - 1); i++)
-// 		{
-// 			strOut += '-';
-// 		}
-// 		strOut += ' ';
-// 		strOutSize = strOut.length();
-// 		fwrite(strOut.c_str(), sizeof(char), strOutSize, pOptTask->m_pFile);
-// 	}
-// 	// 表明存的是前一个文件
-// 	if (uiFileNb < pOptTask->m_uiFileSaveNb)
-// 	{
-// 		pFile = pOptTask->m_pPreviousFile;
-// 	}
-// 	// 存的是最新的文件
-// 	else
-// 	{
-// 		if ((pOptTask->m_pPreviousFile != NULL) 
-// 			&& (uiFrameInFileNb > (static_cast<unsigned int>(pConstVar->m_iADCDataBufSize / pConstVar->m_iADCDataInOneFrameNum))))
-// 		{
-// 			fclose(pOptTask->m_pPreviousFile);
-// 			pOptTask->m_pPreviousFile = NULL;
-// 		}
-// 		pFile = pOptTask->m_pFile;
-// 	}
-// 	if (pFile == NULL)
-// 	{
-// 		return;
-// 	}
-// 
-// 	lOffSet = uiLineLength * uiLineNb + uiRowNb;
-// 	fseek(pFile, lOffSet, SEEK_SET);
-// 	strOut = "";
-// 	for (int i=0; i<pConstVar->m_iADCDataInOneFrameNum; i++)
-// 	{
-// 		sprintf_s(pdata, 100, "%*d ", pConstVar->m_iADCSaveDataBytes, pADCDataBuf->m_pADCDataBuf[i]);
-// 		strOut += pdata;
-// 	}
-// 	strOutSize = strOut.length();
-// 	fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
-// 
-// 	// 写入采样帧的本地时间作为第三行
-// 	lOffSet = uiLineLength * (pConstVar->m_iADCSaveHeadLineNum - 1) + uiRowNb;
-// 	fseek(pFile, lOffSet, SEEK_SET);
-// 	str.Format(_T("%*d "), pConstVar->m_iADCSaveDataBytes, pADCDataBuf->m_uiSysTime);
-// 	strOut = (CStringA)str;
-// 	for (int i=0; i<(pConstVar->m_iADCDataInOneFrameNum - 1); i++)
-// 	{
-// 		for (int j=0; j<pConstVar->m_iADCSaveDataBytes; j++)
-// 		{
-// 			strOut += '-';
-// 		}
-// 		strOut += ' ';
-// 	}
-// 	strOutSize = strOut.length();
-// 	fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
-// 
-// 	// 将SN写入左侧信息区
-// 	lOffSet = uiLineLength * uiLineNb;
-// 	fseek(pFile, lOffSet, SEEK_SET);
-// 	str.Format(_T("SN=0x%x "), pADCDataBuf->m_uiSN);
-// 	strOut = (CStringA)str;
-// 	strOutSize = strOut.length();
-// 	fwrite(strOut.c_str(), sizeof(char), strOutSize, pFile);
+
 }
 // 关闭所有的施工文件
-void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray)
-{
-	ASSERT(pOptTaskArray != NULL);
-	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
-	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
-	for (iter = pOptTaskArray->m_oOptTaskWorkMap.begin();
-		iter != pOptTaskArray->m_oOptTaskWorkMap.end(); iter++)
-	{
-		if (iter->second->m_pPreviousFile != NULL)
-		{
-			fclose(iter->second->m_pPreviousFile);
-		}
-		if (iter->second->m_pFile != NULL)
-		{
-			fclose(iter->second->m_pFile);
-		}
-	}
-	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
-}
+// void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray)
+// {
+// 	ASSERT(pOptTaskArray != NULL);
+// 	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
+// 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
+// 	for (iter = pOptTaskArray->m_oOptTaskWorkMap.begin();
+// 		iter != pOptTaskArray->m_oOptTaskWorkMap.end(); iter++)
+// 	{
+// 		if (iter->second->m_pPreviousFile != NULL)
+// 		{
+// 			fclose(iter->second->m_pPreviousFile);
+// 		}
+// 		if (iter->second->m_pFile != NULL)
+// 		{
+// 			fclose(iter->second->m_pFile);
+// 		}
+// 	}
+// 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
+// }
 // 保存ADC数据到施工文件
 void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 {
 	ASSERT(pADCDataSaveThread != NULL);
-// 	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
-// 	// 行号
-// 	unsigned int uiLineIndex = 0;
-// 	m_oADCDataBufStruct* pADCDataBuf = NULL;
-// 	EnterCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
-// 	EnterCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
-// 	while(pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.empty() == false)
-// 	{
-// 		pADCDataBuf = *pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.begin();
-// 		pADCDataSaveThread->m_pADCDataBufArray->m_olsADCDataToWrite.pop_front();
-// 		// 将数据按照施工任务写入文件
-// 		for (iter = pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.begin();
-// 			iter != pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.end(); iter++)
-// 		{
-			// 仪器在施工任务仪器索引表中
-// 			if (TRUE == IfIndexExistInOptTaskSNMap(pADCDataBuf->m_uiIP, &iter->second->m_oSNMap))
-// 			{
-// 				uiLineIndex = GetLineNbFromOptTaskSNMap(pADCDataBuf->m_uiIP, &iter->second->m_oSNMap);
-// 				// 将数据写入文件
-// 				WriteADCDataInOptTaskFile(pADCDataBuf, iter->second, uiLineIndex, 
-// 					pADCDataSaveThread->m_pThread->m_pConstVar);
-//			}
-// 		}
-// 		// 将该数据缓冲加入空闲任务队列
-// 		AddFreeADCDataBuf(pADCDataBuf, pADCDataSaveThread->m_pADCDataBufArray);
-// 	}
-// 	LeaveCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
-// 	LeaveCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+	bool bSave = false;
+	unsigned int uiOptNb = 0;
+	unsigned int uiSavePointNum = 0;
+	unsigned int uiOptInstrNum = 0;
+	unsigned int uiSaveBufNo = 0;
+	char* pBuf = NULL;
+	int iBufSize = 0;
+	CString strSaveFilePath = _T("");
+	CString str = _T("");
+	m_oADCDataBufStruct* pADCDataBuf = NULL;
+	m_oOptTaskStruct* pOptTask = NULL;
+	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
+	EnterCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
+	for (iter = pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.begin();
+		iter != pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap.end(); iter++)
+	{
+		if ((iter->second->m_bInUsed == true) && (iter->second->m_bSaveInSegd == true)
+			&& (iter->second->m_bSaveBuf == true))
+		{
+			uiOptNb = iter->second->m_uiOptNo;
+			uiSavePointNum = iter->second->m_uiSavePointNum;
+			uiOptInstrNum = iter->second->m_uiOptInstrNum;
+			strSaveFilePath = (CString)iter->second->m_SaveFilePath.c_str();
+			uiSaveBufNo = iter->second->m_uiSaveBufNo;
+			bSave = true;
+			break;
+		}
+	}
+	if (bSave == true)
+	{
+		// 得到施工任务
+		pOptTask = GetOptTaskFromMap(uiOptNb, &pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap);
+		if (pOptTask == NULL)
+		{
+			LeaveCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
+			return;
+		}
+		// 将施工任务加入到空闲列表
+		AddFreeOptTask(pOptTask, pADCDataSaveThread->m_pOptTaskArray);
+		// 从施工任务索引表中删除
+		DeleteOptTaskFromMap(uiOptNb, &pADCDataSaveThread->m_pOptTaskArray->m_oOptTaskWorkMap);
+	}
+	else
+	{
+		LeaveCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
+		return;
+	}
+	LeaveCriticalSection(&pADCDataSaveThread->m_pOptTaskArray->m_oSecOptTaskArray);
+	iBufSize = uiSavePointNum * uiOptInstrNum * pADCDataSaveThread->m_pThread->m_pConstVar->m_iADCDataSize3B;
+	EnterCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+	pADCDataBuf = GetADCDataBufFromMap(uiSaveBufNo, &pADCDataSaveThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);
+	if (pADCDataBuf == NULL)
+	{
+		LeaveCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+		return;
+	}
+	pBuf = new char[iBufSize];
+	memcpy(pBuf, pADCDataBuf->m_pADCDataBuf, iBufSize * sizeof(char));
+	AddFreeADCDataBuf(pADCDataBuf, pADCDataSaveThread->m_pADCDataBufArray);
+	DeleteADCDataBufFromMap(uiSaveBufNo, &pADCDataSaveThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);
+	LeaveCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+	// 保存文件
+	str.Format(_T("保存文件炮号为 %d"), uiOptNb);
+	OutputDebugString(str);
+	delete[] pBuf;
+	pBuf = NULL;
+// 	// 重新产生施工仪器索引
+// 	GenOptInstrMap(pEnv->m_pLineList, pEnv->m_pOptTaskArray);
 }
 // 线程函数
 DWORD WINAPI RunADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)

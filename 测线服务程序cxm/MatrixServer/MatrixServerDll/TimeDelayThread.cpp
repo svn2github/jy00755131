@@ -144,7 +144,7 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	// 接收到尾包时刻查询应答标志位设为true
 	pInstrument->m_bTailTimeQueryOK = true;
 	pInstrument->m_iTailTimeReturnCount++;
-	str.Format(_T("接收到IP地址 = 0x%x 仪器的尾包时刻查询应答帧,	"), pInstrument->m_uiIP);
+	str.Format(_T("接收到IP地址 = 0x%x 仪器的尾包时刻查询应答帧,"), pInstrument->m_uiIP);
 	strOutPut += str;
 	// 如果仪器类型为交叉站或者LCI
 	if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
@@ -155,7 +155,7 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 		{
 			pInstrument->m_usCrossTopReceiveTime = usLAUXTailRecTimeLAUXLineA;
 			pInstrument->m_usCrossDownReceiveTime = usLAUXTailRecTimeLAUXLineB;
-			str.Format(_T("交叉站交叉线A尾包接收时刻 = 0x%x，交叉站交叉线B尾包接收时刻 = 0x%x,	"), 
+			str.Format(_T("交叉站交叉线A尾包接收时刻 = 0x%x，交叉站交叉线B尾包接收时刻 = 0x%x，"), 
 				pInstrument->m_usCrossTopReceiveTime, pInstrument->m_usCrossDownReceiveTime);
 			strOutPut += str;
 		}
@@ -164,7 +164,7 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 		{
 			pInstrument->m_usLineLeftReceiveTime = usLAUXTailRecTimeLineA;
 			pInstrument->m_usLineRightReceiveTime = usLAUXTailRecTimeLineB;
-			str.Format(_T("交叉站大线A尾包接收时刻 = 0x%x，交叉站大线B尾包接收时刻 = 0x%x,	"), 
+			str.Format(_T("交叉站大线A尾包接收时刻 = 0x%x，交叉站大线B尾包接收时刻 = 0x%x，"), 
 				pInstrument->m_usLineLeftReceiveTime, pInstrument->m_usLineRightReceiveTime);
 			strOutPut += str;
 		}
@@ -173,14 +173,14 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	{
 		// 采集站或电源站尾包接收时刻
 		pInstrument->m_usReceiveTime = usTailRecTime;
-		str.Format(_T("采集站尾包接收时刻 = 0x%x,	"), pInstrument->m_usReceiveTime);
+		str.Format(_T("采集站尾包接收时刻 = 0x%x，"), pInstrument->m_usReceiveTime);
 		strOutPut += str;
 	}
 	// 尾包发送时刻
 	pInstrument->m_usSendTime = usTailSndTime;
 	pInstrument->m_uiSystemTime = uiSysTime;
 	pInstrument->m_uiNetTime = uiNetTime;
-	str.Format(_T("尾包发送时刻 = 0x%x"), pInstrument->m_usSendTime);
+	str.Format(_T("尾包发送时刻 = 0x%x，本地时间 = 0x%x，网络时间 = 0x%x"), pInstrument->m_usSendTime, uiSysTime, uiNetTime);
 	strOutPut += str;
 	strConv = (CStringA)strOutPut;
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
@@ -371,9 +371,8 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 			MakeInstrDelayTimeFrame(pTimeDelayThread->m_pTimeDelayFrame, 
 				pTimeDelayThread->m_pThread->m_pConstVar, pInstrumentNext,
 				pTimeDelayThread->m_pThread->m_pLogOutPut);
-			str.Format(_T("发送时统设置帧时统修正高位为 0x%x，时统修正低位为 0x%x，本地时间为 0x%x，网络时间为0x%x"), 
-				pInstrumentNext->m_uiTimeHigh, pInstrumentNext->m_uiTimeLow, 
-				pInstrumentNext->m_uiSystemTime, pInstrumentNext->m_uiNetTime);
+			str.Format(_T("发送时统设置帧时统修正高位为 0x%x，时统修正低位为 0x%x"), 
+				pInstrumentNext->m_uiTimeHigh, pInstrumentNext->m_uiTimeLow);
 			strOutPut += str;
 			strConv = (CStringA)strOutPut;
 			AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);

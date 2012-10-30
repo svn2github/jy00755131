@@ -65,6 +65,7 @@ void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray, m_oConstV
 		// 缓冲区在缓冲区数组中的位置
 		pADCDataBufArray->m_pArrayADCDataBuf[i].m_uiIndex = i;
 		pADCDataBufArray->m_pArrayADCDataBuf[i].m_pADCDataBuf = new char[pConstVar->m_iSEGDDataBufSize];
+		pADCDataBufArray->m_pArrayADCDataBuf[i].m_uiBufLength = pConstVar->m_iSEGDDataBufSize;
 		// 重置数据缓冲区
 		OnADCDataBufReset(&pADCDataBufArray->m_pArrayADCDataBuf[i]);
 		// 数据缓冲区加在空闲数据缓冲区队列尾部
