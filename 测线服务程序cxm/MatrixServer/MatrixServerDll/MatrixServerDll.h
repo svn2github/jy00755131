@@ -1259,8 +1259,14 @@ typedef struct OptTask_Struct
 {
 	/** 任务是否使用中*/
 	bool m_bInUsed;
-	/** 施工炮号*/
-	unsigned int m_uiOptNo;
+	/** 施工起始炮号*/
+	unsigned int m_uiOptStartNo;
+	/** 施工炮数*/
+	unsigned int m_uiOptNum;
+	/** 炮号间隔*/
+	unsigned int m_uiOptInterval;
+	/** 连续放炮标记点间隔*/
+	unsigned int m_uiPointInterval;
 	/** 施工任务开始记录的时间*/
 	unsigned int m_uiTB;
 	/** 施工任务停止记录的时间*/
@@ -1271,14 +1277,6 @@ typedef struct OptTask_Struct
 	unsigned int m_uiOptInstrNum;
 	/** 判断是否写入SEGD文件标志位*/
 	bool m_bSaveInSegd;
-// 	/** 存储一帧所需时间*/
-// 	unsigned int m_uiOneFrameTime;
-	/** 施工数据输出文件指针*/
-	FILE* m_pFile;
-// 	/** 施工数据输出前一个文件的文件指针*/
-// 	FILE* m_pPreviousFile;
-// 	/** 最新的文件存储序号*/
-// 	unsigned int m_uiFileSaveNb;
 	/** 施工数据存储文件路径*/
 	string m_SaveFilePath;
 	/** 施工任务索引表，关键字为IP，内容为行号*/
@@ -1287,6 +1285,14 @@ typedef struct OptTask_Struct
 	bool m_bSaveBuf;
 	/** 分配存储单元序号*/
 	unsigned int m_uiSaveBufNo;
+// 	/** 存储一帧所需时间*/
+// 	unsigned int m_uiOneFrameTime;
+// 	/** 施工数据输出文件指针*/
+// 	FILE* m_pFile;
+// 	/** 施工数据输出前一个文件的文件指针*/
+// 	FILE* m_pPreviousFile;
+// 	/** 最新的文件存储序号*/
+// 	unsigned int m_uiFileSaveNb;
 // 	/** 参与施工的仪器队列*/
 // 	list<m_oOptInstrumentStruct> m_olsOptInstrument;
 }m_oOptTaskStruct;
@@ -2865,7 +2871,8 @@ MatrixServerDll_API void AddInstrInOptList(unsigned int uiIP, int iLineIndex, in
 MatrixServerDll_API void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTaskArrayStruct* pOptTaskArray);
 // 产生一个施工任务
 MatrixServerDll_API void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, unsigned int uiOptNum, 
-	unsigned int uiTBWindow, unsigned int uiTSample, m_oOptTaskArrayStruct* pOptTaskArray, 
+	unsigned int uiPointInterval, unsigned int uiTBWindow, unsigned int uiTSample, 
+	list<m_oOptInstrumentStruct*>* pList, m_oOptTaskArrayStruct* pOptTaskArray, 
 	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar);
 // 释放一个施工任务
 // MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray, m_oADCDataBufArrayStruct* pADCDataBufArray);

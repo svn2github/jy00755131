@@ -91,7 +91,7 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 		if ((iter->second->m_bInUsed == true) && (iter->second->m_bSaveInSegd == true)
 			&& (iter->second->m_bSaveBuf == true))
 		{
-			uiOptNb = iter->second->m_uiOptNo;
+			uiOptNb = iter->second->m_uiOptStartNo;
 			uiSavePointNum = iter->second->m_uiSavePointNum;
 			uiOptInstrNum = iter->second->m_uiOptInstrNum;
 			strSaveFilePath = (CString)iter->second->m_SaveFilePath.c_str();
