@@ -7,6 +7,16 @@ void OnADCDataBufReset(m_oADCDataBufStruct* pADCDataBuf)
 	ASSERT(pADCDataBuf != NULL);
 	// 是否使用中
 	pADCDataBuf->m_bInUsed = false;
+	/** 每个站存储的数据点数*/
+	pADCDataBuf->m_uiSavePointNum = 0;
+	/** 判断是否写入SEGD文件标志位*/
+	pADCDataBuf->m_bSaveInSegd = false;
+	/** 参与施工的采集站个数*/
+	pADCDataBuf->m_uiOptInstrNum = 0;
+	/** 施工炮号*/
+	pADCDataBuf->m_uiOptNo = 0;
+	/** 施工数据存储文件路径*/
+	pADCDataBuf->m_SaveFilePath = "";
 	if (pADCDataBuf->m_pADCDataBuf != NULL)
 	{
 		memset(pADCDataBuf->m_pADCDataBuf, 0, pADCDataBuf->m_uiBufLength);

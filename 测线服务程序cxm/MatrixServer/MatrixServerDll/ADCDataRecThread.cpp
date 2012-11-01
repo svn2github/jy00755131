@@ -71,64 +71,77 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 	EnterCriticalSection(&pADCDataRecThread->m_pOptTaskArray->m_oSecOptTaskArray);
 	EnterCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 	for (iter = pADCDataRecThread->m_pOptTaskArray->m_oOptTaskWorkMap.begin(); 
-		iter != pADCDataRecThread->m_pOptTaskArray->m_oOptTaskWorkMap.end(); iter++)
+		iter != pADCDataRecThread->m_pOptTaskArray->m_oOptTaskWorkMap.end();)
 	{
 		uiTS = iter->second->m_uiTS;
-		if (uiTime > uiTS + pADCDataRecThread->m_pThread->m_pConstVar->m_iSEGDCheckFinishTime)
-		{
-			iter->second->m_bSaveInSegd = true;
-			continue;
-		}
 		if ((FALSE == IfIndexExistInOptTaskIPMap(uiIP, &iter->second->m_oIPMap))
-			|| (iter->second->m_bSaveInSegd == true))
+			|| (iter->second->m_uiTB > (uiTime + uiPointTime * iADCDataInOneFrameNum)))
 		{
+			iter++;
 			continue;
 		}
-		if ((iter->second->m_uiTB > (uiTime + uiPointTime * iADCDataInOneFrameNum)) || (uiTime > uiTS))
+		if (iter->second->m_bSaveBuf == false)
 		{
-			continue;
-		}
-		else
-		{
-			if (iter->second->m_bSaveBuf == false)
-			{
-				// 得到一个空闲的
-				pADCDataBuf = GetFreeADCDataBuf(pADCDataRecThread->m_pADCDataBufArray);
-				if (pADCDataBuf == NULL)
-				{
-					// @@@超出缓冲区个数
-					continue;
-				}
-				iter->second->m_bSaveBuf = true;
-				iter->second->m_uiSaveBufNo = pADCDataBuf->m_uiIndex;
-				// 将数据存储缓冲区加入索引表
-				AddToADCDataBufMap(pADCDataBuf->m_uiIndex, pADCDataBuf, 
-					&pADCDataRecThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);
-			}
-			pADCDataBuf = GetADCDataBufFromMap(iter->second->m_uiSaveBufNo, 
-				&pADCDataRecThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);
+			// 得到一个空闲的
+			pADCDataBuf = GetFreeADCDataBuf(pADCDataRecThread->m_pADCDataBufArray);
 			if (pADCDataBuf == NULL)
 			{
+				// @@@超出缓冲区个数
+				iter++;
 				continue;
 			}
-			pOptInstr = GetOptTaskFromIPMap(uiIP,  &iter->second->m_oIPMap);
-			if (pOptInstr == NULL)
-			{
-				continue;
-			}
-			iter->second->m_uiSavePointNum = (uiTS - iter->second->m_uiTB) / uiPointTime + 1;
-			uiPointNum = iter->second->m_uiSavePointNum;
+			iter->second->m_bSaveBuf = true;
+			iter->second->m_uiSaveBufNo = pADCDataBuf->m_uiIndex;
+			pADCDataBuf->m_uiSavePointNum = (uiTS - iter->second->m_uiTB) / uiPointTime + 1;
+			pADCDataBuf->m_uiOptInstrNum = iter->second->m_oIPMap.size();
+			pADCDataBuf->m_uiOptNo = iter->second->m_uiOptNo;
+			pADCDataBuf->m_SaveFilePath = iter->second->m_SaveFilePath;
+			// 将数据存储缓冲区加入索引表
+			AddToADCDataBufMap(pADCDataBuf->m_uiIndex, pADCDataBuf, 
+				&pADCDataRecThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);
+		}
+		pADCDataBuf = GetADCDataBufFromMap(iter->second->m_uiSaveBufNo, 
+			&pADCDataRecThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);
+		if (pADCDataBuf == NULL)
+		{
+			iter++;
+			continue;
+		}
+		if (pADCDataBuf->m_bSaveInSegd == true)
+		{
+			iter++;
+			continue;
+		}
+		uiPointNum = pADCDataBuf->m_uiSavePointNum;
+		pOptInstr = GetOptTaskFromIPMap(uiIP,  &iter->second->m_oIPMap);
+		if (pOptInstr == NULL)
+		{
+			iter++;
+			continue;
+		}
+		if (uiTime > uiTS + pADCDataRecThread->m_pThread->m_pConstVar->m_iSEGDCheckFinishTime)
+		{
+			// 数据缓冲区可以保存到Segd文件
+			pADCDataBuf->m_bSaveInSegd = true;
+			// 将施工任务加入到空闲列表
+			AddFreeOptTask(iter->second, pADCDataRecThread->m_pOptTaskArray);
+			// 删除该施工任务
+			pADCDataRecThread->m_pOptTaskArray->m_oOptTaskWorkMap.erase(iter++);
+			continue;
+		}
+		if (uiTime <= uiTS)
+		{
 			uiPos = pOptInstr->m_uiLocation * uiPointNum * iADCDataSize3B;
-			if (uiTime < iter->second->m_uiTB)
+			if (uiTime <= iter->second->m_uiTB)
 			{
 				uiMov = (iter->second->m_uiTB - uiTime) / uiPointTime * iADCDataSize3B;
 				memcpy(&pADCDataBuf->m_pADCDataBuf[uiPos], &pBuf[uiMov], (uiLen - uiMov) * sizeof(char));
 			}
-			else if (uiTS < (uiTime + uiPointTime * iADCDataInOneFrameNum))
+			else if (uiTS <= (uiTime + uiPointTime * iADCDataInOneFrameNum))
 			{
 				uiMov = (uiTS - uiTime) / uiPointTime * iADCDataSize3B;
 				uiPos = uiPos + uiPointNum * iADCDataSize3B - uiMov;
-				memcpy(&pADCDataBuf->m_pADCDataBuf[uiPos], &pBuf[uiMov], (uiLen - uiMov) * sizeof(char));
+				memcpy(&pADCDataBuf->m_pADCDataBuf[uiPos], pBuf, uiMov * sizeof(char));
 			}
 			else
 			{
@@ -137,6 +150,7 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 				memcpy(&pADCDataBuf->m_pADCDataBuf[uiPos], pBuf, uiLen * sizeof(char));
 			}
 		}
+		iter++;
 	}
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 	LeaveCriticalSection(&pADCDataRecThread->m_pOptTaskArray->m_oSecOptTaskArray);

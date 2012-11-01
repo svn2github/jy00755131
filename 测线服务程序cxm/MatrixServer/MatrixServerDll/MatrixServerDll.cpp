@@ -83,8 +83,8 @@ void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTaskArrayStruct* pOptTas
 	oIPList.clear();
 }
 // 产生一个施工任务，采样时间和TB时间是以ms为单位的
-void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, unsigned int uiOptNum, unsigned int uiPointInterval, unsigned int uiTBWindow, 
-	unsigned int uiTSample, list<m_oOptInstrumentStruct*>* pList, m_oOptTaskArrayStruct* pOptTaskArray, m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
+void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, unsigned int uiOptNum, unsigned int uiTBWindow, 
+	unsigned int uiTSample, m_oOptTaskArrayStruct* pOptTaskArray, m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
 {
 	ASSERT(pOptTaskArray != NULL);
 	m_oOptTaskStruct* pOptTask = NULL;
@@ -93,6 +93,8 @@ void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, uns
 	unsigned int uiLocation = 0;
 	unsigned int uiTBHigh = 0;
 	unsigned int uiSysTime = 0;
+	list<m_oOptInstrumentStruct*> oList;
+	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iterMap;
 	list<m_oOptInstrumentStruct*>::iterator iter;
 	EnterCriticalSection(&pLineList->m_oSecLineList);
 	uiSysTime = pLineList->m_uiLocalSysTime;
@@ -106,30 +108,46 @@ void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, uns
 	strPath += str;
 	// 创建施工任务数据文件夹
 	CreateDirectory(strPath, NULL);
-	// 得到一个空闲施工任务
-	pOptTask = GetFreeOptTask(pOptTaskArray);
-	pOptTask->m_uiOptStartNo = uiStartOptNo;
-	pOptTask->m_uiOptInterval = uiOptNoInterval;
-	pOptTask->m_uiOptNum = uiOptNum;
-	pOptTask->m_uiPointInterval = uiPointInterval;
-	pOptTask->m_SaveFilePath = (CStringA)strPath;
-	// 记录施工任务开始和停止记录时间，根据当前时间和TB时间计算
-	pOptTask->m_uiTB = uiTBHigh;
-	pOptTask->m_uiTS = uiTBHigh + uiTSample * 4;
-	for (iter = pList->begin(); iter != pList->end(); iter++)
+	for (unsigned int i=0; i<uiOptNum; i++)
 	{
-		AddToOptTaskIPMap((*iter)->m_uiIP, *iter, &pOptTask->m_oIPMap);
-		(*iter)->m_uiLocation = uiLocation;
-		uiLocation++;
+		// 得到一个空闲施工任务
+		pOptTask = GetFreeOptTask(pOptTaskArray);
+		pOptTask->m_uiOptNo = uiStartOptNo + i * uiOptNoInterval;
+		// 加入施工任务索引
+		AddOptTaskToMap(pOptTask->m_uiOptNo, pOptTask, &pOptTaskArray->m_oOptTaskWorkMap);
+		// @@@@记录施工任务开始和停止记录时间，根据当前时间和TB时间计算
+		pOptTask->m_uiTB = uiTBHigh;
+		pOptTask->m_uiTS = uiTBHigh + uiTSample * 4;
+		pOptTask->m_SaveFilePath = (CStringA)strPath;
+		uiTBHigh = pOptTask->m_uiTS;
+		oList.clear();
+		EnterCriticalSection(&pLineList->m_oSecLineList);
+		for (iterMap = pLineList->m_pInstrumentList->m_oIPInstrumentMap.begin();
+			iterMap != pLineList->m_pInstrumentList->m_oIPInstrumentMap.end();
+			iterMap++)
+		{
+			if (iterMap->second->m_iInstrumentType == InstrumentTypeFDU)
+			{
+				// 将接收到的施工任务设备加入对列
+				AddInstrInOptList(iterMap->second->m_uiIP, iterMap->second->m_iLineIndex, iterMap->second->m_iPointIndex, &oList);
+			}
+		}
+		LeaveCriticalSection(&pLineList->m_oSecLineList);
+		oList.sort();
+		uiLocation = 0;
+		for (iter = oList.begin(); iter != oList.end(); iter++)
+		{
+			AddToOptTaskIPMap((*iter)->m_uiIP, *iter, &pOptTask->m_oIPMap);
+			(*iter)->m_uiLocation = uiLocation;
+			uiLocation++;
+		}
+		str.Format(_T("施工任务记录数据开始时间0x%x, 结束时间0x%x\r\n"), pOptTask->m_uiTB, pOptTask->m_uiTS);
+		OutputDebugString(str);
+		oList.clear();
 	}
-	pOptTask->m_uiOptInstrNum = pOptTask->m_oIPMap.size();
-	// 加入施工任务索引
-	AddOptTaskToMap(pOptTask->m_uiOptStartNo, pOptTask, &pOptTaskArray->m_oOptTaskWorkMap);
 	LeaveCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
-	str.Format(_T("施工任务记录数据开始炮号 %d，炮数 %d，炮号间隔 %d"), uiStartOptNo, uiOptNum, uiOptNoInterval);
-	OutputDebugString(str);
-// 	// 重新产生施工仪器索引
-// 	GenOptInstrMap(pLineList, pOptTaskArray);
+	// 重新产生施工仪器索引
+	GenOptInstrMap(pLineList, pOptTaskArray);
 }
 // 释放一个施工任务
 // void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray, m_oADCDataBufArrayStruct* pADCDataBufArray)
@@ -330,27 +348,10 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	// @@@@调试用
 	// 产生施工任务
 	// 炮号、TB开始时间、采样时间、参与采集的仪器指针索引表
-	list<m_oOptInstrumentStruct*> oList;
-	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iterMap;
-	oList.clear();
-	EnterCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
-	for (iterMap = pEnv->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.begin();
-		iterMap != pEnv->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap.end();
-		iterMap++)
-	{
-		if (iterMap->second->m_iInstrumentType == InstrumentTypeFDU)
-		{
-			// 将接收到的施工任务设备加入对列
-			AddInstrInOptList(iterMap->second->m_uiIP, iterMap->second->m_iLineIndex, iterMap->second->m_iPointIndex, &oList);
-		}
-	}
-	LeaveCriticalSection(&pEnv->m_pLineList->m_oSecLineList);
-	oList.sort();
 	// @@@实验连续放炮
-	GenOptTaskList(100, 10, 20, 0, 2000, 4000, &oList, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
-// 	// @@@实验叠加放炮
-// 	GenOptTaskList(600, 10, 20, 2000, 4000, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
-	oList.clear();
+	GenOptTaskList(100, 10, 20, 2000, 4000, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
+	// @@@实验叠加放炮
+	GenOptTaskList(600, 10, 20, 2000, 4000, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
 }
 // ADC停止采集命令

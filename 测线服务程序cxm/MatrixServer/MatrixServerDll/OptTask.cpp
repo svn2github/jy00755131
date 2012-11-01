@@ -8,26 +8,18 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	m_oOptInstrumentStruct* pOptInstr = NULL;
 	// 任务是否使用中
 	pOptTask->m_bInUsed = false;
-	/** 施工起始炮号*/
-	pOptTask->m_uiOptStartNo = 0;
-	/** 施工炮数*/
-	pOptTask->m_uiOptNum = 0;
-	/** 炮号间隔*/
-	pOptTask->m_uiOptInterval = 0;
-	/** 连续放炮标记点间隔*/
-	pOptTask->m_uiPointInterval = 0;
 	// 施工任务开始记录的时间
 	pOptTask->m_uiTB = 0;
 	// 施工任务停止记录的时间
 	pOptTask->m_uiTS = 0;
-	/** 每个站存储的数据点数*/
-	pOptTask->m_uiSavePointNum = 0;
-	/** 参与施工的采集站个数*/
-	pOptTask->m_uiOptInstrNum = 0;
-	/** 施工数据存储文件路径*/
-	pOptTask->m_SaveFilePath = "";
-	/** 判断是否写入SEGD文件标志位*/
-	pOptTask->m_bSaveInSegd = false;
+// 	// 存储一帧所需时间
+// 	pOptTask->m_uiOneFrameTime = 0;
+	// 施工数据输出文件指针
+	pOptTask->m_pFile = NULL;
+// 	// 施工数据输出前一个文件的文件指针
+// 	pOptTask->m_pPreviousFile = NULL;
+// 	// 最新的文件存储序号
+// 	pOptTask->m_uiFileSaveNb = 0;
 	// 施工任务IP索引表，关键字为IP，内容为施工仪器指针
 	while(pOptTask->m_oIPMap.size() != 0)
 	{
@@ -40,17 +32,8 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	pOptTask->m_bSaveBuf = false;
 	// 分配存储单元序号
 	pOptTask->m_uiSaveBufNo = 0;
-// 	// 存储一帧所需时间
-// 	pOptTask->m_uiOneFrameTime = 0;
-// 	// 施工数据输出文件指针
-// 	pOptTask->m_pFile = NULL;
-// 	// 施工数据输出前一个文件的文件指针
-// 	pOptTask->m_pPreviousFile = NULL;
-// 	// 最新的文件存储序号
-// 	pOptTask->m_uiFileSaveNb = 0;
 // 	// 参与施工的仪器队列
 // 	pOptTask->m_olsOptInstrument.clear();
-
 }
 
 // 判断索引号是否已加入施工任务索引表
