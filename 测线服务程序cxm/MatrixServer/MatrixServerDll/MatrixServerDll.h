@@ -1183,58 +1183,6 @@ typedef struct LineList_Struct
 }m_oLineListStruct;
 
 /**
-* @struct ADCDataBuf_Struct
-* @brief 数据存储缓冲区结构体
-*/
-typedef struct ADCDataBuf_Struct
-{
-	/** 缓冲区是否使用中*/
-	bool m_bInUsed;
-	/** ADC数据存储缓冲区*/
-	char* m_pADCDataBuf;
-	/** 缓冲区长度*/
-	unsigned int m_uiBufLength;
-	/** 每个站存储的数据点数*/
-	unsigned int m_uiSavePointNum;
-	/** 判断是否写入SEGD文件标志位*/
-	bool m_bSaveInSegd;
-	/** 参与施工的采集站个数*/
-	unsigned int m_uiOptInstrNum;
-	/** 施工炮号*/
-	unsigned int m_uiOptNo;
-	/** 施工数据存储文件路径*/
-	string m_SaveFilePath;
-// 	/** 每个采集站数据存储帧数*/
-// 	unsigned int m_uiFrameNb;
-// 	/** SEGD协议头长度*/
-// 	unsigned int m_uiSEGDHeaderLen;
-// 	/** 采集站数据头长度*/
-// 	unsigned int m_uiDataHeaderLen;
-	/** 缓冲区序号*/
-	unsigned int m_uiIndex;
-}m_oADCDataBufStruct;
-
-/**
-* @struct ADCDataBufArray_Struct
-* @brief 数据存储缓冲区结构体
-*/
-typedef struct ADCDataBufArray_Struct
-{
-	/** 缓冲区资源同步对象*/
-	CRITICAL_SECTION m_oSecADCDataBufArray;
-	/** 缓冲区数组指针*/
-	m_oADCDataBufStruct* m_pArrayADCDataBuf;
-	/** 缓冲区队列*/
-	list<m_oADCDataBufStruct*> m_olsADCDataBufFree;
-	/** 写入文件的数据缓冲区索引*/
-	hash_map<unsigned int, m_oADCDataBufStruct*> m_oADCDataBufWorkMap;
-	/** 缓冲区总数*/
-	unsigned int m_uiCountAll;
-	/** 空闲缓冲区数量*/
-	unsigned int m_uiCountFree;
-}m_oADCDataBufArrayStruct;
-
-/**
 * @struct OptInstrument_Struct
 * @brief 参与施工的仪器结构体
 */
@@ -1246,19 +1194,10 @@ typedef struct OptInstrument_Struct
 	int m_iLineIndex;
 	/** 标记点号*/
 	int m_iPointIndex;
+	/** 采集站仪器是否用作辅助道*/
+	bool m_bAuxiliary;
 	/** 仪器存储成SEGD的位置号*/
 	unsigned int m_uiLocation;
-	bool operator < (const OptInstrument_Struct& rhs) const
-	{
-		if (m_iLineIndex == rhs.m_iLineIndex)
-		{
-			return (m_iPointIndex < rhs.m_iPointIndex);
-		}
-		else
-		{
-			return (m_iLineIndex < rhs.m_iLineIndex);
-		}
-	}
 }m_oOptInstrumentStruct;
 
 /**
@@ -1275,6 +1214,8 @@ typedef struct OptTask_Struct
 	unsigned int m_uiTB;
 	/** 施工任务停止记录的时间*/
 	unsigned int m_uiTS;
+	/** 采样率*/
+	int m_iSampleRate;
 // 	/** 存储一帧所需时间*/
 // 	unsigned int m_uiOneFrameTime;
 	/** 施工数据输出文件指针*/
@@ -1285,7 +1226,7 @@ typedef struct OptTask_Struct
 // 	unsigned int m_uiFileSaveNb;
 	/** 施工数据存储文件路径*/
 	string m_SaveFilePath;
-	/** 施工任务索引表，关键字为IP，内容为行号*/
+	/** 施工任务索引表，关键字为IP，内容为参与施工的仪器结构体*/
 	hash_map<unsigned int, m_oOptInstrumentStruct*> m_oIPMap;
 	/** 分配存储单元标志位*/
 	bool m_bSaveBuf;
@@ -1318,6 +1259,110 @@ typedef struct OptTaskArray_Struct
 	/** 施工数据存储文件夹路径*/
 	string m_SaveFolderPath;
 }m_oOptTaskArrayStruct;
+/**
+* @struct Segd_Standard_Header_Struct
+* @brief Segd文件标准头结构体
+*/
+typedef struct Segd_Standard_Header_Struct
+{
+	/** 采样率*/
+	unsigned int m_uiSampleRate;
+	/** 采样长度*/
+	unsigned int m_uiSampleLength;
+	/** 辅助道数目*/
+	unsigned int m_uiAuxiliaryTraceNum;
+	/* 采集道数目*/
+	unsigned int m_uiTraceTotalNum;
+	/** 炮号*/
+	unsigned int m_uiShotNo;
+}m_oSegdStandardHeaderStruct;
+/**
+* @struct Segd_Data_Header_Struct
+* @brief Segd文件数据头结构体
+*/
+typedef struct Segd_Data_Header_Struct
+{
+	/** 接收站点号*/
+	int m_iPointIndex;
+	/** 接收站线号*/
+	int m_iLineIndex;
+	/** 位置序号*/
+	unsigned int m_uiLocation;
+}m_oSegdDataHeaderStruct;
+/**
+* @struct Segd_File_Struct
+* @brief Segd文件存储结构体
+*/
+typedef struct Segd_File_Struct
+{
+	/** Segd文件保存路径*/
+	string m_strPath;
+	/** Segd标准头文件*/
+	m_oSegdStandardHeaderStruct m_oSegdSH;
+	/** Segd数据头队列*/
+	list<m_oSegdDataHeaderStruct*>* m_pSegdDHList;
+	/** Segd数据缓冲区指针，辅助道数据放后面*/
+	char* m_pSegdDataBuf;
+	/** Segd数据缓冲区长度*/
+	unsigned int m_uiSegdDataBufLength;
+}m_oSegdFileStruct;
+/**
+* @struct ADCDataBuf_Struct
+* @brief 数据存储缓冲区结构体
+*/
+typedef struct ADCDataBuf_Struct
+{
+	/** 缓冲区是否使用中*/
+	bool m_bInUsed;
+	/** ADC数据存储缓冲区*/
+	char* m_pADCDataBuf;
+	/** 缓冲区长度*/
+	unsigned int m_uiBufLength;
+	/** 每个站存储的数据点数*/
+	unsigned int m_uiSavePointNum;
+	/** 判断是否写入SEGD文件标志位*/
+	bool m_bSaveInSegd;
+	/** 参与施工的采集站个数*/
+	unsigned int m_uiOptInstrNum;
+	/** 辅助道数目*/
+	unsigned int m_uiAuxiliaryTraceNum;
+	/** 施工炮号*/
+	unsigned int m_uiOptNo;
+	/** 施工数据存储文件路径*/
+	string m_SaveFilePath;
+	/** 采样率*/
+	int m_iSampleRate;
+	// 	/** 每个采集站数据存储帧数*/
+	// 	unsigned int m_uiFrameNb;
+	// 	/** SEGD协议头长度*/
+	// 	unsigned int m_uiSEGDHeaderLen;
+	// 	/** 采集站数据头长度*/
+	// 	unsigned int m_uiDataHeaderLen;
+	/** 施工任务索引表指针，关键字为IP，内容为参与施工的Segd数据头结构体*/
+	list<m_oSegdDataHeaderStruct*> m_olsSegdDataHeader;
+	/** 缓冲区序号*/
+	unsigned int m_uiIndex;
+}m_oADCDataBufStruct;
+
+/**
+* @struct ADCDataBufArray_Struct
+* @brief 数据存储缓冲区结构体
+*/
+typedef struct ADCDataBufArray_Struct
+{
+	/** 缓冲区资源同步对象*/
+	CRITICAL_SECTION m_oSecADCDataBufArray;
+	/** 缓冲区数组指针*/
+	m_oADCDataBufStruct* m_pArrayADCDataBuf;
+	/** 缓冲区队列*/
+	list<m_oADCDataBufStruct*> m_olsADCDataBufFree;
+	/** 写入文件的数据缓冲区索引*/
+	hash_map<unsigned int, m_oADCDataBufStruct*> m_oADCDataBufWorkMap;
+	/** 缓冲区总数*/
+	unsigned int m_uiCountAll;
+	/** 空闲缓冲区数量*/
+	unsigned int m_uiCountFree;
+}m_oADCDataBufArrayStruct;
 
 /**
 * @struct Thread_Struct
@@ -1562,7 +1607,6 @@ typedef struct ADCDataSaveThread_Struct
 	/** 数据存储缓冲区结构体指针*/
 	m_oADCDataBufArrayStruct* m_pADCDataBufArray;
 }m_oADCDataSaveThreadStruct;
-
 /**
 * @struct Environment_Struct
 * @brief 资源环境结构体
@@ -2841,9 +2885,8 @@ MatrixServerDll_API void OnFreeADCDataRecThread(m_oADCDataRecThreadStruct* pADCD
 MatrixServerDll_API m_oADCDataSaveThreadStruct* OnCreateADCDataSaveThread(void);
 // 线程等待函数
 MatrixServerDll_API void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread);
-// 保存ADC数据到施工文件
-MatrixServerDll_API void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf, 
-	m_oOptTaskStruct* pOptTask, unsigned int uiLineIndex, m_oConstVarStruct* pConstVar);
+// 保存到Segd文件，成功返回true，失败返回false
+MatrixServerDll_API bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct);
 // 关闭所有的施工文件
 // MatrixServerDll_API void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray);
 // 保存ADC数据到施工文件
@@ -2861,13 +2904,11 @@ MatrixServerDll_API void OnFreeADCDataSaveThread(m_oADCDataSaveThreadStruct* pAD
 /************************************************************************/
 /* 服务程序                                                             */
 /************************************************************************/
-// 将接收到的施工任务设备加入对列
-MatrixServerDll_API void AddInstrInOptList(unsigned int uiIP, int iLineIndex, int iPointIndex, list<m_oOptInstrumentStruct*>* pList);
 // 产生参与施工仪器索引表
 MatrixServerDll_API void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTaskArrayStruct* pOptTaskArray);
 // 产生一个施工任务
 MatrixServerDll_API void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, unsigned int uiOptNum, 
-	unsigned int uiTBWindow, unsigned int uiTSample, m_oOptTaskArrayStruct* pOptTaskArray, 
+	unsigned int uiTBWindow, unsigned int uiTSample, int iSampleRate, m_oOptTaskArrayStruct* pOptTaskArray, 
 	m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar);
 // 释放一个施工任务
 // MatrixServerDll_API void FreeOneOptTask(unsigned int uiIndex, m_oOptTaskArrayStruct* pOptTaskArray, m_oADCDataBufArrayStruct* pADCDataBufArray);

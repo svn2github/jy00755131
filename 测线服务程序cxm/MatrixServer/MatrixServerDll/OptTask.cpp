@@ -12,6 +12,8 @@ void OnOptTaskReset(m_oOptTaskStruct* pOptTask)
 	pOptTask->m_uiTB = 0;
 	// 施工任务停止记录的时间
 	pOptTask->m_uiTS = 0;
+	// 采样率
+	pOptTask->m_iSampleRate = 0;
 // 	// 存储一帧所需时间
 // 	pOptTask->m_uiOneFrameTime = 0;
 	// 施工数据输出文件指针

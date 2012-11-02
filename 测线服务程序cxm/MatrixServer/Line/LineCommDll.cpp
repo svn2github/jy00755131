@@ -96,6 +96,7 @@ void CLineCommDll::OnClose(void)
 void CLineCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize, CCommRecThread* pRecThread)
 {
 	unsigned int uiFieldOnLeftTime = 0;
+	unsigned char test[2000];
 	switch (usCmd)
 	{
 		// 查询接收区域（帧内容为行数（4个字节）+列数（4个字节））
@@ -124,6 +125,7 @@ void CLineCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int 
 		break;
 		// @@@@查询Update Table（帧内容为行号+区域号+ 仪器SN+仪器IP，SN = 0表明无仪器）
 	case CmdQueryUpdateTable:
+		memcpy(test, pChar, uiSize);
 		break;
 		// 查询 SurveyXML 文件信息
 	case CmdQuerySurveyXMLInfo:

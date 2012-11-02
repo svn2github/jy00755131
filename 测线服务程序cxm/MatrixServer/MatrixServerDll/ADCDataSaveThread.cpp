@@ -41,11 +41,10 @@ void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 		}		
 	}
 }
-// 保存ADC数据到施工文件
-void WriteADCDataInOptTaskFile(m_oADCDataBufStruct* pADCDataBuf, 
-	m_oOptTaskStruct* pOptTask, unsigned int uiLineIndex, m_oConstVarStruct* pConstVar)
+// 保存到Segd文件，成功返回true，失败返回false
+bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct)
 {
-
+	return false;
 }
 // 关闭所有的施工文件
 // void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray)
@@ -72,9 +71,6 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 {
 	ASSERT(pADCDataSaveThread != NULL);
 	bool bSave = false;
-	unsigned int uiOptNb = 0;
-	char* pBuf = NULL;
-	int iBufSize = 0;
 	CString str = _T("");
 	m_oADCDataBufStruct* pADCDataBuf = NULL;
 	hash_map<unsigned int, m_oADCDataBufStruct*>::iterator iter;
@@ -87,12 +83,6 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 		// 可以保存到Segd文件
 		if ((pADCDataBuf->m_bInUsed == true) && (pADCDataBuf->m_bSaveInSegd == true))
 		{
-			uiOptNb = pADCDataBuf->m_uiOptNo;
-			iBufSize = pADCDataBuf->m_uiSavePointNum * pADCDataBuf->m_uiOptInstrNum * pADCDataSaveThread->m_pThread->m_pConstVar->m_iADCDataSize3B;
-			pBuf = new char[iBufSize];
-			memcpy(pBuf, pADCDataBuf->m_pADCDataBuf, iBufSize * sizeof(char));
-			AddFreeADCDataBuf(pADCDataBuf, pADCDataSaveThread->m_pADCDataBufArray);
-			DeleteADCDataBufFromMap(pADCDataBuf->m_uiIndex, &pADCDataSaveThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);
 			bSave = true;
 			break;
 		}
@@ -100,11 +90,26 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 	LeaveCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 	if (bSave == true)
 	{
+		m_oSegdFileStruct oSegdFile;
+		oSegdFile.m_strPath = pADCDataBuf->m_SaveFilePath;
+		oSegdFile.m_oSegdSH.m_uiSampleRate = pADCDataBuf->m_iSampleRate;
+		oSegdFile.m_oSegdSH.m_uiShotNo = pADCDataBuf->m_uiOptNo;
+		oSegdFile.m_oSegdSH.m_uiSampleLength = pADCDataBuf->m_uiSavePointNum;
+		oSegdFile.m_oSegdSH.m_uiTraceTotalNum = pADCDataBuf->m_uiOptInstrNum;
+		oSegdFile.m_oSegdSH.m_uiAuxiliaryTraceNum = pADCDataBuf->m_uiAuxiliaryTraceNum;
+		oSegdFile.m_uiSegdDataBufLength = oSegdFile.m_oSegdSH.m_uiSampleLength 
+			* (oSegdFile.m_oSegdSH.m_uiTraceTotalNum + oSegdFile.m_oSegdSH.m_uiAuxiliaryTraceNum) 
+			* pADCDataSaveThread->m_pThread->m_pConstVar->m_iADCDataSize3B;
+		oSegdFile.m_pSegdDataBuf = pADCDataBuf->m_pADCDataBuf;
+		oSegdFile.m_pSegdDHList = &pADCDataBuf->m_olsSegdDataHeader;
 		// 保存文件
-		str.Format(_T("保存文件炮号为 %d"), uiOptNb);
+		SaveSegdFile(&oSegdFile);
+		str.Format(_T("保存文件炮号为 %d"), oSegdFile.m_oSegdSH.m_uiShotNo);
 		OutputDebugString(str);
-		delete[] pBuf;
-		pBuf = NULL;
+		EnterCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
+		AddFreeADCDataBuf(pADCDataBuf, pADCDataSaveThread->m_pADCDataBufArray);
+		DeleteADCDataBufFromMap(pADCDataBuf->m_uiIndex, &pADCDataSaveThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);
+		LeaveCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);
 	}
 // 	// 重新产生施工仪器索引
 // 	GenOptInstrMap(pEnv->m_pLineList, pEnv->m_pOptTaskArray);

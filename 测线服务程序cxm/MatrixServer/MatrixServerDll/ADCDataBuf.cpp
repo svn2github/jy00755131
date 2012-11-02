@@ -5,6 +5,7 @@
 void OnADCDataBufReset(m_oADCDataBufStruct* pADCDataBuf)
 {
 	ASSERT(pADCDataBuf != NULL);
+	m_oSegdDataHeaderStruct* pSegdDataHeader = NULL;
 	// 是否使用中
 	pADCDataBuf->m_bInUsed = false;
 	/** 每个站存储的数据点数*/
@@ -13,8 +14,20 @@ void OnADCDataBufReset(m_oADCDataBufStruct* pADCDataBuf)
 	pADCDataBuf->m_bSaveInSegd = false;
 	/** 参与施工的采集站个数*/
 	pADCDataBuf->m_uiOptInstrNum = 0;
+	/** 辅助道数目*/
+	pADCDataBuf->m_uiAuxiliaryTraceNum = 0;
+	/** 施工任务索引表指针，关键字为IP，内容为参与施工的仪器结构体*/
+	while(pADCDataBuf->m_olsSegdDataHeader.size() != 0)
+	{
+		pSegdDataHeader = *pADCDataBuf->m_olsSegdDataHeader.begin();
+		delete pSegdDataHeader;
+		pSegdDataHeader = NULL;
+		pADCDataBuf->m_olsSegdDataHeader.pop_front();
+	}
 	/** 施工炮号*/
 	pADCDataBuf->m_uiOptNo = 0;
+	/** 采样率*/
+	pADCDataBuf->m_iSampleRate = 0;
 	/** 施工数据存储文件路径*/
 	pADCDataBuf->m_SaveFilePath = "";
 	if (pADCDataBuf->m_pADCDataBuf != NULL)

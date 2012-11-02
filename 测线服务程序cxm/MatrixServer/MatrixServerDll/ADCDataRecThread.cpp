@@ -60,6 +60,7 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 	ASSERT(pBuf != NULL);
 	ASSERT(pADCDataRecThread != NULL);
 	hash_map<unsigned int, m_oOptTaskStruct*>::iterator iter;
+	hash_map<unsigned int, m_oOptInstrumentStruct*>::iterator iterOptStr;
 	m_oADCDataBufStruct* pADCDataBuf = NULL;
 	m_oOptInstrumentStruct* pOptInstr = NULL;
 	unsigned int uiPointNum = 0;
@@ -93,9 +94,26 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 			iter->second->m_bSaveBuf = true;
 			iter->second->m_uiSaveBufNo = pADCDataBuf->m_uiIndex;
 			pADCDataBuf->m_uiSavePointNum = (uiTS - iter->second->m_uiTB) / uiPointTime + 1;
-			pADCDataBuf->m_uiOptInstrNum = iter->second->m_oIPMap.size();
 			pADCDataBuf->m_uiOptNo = iter->second->m_uiOptNo;
 			pADCDataBuf->m_SaveFilePath = iter->second->m_SaveFilePath;
+			pADCDataBuf->m_iSampleRate = iter->second->m_iSampleRate;
+			for (iterOptStr = iter->second->m_oIPMap.begin(); iterOptStr != iter->second->m_oIPMap.end(); iterOptStr++)
+			{
+				m_oSegdDataHeaderStruct* pSegdDataHeader = NULL;
+				pSegdDataHeader = new m_oSegdDataHeaderStruct;
+				pSegdDataHeader->m_iLineIndex = iterOptStr->second->m_iLineIndex;
+				pSegdDataHeader->m_iPointIndex = iterOptStr->second->m_iPointIndex;
+				pSegdDataHeader->m_uiLocation = iterOptStr->second->m_uiLocation;
+				if (iterOptStr->second->m_bAuxiliary == true)
+				{
+					pADCDataBuf->m_uiAuxiliaryTraceNum++;
+				}
+				else
+				{
+					pADCDataBuf->m_uiOptInstrNum++;
+				}
+				pADCDataBuf->m_olsSegdDataHeader.push_back(pSegdDataHeader);
+			}
 			// 将数据存储缓冲区加入索引表
 			AddToADCDataBufMap(pADCDataBuf->m_uiIndex, pADCDataBuf, 
 				&pADCDataRecThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);

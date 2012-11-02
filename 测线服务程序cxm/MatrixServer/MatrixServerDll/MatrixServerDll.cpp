@@ -42,18 +42,6 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 	return nRetCode;
 }
-// 将接收到的施工任务设备加入对列
-void AddInstrInOptList(unsigned int uiIP, int iLineIndex, int iPointIndex, list<m_oOptInstrumentStruct*>* pList)
-{
-	ASSERT(pList != NULL);
-	m_oOptInstrumentStruct* pOptInstrument = NULL;
-	pOptInstrument = new m_oOptInstrumentStruct;
-	pOptInstrument->m_uiIP = uiIP;
-	// @@@@此处应是标记线号和标记点号
-	pOptInstrument->m_iLineIndex = iLineIndex;
-	pOptInstrument->m_iPointIndex = iPointIndex;
-	pList->push_back(pOptInstrument);
-}
 // 产生参与施工仪器索引表
 void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTaskArrayStruct* pOptTaskArray)
 {
@@ -82,9 +70,21 @@ void GenOptInstrMap(m_oLineListStruct* pLineList, m_oOptTaskArrayStruct* pOptTas
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 	oIPList.clear();
 }
+bool CompareLocation(m_oOptInstrumentStruct* pOptStrFirst, m_oOptInstrumentStruct* pOptStrSecond)
+{
+	if (pOptStrFirst->m_bAuxiliary != pOptStrSecond->m_bAuxiliary)
+	{
+		return (!pOptStrFirst->m_bAuxiliary);
+	}
+	if (pOptStrFirst->m_iLineIndex != pOptStrSecond->m_iLineIndex)
+	{
+		return (pOptStrFirst->m_iLineIndex < pOptStrSecond->m_iLineIndex);
+	}
+	return (pOptStrFirst->m_iPointIndex < pOptStrSecond->m_iPointIndex);
+}
 // 产生一个施工任务，采样时间和TB时间是以ms为单位的
 void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, unsigned int uiOptNum, unsigned int uiTBWindow, 
-	unsigned int uiTSample, m_oOptTaskArrayStruct* pOptTaskArray, m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
+	unsigned int uiTSample, int iSampleRate, m_oOptTaskArrayStruct* pOptTaskArray, m_oLineListStruct* pLineList, m_oConstVarStruct* pConstVar)
 {
 	ASSERT(pOptTaskArray != NULL);
 	m_oOptTaskStruct* pOptTask = NULL;
@@ -119,6 +119,7 @@ void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, uns
 		pOptTask->m_uiTB = uiTBHigh;
 		pOptTask->m_uiTS = uiTBHigh + uiTSample * 4;
 		pOptTask->m_SaveFilePath = (CStringA)strPath;
+		pOptTask->m_iSampleRate = iSampleRate;
 		uiTBHigh = pOptTask->m_uiTS;
 		oList.clear();
 		EnterCriticalSection(&pLineList->m_oSecLineList);
@@ -128,12 +129,25 @@ void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, uns
 		{
 			if (iterMap->second->m_iInstrumentType == InstrumentTypeFDU)
 			{
-				// 将接收到的施工任务设备加入对列
-				AddInstrInOptList(iterMap->second->m_uiIP, iterMap->second->m_iLineIndex, iterMap->second->m_iPointIndex, &oList);
+				m_oOptInstrumentStruct* pOptInstrument = NULL;
+				pOptInstrument = new m_oOptInstrumentStruct;
+				pOptInstrument->m_uiIP = iterMap->second->m_uiIP;
+				if (pOptInstrument->m_uiIP == 167)
+				{
+					pOptInstrument->m_bAuxiliary = true;
+				}
+				else
+				{
+					pOptInstrument->m_bAuxiliary = false;
+				}
+				// @@@@此处应是标记线号和标记点号
+				pOptInstrument->m_iLineIndex = iterMap->second->m_iLineIndex;
+				pOptInstrument->m_iPointIndex = iterMap->second->m_iPointIndex;
+				oList.push_back(pOptInstrument);
 			}
 		}
 		LeaveCriticalSection(&pLineList->m_oSecLineList);
-		oList.sort();
+		oList.sort(CompareLocation);
 		uiLocation = 0;
 		for (iter = oList.begin(); iter != oList.end(); iter++)
 		{
@@ -349,9 +363,9 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	// 产生施工任务
 	// 炮号、TB开始时间、采样时间、参与采集的仪器指针索引表
 	// @@@实验连续放炮
-	GenOptTaskList(100, 10, 20, 2000, 4000, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
+	GenOptTaskList(100, 10, 20, 2000, 4000, iSampleRate, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
 	// @@@实验叠加放炮
-	GenOptTaskList(600, 10, 20, 2000, 4000, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
+	GenOptTaskList(600, 10, 20, 2000, 4000, iSampleRate, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
 }
 // ADC停止采集命令

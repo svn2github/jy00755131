@@ -77,6 +77,7 @@ void OnInitADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray, m_oConstV
 void OnCloseADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 {
 	ASSERT(pADCDataBufArray != NULL);
+	m_oSegdDataHeaderStruct* pSegdDataHeader = NULL;
 	EnterCriticalSection(&pADCDataBufArray->m_oSecADCDataBufArray);
 	// 清空数据缓冲区队列
 	pADCDataBufArray->m_oADCDataBufWorkMap.clear();
@@ -89,6 +90,13 @@ void OnCloseADCDataBufArray(m_oADCDataBufArrayStruct* pADCDataBufArray)
 		{
 			if (pADCDataBufArray->m_pArrayADCDataBuf[i].m_pADCDataBuf != NULL)
 			{
+				while(pADCDataBufArray->m_pArrayADCDataBuf[i].m_olsSegdDataHeader.size() != 0)
+				{
+					pSegdDataHeader = *pADCDataBufArray->m_pArrayADCDataBuf[i].m_olsSegdDataHeader.begin();
+					delete pSegdDataHeader;
+					pSegdDataHeader = NULL;
+					pADCDataBufArray->m_pArrayADCDataBuf[i].m_olsSegdDataHeader.pop_front();
+				}
 				delete[] pADCDataBufArray->m_pArrayADCDataBuf[i].m_pADCDataBuf;
 				pADCDataBufArray->m_pArrayADCDataBuf[i].m_pADCDataBuf = NULL;
 			}
