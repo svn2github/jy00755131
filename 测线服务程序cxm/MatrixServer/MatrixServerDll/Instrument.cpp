@@ -236,6 +236,10 @@ m_oInstrumentStruct* GetInstrumentFromMap(unsigned int uiIndex,
 	ASSERT(pMap != NULL);
 	hash_map<unsigned int, m_oInstrumentStruct*>::iterator iter;
 	iter = pMap->find(uiIndex);
+	if (iter == pMap->end())
+	{
+		return NULL;
+	}
 	return iter->second;
 }
 // 从索引表删除索引号指向的仪器指针
@@ -329,40 +333,36 @@ bool GetRoutIPBySn(unsigned int uiSN, int iDirection,
 	m_oInstrumentListStruct* pInstrumentList, unsigned int& uiRoutIP)
 {
 	m_oInstrumentStruct* pInstrument = NULL;
-	
-	if (TRUE == IfIndexExistInMap(uiSN, &pInstrumentList->m_oSNInstrumentMap))
+	pInstrument = GetInstrumentFromMap(uiSN, &pInstrumentList->m_oSNInstrumentMap);
+	if (pInstrument == NULL)
 	{
-		pInstrument = GetInstrumentFromMap(uiSN, &pInstrumentList->m_oSNInstrumentMap);
-		if (iDirection == DirectionLeft)
-		{
-			uiRoutIP = pInstrument->m_uiRoutIPLeft;
-		}
-		else if (iDirection == DirectionRight)
-		{
-			uiRoutIP = pInstrument->m_uiRoutIPRight;
-		}
-		else if (iDirection == DirectionTop)
-		{
-			uiRoutIP = pInstrument->m_uiRoutIPTop;
-		}
-		else if (iDirection == DirectionDown)
-		{
-			uiRoutIP = pInstrument->m_uiRoutIPDown;
-		}
-		else if (iDirection == DirectionCenter)
-		{
-			uiRoutIP = pInstrument->m_uiRoutIP;
-		}
-		else
-		{
-			
-			return false;
-		}
-		
-		return true;
+		return false;
 	}
-	
-	return false;
+	if (iDirection == DirectionLeft)
+	{
+		uiRoutIP = pInstrument->m_uiRoutIPLeft;
+	}
+	else if (iDirection == DirectionRight)
+	{
+		uiRoutIP = pInstrument->m_uiRoutIPRight;
+	}
+	else if (iDirection == DirectionTop)
+	{
+		uiRoutIP = pInstrument->m_uiRoutIPTop;
+	}
+	else if (iDirection == DirectionDown)
+	{
+		uiRoutIP = pInstrument->m_uiRoutIPDown;
+	}
+	else if (iDirection == DirectionCenter)
+	{
+		uiRoutIP = pInstrument->m_uiRoutIP;
+	}
+	else
+	{
+		return false;
+	}
+	return true;
 }
 /**
 * 根据链接方向，得到连接的下一个仪器

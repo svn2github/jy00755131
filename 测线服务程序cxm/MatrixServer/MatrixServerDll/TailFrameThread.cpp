@@ -218,47 +218,48 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	uiSysTime = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTime;
 	LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 	EnterCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
-	// 判断仪器SN是否在SN索引表中
-	if(TRUE == IfIndexExistInMap(uiSN, &pTailFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap))
+	// 在索引表中则找到该仪器,得到该仪器指针
+	pInstrument = GetInstrumentFromMap(uiSN, &pTailFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap);
+	if (pInstrument == NULL)
 	{
-		// 在索引表中则找到该仪器,得到该仪器指针
-		pInstrument = GetInstrumentFromMap(uiSN, &pTailFrameThread->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap);
-		// 仪器设置IP成功且路由地址发生变化
-		if ((pInstrument->m_bIPSetOK == true) && (pInstrument->m_uiRoutIP != uiRoutIP))
-		{
-			LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
-			EnterCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
-			GetFrameInfo(pTailFrameThread->m_pTailFrame->m_cpRcvFrameData,
-				pTailFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
-			LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
-			AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne",
-				strFrameData, ErrorType, IDS_ERR_ROUT_CHANGE);
-			return;
-		}
-		str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包，仪器位置= %d，尾包计数 = %d"), 
-			uiSN, uiRoutIP, pInstrument->m_iPointIndex, uiTailFrameCount);
-		strConv = (CStringA)str;
-		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", strConv);
-		OutputDebugString(str);
-		// 在路由索引表中找到该尾包所在的路由
-		// 更新仪器的存活时间
-		UpdateInstrActiveTime(pInstrument);
-		// 仪器类型为LCI则更新本地时间
-		if (pInstrument->m_iInstrumentType == InstrumentTypeLCI)
-		{
-			UpdateLocalSysTime(uiSysTime, pTailFrameThread->m_pLineList);
-		}
-		if (FALSE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
-		{
-			LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
-			EnterCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
-			GetFrameInfo(pTailFrameThread->m_pTailFrame->m_cpRcvFrameData,
-				pTailFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
-			LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
-			EnterCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
-			AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne",
-				strFrameData,	ErrorType, IDS_ERR_ROUT_NOTEXIT);
-		}
+		LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
+		return;
+	}
+	// 仪器设置IP成功且路由地址发生变化
+	if ((pInstrument->m_bIPSetOK == true) && (pInstrument->m_uiRoutIP != uiRoutIP))
+	{
+		LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
+		EnterCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
+		GetFrameInfo(pTailFrameThread->m_pTailFrame->m_cpRcvFrameData,
+			pTailFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+		LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
+		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne",
+			strFrameData, ErrorType, IDS_ERR_ROUT_CHANGE);
+		return;
+	}
+	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包，仪器位置= %d，尾包计数 = %d"), 
+		uiSN, uiRoutIP, pInstrument->m_iPointIndex, uiTailFrameCount);
+	strConv = (CStringA)str;
+	AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", strConv);
+	OutputDebugString(str);
+	// 在路由索引表中找到该尾包所在的路由
+	// 更新仪器的存活时间
+	UpdateInstrActiveTime(pInstrument);
+	// 仪器类型为LCI则更新本地时间
+	if (pInstrument->m_iInstrumentType == InstrumentTypeLCI)
+	{
+		UpdateLocalSysTime(uiSysTime, pTailFrameThread->m_pLineList);
+	}
+	if (FALSE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
+	{
+		LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
+		EnterCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
+		GetFrameInfo(pTailFrameThread->m_pTailFrame->m_cpRcvFrameData,
+			pTailFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
+		LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
+		EnterCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
+		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne",
+			strFrameData,	ErrorType, IDS_ERR_ROUT_NOTEXIT);
 	}
 	LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
 }

@@ -48,6 +48,9 @@ public:
 	// 根据输入索引号，由索引表得到仪器指针
 	m_oInstrumentStruct* Dll_GetInstrumentFromLocationMap(int iLineIndex, int iPointIndex, 
 		map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+	// 根据输入索引号，由索引表得到仪器指针
+	m_oInstrumentStruct* Dll_GetInstrumentFromMap(unsigned int uiIndex, 
+		hash_map<unsigned int, m_oInstrumentStruct*>* pMap);
 
 	// 得到测线接收区域
 	void Dll_GetLineRevSection(unsigned int& uiLineNum, unsigned int& uiColumnNum, m_oLineSetupDataStruct* pLineSetupData);

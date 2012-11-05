@@ -10,12 +10,14 @@ CCommRecThread::CCommRecThread(void)
 	m_uiClientActiveCount = 0;
 	m_uiClientCheckCount = 0;
 	m_oInstrumentWholeTableMap.clear();
+	m_oInstrumentUpdataTableMap.clear();
 }
 
 
 CCommRecThread::~CCommRecThread(void)
 {
 	m_oInstrumentWholeTableMap.clear();
+	m_oInstrumentUpdataTableMap.clear();
 }
 // 处理函数
 void CCommRecThread::OnProc(void)
@@ -99,13 +101,14 @@ void CCommRecThread::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 	(*m_oProcRecCmdCallBack)(usCmd, pChar, uiSize, this);
 }
 // 判断仪器位置索引号是否已加入索引表
-BOOL CCommRecThread::IfLocationExistInMap(int iLineIndex, int iPointIndex)
+BOOL CCommRecThread::IfLocationExistInMap(int iLineIndex, int iPointIndex, 
+	map<m_oLocationStruct, unsigned int>* pMap)
 {
 	BOOL bResult = FALSE;
 	m_oLocationStruct Location(iLineIndex, iPointIndex);
 	map<m_oLocationStruct, unsigned int>::iterator iter;
-	iter = m_oInstrumentWholeTableMap.find(Location);
-	if (iter != m_oInstrumentWholeTableMap.end())
+	iter = pMap->find(Location);
+	if (iter != pMap->end())
 	{
 		bResult = TRUE;
 	}
@@ -117,22 +120,24 @@ BOOL CCommRecThread::IfLocationExistInMap(int iLineIndex, int iPointIndex)
 }
 
 // 增加对象到索引表
-void CCommRecThread::AddLocationToMap(int iLineIndex, int iPointIndex, unsigned int uiSN)
+void CCommRecThread::AddLocationToMap(int iLineIndex, int iPointIndex, unsigned int uiSN, 
+	map<m_oLocationStruct, unsigned int>* pMap)
 {
 	m_oLocationStruct Location(iLineIndex, iPointIndex);
-	if (false == IfLocationExistInMap(iLineIndex, iPointIndex))
+	if (false == IfLocationExistInMap(iLineIndex, iPointIndex, pMap))
 	{
-		m_oInstrumentWholeTableMap.insert(map<m_oLocationStruct, unsigned int>::value_type (Location, uiSN));
+		pMap->insert(map<m_oLocationStruct, unsigned int>::value_type (Location, uiSN));
 	}
 }
 
 // 根据输入索引号，由索引表得到仪器指针
-unsigned int* CCommRecThread::GetSnPtrFromLocationMap(int iLineIndex, int iPointIndex)
+unsigned int* CCommRecThread::GetSnPtrFromLocationMap(int iLineIndex, int iPointIndex, 
+	map<m_oLocationStruct, unsigned int>* pMap)
 {
 	m_oLocationStruct Location(iLineIndex, iPointIndex);
 	map<m_oLocationStruct, unsigned int>::iterator iter;
-	iter = m_oInstrumentWholeTableMap.find(Location);
-	if (iter == m_oInstrumentWholeTableMap.end())
+	iter = pMap->find(Location);
+	if (iter == pMap->end())
 	{
 		return NULL;
 	}

@@ -38,6 +38,9 @@ typedef BOOL (*IfLocation_ExistInMap)(int iLineIndex, int iPointIndex,
 // 根据输入索引号，由索引表得到仪器指针
 typedef m_oInstrumentStruct* (*Get_InstrumentFromLocationMap)(int iLineIndex, int iPointIndex, 
 	map<m_oInstrumentLocationStruct, m_oInstrumentStruct*>* pMap);
+// 根据输入索引号，由索引表得到仪器指针
+typedef m_oInstrumentStruct* (*Get_InstrumentFromMap)(unsigned int uiIndex, 
+	hash_map<unsigned int, m_oInstrumentStruct*>* pMap);
 // 得到在线仪器位置
 typedef void (*Query_InstrumentLocation)(char* pChar, int& iPos, m_oLineListStruct* pLineList);
 
@@ -417,6 +420,26 @@ m_oInstrumentStruct* CMatrixServerDllCall::Dll_GetInstrumentFromLocationMap(int 
 	{
 		// call the function
 		pInstrument = (*Dll_Get_InstrumentFromLocationMap)(iLineIndex, iPointIndex, pMap);
+	}
+	return pInstrument;
+}
+// 根据输入索引号，由索引表得到仪器指针
+m_oInstrumentStruct* CMatrixServerDllCall::Dll_GetInstrumentFromMap(unsigned int uiIndex, 
+	hash_map<unsigned int, m_oInstrumentStruct*>* pMap)
+{
+	m_oInstrumentStruct* pInstrument = NULL;
+	Get_InstrumentFromMap Dll_Get_InstrumentFromMap = NULL;
+	Dll_Get_InstrumentFromMap = (Get_InstrumentFromMap)GetProcAddress(m_hDllMod, "GetInstrumentFromMap");
+	if (!Dll_Get_InstrumentFromMap)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		pInstrument = (*Dll_Get_InstrumentFromMap)(uiIndex, pMap);
 	}
 	return pInstrument;
 }

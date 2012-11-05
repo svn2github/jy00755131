@@ -231,7 +231,7 @@ void CCommServerDll::OnProcQueryFormLineXMLInfo(CCommRecThread* pRecThread, unsi
 	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 }
 // 查询所选区域仪器噪声测试数据和测试结果
-unsigned int CCommServerDll::QueryInstrNoiseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QueryInstrNoiseTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -268,7 +268,7 @@ unsigned int CCommServerDll::QueryInstrNoiseTestByArea(m_oInstrumentStruct* pIns
 
 
 // 查询所选区域仪器失真测试数据和测试结果
-unsigned int CCommServerDll::QueryInstrDistortionTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QueryInstrDistortionTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -306,7 +306,7 @@ unsigned int CCommServerDll::QueryInstrDistortionTestByArea(m_oInstrumentStruct*
 
 
 // 查询所选区域仪器串扰测试数据和测试结果
-unsigned int CCommServerDll::QueryInstrCrosstalkTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QueryInstrCrosstalkTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -344,7 +344,7 @@ unsigned int CCommServerDll::QueryInstrCrosstalkTestByArea(m_oInstrumentStruct* 
 
 
 // 查询所选区域仪器共模抑制比测试数据和测试结果
-unsigned int CCommServerDll::QueryInstrCMRRTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QueryInstrCMRRTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -382,7 +382,7 @@ unsigned int CCommServerDll::QueryInstrCMRRTestByArea(m_oInstrumentStruct* pInst
 
 
 // 查询所选区域仪器增益相位测试数据和测试结果
-unsigned int CCommServerDll::QueryInstrGainPhaseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QueryInstrGainPhaseTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -420,7 +420,7 @@ unsigned int CCommServerDll::QueryInstrGainPhaseTestByArea(m_oInstrumentStruct* 
 
 
 // 查询所选区域检波器阻抗测试数据和测试结果
-unsigned int CCommServerDll::QuerySensorResistanceTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QuerySensorResistanceTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -458,7 +458,7 @@ unsigned int CCommServerDll::QuerySensorResistanceTestByArea(m_oInstrumentStruct
 
 
 // 查询所选区域检波器漏电测试数据和测试结果
-unsigned int CCommServerDll::QuerySensorLeakageTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QuerySensorLeakageTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -496,7 +496,7 @@ unsigned int CCommServerDll::QuerySensorLeakageTestByArea(m_oInstrumentStruct* p
 
 
 // 查询所选区域检波器噪声测试数据和测试结果
-unsigned int CCommServerDll::QuerySensorNoiseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QuerySensorNoiseTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -533,7 +533,7 @@ unsigned int CCommServerDll::QuerySensorNoiseTestByArea(m_oInstrumentStruct* pIn
 
 
 // 查询所选区域检波器倾斜度测试数据和测试结果
-unsigned int CCommServerDll::QuerySensorTiltTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QuerySensorTiltTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -571,7 +571,7 @@ unsigned int CCommServerDll::QuerySensorTiltTestByArea(m_oInstrumentStruct* pIns
 
 
 // 查询所选区域检波器倾斜度模式测试数据和测试结果
-unsigned int CCommServerDll::QuerySensorTiltModelTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QuerySensorTiltModelTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -609,7 +609,7 @@ unsigned int CCommServerDll::QuerySensorTiltModelTestByArea(m_oInstrumentStruct*
 
 
 // 查询所选区域地震监测测试数据和测试结果
-unsigned int CCommServerDll::QuerySeisMonitorTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QuerySeisMonitorTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	float fData = 0.0;
@@ -651,51 +651,19 @@ float CCommServerDll::CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument)
 {
 	return (float)m_pMatrixServer->Dll_CalMeanSquare(pInstrument);
 }
-
-// 由线号和点号得到区域位置
-void CCommServerDll::GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct)
-{
-	pAreaStruct->m_uiLineNb = m_uiLineNum + iLineIndex;
-	pAreaStruct->m_uiAreaNb = m_uiColumnNum + iPointIndex;
-	if ((pAreaStruct->m_uiAreaNb % InstrumentTableWindowSize) == 0)
-	{
-		pAreaStruct->m_uiAreaNb /= InstrumentTableWindowSize;
-	}
-	else
-	{
-		pAreaStruct->m_uiAreaNb /= InstrumentTableWindowSize;
-		pAreaStruct->m_uiAreaNb += 1;
-	}
-}
-// 由区域号得到线号及点号范围
-void CCommServerDll::GetPointRangeFromArea(int* iLineIndex, int* iPointMinIndex, 
-	int* iPointMaxIndex, m_oAreaStruct* pAreaStruct)
-{
-	*iLineIndex = (int)pAreaStruct->m_uiLineNb - m_uiLineNum;
-	*iPointMinIndex = ((int)pAreaStruct->m_uiAreaNb - 1) * InstrumentTableWindowSize + 1 - m_uiColumnNum;
-	*iPointMaxIndex = ((int)pAreaStruct->m_uiAreaNb) * InstrumentTableWindowSize - m_uiColumnNum;
-}
 // 处理仪器设备表更新
 void CCommServerDll::OnProcInstrumentTableUpdate(CCommRecThread* pRecThread)
 {
 	map<m_oLocationStruct, unsigned int>::iterator iterLocation;
-	map<m_oAreaStruct, m_oAreaStruct>::iterator iterArea;
 	/** 客户端设备位置索引表*/
 	map<m_oLocationStruct, unsigned int> InstrumentWholeTableMap;
-	/** 客户端设备更新区域索引表*/
-	map<m_oAreaStruct, m_oAreaStruct> InstrumentUpdateArea;
 	int iLineIndex = 0;
 	int iPointIndex = 0;
 	unsigned int uiSN = 0;
 	unsigned int* uipSNClient = NULL;
-	int iPointMinIndex = 0;
-	int iPointMaxIndex = 0;
 	int iPos = 0;
 	int iSize = 0;
-	m_oAreaStruct oAreaStruct;
-	m_oInstrumentStruct* pInstrument = NULL;
-	InstrumentWholeTableMap.clear();
-	InstrumentUpdateArea.clear();
+	pRecThread->m_oInstrumentUpdataTableMap.clear();
 	// 将SN索引表与客户端的仪器位置索引表相对照
 	m_pMatrixServer->Dll_QueryInstrumentLocation(pRecThread->m_pCommSndFrame->m_cProcBuf, iSize);
 	for (int i=0; i<iSize;)
@@ -707,129 +675,90 @@ void CCommServerDll::OnProcInstrumentTableUpdate(CCommRecThread* pRecThread)
 		memcpy(&uiSN, &pRecThread->m_pCommSndFrame->m_cProcBuf[i], 4);
 		i += 4;
 		// 客户端仪器索引表中找不到该设备
-		if (FALSE == pRecThread->IfLocationExistInMap(iLineIndex, iPointIndex))
+		if (FALSE == pRecThread->IfLocationExistInMap(iLineIndex, iPointIndex, &pRecThread->m_oInstrumentWholeTableMap))
 		{
-			pRecThread->AddLocationToMap(iLineIndex, iPointIndex, uiSN);
-			GetAreaFromPoint(iLineIndex, iPointIndex, &oAreaStruct);
-			// 增加对象到索引表
-			AddAreaToMap(&InstrumentUpdateArea, oAreaStruct);
+			// 将仪器加入整表
+			pRecThread->AddLocationToMap(iLineIndex, iPointIndex, uiSN, &pRecThread->m_oInstrumentWholeTableMap);
+			// 将仪器加入更新表
+			pRecThread->AddLocationToMap(iLineIndex, iPointIndex, uiSN, &pRecThread->m_oInstrumentUpdataTableMap);
 		}
 		else
 		{
-			uipSNClient = pRecThread->GetSnPtrFromLocationMap(iLineIndex, iPointIndex);
+			uipSNClient = pRecThread->GetSnPtrFromLocationMap(iLineIndex, iPointIndex, &pRecThread->m_oInstrumentWholeTableMap);
 			if (uiSN != *uipSNClient)
 			{
+				// 整表中SN与当前位置SN不同
 				*uipSNClient = uiSN;
-				GetAreaFromPoint(iLineIndex, iPointIndex, &oAreaStruct);
-				// 增加对象到索引表
-				AddAreaToMap(&InstrumentUpdateArea, oAreaStruct);
+				// 加入更新表
+				pRecThread->AddLocationToMap(iLineIndex, iPointIndex, uiSN, &pRecThread->m_oInstrumentUpdataTableMap);
 			}
 		}
 	}
-	InstrumentWholeTableMap.swap(pRecThread->m_oInstrumentWholeTableMap);
 	EnterCriticalSection(&m_pMatrixServer->m_pEnv->m_pLineList->m_oSecLineList);
 	// 将客户端的仪器位置索引表与SN索引表相对照
-	for (iterLocation = InstrumentWholeTableMap.begin(); iterLocation != InstrumentWholeTableMap.end();)
+	for (iterLocation = pRecThread->m_oInstrumentWholeTableMap.begin(); iterLocation != pRecThread->m_oInstrumentWholeTableMap.end();)
 	{
 		// 仪器位置索引表找不到该设备
 		if (FALSE == m_pMatrixServer->Dll_IfLocationExistInMap(iterLocation->first.m_iLineIndex, 
 			iterLocation->first.m_iPointIndex, &m_pMatrixServer->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap))
 		{
-			// 增加对象到索引表
-			GetAreaFromPoint(iterLocation->first.m_iLineIndex, iterLocation->first.m_iPointIndex, &oAreaStruct);
-			AddAreaToMap(&InstrumentUpdateArea, oAreaStruct);
-			InstrumentWholeTableMap.erase(iterLocation++);
+			// 在仪器位置索引中找不到整表中该位置仪器
+			// 更新表中该位置SN更新为0
+			pRecThread->AddLocationToMap(iterLocation->first.m_iLineIndex, iterLocation->first.m_iPointIndex, 0, 
+				&pRecThread->m_oInstrumentUpdataTableMap);
+			// 从整表中删除该位置仪器
+			pRecThread->m_oInstrumentWholeTableMap.erase(iterLocation++);
 		}
 		else
 		{
 			uiSN = m_pMatrixServer->Dll_GetInstrumentFromLocationMap(iterLocation->first.m_iLineIndex, 
 				iterLocation->first.m_iPointIndex, &m_pMatrixServer->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap)->m_uiSN;
-			// SN不同则更新
+			// 当前位置SN与整表中SN不同
 			if (uiSN != iterLocation->second)
 			{
+				// 更新整表中该位置SN
 				iterLocation->second = uiSN;
+				// 将该位置加入索引
+				pRecThread->AddLocationToMap(iterLocation->first.m_iLineIndex, iterLocation->first.m_iPointIndex, uiSN, 
+					&pRecThread->m_oInstrumentUpdataTableMap);
 			}
 			iterLocation++;
 		}
 	}
 	LeaveCriticalSection(&m_pMatrixServer->m_pEnv->m_pLineList->m_oSecLineList);
-	pRecThread->m_oInstrumentWholeTableMap.swap(InstrumentWholeTableMap);
+//	pRecThread->m_oInstrumentWholeTableMap.swap(InstrumentWholeTableMap);
 
-	// 对照后客户端仪器索引表与服务端仪器SN索引表一致，将变化区域发送到客户端
-	for (iterArea = InstrumentUpdateArea.begin(); iterArea != InstrumentUpdateArea.end(); iterArea++)
+	// 对照后客户端仪器索引表与服务端仪器SN索引表一致，将更新表发送到客户端
+	for (iterLocation = pRecThread->m_oInstrumentUpdataTableMap.begin();
+		iterLocation != pRecThread->m_oInstrumentUpdataTableMap.end(); iterLocation++)
 	{
-		// 由区域号得到线号及点号范围
-		GetPointRangeFromArea(&iLineIndex, &iPointMinIndex, &iPointMaxIndex, &iterArea->second);
-		memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &iterArea->second.m_uiLineNb, 4);
+		memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &iterLocation->first.m_iLineIndex, 4);
 		iPos += 4;
-		memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &iterArea->second.m_uiAreaNb, 4);
+		memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &iterLocation->first.m_iPointIndex, 4);
 		iPos += 4;
-		for (int i = iPointMinIndex; i <= iPointMaxIndex; i++)
-		{
-			pInstrument = m_pMatrixServer->Dll_GetInstrumentFromLocationMap(iLineIndex, i, 
-				&m_pMatrixServer->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
-			if (pInstrument != NULL)
-			{
-				memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &pInstrument->m_uiSN, 4);
-				iPos += 4;
-				memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &pInstrument->m_uiIP, 4);
-				iPos += 4;
-			}
-			else
-			{
-				memset(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], 0, 8);
-				iPos += 8;
-			}
-		}
+		memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[iPos], &iterLocation->second, 4);
+		iPos += 4;
 	}
+	pRecThread->m_oInstrumentUpdataTableMap.clear();
 	if (iPos > 0)
 	{
 		pRecThread->m_pCommSndFrame->MakeSetFrame(CmdQueryUpdateTable, 
 			pRecThread->m_pCommSndFrame->m_cProcBuf, iPos);
 	}
 }
-// 判断仪器更新区域是否已加入索引表
-BOOL CCommServerDll::IfAreaExistInMap(map<m_oAreaStruct, m_oAreaStruct>* pmap, m_oAreaStruct oAreaStruct)
-{
-	BOOL bResult = FALSE;
-	map<m_oAreaStruct, m_oAreaStruct>::iterator iter;
-	iter = pmap->find(oAreaStruct);
-	if (iter != pmap->end())
-	{
-		bResult = TRUE;
-	}
-	else
-	{
-		bResult = FALSE;
-	}
-	return bResult;
-}
-// 增加对象到索引表
-void CCommServerDll::AddAreaToMap(map<m_oAreaStruct, m_oAreaStruct>* pmap, m_oAreaStruct oAreaStruct)
-{
-	if (FALSE == IfAreaExistInMap(pmap, oAreaStruct))
-	{
-		pmap->insert(map<m_oAreaStruct, m_oAreaStruct>::value_type (oAreaStruct, oAreaStruct));
-	}
-}
 
 // 按区域查询仪器信息
-unsigned int CCommServerDll::QueryByArea(CCommRecThread* pRecThread, m_oAreaStruct* pArea, 
-	unsigned int uiStartPos, unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
+unsigned int CCommServerDll::QueryByArea(CCommRecThread* pRecThread, unsigned int uiSN, 
+	unsigned int uiSendPos, unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
 	unsigned int uiStartPos, CCommRecThread* pRecThread))
 {
-	unsigned int uiPos = uiStartPos;
+	unsigned int uiPos = uiSendPos;
 	m_oInstrumentStruct* pInstrument = NULL;
-	int iLineIndex = 0;
-	int iPointMinIndex = 0;
-	int iPointMaxIndex = 0;
-	// 由区域号得到线号及点号范围
-	GetPointRangeFromArea(&iLineIndex, &iPointMinIndex, &iPointMaxIndex, pArea);
+
 	EnterCriticalSection(&m_pMatrixServer->m_pEnv->m_pLineList->m_oSecLineList);
-	for (int i = iPointMinIndex; i <= iPointMaxIndex; i++)
+	pInstrument = m_pMatrixServer->Dll_GetInstrumentFromMap(uiSN, &m_pMatrixServer->m_pEnv->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap);
+	if (pInstrument != NULL)
 	{
-		pInstrument = m_pMatrixServer->Dll_GetInstrumentFromLocationMap(iLineIndex, i, 
-			&m_pMatrixServer->m_pEnv->m_pLineList->m_pInstrumentList->m_oInstrumentLocationMap);
 		uiPos = (this->*ptrFun)(pInstrument, uiPos, pRecThread);
 	}
 	LeaveCriticalSection(&m_pMatrixServer->m_pEnv->m_pLineList->m_oSecLineList);
@@ -837,60 +766,47 @@ unsigned int CCommServerDll::QueryByArea(CCommRecThread* pRecThread, m_oAreaStru
 }
 
 // 处理仪器信息查询
-void CCommServerDll::OnProcQueryByArea(CCommRecThread* pRecThread, char* pChar, unsigned int uiSize, 
+void CCommServerDll::OnProcQueryBySN(CCommRecThread* pRecThread, char* pChar, unsigned int uiSize, 
 	unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread))
 {
 	unsigned int uiPos = 0;
-	m_oAreaStruct oAreaStruct;
+	unsigned int uiSendPos = 0;
+	unsigned int uiSN = 0;
 	while(uiPos < uiSize)
 	{
-		memcpy(&oAreaStruct.m_uiLineNb, &pChar[uiPos], 4);
+		memcpy(&uiSN, &pChar[uiPos], 4);
 		uiPos += 4;
-		memcpy(&oAreaStruct.m_uiAreaNb, &pChar[uiPos], 4);
-		uiPos += 4;
-		uiPos = QueryByArea(pRecThread, &oAreaStruct, uiPos, ptrFun);
+		uiSendPos = QueryByArea(pRecThread, uiSN, uiSendPos, ptrFun);
 	}
 	pRecThread->m_pCommSndFrame->MakeSetFrame(CmdQueryInstrumentInfo, 
-		pRecThread->m_pCommSndFrame->m_cProcBuf, uiPos);
+		pRecThread->m_pCommSndFrame->m_cProcBuf, uiSendPos);
 }
 
 // 处理全部信息查询
 void CCommServerDll::OnProcQueryInfoAll(CCommRecThread* pRecThread, 
 	unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread))
 {
-	int iLineNum = 0;
-	int iColumn = 0;
-	int iAreaNum = 0;
 	int iPos = 0;
-	iLineNum = m_uiLineNum * 2 - 1;
-	iColumn = m_uiColumnNum * 2 - 1;
-	iAreaNum = iColumn / InstrumentTableWindowSize;
-	if ((iColumn % InstrumentTableWindowSize) != 0)
-	{
-		iAreaNum += 1;
-	}
-	if ((iAreaNum < 1) || (iLineNum < 1))
+	map<m_oLocationStruct, unsigned int>::iterator iter;
+	int iSize = pRecThread->m_oInstrumentWholeTableMap.size();
+	if (iSize == 0)
 	{
 		return;
 	}
-	char* pChar = new char[iLineNum * iAreaNum * 8];
-	for (int i=1; i<= iLineNum; i++)
+	char* pChar = new char[iSize * 4];
+	for (iter = pRecThread->m_oInstrumentWholeTableMap.begin();
+		iter != pRecThread->m_oInstrumentWholeTableMap.end(); iter++)
 	{
-		for (int j=1; j<=iAreaNum; j++)
-		{
-			memcpy(&pChar[iPos], &i, 4);
-			iPos += 4;
-			memcpy(&pChar[iPos], &j, 4);
-			iPos += 4;
-		}
+		memcpy(&pChar[iPos], &iter->second, 4);
+		iPos += 4;
 	}
-	OnProcQueryByArea(pRecThread, pChar, iPos, ptrFun);
+	OnProcQueryBySN(pRecThread, pChar, iPos, ptrFun);
 	delete[] pChar;
 	pChar = NULL;
 }
 
 // 按区域查询仪器信息
-unsigned int CCommServerDll::QueryInstrumentInfoByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
+unsigned int CCommServerDll::QueryInstrumentInfoBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread)
 {
 	unsigned int uiPos = uiStartPos;
 	if (pInstrument != NULL)

@@ -276,31 +276,6 @@ public:
 	*/
 	virtual void OnProc(void);
 };
-/**
-* @brief 仪器区域结构体
-*/
-typedef struct AreaStruct
-{
-	/** 线号，从1开始*/
-	unsigned int m_uiLineNb;
-	/** 区域号，从1开始*/
-	unsigned int m_uiAreaNb;
-	bool operator == (const AreaStruct& rhs) const
-	{
-		return ((m_uiLineNb == rhs.m_uiLineNb) && (m_uiAreaNb == rhs.m_uiAreaNb));
-	}
-	bool operator < (const AreaStruct& rhs) const
-	{
-			if (m_uiLineNb == rhs.m_uiLineNb)
-		{
-			return (m_uiAreaNb < rhs.m_uiAreaNb);
-		}
-		else
-		{
-			return (m_uiLineNb < rhs.m_uiLineNb);
-		}
-	}
-}m_oAreaStruct;
 
 /**
 * @struct InstrumentLocation_Struct
@@ -372,8 +347,8 @@ public:
 	bool m_bCheckConnected;
  	/** 客户端设备位置索引表*/
  	map<m_oLocationStruct, unsigned int> m_oInstrumentWholeTableMap;
-	/** 客户端设备更新区域索引表*/
-	map<m_oAreaStruct, m_oAreaStruct> m_oInstrumentUpdateArea;
+	 /** 客户端设备位置更新索引表*/
+ 	map<m_oLocationStruct, unsigned int> m_oInstrumentUpdataTableMap;
 private:
 	/** 客户端验证时间次数计数*/
 	unsigned int m_uiClientCheckCount;
@@ -404,11 +379,14 @@ public:
 	*/
 	virtual void OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize);
 	// 判断仪器位置索引号是否已加入索引表
-	virtual BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex);
+	virtual BOOL IfLocationExistInMap(int iLineIndex, int iPointIndex, 
+		map<m_oLocationStruct, unsigned int>* pMap);
 	// 增加对象到索引表
-	virtual void AddLocationToMap(int iLineIndex, int iPointIndex, unsigned int uiSN);
+	virtual void AddLocationToMap(int iLineIndex, int iPointIndex, unsigned int uiSN, 
+		map<m_oLocationStruct, unsigned int>* pMap);
 	// 根据输入索引号，由索引表得到仪器指针
-	virtual unsigned int* GetSnPtrFromLocationMap(int iLineIndex, int iPointIndex);
+	virtual unsigned int* GetSnPtrFromLocationMap(int iLineIndex, int iPointIndex, 
+		map<m_oLocationStruct, unsigned int>* pMap);
 	// 向所有在线客户端广播配置文件变更
 	virtual void BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize);
 	// 监视客户端是否活跃

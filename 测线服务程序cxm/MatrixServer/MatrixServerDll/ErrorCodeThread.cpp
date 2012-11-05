@@ -79,7 +79,9 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	LeaveCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
 	EnterCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
 	// 仪器在索引表中
-	if (FALSE == IfIndexExistInMap(uiIPInstrument, &pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap))
+	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
+		&pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
+	if (pInstrument == NULL)
 	{
 		LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
 		EnterCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
@@ -90,8 +92,6 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 			strFrameData, ErrorType, IDS_ERR_IPSETMAP_NOTEXIT);
 		return;
 	}
-	pInstrument = GetInstrumentFromMap(uiIPInstrument, 
-		&pErrorCodeThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap);
 	if (FALSE == GetRoutByRoutIP(pInstrument->m_uiRoutIP, pErrorCodeThread->m_pLineList->m_pRoutList, &pRout))
 	{
 		LeaveCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);

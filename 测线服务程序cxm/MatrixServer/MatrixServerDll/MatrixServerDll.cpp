@@ -365,7 +365,7 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	// @@@实验连续放炮
 	GenOptTaskList(100, 10, 20, 2000, 4000, iSampleRate, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
 	// @@@实验叠加放炮
-	GenOptTaskList(600, 10, 20, 2000, 4000, iSampleRate, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
+//	GenOptTaskList(600, 10, 20, 2000, 4000, iSampleRate, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");
 }
 // ADC停止采集命令

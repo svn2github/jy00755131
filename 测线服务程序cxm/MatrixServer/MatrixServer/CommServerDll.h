@@ -230,47 +230,38 @@ public:
 	void OnProcQueryFormLineXMLInfo(CCommRecThread* pRecThread, unsigned short usCmd);
 
 	// 按区域查询仪器信息
-	unsigned int QueryInstrumentInfoByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QueryInstrumentInfoBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域仪器噪声测试数据和测试结果
-	unsigned int QueryInstrNoiseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QueryInstrNoiseTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域仪器失真测试数据和测试结果
-	unsigned int QueryInstrDistortionTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QueryInstrDistortionTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域仪器串扰测试数据和测试结果
-	unsigned int QueryInstrCrosstalkTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QueryInstrCrosstalkTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域仪器共模抑制比测试数据和测试结果
-	unsigned int QueryInstrCMRRTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QueryInstrCMRRTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域仪器增益相位测试数据和测试结果
-	unsigned int QueryInstrGainPhaseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QueryInstrGainPhaseTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域检波器阻抗测试数据和测试结果
-	unsigned int QuerySensorResistanceTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QuerySensorResistanceTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域检波器漏电测试数据和测试结果
-	unsigned int QuerySensorLeakageTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QuerySensorLeakageTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域检波器噪声测试数据和测试结果
-	unsigned int QuerySensorNoiseTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QuerySensorNoiseTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域检波器倾斜度测试数据和测试结果
-	unsigned int QuerySensorTiltTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QuerySensorTiltTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域检波器倾斜度模式测试数据和测试结果
-	unsigned int QuerySensorTiltModelTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QuerySensorTiltModelTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 	// 查询所选区域地震监测测试数据和测试结果
-	unsigned int QuerySeisMonitorTestByArea(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
+	unsigned int QuerySeisMonitorTestBySN(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread);
 
 	// 计算测试数据的算术均方根
 	float CalTestDataMeanSquare(m_oInstrumentStruct* pInstrument);
 
-	// 由线号和点号得到区域位置
-	void GetAreaFromPoint(int iLineIndex, int iPointIndex, m_oAreaStruct* pAreaStruct);
-	// 由区域号得到线号及点号范围
-	void GetPointRangeFromArea(int* iLineIndex, int* iPointMinIndex, int* iPointMaxIndex, 
-		m_oAreaStruct* pAreaStruct);
 	// 处理仪器设备表更新
 	void OnProcInstrumentTableUpdate(CCommRecThread* pRecThread);
 
-	// 判断仪器更新区域是否已加入索引表
-	BOOL IfAreaExistInMap(map<m_oAreaStruct, m_oAreaStruct>* pmap, m_oAreaStruct oAreaStruct);
-	// 增加对象到索引表
-	void AddAreaToMap(map<m_oAreaStruct, m_oAreaStruct>* pmap, m_oAreaStruct oAreaStruct);
 	// 处理仪器信息查询
-	void OnProcQueryByArea(CCommRecThread* pRecThread, char* pChar, unsigned int uiSize, 
+	void OnProcQueryBySN(CCommRecThread* pRecThread, char* pChar, unsigned int uiSize, 
 		unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
 		unsigned int uiStartPos, CCommRecThread* pRecThread));
 	// 处理全部信息查询
@@ -278,8 +269,8 @@ public:
 		unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
 		unsigned int uiStartPos, CCommRecThread* pRecThread));
 	// 按区域查询仪器信息
-	unsigned int QueryByArea(CCommRecThread* pRecThread, m_oAreaStruct* pArea, 
-		unsigned int uiStartPos, unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
+	unsigned int QueryByArea(CCommRecThread* pRecThread, unsigned int uiSN, 
+		unsigned int uiSendPos, unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
 		unsigned int uiStartPos, CCommRecThread* pRecThread));
 
 	/**
