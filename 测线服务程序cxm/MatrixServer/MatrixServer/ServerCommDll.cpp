@@ -130,11 +130,11 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			break;
 			// 查询所选仪器全部信息（帧内容为行号+区域号）
 		case CmdQueryInstrumentInfo:
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrumentInfoBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QueryInstrumentInfoBySN);
 			break;
 			// 查询全部仪器的全部信息（应答帧内容为仪器结构体）
 		case CmdQueryInstrumentInfoAll:
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrumentInfoBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QueryInstrumentInfoBySN);
 			break;
 
 			// 查询 SurveyXML 文件信息（帧内容为空）
@@ -331,114 +331,114 @@ void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned in
 			// 查询所选区域仪器噪声测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrNoiseTestArea:
 			m_oCommServerDll.m_fInstrumentNoiseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Noise");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrNoiseTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QueryInstrNoiseTestBySN);
 			break;
 			// 查询全部仪器的仪器噪声测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrNoiseTestAll:
 			m_oCommServerDll.m_fInstrumentNoiseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Noise");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrNoiseTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QueryInstrNoiseTestBySN);
 			break;
 			// 查询所选区域仪器失真测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrDistortionTestArea:
 			m_oCommServerDll.m_fInstrumentDistortionLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Distortion");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrDistortionTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QueryInstrDistortionTestBySN);
 			break;
 			// 查询全部仪器失真测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrDistortionTestAll:
 			m_oCommServerDll.m_fInstrumentDistortionLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Distortion");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrDistortionTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QueryInstrDistortionTestBySN);
 			break;
 			// 查询所选区域仪器串扰测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrCrosstalkTestArea:
 			m_oCommServerDll.m_fInstrumentCrosstalkLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Crosstalk");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrCrosstalkTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QueryInstrCrosstalkTestBySN);
 			break;
 			// 查询全部仪器串扰测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrCrosstalkTestAll:
 			m_oCommServerDll.m_fInstrumentCrosstalkLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "Crosstalk");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrCrosstalkTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QueryInstrCrosstalkTestBySN);
 			break;
 			// 查询所选区域仪器共模抑制比测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrCMRRTestArea:
 			m_oCommServerDll.m_fInstrumentCMRRLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "CMRR");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrCMRRTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QueryInstrCMRRTestBySN);
 			break;
 			// 查询全部仪器共模抑制比测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrCMRRTestAll:
 			m_oCommServerDll.m_fInstrumentCMRRLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "CMRR");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrCMRRTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QueryInstrCMRRTestBySN);
 			break;
 			// 查询所选区域仪器增益相位测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQueryInstrGainPhaseTestArea:
 			m_oCommServerDll.m_fInstrumentGainPhaseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "GainPhase");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QueryInstrGainPhaseTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QueryInstrGainPhaseTestBySN);
 			break;
 			// 查询全部仪器增益相位测试数据和测试结果（帧内容为空）
 		case CmdQueryInstrGainPhaseTestAll:
 			m_oCommServerDll.m_fInstrumentGainPhaseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(true, "GainPhase");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QueryInstrGainPhaseTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QueryInstrGainPhaseTestBySN);
 			break;
 			// 查询所选区域检波器阻抗测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorResistanceTestArea:
 			m_oCommServerDll.m_fSensorResistanceLimitMin = m_oCommServerDll.QueryTestDataLimitFromXML(false, "ResistanceMin");
 			m_oCommServerDll.m_fSensorResistanceLimitMax = m_oCommServerDll.QueryTestDataLimitFromXML(false, "ResistanceMax");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorResistanceTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QuerySensorResistanceTestBySN);
 			break;
 			// 查询全部检波器阻抗测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorResistanceTestAll:
 			m_oCommServerDll.m_fSensorResistanceLimitMin = m_oCommServerDll.QueryTestDataLimitFromXML(false, "ResistanceMin");
 			m_oCommServerDll.m_fSensorResistanceLimitMax = m_oCommServerDll.QueryTestDataLimitFromXML(false, "ResistanceMax");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorResistanceTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QuerySensorResistanceTestBySN);
 			break;
 			// 查询所选区域检波器漏电测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorLeakageTestArea:
 			m_oCommServerDll.m_fSensorLeakageLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Leakage");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorLeakageTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QuerySensorLeakageTestBySN);
 			break;
 			// 查询全部检波器漏电测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorLeakageTestAll:
 			m_oCommServerDll.m_fSensorLeakageLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Leakage");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorLeakageTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QuerySensorLeakageTestBySN);
 			break;
 			// 查询所选区域检波器噪声测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorNoiseTestArea:
 			m_oCommServerDll.m_fSensorNoiseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Noise");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorNoiseTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QuerySensorNoiseTestBySN);
 			break;
 			// 查询全部检波器噪声测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorNoiseTestAll:
 			m_oCommServerDll.m_fSensorNoiseLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Noise");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorNoiseTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QuerySensorNoiseTestBySN);
 			break;
 			// 查询所选区域检波器倾斜度测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorTiltTestArea:
 			m_oCommServerDll.m_fSensorTiltLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Tilt");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorTiltTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QuerySensorTiltTestBySN);
 			break;
 			// 查询全部检波器倾斜度测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorTiltTestAll:
 			m_oCommServerDll.m_fSensorTiltLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Tilt");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorTiltTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QuerySensorTiltTestBySN);
 			break;
 			// 查询所选区域检波器倾斜度模式测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySensorTiltModelTestArea:
 			m_oCommServerDll.m_fSensorTiltModelLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Tilt Model");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QuerySensorTiltModelTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QuerySensorTiltModelTestBySN);
 			break;
 			// 查询全部检波器倾斜度模式测试数据和测试结果（帧内容为空）
 		case CmdQuerySensorTiltModelTestAll:
 			m_oCommServerDll.m_fSensorTiltModelLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Tilt Model");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySensorTiltModelTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QuerySensorTiltModelTestBySN);
 			break;
 			// 查询所选区域地震监测测试数据和测试结果（帧内容为行号+区域号）
 		case CmdQuerySeisMonitorTestArea:
 			m_oCommServerDll.m_fSeisMonitorLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Seismonitor");
-			m_oCommServerDll.OnProcQueryBySN(pRecThread, pChar, uiSize, &CCommServerDll::QuerySeisMonitorTestBySN);
+			m_oCommServerDll.OnProcQueryBySN(pRecThread, usCmd, pChar, uiSize, &CCommServerDll::QuerySeisMonitorTestBySN);
 			break;
 			// 查询全部地震监测测试数据和测试结果（帧内容为空）
 		case CmdQuerySeisMonitorTestAll:
 			m_oCommServerDll.m_fSeisMonitorLimit = m_oCommServerDll.QueryTestDataLimitFromXML(false, "Seismonitor");
-			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, &CCommServerDll::QuerySeisMonitorTestBySN);
+			m_oCommServerDll.OnProcQueryInfoAll(pRecThread, usCmd, &CCommServerDll::QuerySeisMonitorTestBySN);
 			break;
 			// 查询 OperationDelay XML文件信息（帧内容为空）
 		case CmdQueryDelayOptXMLInfo:

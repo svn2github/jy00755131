@@ -122,10 +122,24 @@ void CLineCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int 
 		break;
 		// @@@@查询全部仪器的全部信息（帧内容为仪器结构体）
 	case CmdQueryInstrumentInfoAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
 		break;
 		// @@@@查询Update Table（帧内容为行号+区域号+ 仪器SN+仪器IP，SN = 0表明无仪器）
 	case CmdQueryUpdateTable:
-		memcpy(test, pChar, uiSize);
+		// @@@调试用
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryInstrumentInfoAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryInstrNoiseTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryInstrDistortionTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryInstrCrosstalkTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryInstrCMRRTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQueryInstrGainPhaseTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySensorResistanceTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySensorLeakageTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySensorNoiseTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySensorTiltTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySensorTiltModelTestAll, NULL, 0);
+		m_pCommClient->m_oSndFrame.MakeSetFrame(CmdQuerySeisMonitorTestAll, NULL, 0);
 		break;
 		// 查询 SurveyXML 文件信息
 	case CmdQuerySurveyXMLInfo:
@@ -273,6 +287,50 @@ void CLineCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int 
 	case CmdSetFormLineXMLInfo:
 		m_oXMLDllLine.OnProcSetFormLineXMLInfo(pChar, uiSize, false);
 		::PostMessage(m_pCommDll->m_hWnd, WM_MSG_CLIENT, CmdSetFormLineXMLInfo, 0);
+		break;
+	case CmdQueryInstrNoiseTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQueryInstrDistortionTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQueryInstrCrosstalkTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQueryInstrCMRRTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQueryInstrGainPhaseTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQuerySensorResistanceTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQuerySensorLeakageTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQuerySensorNoiseTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQuerySensorTiltTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQuerySensorTiltModelTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
+		break;
+	case CmdQuerySeisMonitorTestAll:
+		// @@@@测试用
+		memcpy(test, pChar, uiSize);
 		break;
 	default:
 		break;

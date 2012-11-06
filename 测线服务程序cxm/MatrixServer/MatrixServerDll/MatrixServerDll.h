@@ -1269,10 +1269,14 @@ typedef struct Segd_Standard_Header_Struct
 	unsigned int m_uiSampleRate;
 	/** 采样长度*/
 	unsigned int m_uiSampleLength;
+	/** 采样时间*/
+	unsigned int m_uiSampleTime;
 	/** 辅助道数目*/
-	unsigned int m_uiAuxiliaryTraceNum;
+	unsigned int m_uiAuxTraceNum;
 	/* 采集道数目*/
-	unsigned int m_uiTraceTotalNum;
+	unsigned int m_uiAcqTraceNum;
+	/** 总道数*/
+	unsigned int m_uiTotalTraceNum;
 	/** 炮号*/
 	unsigned int m_uiShotNo;
 }m_oSegdStandardHeaderStruct;
@@ -1320,12 +1324,14 @@ typedef struct ADCDataBuf_Struct
 	unsigned int m_uiBufLength;
 	/** 每个站存储的数据点数*/
 	unsigned int m_uiSavePointNum;
+	/** 采样时间*/
+	unsigned int m_uiSampleTime;
 	/** 判断是否写入SEGD文件标志位*/
 	bool m_bSaveInSegd;
 	/** 参与施工的采集站个数*/
-	unsigned int m_uiOptInstrNum;
+	unsigned int m_uiAcqTraceNum;
 	/** 辅助道数目*/
-	unsigned int m_uiAuxiliaryTraceNum;
+	unsigned int m_uiAuxTraceNum;
 	/** 施工炮号*/
 	unsigned int m_uiOptNo;
 	/** 施工数据存储文件路径*/
@@ -2887,6 +2893,31 @@ MatrixServerDll_API m_oADCDataSaveThreadStruct* OnCreateADCDataSaveThread(void);
 MatrixServerDll_API void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread);
 // 保存到Segd文件，成功返回true，失败返回false
 MatrixServerDll_API bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct);
+
+// MatrixServerDll_API void ProcessGeneralHeaderBlock1Back(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessGeneralHeaderBlock2Back(FILE* pFile ,m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessGeneralHeaderBlock3Back(FILE* pFile,m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessScanTypeHeaderBack(FILE* pFile, int iChannel,m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessExtendedHeaderBack(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessExternalHeaderBack(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessTraceHeaderBack(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock1Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock2Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock3Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock4Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock5Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock6Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock7Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ProcessTraceDataBackNew(FILE* pFile, int iInstrNo, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API void ReadArrayToWriteSegdData_FLOAT(FILE* pFile, int iInstrNo, int iDataNo, m_oSegdFileStruct* pSegdFileStruct);
+// MatrixServerDll_API int ReadInitToWriteSegd_BCD(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
+// MatrixServerDll_API int ReadInitToWriteSegd_BIN(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
+// MatrixServerDll_API void ReadInitToWriteSegd_BCD_addLow(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName, CString strHigh);
+// MatrixServerDll_API string ReadInitToWriteSegd_BCD_addHigh(FILE* pFile, string cstrAppName, string cstrKeyName);
+// MatrixServerDll_API void ReadInitToWriteSegd_DOUBLE(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
+// MatrixServerDll_API void ReadInitToWriteSegd_FLOAT(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
+// MatrixServerDll_API void ReadInitToWriteSegd_ASC(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
+
 // 关闭所有的施工文件
 // MatrixServerDll_API void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray);
 // 保存ADC数据到施工文件

@@ -199,6 +199,9 @@
     <ClCompile Include="PcapXML.cpp">
       <Filter>杂项\XML</Filter>
     </ClCompile>
+    <ClCompile Include="Segd.cpp">
+      <Filter>杂项</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MatrixServerDll.rc">

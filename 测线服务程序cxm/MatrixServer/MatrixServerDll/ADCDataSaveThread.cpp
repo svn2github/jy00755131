@@ -95,10 +95,12 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 		oSegdFile.m_oSegdSH.m_uiSampleRate = pADCDataBuf->m_iSampleRate;
 		oSegdFile.m_oSegdSH.m_uiShotNo = pADCDataBuf->m_uiOptNo;
 		oSegdFile.m_oSegdSH.m_uiSampleLength = pADCDataBuf->m_uiSavePointNum;
-		oSegdFile.m_oSegdSH.m_uiTraceTotalNum = pADCDataBuf->m_uiOptInstrNum;
-		oSegdFile.m_oSegdSH.m_uiAuxiliaryTraceNum = pADCDataBuf->m_uiAuxiliaryTraceNum;
+		oSegdFile.m_oSegdSH.m_uiSampleTime = pADCDataBuf->m_uiSampleTime;
+		oSegdFile.m_oSegdSH.m_uiAcqTraceNum = pADCDataBuf->m_uiAcqTraceNum;
+		oSegdFile.m_oSegdSH.m_uiAuxTraceNum = pADCDataBuf->m_uiAuxTraceNum;
+		oSegdFile.m_oSegdSH.m_uiTotalTraceNum = pADCDataBuf->m_uiAcqTraceNum + pADCDataBuf->m_uiAuxTraceNum;
 		oSegdFile.m_uiSegdDataBufLength = oSegdFile.m_oSegdSH.m_uiSampleLength 
-			* (oSegdFile.m_oSegdSH.m_uiTraceTotalNum + oSegdFile.m_oSegdSH.m_uiAuxiliaryTraceNum) 
+			* (oSegdFile.m_oSegdSH.m_uiAcqTraceNum + oSegdFile.m_oSegdSH.m_uiAuxTraceNum) 
 			* pADCDataSaveThread->m_pThread->m_pConstVar->m_iADCDataSize3B;
 		oSegdFile.m_pSegdDataBuf = pADCDataBuf->m_pADCDataBuf;
 		oSegdFile.m_pSegdDHList = &pADCDataBuf->m_olsSegdDataHeader;

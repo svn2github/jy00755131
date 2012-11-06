@@ -45,6 +45,10 @@ void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		}		
 	}
 }
+bool CompareSegdDataHeader(m_oSegdDataHeaderStruct* ptrFirst, m_oSegdDataHeaderStruct* ptrSecond)
+{
+	return (ptrFirst->m_uiLocation < ptrSecond->m_uiLocation);
+}
 // 采样数据回调函数
 // void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, ProSampleDateCallBack pCallBack)
 // {
@@ -93,6 +97,7 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 			}
 			iter->second->m_bSaveBuf = true;
 			iter->second->m_uiSaveBufNo = pADCDataBuf->m_uiIndex;
+			pADCDataBuf->m_uiSampleTime = (uiTS - iter->second->m_uiTB) / 4;
 			pADCDataBuf->m_uiSavePointNum = (uiTS - iter->second->m_uiTB) / uiPointTime + 1;
 			pADCDataBuf->m_uiOptNo = iter->second->m_uiOptNo;
 			pADCDataBuf->m_SaveFilePath = iter->second->m_SaveFilePath;
@@ -106,14 +111,15 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 				pSegdDataHeader->m_uiLocation = iterOptStr->second->m_uiLocation;
 				if (iterOptStr->second->m_bAuxiliary == true)
 				{
-					pADCDataBuf->m_uiAuxiliaryTraceNum++;
+					pADCDataBuf->m_uiAuxTraceNum++;
 				}
 				else
 				{
-					pADCDataBuf->m_uiOptInstrNum++;
+					pADCDataBuf->m_uiAcqTraceNum++;
 				}
 				pADCDataBuf->m_olsSegdDataHeader.push_back(pSegdDataHeader);
 			}
+			pADCDataBuf->m_olsSegdDataHeader.sort(CompareSegdDataHeader);
 			// 将数据存储缓冲区加入索引表
 			AddToADCDataBufMap(pADCDataBuf->m_uiIndex, pADCDataBuf, 
 				&pADCDataRecThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);

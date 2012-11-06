@@ -10,12 +10,14 @@ void OnADCDataBufReset(m_oADCDataBufStruct* pADCDataBuf)
 	pADCDataBuf->m_bInUsed = false;
 	/** 每个站存储的数据点数*/
 	pADCDataBuf->m_uiSavePointNum = 0;
+	// 采样时间
+	pADCDataBuf->m_uiSampleTime = 0;
 	/** 判断是否写入SEGD文件标志位*/
 	pADCDataBuf->m_bSaveInSegd = false;
 	/** 参与施工的采集站个数*/
-	pADCDataBuf->m_uiOptInstrNum = 0;
+	pADCDataBuf->m_uiAcqTraceNum = 0;
 	/** 辅助道数目*/
-	pADCDataBuf->m_uiAuxiliaryTraceNum = 0;
+	pADCDataBuf->m_uiAuxTraceNum = 0;
 	/** 施工任务索引表指针，关键字为IP，内容为参与施工的仪器结构体*/
 	while(pADCDataBuf->m_olsSegdDataHeader.size() != 0)
 	{

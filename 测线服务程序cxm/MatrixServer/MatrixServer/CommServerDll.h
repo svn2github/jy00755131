@@ -261,15 +261,15 @@ public:
 	void OnProcInstrumentTableUpdate(CCommRecThread* pRecThread);
 
 	// 处理仪器信息查询
-	void OnProcQueryBySN(CCommRecThread* pRecThread, char* pChar, unsigned int uiSize, 
-		unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
+	void OnProcQueryBySN(CCommRecThread* pRecThread, unsigned short usCmd, char* pChar, 
+		unsigned int uiSize, unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
 		unsigned int uiStartPos, CCommRecThread* pRecThread));
 	// 处理全部信息查询
-	void OnProcQueryInfoAll(CCommRecThread* pRecThread, 
+	void OnProcQueryInfoAll(CCommRecThread* pRecThread, unsigned short usCmd,
 		unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
 		unsigned int uiStartPos, CCommRecThread* pRecThread));
 	// 按区域查询仪器信息
-	unsigned int QueryByArea(CCommRecThread* pRecThread, unsigned int uiSN, 
+	unsigned int QueryBySN(CCommRecThread* pRecThread, unsigned int uiSN, 
 		unsigned int uiSendPos, unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
 		unsigned int uiStartPos, CCommRecThread* pRecThread));
 

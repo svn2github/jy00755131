@@ -94,7 +94,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="ReadMe.txt" />
     <None Include="res\NetWinPcap.ico" />
     <None Include="res\NetWinPcap.rc2" />

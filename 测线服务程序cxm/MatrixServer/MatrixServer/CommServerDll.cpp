@@ -748,7 +748,7 @@ void CCommServerDll::OnProcInstrumentTableUpdate(CCommRecThread* pRecThread)
 }
 
 // 按区域查询仪器信息
-unsigned int CCommServerDll::QueryByArea(CCommRecThread* pRecThread, unsigned int uiSN, 
+unsigned int CCommServerDll::QueryBySN(CCommRecThread* pRecThread, unsigned int uiSN, 
 	unsigned int uiSendPos, unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, 
 	unsigned int uiStartPos, CCommRecThread* pRecThread))
 {
@@ -757,16 +757,15 @@ unsigned int CCommServerDll::QueryByArea(CCommRecThread* pRecThread, unsigned in
 
 	EnterCriticalSection(&m_pMatrixServer->m_pEnv->m_pLineList->m_oSecLineList);
 	pInstrument = m_pMatrixServer->Dll_GetInstrumentFromMap(uiSN, &m_pMatrixServer->m_pEnv->m_pLineList->m_pInstrumentList->m_oSNInstrumentMap);
-	if (pInstrument != NULL)
-	{
-		uiPos = (this->*ptrFun)(pInstrument, uiPos, pRecThread);
-	}
+	memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[uiPos], &uiSN, 4);
+	uiPos += 4;
+	uiPos = (this->*ptrFun)(pInstrument, uiPos, pRecThread);
 	LeaveCriticalSection(&m_pMatrixServer->m_pEnv->m_pLineList->m_oSecLineList);
 	return uiPos;
 }
 
 // 处理仪器信息查询
-void CCommServerDll::OnProcQueryBySN(CCommRecThread* pRecThread, char* pChar, unsigned int uiSize, 
+void CCommServerDll::OnProcQueryBySN(CCommRecThread* pRecThread, unsigned short usCmd, char* pChar, unsigned int uiSize, 
 	unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread))
 {
 	unsigned int uiPos = 0;
@@ -776,14 +775,14 @@ void CCommServerDll::OnProcQueryBySN(CCommRecThread* pRecThread, char* pChar, un
 	{
 		memcpy(&uiSN, &pChar[uiPos], 4);
 		uiPos += 4;
-		uiSendPos = QueryByArea(pRecThread, uiSN, uiSendPos, ptrFun);
+		uiSendPos = QueryBySN(pRecThread, uiSN, uiSendPos, ptrFun);
 	}
-	pRecThread->m_pCommSndFrame->MakeSetFrame(CmdQueryInstrumentInfo, 
+	pRecThread->m_pCommSndFrame->MakeSetFrame(usCmd, 
 		pRecThread->m_pCommSndFrame->m_cProcBuf, uiSendPos);
 }
 
 // 处理全部信息查询
-void CCommServerDll::OnProcQueryInfoAll(CCommRecThread* pRecThread, 
+void CCommServerDll::OnProcQueryInfoAll(CCommRecThread* pRecThread, unsigned short usCmd,
 	unsigned int(CCommServerDll::*ptrFun)(m_oInstrumentStruct* pInstrument, unsigned int uiStartPos, CCommRecThread* pRecThread))
 {
 	int iPos = 0;
@@ -800,7 +799,7 @@ void CCommServerDll::OnProcQueryInfoAll(CCommRecThread* pRecThread,
 		memcpy(&pChar[iPos], &iter->second, 4);
 		iPos += 4;
 	}
-	OnProcQueryBySN(pRecThread, pChar, iPos, ptrFun);
+	OnProcQueryBySN(pRecThread, usCmd, pChar, iPos, ptrFun);
 	delete[] pChar;
 	pChar = NULL;
 }
@@ -811,15 +810,13 @@ unsigned int CCommServerDll::QueryInstrumentInfoBySN(m_oInstrumentStruct* pInstr
 	unsigned int uiPos = uiStartPos;
 	if (pInstrument != NULL)
 	{
-		memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiSN, 4);
-		uiPos += 4;
 		memcpy(&pRecThread->m_pCommSndFrame->m_cProcBuf[uiPos], &pInstrument->m_uiIP, 4);
 		uiPos += 4;
 	}
 	else
 	{
-		memset(&pRecThread->m_pCommSndFrame->m_cProcBuf[uiPos], 0, 8);
-		uiPos += 8;
+		memset(&pRecThread->m_pCommSndFrame->m_cProcBuf[uiPos], 0, 4);
+		uiPos += 4;
 	}
 	return uiPos;
 }

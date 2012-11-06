@@ -132,6 +132,7 @@
     <ClCompile Include="PerformanceFunc.cpp" />
     <ClCompile Include="Rout.cpp" />
     <ClCompile Include="RoutList.cpp" />
+    <ClCompile Include="Segd.cpp" />
     <ClCompile Include="ServerXML.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
