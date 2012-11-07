@@ -513,8 +513,6 @@ public:
 	CCommHeartBeatThread m_oHeartBeatThread;
 	/** 接收客户端通讯成员类*/
 	CClientSocket m_oClientSocket;
-// 	/** DLL函数调用类成员*/
-// 	CMatrixDllCall* m_pMatrixDllCall;
 	/** 连接客户端索引指针*/
 	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
 	/** 回调函数-接收数据处理*/
@@ -523,7 +521,7 @@ public:
 	bool m_bClient;
 	/** 客户端类型*/
 	int m_iClientType;
-		/** 连接验证*/
+	/** 连接验证*/
 	bool m_bCheckConnected;
 	/** 客户端IP地址*/
 	CString m_strClientIP;

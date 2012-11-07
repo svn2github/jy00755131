@@ -112,8 +112,6 @@ BOOL CMatrixServerDlg::OnInitDialog()
 	m_oMatrixDllCall.OnInit(_T("MatrixServerDll.dll"));
 	// 初始化与客户端通讯连接
 	m_oComDll.m_oCommServerDll.m_pMatrixServer = &m_oMatrixDllCall.m_oMatrixServer;
-	m_oComDll.m_oCommServerDll.m_pLineSetupData = m_oMatrixDllCall.m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData;
-	m_oComDll.m_oCommServerDll.m_pOptSetupData = m_oMatrixDllCall.m_pEnv->m_pInstrumentCommInfo->m_pOptSetupData;
 	m_oComDll.m_oCommLineDll.m_pMatrixLine = &m_oMatrixDllCall.m_oMatrixLine;
 	m_oComDll.m_oCommLineDll.m_pLineSetupData = m_oMatrixDllCall.m_pEnv->m_pInstrumentCommInfo->m_pLineSetupData;
 	m_oComDll.m_oCommOptDll.m_pMatrixOpt = &m_oMatrixDllCall.m_oMatrixOpt;
