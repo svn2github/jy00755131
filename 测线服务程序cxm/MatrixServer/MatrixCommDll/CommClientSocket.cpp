@@ -216,8 +216,13 @@ void CClientSocket::OnConnect(int nErrorCode)
 	}
 	else
 	{
+		CString cstrCheck = CommCheck;
+		CString str = _T("");
+		str.Format(_T("ClientType = %d"), m_pComClient->m_iClientType);
+		cstrCheck += str;
+		string strCheck= (CStringA)cstrCheck;
 		// 发送验证码
-		m_pComClient->m_oSndFrame.MakeSetFrame(CmdClientConnect, CommCheck, strlen(CommCheck));
+		m_pComClient->m_oSndFrame.MakeSetFrame(CmdClientConnect, (char*)strCheck.c_str(), strCheck.length());
 		// 发送客户端连接的消息
 		::PostMessage(m_hWnd, WM_MSG_CLIENT, CmdClientConnect, 0);
 	}

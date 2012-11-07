@@ -5,8 +5,8 @@ CCommRecThread::CCommRecThread(void)
 {
 	m_pCommRecFrame = NULL;
 	m_pCommSndFrame = NULL;
+	m_pCommClient = NULL;
 	m_pComClientMap = NULL;
-	m_bCheckConnected = false;
 	m_uiClientActiveCount = 0;
 	m_uiClientCheckCount = 0;
 	m_oInstrumentWholeTableMap.clear();
@@ -153,7 +153,7 @@ void CCommRecThread::BroadCastXMLChange(unsigned short usCmd, char* pChar, unsig
 	}
 	for (iter = m_pComClientMap->begin(); iter != m_pComClientMap->end(); iter++)
 	{
-		if (iter->second->m_oRecThread.m_bCheckConnected == true)
+		if (iter->second->m_bCheckConnected == true)
 		{
 			iter->second->m_oSndFrame.MakeSetFrame(usCmd, pChar, uiSize);
 		}
@@ -176,7 +176,7 @@ void CCommRecThread::MonitorClientActive(bool bActive)
 			bClose = true;
 		}
 	}
-	if (m_bCheckConnected == false)
+	if (m_pCommClient->m_bCheckConnected == false)
 	{
 		m_uiClientCheckCount++;
 		if (m_uiClientCheckCount >= ClientCheckCountNum)

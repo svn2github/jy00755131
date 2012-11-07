@@ -106,7 +106,11 @@
 /** 测试结果-无数据*/
 #define TestResultNull						0x03
 /** 客户端向服务端发送验证码*/
-#define CommCheck							"天津海泰光电科技有限公司"
+#define CommCheck							_T("天津海泰光电科技有限公司")
+/** 测线客户端*/
+#define ClientTypeLine						1
+/** 施工客户端*/
+#define ClientTypeOpt						2
 /** 客户端标题*/
 #define ClientTitle							_T("天津海泰光电科技有限公司")
 typedef struct CommFrame_Struct
@@ -148,8 +152,7 @@ typedef struct CommFrame_Struct
 	unsigned int m_uiSndCount;
 }m_oCommFrameStruct, *m_oCommFrameStructPtr;
 
-/** 客户端向服务端发送验证码*/
-#define CommCheck							"天津海泰光电科技有限公司"
+
 
 /** 客户端登陆验证（帧内容为验证码*/
 #define CmdClientConnect					0x0001

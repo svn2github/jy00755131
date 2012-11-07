@@ -5,6 +5,9 @@ CCommClient::CCommClient()
 {
 	m_pComClientMap = NULL;
 	m_bClient = false;
+	m_iClientType = ClientTypeLine;
+	m_bCheckConnected = false;
+	m_strClientIP = _T("");
 }
 
 CCommClient::~CCommClient()

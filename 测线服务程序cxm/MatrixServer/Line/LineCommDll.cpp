@@ -58,6 +58,8 @@ void CLineCommDll::OnCreateClientComm(unsigned int uiPort, CString strIP, HWND h
 		m_pCommClient = m_pMatrixCommDll->CreateCommClient();
 		m_pCommClient->m_oProcRecCmdCallBack = ProcRecCmd;
 		m_pCommClient->m_bClient = true;
+		m_pCommClient->m_iClientType = ClientTypeLine;
+		m_pCommClient->m_oRecThread.m_pCommClient = m_pCommClient;
 		m_pCommClient->OnInit(uiPort, strIP, hWnd);
 	}
 }

@@ -92,18 +92,44 @@ void CServerCommDll::OnClose(void)
 /** 命令字解析*/
 void CServerCommDll::OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize, CCommRecThread* pRecThread)
 {
+	CCommClient* pCommClient = pRecThread->m_pCommClient;
 	// 客户端登陆验证（帧内容为验证码）
 	if (usCmd == CmdClientConnect)
 	{
+		CString str = _T("");
+		string strCheck = "";
+		str.Format(_T("ClientType = %d"), ClientTypeLine);
+		str = CommCheck + str;
+		strCheck = (CStringA)str;
 		// 与连接校验码相匹配
-		if (0 == strcmp(pChar, CommCheck))
+		if (0 == strcmp(pChar, strCheck.c_str()))
 		{
-			pRecThread->m_bCheckConnected = true;
+			pCommClient->m_bCheckConnected = true;
+			pCommClient->m_iClientType = ClientTypeLine;
+		}
+		str.Format(_T("ClientType = %d"), ClientTypeOpt);
+		str = CommCheck + str;
+		strCheck = (CStringA)str;
+		if (0 == strcmp(pChar, strCheck.c_str()))
+		{
+			pCommClient->m_bCheckConnected = true;
+			pCommClient->m_iClientType = ClientTypeOpt;
+		}
+		if (pCommClient->m_bCheckConnected == true)
+		{
+			if (pCommClient->m_iClientType == ClientTypeLine)
+			{
+				
+			}
+			else if (pCommClient->m_iClientType == ClientTypeOpt)
+			{
+
+			}
 		}
 	}
 	else
 	{
-		if (pRecThread->m_bCheckConnected == false)
+		if (pCommClient->m_bCheckConnected == false)
 		{
 			return;
 		}

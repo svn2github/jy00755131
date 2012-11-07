@@ -11,6 +11,7 @@
 #include <list>
 #include <map>
 #include <hash_map>
+using std::string;
 using std::list;
 using std::map;
 using std::hash_map;
@@ -339,12 +340,12 @@ public:
 	CCommRecFrame* m_pCommRecFrame;
 	/** 发送帧类指针*/
 	CCommSndFrame* m_pCommSndFrame;
+	/** 客户端类指针*/
+	CCommClient* m_pCommClient;
 	/** 连接客户端索引指针*/
 	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
 	/** 回调函数-接收数据处理*/
 	ProcRecCmdCallBack m_oProcRecCmdCallBack;
-	/** 连接验证*/
-	bool m_bCheckConnected;
  	/** 客户端设备位置索引表*/
  	map<m_oLocationStruct, unsigned int> m_oInstrumentWholeTableMap;
 	 /** 客户端设备位置更新索引表*/
@@ -352,7 +353,7 @@ public:
 private:
 	/** 客户端验证时间次数计数*/
 	unsigned int m_uiClientCheckCount;
-		/** 客户端活跃时间间隔计数*/
+	/** 客户端活跃时间间隔计数*/
 	unsigned int m_uiClientActiveCount;
 public:
 	/**
@@ -520,6 +521,12 @@ public:
 	ProcRecCmdCallBack m_oProcRecCmdCallBack;
 	/** 是否是客户端程序*/
 	bool m_bClient;
+	/** 客户端类型*/
+	int m_iClientType;
+		/** 连接验证*/
+	bool m_bCheckConnected;
+	/** 客户端IP地址*/
+	CString m_strClientIP;
 public:
 	// 创建一个客户端连接信息
 	virtual void OnInit(unsigned int uiPort = 0, CString strIP = _T(""), HWND hWnd = NULL);

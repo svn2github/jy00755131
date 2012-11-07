@@ -17,11 +17,18 @@ CCommServer::~CCommServer()
 void CCommServer::OnAccept(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类
+	SOCKADDR addr;
+	unsigned char IP4[4];
+	int iaddrLen = sizeof(SOCKADDR);
 	CCommClient* pComClient = NULL;
 	pComClient = new CCommClient;
 	CloseInvalidClient();
-	if (CAsyncSocket::Accept(pComClient->m_oClientSocket))
+	if (CAsyncSocket::Accept(pComClient->m_oClientSocket, &addr, &iaddrLen))
 	{
+		memcpy(IP4, &addr.sa_data[2], 4);
+		pComClient->m_strClientIP.Format(_T("%u.%u.%u.%u"), IP4[0], 
+			IP4[1], IP4[2], IP4[3]);
+		pComClient->m_oRecThread.m_pCommClient = pComClient;
 		pComClient->m_pComClientMap = m_pComClientMap;
 		pComClient->m_oProcRecCmdCallBack = m_oProcRecCmdCallBack;
 		pComClient->OnInit();
