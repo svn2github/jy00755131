@@ -20,6 +20,20 @@ void CCommOptDll::OnInit(CString strPath)
 	m_pOptSetupData = new m_oOptSetupDataStruct;
 	m_pMatrixOpt->Dll_Init_Instance(m_pOptSetupData);
 }
+// 载入配置文件
+void CCommOptDll::LoadOptAppSetupData()
+{
+	ASSERT(m_pMatrixOpt);
+	ASSERT(m_pOptSetupData);
+	m_pMatrixOpt->Dll_Load_SetupData(m_pOptSetupData);
+}
+// 保存配置文件
+void CCommOptDll::SaveOptAppSetupData()
+{
+	ASSERT(m_pMatrixOpt);
+	ASSERT(m_pOptSetupData);
+	m_pMatrixOpt->Dll_Save_SetupData(m_pOptSetupData);
+}
 // 关闭
 void CCommOptDll::OnClose(void)
 {

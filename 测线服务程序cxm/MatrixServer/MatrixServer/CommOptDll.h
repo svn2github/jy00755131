@@ -13,6 +13,10 @@ public:
 public:
 	/** 初始化*/
 	void OnInit(CString strPath);
+	/** 载入配置文件*/
+	void LoadOptAppSetupData();
+	/** 保存配置文件*/
+	void SaveOptAppSetupData();
 	/** 关闭*/
 	void OnClose();
 public:

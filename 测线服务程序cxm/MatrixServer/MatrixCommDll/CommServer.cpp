@@ -22,15 +22,46 @@ void CCommServer::OnAccept(int nErrorCode)
 	int iaddrLen = sizeof(SOCKADDR);
 	CCommClient* pComClient = NULL;
 	pComClient = new CCommClient;
+	CString strDstFolderPath = _T("");
+	CString strSrcFolderPath = _T("");
+	CString strDstFilePath = _T("");
+	CString strSrcFilePath = _T("");
 	CloseInvalidClient();
 	if (CAsyncSocket::Accept(pComClient->m_oClientSocket, &addr, &iaddrLen))
 	{
 		memcpy(IP4, &addr.sa_data[2], 4);
 		pComClient->m_strClientIP.Format(_T("%u.%u.%u.%u"), IP4[0], 
 			IP4[1], IP4[2], IP4[3]);
+		strDstFolderPath = ClientFolderPath;
+		if (_taccess(strDstFolderPath, 0) == -1)
+		{
+			CreateDirectory(strDstFolderPath, NULL);
+		}
+		strDstFolderPath += _T("\\");
+		strDstFolderPath += pComClient->m_strClientIP;
+		strSrcFolderPath = ServerFolderPath;
+		if (_taccess(strDstFolderPath, 0) == -1)
+		{
+			CreateDirectory(strDstFolderPath, NULL);
+		}
+		strDstFilePath = strDstFolderPath + LineXmlFileName;
+		strSrcFilePath = strSrcFolderPath + LineXmlFileName;
+		if (_taccess(strDstFilePath, 0) == -1)
+		{
+			CopyFile(strSrcFilePath, strDstFilePath, TRUE);
+		}
+		pComClient->m_strLinePath = strDstFilePath;
+		strDstFilePath = strDstFolderPath + OptXmlFileName;
+		strSrcFilePath = strSrcFolderPath + OptXmlFileName;
+		if (_taccess(strDstFilePath, 0) == -1)
+		{
+			CopyFile(strSrcFilePath, strDstFilePath, TRUE);
+		}
+		pComClient->m_strOptPath = strDstFilePath;
 		pComClient->m_oRecThread.m_pCommClient = pComClient;
 		pComClient->m_pComClientMap = m_pComClientMap;
 		pComClient->m_oProcRecCmdCallBack = m_oProcRecCmdCallBack;
+		pComClient->m_oCloseClientXml = m_oProcCloseClientXML;
 		pComClient->OnInit();
 	}
 	else

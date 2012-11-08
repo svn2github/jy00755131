@@ -22,6 +22,20 @@ void CCommLineDll::OnInit(CString strPath)
 	m_pLineSetupData = new m_oLineSetupDataStruct;
 	m_pMatrixLine->Dll_Init_Instance(m_pLineSetupData);
 }
+// 载入配置文件
+void CCommLineDll::LoadLineAppSetupData()
+{
+	ASSERT(m_pMatrixLine);
+	ASSERT(m_pLineSetupData);
+	m_pMatrixLine->Dll_Load_SetupData(m_pLineSetupData);
+}
+// 保存配置文件
+void CCommLineDll::SaveLineAppSetupData()
+{
+	ASSERT(m_pMatrixLine);
+	ASSERT(m_pLineSetupData);
+	m_pMatrixLine->Dll_Save_SetupData(m_pLineSetupData);
+}
 // 关闭
 void CCommLineDll::OnClose(void)
 {

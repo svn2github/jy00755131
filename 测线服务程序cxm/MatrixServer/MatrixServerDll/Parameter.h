@@ -12,6 +12,13 @@
 #define ADCFrameTimeLogFolderPath	_T("\\采样数据帧时间及偏移量")
 /** ADC数据帧*/
 #define ADCDataLogFolderPath		_T("\\采样数据")
+/** 服务器参数路径*/
+#define ParamServerFolderPath		"..\\parameter\\Server"
+/** 服务程序配置文件文件名*/
+#define ServerXmlFileName			"\\MatrixServer.XML"
+/** 服务程序常量文件文件名*/
+#define ServerIniFileName			"\\MatrixServerDLL.ini"
+
 /** 输出选择:Debug输出则为0，Release输出则为1*/
 #define OutPutSelect				0
 /** 输出错误日志上限*/

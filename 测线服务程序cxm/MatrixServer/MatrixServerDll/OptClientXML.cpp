@@ -6,7 +6,6 @@ void OnInitOptClientXMLSetupData(m_oOptSetupDataStruct* pOptSetupData)
 {
 	InitializeCriticalSection(&pOptSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pOptSetupData->m_oSecCommInfo);
-	pOptSetupData->m_strOptXMLFilePath = "..\\parameter\\MatrixOperation.XML";
 	// 重置施工客户端信息
 	OnResetOptClientXMLSetupData(pOptSetupData);
 	LeaveCriticalSection(&pOptSetupData->m_oSecCommInfo);

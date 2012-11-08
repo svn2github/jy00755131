@@ -34,6 +34,7 @@ using stdext::hash_map;
 #define MatrixServerDll_API __declspec(dllimport)
 #endif
 
+
 // Macro definitions declarations
 /**
 * @struct LogOutPut_Struct

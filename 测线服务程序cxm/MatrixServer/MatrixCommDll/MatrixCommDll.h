@@ -322,6 +322,8 @@ class CCommRecThread;
 /** 回调函数-接收数据处理*/
 typedef void (CALLBACK* ProcRecCmdCallBack)(unsigned short usCmd, char* pChar, 
 	unsigned int uiSize, CCommRecThread* pRecThread);
+/** 客户端关闭*/
+typedef void (CALLBACK* CloseClientXml)(CCommClient* pCommClient);
 class MATRIXCOMMDLL_API CCommRecThread : public CCommThread
 {
 public:
@@ -342,8 +344,6 @@ public:
 	CCommSndFrame* m_pCommSndFrame;
 	/** 客户端类指针*/
 	CCommClient* m_pCommClient;
-	/** 连接客户端索引指针*/
-	hash_map<SOCKET, CCommClient*>* m_pComClientMap;
 	/** 回调函数-接收数据处理*/
 	ProcRecCmdCallBack m_oProcRecCmdCallBack;
  	/** 客户端设备位置索引表*/
@@ -388,8 +388,6 @@ public:
 	// 根据输入索引号，由索引表得到仪器指针
 	virtual unsigned int* GetSnPtrFromLocationMap(int iLineIndex, int iPointIndex, 
 		map<m_oLocationStruct, unsigned int>* pMap);
-	// 向所有在线客户端广播配置文件变更
-	virtual void BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize);
 	// 监视客户端是否活跃
 	void MonitorClientActive(bool bActive);
 
@@ -525,11 +523,21 @@ public:
 	bool m_bCheckConnected;
 	/** 客户端IP地址*/
 	CString m_strClientIP;
+	/** 指针*/
+	void* m_ptr;
+	/** 测线客户端配置文件路径*/
+	CString m_strLinePath;
+	/** 施工客户端配置文件路径*/
+	CString m_strOptPath;
+	/** 保存并关闭配置文件*/
+	CloseClientXml m_oCloseClientXml;
 public:
 	// 创建一个客户端连接信息
 	virtual void OnInit(unsigned int uiPort = 0, CString strIP = _T(""), HWND hWnd = NULL);
 	// 释放一个客户端连接信息
 	virtual void OnClose();
+	// 向所有在线客户端广播配置文件变更
+	virtual void BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize);
 };
 
 /**
@@ -549,6 +557,8 @@ public:
 	list<CCommClient*> m_olsClientClose;
 	/** 回调函数-接收数据处理*/
 	ProcRecCmdCallBack m_oProcRecCmdCallBack;
+	/** 回调函数-关闭并保存客户端配置文件*/
+	CloseClientXml m_oProcCloseClientXML;
 public:
 	// 初始化
 	virtual void OnInit(unsigned int uiSocketPort = ServerListenPort, int iSocketType = SOCK_STREAM, LPCTSTR lpszSocketAddress = NULL);

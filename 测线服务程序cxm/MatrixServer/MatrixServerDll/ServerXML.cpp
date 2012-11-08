@@ -6,7 +6,8 @@ void OnInitServerXMLSetupData(m_oServerSetupDataStruct* pServerSetupData)
 {
 	InitializeCriticalSection(&pServerSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pServerSetupData->m_oSecCommInfo);
-	pServerSetupData->m_strServerXMLFilePath = "..\\parameter\\MatrixServer.XML";
+	pServerSetupData->m_strServerXMLFilePath = ParamServerFolderPath;
+	pServerSetupData->m_strServerXMLFilePath += ServerXmlFileName;
 	pServerSetupData->m_oXMLADCSetupData.m_cpSetADCSetSine = NULL;
 	pServerSetupData->m_oXMLADCSetupData.m_cpSetADCStopSample = NULL;
 	pServerSetupData->m_oXMLADCSetupData.m_cpSetADCOpenTBPowerLow = NULL;

@@ -17,10 +17,8 @@ public:
 	HINSTANCE m_hCommDll;
 	/** 服务端程序命令响应类成员*/
 	CCommServerDll m_oCommServerDll;
-	/** 测线客户端程序命令响应类成员*/
-	CCommLineDll m_oCommLineDll;
-	/** 施工客户端程序命令响应类成员*/
-	CCommOptDll m_oCommOptDll;
+	CMatrixLineDllCall* m_pMatrixLine;
+	CMatrixOptDllCall* m_pMatrixOpt;
 public:
 	// 载入MatrixCommDll动态链接库
 	void LoadMatrixCommDll(CString strPath);
@@ -34,8 +32,10 @@ public:
 	void OnInit(CString strPath);
 	// 关闭
 	void OnClose(void);
-	/** 命令字解析*/
+	/** 接收命令字解析*/
 	void OnProcRecCmd(unsigned short usCmd, char* pChar, unsigned int uiSize, CCommRecThread* pRecThread);
+	/** 关闭并保存客户端XML文件*/
+	void OnProcCloseClientXML(CCommClient* pCommClient);
 };
 
 

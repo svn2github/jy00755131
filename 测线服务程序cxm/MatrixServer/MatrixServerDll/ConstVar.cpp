@@ -7,7 +7,8 @@ m_oConstVarStruct* OnCreateConstVar(void)
 	m_oConstVarStruct* pConstVar = NULL;
 	pConstVar = new m_oConstVarStruct;
 	pConstVar->m_cpFrameHeadCheck = NULL;
-	pConstVar->m_strINIFilePath = "..\\parameter\\MatrixServerDLL.ini";
+	pConstVar->m_strINIFilePath = ParamServerFolderPath;
+	pConstVar->m_strINIFilePath += ServerIniFileName;
 	return pConstVar;
 }
 // ÔØÈëINIÎÄ¼ş

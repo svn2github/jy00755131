@@ -3,9 +3,12 @@
 
 // 创建测线客户端通讯信息结构体
 typedef void (*Init_LineAppSetupData)(m_oLineSetupDataStruct* pLineSetupData);
+// 载入测线客户程序设置信息
+typedef void (*Load_LineSetupData)(m_oLineSetupDataStruct* pLineSetupData);
+// 保存测线客户程序设置信息
+typedef void (*Save_LineSetupData)(m_oLineSetupDataStruct* pLineSetupData);
 // 释放测线客户端参数设置信息结构体缓冲区
 typedef void (*Free_LineXMLSetupData)(m_oLineSetupDataStruct* pLineSetupData);
-
 // 写入配置文件
 // 设置Survery设置数据
 typedef void (*Set_SurverySetupData)(char* pChar, unsigned int uiSize, m_oLineSetupDataStruct* pLineSetupData, bool bSave);
@@ -114,6 +117,40 @@ void CMatrixLineDllCall::Dll_Init_Instance(m_oLineSetupDataStruct* pLineSetupDat
 	{
 		// call the function
 		(*Dll_On_Init)(pLineSetupData);
+	}
+}
+// 载入测线客户程序设置信息
+void CMatrixLineDllCall::Dll_Load_SetupData(m_oLineSetupDataStruct* pLineSetupData)
+{
+	Load_LineSetupData Dll_On_Load = NULL;
+	Dll_On_Load = (Load_LineSetupData)GetProcAddress(m_hDllMod, "LoadLineAppSetupData");
+	if (!Dll_On_Load)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_On_Load)(pLineSetupData);
+	}
+}
+// 保存测线客户程序设置信息
+void CMatrixLineDllCall::Dll_Save_SetupData(m_oLineSetupDataStruct* pLineSetupData)
+{
+	Save_LineSetupData Dll_On_Save = NULL;
+	Dll_On_Save = (Save_LineSetupData)GetProcAddress(m_hDllMod, "SaveLineAppSetupData");
+	if (!Dll_On_Save)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_On_Save)(pLineSetupData);
 	}
 }
 // DLL释放实例

@@ -3,6 +3,10 @@
 
 // 创建施工客户端通讯信息结构体
 typedef void (*Init_OptAppSetupData)(m_oOptSetupDataStruct* pOptSetupData);
+// 载入施工客户程序设置信息
+typedef void (*Load_LineSetupData)(m_oOptSetupDataStruct* pOptSetupData);
+// 保存施工客户程序设置信息
+typedef void (*Save_LineSetupData)(m_oOptSetupDataStruct* pOptSetupData);
 // 释放施工客户端参数设置信息结构体缓冲区
 typedef void (*Free_OptXMLSetupData)(m_oOptSetupDataStruct* pOptSetupData);
 // 设置Delay设置数据
@@ -65,6 +69,40 @@ void CMatrixOptDllCall::Dll_Init_Instance(m_oOptSetupDataStruct* pOptSetupData)
 	{
 		// call the function
 		(*Dll_On_Init)(pOptSetupData);
+	}
+}
+// 载入施工客户程序设置信息
+void CMatrixOptDllCall::Dll_Load_SetupData(m_oOptSetupDataStruct* pOptSetupData)
+{
+	Load_LineSetupData Dll_On_Load = NULL;
+	Dll_On_Load = (Load_LineSetupData)GetProcAddress(m_hDllMod, "LoadOptAppSetupData");
+	if (!Dll_On_Load)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_On_Load)(pOptSetupData);
+	}
+}
+// 保存施工客户程序设置信息
+void CMatrixOptDllCall::Dll_Save_SetupData(m_oOptSetupDataStruct* pOptSetupData)
+{
+	Save_LineSetupData Dll_On_Save = NULL;
+	Dll_On_Save = (Save_LineSetupData)GetProcAddress(m_hDllMod, "SaveOptAppSetupData");
+	if (!Dll_On_Save)
+	{
+		// handle the error
+		FreeLibrary(m_hDllMod);
+		PostQuitMessage(0);
+	}
+	else
+	{
+		// call the function
+		(*Dll_On_Save)(pOptSetupData);
 	}
 }
 // DLL释放实例

@@ -15,6 +15,10 @@ public:
 public:
 	// 初始化测线客户程序设置信息
 	void Dll_Init_Instance(m_oLineSetupDataStruct* pLineSetupData);
+	// 载入测线客户程序设置信息
+	void Dll_Load_SetupData(m_oLineSetupDataStruct* pLineSetupData);
+	// 保存测线客户程序设置信息
+	void Dll_Save_SetupData(m_oLineSetupDataStruct* pLineSetupData);
 	// DLL释放实例
 	void Dll_Free_Instance(m_oLineSetupDataStruct* pLineSetupData);
 	// 载入MatrixServerDll动态链接库

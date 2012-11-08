@@ -6,7 +6,6 @@ void OnInitLineClientXMLSetupData(m_oLineSetupDataStruct* pLineSetupData)
 {
 	InitializeCriticalSection(&pLineSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pLineSetupData->m_oSecCommInfo);
-	pLineSetupData->m_strLineXMLFilePath = "..\\parameter\\MatrixLine.XML";
 	pLineSetupData->m_oSeisMonitor.m_pcAbsoluteSpread = NULL;
 	// 重置测线客户端信息
 	OnResetLineClientXMLSetupData(pLineSetupData);

@@ -11,6 +11,10 @@ public:
 public:
 	// 初始化施工客户程序设置信息DLL实例
 	void Dll_Init_Instance(m_oOptSetupDataStruct* pOptSetupData);
+	// 载入施工客户程序设置信息
+	void Dll_Load_SetupData(m_oOptSetupDataStruct* pOptSetupData);
+	// 保存施工客户程序设置信息
+	void Dll_Save_SetupData(m_oOptSetupDataStruct* pOptSetupData);
 	// DLL释放实例
 	void Dll_Free_Instance(m_oOptSetupDataStruct* pOptSetupData);
 	// 载入MatrixServerDll动态链接库

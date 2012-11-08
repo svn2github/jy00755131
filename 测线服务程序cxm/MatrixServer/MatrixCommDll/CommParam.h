@@ -341,6 +341,14 @@ typedef struct CommFrame_Struct
 /** 查询全部地震监测测试数据和测试结果（帧内容为空）*/
 #define CmdQuerySeisMonitorTestAll			0x2016
 
+/** 服务器参数路径*/
+#define ServerFolderPath		_T("..\\parameter\\Server")
+/** 测线客户端配置文件文件名*/
+#define LineXmlFileName			_T("\\MatrixLine.XML")
+/** 施工客户端配置文件文件名*/
+#define OptXmlFileName			_T("\\MatrixOperation.XML")
+/** 客户端参数路径*/
+#define ClientFolderPath		_T("..\\parameter\\Client")
 /**
 * @brief 仪器属性结构体
 */

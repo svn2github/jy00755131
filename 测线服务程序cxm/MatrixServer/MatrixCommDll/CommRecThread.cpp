@@ -6,7 +6,6 @@ CCommRecThread::CCommRecThread(void)
 	m_pCommRecFrame = NULL;
 	m_pCommSndFrame = NULL;
 	m_pCommClient = NULL;
-	m_pComClientMap = NULL;
 	m_uiClientActiveCount = 0;
 	m_uiClientCheckCount = 0;
 	m_oInstrumentWholeTableMap.clear();
@@ -143,22 +142,7 @@ unsigned int* CCommRecThread::GetSnPtrFromLocationMap(int iLineIndex, int iPoint
 	}
 	return &(iter->second);
 }
-/** 向所有在线客户端广播配置文件变更*/
-void CCommRecThread::BroadCastXMLChange(unsigned short usCmd, char* pChar, unsigned int uiSize)
-{
-	hash_map<SOCKET, CCommClient*>::iterator iter;
-	if (m_pComClientMap == NULL)
-	{
-		return;
-	}
-	for (iter = m_pComClientMap->begin(); iter != m_pComClientMap->end(); iter++)
-	{
-		if (iter->second->m_bCheckConnected == true)
-		{
-			iter->second->m_oSndFrame.MakeSetFrame(usCmd, pChar, uiSize);
-		}
-	}
-}
+
 
 /** 监视客户端是否活跃*/
 void CCommRecThread::MonitorClientActive(bool bActive)

@@ -5,7 +5,8 @@ void OnInitPcapXMLSetupData(m_oNetPcapSetupDataStruct* pPcapSetupData)
 {
 	InitializeCriticalSection(&pPcapSetupData->m_oSecCommInfo);
 	EnterCriticalSection(&pPcapSetupData->m_oSecCommInfo);
-	pPcapSetupData->m_strPcapXMLFilePath = "..\\parameter\\MatrixServer.XML";
+	pPcapSetupData->m_strPcapXMLFilePath = ParamServerFolderPath;
+	pPcapSetupData->m_strPcapXMLFilePath += ServerXmlFileName;
 	LeaveCriticalSection(&pPcapSetupData->m_oSecCommInfo);
 }
 // 创建Pcap程序信息结构体
