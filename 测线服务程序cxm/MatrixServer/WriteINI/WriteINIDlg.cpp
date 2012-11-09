@@ -498,8 +498,16 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("3");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("CmdLocalSysTime");	// 本地系统时间
+	strSectionKey=_T("CmdLocalSysTime1");	// 本地系统时间
 	strValue = _T("4");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLocalSysTime2");			// 本地系统时间
+	strValue = _T("84");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdLocalSysTime3");			// 本地系统时间
+	strValue = _T("100");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdLocalTimeFixedHigh");	// 本地时间修正高位
@@ -550,8 +558,16 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("17");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-	strSectionKey=_T("CmdTailRecSndTimeLow");	// 尾包接收\发送时刻低位
+	strSectionKey=_T("CmdTailRecSndTimeLow1");	// 尾包接收\发送时刻低位
 	strValue = _T("22");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdTailRecSndTimeLow2");	// 尾包接收\发送时刻低位
+	strValue = _T("86");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+
+	strSectionKey=_T("CmdTailRecSndTimeLow3");	// 尾包接收\发送时刻低位
+	strValue = _T("102");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdBroadCastPortSet");	// 广播命令等待端口匹配

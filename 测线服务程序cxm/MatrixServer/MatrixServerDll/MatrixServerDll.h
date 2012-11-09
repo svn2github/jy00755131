@@ -238,7 +238,11 @@ typedef struct ConstVar_Struct
 	/** 本地IP地址*/
 	char m_cCmdLocalIPAddr;
 	/** 本地系统时间*/
-	char m_cCmdLocalSysTime;
+	char m_cCmdLocalSysTime1;
+	/** 本地系统时间*/
+	char m_cCmdLocalSysTime2;
+	/** 本地系统时间*/
+	char m_cCmdLocalSysTime3;
 	/** 本地时间修正高位*/
 	char m_cCmdLocalTimeFixedHigh;
 	/** 本地时间修正低位*/
@@ -264,7 +268,11 @@ typedef struct ConstVar_Struct
 	/** 仪器设备版本*/
 	char m_cCmdVersion;
 	/** 尾包接收\发送时刻低位*/
-	char m_cCmdTailRecSndTime;
+	char m_cCmdTailRecSndTime1;
+	/** 尾包接收\发送时刻低位*/
+	char m_cCmdTailRecSndTime2;
+	/** 尾包接收\发送时刻低位*/
+	char m_cCmdTailRecSndTime3;
 	/** 广播命令等待端口匹配*/
 	char m_cCmdBroadCastPortSeted;
 	/** 设置ADC控制命令命令字*/
@@ -472,7 +480,13 @@ typedef struct InstrumentCommand_Struct
 	/** 仪器IP地址*/
 	unsigned int m_uiInstrumentIP;
 	/** 本地时间*/
-	unsigned int m_uiSysTime;
+	unsigned short m_usSysTimeNewLow;
+	/** 本地时间*/
+	unsigned int m_uiSysTimeNewHigh;
+	/** 本地时间*/
+	unsigned short m_usSysTimeOldLow;
+	/** 本地时间*/
+	unsigned int m_uiSysTimeOldHigh;
 	/** 本地时间修正高位*/
 	unsigned int m_uiLocalTimeFixedHigh;
 	/** 本地时间修正低位*/
@@ -514,10 +528,19 @@ typedef struct InstrumentCommand_Struct
 	char m_cLAUXRoutOpenSet;
 	/** 硬件设备软件版本号*/
 	unsigned int m_uiVersion;
-	/** 尾包接收时刻，低14位有效*/
-	unsigned short m_usTailRecTime;
-	/** 尾包发送时刻/**交叉站尾包发送时刻，低14位有效*/
-	unsigned short m_usTailSndTime;
+	// @@@时间48位
+// 	/** 尾包接收时刻，低14位有效*/
+// 	unsigned short m_usTailRecTime;
+// 	/** 尾包发送时刻/**交叉站尾包发送时刻，低14位有效*/
+// 	unsigned short m_usTailSndTime;
+	/** 尾包接收时刻低位*/
+	unsigned short m_usTailRecTimeLow;
+	/** 尾包接收时刻高位*/
+	unsigned int m_uiTailRecTimeHigh;
+	/** 尾包发送时刻/交叉站尾包发送时刻低位*/
+	unsigned short m_usTailSndTimeLow;
+	/** 尾包发送时刻/交叉站尾包发送时刻高位*/
+	unsigned int m_uiTailSndTimeHigh;
 	/** 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令*/
 	unsigned int m_uiBroadCastPortSeted;
 	/** 网络时刻*/
@@ -556,8 +579,10 @@ typedef struct InstrumentCommand_Struct
 	int m_iADCSetNum;
 	/** ADC数据指针偏移量*/
 	unsigned short m_usADCDataPoint;
-	/** ADC数据采集时仪器本地时间*/
-	unsigned int m_uiADCSampleSysTime;
+	/** ADC数据采集时仪器本地时间高位*/
+	unsigned int m_uiADCSampleSysTimeHigh;
+	/** ADC数据采集时仪器本地时间低位*/
+	unsigned short m_usADCSampleSysTimeLow;
 	/** ADC采样数据缓冲区指针*/
 	char* m_pADCDataBuf;
 }m_oInstrumentCommandStruct;
@@ -846,18 +871,27 @@ typedef struct Instrument_Struct
 	int m_iTailFrameCount;
 	/** 仪器时延*/
 	unsigned int m_uiDelayTime;
-	/** 仪器本地系统时间*/
-	unsigned int m_uiSystemTime;
-	/** 仪器网络时间*/
-	unsigned int m_uiNetTime;
+	// @@@时间48位
+// 	/** 仪器本地系统时间*/
+// 	unsigned int m_uiSystemTime;
+// 	/** 仪器网络时间*/
+// 	unsigned int m_uiNetTime;
 	/** 仪器网络状态*/
 	unsigned int m_uiNetState;
 	/** 仪器参数备用1*/
 	unsigned int m_uiNetOrder;
+// 	/** 16bits时间，接收时刻低位*/
+// 	unsigned short m_usReceiveTime;	
+// 	/** 16bits时间，发送时刻低位*/
+// 	unsigned short m_usSendTime;
 	/** 16bits时间，接收时刻低位*/
-	unsigned short m_usReceiveTime;	
+	unsigned short m_usReceiveTimeLow;
+	/** 32bits时间，接收时刻高位*/
+	unsigned int m_uiReceiveTimeHigh;
 	/** 16bits时间，发送时刻低位*/
-	unsigned short m_usSendTime;
+	unsigned short m_usSendTimeLow;
+	/** 32bits时间，发送时刻高位*/
+	unsigned int m_uiSendTimeHigh;
 	/** 16bits 测线方向左面尾包接收时刻*/
 	unsigned short m_usLineLeftReceiveTime;	
 	/** 16bits 测线方向右面尾包接收时刻*/

@@ -101,7 +101,7 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 		oSegdFile.m_pSegdDataBuf = pADCDataBuf->m_pADCDataBuf;
 		oSegdFile.m_pSegdDHList = &pADCDataBuf->m_olsSegdDataHeader;
 		// 保存文件
-		SaveSegdFile(&oSegdFile);
+//		SaveSegdFile(&oSegdFile);
 		str.Format(_T("保存文件炮号为 %d"), oSegdFile.m_oSegdSH.m_uiShotNo);
 		OutputDebugString(str);
 		EnterCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);

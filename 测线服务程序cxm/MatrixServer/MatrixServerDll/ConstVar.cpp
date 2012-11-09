@@ -280,8 +280,14 @@ bool LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("CmdLocalIPAddr");		// 本地IP地址
 		pConstVar->m_cCmdLocalIPAddr = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
-		strSectionKey=_T("CmdLocalSysTime");	// 本地系统时间
-		pConstVar->m_cCmdLocalSysTime = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		strSectionKey=_T("CmdLocalSysTime1");	// 本地系统时间
+		pConstVar->m_cCmdLocalSysTime1 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+
+		strSectionKey=_T("CmdLocalSysTime2");	// 本地系统时间
+		pConstVar->m_cCmdLocalSysTime2 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+
+		strSectionKey=_T("CmdLocalSysTime2");	// 本地系统时间
+		pConstVar->m_cCmdLocalSysTime2 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLocalTimeFixedHigh");	// 本地时间修正高位
 		pConstVar->m_cCmdLocalTimeFixedHigh = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
@@ -319,8 +325,12 @@ bool LoadIniFile(m_oConstVarStruct* pConstVar)
 		strSectionKey=_T("CmdVersion");				// 仪器软件版本
 		pConstVar->m_cCmdVersion = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
-		strSectionKey=_T("CmdTailRecSndTimeLow");	// 尾包接收\发送时刻低位
-		pConstVar->m_cCmdTailRecSndTime = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		strSectionKey=_T("CmdTailRecSndTimeLow1");	// 尾包接收\发送时刻低位
+		pConstVar->m_cCmdTailRecSndTime1 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		strSectionKey=_T("CmdTailRecSndTimeLow2");	// 尾包接收\发送时刻低位
+		pConstVar->m_cCmdTailRecSndTime2 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		strSectionKey=_T("CmdTailRecSndTimeLow3");	// 尾包接收\发送时刻低位
+		pConstVar->m_cCmdTailRecSndTime3 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdBroadCastPortSet");	// 广播命令等待端口匹配
 		pConstVar->m_cCmdBroadCastPortSeted = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));

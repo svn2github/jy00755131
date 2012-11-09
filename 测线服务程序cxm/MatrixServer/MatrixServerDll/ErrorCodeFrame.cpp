@@ -193,7 +193,7 @@ void MakeInstrErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXErrorCode2;
 	usPos ++;
 	// 本地时间
-	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalSysTime;
+	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalSysTime1;
 	usPos ++;
 	// 查询命令字个数
 	pErrorCodeFrame->m_usCommandWordNum = usPos;

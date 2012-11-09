@@ -215,7 +215,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	EnterCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 	uiSN = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSN;
 	uiRoutIP = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiRoutIP;
-	uiSysTime = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTime;
+	uiSysTime = pTailFrameThread->m_pTailFrame->m_pCommandStruct->m_uiSysTimeNewHigh;
 	LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
 	EnterCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
 	// 在索引表中则找到该仪器,得到该仪器指针

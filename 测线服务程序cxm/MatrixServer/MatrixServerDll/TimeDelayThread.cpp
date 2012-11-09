@@ -109,9 +109,12 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	unsigned short usLAUXTailRecTimeLAUXLineB = 0;
 	unsigned short usLAUXTailRecTimeLineA = 0;
 	unsigned short usLAUXTailRecTimeLineB = 0;
-	unsigned short usTailSndTime = 0;
-	unsigned short usTailRecTime = 0;
-	unsigned int uiSysTime = 0;
+	unsigned short usTailSndTimeLow = 0;
+	unsigned short usTailRecTimeLow = 0;
+	unsigned int uiTailSndTimeHigh = 0;
+	unsigned int uiTailRecTimeHigh = 0;
+	unsigned int uiSysTimeHigh = 0;
+	unsigned short usSysTimeLow = 0;
 	unsigned int uiNetTime = 0;
 	EnterCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
 	uiSrcIP = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSrcIP;
@@ -119,10 +122,13 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	usLAUXTailRecTimeLAUXLineB = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLAUXLineB;
 	usLAUXTailRecTimeLineA = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLineA;
 	usLAUXTailRecTimeLineB = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLineB;
-	usTailRecTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailRecTime;
-	usTailSndTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTime;
-	uiSysTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSysTime;
-	uiNetTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiNetTime;
+	usTailRecTimeLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailRecTimeLow;
+	uiTailRecTimeHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiTailRecTimeHigh;
+	usTailSndTimeLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTimeLow;
+	uiTailSndTimeHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiTailSndTimeHigh;
+ 	uiSysTimeHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSysTimeNewHigh;
+	usSysTimeLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usSysTimeNewLow;
+ 	uiNetTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiNetTime;
 	LeaveCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
 	EnterCriticalSection(&pTimeDelayThread->m_pLineList->m_oSecLineList);
 	// 判断仪器IP是否在SN索引表中
@@ -172,15 +178,20 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	else
 	{
 		// 采集站或电源站尾包接收时刻
-		pInstrument->m_usReceiveTime = usTailRecTime;
-		str.Format(_T("采集站尾包接收时刻 = 0x%x，"), pInstrument->m_usReceiveTime);
+		pInstrument->m_usReceiveTimeLow = usTailRecTimeLow;
+		pInstrument->m_uiReceiveTimeHigh = uiTailRecTimeHigh;
+		str.Format(_T("采集站尾包接收时刻低位 = 0x%x，采集站尾包接收时刻高位 = 0x%x，"), 
+			usTailRecTimeLow, uiTailRecTimeHigh);
 		strOutPut += str;
 	}
 	// 尾包发送时刻
-	pInstrument->m_usSendTime = usTailSndTime;
-	pInstrument->m_uiSystemTime = uiSysTime;
-	pInstrument->m_uiNetTime = uiNetTime;
-	str.Format(_T("尾包发送时刻 = 0x%x，本地时间 = 0x%x，网络时间 = 0x%x"), pInstrument->m_usSendTime, uiSysTime, uiNetTime);
+	pInstrument->m_usSendTimeLow = usTailSndTimeLow;
+	pInstrument->m_uiSendTimeHigh = uiTailSndTimeHigh;
+	// @@@时间48位
+// 	pInstrument->m_uiSystemTime = uiSysTime;
+// 	pInstrument->m_uiNetTime = uiNetTime;
+	str.Format(_T("尾包发送时刻低位 = 0x%x，尾包发送时刻高位 = 0x%x，本地时间高位 = 0x%x，本地时间低位 = 0x%x，网络时间 = 0x%x"), 
+		usTailSndTimeLow, uiTailSndTimeHigh, uiSysTimeHigh, usSysTimeLow, uiNetTime);
 	strOutPut += str;
 	strConv = (CStringA)strOutPut;
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
@@ -276,8 +287,10 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	// 临时变量
-	int itmp1 = 0;
-	int itmp2 = 0;
+	int iFixLow1 = 0;
+	int iFixLow2 = 0;
+	int iFixHigh1 = 0;
+	int iFixHigh2 = 0;
 	CString str = _T("");
 	CString strOutPut = _T("");
 	string strConv = "";
@@ -298,69 +311,83 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
 			|| (pInstrument->m_iInstrumentType == InstrumentTypeLAUX))
 		{
-			// 如果路由方向为上方
-			if (pRout->m_iRoutDirection == DirectionTop)
-			{
-				itmp1 = pInstrument->m_usCrossTopReceiveTime - pInstrumentNext->m_usSendTime;
-			}
-			// 如果路由方向为下方
-			else if (pRout->m_iRoutDirection == DirectionDown)
-			{
-				itmp1 = pInstrument->m_usCrossDownReceiveTime - pInstrumentNext->m_usSendTime;
-			}
-			// 如果路由方向为左方
-			else if (pRout->m_iRoutDirection == DirectionLeft)
-			{
-				itmp1 = pInstrument->m_usLineLeftReceiveTime - pInstrumentNext->m_usSendTime;
-			}
-			// 如果路由方向为右方
-			else if (pRout->m_iRoutDirection == DirectionRight)
-			{
-				itmp1 = pInstrument->m_usLineRightReceiveTime - pInstrumentNext->m_usSendTime;
-			}
+			// @@@时间48位
+// 			// 如果路由方向为上方
+// 			if (pRout->m_iRoutDirection == DirectionTop)
+// 			{
+// 				iFixLow1 = pInstrument->m_usCrossTopReceiveTime - pInstrumentNext->m_usSendTime;
+// 			}
+// 			// 如果路由方向为下方
+// 			else if (pRout->m_iRoutDirection == DirectionDown)
+// 			{
+// 				iFixLow1 = pInstrument->m_usCrossDownReceiveTime - pInstrumentNext->m_usSendTime;
+// 			}
+// 			// 如果路由方向为左方
+// 			else if (pRout->m_iRoutDirection == DirectionLeft)
+// 			{
+// 				iFixLow1 = pInstrument->m_usLineLeftReceiveTime - pInstrumentNext->m_usSendTime;
+// 			}
+// 			// 如果路由方向为右方
+// 			else if (pRout->m_iRoutDirection == DirectionRight)
+// 			{
+// 				iFixLow1 = pInstrument->m_usLineRightReceiveTime - pInstrumentNext->m_usSendTime;
+// 			}
+			// @@@@
+			iFixLow1 = 0;
+			iFixHigh1 = 0;
 		}
 		else
 		{
-			itmp1 = pInstrument->m_usReceiveTime - pInstrumentNext->m_usSendTime;
+			iFixLow1 = pInstrument->m_usReceiveTimeLow - pInstrumentNext->m_usSendTimeLow;
+			iFixHigh1 = pInstrument->m_uiReceiveTimeHigh - pInstrumentNext->m_uiSendTimeHigh;
 		}
-		if (itmp1 < 0)
+		if (iFixLow1 < 0)
 		{
-			itmp1 += 0x3fff;
+			iFixLow1 += 0xffff;
+			iFixHigh1 -= 1;
 		}
-		if ((pInstrument->m_iInstrumentType == InstrumentTypeFDU)
-			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeFDU))
+// 		if ((pInstrument->m_iInstrumentType == InstrumentTypeFDU)
+// 			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeFDU))
+// 		{
+// 			iFixLow1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToFDU;
+// 		}
+// 		else if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
+// 			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeFDU))
+// 		{
+// 			iFixLow1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayLCIToFDU;
+// 		}
+// 		else if ((pInstrument->m_iInstrumentType == InstrumentTypeFDU)
+// 			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeLAUL))
+// 		{
+// 			iFixLow1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToLAUL;
+// 		}
+// 		else if ((pInstrument->m_iInstrumentType == InstrumentTypeLAUL)
+// 			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeFDU))
+// 		{
+// 			iFixLow1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayLAULToFDU;
+// 		}
+// 		iFixLow1 >>= 1;
+// 		if (iFixLow1 > TimeDelayLowLimit)
+// 		{
+// 			iFixLow1 = TimeDelayDefault;
+// 		}
+		iFixLow2 += iFixLow1;
+		if (iFixLow2 > 0xffff)
 		{
-			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToFDU;
+			iFixLow2 -= 0xffff;
+			iFixHigh1 += 1;
 		}
-		else if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
-			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeFDU))
-		{
-			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayLCIToFDU;
-		}
-		else if ((pInstrument->m_iInstrumentType == InstrumentTypeFDU)
-			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeLAUL))
-		{
-			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToLAUL;
-		}
-		else if ((pInstrument->m_iInstrumentType == InstrumentTypeLAUL)
-			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeFDU))
-		{
-			itmp1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayLAULToFDU;
-		}
-		itmp1 >>= 1;
-		if (itmp1 > TimeDelayLowLimit)
-		{
-			itmp1 = TimeDelayDefault;
-		}
-		itmp2 += itmp1;
-		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻差值为 %d,	"), pInstrumentNext->m_uiIP, itmp1);
+		iFixHigh2 += iFixHigh1;
+		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻低位差值为 %d,	高位差值为 %d"), 
+			pInstrumentNext->m_uiIP, iFixLow1, iFixHigh1);
 		strOutPut = str;
 
-		// 时间修正低位
-		pInstrumentNext->m_uiTimeLow = itmp2 & 0x3fff;
+		// @@@时间48位
+// 		// 时间修正低位
+// 		pInstrumentNext->m_uiTimeLow = itmp2 & 0x3fff;
+		pInstrumentNext->m_uiTimeLow = iFixLow2;
 		// 时间修正高位
-		/*pInstrumentNext->m_uiTimeHigh = (pInstrumentNext->m_uiNetTime - pInstrumentNext->m_uiSystemTime) & 0xffffffff;*/
-		pInstrumentNext->m_uiTimeHigh = 0;
+		pInstrumentNext->m_uiTimeHigh = iFixHigh2;
 		// 在数据采集期间只针对未时统的仪器进行时统设置
 		if (((bADCStartSample == true) && (pInstrumentNext->m_iTimeSetReturnCount == 0))
 			|| (bADCStartSample == false))

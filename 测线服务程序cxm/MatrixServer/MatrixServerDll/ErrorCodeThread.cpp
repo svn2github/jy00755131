@@ -75,7 +75,7 @@ void ProcErrorCodeReturnFrameOne(m_oErrorCodeThreadStruct* pErrorCodeThread)
 	cLAUXErrorCodeCmdCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cLAUXErrorCodeCmdCount;
 	cFDUErrorCodeDataCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeDataCount;
 	cFDUErrorCodeCmdCount = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_cFDUErrorCodeCmdCount;
-	uiSysTime = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_uiSysTime;
+	uiSysTime = pErrorCodeThread->m_pErrorCodeFrame->m_pCommandStructReturn->m_uiSysTimeNewHigh;
 	LeaveCriticalSection(&pErrorCodeThread->m_pErrorCodeFrame->m_oSecErrorCodeFrame);
 	EnterCriticalSection(&pErrorCodeThread->m_pLineList->m_oSecLineList);
 	// 仪器在索引表中

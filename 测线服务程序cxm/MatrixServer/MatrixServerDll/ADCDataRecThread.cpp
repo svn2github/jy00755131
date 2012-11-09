@@ -209,7 +209,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	unsigned int uiIPInstrument = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	unsigned short usADCDataFramePoint = 0;
-	unsigned int uiADCDataFrameSysTime = 0;
+	unsigned int uiADCDataFrameSysTimeHigh = 0;
+	unsigned short usADCDataFrameSysTimeLow = 0;
 	int iADCDataInOneFrameNum = 0;
 	unsigned short usADCFramePointLimit = 0;
 	unsigned short usADCDataFramePointMove = 0;
@@ -238,7 +239,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	// 得到指针偏移量
 	usADCDataFramePoint = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_usADCDataPoint;
 	// 得到本地系统时间
-	uiADCDataFrameSysTime = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_uiADCSampleSysTime;
+	uiADCDataFrameSysTimeHigh = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_uiADCSampleSysTimeHigh;
+	usADCDataFrameSysTimeLow = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_usADCSampleSysTimeLow;
 	pADCDataBuf = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_pADCDataBuf;
 	if (usADCDataFramePoint > usADCFramePointLimit)
 	{
@@ -250,7 +252,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 		return;
 	}
 	LeaveCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
-	UpdateLocalSysTime(uiADCDataFrameSysTime, pADCDataRecThread->m_pLineList);
+	UpdateLocalSysTime(uiADCDataFrameSysTimeHigh, pADCDataRecThread->m_pLineList);
 	EnterCriticalSection(&pADCDataRecThread->m_pLineList->m_oSecLineList);
 	if (FALSE == IfIndexExistInMap(uiIPInstrument, &pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oIPInstrumentMap))
 	{
@@ -292,13 +294,13 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	pInstrument->m_usADCDataFramePointOld = pInstrument->m_usADCDataFramePointNow;
 	pInstrument->m_uiADCDataFrameSysTimeOld = pInstrument->m_uiADCDataFrameSysTimeNow;
 	pInstrument->m_usADCDataFramePointNow = usADCDataFramePoint;
-	pInstrument->m_uiADCDataFrameSysTimeNow = uiADCDataFrameSysTime;
+	pInstrument->m_uiADCDataFrameSysTimeNow = uiADCDataFrameSysTimeHigh;
 	if (pInstrument->m_uiADCDataActualRecFrameNum == 1)
 	{
-		if (pInstrument->m_uiTBHigh != uiADCDataFrameSysTime)
+		if (pInstrument->m_uiTBHigh != uiADCDataFrameSysTimeHigh)
 		{
 			str.Format(_T("仪器SN = 0x%x，IP = 0x%x，第一帧的本地时间 = 0x%x, TB时间 = 0x%x"), pInstrument->m_uiSN, 
-				pInstrument->m_uiIP, uiADCDataFrameSysTime, pInstrument->m_uiTBHigh);
+				pInstrument->m_uiIP, uiADCDataFrameSysTimeHigh, pInstrument->m_uiTBHigh);
 			strConv = (CStringA)str;
 			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCDataRecFrameOne",
 				strConv, ErrorType, IDS_ERR_SAMPLETIME);
@@ -427,8 +429,8 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	str.Format(_T("接收帧的指针偏移量为 %d，差值为 %d；"), 
 		pInstrument->m_usADCDataFramePointNow, usADCDataFramePointMove);
 	strOut += str;
-	str.Format(_T("本地时间为 0x%x，差值为%d；"), pInstrument->m_uiADCDataFrameSysTimeNow, 
-		pInstrument->m_uiADCDataFrameSysTimeNow - pInstrument->m_uiADCDataFrameSysTimeOld);
+	str.Format(_T("本地时间高位为 0x%x，本地时间低位为 0x%x，差值为%d；"), pInstrument->m_uiADCDataFrameSysTimeNow, 
+		usADCDataFrameSysTimeLow, pInstrument->m_uiADCDataFrameSysTimeNow - pInstrument->m_uiADCDataFrameSysTimeOld);
 	strOut += str;
 	strConv = (CStringA)strOut;
 	AddMsgToLogOutPutList(pADCDataRecThread->m_pLogOutPutADCFrameTime, "", strConv);
