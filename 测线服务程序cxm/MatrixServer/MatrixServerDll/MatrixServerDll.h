@@ -10,6 +10,7 @@
 #include "ConfigLineXml.h"
 #include "ConfigOperationXml.h"
 #include "ConfigPcapXml.h"
+#include "Segd.h"
 #include "Parameter.h"
 #include <list>
 #include <map>
@@ -1260,57 +1261,6 @@ typedef struct OptTaskArray_Struct
 	/** 施工数据存储文件夹路径*/
 	string m_SaveFolderPath;
 }m_oOptTaskArrayStruct;
-/**
-* @struct Segd_Standard_Header_Struct
-* @brief Segd文件标准头结构体
-*/
-typedef struct Segd_Standard_Header_Struct
-{
-	/** 采样率*/
-	unsigned int m_uiSampleRate;
-	/** 采样长度*/
-	unsigned int m_uiSampleLength;
-	/** 采样时间*/
-	unsigned int m_uiSampleTime;
-	/** 辅助道数目*/
-	unsigned int m_uiAuxTraceNum;
-	/* 采集道数目*/
-	unsigned int m_uiAcqTraceNum;
-	/** 总道数*/
-	unsigned int m_uiTotalTraceNum;
-	/** 炮号*/
-	unsigned int m_uiShotNo;
-}m_oSegdStandardHeaderStruct;
-/**
-* @struct Segd_Data_Header_Struct
-* @brief Segd文件数据头结构体
-*/
-typedef struct Segd_Data_Header_Struct
-{
-	/** 接收站点号*/
-	int m_iPointIndex;
-	/** 接收站线号*/
-	int m_iLineIndex;
-	/** 位置序号*/
-	unsigned int m_uiLocation;
-}m_oSegdDataHeaderStruct;
-/**
-* @struct Segd_File_Struct
-* @brief Segd文件存储结构体
-*/
-typedef struct Segd_File_Struct
-{
-	/** Segd文件保存路径*/
-	string m_strPath;
-	/** Segd标准头文件*/
-	m_oSegdStandardHeaderStruct m_oSegdSH;
-	/** Segd数据头队列*/
-	list<m_oSegdDataHeaderStruct*>* m_pSegdDHList;
-	/** Segd数据缓冲区指针，辅助道数据放后面*/
-	char* m_pSegdDataBuf;
-	/** Segd数据缓冲区长度*/
-	unsigned int m_uiSegdDataBufLength;
-}m_oSegdFileStruct;
 /**
 * @struct ADCDataBuf_Struct
 * @brief 数据存储缓冲区结构体
@@ -2894,31 +2844,31 @@ MatrixServerDll_API m_oADCDataSaveThreadStruct* OnCreateADCDataSaveThread(void);
 MatrixServerDll_API void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread);
 // 保存到Segd文件，成功返回true，失败返回false
 MatrixServerDll_API bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct);
-
-// MatrixServerDll_API void ProcessGeneralHeaderBlock1Back(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessGeneralHeaderBlock2Back(FILE* pFile ,m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessGeneralHeaderBlock3Back(FILE* pFile,m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessScanTypeHeaderBack(FILE* pFile, int iChannel,m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessExtendedHeaderBack(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessExternalHeaderBack(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessTraceHeaderBack(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock1Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock2Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock3Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock4Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock5Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock6Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessTraceHeaderExtensionBlock7Back(FILE* pFile, int iChannel, int iType, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ProcessTraceDataBackNew(FILE* pFile, int iInstrNo, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API void ReadArrayToWriteSegdData_FLOAT(FILE* pFile, int iInstrNo, int iDataNo, m_oSegdFileStruct* pSegdFileStruct);
-// MatrixServerDll_API int ReadInitToWriteSegd_BCD(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
-// MatrixServerDll_API int ReadInitToWriteSegd_BIN(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
-// MatrixServerDll_API void ReadInitToWriteSegd_BCD_addLow(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName, CString strHigh);
-// MatrixServerDll_API string ReadInitToWriteSegd_BCD_addHigh(FILE* pFile, string cstrAppName, string cstrKeyName);
-// MatrixServerDll_API void ReadInitToWriteSegd_DOUBLE(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
-// MatrixServerDll_API void ReadInitToWriteSegd_FLOAT(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
-// MatrixServerDll_API void ReadInitToWriteSegd_ASC(FILE* pFile, int iCountByte, CString cstrAppName, CString cstrKeyName);
-
+MatrixServerDll_API void ProcessGeneralHeaderBlock1BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessGeneralHeaderBlock2BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessGeneralHeaderBlock3BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessScanTypeHeaderBackNew(FILE* pFile, int iChannel, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessExtendedHeaderBackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessExternalHeaderBackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessTraceHeaderBackNew(FILE* pFile, int iChannel, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessTraceHeaderExtensionBlock1BackNew(FILE* pFile, int iChannel, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessTraceHeaderExtensionBlock2BackNew(FILE* pFile, int iChannel, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessTraceHeaderExtensionBlock3BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessTraceHeaderExtensionBlock4BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessTraceHeaderExtensionBlock5BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessTraceHeaderExtensionBlock6BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessTraceHeaderExtensionBlock7BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ProcessTraceDataBackNew(FILE* pFile, int iInstrNo, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API int ReadInitToWriteSegdNew_BCD(FILE* pFile, int iCountByte, char* pParameter);
+MatrixServerDll_API int ReadInitToWriteSegdNew_BIN(FILE* pFile, int iCountByte, char* pParameter);
+MatrixServerDll_API void ReadInitToWriteSegdNew_BCD_addLow(FILE* pFile, int iCountByte, char* pParameter, string strHigh);
+MatrixServerDll_API void ReadInitToWriteSegdNew_BCD_addHigh(char* pParameter, string* pstr);
+MatrixServerDll_API void ReadInitToWriteSegdNew_FLOAT(FILE* pFile, int iCountByte, char* pParameter);
+MatrixServerDll_API void ReadInitToWriteSegdNew_DOUBLE(FILE* pFile, int iCountByte, char* pParameter);
+MatrixServerDll_API void ReadInitToWriteSegdNew_ASC(FILE* pFile, int iCountByte, char* pParameter);
+MatrixServerDll_API void ReadArrayToWriteSegdData_FLOAT(FILE* pFile, int iInstrNo, int iDataNo, m_oSegdFileStruct* pSegdFileStruct);
+MatrixServerDll_API void ReadParameterToSegd_BIN(FILE* pFile, int iCountByte, int iValue);
+MatrixServerDll_API void ReadParameterToSegd_BCD(FILE* pFile, int iCountByte, int iValue);
 // 关闭所有的施工文件
 // MatrixServerDll_API void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray);
 // 保存ADC数据到施工文件

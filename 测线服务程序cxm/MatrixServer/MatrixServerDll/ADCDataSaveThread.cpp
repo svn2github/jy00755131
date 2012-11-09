@@ -41,11 +41,7 @@ void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 		}		
 	}
 }
-// 保存到Segd文件，成功返回true，失败返回false
-bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct)
-{
-	return false;
-}
+
 // 关闭所有的施工文件
 // void CloseAllADCDataSaveInFile(m_oOptTaskArrayStruct* pOptTaskArray)
 // {
@@ -94,13 +90,13 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 		oSegdFile.m_strPath = pADCDataBuf->m_SaveFilePath;
 		oSegdFile.m_oSegdSH.m_uiSampleRate = pADCDataBuf->m_iSampleRate;
 		oSegdFile.m_oSegdSH.m_uiShotNo = pADCDataBuf->m_uiOptNo;
-		oSegdFile.m_oSegdSH.m_uiSampleLength = pADCDataBuf->m_uiSavePointNum;
+		oSegdFile.m_oSegdSH.m_iSampleLength = pADCDataBuf->m_uiSavePointNum;
 		oSegdFile.m_oSegdSH.m_uiSampleTime = pADCDataBuf->m_uiSampleTime;
-		oSegdFile.m_oSegdSH.m_uiAcqTraceNum = pADCDataBuf->m_uiAcqTraceNum;
-		oSegdFile.m_oSegdSH.m_uiAuxTraceNum = pADCDataBuf->m_uiAuxTraceNum;
-		oSegdFile.m_oSegdSH.m_uiTotalTraceNum = pADCDataBuf->m_uiAcqTraceNum + pADCDataBuf->m_uiAuxTraceNum;
-		oSegdFile.m_uiSegdDataBufLength = oSegdFile.m_oSegdSH.m_uiSampleLength 
-			* (oSegdFile.m_oSegdSH.m_uiAcqTraceNum + oSegdFile.m_oSegdSH.m_uiAuxTraceNum) 
+		oSegdFile.m_oSegdSH.m_iAcqTraceNum = pADCDataBuf->m_uiAcqTraceNum;
+		oSegdFile.m_oSegdSH.m_iAuxTraceNum = pADCDataBuf->m_uiAuxTraceNum;
+		oSegdFile.m_oSegdSH.m_iTotalTraceNum = pADCDataBuf->m_uiAcqTraceNum + pADCDataBuf->m_uiAuxTraceNum;
+		oSegdFile.m_uiSegdDataBufLength = oSegdFile.m_oSegdSH.m_iSampleLength 
+			* (oSegdFile.m_oSegdSH.m_iAcqTraceNum + oSegdFile.m_oSegdSH.m_iAuxTraceNum) 
 			* pADCDataSaveThread->m_pThread->m_pConstVar->m_iADCDataSize3B;
 		oSegdFile.m_pSegdDataBuf = pADCDataBuf->m_pADCDataBuf;
 		oSegdFile.m_pSegdDHList = &pADCDataBuf->m_olsSegdDataHeader;

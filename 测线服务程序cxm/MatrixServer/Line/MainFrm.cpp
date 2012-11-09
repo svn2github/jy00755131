@@ -135,6 +135,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_oComDll.OnInit(_T("MatrixCommDll.dll"), m_uiServerPort, m_strServerIP, this->m_hWnd);
 	m_oComDll.m_oXMLDllLine.OnInit(_T("MatrixServerDll.dll"));
 	m_oComDll.m_hWnd = m_hWnd;
+//	char pParameter[256];
+// 	CString str = _T("");
+// 	pParameter[0] = '0';
+// 	pParameter[1] = '3';
+// 	pParameter[2] = '2';
+// 	pParameter[3] = '7';
+// 	str = CString(pParameter);
+//	memcpy(pParameter, "0327", 4);
 	return 0;
 }
 
