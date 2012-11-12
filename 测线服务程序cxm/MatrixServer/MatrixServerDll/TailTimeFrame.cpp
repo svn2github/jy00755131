@@ -9,7 +9,7 @@ m_oTailTimeFrameStruct* OnCreateInstrTailTimeFrame(void)
 	InitializeCriticalSection(&pTailTimeFrame->m_oSecTailTimeFrame);
 	pTailTimeFrame->m_cpRcvFrameData = NULL;
 	pTailTimeFrame->m_cpSndFrameData = NULL;
-	pTailTimeFrame->m_cpCommandWord = NULL;
+	pTailTimeFrame->m_pbyCommandWord = NULL;
 	pTailTimeFrame->m_oTailTimeFrameSocket = INVALID_SOCKET;
 	pTailTimeFrame->m_pCommandStructSet = NULL;
 	pTailTimeFrame->m_pCommandStructReturn = NULL;
@@ -60,13 +60,13 @@ void OnInitInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame,
 	memset(pTailTimeFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, 
 		pConstVar->m_iSndFrameSize);
 	// 清空尾包时刻查询命令字集合
-	if (pTailTimeFrame->m_cpCommandWord != NULL)
+	if (pTailTimeFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pTailTimeFrame->m_cpCommandWord;
-		pTailTimeFrame->m_cpCommandWord = NULL;
+		delete[] pTailTimeFrame->m_pbyCommandWord;
+		pTailTimeFrame->m_pbyCommandWord = NULL;
 	}
-	pTailTimeFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pTailTimeFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
+	pTailTimeFrame->m_pbyCommandWord = new BYTE[pConstVar->m_iCommandWordMaxNum];
+	memset(pTailTimeFrame->m_pbyCommandWord, pConstVar->m_cSndFrameBufInit, 
 		pConstVar->m_iCommandWordMaxNum);
 	// 尾包时刻查询命令字个数
 	pTailTimeFrame->m_usCommandWordNum = 0;
@@ -100,10 +100,10 @@ void OnCloseInstrTailTimeFrame(m_oTailTimeFrameStruct* pTailTimeFrame)
 		delete[] pTailTimeFrame->m_cpSndFrameData;
 		pTailTimeFrame->m_cpSndFrameData = NULL;
 	}
-	if (pTailTimeFrame->m_cpCommandWord != NULL)
+	if (pTailTimeFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pTailTimeFrame->m_cpCommandWord;
-		pTailTimeFrame->m_cpCommandWord = NULL;
+		delete[] pTailTimeFrame->m_pbyCommandWord;
+		pTailTimeFrame->m_pbyCommandWord = NULL;
 	}
 	if (pTailTimeFrame->m_cpRcvFrameData != NULL)
 	{
@@ -178,18 +178,18 @@ void MakeInstrTailTimeQueryFramebyIP(m_oTailTimeFrameStruct* pTailTimeFrame,
 	pTailTimeFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// 查询命令字内容
 	// 交叉站交叉线尾包接收时刻
-	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUTailRecTimeLAUX;
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUTailRecTimeLAUX;
 	usPos ++;
 	// 交叉站大线尾包接收时刻
-	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLineTailRecTimeLAUX;
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLineTailRecTimeLAUX;
 	usPos ++;
 	// 尾包接收/发送时刻
-	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdTailRecSndTime1;
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdTailRecSndTime1;
 	usPos ++;
 	// 查询命令字个数
 	pTailTimeFrame->m_usCommandWordNum = usPos;
 	MakeInstrFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 
-		pTailTimeFrame->m_cpCommandWord, pTailTimeFrame->m_usCommandWordNum);
+		pTailTimeFrame->m_pbyCommandWord, pTailTimeFrame->m_usCommandWordNum);
 	SendFrame(pTailTimeFrame->m_oTailTimeFrameSocket, pTailTimeFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pTailTimeFrame->m_pCommandStructSet->m_usAimPort, 
 		pTailTimeFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);
@@ -212,27 +212,27 @@ void MakeInstrTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFra
 	pTailTimeFrame->m_pCommandStructSet->m_uiBroadCastPortSeted = uiBroadCastPort;
 	// 查询命令字内容
 	// 广播端口
-	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdBroadCastPortSeted;
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdBroadCastPortSeted;
 	usPos ++;
 	// 交叉站交叉线尾包接收时刻
-	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUTailRecTimeLAUX;
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUTailRecTimeLAUX;
 	usPos ++;
 	// 交叉站大线尾包接收时刻
-	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLineTailRecTimeLAUX;
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLineTailRecTimeLAUX;
 	usPos ++;
 	// 尾包接收/发送时刻
-	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdTailRecSndTime1;
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdTailRecSndTime1;
 	usPos ++;
 	// 本地时间
-	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalSysTime1;
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalSysTime1;
 	usPos ++;
 	// 网络时间
-	pTailTimeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdNetTime;
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdNetTime;
 	usPos ++;
 	// 查询命令字个数
 	pTailTimeFrame->m_usCommandWordNum = usPos;
 	MakeInstrFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 
-		pTailTimeFrame->m_cpCommandWord, pTailTimeFrame->m_usCommandWordNum);
+		pTailTimeFrame->m_pbyCommandWord, pTailTimeFrame->m_usCommandWordNum);
 	SendFrame(pTailTimeFrame->m_oTailTimeFrameSocket, pTailTimeFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pTailTimeFrame->m_pCommandStructSet->m_usAimPort, 
 		pTailTimeFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);

@@ -232,67 +232,67 @@ typedef struct ConstVar_Struct
 	/** 发送ADC采样数据重发命令*/
 	unsigned short m_usSendADCCmd;
 	/** 串号*/
-	char m_cCmdSn;
+	BYTE m_byCmdSn;
 	/** 首包时间*/
-	char m_cCmdHeadFrameTime;
+	BYTE m_byCmdHeadFrameTime;
 	/** 本地IP地址*/
-	char m_cCmdLocalIPAddr;
+	BYTE m_byCmdLocalIPAddr;
 	/** 本地系统时间*/
-	char m_cCmdLocalSysTime1;
+	BYTE m_byCmdLocalSysTime1;
 	/** 本地系统时间*/
-	char m_cCmdLocalSysTime2;
+	BYTE m_byCmdLocalSysTime2;
 	/** 本地系统时间*/
-	char m_cCmdLocalSysTime3;
+	BYTE m_byCmdLocalSysTime3;
 	/** 本地时间修正高位*/
-	char m_cCmdLocalTimeFixedHigh;
+	BYTE m_byCmdLocalTimeFixedHigh;
 	/** 本地时间修正低位*/
-	char m_cCmdLocalTimeFixedLow;
+	BYTE m_byCmdLocalTimeFixedLow;
 	/** 自动数据返回地址*/
-	char m_cCmdADCDataReturnAddr;
+	BYTE m_byCmdADCDataReturnAddr;
 	/** 自动数据返回端口和命令*/
-	char m_cCmdADCDataReturnPort;
+	BYTE m_byCmdADCDataReturnPort;
 	/** 端口递增下限和上限*/
-	char m_cCmdADCDataReturnPortLimit;
+	BYTE m_byCmdADCDataReturnPortLimit;
 	/** 设置网络等待端口和命令*/
-	char m_cCmdBroadCastPortSet;
+	BYTE m_byCmdBroadCastPortSet;
 	/** 系统硬件状态拷贝*/
-	char m_cCmdFDUErrorCode;
+	BYTE m_byCmdFDUErrorCode;
 	/** TB时刻高位*/
-	char m_cCmdTBHigh;
+	BYTE m_byCmdTBHigh;
 	/** TB时刻低位*/
-	char m_cCmdTbLow;
+	BYTE m_byCmdTbLow;
 	/** work_ctrl 交叉站方向*/
-	char m_cCmdLAUXRoutOpenQuery;
+	BYTE m_byCmdLAUXRoutOpenQuery;
 	/** 路由开关*/
-	char m_cCmdLAUXRoutOpenSet;
+	BYTE m_byCmdLAUXRoutOpenSet;
 	/** 仪器设备版本*/
-	char m_cCmdVersion;
+	BYTE m_byCmdVersion;
 	/** 尾包接收\发送时刻低位*/
-	char m_cCmdTailRecSndTime1;
+	BYTE m_byCmdTailRecSndTime1;
 	/** 尾包接收\发送时刻低位*/
-	char m_cCmdTailRecSndTime2;
+	BYTE m_byCmdTailRecSndTime2;
 	/** 尾包接收\发送时刻低位*/
-	char m_cCmdTailRecSndTime3;
+	BYTE m_byCmdTailRecSndTime3;
 	/** 广播命令等待端口匹配*/
-	char m_cCmdBroadCastPortSeted;
+	BYTE m_byCmdBroadCastPortSeted;
 	/** 设置ADC控制命令命令字*/
-	char m_cCmdADCSet;
+	BYTE m_byCmdADCSet;
 	/** 网络时刻*/
-	char m_cCmdNetTime;
+	BYTE m_byCmdNetTime;
 	/** 交叉站大线尾包接收时刻*/
-	char m_cCmdLineTailRecTimeLAUX;
+	BYTE m_byCmdLineTailRecTimeLAUX;
 	/** 交叉站交叉线尾包接收时刻*/
-	char m_cCmdLAUTailRecTimeLAUX;
+	BYTE m_byCmdLAUTailRecTimeLAUX;
 	/** 交叉站故障1*/
-	char m_cCmdLAUXErrorCode1;
+	BYTE m_byCmdLAUXErrorCode1;
 	/** 交叉站故障2*/
-	char m_cCmdLAUXErrorCode2;
+	BYTE m_byCmdLAUXErrorCode2;
 	/** 交叉站路由分配*/
-	char m_cCmdLAUXSetRout;
+	BYTE m_byCmdLAUXSetRout;
 	/** 返回路由*/
-	char m_cCmdReturnRout;
+	BYTE m_byCmdReturnRout;
 	/** 命令解析结束命令*/
-	char m_cCmdEnd;
+	BYTE m_byCmdEnd;
 
 	/** TB设置延时高位*/
 	unsigned int m_uiTBSleepTimeHigh;
@@ -598,7 +598,7 @@ typedef struct HeartBeatFrame_Struct
 	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
 	/** 心跳命令字集合*/
-	char* m_cpCommandWord;
+	BYTE* m_pbyCommandWord;
 	/** 心跳命令字个数*/
 	unsigned short m_usCommandWordNum;
 	/** 心跳帧命令*/
@@ -642,7 +642,7 @@ typedef struct IPSetFrame_Struct
 	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
 	/** IP地址设置命令字集合*/
-	char* m_cpCommandWord;
+	BYTE* m_pbyCommandWord;
 	/** IP地址设置命令字个数*/
 	unsigned short m_usCommandWordNum;
 	/** IP地址设置帧命令*/
@@ -698,7 +698,7 @@ typedef struct TailTimeFrame_Struct
 	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
 	/** 尾包时刻查询命令字集合*/
-	char* m_cpCommandWord;
+	BYTE* m_pbyCommandWord;
 	/** 尾包时刻查询命令字个数*/
 	unsigned short m_usCommandWordNum;
 	/** 尾包时刻发送帧命令*/
@@ -728,7 +728,7 @@ typedef struct TimeDelayFrame_Struct
 	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
 	/** 时统设置命令字集合*/
-	char* m_cpCommandWord;
+	BYTE* m_pbyCommandWord;
 	/** 时统设置命令字个数*/
 	unsigned short m_usCommandWordNum;
 	/** 时统设置发送帧命令*/
@@ -758,7 +758,7 @@ typedef struct ADCSetFrame_Struct
 	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
 	/** ADC参数设置命令字集合*/
-	char* m_cpCommandWord;
+	BYTE* m_pbyCommandWord;
 	/** ADC参数设置命令字个数*/
 	unsigned short m_usCommandWordNum;
 	/** ADC参数设置发送帧命令*/
@@ -788,7 +788,7 @@ typedef struct ErrorCodeFrame_Struct
 	/** 发送帧缓冲区*/
 	char* m_cpSndFrameData;
 	/** 误码查询命令字集合*/
-	char* m_cpCommandWord;
+	BYTE* m_pbyCommandWord;
 	/** 误码查询命令字个数*/
 	unsigned short m_usCommandWordNum;
 	/** 发送帧命令*/
@@ -1702,7 +1702,7 @@ MatrixServerDll_API bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 	char* pFrameData, m_oConstVarStruct* pConstVar, m_oLogOutPutStruct* pLogOutPut);
 // 生成与设备通讯帧
 MatrixServerDll_API bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, 
-	m_oConstVarStruct* pConstVar,char* pFrameData, char* pCommandWord = NULL, 
+	m_oConstVarStruct* pConstVar, char* pFrameData, BYTE* pCommandWord = NULL, 
 	unsigned short usCommandWordNum = 0);
 // 创建CSocket接收端口并绑定端口和IP地址
 MatrixServerDll_API SOCKET CreateInstrSocket(unsigned short usPort, 

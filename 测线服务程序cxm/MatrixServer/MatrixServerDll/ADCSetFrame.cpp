@@ -9,7 +9,7 @@ m_oADCSetFrameStruct* OnCreateInstrADCSetFrame(void)
 	InitializeCriticalSection(&pADCSetFrame->m_oSecADCSetFrame);
 	pADCSetFrame->m_cpRcvFrameData = NULL;
 	pADCSetFrame->m_cpSndFrameData = NULL;
-	pADCSetFrame->m_cpCommandWord = NULL;
+	pADCSetFrame->m_pbyCommandWord = NULL;
 	pADCSetFrame->m_oADCSetFrameSocket = INVALID_SOCKET;
 	pADCSetFrame->m_pCommandStructSet = NULL;
 	pADCSetFrame->m_pCommandStructReturn = NULL;
@@ -69,13 +69,13 @@ void OnInitInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame,
 	pADCSetFrame->m_cpSndFrameData = new char[pConstVar->m_iSndFrameSize];
 	memset(pADCSetFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iSndFrameSize);
 	// 清空时统设置命令字集合
-	if (pADCSetFrame->m_cpCommandWord != NULL)
+	if (pADCSetFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pADCSetFrame->m_cpCommandWord;
-		pADCSetFrame->m_cpCommandWord = NULL;
+		delete[] pADCSetFrame->m_pbyCommandWord;
+		pADCSetFrame->m_pbyCommandWord = NULL;
 	}
-	pADCSetFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pADCSetFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
+	pADCSetFrame->m_pbyCommandWord = new BYTE[pConstVar->m_iCommandWordMaxNum];
+	memset(pADCSetFrame->m_pbyCommandWord, pConstVar->m_cSndFrameBufInit, pConstVar->m_iCommandWordMaxNum);
 	// ADC参数设置命令字个数
 	pADCSetFrame->m_usCommandWordNum = 0;
 
@@ -108,10 +108,10 @@ void OnCloseInstrADCSetFrame(m_oADCSetFrameStruct* pADCSetFrame)
 		delete[] pADCSetFrame->m_cpSndFrameData;
 		pADCSetFrame->m_cpSndFrameData = NULL;
 	}
-	if (pADCSetFrame->m_cpCommandWord != NULL)
+	if (pADCSetFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pADCSetFrame->m_cpCommandWord;
-		pADCSetFrame->m_cpCommandWord = NULL;
+		delete[] pADCSetFrame->m_pbyCommandWord;
+		pADCSetFrame->m_pbyCommandWord = NULL;
 	}
 	if (pADCSetFrame->m_cpRcvFrameData != NULL)
 	{

@@ -9,7 +9,7 @@ m_oTimeDelayFrameStruct* OnCreateInstrTimeDelayFrame(void)
 	InitializeCriticalSection(&pTimeDelayFrame->m_oSecTimeDelayFrame);
 	pTimeDelayFrame->m_cpRcvFrameData = NULL;
 	pTimeDelayFrame->m_cpSndFrameData = NULL;
-	pTimeDelayFrame->m_cpCommandWord = NULL;
+	pTimeDelayFrame->m_pbyCommandWord = NULL;
 	pTimeDelayFrame->m_oTimeDelayFrameSocket = INVALID_SOCKET;
 	pTimeDelayFrame->m_pCommandStructSet = NULL;
 	pTimeDelayFrame->m_pCommandStructReturn = NULL;
@@ -60,13 +60,13 @@ void OnInitInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	memset(pTimeDelayFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, 
 		pConstVar->m_iSndFrameSize);
 	// 清空时统设置命令字集合
-	if (pTimeDelayFrame->m_cpCommandWord != NULL)
+	if (pTimeDelayFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pTimeDelayFrame->m_cpCommandWord;
-		pTimeDelayFrame->m_cpCommandWord = NULL;
+		delete[] pTimeDelayFrame->m_pbyCommandWord;
+		pTimeDelayFrame->m_pbyCommandWord = NULL;
 	}
-	pTimeDelayFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pTimeDelayFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
+	pTimeDelayFrame->m_pbyCommandWord = new BYTE[pConstVar->m_iCommandWordMaxNum];
+	memset(pTimeDelayFrame->m_pbyCommandWord, pConstVar->m_cSndFrameBufInit, 
 		pConstVar->m_iCommandWordMaxNum);
 	// 时统设置命令字个数
 	pTimeDelayFrame->m_usCommandWordNum = 0;
@@ -100,10 +100,10 @@ void OnCloseInstrTimeDelayFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame)
 		delete[] pTimeDelayFrame->m_cpSndFrameData;
 		pTimeDelayFrame->m_cpSndFrameData = NULL;
 	}
-	if (pTimeDelayFrame->m_cpCommandWord != NULL)
+	if (pTimeDelayFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pTimeDelayFrame->m_cpCommandWord;
-		pTimeDelayFrame->m_cpCommandWord = NULL;
+		delete[] pTimeDelayFrame->m_pbyCommandWord;
+		pTimeDelayFrame->m_pbyCommandWord = NULL;
 	}
 	if (pTimeDelayFrame->m_cpRcvFrameData != NULL)
 	{
@@ -186,15 +186,15 @@ void MakeInstrDelayTimeFrame(m_oTimeDelayFrameStruct* pTimeDelayFrame,
 	pTimeDelayFrame->m_pCommandStructSet->m_uiLocalTimeFixedLow = pInstrument->m_uiTimeLow;
 	// 设置命令字内容
 	// 时统设置高位
-	pTimeDelayFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalTimeFixedHigh;
+	pTimeDelayFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalTimeFixedHigh;
 	usPos ++;
 	// 时统设置低位
-	pTimeDelayFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalTimeFixedLow;
+	pTimeDelayFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalTimeFixedLow;
 	usPos ++;
 	// 设置命令字个数
 	pTimeDelayFrame->m_usCommandWordNum = usPos;
 	MakeInstrFrame(pTimeDelayFrame->m_pCommandStructSet, pConstVar, pTimeDelayFrame->m_cpSndFrameData,
-		pTimeDelayFrame->m_cpCommandWord, pTimeDelayFrame->m_usCommandWordNum);
+		pTimeDelayFrame->m_pbyCommandWord, pTimeDelayFrame->m_usCommandWordNum);
 	SendFrame(pTimeDelayFrame->m_oTimeDelayFrameSocket, pTimeDelayFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pTimeDelayFrame->m_pCommandStructSet->m_usAimPort, 
 		pTimeDelayFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);

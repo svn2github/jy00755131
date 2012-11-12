@@ -272,95 +272,95 @@ bool LoadIniFile(m_oConstVarStruct* pConstVar)
 		pConstVar->m_usSendADCCmd = static_cast<unsigned short>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdSn");				// 串号
-		pConstVar->m_cCmdSn = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdSn = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdHeadFrameTime");	// 首包时间
-		pConstVar->m_cCmdHeadFrameTime = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdHeadFrameTime = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLocalIPAddr");		// 本地IP地址
-		pConstVar->m_cCmdLocalIPAddr = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLocalIPAddr = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLocalSysTime1");	// 本地系统时间
-		pConstVar->m_cCmdLocalSysTime1 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLocalSysTime1 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLocalSysTime2");	// 本地系统时间
-		pConstVar->m_cCmdLocalSysTime2 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLocalSysTime2 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
-		strSectionKey=_T("CmdLocalSysTime2");	// 本地系统时间
-		pConstVar->m_cCmdLocalSysTime2 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		strSectionKey=_T("CmdLocalSysTime3");	// 本地系统时间
+		pConstVar->m_byCmdLocalSysTime3 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLocalTimeFixedHigh");	// 本地时间修正高位
-		pConstVar->m_cCmdLocalTimeFixedHigh = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLocalTimeFixedHigh = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLocalTimeFixedLow");	// 本地时间修正低位
-		pConstVar->m_cCmdLocalTimeFixedLow = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLocalTimeFixedLow = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdADCDataReturnAddr");	// 自动数据返回地址
-		pConstVar->m_cCmdADCDataReturnAddr = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdADCDataReturnAddr = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdADCDataReturnPort");	// 自动数据返回端口和命令
-		pConstVar->m_cCmdADCDataReturnPort = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdADCDataReturnPort = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdADCDataReturnPortLimit");	// 端口递增下限和上限
-		pConstVar->m_cCmdADCDataReturnPortLimit = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdADCDataReturnPortLimit = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdSetBroadCastPort");	// 设置网络等待端口和命令
-		pConstVar->m_cCmdBroadCastPortSet = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdBroadCastPortSet = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdFDUErrorCode");		// 系统硬件状态拷贝
-		pConstVar->m_cCmdFDUErrorCode = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdFDUErrorCode = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdTBHigh");				// TB时刻高位
-		pConstVar->m_cCmdTBHigh = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdTBHigh = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdTbLow");				// TB时刻低位
-		pConstVar->m_cCmdTbLow = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdTbLow = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLAUXRoutOpenQuery");	// work_ctrl 交叉站方向
-		pConstVar->m_cCmdLAUXRoutOpenQuery = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLAUXRoutOpenQuery = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLAUXRoutOpenSet");		// 路由开关
-		pConstVar->m_cCmdLAUXRoutOpenSet = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLAUXRoutOpenSet = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdVersion");				// 仪器软件版本
-		pConstVar->m_cCmdVersion = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdVersion = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdTailRecSndTimeLow1");	// 尾包接收\发送时刻低位
-		pConstVar->m_cCmdTailRecSndTime1 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdTailRecSndTime1 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 		strSectionKey=_T("CmdTailRecSndTimeLow2");	// 尾包接收\发送时刻低位
-		pConstVar->m_cCmdTailRecSndTime2 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdTailRecSndTime2 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 		strSectionKey=_T("CmdTailRecSndTimeLow3");	// 尾包接收\发送时刻低位
-		pConstVar->m_cCmdTailRecSndTime3 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdTailRecSndTime3 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdBroadCastPortSet");	// 广播命令等待端口匹配
-		pConstVar->m_cCmdBroadCastPortSeted = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdBroadCastPortSeted = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdADCSet");				// 设置ADC控制命令命令字
-		pConstVar->m_cCmdADCSet = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdADCSet = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdNetTime");				// 网络时刻
-		pConstVar->m_cCmdNetTime = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdNetTime = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLineTailRecTimeLAUX");	// 交叉站大线尾包接收时刻
-		pConstVar->m_cCmdLineTailRecTimeLAUX = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLineTailRecTimeLAUX = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLAUTailRecTimeLAUX");	// 交叉站交叉线尾包接收时刻
-		pConstVar->m_cCmdLAUTailRecTimeLAUX = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLAUTailRecTimeLAUX = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLAUXErrorCode1");		// 交叉站故障1
-		pConstVar->m_cCmdLAUXErrorCode1 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLAUXErrorCode1 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLAUXErrorCode2");		// 交叉站故障2
-		pConstVar->m_cCmdLAUXErrorCode2 = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLAUXErrorCode2 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdLAUXSetRout");			// 交叉站路由分配
-		pConstVar->m_cCmdLAUXSetRout = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdLAUXSetRout = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdReturnRout");			// 返回路由
-		pConstVar->m_cCmdReturnRout = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdReturnRout = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdEnd");					// 命令解析结束命令
-		pConstVar->m_cCmdEnd = static_cast<char>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+		pConstVar->m_byCmdEnd = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdTBCtrlStartSample");		// TB开关控制ADC数据采集命令
 		pConstVar->m_usCmdTBCtrlStartSample = static_cast<unsigned short>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));

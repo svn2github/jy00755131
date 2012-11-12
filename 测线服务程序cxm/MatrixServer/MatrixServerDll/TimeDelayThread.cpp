@@ -113,9 +113,11 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	unsigned short usTailRecTimeLow = 0;
 	unsigned int uiTailSndTimeHigh = 0;
 	unsigned int uiTailRecTimeHigh = 0;
-	unsigned int uiSysTimeHigh = 0;
-	unsigned short usSysTimeLow = 0;
-	unsigned int uiNetTime = 0;
+	unsigned int uiSysTimeNewHigh = 0;
+	unsigned short usSysTimeNewLow = 0;
+	unsigned int uiSysTimeOldHigh = 0;
+	unsigned short usSysTimeOldLow = 0;
+/*	unsigned int uiNetTime = 0;*/
 	EnterCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
 	uiSrcIP = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSrcIP;
 	usLAUXTailRecTimeLAUXLineA = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLAUXLineA;
@@ -126,9 +128,11 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	uiTailRecTimeHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiTailRecTimeHigh;
 	usTailSndTimeLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTimeLow;
 	uiTailSndTimeHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiTailSndTimeHigh;
- 	uiSysTimeHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSysTimeNewHigh;
-	usSysTimeLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usSysTimeNewLow;
- 	uiNetTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiNetTime;
+ 	uiSysTimeNewHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSysTimeNewHigh;
+	usSysTimeNewLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usSysTimeNewLow;
+	uiSysTimeOldHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSysTimeOldHigh;
+	usSysTimeOldLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usSysTimeOldLow;
+/* 	uiNetTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiNetTime;*/
 	LeaveCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
 	EnterCriticalSection(&pTimeDelayThread->m_pLineList->m_oSecLineList);
 	// 判断仪器IP是否在SN索引表中
@@ -190,8 +194,8 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	// @@@时间48位
 // 	pInstrument->m_uiSystemTime = uiSysTime;
 // 	pInstrument->m_uiNetTime = uiNetTime;
-	str.Format(_T("尾包发送时刻低位 = 0x%x，尾包发送时刻高位 = 0x%x，本地时间高位 = 0x%x，本地时间低位 = 0x%x，网络时间 = 0x%x"), 
-		usTailSndTimeLow, uiTailSndTimeHigh, uiSysTimeHigh, usSysTimeLow, uiNetTime);
+	str.Format(_T("尾包发送时刻低位 = 0x%x，尾包发送时刻高位 = 0x%x，修正后的本地时间高位 = 0x%x，修正后的本地时间低位 = 0x%x，原本地时间高位 = 0x%x，原本地时间低位 = 0x%x"), 
+		usTailSndTimeLow, uiTailSndTimeHigh, uiSysTimeNewHigh, usSysTimeNewLow, uiSysTimeOldHigh, usSysTimeOldLow);
 	strOutPut += str;
 	strConv = (CStringA)strOutPut;
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
@@ -366,15 +370,29 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 // 		{
 // 			iFixLow1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayLAULToFDU;
 // 		}
-// 		iFixLow1 >>= 1;
+// 		if (iFixLow1 < 0)
+// 		{
+// 			iFixLow1 += 0x3fff;
+// 			iFixHigh1 -= 1;
+// 		}
+//  		if (iFixHigh1 % 2 == 0)
+//  		{
+//		iFixLow1 >>= 1;
+//  		}
+// 		else
+// 		{
+// 			iFixLow1 = (iFixLow1 >> 1) + 0x2000;
+// 		}
+// 		iFixHigh1 >>= 1;
+ 		
 // 		if (iFixLow1 > TimeDelayLowLimit)
 // 		{
 // 			iFixLow1 = TimeDelayDefault;
 // 		}
 		iFixLow2 += iFixLow1;
-		if (iFixLow2 > 0xffff)
+		if (iFixLow2 > 0x3fff)
 		{
-			iFixLow2 -= 0xffff;
+			iFixLow2 -= 0x3fff;
 			iFixHigh1 += 1;
 		}
 		iFixHigh2 += iFixHigh1;
@@ -383,11 +401,13 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		strOutPut = str;
 
 		// @@@时间48位
-// 		// 时间修正低位
+ 		// 时间修正低位
 // 		pInstrumentNext->m_uiTimeLow = itmp2 & 0x3fff;
-		pInstrumentNext->m_uiTimeLow = iFixLow2;
-		// 时间修正高位
-		pInstrumentNext->m_uiTimeHigh = iFixHigh2;
+// 		pInstrumentNext->m_uiTimeLow = iFixLow2;
+// 		// 时间修正高位
+// 		pInstrumentNext->m_uiTimeHigh = iFixHigh2;
+		pInstrumentNext->m_uiTimeLow = 0;
+		pInstrumentNext->m_uiTimeHigh = 0;
 		// 在数据采集期间只针对未时统的仪器进行时统设置
 		if (((bADCStartSample == true) && (pInstrumentNext->m_iTimeSetReturnCount == 0))
 			|| (bADCStartSample == false))

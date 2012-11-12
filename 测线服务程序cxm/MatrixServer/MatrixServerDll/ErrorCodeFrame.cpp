@@ -10,7 +10,7 @@ m_oErrorCodeFrameStruct* OnCreateInstrErrorCodeFrame(void)
 	pErrorCodeFrame->m_cpRcvFrameData = NULL;
 	pErrorCodeFrame->m_cpSndFrameData = NULL;
 	pErrorCodeFrame->m_oErrorCodeFrameSocket = INVALID_SOCKET;
-	pErrorCodeFrame->m_cpCommandWord = NULL;
+	pErrorCodeFrame->m_pbyCommandWord = NULL;
 	pErrorCodeFrame->m_pCommandStructSet = NULL;
 	pErrorCodeFrame->m_pCommandStructReturn = NULL;
 	pErrorCodeFrame->m_usPortMove = 0;
@@ -60,13 +60,13 @@ void OnInitInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	memset(pErrorCodeFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, 
 		pConstVar->m_iSndFrameSize);
 	// 清空误码查询命令字集合
-	if (pErrorCodeFrame->m_cpCommandWord != NULL)
+	if (pErrorCodeFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pErrorCodeFrame->m_cpCommandWord;
-		pErrorCodeFrame->m_cpCommandWord = NULL;
+		delete[] pErrorCodeFrame->m_pbyCommandWord;
+		pErrorCodeFrame->m_pbyCommandWord = NULL;
 	}
-	pErrorCodeFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pErrorCodeFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
+	pErrorCodeFrame->m_pbyCommandWord = new BYTE[pConstVar->m_iCommandWordMaxNum];
+	memset(pErrorCodeFrame->m_pbyCommandWord, pConstVar->m_cSndFrameBufInit, 
 		pConstVar->m_iCommandWordMaxNum);
 	// 误码查询命令字个数
 	pErrorCodeFrame->m_usCommandWordNum = 0;
@@ -101,10 +101,10 @@ void OnCloseInstrErrorCodeFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame)
 		delete[] pErrorCodeFrame->m_cpSndFrameData;
 		pErrorCodeFrame->m_cpSndFrameData = NULL;
 	}
-	if (pErrorCodeFrame->m_cpCommandWord != NULL)
+	if (pErrorCodeFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pErrorCodeFrame->m_cpCommandWord;
-		pErrorCodeFrame->m_cpCommandWord = NULL;
+		delete[] pErrorCodeFrame->m_pbyCommandWord;
+		pErrorCodeFrame->m_pbyCommandWord = NULL;
 	}
 	if (pErrorCodeFrame->m_cpRcvFrameData != NULL)
 	{
@@ -181,24 +181,24 @@ void MakeInstrErrorCodeQueryFrame(m_oErrorCodeFrameStruct* pErrorCodeFrame,
 	pErrorCodeFrame->m_pCommandStructSet->m_uiBroadCastPortSeted = uiBroadCastPort;
 	// 查询命令字内容
 	// 广播端口
-	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdBroadCastPortSeted;
+	pErrorCodeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdBroadCastPortSeted;
 	usPos ++;
 	// 交叉站交叉线尾包接收时刻
-	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdFDUErrorCode;
+	pErrorCodeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdFDUErrorCode;
 	usPos ++;
 	// 交叉站大线尾包接收时刻
-	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXErrorCode1;
+	pErrorCodeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUXErrorCode1;
 	usPos ++;
 	// 尾包接收/发送时刻
-	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXErrorCode2;
+	pErrorCodeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUXErrorCode2;
 	usPos ++;
 	// 本地时间
-	pErrorCodeFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalSysTime1;
+	pErrorCodeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalSysTime1;
 	usPos ++;
 	// 查询命令字个数
 	pErrorCodeFrame->m_usCommandWordNum = usPos;
 	MakeInstrFrame(pErrorCodeFrame->m_pCommandStructSet, pConstVar, 
-		pErrorCodeFrame->m_cpSndFrameData, pErrorCodeFrame->m_cpCommandWord, 
+		pErrorCodeFrame->m_cpSndFrameData, pErrorCodeFrame->m_pbyCommandWord, 
 		pErrorCodeFrame->m_usCommandWordNum);
 	SendFrame(pErrorCodeFrame->m_oErrorCodeFrameSocket, pErrorCodeFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pErrorCodeFrame->m_pCommandStructSet->m_usAimPort, 

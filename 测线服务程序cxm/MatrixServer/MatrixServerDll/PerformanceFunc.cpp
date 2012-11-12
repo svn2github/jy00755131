@@ -251,6 +251,9 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 		iPos += iFramePacketSize2B;
 		memcpy(&pCommand->m_uiADCSampleSysTimeHigh, &pFrameData[iPos], iFramePacketSize4B);
 		iPos += iFramePacketSize4B;
+		pCommand->m_uiADCSampleSysTimeHigh = (pCommand->m_uiADCSampleSysTimeHigh << 2) 
+			+ (pCommand->m_usADCSampleSysTimeLow >> 14);
+		pCommand->m_usADCSampleSysTimeLow &= 0x3fff;
 		iBufLen = pConstVar->m_iADCDataInOneFrameNum * iADCDataSize3B;
 		memcpy(pCommand->m_pADCDataBuf, &pFrameData[iPos], iBufLen);
 		iPos += iBufLen;
@@ -261,22 +264,22 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 	{
 		memcpy(&byCommandWord, &pFrameData[iPos], iFrameCmdSize1B);
 		iPos += iFrameCmdSize1B;
-		if (byCommandWord == pConstVar->m_cCmdSn)
+		if (byCommandWord == pConstVar->m_byCmdSn)
 		{
 			memcpy(&pCommand->m_uiSN, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdHeadFrameTime)
+		else if (byCommandWord == pConstVar->m_byCmdHeadFrameTime)
 		{
 			memcpy(&pCommand->m_uiTimeHeadFrame, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLocalIPAddr)
+		else if (byCommandWord == pConstVar->m_byCmdLocalIPAddr)
 		{
 			memcpy(&pCommand->m_uiInstrumentIP, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLocalSysTime1)
+		else if (byCommandWord == pConstVar->m_byCmdLocalSysTime1)
 		{
 			// @@@时间48位
 // 			memcpy(&pCommand->m_uiSysTimeNewHigh, &pFrameData[iPos], iFramePacketSize4B);
@@ -286,7 +289,7 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			memcpy(&pCommand->m_uiSysTimeNewHigh, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLocalSysTime2)
+		else if (byCommandWord == pConstVar->m_byCmdLocalSysTime2)
 		{
 			unsigned short usTemp = 0;
 			unsigned int uiTemp = 0;
@@ -295,49 +298,55 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			uiTemp = usTemp;
 			uiTemp = uiTemp << 16;
 			pCommand->m_uiSysTimeNewHigh += uiTemp;
+			pCommand->m_uiSysTimeNewHigh <<= 2;
+			pCommand->m_uiSysTimeNewHigh += (pCommand->m_usSysTimeNewLow >> 14);
+			pCommand->m_usSysTimeNewLow &= 0x3fff;
 			memcpy(&pCommand->m_usSysTimeOldLow, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLocalSysTime3)
+		else if (byCommandWord == pConstVar->m_byCmdLocalSysTime3)
 		{
 			memcpy(&pCommand->m_uiSysTimeOldHigh, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
+			pCommand->m_uiSysTimeOldHigh <<= 2;
+			pCommand->m_uiSysTimeOldHigh += (pCommand->m_usSysTimeOldLow >> 14);
+			pCommand->m_usSysTimeOldLow &= 0x3fff;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLocalTimeFixedHigh)
+		else if (byCommandWord == pConstVar->m_byCmdLocalTimeFixedHigh)
 		{
 			memcpy(&pCommand->m_uiLocalTimeFixedHigh, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLocalTimeFixedLow)
+		else if (byCommandWord == pConstVar->m_byCmdLocalTimeFixedLow)
 		{
 			memcpy(&pCommand->m_uiLocalTimeFixedLow, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdADCDataReturnAddr)
+		else if (byCommandWord == pConstVar->m_byCmdADCDataReturnAddr)
 		{
 			memcpy(&pCommand->m_uiADCDataReturnAddr, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdADCDataReturnPort)
+		else if (byCommandWord == pConstVar->m_byCmdADCDataReturnPort)
 		{
 			memcpy(&pCommand->m_usADCDataReturnPort, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pCommand->m_usADCDataReturnCmd, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdADCDataReturnPortLimit)
+		else if (byCommandWord == pConstVar->m_byCmdADCDataReturnPortLimit)
 		{
 			memcpy(&pCommand->m_usADCDataReturnPortLimitLow, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pCommand->m_usADCDataReturnPortLimitHigh, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdBroadCastPortSet)
+		else if (byCommandWord == pConstVar->m_byCmdBroadCastPortSet)
 		{
 			memcpy(&pCommand->m_uiBroadCastPortSet, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdFDUErrorCode)
+		else if (byCommandWord == pConstVar->m_byCmdFDUErrorCode)
 		{
 			memcpy(&pCommand->m_cFDUErrorCodeDataCount, &pFrameData[iPos], iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
@@ -348,34 +357,34 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			memcpy(&pCommand->m_cCtrlStatus, &pFrameData[iPos], iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdTBHigh)
+		else if (byCommandWord == pConstVar->m_byCmdTBHigh)
 		{
 			memcpy(&pCommand->m_uiTBHigh, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdTbLow)
+		else if (byCommandWord == pConstVar->m_byCmdTbLow)
 		{
 			memcpy(&pCommand->m_usTBLow, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pCommand->m_usTBCtrl, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLAUXRoutOpenQuery)
+		else if (byCommandWord == pConstVar->m_byCmdLAUXRoutOpenQuery)
 		{
 			memcpy(&pCommand->m_cLAUXRoutOpenQuery, &pFrameData[iPos], iFramePacketSize1B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLAUXRoutOpenSet)
+		else if (byCommandWord == pConstVar->m_byCmdLAUXRoutOpenSet)
 		{
 			memcpy(&pCommand->m_cLAUXRoutOpenSet, &pFrameData[iPos], iFramePacketSize1B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdVersion)
+		else if (byCommandWord == pConstVar->m_byCmdVersion)
 		{
 			memcpy(&pCommand->m_uiVersion, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdTailRecSndTime1)
+		else if (byCommandWord == pConstVar->m_byCmdTailRecSndTime1)
 		{
 // 			memcpy(&pCommand->m_usTailRecTime, &pFrameData[iPos], iFramePacketSize2B);
 // 			pCommand->m_usTailRecTime &= 0x3fff;
@@ -388,7 +397,7 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			memcpy(&pCommand->m_uiTailRecTimeHigh, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdTailRecSndTime2)
+		else if (byCommandWord == pConstVar->m_byCmdTailRecSndTime2)
 		{
 			unsigned short usTemp = 0;
 			unsigned int uiTemp = 0;
@@ -397,31 +406,37 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			uiTemp = usTemp;
 			uiTemp = uiTemp << 16;
 			pCommand->m_uiTailRecTimeHigh += uiTemp;
+// 			pCommand->m_uiTailRecTimeHigh <<= 2;
+// 			pCommand->m_uiTailRecTimeHigh += (pCommand->m_usTailRecTimeLow >> 14);
+// 			pCommand->m_usTailRecTimeLow &= 0x3fff;
 			memcpy(&pCommand->m_usTailSndTimeLow, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdTailRecSndTime3)
+		else if (byCommandWord == pConstVar->m_byCmdTailRecSndTime3)
 		{
 			memcpy(&pCommand->m_uiTailSndTimeHigh, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
+// 			pCommand->m_uiTailSndTimeHigh <<= 2;
+// 			pCommand->m_uiTailSndTimeHigh += (pCommand->m_usTailSndTimeLow >> 14);
+// 			pCommand->m_usTailSndTimeLow &= 0x3fff;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdBroadCastPortSeted)
+		else if (byCommandWord == pConstVar->m_byCmdBroadCastPortSeted)
 		{
 			memcpy(&pCommand->m_uiBroadCastPortSeted, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdADCSet)
+		else if (byCommandWord == pConstVar->m_byCmdADCSet)
 		{
 			memcpy(&pCommand->m_cpADCSet[pCommand->m_iADCSetNum], &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 			pCommand->m_iADCSetNum += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdNetTime)
+		else if (byCommandWord == pConstVar->m_byCmdNetTime)
 		{
 			memcpy(&pCommand->m_uiNetTime, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLineTailRecTimeLAUX)
+		else if (byCommandWord == pConstVar->m_byCmdLineTailRecTimeLAUX)
 		{
 			memcpy(&pCommand->m_usLAUXTailRecTimeLineA, &pFrameData[iPos], iFramePacketSize2B);
 			pCommand->m_usLAUXTailRecTimeLineA &= 0x3fff;
@@ -430,7 +445,7 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			pCommand->m_usLAUXTailRecTimeLineB &= 0x3fff;
 			iPos += iFramePacketSize2B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLAUTailRecTimeLAUX)
+		else if (byCommandWord == pConstVar->m_byCmdLAUTailRecTimeLAUX)
 		{
 			memcpy(&pCommand->m_usLAUXTailRecTimeLAUXLineA, &pFrameData[iPos], iFramePacketSize2B);
 			pCommand->m_usLAUXTailRecTimeLAUXLineA &= 0x3fff;
@@ -439,7 +454,7 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			pCommand->m_usLAUXTailRecTimeLAUXLineB &= 0x3fff;
 			iPos += iFramePacketSize2B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLAUXErrorCode1)
+		else if (byCommandWord == pConstVar->m_byCmdLAUXErrorCode1)
 		{
 			memcpy(&pCommand->m_cLAUXErrorCodeDataLineACount, &pFrameData[iPos], iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
@@ -450,12 +465,12 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			memcpy(&pCommand->m_cLAUXErrorCodeDataLAUXLineBCount, &pFrameData[iPos], iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLAUXErrorCode2)
+		else if (byCommandWord == pConstVar->m_byCmdLAUXErrorCode2)
 		{
 			memcpy(&pCommand->m_cLAUXErrorCodeCmdCount, &pFrameData[iPos], iFramePacketSize1B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdLAUXSetRout)
+		else if (byCommandWord == pConstVar->m_byCmdLAUXSetRout)
 		{
 			if (uiRoutAddrNum == 0)
 			{
@@ -479,12 +494,12 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			}
 			uiRoutAddrNum++;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdReturnRout)
+		else if (byCommandWord == pConstVar->m_byCmdReturnRout)
 		{
 			memcpy(&pCommand->m_uiRoutIP, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (byCommandWord == pConstVar->m_cCmdEnd)
+		else if (byCommandWord == pConstVar->m_byCmdEnd)
 		{
 			break;
 		}
@@ -497,7 +512,7 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 }
 // 生成与设备通讯帧
 bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pConstVar,
-	char* pFrameData, char* pCommandWord, unsigned short usCommandWordNum)
+	char* pFrameData, BYTE* pCommandWord, unsigned short usCommandWordNum)
 {
 	ASSERT(pCommand != NULL);
 	ASSERT(pFrameData != NULL);
@@ -537,7 +552,7 @@ bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pCo
 		memcpy(&pFrameData[iPos], &pCommand->m_usADCDataPoint, iFramePacketSize2B);
 		iPos += iFramePacketSize2B;
 		// 截止
-		pFrameData[iPos] = pConstVar->m_cCmdEnd;
+		pFrameData[iPos] = pConstVar->m_byCmdEnd;
 		return true;
 	}
 	// 生成帧内容
@@ -545,63 +560,63 @@ bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pCo
 	{
 		memcpy(&pFrameData[iPos], &pCommandWord[i], iFrameCmdSize1B);
 		iPos += iFrameCmdSize1B;
-		if (pCommandWord[i] == pConstVar->m_cCmdSn)
+		if (pCommandWord[i] == pConstVar->m_byCmdSn)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiSN, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdHeadFrameTime)
+		else if (pCommandWord[i] == pConstVar->m_byCmdHeadFrameTime)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiTimeHeadFrame, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLocalIPAddr)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLocalIPAddr)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiInstrumentIP, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLocalSysTime1)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLocalSysTime1)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_usSysTimeNewLow, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pFrameData[iPos], &pCommand->m_uiSysTimeNewHigh, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLocalTimeFixedHigh)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLocalTimeFixedHigh)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiLocalTimeFixedHigh, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLocalTimeFixedLow)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLocalTimeFixedLow)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiLocalTimeFixedLow, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdADCDataReturnAddr)
+		else if (pCommandWord[i] == pConstVar->m_byCmdADCDataReturnAddr)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiADCDataReturnAddr, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdADCDataReturnPort)
+		else if (pCommandWord[i] == pConstVar->m_byCmdADCDataReturnPort)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnPort, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnCmd, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdADCDataReturnPortLimit)
+		else if (pCommandWord[i] == pConstVar->m_byCmdADCDataReturnPortLimit)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnPortLimitLow, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pFrameData[iPos], &pCommand->m_usADCDataReturnPortLimitHigh, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdBroadCastPortSet)
+		else if (pCommandWord[i] == pConstVar->m_byCmdBroadCastPortSet)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiBroadCastPortSet, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdFDUErrorCode)
+		else if (pCommandWord[i] == pConstVar->m_byCmdFDUErrorCode)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_cFDUErrorCodeDataCount, iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
@@ -612,19 +627,19 @@ bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pCo
 			memcpy(&pFrameData[iPos], &pCommand->m_cCtrlStatus, iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdTBHigh)
+		else if (pCommandWord[i] == pConstVar->m_byCmdTBHigh)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiTBHigh, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdTbLow)
+		else if (pCommandWord[i] == pConstVar->m_byCmdTbLow)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_usTBLow, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pFrameData[iPos], &pCommand->m_usTBCtrl, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLAUXRoutOpenQuery)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXRoutOpenQuery)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_cLAUXRoutOpenQuery, iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
@@ -635,7 +650,7 @@ bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pCo
 			memcpy(&pFrameData[iPos], &pConstVar->m_cSndFrameBufInit, iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLAUXRoutOpenSet)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXRoutOpenSet)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_cLAUXRoutOpenSet, iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
@@ -646,50 +661,50 @@ bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pCo
 			memcpy(&pFrameData[iPos], &pConstVar->m_cSndFrameBufInit, iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdTailRecSndTime1)
+		else if (pCommandWord[i] == pConstVar->m_byCmdTailRecSndTime1)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_usTailRecTimeLow, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pFrameData[iPos], &pCommand->m_uiTailRecTimeHigh, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdBroadCastPortSeted)
+		else if (pCommandWord[i] == pConstVar->m_byCmdBroadCastPortSeted)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiBroadCastPortSeted, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdADCSet)
+		else if (pCommandWord[i] == pConstVar->m_byCmdADCSet)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_cpADCSet[0], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 			for (int j = iFramePacketSize4B; j < pCommand->m_iADCSetNum; j += iFramePacketSize4B)
 			{
-				memcpy(&pFrameData[iPos], &pConstVar->m_cCmdADCSet, iFrameCmdSize1B);
+				memcpy(&pFrameData[iPos], &pConstVar->m_byCmdADCSet, iFrameCmdSize1B);
 				iPos += iFrameCmdSize1B;
 				memcpy(&pFrameData[iPos], &pCommand->m_cpADCSet[j], iFramePacketSize4B);
 				iPos += iFramePacketSize4B;
 			}
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdNetTime)
+		else if (pCommandWord[i] == pConstVar->m_byCmdNetTime)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiNetTime, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLineTailRecTimeLAUX)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLineTailRecTimeLAUX)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLineA, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLineB, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLAUTailRecTimeLAUX)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLAUTailRecTimeLAUX)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLAUXLineA, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 			memcpy(&pFrameData[iPos], &pCommand->m_usLAUXTailRecTimeLAUXLineB, iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLAUXErrorCode1)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXErrorCode1)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_cLAUXErrorCodeDataLineACount, iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
@@ -700,12 +715,12 @@ bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pCo
 			memcpy(&pFrameData[iPos], &pCommand->m_cLAUXErrorCodeDataLAUXLineBCount, iFramePacketSize1B);
 			iPos += iFramePacketSize1B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLAUXErrorCode2)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXErrorCode2)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_cLAUXErrorCodeCmdCount, iFramePacketSize1B);
 			iPos += iFramePacketSize4B;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdLAUXSetRout)
+		else if (pCommandWord[i] == pConstVar->m_byCmdLAUXSetRout)
 		{
 			if (uiRoutAddrNum == 0)
 			{
@@ -729,7 +744,7 @@ bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pCo
 			}
 			uiRoutAddrNum++;
 		}
-		else if (pCommandWord[i] == pConstVar->m_cCmdReturnRout)
+		else if (pCommandWord[i] == pConstVar->m_byCmdReturnRout)
 		{
 			memcpy(&pFrameData[iPos], &pCommand->m_uiRoutIP, iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
@@ -740,7 +755,7 @@ bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pCo
 			iPos += iFramePacketSize4B;
 		}
 	}
-	pFrameData[iPos] = pConstVar->m_cCmdEnd;
+	pFrameData[iPos] = pConstVar->m_byCmdEnd;
 	return true;
 }
 // 创建CSocket接收端口并绑定端口和IP地址

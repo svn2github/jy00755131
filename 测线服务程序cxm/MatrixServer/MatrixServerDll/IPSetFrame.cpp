@@ -8,7 +8,7 @@ m_oIPSetFrameStruct* OnCreateInstrIPSetFrame(void)
 	pIPSetFrame = new m_oIPSetFrameStruct;
 	InitializeCriticalSection(&pIPSetFrame->m_oSecIPSetFrame);
 	pIPSetFrame->m_cpSndFrameData = NULL;
-	pIPSetFrame->m_cpCommandWord = NULL;
+	pIPSetFrame->m_pbyCommandWord = NULL;
 	pIPSetFrame->m_cpRcvFrameData = NULL;
 	pIPSetFrame->m_oIPSetFrameSocket = INVALID_SOCKET;
 	pIPSetFrame->m_pCommandStructSet = NULL;
@@ -59,13 +59,13 @@ void OnInitInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	pIPSetFrame->m_cpSndFrameData = new char[pConstVar->m_iSndFrameSize];
 	memset(pIPSetFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, pConstVar->m_iSndFrameSize);
 	// Çå¿ÕIPµØÖ·ÉèÖÃÃüÁî×Ö¼¯ºÏ
-	if (pIPSetFrame->m_cpCommandWord != NULL)
+	if (pIPSetFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pIPSetFrame->m_cpCommandWord;
-		pIPSetFrame->m_cpCommandWord = NULL;
+		delete[] pIPSetFrame->m_pbyCommandWord;
+		pIPSetFrame->m_pbyCommandWord = NULL;
 	}
-	pIPSetFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pIPSetFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
+	pIPSetFrame->m_pbyCommandWord = new BYTE[pConstVar->m_iCommandWordMaxNum];
+	memset(pIPSetFrame->m_pbyCommandWord, pConstVar->m_cSndFrameBufInit, 
 		pConstVar->m_iCommandWordMaxNum);
 	// IPµØÖ·ÉèÖÃÃüÁî×Ö¸öÊý
 	pIPSetFrame->m_usCommandWordNum = 0;
@@ -98,10 +98,10 @@ void OnCloseInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame)
 		delete[] pIPSetFrame->m_cpSndFrameData;
 		pIPSetFrame->m_cpSndFrameData = NULL;
 	}
-	if (pIPSetFrame->m_cpCommandWord != NULL)
+	if (pIPSetFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pIPSetFrame->m_cpCommandWord;
-		pIPSetFrame->m_cpCommandWord = NULL;
+		delete[] pIPSetFrame->m_pbyCommandWord;
+		pIPSetFrame->m_pbyCommandWord = NULL;
 	}
 	if (pIPSetFrame->m_cpRcvFrameData != NULL)
 	{
@@ -175,12 +175,12 @@ void MakeInstrIPQueryFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	// IPµØÖ·²éÑ¯ÃüÁî
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendQueryCmd;
 	// ²éÑ¯ÃüÁî×ÖÄÚÈÝ
-	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalIPAddr;
+	pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalIPAddr;
 	usPos ++;
 	// ²éÑ¯ÃüÁî×Ö¸öÊý
 	pIPSetFrame->m_usCommandWordNum = usPos;
 	MakeInstrFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_cpSndFrameData, 
-		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
+		pIPSetFrame->m_pbyCommandWord, pIPSetFrame->m_usCommandWordNum);
 	SendFrame(pIPSetFrame->m_oIPSetFrameSocket, pIPSetFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pIPSetFrame->m_pCommandStructSet->m_usAimPort,
 		pIPSetFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);
@@ -218,12 +218,12 @@ bool OpenLAUXRoutPower(int iLineIndex, int iPointIndex, unsigned char ucLAUXRout
 	// Â·ÓÉ¿ª¹Ø´ò¿ª
 	pEnv->m_pIPSetFrame->m_pCommandStructSet->m_cLAUXRoutOpenSet = ucLAUXRoutOpenSet;
 	// ÃüÁî×ÖÄÚÈÝ
-	pEnv->m_pIPSetFrame->m_cpCommandWord[usPos] = pEnv->m_pConstVar->m_cCmdLAUXRoutOpenSet;
+	pEnv->m_pIPSetFrame->m_pbyCommandWord[usPos] = pEnv->m_pConstVar->m_byCmdLAUXRoutOpenSet;
 	usPos ++;
 	// ÃüÁî×Ö¸öÊý
 	pEnv->m_pIPSetFrame->m_usCommandWordNum = usPos;
 	MakeInstrFrame(pEnv->m_pIPSetFrame->m_pCommandStructSet, pEnv->m_pConstVar, pEnv->m_pIPSetFrame->m_cpSndFrameData, 
-		pEnv->m_pIPSetFrame->m_cpCommandWord, pEnv->m_pIPSetFrame->m_usCommandWordNum);
+		pEnv->m_pIPSetFrame->m_pbyCommandWord, pEnv->m_pIPSetFrame->m_usCommandWordNum);
 	SendFrame(pEnv->m_pIPSetFrame->m_oIPSetFrameSocket, pEnv->m_pIPSetFrame->m_cpSndFrameData, 
 		pEnv->m_pConstVar->m_iSndFrameSize, pEnv->m_pIPSetFrame->m_pCommandStructSet->m_usAimPort,
 		pEnv->m_pIPSetFrame->m_pCommandStructSet->m_uiAimIP, pEnv->m_pLogOutPutOpt);
@@ -265,19 +265,19 @@ void MakeInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	pIPSetFrame->m_pCommandStructSet->m_uiLocalTimeFixedLow = pInstrument->m_uiTimeLow;
 
 	// ÒÇÆ÷SNÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdSn;
+	pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdSn;
 	usPos ++;
 	// ÒÇÆ÷IPÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalIPAddr;
+	pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalIPAddr;
 	usPos ++;
 	// Ê±¼äÐÞÕý¸ßÎ»ÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalTimeFixedHigh;
+	pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalTimeFixedHigh;
 	usPos ++;
 	// Ê±¼äÐÞÕýµÍÎ»ÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLocalTimeFixedLow;
+	pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalTimeFixedLow;
 	usPos ++;
 	// ÒÇÆ÷¹ã²¥¶Ë¿ÚÃüÁî×Ö
-	pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdBroadCastPortSet;
+	pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdBroadCastPortSet;
 	usPos ++;
 
 	// Éú³ÉIPµØÖ·ÉèÖÃÖ¡
@@ -291,19 +291,19 @@ void MakeInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	else
 	{
 		// ÒÇÆ÷Â·ÓÉIPÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXSetRout;
+		pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUXSetRout;
 		usPos ++;
 		// ÒÇÆ÷Â·ÓÉIPÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXSetRout;
+		pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUXSetRout;
 		usPos ++;
 		// ÒÇÆ÷Â·ÓÉIPÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXSetRout;
+		pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUXSetRout;
 		usPos ++;
 		// ÒÇÆ÷Â·ÓÉIPÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXSetRout;
+		pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUXSetRout;
 		usPos ++;
 		// ´ò¿ªÒÇÆ÷Â·ÓÉÃüÁî×Ö
-		pIPSetFrame->m_cpCommandWord[usPos] = pConstVar->m_cCmdLAUXRoutOpenSet;
+		pIPSetFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUXRoutOpenSet;
 		usPos ++;
 		// ÃüÁî×Ö¸öÊý
 		pIPSetFrame->m_usCommandWordNum = usPos;
@@ -311,7 +311,7 @@ void MakeInstrIPSetFrame(m_oIPSetFrameStruct* pIPSetFrame,
 	// IPµØÖ·ÉèÖÃÃüÁî
 	pIPSetFrame->m_pCommandStructSet->m_usCommand = pConstVar->m_usSendSetCmd;
 	MakeInstrFrame(pIPSetFrame->m_pCommandStructSet, pConstVar, pIPSetFrame->m_cpSndFrameData, 
-		pIPSetFrame->m_cpCommandWord, pIPSetFrame->m_usCommandWordNum);
+		pIPSetFrame->m_pbyCommandWord, pIPSetFrame->m_usCommandWordNum);
 	SendFrame(pIPSetFrame->m_oIPSetFrameSocket, pIPSetFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize, pIPSetFrame->m_pCommandStructSet->m_usAimPort,
 		pIPSetFrame->m_pCommandStructSet->m_uiAimIP, pLogOutPut);

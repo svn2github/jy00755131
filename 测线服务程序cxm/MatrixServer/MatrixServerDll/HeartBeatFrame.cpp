@@ -8,7 +8,7 @@ m_oHeartBeatFrameStruct* OnCreateInstrHeartBeat(void)
 	pHeartBeatFrame = new m_oHeartBeatFrameStruct;
 	InitializeCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	pHeartBeatFrame->m_cpSndFrameData = NULL;
-	pHeartBeatFrame->m_cpCommandWord = NULL;
+	pHeartBeatFrame->m_pbyCommandWord = NULL;
 	pHeartBeatFrame->m_oHeartBeatSocket = INVALID_SOCKET;
 	pHeartBeatFrame->m_pCommandStruct = NULL;
 	pHeartBeatFrame->m_usPortMove = 0;
@@ -54,13 +54,13 @@ void OnInitInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame,
 	memset(pHeartBeatFrame->m_cpSndFrameData, pConstVar->m_cSndFrameBufInit, 
 		pConstVar->m_iSndFrameSize);
 	// 清空心跳命令字集合
-	if (pHeartBeatFrame->m_cpCommandWord != NULL)
+	if (pHeartBeatFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pHeartBeatFrame->m_cpCommandWord;
-		pHeartBeatFrame->m_cpCommandWord = NULL;
+		delete[] pHeartBeatFrame->m_pbyCommandWord;
+		pHeartBeatFrame->m_pbyCommandWord = NULL;
 	}
-	pHeartBeatFrame->m_cpCommandWord = new char[pConstVar->m_iCommandWordMaxNum];
-	memset(pHeartBeatFrame->m_cpCommandWord, pConstVar->m_cSndFrameBufInit, 
+	pHeartBeatFrame->m_pbyCommandWord = new BYTE[pConstVar->m_iCommandWordMaxNum];
+	memset(pHeartBeatFrame->m_pbyCommandWord, pConstVar->m_cSndFrameBufInit, 
 		pConstVar->m_iCommandWordMaxNum);
 	// 心跳命令字个数
 	pHeartBeatFrame->m_usCommandWordNum = 0;
@@ -76,10 +76,10 @@ void OnCloseInstrHeartBeat(m_oHeartBeatFrameStruct* pHeartBeatFrame)
 		delete[] pHeartBeatFrame->m_cpSndFrameData;
 		pHeartBeatFrame->m_cpSndFrameData = NULL;
 	}
-	if (pHeartBeatFrame->m_cpCommandWord != NULL)
+	if (pHeartBeatFrame->m_pbyCommandWord != NULL)
 	{
-		delete[] pHeartBeatFrame->m_cpCommandWord;
-		pHeartBeatFrame->m_cpCommandWord = NULL;
+		delete[] pHeartBeatFrame->m_pbyCommandWord;
+		pHeartBeatFrame->m_pbyCommandWord = NULL;
 	}
 	if (pHeartBeatFrame->m_pCommandStruct != NULL)
 	{
@@ -119,7 +119,7 @@ void MakeInstrHeartBeatFrame(m_oHeartBeatFrameStruct* pHeartBeatFrame,
 	EnterCriticalSection(&pHeartBeatFrame->m_oSecHeartBeat);
 	pHeartBeatFrame->m_pCommandStruct->m_uiDstIP = pConstVar->m_uiIPBroadcastAddr;
 	MakeInstrFrame(pHeartBeatFrame->m_pCommandStruct,  pConstVar, pHeartBeatFrame->m_cpSndFrameData,
-		pHeartBeatFrame->m_cpCommandWord, pHeartBeatFrame->m_usCommandWordNum);
+		pHeartBeatFrame->m_pbyCommandWord, pHeartBeatFrame->m_usCommandWordNum);
 	SendFrame(pHeartBeatFrame->m_oHeartBeatSocket, pHeartBeatFrame->m_cpSndFrameData, 
 		pConstVar->m_iSndFrameSize,pHeartBeatFrame->m_pCommandStruct->m_usAimPort, 
 		pHeartBeatFrame->m_pCommandStruct->m_uiAimIP, pLogOutPut);
