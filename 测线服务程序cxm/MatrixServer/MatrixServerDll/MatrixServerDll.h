@@ -271,8 +271,8 @@ typedef struct ConstVar_Struct
 	BYTE m_byCmdTailRecSndTime1;
 	/** 尾包接收\发送时刻低位*/
 	BYTE m_byCmdTailRecSndTime2;
-	/** 尾包接收\发送时刻低位*/
-	BYTE m_byCmdTailRecSndTime3;
+// 	/** 尾包接收\发送时刻低位*/
+// 	BYTE m_byCmdTailRecSndTime3;
 	/** 广播命令等待端口匹配*/
 	BYTE m_byCmdBroadCastPortSeted;
 	/** 设置ADC控制命令命令字*/
@@ -533,14 +533,14 @@ typedef struct InstrumentCommand_Struct
 // 	unsigned short m_usTailRecTime;
 // 	/** 尾包发送时刻/**交叉站尾包发送时刻，低14位有效*/
 // 	unsigned short m_usTailSndTime;
-	/** 尾包接收时刻低位*/
-	unsigned short m_usTailRecTimeLow;
+// 	/** 尾包接收时刻低位*/
+// 	unsigned short m_usTailRecTimeLow;
 	/** 尾包接收时刻高位*/
-	unsigned int m_uiTailRecTimeHigh;
-	/** 尾包发送时刻/交叉站尾包发送时刻低位*/
-	unsigned short m_usTailSndTimeLow;
+	unsigned int m_uiTailRecTime;
+// 	/** 尾包发送时刻/交叉站尾包发送时刻低位*/
+// 	unsigned short m_usTailSndTimeLow;
 	/** 尾包发送时刻/交叉站尾包发送时刻高位*/
-	unsigned int m_uiTailSndTimeHigh;
+	unsigned int m_uiTailSndTime;
 	/** 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令*/
 	unsigned int m_uiBroadCastPortSeted;
 	/** 网络时刻*/
@@ -884,14 +884,14 @@ typedef struct Instrument_Struct
 // 	unsigned short m_usReceiveTime;	
 // 	/** 16bits时间，发送时刻低位*/
 // 	unsigned short m_usSendTime;
-	/** 16bits时间，接收时刻低位*/
-	unsigned short m_usReceiveTimeLow;
+// 	/** 16bits时间，接收时刻低位*/
+// 	unsigned short m_usReceiveTimeLow;
 	/** 32bits时间，接收时刻高位*/
-	unsigned int m_uiReceiveTimeHigh;
-	/** 16bits时间，发送时刻低位*/
-	unsigned short m_usSendTimeLow;
+	unsigned int m_uiReceiveTime;
+// 	/** 16bits时间，发送时刻低位*/
+// 	unsigned short m_usSendTimeLow;
 	/** 32bits时间，发送时刻高位*/
-	unsigned int m_uiSendTimeHigh;
+	unsigned int m_uiSendTime;
 	/** 16bits 测线方向左面尾包接收时刻*/
 	unsigned short m_usLineLeftReceiveTime;	
 	/** 16bits 测线方向右面尾包接收时刻*/

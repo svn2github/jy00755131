@@ -133,14 +133,14 @@ bool ResetInstrFramePacket(m_oInstrumentCommandStruct* pCommand)
 //	pCommand->m_usTailRecTime = 0;
 //	// 尾包发送时刻//交叉站尾包发送时刻，低14位有效
 //	pCommand->m_usTailSndTime = 0;
-	/** 尾包接收时刻低位*/
-	pCommand->m_usTailRecTimeLow = 0;
+// 	/** 尾包接收时刻低位*/
+// 	pCommand->m_usTailRecTimeLow = 0;
 	/** 尾包接收时刻高位*/
-	pCommand->m_uiTailRecTimeHigh = 0;
-	/** 尾包发送时刻/交叉站尾包发送时刻低位*/
-	pCommand->m_usTailSndTimeLow = 0;
+	pCommand->m_uiTailRecTime = 0;
+// 	/** 尾包发送时刻/交叉站尾包发送时刻低位*/
+// 	pCommand->m_usTailSndTimeLow = 0;
 	/** 尾包发送时刻/交叉站尾包发送时刻高位*/
-	pCommand->m_uiTailSndTimeHigh = 0;
+	pCommand->m_uiTailSndTime = 0;
 	// 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令
 	pCommand->m_uiBroadCastPortSeted = 0;
 	// 网络时刻
@@ -392,34 +392,38 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 // 			memcpy(&pCommand->m_usTailSndTime, &pFrameData[iPos], iFramePacketSize2B);
 // 			pCommand->m_usTailSndTime &= 0x3fff;
 // 			iPos += iFramePacketSize2B;
-			memcpy(&pCommand->m_usTailRecTimeLow, &pFrameData[iPos], iFramePacketSize2B);
-			iPos += iFramePacketSize2B;
-			memcpy(&pCommand->m_uiTailRecTimeHigh, &pFrameData[iPos], iFramePacketSize2B);
-			iPos += iFramePacketSize2B;
+// 			memcpy(&pCommand->m_usTailRecTimeLow, &pFrameData[iPos], iFramePacketSize2B);
+// 			iPos += iFramePacketSize2B;
+// 			memcpy(&pCommand->m_uiTailRecTime, &pFrameData[iPos], iFramePacketSize2B);
+// 			iPos += iFramePacketSize2B;
+			memcpy(&pCommand->m_uiTailRecTime, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdTailRecSndTime2)
 		{
-			unsigned short usTemp = 0;
-			unsigned int uiTemp = 0;
-			memcpy(&usTemp, &pFrameData[iPos], iFramePacketSize2B);
-			iPos += iFramePacketSize2B;
-			uiTemp = usTemp;
-			uiTemp = uiTemp << 16;
-			pCommand->m_uiTailRecTimeHigh += uiTemp;
-// 			pCommand->m_uiTailRecTimeHigh <<= 2;
-// 			pCommand->m_uiTailRecTimeHigh += (pCommand->m_usTailRecTimeLow >> 14);
+// 			unsigned short usTemp = 0;
+// 			unsigned int uiTemp = 0;
+// 			memcpy(&usTemp, &pFrameData[iPos], iFramePacketSize2B);
+// 			iPos += iFramePacketSize2B;
+// 			uiTemp = usTemp;
+// 			uiTemp = uiTemp << 16;
+// 			pCommand->m_uiTailRecTime += uiTemp;
+// 			pCommand->m_uiTailRecTime <<= 2;
+// 			pCommand->m_uiTailRecTime += (pCommand->m_usTailRecTimeLow >> 14);
 // 			pCommand->m_usTailRecTimeLow &= 0x3fff;
-			memcpy(&pCommand->m_usTailSndTimeLow, &pFrameData[iPos], iFramePacketSize2B);
-			iPos += iFramePacketSize2B;
-		}
-		else if (byCommandWord == pConstVar->m_byCmdTailRecSndTime3)
-		{
-			memcpy(&pCommand->m_uiTailSndTimeHigh, &pFrameData[iPos], iFramePacketSize4B);
+// 			memcpy(&pCommand->m_usTailSndTimeLow, &pFrameData[iPos], iFramePacketSize2B);
+// 			iPos += iFramePacketSize2B;
+			memcpy(&pCommand->m_uiTailSndTime, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
-// 			pCommand->m_uiTailSndTimeHigh <<= 2;
-// 			pCommand->m_uiTailSndTimeHigh += (pCommand->m_usTailSndTimeLow >> 14);
-// 			pCommand->m_usTailSndTimeLow &= 0x3fff;
 		}
+// 		else if (byCommandWord == pConstVar->m_byCmdTailRecSndTime3)
+// 		{
+// 			memcpy(&pCommand->m_uiTailSndTime, &pFrameData[iPos], iFramePacketSize4B);
+// 			iPos += iFramePacketSize4B;
+// 			pCommand->m_uiTailSndTime <<= 2;
+// 			pCommand->m_uiTailSndTime += (pCommand->m_usTailSndTimeLow >> 14);
+// 			pCommand->m_usTailSndTimeLow &= 0x3fff;
+// 		}
 		else if (byCommandWord == pConstVar->m_byCmdBroadCastPortSeted)
 		{
 			memcpy(&pCommand->m_uiBroadCastPortSeted, &pFrameData[iPos], iFramePacketSize4B);
@@ -663,10 +667,15 @@ bool MakeInstrFrame(m_oInstrumentCommandStruct* pCommand, m_oConstVarStruct* pCo
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdTailRecSndTime1)
 		{
-			memcpy(&pFrameData[iPos], &pCommand->m_usTailRecTimeLow, iFramePacketSize2B);
-			iPos += iFramePacketSize2B;
-			memcpy(&pFrameData[iPos], &pCommand->m_uiTailRecTimeHigh, iFramePacketSize2B);
-			iPos += iFramePacketSize2B;
+// 			memcpy(&pFrameData[iPos], &pCommand->m_usTailRecTimeLow, iFramePacketSize2B);
+// 			iPos += iFramePacketSize2B;
+			memcpy(&pFrameData[iPos], &pCommand->m_uiTailRecTime, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
+		}
+		else if (pCommandWord[i] == pConstVar->m_byCmdTailRecSndTime2)
+		{
+			memcpy(&pFrameData[iPos], &pCommand->m_uiTailSndTime, iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 		}
 		else if (pCommandWord[i] == pConstVar->m_byCmdBroadCastPortSeted)
 		{

@@ -57,14 +57,14 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 // 	pInstrument->m_usReceiveTime = 0;	// 16bits时间，接收时刻低位
 // 	pInstrument->m_usSendTime = 0;	// 16bits时间，发送时刻低位
 
-	/** 16bits时间，接收时刻低位*/
-	pInstrument->m_usReceiveTimeLow = 0;
+// 	/** 16bits时间，接收时刻低位*/
+// 	pInstrument->m_usReceiveTimeLow = 0;
 	/** 32bits时间，接收时刻高位*/
-	pInstrument->m_uiReceiveTimeHigh = 0;
-	/** 16bits时间，发送时刻低位*/
-	pInstrument->m_usSendTimeLow = 0;
+	pInstrument->m_uiReceiveTime = 0;
+// 	/** 16bits时间，发送时刻低位*/
+// 	pInstrument->m_usSendTimeLow = 0;
 	/** 32bits时间，发送时刻高位*/
-	pInstrument->m_uiSendTimeHigh = 0;
+	pInstrument->m_uiSendTime = 0;
 
 	pInstrument->m_usLineLeftReceiveTime = 0;	// 16bits 测线方向左面尾包接收时刻
 	pInstrument->m_usLineRightReceiveTime = 0;	// 16bits 测线方向右面尾包接收时刻

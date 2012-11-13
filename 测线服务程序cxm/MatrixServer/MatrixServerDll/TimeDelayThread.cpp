@@ -109,10 +109,10 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	unsigned short usLAUXTailRecTimeLAUXLineB = 0;
 	unsigned short usLAUXTailRecTimeLineA = 0;
 	unsigned short usLAUXTailRecTimeLineB = 0;
-	unsigned short usTailSndTimeLow = 0;
-	unsigned short usTailRecTimeLow = 0;
-	unsigned int uiTailSndTimeHigh = 0;
-	unsigned int uiTailRecTimeHigh = 0;
+// 	unsigned short usTailSndTimeLow = 0;
+// 	unsigned short usTailRecTimeLow = 0;
+	unsigned int uiTailSndTime = 0;
+	unsigned int uiTailRecTime = 0;
 	unsigned int uiSysTimeNewHigh = 0;
 	unsigned short usSysTimeNewLow = 0;
 	unsigned int uiSysTimeOldHigh = 0;
@@ -124,10 +124,10 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	usLAUXTailRecTimeLAUXLineB = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLAUXLineB;
 	usLAUXTailRecTimeLineA = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLineA;
 	usLAUXTailRecTimeLineB = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usLAUXTailRecTimeLineB;
-	usTailRecTimeLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailRecTimeLow;
-	uiTailRecTimeHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiTailRecTimeHigh;
-	usTailSndTimeLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTimeLow;
-	uiTailSndTimeHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiTailSndTimeHigh;
+//	usTailRecTimeLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailRecTimeLow;
+	uiTailRecTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiTailRecTime;
+//	usTailSndTimeLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usTailSndTimeLow;
+	uiTailSndTime = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiTailSndTime;
  	uiSysTimeNewHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSysTimeNewHigh;
 	usSysTimeNewLow = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_usSysTimeNewLow;
 	uiSysTimeOldHigh = pTimeDelayThread->m_pTailTimeFrame->m_pCommandStructReturn->m_uiSysTimeOldHigh;
@@ -182,20 +182,23 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	else
 	{
 		// 采集站或电源站尾包接收时刻
-		pInstrument->m_usReceiveTimeLow = usTailRecTimeLow;
-		pInstrument->m_uiReceiveTimeHigh = uiTailRecTimeHigh;
-		str.Format(_T("采集站尾包接收时刻低位 = 0x%x，采集站尾包接收时刻高位 = 0x%x，"), 
-			usTailRecTimeLow, uiTailRecTimeHigh);
+//		pInstrument->m_usReceiveTimeLow = usTailRecTimeLow;
+		pInstrument->m_uiReceiveTime = uiTailRecTime;
+// 		str.Format(_T("采集站尾包接收时刻低位 = 0x%x，采集站尾包接收时刻高位 = 0x%x，"), 
+// 			usTailRecTimeLow, uiTailRecTime);
+		str.Format(_T("采集站尾包接收时刻 = 0x%x，"), uiTailRecTime);
 		strOutPut += str;
 	}
 	// 尾包发送时刻
-	pInstrument->m_usSendTimeLow = usTailSndTimeLow;
-	pInstrument->m_uiSendTimeHigh = uiTailSndTimeHigh;
+//	pInstrument->m_usSendTimeLow = usTailSndTimeLow;
+	pInstrument->m_uiSendTime = uiTailSndTime;
 	// @@@时间48位
 // 	pInstrument->m_uiSystemTime = uiSysTime;
 // 	pInstrument->m_uiNetTime = uiNetTime;
-	str.Format(_T("尾包发送时刻低位 = 0x%x，尾包发送时刻高位 = 0x%x，修正后的本地时间高位 = 0x%x，修正后的本地时间低位 = 0x%x，原本地时间高位 = 0x%x，原本地时间低位 = 0x%x"), 
-		usTailSndTimeLow, uiTailSndTimeHigh, uiSysTimeNewHigh, usSysTimeNewLow, uiSysTimeOldHigh, usSysTimeOldLow);
+// 	str.Format(_T("尾包发送时刻低位 = 0x%x，尾包发送时刻高位 = 0x%x，修正后的本地时间高位 = 0x%x，修正后的本地时间低位 = 0x%x，原本地时间高位 = 0x%x，原本地时间低位 = 0x%x"), 
+// 		usTailSndTimeLow, uiTailSndTime, uiSysTimeNewHigh, usSysTimeNewLow, uiSysTimeOldHigh, usSysTimeOldLow);
+	str.Format(_T("尾包发送时刻 = 0x%x，修正后的本地时间高位 = 0x%x，修正后的本地时间低位 = 0x%x，原本地时间高位 = 0x%x，原本地时间低位 = 0x%x"), 
+		uiTailSndTime, uiSysTimeNewHigh, usSysTimeNewLow, uiSysTimeOldHigh, usSysTimeOldLow);
 	strOutPut += str;
 	strConv = (CStringA)strOutPut;
 	AddMsgToLogOutPutList(pTimeDelayThread->m_pLogOutPutTimeDelay, "", strConv);
@@ -291,10 +294,10 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 	m_oInstrumentStruct* pInstrument = NULL;
 	m_oInstrumentStruct* pInstrumentNext = NULL;
 	// 临时变量
-	int iFixLow1 = 0;
-	int iFixLow2 = 0;
-	int iFixHigh1 = 0;
-	int iFixHigh2 = 0;
+	int iFix1 = 0;
+	int iFix2 = 0;
+// 	int iFixHigh1 = 0;
+// 	int iFixHigh2 = 0;
 	CString str = _T("");
 	CString strOutPut = _T("");
 	string strConv = "";
@@ -337,23 +340,23 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 // 				iFixLow1 = pInstrument->m_usLineRightReceiveTime - pInstrumentNext->m_usSendTime;
 // 			}
 			// @@@@
-			iFixLow1 = 0;
-			iFixHigh1 = 0;
+			iFix1 = 0;
+//			iFixHigh1 = 0;
 		}
 		else
 		{
-			iFixLow1 = pInstrument->m_usReceiveTimeLow - pInstrumentNext->m_usSendTimeLow;
-			iFixHigh1 = pInstrument->m_uiReceiveTimeHigh - pInstrumentNext->m_uiSendTimeHigh;
+			iFix1 = pInstrument->m_uiReceiveTime - pInstrumentNext->m_uiSendTime;
+//			iFixHigh1 = pInstrument->m_uiReceiveTime - pInstrumentNext->m_uiSendTime;
 		}
-		if (iFixLow1 < 0)
-		{
-			iFixLow1 += 0xffff;
-			iFixHigh1 -= 1;
-		}
+// 		if (iFix1 < 0)
+// 		{
+// 			iFix1 += 0x3fff;
+// 			iFixHigh1 -= 1;
+// 		}
 // 		if ((pInstrument->m_iInstrumentType == InstrumentTypeFDU)
 // 			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeFDU))
 // 		{
-// 			iFixLow1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToFDU;
+// 			iFix1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToFDU;
 // 		}
 // 		else if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
 // 			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeFDU))
@@ -377,7 +380,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 // 		}
 //  		if (iFixHigh1 % 2 == 0)
 //  		{
-//		iFixLow1 >>= 1;
+		iFix1 >>= 1;
 //  		}
 // 		else
 // 		{
@@ -389,15 +392,17 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 // 		{
 // 			iFixLow1 = TimeDelayDefault;
 // 		}
-		iFixLow2 += iFixLow1;
-		if (iFixLow2 > 0x3fff)
-		{
-			iFixLow2 -= 0x3fff;
-			iFixHigh1 += 1;
-		}
-		iFixHigh2 += iFixHigh1;
-		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻低位差值为 %d,	高位差值为 %d"), 
-			pInstrumentNext->m_uiIP, iFixLow1, iFixHigh1);
+		iFix2 += iFix1;
+// 		if (iFix2 > 0x3fff)
+// 		{
+// 			iFix2 -= 0x3fff;
+// 			iFixHigh1 += 1;
+// 		}
+//		iFixHigh2 += iFixHigh1;
+// 		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻低位差值为 %d,	高位差值为 %d"), 
+// 			pInstrumentNext->m_uiIP, iFix1, iFixHigh1);
+		str.Format(_T("IP地址 = 0x%x 的仪器的尾包时刻差值为 %d"), 
+			pInstrumentNext->m_uiIP, iFix1);
 		strOutPut = str;
 
 		// @@@时间48位
