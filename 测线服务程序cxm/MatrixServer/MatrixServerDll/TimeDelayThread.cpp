@@ -183,6 +183,8 @@ void ProcTailTimeReturnFrameOne(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* 
 	{
 		// 采集站或电源站尾包接收时刻
 //		pInstrument->m_usReceiveTimeLow = usTailRecTimeLow;
+		str.Format(_T("采集站尾包接收时刻增加帧计数 = %d，"), (uiTailRecTime - pInstrument->m_uiReceiveTime) >> 14);
+		strOutPut += str;
 		pInstrument->m_uiReceiveTime = uiTailRecTime;
 // 		str.Format(_T("采集站尾包接收时刻低位 = 0x%x，采集站尾包接收时刻高位 = 0x%x，"), 
 // 			usTailRecTimeLow, uiTailRecTime);
@@ -257,11 +259,11 @@ bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDe
 	pInstrument = pRout->m_pHead;
 	if (pInstrument->m_bTailTimeQueryOK == false)
 	{
-		str.Format(_T("没有收到路由IP = 0x%x的路由头仪器IP = 0x%x的尾包时刻查询帧"), 
-			pRout->m_uiRoutIP, pInstrument->m_uiIP);
-		strConv = (CStringA)str;
-		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTailTimeReturn", 
-			strConv, WarningType);
+// 		str.Format(_T("没有收到路由IP = 0x%x的路由头仪器IP = 0x%x的尾包时刻查询帧"), 
+// 			pRout->m_uiRoutIP, pInstrument->m_uiIP);
+// 		strConv = (CStringA)str;
+// 		AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTailTimeReturn", 
+// 			strConv, WarningType);
 		return false;
 	}
 	do 
@@ -274,12 +276,24 @@ bool CheckTailTimeReturn(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDe
 		/** 尾包时刻查询是否成功*/
 		if (pInstrument->m_bTailTimeQueryOK == false)
 		{
-			str.Format(_T("路由IP = 0x%x的仪器的尾包时刻查询接收不完全"), pRout->m_uiRoutIP);
-			strConv = (CStringA)str;
-			AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTailTimeReturn", 
-				strConv, WarningType);
+// 			str.Format(_T("路由IP = 0x%x的仪器的尾包时刻查询接收不完全"), pRout->m_uiRoutIP);
+// 			strConv = (CStringA)str;
+// 			AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "CheckTailTimeReturn", 
+// 				strConv, WarningType);
 			return false;
 		}
+	} while (pInstrument != pRout->m_pTail);
+	// 重置尾包查询应答标志位
+	pInstrument = pRout->m_pHead;
+	do 
+	{
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection);
+		if (pInstrument == NULL)
+		{
+			break;
+		}
+		/** 尾包时刻查询是否成功*/
+		pInstrument->m_bTailTimeQueryOK = false;
 	} while (pInstrument != pRout->m_pTail);
 	str.Format(_T("路由IP = 0x%x的仪器的尾包时刻查询接收完全"), pRout->m_uiRoutIP);
 	strConv = (CStringA)str;
@@ -520,14 +534,16 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	CString str = _T("");
 	string strConv = "";
 	unsigned int uiProcRoutIP = 0;
-	unsigned int uiCounter = 0;
+//	unsigned int uiCounter = 0;
 	bool bClose = false;
 	bool bWork = false;
+	hash_map<unsigned int, m_oRoutStruct*>::iterator iter;
 	while(true)
 	{
 		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		bClose = pTimeDelayThread->m_pThread->m_bClose;
 		bWork = pTimeDelayThread->m_pThread->m_bWork;
+//		uiCounter = pTimeDelayThread->m_uiCounter;
 		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		if (bClose == true)
 		{
@@ -535,83 +551,103 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		}
 		if (bWork == true)
 		{
-			EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-			uiCounter = pTimeDelayThread->m_uiCounter;
-			LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 			EnterCriticalSection(&pTimeDelayThread->m_pLineList->m_oSecLineList);
-			if (pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.size() > 0)
+			for (iter = pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap.begin();
+				iter != pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap.end(); iter++)
 			{
-				uiCounter++;
-				EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-				pTimeDelayThread->m_uiCounter = uiCounter;
-				LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-				if (uiCounter == 1)
+				pRout = iter->second;
+				if ((pRout->m_uiRoutIP == 0) || (pRout->m_pTail == NULL))
 				{
-					// 得到时统队列头的路由IP地址作为当前任务处理的路由IP
-					uiProcRoutIP = *pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.begin();
-					// 当前操作的路由IP在路由索引表中
-					if (TRUE == IfIndexExistInRoutMap(uiProcRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap))
-					{
-						// 得到当前操作的路由指针
-						pRout = GetRout(uiProcRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap);
-					}
-					else
-					{
-						str.Format(_T("路由IP = 0x%x"), uiProcRoutIP);
-						strConv = (CStringA)str;
-						AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "RunTimeDelayThread", 
-							strConv, ErrorType, IDS_ERR_ROUT_NOTEXIT);
-						// 删除该路由时统任务
-						pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
-						LeaveCriticalSection(&pTimeDelayThread->m_pLineList->m_oSecLineList);
-						uiCounter = 0;
-						EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-						pTimeDelayThread->m_uiCounter = uiCounter;
-						LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-						continue;
-					}
-					// 处理尾包时刻查询
-					ProcTailTimeFrame(pRout, pTimeDelayThread);
+					continue;
 				}
-				else if (uiCounter == 5)
+				// 处理尾包时刻查询应答
+				ProcTailTimeReturnFrame(pRout, pTimeDelayThread);
+				// 检查尾包时刻查询结果是否接收完全
+				if (true == CheckTailTimeReturn(pRout, pTimeDelayThread))
 				{
-					// 处理尾包时刻查询应答
-					ProcTailTimeReturnFrame(pRout, pTimeDelayThread);
-					// 检查尾包时刻查询结果是否接收完全
-					if (false == CheckTailTimeReturn(pRout, pTimeDelayThread))
-					{
-						uiCounter = 0;
-						EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-						pTimeDelayThread->m_uiCounter = uiCounter;
-						LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-					}
-					else
-					{
-						// 处理时统设置
-						ProcTimeDelayFrame(pRout, pTimeDelayThread);
-					}
+					// 处理时统设置
+					ProcTimeDelayFrame(pRout, pTimeDelayThread);
 				}
-				else if (uiCounter == 10)
-				{
-					// 处理时统设置应答
-					ProcTimeDelayReturnFrame(pTimeDelayThread);
-					// 判断该路由方向是否完成时统
-					// 检查时统设置应答是否接收完全
-					if (true == CheckTimeDelayReturnByRout(pRout, pTimeDelayThread, false))
-					{
-						// 时统任务移到队列尾
-						pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
-						pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.push_back(uiProcRoutIP);
-					}
-				}
-				else if (uiCounter == 15)
-				{
-					uiCounter = 0;
-					EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-					pTimeDelayThread->m_uiCounter = uiCounter;
-					LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
-				}
+				// 处理时统设置应答
+				ProcTimeDelayReturnFrame(pTimeDelayThread);
+				// 判断该路由方向是否完成时统
+				// 检查时统设置应答是否接收完全
+				CheckTimeDelayReturnByRout(pRout, pTimeDelayThread, false);
 			}
+
+// 			if (pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.size() > 0)
+// 			{
+// 				uiCounter++;
+// 				EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+// 				pTimeDelayThread->m_uiCounter = uiCounter;
+// 				LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+// 				if (uiCounter == 1)
+// 				{
+// 					// 得到时统队列头的路由IP地址作为当前任务处理的路由IP
+// 					uiProcRoutIP = *pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.begin();
+// 					// 当前操作的路由IP在路由索引表中
+// 					if (TRUE == IfIndexExistInRoutMap(uiProcRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap))
+// 					{
+// 						// 得到当前操作的路由指针
+// 						pRout = GetRout(uiProcRoutIP, &pTimeDelayThread->m_pLineList->m_pRoutList->m_oRoutMap);
+// 					}
+// 					else
+// 					{
+// 						str.Format(_T("路由IP = 0x%x"), uiProcRoutIP);
+// 						strConv = (CStringA)str;
+// 						AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, "RunTimeDelayThread", 
+// 							strConv, ErrorType, IDS_ERR_ROUT_NOTEXIT);
+// 						// 删除该路由时统任务
+// 						pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
+// 						LeaveCriticalSection(&pTimeDelayThread->m_pLineList->m_oSecLineList);
+// 						uiCounter = 0;
+// 						EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+// 						pTimeDelayThread->m_uiCounter = uiCounter;
+// 						LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+// 						continue;
+// 					}
+// 					// 处理尾包时刻查询
+// 					ProcTailTimeFrame(pRout, pTimeDelayThread);
+// 				}
+// 				else if (uiCounter == 5)
+// 				{
+// 					// 处理尾包时刻查询应答
+// 					ProcTailTimeReturnFrame(pRout, pTimeDelayThread);
+// 					// 检查尾包时刻查询结果是否接收完全
+// 					if (false == CheckTailTimeReturn(pRout, pTimeDelayThread))
+// 					{
+// 						uiCounter = 0;
+// 						EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+// 						pTimeDelayThread->m_uiCounter = uiCounter;
+// 						LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+// 					}
+// 					else
+// 					{
+// 						// 处理时统设置
+// 						ProcTimeDelayFrame(pRout, pTimeDelayThread);
+// 					}
+// 				}
+// 				else if (uiCounter == 10)
+// 				{
+// 					// 处理时统设置应答
+// 					ProcTimeDelayReturnFrame(pTimeDelayThread);
+// 					// 判断该路由方向是否完成时统
+// 					// 检查时统设置应答是否接收完全
+// 					if (true == CheckTimeDelayReturnByRout(pRout, pTimeDelayThread, false))
+// 					{
+// 						// 时统任务移到队列尾
+// 						pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.pop_front();
+// 						pTimeDelayThread->m_pLineList->m_pRoutList->m_olsTimeDelayTaskQueue.push_back(uiProcRoutIP);
+// 					}
+// 				}
+// 				else if (uiCounter == 15)
+// 				{
+// 					uiCounter = 0;
+// 					EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+// 					pTimeDelayThread->m_uiCounter = uiCounter;
+// 					LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
+// 				}
+// 			}
 			LeaveCriticalSection(&pTimeDelayThread->m_pLineList->m_oSecLineList);
 		}
 		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
@@ -638,7 +674,7 @@ bool OnInitTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread,
 	ASSERT(pConstVar != NULL);
 	EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 	pTimeDelayThread->m_bADCStartSample = false;
-	pTimeDelayThread->m_uiCounter = 0;
+//	pTimeDelayThread->m_uiCounter = 0;
 	if (false == OnInitThread(pTimeDelayThread->m_pThread, pLogOutPut, pConstVar))
 	{
 		LeaveCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);

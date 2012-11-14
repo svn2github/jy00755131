@@ -22,8 +22,8 @@ void OnResetRoutList(m_oRoutListStruct* pRoutList)
 	// 清空空闲路由队列
 	pRoutList->m_olsRoutFree.clear();
 	// 清空仪器时统的任务队列
-	pRoutList->m_olsTimeDelayTaskQueue.clear();
-	pRoutList->m_olsTimeDelayTemp.clear();
+// 	pRoutList->m_olsTimeDelayTaskQueue.clear();
+// 	pRoutList->m_olsTimeDelayTemp.clear();
 	// 空闲路由总数
 	pRoutList->m_uiCountFree = pRoutList->m_uiCountAll;
 	// 加入空闲路由队列
@@ -49,8 +49,8 @@ void OnInitRoutList(m_oRoutListStruct* pRoutList, m_oConstVarStruct* pConstVar)
 	// 清空空闲路由队列
 	pRoutList->m_olsRoutFree.clear();
 	// 清空仪器时统的任务队列
-	pRoutList->m_olsTimeDelayTaskQueue.clear();
-	pRoutList->m_olsTimeDelayTemp.clear();
+// 	pRoutList->m_olsTimeDelayTaskQueue.clear();
+// 	pRoutList->m_olsTimeDelayTemp.clear();
 	// 路由队列中路由个数
 	pRoutList->m_uiCountAll = pConstVar->m_iInstrumentNum;
 	// 空闲路由总数
@@ -90,8 +90,8 @@ void OnCloseRoutList(m_oRoutListStruct* pRoutList)
 	// 清空空闲路由队列
 	pRoutList->m_olsRoutFree.clear();
 	// 清空仪器时统的任务队列
-	pRoutList->m_olsTimeDelayTaskQueue.clear();
-	pRoutList->m_olsTimeDelayTemp.clear();
+// 	pRoutList->m_olsTimeDelayTaskQueue.clear();
+// 	pRoutList->m_olsTimeDelayTemp.clear();
 	// 删除路由数组
 	if (pRoutList->m_pArrayRout != NULL)
 	{

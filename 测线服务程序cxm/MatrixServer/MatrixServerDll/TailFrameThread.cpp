@@ -9,6 +9,7 @@ m_oTailFrameThreadStruct* OnCreateTailFrameThread(void)
 	pTailFrameThread->m_pThread = new m_oThreadStruct;
 	pTailFrameThread->m_pLineList = NULL;
 	pTailFrameThread->m_pTailFrame = NULL;
+	pTailFrameThread->m_pTimeDelayThread = NULL;
 	InitializeCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	return pTailFrameThread;
 }
@@ -201,6 +202,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	ASSERT(pTailFrameThread != NULL);
 	// 新仪器指针为空
 	m_oInstrumentStruct* pInstrument = NULL;
+	m_oRoutStruct* pRout = NULL;
 	CString str = _T("");
 	string strFrameData = "";
 	string strConv = "";
@@ -208,6 +210,12 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	unsigned int uiRoutIP = 0;
 	unsigned int uiSysTime = 0;
 	unsigned int uiTailFrameCount = 0;
+	bool bStartSample = false;
+	bool bWork = false;
+	EnterCriticalSection(&pTailFrameThread->m_pTimeDelayThread->m_oSecTimeDelayThread);
+	bStartSample = pTailFrameThread->m_pTimeDelayThread->m_bADCStartSample;
+	bWork = pTailFrameThread->m_pTimeDelayThread->m_pThread->m_bWork;
+	LeaveCriticalSection(&pTailFrameThread->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	EnterCriticalSection(&pTailFrameThread->m_oSecTailFrameThread);
 	pTailFrameThread->m_uiTailFrameCount++;
 	uiTailFrameCount = pTailFrameThread->m_uiTailFrameCount;
@@ -245,11 +253,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 	// 在路由索引表中找到该尾包所在的路由
 	// 更新仪器的存活时间
 	UpdateInstrActiveTime(pInstrument);
-	// 仪器类型为LCI则更新本地时间
-	if (pInstrument->m_iInstrumentType == InstrumentTypeLCI)
-	{
-		UpdateLocalSysTime(uiSysTime, pTailFrameThread->m_pLineList);
-	}
+
 	if (FALSE == IfIndexExistInRoutMap(uiRoutIP, &pTailFrameThread->m_pLineList->m_pRoutList->m_oRoutMap))
 	{
 		LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
@@ -257,9 +261,28 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 		GetFrameInfo(pTailFrameThread->m_pTailFrame->m_cpRcvFrameData,
 			pTailFrameThread->m_pThread->m_pConstVar->m_iRcvFrameSize, &strFrameData);
 		LeaveCriticalSection(&pTailFrameThread->m_pTailFrame->m_oSecTailFrame);
-		EnterCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
 		AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne",
 			strFrameData,	ErrorType, IDS_ERR_ROUT_NOTEXIT);
+		return;
+	}
+	else
+	{
+		GetRoutByRoutIP(uiRoutIP, pTailFrameThread->m_pLineList->m_pRoutList, &pRout);
+		if (uiRoutIP != 0)
+		{
+			// 如果系统稳定且收到不是LCI的尾包
+			if ((pTailFrameThread->m_pLineList->m_bLineStableChange == true)
+				&& (bWork == true))
+			{
+				// 处理尾包时刻查询
+				ProcTailTimeFrame(pRout, pTailFrameThread->m_pTimeDelayThread);
+			}
+		}
+		else
+		{
+			// 仪器类型为LCI则更新本地时间
+			UpdateLocalSysTime(uiSysTime, pTailFrameThread->m_pLineList);
+		}
 	}
 	LeaveCriticalSection(&pTailFrameThread->m_pLineList->m_oSecLineList);
 }
@@ -378,6 +401,7 @@ bool OnInit_TailFrameThread(m_oEnvironmentStruct* pEnv)
 	ASSERT(pEnv != NULL);
 	pEnv->m_pTailFrameThread->m_pTailFrame = pEnv->m_pTailFrame;
 	pEnv->m_pTailFrameThread->m_pLineList = pEnv->m_pLineList;
+	pEnv->m_pTailFrameThread->m_pTimeDelayThread = pEnv->m_pTimeDelayThread;
 	return OnInitTailFrameThread(pEnv->m_pTailFrameThread, pEnv->m_pLogOutPutOpt, pEnv->m_pConstVar);
 }
 // 关闭尾包接收线程

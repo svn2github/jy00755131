@@ -383,7 +383,7 @@ void OnADCStopSample(m_oEnvironmentStruct* pEnv)
 	OnResetADCSetLable(pEnv->m_pLineList, ADCStopSampleOptNb);
 	EnterCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);
 	pEnv->m_pTimeDelayThread->m_bADCStartSample = false;
-	pEnv->m_pTimeDelayThread->m_uiCounter = 0;
+//	pEnv->m_pTimeDelayThread->m_uiCounter = 0;
 	// 时统设置线程开始工作
 	pEnv->m_pTimeDelayThread->m_pThread->m_bWork = true;
 	LeaveCriticalSection(&pEnv->m_pTimeDelayThread->m_oSecTimeDelayThread);

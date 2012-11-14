@@ -1184,10 +1184,10 @@ typedef struct RoutList_Struct
 	hash_map<unsigned int, m_oRoutStruct*> m_oRoutMap;
 	/** 需要删除路由仪器的路由索引表*/
 	hash_map<unsigned int, m_oRoutStruct*> m_oRoutDeleteMap;
-	/** 仪器时统的任务队列，成员为路由IP*/
-	list<unsigned int> m_olsTimeDelayTaskQueue;
-	/** 仪器时统的任务中转队列*/
-	list<unsigned int> m_olsTimeDelayTemp;
+// 	/** 仪器时统的任务队列，成员为路由IP*/
+// 	list<unsigned int> m_olsTimeDelayTaskQueue;
+// 	/** 仪器时统的任务中转队列*/
+// 	list<unsigned int> m_olsTimeDelayTemp;
 	/** ADC参数设置任务索引*/
 	hash_map<unsigned int, m_oRoutStruct*> m_oADCSetRoutMap;
 	/** 路由总数*/
@@ -1444,24 +1444,6 @@ typedef struct IPSetFrameThread_Struct
 }m_oIPSetFrameThreadStruct;
 
 /**
-* @struct TailFrameThread_Struct
-* @brief 尾包线程结构体
-*/
-typedef struct TailFrameThread_Struct
-{
-	/** 资源同步对象*/
-	CRITICAL_SECTION m_oSecTailFrameThread;
-	/** 线程结构体指针*/
-	m_oThreadStruct* m_pThread;
-	/** 尾包帧指针*/
-	m_oTailFrameStruct* m_pTailFrame;
-	/** 仪器队列结构体指针*/
-	m_oLineListStruct* m_pLineList;
-	/** 尾包计数*/
-	unsigned int m_uiTailFrameCount;
-}m_oTailFrameThreadStruct;
-
-/**
 * @struct TimeDelayThread_Struct
 * @brief 时统线程结构体
 */
@@ -1480,11 +1462,30 @@ typedef struct TimeDelayThread_Struct
 	/** ADC开始数据采集标志位*/
 	bool m_bADCStartSample;
 	/** 计数器*/
-	unsigned int m_uiCounter;
+//	unsigned int m_uiCounter;
 	/** 输出日志指针*/
 	m_oLogOutPutStruct* m_pLogOutPutTimeDelay;
 }m_oTimeDelayThreadStruct;
 
+/**
+* @struct TailFrameThread_Struct
+* @brief 尾包线程结构体
+*/
+typedef struct TailFrameThread_Struct
+{
+	/** 资源同步对象*/
+	CRITICAL_SECTION m_oSecTailFrameThread;
+	/** 线程结构体指针*/
+	m_oThreadStruct* m_pThread;
+	/** 尾包帧指针*/
+	m_oTailFrameStruct* m_pTailFrame;
+	/** 仪器队列结构体指针*/
+	m_oLineListStruct* m_pLineList;
+	/** 尾包计数*/
+	unsigned int m_uiTailFrameCount;
+	/** 时统线程指针*/
+	m_oTimeDelayThreadStruct* m_pTimeDelayThread;
+}m_oTailFrameThreadStruct;
 /**
 * @struct ADCSetThread_Struct
 * @brief ADC参数设置线程结构体
@@ -2791,11 +2792,11 @@ MatrixServerDll_API m_oMonitorThreadStruct* OnCreateMonitorThread(void);
 // 线程等待函数
 MatrixServerDll_API void WaitMonitorThread(m_oMonitorThreadStruct* pMonitorThread);
 // 沿着路由方向得到时统任务
-MatrixServerDll_API void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout, m_oRoutListStruct* pRoutList);
+// MatrixServerDll_API void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout, m_oRoutListStruct* pRoutList);
 // 得到时统任务
-MatrixServerDll_API void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oLogOutPutStruct* pLogOutPut);
+// MatrixServerDll_API void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oLogOutPutStruct* pLogOutPut);
 // 生成时统任务队列
-MatrixServerDll_API void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_oLogOutPutStruct* pLogOutPut);
+// MatrixServerDll_API void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_oLogOutPutStruct* pLogOutPut);
 // ADC参数设置线程开始工作
 MatrixServerDll_API void OnADCSetThreadWork(int iOpt, m_oADCSetThreadStruct* pADCSetThread);
 // 清除ADC参数设置任务索引

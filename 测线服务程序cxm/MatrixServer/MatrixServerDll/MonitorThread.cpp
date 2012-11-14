@@ -46,91 +46,91 @@ void WaitMonitorThread(m_oMonitorThreadStruct* pMonitorThread)
 	}
 }
 // 沿着路由方向得到时统任务
-void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout, m_oRoutListStruct* pRoutList)
-{
-	ASSERT(pRoutList != NULL);
-	ASSERT(pRout != NULL);
-	m_oInstrumentStruct* pInstrument = NULL;
-	pInstrument = pRout->m_pHead;
-	do 
-	{
-		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection);
-		if (pInstrument == NULL)
-		{
-			break;
-		}
-		// 如果仪器为交叉站
-		if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
-			|| (pInstrument->m_iInstrumentType == InstrumentTypeLAUX))
-		{
-			// 将仪器四个方向的路由加入临时队列
-			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPTop);
-			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPDown);
-			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPLeft);
-			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPRight);
-		}
-	} while (pInstrument != pRout->m_pTail);
-}
+// void GetTimeDelayTaskAlongRout(m_oRoutStruct* pRout, m_oRoutListStruct* pRoutList)
+// {
+// 	ASSERT(pRoutList != NULL);
+// 	ASSERT(pRout != NULL);
+// 	m_oInstrumentStruct* pInstrument = NULL;
+// 	pInstrument = pRout->m_pHead;
+// 	do 
+// 	{
+// 		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection);
+// 		if (pInstrument == NULL)
+// 		{
+// 			break;
+// 		}
+// 		// 如果仪器为交叉站
+// 		if ((pInstrument->m_iInstrumentType == InstrumentTypeLCI)
+// 			|| (pInstrument->m_iInstrumentType == InstrumentTypeLAUX))
+// 		{
+// 			// 将仪器四个方向的路由加入临时队列
+// 			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPTop);
+// 			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPDown);
+// 			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPLeft);
+// 			pRoutList->m_olsTimeDelayTemp.push_back(pInstrument->m_uiRoutIPRight);
+// 		}
+// 	} while (pInstrument != pRout->m_pTail);
+// }
 // 得到时统任务
-void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oLogOutPutStruct* pLogOutPut)
-{
-	ASSERT(pLogOutPut != NULL);
-	ASSERT(pRoutList != NULL);
-	m_oRoutStruct* pRout = NULL;
-	unsigned int uiRoutIP = 0;
-	CString str = _T("");
-	string strConv = "";
-	while(false == pRoutList->m_olsTimeDelayTemp.empty())
-	{
-		uiRoutIP = *pRoutList->m_olsTimeDelayTemp.begin();
-		pRoutList->m_olsTimeDelayTemp.pop_front();
-		// 判断该路由是否在路由索引表中
-		if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pRoutList->m_oRoutMap))
-		{
-			// 得到路由指针
-			pRout = GetRout(uiRoutIP, &pRoutList->m_oRoutMap);
-			if (pRout->m_pTail != NULL)
-			{
-				// 不是LCI
-				if (uiRoutIP != 0)
-				{
-					// 将该路由IP加入任务队列
-					pRoutList->m_olsTimeDelayTaskQueue.push_back(uiRoutIP);
-					str.Format(_T("将路由IP = 0x%x 加入时统任务队列"), uiRoutIP);
-					strConv = (CStringA)str;
-					AddMsgToLogOutPutList(pLogOutPut, "GetTimeDelayTask", strConv);
-				}
-				// 沿着路由方向得到时统任务
-				GetTimeDelayTaskAlongRout(pRout, pRoutList);
-			}
-		}
-		else
-		{
-			// 不是LCI路由
-			if (uiRoutIP != 0)
-			{
-				str.Format(_T("路由IP = 0x%x"), uiRoutIP);
-				strConv = (CStringA)str;
-				AddMsgToLogOutPutList(pLogOutPut, "GetTimeDelayTask", strConv,
-					ErrorType, IDS_ERR_ROUT_NOTEXIT);
-			}
-		}
-	}
-}
+// void GetTimeDelayTask(m_oRoutListStruct* pRoutList, m_oLogOutPutStruct* pLogOutPut)
+// {
+// 	ASSERT(pLogOutPut != NULL);
+// 	ASSERT(pRoutList != NULL);
+// 	m_oRoutStruct* pRout = NULL;
+// 	unsigned int uiRoutIP = 0;
+// 	CString str = _T("");
+// 	string strConv = "";
+// 	while(false == pRoutList->m_olsTimeDelayTemp.empty())
+// 	{
+// 		uiRoutIP = *pRoutList->m_olsTimeDelayTemp.begin();
+// 		pRoutList->m_olsTimeDelayTemp.pop_front();
+// 		// 判断该路由是否在路由索引表中
+// 		if (TRUE == IfIndexExistInRoutMap(uiRoutIP, &pRoutList->m_oRoutMap))
+// 		{
+// 			// 得到路由指针
+// 			pRout = GetRout(uiRoutIP, &pRoutList->m_oRoutMap);
+// 			if (pRout->m_pTail != NULL)
+// 			{
+// 				// 不是LCI
+// 				if (uiRoutIP != 0)
+// 				{
+// 					// 将该路由IP加入任务队列
+// 					pRoutList->m_olsTimeDelayTaskQueue.push_back(uiRoutIP);
+// 					str.Format(_T("将路由IP = 0x%x 加入时统任务队列"), uiRoutIP);
+// 					strConv = (CStringA)str;
+// 					AddMsgToLogOutPutList(pLogOutPut, "GetTimeDelayTask", strConv);
+// 				}
+// 				// 沿着路由方向得到时统任务
+// 				GetTimeDelayTaskAlongRout(pRout, pRoutList);
+// 			}
+// 		}
+// 		else
+// 		{
+// 			// 不是LCI路由
+// 			if (uiRoutIP != 0)
+// 			{
+// 				str.Format(_T("路由IP = 0x%x"), uiRoutIP);
+// 				strConv = (CStringA)str;
+// 				AddMsgToLogOutPutList(pLogOutPut, "GetTimeDelayTask", strConv,
+// 					ErrorType, IDS_ERR_ROUT_NOTEXIT);
+// 			}
+// 		}
+// 	}
+// }
 // 生成时统任务队列
-void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_oLogOutPutStruct* pLogOutPut)
-{
-	ASSERT(pLogOutPut != NULL);
-	ASSERT(pRoutList != NULL);
-	// 清空任务队列
-	pRoutList->m_olsTimeDelayTaskQueue.clear();
-	pRoutList->m_olsTimeDelayTemp.clear();
-	// 将LCI路由加入临时队列
-	pRoutList->m_olsTimeDelayTemp.push_back(0);
-	AddMsgToLogOutPutList(pLogOutPut, "GenTimeDelayTaskQueue", "当前系统稳定，生成时统任务队列");
-	// 得到时统任务
-	GetTimeDelayTask(pRoutList, pLogOutPut);
-}
+// void GenTimeDelayTaskQueue(m_oRoutListStruct* pRoutList, m_oLogOutPutStruct* pLogOutPut)
+// {
+// 	ASSERT(pLogOutPut != NULL);
+// 	ASSERT(pRoutList != NULL);
+// 	// 清空任务队列
+// 	pRoutList->m_olsTimeDelayTaskQueue.clear();
+// 	pRoutList->m_olsTimeDelayTemp.clear();
+// 	// 将LCI路由加入临时队列
+// 	pRoutList->m_olsTimeDelayTemp.push_back(0);
+// 	AddMsgToLogOutPutList(pLogOutPut, "GenTimeDelayTaskQueue", "当前系统稳定，生成时统任务队列");
+// 	// 得到时统任务
+// 	GetTimeDelayTask(pRoutList, pLogOutPut);
+// }
 // ADC参数设置线程开始工作
 void OnADCSetThreadWork(int iOpt, m_oADCSetThreadStruct* pADCSetThread)
 {
@@ -546,11 +546,11 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 		{
 			if (pInstrument->m_iTimeSetReturnCount == 0)
 			{
-				str.Format(_T("数据采样过程中，路由IP = 0x%x的仪器的没有全部实现时统"), 
-					pRout->m_uiRoutIP);
-				strConv = (CStringA)str;
-				AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, 
-					"CheckTimeDelayReturnByRout", strConv, WarningType);
+// 				str.Format(_T("数据采样过程中，路由IP = 0x%x的仪器的没有全部实现时统"), 
+// 					pRout->m_uiRoutIP);
+// 				strConv = (CStringA)str;
+// 				AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, 
+// 					"CheckTimeDelayReturnByRout", strConv, WarningType);
 				return false;
 			}
 		}
@@ -559,10 +559,10 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 			/** 时统设置是否成功*/
 			if (pInstrument->m_bTimeSetOK == false)
 			{
-				str.Format(_T("路由IP = 0x%x的仪器的时统设置应答接收不完全"), pRout->m_uiRoutIP);
-				strConv = (CStringA)str;
-				AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, 
-					"CheckTimeDelayReturnByRout", strConv);
+// 				str.Format(_T("路由IP = 0x%x的仪器的时统设置应答接收不完全"), pRout->m_uiRoutIP);
+// 				strConv = (CStringA)str;
+// 				AddMsgToLogOutPutList(pTimeDelayThread->m_pThread->m_pLogOutPut, 
+// 					"CheckTimeDelayReturnByRout", strConv);
 				return false;
 			}
 		}
@@ -621,9 +621,9 @@ void MonitorTimeDelay(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		if (bLineStableChange == false)
 		{
 			pTimeDelayThread->m_pLineList->m_bLineStableChange = true;
-			// 生成时统任务队列
-			GenTimeDelayTaskQueue(pTimeDelayThread->m_pLineList->m_pRoutList, 
-				pTimeDelayThread->m_pThread->m_pLogOutPut);
+// 			// 生成时统任务队列
+// 			GenTimeDelayTaskQueue(pTimeDelayThread->m_pLineList->m_pRoutList, 
+// 				pTimeDelayThread->m_pThread->m_pLogOutPut);
 			EnterCriticalSection(&pTimeDelayThread->m_pTailTimeFrame->m_oSecTailTimeFrame);
 			// 清空尾包时刻查询帧接收缓冲区
 			OnClearSocketRcvBuf(pTimeDelayThread->m_pTailTimeFrame->m_oTailTimeFrameSocket, 
@@ -663,7 +663,7 @@ void MonitorTimeDelay(m_oTimeDelayThreadStruct* pTimeDelayThread)
 		EnterCriticalSection(&pTimeDelayThread->m_oSecTimeDelayThread);
 		if (bWork == true)
 		{
-			pTimeDelayThread->m_uiCounter = 0;
+//			pTimeDelayThread->m_uiCounter = 0;
 			// 时统设置线程开始工作
 			pTimeDelayThread->m_pThread->m_bWork = true;
 		}

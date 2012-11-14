@@ -209,7 +209,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TailFrameSleepTimes");		// 尾包线程延时次数
-	strValue = _T("10");
+	strValue = _T("2");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("MonitorSleepTimes");			// 路由监视线程延时次数
@@ -217,7 +217,7 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TimeDelaySleepTimes");		// 时统设置线程延时次数
-	strValue = _T("4");
+	strValue = _T("2");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("ADCSetSleepTimes");			// ADC参数设置线程延时次数
