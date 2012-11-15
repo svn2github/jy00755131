@@ -567,6 +567,16 @@ bool CheckTimeDelayReturnByRout(m_oRoutStruct* pRout,
 			}
 		}
 	} while (pInstrument != pRout->m_pTail);
+	pInstrument = pRout->m_pHead;
+	do 
+	{
+		pInstrument = GetNextInstrAlongRout(pInstrument, pRout->m_iRoutDirection);
+		if (pInstrument == NULL)
+		{
+			break;
+		}
+		pInstrument->m_bTimeSetOK = false;
+	} while (pInstrument != pRout->m_pTail);
 	if (bSample == false)
 	{
 		str.Format(_T("路由IP = 0x%x的仪器的时统设置应答接收完全"), pRout->m_uiRoutIP);

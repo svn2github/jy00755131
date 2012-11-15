@@ -226,9 +226,9 @@ void MakeInstrTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFra
 	// 本地时间
 	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalSysTime1;
 	usPos ++;
-	// 网络时间
-	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdNetTime;
-	usPos ++;
+// 	// 网络时间
+// 	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdNetTime;
+// 	usPos ++;
 	// 查询命令字个数
 	pTailTimeFrame->m_usCommandWordNum = usPos;
 	MakeInstrFrame(pTailTimeFrame->m_pCommandStructSet, pConstVar, pTailTimeFrame->m_cpSndFrameData, 

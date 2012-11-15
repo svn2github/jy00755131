@@ -360,6 +360,15 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 		else
 		{
 			iFix1 = pInstrument->m_uiReceiveTime - pInstrumentNext->m_uiSendTime;
+			// @@@Ö¡¼ÆÊý²¹³¥
+// 			if (iFix1 < 0)
+// 			{
+// 				iFix1 += 0x3fff;
+// 			}
+// 			else if (iFix1 > 0x3fff)
+// 			{
+// 				iFix1 -= 0x3fff;
+// 			}
 //			iFixHigh1 = pInstrument->m_uiReceiveTime - pInstrumentNext->m_uiSendTime;
 		}
 // 		if (iFix1 < 0)
@@ -533,7 +542,7 @@ DWORD WINAPI RunTimeDelayThread(m_oTimeDelayThreadStruct* pTimeDelayThread)
 	m_oRoutStruct* pRout = NULL;
 	CString str = _T("");
 	string strConv = "";
-	unsigned int uiProcRoutIP = 0;
+//	unsigned int uiProcRoutIP = 0;
 //	unsigned int uiCounter = 0;
 	bool bClose = false;
 	bool bWork = false;

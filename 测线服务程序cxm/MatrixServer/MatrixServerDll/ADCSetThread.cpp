@@ -315,9 +315,9 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 查询仪器的当前系统时间
 		pADCSetThread->m_pADCSetFrame->m_pbyCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdLocalSysTime1;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
-		// 查询仪器的当前网络时间
-		pADCSetThread->m_pADCSetFrame->m_pbyCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdNetTime;
-		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
+// 		// 查询仪器的当前网络时间
+// 		pADCSetThread->m_pADCSetFrame->m_pbyCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdNetTime;
+// 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		break;
 	case 18:
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
@@ -547,7 +547,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	ASSERT(pADCSetThread != NULL);
 	unsigned int uiIPInstrument = 0;
 	unsigned int uiSysTime = 0;
-	unsigned int uiNetTime = 0;
+//	unsigned int uiNetTime = 0;
 	m_oInstrumentStruct* pInstrument = NULL;
 	CString str = _T("");
 	string strFrameData = "";
@@ -557,7 +557,7 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	EnterCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	uiIPInstrument = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiSrcIP;
 	uiSysTime = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiSysTimeNewHigh;
-	uiNetTime = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiNetTime;
+//	uiNetTime = pADCSetThread->m_pADCSetFrame->m_pCommandStructReturn->m_uiNetTime;
 	LeaveCriticalSection(&pADCSetThread->m_pADCSetFrame->m_oSecADCSetFrame);
 	EnterCriticalSection(&pADCSetThread->m_oSecADCSetThread);
 	uiADCSetOperationNb = pADCSetThread->m_iADCSetOperationNb;
@@ -584,7 +584,8 @@ void ProcADCSetReturnFrameOne(m_oADCSetThreadStruct* pADCSetThread)
 	if (uiADCSetOperationNb == 17)
 	{
 		UpdateLocalSysTime(uiSysTime, pADCSetThread->m_pLineList);
-		str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x网络时间为 = 0x%x"), uiIPInstrument, uiSysTime, uiNetTime);
+//		str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x网络时间为 = 0x%x"), uiIPInstrument, uiSysTime, uiNetTime);
+		str.Format(_T("IP地址 = 0x%x的仪器本地时间为 = 0x%x"), uiIPInstrument, uiSysTime);
 		strConv = (CStringA)str;
 		AddMsgToLogOutPutList(pADCSetThread->m_pThread->m_pLogOutPut, "ProcADCSetReturnFrameOne", strConv);
 	}
