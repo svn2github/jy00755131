@@ -1,39 +1,39 @@
-// Draw3DGraph.cpp : 定义应用程序的类行为。
+// Draw3DGraph_Test2.cpp : 定义应用程序的类行为。
 //
 
 #include "stdafx.h"
-#include "Draw3DGraph.h"
-#include "Draw3DGraphDlg.h"
+#include "Draw3DGraph_Test2.h"
+#include "Draw3DGraph_Test2Dlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
-// CDraw3DGraphApp
+// CDraw3DGraph_Test2App
 
-BEGIN_MESSAGE_MAP(CDraw3DGraphApp, CWinApp)
+BEGIN_MESSAGE_MAP(CDraw3DGraph_Test2App, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
 
-// CDraw3DGraphApp 构造
+// CDraw3DGraph_Test2App 构造
 
-CDraw3DGraphApp::CDraw3DGraphApp()
+CDraw3DGraph_Test2App::CDraw3DGraph_Test2App()
 {
 	// TODO: 在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
 }
 
 
-// 唯一的一个 CDraw3DGraphApp 对象
+// 唯一的一个 CDraw3DGraph_Test2App 对象
 
-CDraw3DGraphApp theApp;
+CDraw3DGraph_Test2App theApp;
 
 
-// CDraw3DGraphApp 初始化
+// CDraw3DGraph_Test2App 初始化
 
-BOOL CDraw3DGraphApp::InitInstance()
+BOOL CDraw3DGraph_Test2App::InitInstance()
 {
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
 	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
@@ -47,12 +47,6 @@ BOOL CDraw3DGraphApp::InitInstance()
 
 	CWinApp::InitInstance();
 
-	if (!AfxSocketInit())
-	{
-		AfxMessageBox(IDP_SOCKETS_INIT_FAILED);
-		return FALSE;
-	}
-
 	AfxEnableControlContainer();
 
 	// 标准初始化
@@ -64,7 +58,7 @@ BOOL CDraw3DGraphApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	CDraw3DGraphDlg dlg;
+	CDraw3DGraph_Test2Dlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

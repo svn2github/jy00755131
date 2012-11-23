@@ -5,7 +5,7 @@
 #include "nigraph3d.h"
 #include "afxwin.h"
 // 采样数据幅值
-#define SampleAmpMax		2.5			
+#define SampleAmpMax		2.5
 // 采样时间
 #define SampleTime			100
 // 通道数
@@ -17,11 +17,11 @@
 // 定时器延时
 #define TimerDelay			500
 // CDraw3DGraphDlg 对话框
-class CDraw3DGraphDlg : public CDialog
+class CDraw3DGraph_Test1Dlg : public CDialog
 {
 // 构造
 public:
-	CDraw3DGraphDlg(CWnd* pParent = NULL);	// 标准构造函数
+	CDraw3DGraph_Test1Dlg(CWnd* pParent = NULL);	// 标准构造函数
 
 // 对话框数据
 	enum { IDD = IDD_DRAW3DGRAPH_DIALOG };

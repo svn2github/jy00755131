@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Draw3DGraph_Test1"
-	ProjectGUID="{E65D9165-672E-4090-8089-693192E7072B}"
-	RootNamespace="Draw3DGraph_Test1"
+	Name="Draw3DGraph_Test3"
+	ProjectGUID="{1263F2C6-6C46-419F-B2C9-8DDF573AA202}"
+	RootNamespace="Draw3DGraph_Test3"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="196613"
 	>
@@ -190,11 +190,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Draw3DGraph_Test1.cpp"
+				RelativePath=".\Draw3DGraph_Test3.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Draw3DGraph_Test1Dlg.cpp"
+				RelativePath=".\Draw3DGraph_Test3Dlg.cpp"
 				>
 			</File>
 			<File
@@ -224,11 +224,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Draw3DGraph_Test1.h"
+				RelativePath=".\Draw3DGraph_Test3.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Draw3DGraph_Test1Dlg.h"
+				RelativePath=".\Draw3DGraph_Test3Dlg.h"
 				>
 			</File>
 			<File
@@ -250,15 +250,15 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\res\Draw3DGraph.ico"
+				RelativePath=".\res\Draw3DGraph_Test3.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\Draw3DGraph.rc"
+				RelativePath=".\Draw3DGraph_Test3.rc"
 				>
 			</File>
 			<File
-				RelativePath=".\res\Draw3DGraph.rc2"
+				RelativePath=".\res\Draw3DGraph_Test3.rc2"
 				>
 			</File>
 		</Filter>
@@ -270,7 +270,7 @@
 	<Globals>
 		<Global
 			Name="RESOURCE_FILE"
-			Value="Draw3DGraph.rc"
+			Value="Draw3DGraph_Test3.rc"
 		/>
 		<Global
 			Name="{17301DA3-C84D-11CF-AE6F-0020AF31CEF9}"

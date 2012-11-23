@@ -14,10 +14,10 @@
 // 有关此类的实现，请参阅 Draw3DGraph.cpp
 //
 
-class CDraw3DGraphApp : public CWinApp
+class CDraw3DGraph_Test1App : public CWinApp
 {
 public:
-	CDraw3DGraphApp();
+	CDraw3DGraph_Test1App();
 
 // 重写
 	public:
@@ -28,4 +28,4 @@ public:
 	DECLARE_MESSAGE_MAP()
 };
 
-extern CDraw3DGraphApp theApp;
+extern CDraw3DGraph_Test1App theApp;

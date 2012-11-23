@@ -1,15 +1,15 @@
-// Draw3DGraphDlg.cpp : 实现文件
+// Draw3DGraph_Test3Dlg.cpp : 实现文件
 //
 
 #include "stdafx.h"
-#include "Draw3DGraph.h"
-#include "Draw3DGraphDlg.h"
+#include "Draw3DGraph_Test3.h"
+#include "Draw3DGraph_Test3Dlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-#define PI 3.1415926535
+
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialog
@@ -41,42 +41,44 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// CDraw3DGraphDlg 对话框
+// CDraw3DGraph_Test3Dlg 对话框
 
 
 
 
-CDraw3DGraphDlg::CDraw3DGraphDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CDraw3DGraphDlg::IDD, pParent)
-	, m_iCounter(0)
+CDraw3DGraph_Test3Dlg::CDraw3DGraph_Test3Dlg(CWnd* pParent /*=NULL*/)
+	: CDialog(CDraw3DGraph_Test3Dlg::IDD, pParent)
+	, m_strFilePath(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-void CDraw3DGraphDlg::DoDataExchange(CDataExchange* pDX)
+void CDraw3DGraph_Test3Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_BTN_SELECTFILE, m_ctrlBtnSelectFile);
 	DDX_Control(pDX, IDC_CWGRAPH3D1, m_ctrlGraph3D);
 	DDX_Control(pDX, IDC_BTN_START, m_ctrlBtnStart);
 	DDX_Control(pDX, IDC_BTN_STOP, m_ctrlBtnStop);
 }
 
-BEGIN_MESSAGE_MAP(CDraw3DGraphDlg, CDialog)
+BEGIN_MESSAGE_MAP(CDraw3DGraph_Test3Dlg, CDialog)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
-	ON_BN_CLICKED(IDC_BTN_START, &CDraw3DGraphDlg::OnBnClickedBtnStart)
-	ON_BN_CLICKED(IDC_BTN_STOP, &CDraw3DGraphDlg::OnBnClickedBtnStop)
-	ON_BN_CLICKED(IDC_RADIO_SURFACE, &CDraw3DGraphDlg::OnBnClickedRadioSurface)
-	ON_BN_CLICKED(IDC_RADIO_SURFACELINE, &CDraw3DGraphDlg::OnBnClickedRadioSurfaceline)
+	ON_BN_CLICKED(IDC_BTN_SELECTFILE, &CDraw3DGraph_Test3Dlg::OnBnClickedBtnSelectfile)
+	ON_BN_CLICKED(IDC_BTN_START, &CDraw3DGraph_Test3Dlg::OnBnClickedBtnStart)
+	ON_BN_CLICKED(IDC_BTN_STOP, &CDraw3DGraph_Test3Dlg::OnBnClickedBtnStop)
+	ON_BN_CLICKED(IDC_RADIO_SURFACE, &CDraw3DGraph_Test3Dlg::OnBnClickedRadioSurface)
+	ON_BN_CLICKED(IDC_RADIO_SURFACELINE, &CDraw3DGraph_Test3Dlg::OnBnClickedRadioSurfaceline)
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
-// CDraw3DGraphDlg 消息处理程序
+// CDraw3DGraph_Test3Dlg 消息处理程序
 
-BOOL CDraw3DGraphDlg::OnInitDialog()
+BOOL CDraw3DGraph_Test3Dlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -129,25 +131,37 @@ BOOL CDraw3DGraphDlg::OnInitDialog()
 	rectCtrl.bottom = rectWindow.bottom * 15 / 32;
 	GetDlgItem(IDC_RADIO_SURFACELINE)->MoveWindow(rectCtrl);
 
+	rectCtrl.top = rectWindow.bottom * 1 / 2;
+	rectCtrl.bottom = rectWindow.bottom * 9 / 16;
+	m_ctrlBtnSelectFile.MoveWindow(rectCtrl);
+
 	m_xTimeData.SetSize(SampleTime);
-	m_yTraceData.SetSize(TraceNum);
-	m_zAmpData.SetSize(SampleTime, TraceNum);
-	for (int i = 0; i < TraceNum; i++)
-	{
-		m_yTraceData[i] = i;
-	}
-	for (int i = 0; i < SampleTime; i++)
-	{
-		m_xTimeData[i] = i;
-	}
-// 	// Plot the data
-// 	m_ctrlGraph3D.GetPlots().Item(1).Plot3DSurface(xData, yData, zData);
-// 	m_ctrlGraph3D.GetPlots().Add();
-// 	m_ctrlGraph3D.GetPlots().Item(2).Plot3DSurface(xData, yData, zData2);
+
+	m_ctrlGraph3D.SetPlotAreaColor(RGB(128, 128, 128));
+	/*m_ctrlGraph3D.GetPlots().Item(1).SetProjectionYZ(TRUE);*/
+	m_ctrlGraph3D.GetPlots().Item(1).SetFillColor(RGB(0, 0, 0));
+	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::None;
+	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
+	m_Axis3D.SetCaption(_T("Time"));
+	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
+	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(2);
+	m_Axis3D.SetCaption(_T("Trace"));
+	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
+	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(3);
+	m_Axis3D.SetMinMax(SampleAmpMin, SampleAmpMax);
+	m_Axis3D.SetCaption(_T("Amp"));
+	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
+	m_ctrlGraph3D.SetCaptionColor(RGB(213, 43, 213));
+	m_ctrlGraph3D.SetGridFrameColor(RGB(128, 0, 0));
+	//	m_ctrlGraph3D.SetPlotAreaColor(RGB(0, 128, 0));
+
+
+	m_ctrlBtnStart.EnableWindow(FALSE);
+	m_ctrlBtnStop.EnableWindow(FALSE);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
-void CDraw3DGraphDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void CDraw3DGraph_Test3Dlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
@@ -164,7 +178,7 @@ void CDraw3DGraphDlg::OnSysCommand(UINT nID, LPARAM lParam)
 //  来绘制该图标。对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
 
-void CDraw3DGraphDlg::OnPaint()
+void CDraw3DGraph_Test3Dlg::OnPaint()
 {
 	if (IsIconic())
 	{
@@ -191,77 +205,66 @@ void CDraw3DGraphDlg::OnPaint()
 
 //当用户拖动最小化窗口时系统调用此函数取得光标
 //显示。
-HCURSOR CDraw3DGraphDlg::OnQueryDragIcon()
+HCURSOR CDraw3DGraph_Test3Dlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
 
-void CDraw3DGraphDlg::OnBnClickedBtnStart()
+// 选择要打开的文件
+CString CDraw3DGraph_Test3Dlg::SelectOpenFile(void)
 {
-	// TODO: 在此添加控件通知处理程序代码
-	SetTimer(TimerID, TimerDelay, NULL);
+	CString strPath = _T("");
+	CFileDialog hFileDlg(true,NULL ,
+		NULL,
+		OFN_FILEMUSTEXIST | OFN_READONLY | OFN_PATHMUSTEXIST,
+		TEXT("数据文件 (*.text)|*.text|*.txt|所有文件(*.*)|*.*|"),
+		NULL);
+	if(hFileDlg.DoModal() == IDOK)
+	{
+		strPath = hFileDlg.GetPathName();
+	}
+	return strPath;
 }
 
-void CDraw3DGraphDlg::OnBnClickedBtnStop()
+void CDraw3DGraph_Test3Dlg::OnBnClickedBtnSelectfile()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	KillTimer(TimerID);
+	m_ctrlBtnStart.EnableWindow(FALSE);
+	m_ctrlBtnStop.EnableWindow(FALSE);
+	m_strFilePath = SelectOpenFile();
+	if (m_strFilePath == _T(""))
+	{
+		AfxMessageBox(_T("请选择数据文件！"));
+		return;
+	}
+	m_ctrlBtnStart.EnableWindow(TRUE);
+	m_ctrlBtnStop.EnableWindow(TRUE);
 }
 
-void CDraw3DGraphDlg::OnBnClickedRadioSurface()
+void CDraw3DGraph_Test3Dlg::OnBnClickedBtnStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::Surface);
 }
 
-void CDraw3DGraphDlg::OnBnClickedRadioSurfaceline()
+void CDraw3DGraph_Test3Dlg::OnBnClickedBtnStop()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::SurfaceLine);
 }
 
-void CDraw3DGraphDlg::OnTimer(UINT_PTR nIDEvent)
+void CDraw3DGraph_Test3Dlg::OnBnClickedRadioSurface()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+void CDraw3DGraph_Test3Dlg::OnBnClickedRadioSurfaceline()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+void CDraw3DGraph_Test3Dlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (nIDEvent == TimerID)
-	{
-		if (m_iCounter < SampleTime)
-		{
-			for (int i = 0; i < m_iCounter; i++)
-			{
-				for (int j = 0; j < TraceNum; j++)
-				{
-					if (j < (TraceNum - 1) / 2)
-					{
-						m_zAmpData(i, j) = SampleAmpMax * sin((m_xTimeData[i] + m_iCounter) / 20 * PI + j * PI / (TraceNum - 1));
-					}
-					else
-					{
-						m_zAmpData(i, j) = SampleAmpMax * sin((m_xTimeData[i] + m_iCounter) / 20 * PI + (TraceNum - 1 - j) * PI / (TraceNum - 1));
-					}
-				}
-			}
-		}
-		else
-		{
-			for (int i = 0; i < SampleTime; i++)
-			{
-				for (int j = 0; j < TraceNum; j++)
-				{
-					if (j < (TraceNum - 1) / 2)
-					{
-						m_zAmpData(i, j) = SampleAmpMax * sin((m_xTimeData[i] + m_iCounter) / 20 * PI + j * PI / (TraceNum - 1));
-					}
-					else
-					{
-						m_zAmpData(i, j) = SampleAmpMax * sin((m_xTimeData[i] + m_iCounter) / 20 * PI + (TraceNum - 1 - j) * PI / (TraceNum - 1));
-					}
-				}
-			}
-		}
-		m_ctrlGraph3D.GetPlots().Item(1).Plot3DSurface(m_xTimeData, m_yTraceData, m_zAmpData);
-		m_iCounter++;
-	}
+
 	CDialog::OnTimer(nIDEvent);
 }
