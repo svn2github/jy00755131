@@ -49,6 +49,11 @@ END_MESSAGE_MAP()
 CDraw3DGraph_Test3Dlg::CDraw3DGraph_Test3Dlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CDraw3DGraph_Test3Dlg::IDD, pParent)
 	, m_strFilePath(_T(""))
+	, m_uiTraceNume(0)
+	, m_iOff(0)
+	, m_bOpenFile(false)
+	, m_uiTimeCount(0)
+	, m_ppData(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -73,6 +78,7 @@ BEGIN_MESSAGE_MAP(CDraw3DGraph_Test3Dlg, CDialog)
 	ON_BN_CLICKED(IDC_RADIO_SURFACE, &CDraw3DGraph_Test3Dlg::OnBnClickedRadioSurface)
 	ON_BN_CLICKED(IDC_RADIO_SURFACELINE, &CDraw3DGraph_Test3Dlg::OnBnClickedRadioSurfaceline)
 	ON_WM_TIMER()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -136,7 +142,11 @@ BOOL CDraw3DGraph_Test3Dlg::OnInitDialog()
 	m_ctrlBtnSelectFile.MoveWindow(rectCtrl);
 
 	m_xTimeData.SetSize(SampleTime);
-
+	m_ppData = new int* [SampleTime];
+	for (int i=0; i<SampleTime; i++)
+	{
+		m_ppData[i] = NULL;
+	}
 	m_ctrlGraph3D.SetPlotAreaColor(RGB(128, 128, 128));
 	/*m_ctrlGraph3D.GetPlots().Item(1).SetProjectionYZ(TRUE);*/
 	m_ctrlGraph3D.GetPlots().Item(1).SetFillColor(RGB(0, 0, 0));
@@ -148,7 +158,7 @@ BOOL CDraw3DGraph_Test3Dlg::OnInitDialog()
 	m_Axis3D.SetCaption(_T("Trace"));
 	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
 	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(3);
-	m_Axis3D.SetMinMax(SampleAmpMin, SampleAmpMax);
+//	m_Axis3D.SetMinMax(SampleAmpMin, SampleAmpMax);
 	m_Axis3D.SetCaption(_T("Amp"));
 	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
 	m_ctrlGraph3D.SetCaptionColor(RGB(213, 43, 213));
@@ -226,7 +236,6 @@ CString CDraw3DGraph_Test3Dlg::SelectOpenFile(void)
 	}
 	return strPath;
 }
-
 void CDraw3DGraph_Test3Dlg::OnBnClickedBtnSelectfile()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -240,31 +249,208 @@ void CDraw3DGraph_Test3Dlg::OnBnClickedBtnSelectfile()
 	}
 	m_ctrlBtnStart.EnableWindow(TRUE);
 	m_ctrlBtnStop.EnableWindow(TRUE);
+	if (m_fin.is_open())
+	{
+		m_fin.close();
+	}
+	string str = "";
+	char data[10];
+	m_uiTraceNume = 0;
+	m_iOff = 0;
+	m_bOpenFile = false;
+	m_uiTimeCount = 0;
+	for (int i=0; i< SampleTime; i++)
+	{
+		if (m_ppData[i] != NULL)
+		{
+			delete[] m_ppData[i];
+			m_ppData[i] = NULL;
+		}
+	}
+	m_fin.open(m_strFilePath, ios::_Nocreate);
+	getline(m_fin, str, '\n');
+	getline(m_fin, str, '\n');
+	getline(m_fin, str, '\n');
+	m_iOff = m_fin.tellg();
+	m_fin.seekg(FrameTimeBytesNume + m_iOff, ios::beg);
+	while(1)
+	{
+		if (m_fin.peek() == 0x0a)
+		{
+			break;
+		}
+		m_fin.read(data, DataBytesNum);
+		m_uiTraceNume++;
+	}
+	m_yTraceData.SetSize(m_uiTraceNume);
+	for (unsigned int i=0; i<m_uiTraceNume; i++)
+	{
+		m_yTraceData[i] = i;
+	}
+	m_zAmpData.SetSize(SampleTime, m_uiTraceNume);
+	for (int i=0; i< SampleTime; i++)
+	{
+		m_ppData[i] = new int[m_uiTraceNume];
+		for (int j = 0; j< m_uiTraceNume; j++)
+		{
+			m_ppData[i][j] = 0;
+			m_zAmpData(i, j) = 0;
+		}
+	}
+	m_bOpenFile = true;
+
+// 	while(1)
+// 	{
+// 		if ((iCount % 445 == 0) && (iCount > 0))
+// 		{
+// 			m_fin.seekg(2, ios::cur);
+// 		}
+// 		if (iCount % (445 * 72) == 0)
+// 		{
+// 			m_fin.seekg(13, ios::cur);
+// 		}
+// 		m_fin.read(data, 10);
+// 		if (m_fin.fail() == true)
+// 		{
+// 			break;
+// 		}
+// 		s = data;
+// 		sscanf_s(s, _T("%8d /t"), &i);
+// 		iCount ++;
+// 	}
 }
 
 void CDraw3DGraph_Test3Dlg::OnBnClickedBtnStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (m_bOpenFile == false)
+	{
+		return;
+	}
+	SetTimer(TimerID, TimerDelay, NULL);
 }
 
 void CDraw3DGraph_Test3Dlg::OnBnClickedBtnStop()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (m_bOpenFile == false)
+	{
+		return;
+	}
+	KillTimer(TimerID);
 }
 
 void CDraw3DGraph_Test3Dlg::OnBnClickedRadioSurface()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (m_bOpenFile == false)
+	{
+		return;
+	}
+	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::Surface);
 }
 
 void CDraw3DGraph_Test3Dlg::OnBnClickedRadioSurfaceline()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (m_bOpenFile == false)
+	{
+		return;
+	}
+	m_ctrlGraph3D.GetPlots().Item(1).SetLineColor(RGB(0, 255, 0));
+	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::SurfaceLine);
 }
 
 void CDraw3DGraph_Test3Dlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
+	if (nIDEvent == TimerID)
+	{
+		CString s = _T("");
+		char data[10];
+		unsigned int uiCounter = 0;
+		unsigned int x = 0;
+		int iTemp = 0;
+		if (m_uiTimeCount < SampleTime)
+		{
+			x = m_uiTimeCount;
+			for (int i = 0; i < SampleTime; i++)
+			{
+				m_xTimeData[i] = i;
+			}
+		}
+		else
+		{
+			x = SampleTime - 1;
+			for (int i = 1; i < SampleTime; i++)
+			{
+				for (unsigned int j = 0; j < m_uiTraceNume; j++)
+				{
+					m_ppData[i-1][j] = m_ppData[i][j];
+				}
+//				m_xTimeData[i] = i + m_uiTimeCount - SampleTime + 1;
+			}
+// 			m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
+// 			m_Axis3D.SetMinMax(m_xTimeData[0], m_xTimeData[SampleTime - 1]);
+		}
+		if (m_uiTimeCount % 72 == 0)
+		{
+			m_fin.seekg(FrameTimeBytesNume + m_iOff, ios::beg);
+		}
+		while(1)
+		{
+			if (m_fin.peek() == 0x0a)
+			{
+				break;
+			}
+			m_fin.read(data, DataBytesNum);
+			if (m_fin.fail() == true)
+			{
+				break;
+			}
+			s = data;
+			sscanf_s(s, _T("%8d /t"), &iTemp);
+			if (iTemp > 10000)
+			{
+				iTemp = 0;
+			}
+			else if (iTemp < -10000)
+			{
+				iTemp = 0;
+			}
+			m_ppData[x][uiCounter] = iTemp;
+			uiCounter ++;
+		}
+		m_fin.seekg(2, ios::cur);
+		m_uiTimeCount++;
+		m_iOff = m_fin.tellg();
+		for (unsigned int i = 0; i < SampleTime; i++)
+		{
+			for (unsigned int j = 0; j < m_uiTraceNume; j++)
+			{
+				m_zAmpData(i, j) = m_ppData[i][j];
+			}
+		}
+		m_ctrlGraph3D.GetPlots().Item(1).Plot3DSurface(m_xTimeData, m_yTraceData, m_zAmpData);
+	}
 	CDialog::OnTimer(nIDEvent);
+}
+
+void CDraw3DGraph_Test3Dlg::OnDestroy()
+{
+	CDialog::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	if (m_fin.is_open())
+	{
+		m_fin.close();
+	}
+	for (int i=0; i< SampleTime; i++)
+	{
+		if (m_ppData[i] != NULL)
+		{
+			delete[] m_ppData[i];
+			m_ppData[i] = NULL;
+		}
+	}
 }

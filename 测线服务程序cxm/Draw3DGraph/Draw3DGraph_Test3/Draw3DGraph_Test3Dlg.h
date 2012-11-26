@@ -4,7 +4,12 @@
 #pragma once
 #include "afxwin.h"
 #include "nigraph3d.h"
-
+#include <fstream>
+#include <string>
+using std::string;
+using std::ifstream;
+using std::ios;
+using std::streamoff;
 // 采样数据最大值
 #define SampleAmpMax		100.0
 // 采样数据最大值
@@ -15,6 +20,10 @@
 #define TimerID				1
 // 定时器延时
 #define TimerDelay			500
+// 定义帧内时间显示字节数
+#define FrameTimeBytesNume	13
+// 数据显示字节数
+#define DataBytesNum		10
 // CDraw3DGraph_Test3Dlg 对话框
 class CDraw3DGraph_Test3Dlg : public CDialog
 {
@@ -56,12 +65,23 @@ public:
 	CNiReal64Vector m_xTimeData;
 	CNiReal64Vector m_yTraceData;
 	CNiReal64Matrix m_zAmpData;
-	// 计数
-	int m_iCounter;
 	CNiAxis3D m_Axis3D;
+	// 读取文件
+	ifstream m_fin;
+	// 数据缓冲区
+	int** m_ppData;
+	// 读文件指针偏移量
+	streamoff m_iOff;
 	afx_msg void OnBnClickedBtnStart();
 	afx_msg void OnBnClickedBtnStop();
 	afx_msg void OnBnClickedRadioSurface();
 	afx_msg void OnBnClickedRadioSurfaceline();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnDestroy();
+	// 道数
+	unsigned int m_uiTraceNume;
+	// 打开文件标志位
+	bool m_bOpenFile;
+	// 时间计数
+	unsigned int m_uiTimeCount;
 };
