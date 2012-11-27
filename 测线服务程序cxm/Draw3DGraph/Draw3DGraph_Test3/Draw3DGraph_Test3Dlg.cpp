@@ -53,7 +53,6 @@ CDraw3DGraph_Test3Dlg::CDraw3DGraph_Test3Dlg(CWnd* pParent /*=NULL*/)
 	, m_iOff(0)
 	, m_bOpenFile(false)
 	, m_uiTimeCount(0)
-	, m_ppData(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -142,11 +141,7 @@ BOOL CDraw3DGraph_Test3Dlg::OnInitDialog()
 	m_ctrlBtnSelectFile.MoveWindow(rectCtrl);
 
 	m_xTimeData.SetSize(SampleTime);
-	m_ppData = new int* [SampleTime];
-	for (int i=0; i<SampleTime; i++)
-	{
-		m_ppData[i] = NULL;
-	}
+
 	m_ctrlGraph3D.SetPlotAreaColor(RGB(128, 128, 128));
 	/*m_ctrlGraph3D.GetPlots().Item(1).SetProjectionYZ(TRUE);*/
 	m_ctrlGraph3D.GetPlots().Item(1).SetFillColor(RGB(0, 0, 0));
@@ -157,8 +152,12 @@ BOOL CDraw3DGraph_Test3Dlg::OnInitDialog()
 	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(2);
 	m_Axis3D.SetCaption(_T("Trace"));
 	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
+	m_Axis3D.GetLabels().SetOpposite(true);
+	m_Axis3D.GetLabels().SetNormal(false);
+	m_Axis3D.SetCaptionOpposite(true);
+	m_Axis3D.SetCaptionNormal(false);
 	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(3);
-//	m_Axis3D.SetMinMax(SampleAmpMin, SampleAmpMax);
+	m_Axis3D.SetMinMax(SampleAmpMin, SampleAmpMax);
 	m_Axis3D.SetCaption(_T("Amp"));
 	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
 	m_ctrlGraph3D.SetCaptionColor(RGB(213, 43, 213));
@@ -259,14 +258,7 @@ void CDraw3DGraph_Test3Dlg::OnBnClickedBtnSelectfile()
 	m_iOff = 0;
 	m_bOpenFile = false;
 	m_uiTimeCount = 0;
-	for (int i=0; i< SampleTime; i++)
-	{
-		if (m_ppData[i] != NULL)
-		{
-			delete[] m_ppData[i];
-			m_ppData[i] = NULL;
-		}
-	}
+
 	m_fin.open(m_strFilePath, ios::_Nocreate);
 	getline(m_fin, str, '\n');
 	getline(m_fin, str, '\n');
@@ -288,13 +280,11 @@ void CDraw3DGraph_Test3Dlg::OnBnClickedBtnSelectfile()
 		m_yTraceData[i] = i;
 	}
 	m_zAmpData.SetSize(SampleTime, m_uiTraceNume);
-	for (int i=0; i< SampleTime; i++)
+	for (unsigned int i=0; i< SampleTime; i++)
 	{
-		m_ppData[i] = new int[m_uiTraceNume];
-		for (int j = 0; j< m_uiTraceNume; j++)
+		for (unsigned int j = 0; j< m_uiTraceNume; j++)
 		{
-			m_ppData[i][j] = 0;
-			m_zAmpData(i, j) = 0;
+			m_zAmpData(i, j) = 0.0;
 		}
 	}
 	m_bOpenFile = true;
@@ -382,16 +372,19 @@ void CDraw3DGraph_Test3Dlg::OnTimer(UINT_PTR nIDEvent)
 		else
 		{
 			x = SampleTime - 1;
-			for (int i = 1; i < SampleTime; i++)
+			for (unsigned int i = 0; i < SampleTime; i++)
+			{
+				m_xTimeData[i] = i + m_uiTimeCount - SampleTime + 1;
+			}
+			for (unsigned int i = 1; i < SampleTime; i++)
 			{
 				for (unsigned int j = 0; j < m_uiTraceNume; j++)
 				{
-					m_ppData[i-1][j] = m_ppData[i][j];
+					m_zAmpData(i-1, j) = m_zAmpData(i, j);
 				}
-//				m_xTimeData[i] = i + m_uiTimeCount - SampleTime + 1;
 			}
-// 			m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
-// 			m_Axis3D.SetMinMax(m_xTimeData[0], m_xTimeData[SampleTime - 1]);
+ 			m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
+ 			m_Axis3D.SetMinMax(m_xTimeData[0], m_xTimeData[SampleTime - 1]);
 		}
 		if (m_uiTimeCount % 72 == 0)
 		{
@@ -418,19 +411,12 @@ void CDraw3DGraph_Test3Dlg::OnTimer(UINT_PTR nIDEvent)
 			{
 				iTemp = 0;
 			}
-			m_ppData[x][uiCounter] = iTemp;
+			m_zAmpData(x, uiCounter) = iTemp;
 			uiCounter ++;
 		}
 		m_fin.seekg(2, ios::cur);
 		m_uiTimeCount++;
 		m_iOff = m_fin.tellg();
-		for (unsigned int i = 0; i < SampleTime; i++)
-		{
-			for (unsigned int j = 0; j < m_uiTraceNume; j++)
-			{
-				m_zAmpData(i, j) = m_ppData[i][j];
-			}
-		}
 		m_ctrlGraph3D.GetPlots().Item(1).Plot3DSurface(m_xTimeData, m_yTraceData, m_zAmpData);
 	}
 	CDialog::OnTimer(nIDEvent);
@@ -444,13 +430,5 @@ void CDraw3DGraph_Test3Dlg::OnDestroy()
 	if (m_fin.is_open())
 	{
 		m_fin.close();
-	}
-	for (int i=0; i< SampleTime; i++)
-	{
-		if (m_ppData[i] != NULL)
-		{
-			delete[] m_ppData[i];
-			m_ppData[i] = NULL;
-		}
 	}
 }
