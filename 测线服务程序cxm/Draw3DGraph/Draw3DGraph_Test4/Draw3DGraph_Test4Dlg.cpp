@@ -133,9 +133,7 @@ BOOL CDraw3DGraph_Test4Dlg::OnInitDialog()
 //	m_xTimeData.SetSize(SampleTime);
 
 	m_ctrlGraph3D.SetPlotAreaColor(RGB(128, 128, 128));
-	/*m_ctrlGraph3D.GetPlots().Item(1).SetProjectionYZ(TRUE);*/
-	m_ctrlGraph3D.GetPlots().Item(1).SetFillColor(RGB(0, 0, 0));
-	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::None;
+
 	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
 	m_Axis3D.SetCaption(_T("Row"));
 	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
@@ -150,12 +148,18 @@ BOOL CDraw3DGraph_Test4Dlg::OnInitDialog()
 	m_Axis3D.SetMinMax(SampleAmpMin, SampleAmpMax);
 	m_Axis3D.SetCaption(_T("Amp"));
 	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
-	m_ctrlGraph3D.SetCaptionColor(RGB(213, 43, 213));
-	m_ctrlGraph3D.SetGridFrameColor(RGB(128, 0, 0));
+// 	m_ctrlGraph3D.SetCaptionColor(RGB(213, 43, 213));
+// 	m_ctrlGraph3D.SetGridFrameColor(RGB(128, 0, 0));
 	//	m_ctrlGraph3D.SetPlotAreaColor(RGB(0, 128, 0));
+	/*m_ctrlGraph3D.GetPlots().Item(1).SetProjectionYZ(TRUE);*/
+
+	m_ctrlGraph3D.GetPlots().Item(1).SetFillColor(RGB(0, 0, 0));
+	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::None;
 	m_ctrlGraph3D.GetPlots().Item(1).SetLineColor(RGB(0, 255, 0));
 	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::SurfaceLine);
-//	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::HiddenLine);
+	
+
+/*	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::SurfaceContour);*/
 
 	m_ctrlBtnStart.EnableWindow(FALSE);
 	m_ctrlBtnStop.EnableWindow(FALSE);
@@ -266,6 +270,8 @@ void CDraw3DGraph_Test4Dlg::OnBnClickedBtnSelectfile()
 	string str = "";
 	char data[10];
 	unsigned int uiRowNum = 0;
+	unsigned int uiCurveRowNum = 0;
+	unsigned int uiCurveColumnNum = 0;
 	m_uiTraceNume = 0;
 	m_iOff = 0;
 	m_bOpenFile = false;
@@ -288,16 +294,33 @@ void CDraw3DGraph_Test4Dlg::OnBnClickedBtnSelectfile()
 	}
 	uiRowNum = m_uiTraceNume / ColumnNum;
 	m_xRow.SetSize(uiRowNum);
+	uiCurveRowNum = uiRowNum * (InterpolateRowNum + 1) - InterpolateRowNum;
+	m_xCurveRow.SetSize(uiCurveRowNum);
+	m_dtRow.SetSize(uiRowNum);
+	m_zAmpRowTemp.SetSize(uiRowNum);
 	for (unsigned int i=0; i<uiRowNum; i++)
 	{
 		m_xRow[i] = i + 1;
 	}
+	for (unsigned int i=0; i<uiCurveRowNum; i++)
+	{
+		m_xCurveRow[i] = 0.1 * i + 1;
+	}
 	m_yColumn.SetSize(ColumnNum);
+	uiCurveColumnNum = ColumnNum * (InterpolateColumnNum + 1) - InterpolateColumnNum;
+	m_yCurveColumn.SetSize(uiCurveColumnNum);
+	m_dtColumn.SetSize(ColumnNum);
+	m_zAmpColumnTemp.SetSize(ColumnNum);
 	for (unsigned int i=0; i<ColumnNum; i++)
 	{
 		m_yColumn[i] = i + 1;
 	}
+	for (unsigned int i=0; i<uiCurveColumnNum; i++)
+	{
+		m_yCurveColumn[i] = 0.1 * i + 1;
+	}
 	m_zAmpData.SetSize(uiRowNum, ColumnNum);
+	m_zCurveAmpData.SetSize(uiCurveRowNum, uiCurveColumnNum);
 	for (unsigned int i=0; i< uiRowNum; i++)
 	{
 		for (unsigned int j = 0; j< ColumnNum; j++)
@@ -306,95 +329,7 @@ void CDraw3DGraph_Test4Dlg::OnBnClickedBtnSelectfile()
 		}
 	}
 	m_bOpenFile = true;
-}
-void CDraw3DGraph_Test4Dlg::CreateCurve(CNiReal64Vector vSrc, CNiReal64Vector vDst)
-{  
-	// 控制点收缩系数 ，经调试0.6较好，CvPoint是opencv的，可自行定义结构体(x,y)
-	double scale = 0.6;
-	int iSrcSize = vSrc.GetSize();
-	if (iSrcSize < 2)
-	{
-		return;
-	}
-	int iMidPointSize = iSrcSize - 1;
-	CNiReal64Vector vMidPoints;
-	vMidPoints.SetSize(iMidPointSize);
-	// 生成中点
-	// @@@与我的应用有区别，不是首尾连接的线，需做一定的改动
-	for(int i = 0; i < iMidPointSize; i++)
-	{
-		int nexti = (i + 1) % iSrcSize;
-		vMidPoints[i] = (vSrc[i] + vSrc[nexti]) / 2.0;
-	}
-	//平移中点
-	CNiReal64Vector vExtraPoints;
-	vExtraPoints.SetSize(2 * (iMidPointSize - 1));
-// 	14.    for(int i = 0 ;i < originCount ; i++){  
-// 		15.         int nexti = (i + 1) % originCount;  
-// 		16.         int backi = (i + originCount - 1) % originCount;  
-// 		17.         CvPoint midinmid;  
-// 		18.         midinmid.x = (midpoints[i].x + midpoints[backi].x)/2.0;  
-// 		19.         midinmid.y = (midpoints[i].y + midpoints[backi].y)/2.0;  
-// 		20.         int offsetx = originPoint[i].x - midinmid.x;  
-// 		21.         int offsety = originPoint[i].y - midinmid.y;  
-// 		22.         int extraindex = 2 * i;  
-// 		23.         extrapoints[extraindex].x = midpoints[backi].x + offsetx;  
-// 		24.         extrapoints[extraindex].y = midpoints[backi].y + offsety;  
-// 		25.         //朝 originPoint[i]方向收缩   
-// 			26.         int addx = (extrapoints[extraindex].x - originPoint[i].x) * scale;  
-// 		27.         int addy = (extrapoints[extraindex].y - originPoint[i].y) * scale;  
-// 		28.         extrapoints[extraindex].x = originPoint[i].x + addx;  
-// 		29.         extrapoints[extraindex].y = originPoint[i].y + addy;  
-// 		30.           
-// 			31.         int extranexti = (extraindex + 1)%(2 * originCount);  
-// 		32.         extrapoints[extranexti].x = midpoints[i].x + offsetx;  
-// 		33.         extrapoints[extranexti].y = midpoints[i].y + offsety;  
-// 		34.         //朝 originPoint[i]方向收缩   
-// 			35.         addx = (extrapoints[extranexti].x - originPoint[i].x) * scale;  
-// 		36.         addy = (extrapoints[extranexti].y - originPoint[i].y) * scale;  
-// 		37.         extrapoints[extranexti].x = originPoint[i].x + addx;  
-// 		38.         extrapoints[extranexti].y = originPoint[i].y + addy;  
-// 		39.           
-// 			40.    }      
-// 	41.      
-// 		42.    CvPoint controlPoint[4];  
-// 	43.    //生成4控制点，产生贝塞尔曲线  
-// 		44.    for(int i = 0 ;i < originCount ; i++){  
-// 			45.           controlPoint[0] = originPoint[i];  
-// 			46.           int extraindex = 2 * i;  
-// 			47.           controlPoint[1] = extrapoints[extraindex + 1];  
-// 			48.           int extranexti = (extraindex + 2) % (2 * originCount);  
-// 			49.           controlPoint[2] = extrapoints[extranexti];  
-// 			50.           int nexti = (i + 1) % originCount;  
-// 			51.           controlPoint[3] = originPoint[nexti];      
-// 			52.           float u = 1;  
-// 			53.           while(u >= 0){  
-// 				54.               int px = bezier3funcX(u,controlPoint);  
-// 				55.               int py = bezier3funcY(u,controlPoint);  
-// 				56.               //u的步长决定曲线的疏密  
-// 					57.               u -= 0.005;  
-// 				58.               CvPoint tempP = cvPoint(px,py);  
-// 				59.               //存入曲线点   
-// 					60.               curvePoint.push_back(tempP);  
-// 				61.           }      
-// 			62.    }  
 }  
-//三次贝塞尔曲线  
-// 66.float bezier3funcX(float uu,CvPoint *controlP){  
-// 	67.   float part0 = controlP[0].x * uu * uu * uu;  
-// 	68.   float part1 = 3 * controlP[1].x * uu * uu * (1 - uu);  
-// 	69.   float part2 = 3 * controlP[2].x * uu * (1 - uu) * (1 - uu);  
-// 	70.   float part3 = controlP[3].x * (1 - uu) * (1 - uu) * (1 - uu);     
-// 	71.   return part0 + part1 + part2 + part3;   
-// 	72.}      
-// 73.  
-// 74.float bezier3funcY(float uu,CvPoint *controlP){  
-// 	75.   float part0 = controlP[0].y * uu * uu * uu;  
-// 	76.   float part1 = 3 * controlP[1].y * uu * uu * (1 - uu);  
-// 	77.   float part2 = 3 * controlP[2].y * uu * (1 - uu) * (1 - uu);  
-// 	78.   float part3 = controlP[3].y * (1 - uu) * (1 - uu) * (1 - uu);     
-// 	79.   return part0 + part1 + part2 + part3;   
-// 	80.}   
 void CDraw3DGraph_Test4Dlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -438,8 +373,34 @@ void CDraw3DGraph_Test4Dlg::OnTimer(UINT_PTR nIDEvent)
 		m_fin.seekg(2, ios::cur);
 		m_uiTimeCount++;
 		m_iOff = m_fin.tellg();
+		// 先按行求差值
+		for (unsigned int j=0; j<ColumnNum; j++)
+		{
+			for (unsigned int i=0; i<m_uiTraceNume / ColumnNum; i++)
+			{
+				m_zAmpRowTemp[i] = m_zAmpData(i, j);
+			}
+			CNiMath::Spline(m_xRow, m_zAmpRowTemp, 1, 1, m_dtRow);
+			for (unsigned int i=0; i<m_xCurveRow.GetSize(); i++)
+			{
+				CNiMath::InterpolateSpline(m_xRow, m_zAmpRowTemp, m_dtRow, m_xCurveRow[i], m_zCurveAmpData(i, j * (InterpolateColumnNum + 1)));
+			}
+		}
+ 		// 按列求差值
+		for (unsigned int i=0; i<m_xCurveRow.GetSize(); i++)
+		{
+			for (unsigned int j=0; j<ColumnNum; j++)
+			{
+				m_zAmpColumnTemp[j] = m_zCurveAmpData(i, j * (InterpolateColumnNum + 1));
+			}
+			CNiMath::Spline(m_yColumn, m_zAmpColumnTemp, 1, 1, m_dtColumn);
+			for (unsigned int j=0; j<m_yCurveColumn.GetSize(); j++)
+			{
+				CNiMath::InterpolateSpline(m_yColumn, m_zAmpColumnTemp, m_dtColumn, m_yCurveColumn[j], m_zCurveAmpData(i, j));
+			}
+		}
 
-		m_ctrlGraph3D.GetPlots().Item(1).Plot3DSurface(m_xRow, m_yColumn, m_zAmpData);
+		m_ctrlGraph3D.GetPlots().Item(1).Plot3DSurface(m_xCurveRow, m_yCurveColumn, m_zCurveAmpData);
 	}
 	CDialog::OnTimer(nIDEvent);
 }

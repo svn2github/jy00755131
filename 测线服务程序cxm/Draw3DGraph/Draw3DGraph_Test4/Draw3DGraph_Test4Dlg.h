@@ -19,12 +19,15 @@ using std::streamoff;
 // 定时器序号
 #define TimerID				1
 // 定时器延时
-#define TimerDelay			500
+#define TimerDelay			1000
 // 定义帧内时间显示字节数
 #define FrameTimeBytesNume	13
 // 数据显示字节数
 #define DataBytesNum		10
-
+// 行差值数据个数
+#define InterpolateRowNum		9
+// 列差值数据个数
+#define InterpolateColumnNum	9
 // CDraw3DGraph_Test4Dlg 对话框
 class CDraw3DGraph_Test4Dlg : public CDialog
 {
@@ -58,9 +61,27 @@ public:
 	CButton m_ctrlBtnStop;
 	// 选择文件按键控制变量
 	CButton m_ctrlBtnSelectFile;
+	// X轴数据
 	CNiReal64Vector m_xRow;
+	// Y轴数据
 	CNiReal64Vector m_yColumn;
+	// 采样数据
 	CNiReal64Matrix m_zAmpData;
+	// 差值计算后X轴数据
+	CNiReal64Vector m_xCurveRow;
+	// 差值计算后Y轴数据
+	CNiReal64Vector m_yCurveColumn;
+	// 差值计算后Z轴数据
+	CNiReal64Matrix m_zCurveAmpData;
+	// X轴方向衍生数据
+	CNiReal64Vector m_dtRow;
+	// Y轴方向衍生数据
+	CNiReal64Vector m_dtColumn;
+	// X轴方向采样数据临时缓冲
+	CNiReal64Vector m_zAmpRowTemp;
+	// Y轴方向采样数据临时缓冲
+	CNiReal64Vector m_zAmpColumnTemp;
+	// 坐标轴
 	CNiAxis3D m_Axis3D;
 	// 打开文件路径
 	CString m_strFilePath;
@@ -76,7 +97,6 @@ public:
 	unsigned int m_uiTimeCount;
 	// 选择要打开的文件
 	CString SelectOpenFile(void);
-	void CreateCurve(CNiReal64Vector vSrc, CNiReal64Vector vDst);
 	afx_msg void OnBnClickedBtnStart();
 	afx_msg void OnBnClickedBtnStop();
 	afx_msg void OnBnClickedBtnSelectfile();
