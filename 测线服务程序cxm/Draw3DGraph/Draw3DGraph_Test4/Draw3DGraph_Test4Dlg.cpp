@@ -76,6 +76,8 @@ BEGIN_MESSAGE_MAP(CDraw3DGraph_Test4Dlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_SELECTFILE, &CDraw3DGraph_Test4Dlg::OnBnClickedBtnSelectfile)
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_RADIO_COLOR_SINGLE, &CDraw3DGraph_Test4Dlg::OnBnClickedRadioColorSingle)
+	ON_BN_CLICKED(IDC_RADIO_COLOR_SPECTRUM, &CDraw3DGraph_Test4Dlg::OnBnClickedRadioColorSpectrum)
 END_MESSAGE_MAP()
 
 
@@ -130,37 +132,15 @@ BOOL CDraw3DGraph_Test4Dlg::OnInitDialog()
 	rectCtrl.bottom = rectWindow.bottom * 7 / 16;
 	m_ctrlBtnSelectFile.MoveWindow(rectCtrl);
 
-//	m_xTimeData.SetSize(SampleTime);
+	rectCtrl.top = rectWindow.bottom * 1 / 2;
+	rectCtrl.bottom = rectWindow.bottom * 17 / 32;
+	GetDlgItem(IDC_RADIO_COLOR_SINGLE)->MoveWindow(rectCtrl);
 
-	m_ctrlGraph3D.SetPlotAreaColor(RGB(128, 128, 128));
+	rectCtrl.top = rectWindow.bottom * 9 / 16;
+	rectCtrl.bottom = rectWindow.bottom * 19 / 32;
+	GetDlgItem(IDC_RADIO_COLOR_SPECTRUM)->MoveWindow(rectCtrl);
 
-	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
-	m_Axis3D.SetCaption(_T("Row"));
-	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
-	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(2);
-	m_Axis3D.SetCaption(_T("Column"));
-	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
-	m_Axis3D.GetLabels().SetOpposite(true);
-	m_Axis3D.GetLabels().SetNormal(false);
-	m_Axis3D.SetCaptionOpposite(true);
-	m_Axis3D.SetCaptionNormal(false);
-	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(3);
-	m_Axis3D.SetMinMax(SampleAmpMin, SampleAmpMax);
-	m_Axis3D.SetCaption(_T("Amp"));
-	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
-// 	m_ctrlGraph3D.SetCaptionColor(RGB(213, 43, 213));
-// 	m_ctrlGraph3D.SetGridFrameColor(RGB(128, 0, 0));
-	//	m_ctrlGraph3D.SetPlotAreaColor(RGB(0, 128, 0));
-	/*m_ctrlGraph3D.GetPlots().Item(1).SetProjectionYZ(TRUE);*/
-
-	m_ctrlGraph3D.GetPlots().Item(1).SetFillColor(RGB(0, 0, 0));
-	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::None;
-	m_ctrlGraph3D.GetPlots().Item(1).SetLineColor(RGB(0, 255, 0));
-	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::SurfaceLine);
-	
-
-/*	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::SurfaceContour);*/
-
+	OnInitGraph3D();
 	m_ctrlBtnStart.EnableWindow(FALSE);
 	m_ctrlBtnStop.EnableWindow(FALSE);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -234,6 +214,7 @@ void CDraw3DGraph_Test4Dlg::OnBnClickedBtnStop()
 		return;
 	}
 	KillTimer(TimerID);
+	OnInitCursor();
 }
 // 选择要打开的文件
 CString CDraw3DGraph_Test4Dlg::SelectOpenFile(void)
@@ -414,4 +395,94 @@ void CDraw3DGraph_Test4Dlg::OnDestroy()
 	{
 		m_fin.close();
 	}
+}
+
+// 初始化光标
+void CDraw3DGraph_Test4Dlg::OnInitCursor(void)
+{
+	m_ctrlGraph3D.Cursors.RemoveAll();
+	m_Cursor = m_ctrlGraph3D.Cursors.Add();
+	m_Cursor.Name = _T("Cursor 1");
+	m_Cursor.Enabled = true;
+	m_Cursor.Visible = true;
+	m_Cursor.NameVisible = true;
+	m_Cursor.TextColor = CNiColor(0, 0, 0);
+
+	m_Cursor.XPosition = 5.0;
+	m_Cursor.YPosition = 5.0;
+	m_Cursor.ZPosition = 5.0;
+	m_Cursor.PositionVisible = true;
+	m_Cursor.SnapMode = CNiCursor3D::SnapNearestPlot;
+
+	m_Cursor.PointSize = 10.0;
+	m_Cursor.PointColor = CNiColor(0, 0, 128);
+	m_Cursor.PointStyle = CNiCursor3D::Asterisk;
+
+	m_Cursor.LineWidth = 1.0;
+	m_Cursor.LineColor = CNiColor(255, 0, 0);
+	m_Cursor.LineStyle = CNiCursor3D::LineSolid;
+
+	m_Cursor.Transparency = 75;
+	m_Cursor.PlaneColor = CNiColor(0, 128, 0);
+	m_Cursor.XYPlaneVisible = false;
+	m_Cursor.XZPlaneVisible = false;
+	m_Cursor.YZPlaneVisible = false;
+}
+
+// 初始化绘图控件
+void CDraw3DGraph_Test4Dlg::OnInitGraph3D(void)
+{
+	m_ctrlGraph3D.FastDraw = true;
+	m_ctrlGraph3D.SetPlotAreaColor(RGB(128, 128, 128));
+	// 	m_ctrlGraph3D.SetCaptionColor(RGB(213, 43, 213));
+	// 	m_ctrlGraph3D.SetGridFrameColor(RGB(128, 0, 0));
+	//	m_ctrlGraph3D.SetPlotAreaColor(RGB(0, 128, 0));
+	/*m_ctrlGraph3D.GetPlots().Item(1).SetProjectionYZ(TRUE);*/
+
+	m_ctrlGraph3D.GetPlots().Item(1).SetFillColor(RGB(0, 0, 0));
+	//	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::None;
+	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::ColorSpectrum;
+	m_ctrlGraph3D.GetPlots().Item(1).SetLineColor(RGB(0, 191, 255));
+	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::SurfaceLine);
+	/*	m_ctrlGraph3D.GetPlots().Item(1).SetStyle(CNiPlot3D::SurfaceContour);*/
+
+//	m_ctrlGraph3D.SetViewMode(CNiGraph3D::ViewXYPlane);
+	OnInitAxis3D();
+}
+
+// 初始化3D坐标轴
+void CDraw3DGraph_Test4Dlg::OnInitAxis3D(void)
+{
+	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
+	m_Axis3D.SetCaption(_T("Row"));
+	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
+	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(2);
+	m_Axis3D.SetCaption(_T("Column"));
+	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
+	m_Axis3D.GetLabels().SetOpposite(true);
+	m_Axis3D.GetLabels().SetNormal(false);
+	m_Axis3D.SetCaptionOpposite(true);
+	m_Axis3D.SetCaptionNormal(false);
+	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(3);
+	m_Axis3D.SetMinMax(SampleAmpMin, SampleAmpMax);
+	m_Axis3D.SetCaption(_T("Amp"));
+	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
+}
+
+void CDraw3DGraph_Test4Dlg::OnBnClickedRadioColorSingle()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::None;
+	m_ctrlGraph3D.GetPlots().Item(1).SetLineColor(RGB(0, 255, 0));
+	((CButton*)GetDlgItem(IDC_RADIO_COLOR_SINGLE))->SetCheck(1); 
+	((CButton*)GetDlgItem(IDC_RADIO_COLOR_SPECTRUM))->SetCheck(0); 
+}
+
+void CDraw3DGraph_Test4Dlg::OnBnClickedRadioColorSpectrum()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::ColorSpectrum;
+	m_ctrlGraph3D.GetPlots().Item(1).SetLineColor(RGB(0, 191, 255));
+	((CButton*)GetDlgItem(IDC_RADIO_COLOR_SINGLE))->SetCheck(0); 
+	((CButton*)GetDlgItem(IDC_RADIO_COLOR_SPECTRUM))->SetCheck(1); 
 }

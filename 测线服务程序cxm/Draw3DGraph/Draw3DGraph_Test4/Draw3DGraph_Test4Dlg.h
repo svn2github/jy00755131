@@ -61,6 +61,8 @@ public:
 	CButton m_ctrlBtnStop;
 	// 选择文件按键控制变量
 	CButton m_ctrlBtnSelectFile;
+	// 曲面单一颜色按键控制变量
+	
 	// X轴数据
 	CNiReal64Vector m_xRow;
 	// Y轴数据
@@ -95,6 +97,8 @@ public:
 	bool m_bOpenFile;
 	// 时间计数
 	unsigned int m_uiTimeCount;
+	// 3D坐标
+	CNiCursor3D m_Cursor;
 	// 选择要打开的文件
 	CString SelectOpenFile(void);
 	afx_msg void OnBnClickedBtnStart();
@@ -102,4 +106,12 @@ public:
 	afx_msg void OnBnClickedBtnSelectfile();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnDestroy();
+	// 初始化光标
+	void OnInitCursor(void);
+	// 初始化绘图控件
+	void OnInitGraph3D(void);
+	// 初始化3D坐标轴
+	void OnInitAxis3D(void);
+	afx_msg void OnBnClickedRadioColorSingle();
+	afx_msg void OnBnClickedRadioColorSpectrum();
 };
