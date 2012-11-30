@@ -6,6 +6,8 @@
 #include "d:\program files (x86)\codejock software\mfc\xtreme toolkitpro v15.3.1\source\controls\edit\xtphexedit.h"
 #include <vector>
 #include "afxcmn.h"
+#include "LandedDlg.h"
+
 using std::vector;
 // 定义默认缓冲区大小
 #define DefaultBufSize	10240
@@ -17,6 +19,7 @@ using std::vector;
 #define IRC4MAddr		1038
 // 定义IRC1K地址
 #define IRC1KAddr		1037
+
 // CIC_TESTDlg dialog
 class CIC_TESTDlg : public CDialog
 {
@@ -64,10 +67,30 @@ public:
 	afx_msg void OnBnClickedBtnResetMsg();
 	afx_msg void OnBnClickedBtnOpenfile();
 	afx_msg void OnDestroy();
+
+	// 烧写模式下拉菜单控制变量
+	CComboBox m_ctrlComboProMode;
+	// 端口号编辑控件控制变量
+	CEdit m_ctrlComNo;
+	// 登陆
+	void OnLanded(void);
+	afx_msg void OnBnClickedBtnLanded();
+	// 重置界面
+	void RefreshView(void);
+	// 显示控件
+	void ShowControls(int iStyle);
 	// SRC的Spin控件控制变量
 	CSpinButtonCtrl m_ctrlSpinSRC;
+	CEdit m_ctrlEditSRC;
+	CComboBox m_ctrlComboSRC;
 	// IRC4M的Spin控件控制变量
 	CSpinButtonCtrl m_ctrlSpinIRC4M;
+	CEdit m_ctrlEditIRC4M;
+	CComboBox m_ctrlComboIRC4M;
 	// IRC1K的Spin控件控制变量
 	CSpinButtonCtrl m_ctrlSpinIRC1K;
+	CEdit m_ctrlEditIRC1K;
+	CComboBox m_ctrlComboIRC1K;
+	// 读回菜单控制变量
+	CComboBox m_ctrlComboReadback;
 };

@@ -102,12 +102,15 @@
   <ItemGroup>
     <ClInclude Include="IC_TEST.h" />
     <ClInclude Include="IC_TESTDlg.h" />
+    <ClInclude Include="LandedDlg.h" />
+    <ClInclude Include="Parameter.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IC_TEST.cpp" />
     <ClCompile Include="IC_TESTDlg.cpp" />
+    <ClCompile Include="LandedDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

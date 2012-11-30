@@ -43,7 +43,8 @@ END_MESSAGE_MAP()
 
 // CIC_TESTDlg dialog
 
-
+// 是否管理员登陆标志位
+bool m_bAdmin;
 
 
 CIC_TESTDlg::CIC_TESTDlg(CWnd* pParent /*=NULL*/)
@@ -61,6 +62,15 @@ void CIC_TESTDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SPIN_SRC, m_ctrlSpinSRC);
 	DDX_Control(pDX, IDC_SPIN_IRC4M, m_ctrlSpinIRC4M);
 	DDX_Control(pDX, IDC_SPIN_IRC1K, m_ctrlSpinIRC1K);
+	DDX_Control(pDX, IDC_COMBO_PROGRAM_MODE, m_ctrlComboProMode);
+	DDX_Control(pDX, IDC_EDIT_COMNO, m_ctrlComNo);
+	DDX_Control(pDX, IDC_EDIT_SRC, m_ctrlEditSRC);
+	DDX_Control(pDX, IDC_COMBO_SRC, m_ctrlComboSRC);
+	DDX_Control(pDX, IDC_EDIT_IRC4M, m_ctrlEditIRC4M);
+	DDX_Control(pDX, IDC_COMBO_IRC4M, m_ctrlComboIRC4M);
+	DDX_Control(pDX, IDC_EDIT_IRC1K, m_ctrlEditIRC1K);
+	DDX_Control(pDX, IDC_COMBO_IRC1K, m_ctrlComboIRC1K);
+	DDX_Control(pDX, IDC_COMBO_READBACK, m_ctrlComboReadback);
 }
 
 BEGIN_MESSAGE_MAP(CIC_TESTDlg, CDialog)
@@ -72,6 +82,7 @@ BEGIN_MESSAGE_MAP(CIC_TESTDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_RESET_MSG, &CIC_TESTDlg::OnBnClickedBtnResetMsg)
 	ON_BN_CLICKED(IDC_BTN_OPENFILE, &CIC_TESTDlg::OnBnClickedBtnOpenfile)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BTN_LANDED, &CIC_TESTDlg::OnBnClickedBtnLanded)
 END_MESSAGE_MAP()
 
 
@@ -110,6 +121,10 @@ BOOL CIC_TESTDlg::OnInitDialog()
 	m_ctrlSpinIRC1K.SetRange(0, 255);
 	m_ctrlSpinIRC4M.SetBuddy(GetDlgItem(IDC_EDIT_IRC4M));
 	m_ctrlSpinIRC4M.SetRange(0, 255);
+	m_ctrlComNo.SetWindowText(_T("0"));
+
+	OnLanded();
+
 	RefreshControls();
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -188,6 +203,7 @@ void CIC_TESTDlg::RefreshControls(void)
 	m_ctrlEditHex.SetBPR(16);
 	m_ctrlEditHex.SetOptions(TRUE, TRUE, FALSE, TRUE);
 	m_ctrlEditHex.Clear();
+	m_ctrlEditHex.SetData(NULL, 0, 0);
 	while(m_ctrlListMsg.GetCount() != 0)
 	{
 		m_ctrlListMsg.DeleteString(0);
@@ -331,4 +347,79 @@ void CIC_TESTDlg::OnDestroy()
 		delete[] m_pProData;
 		m_pProData = NULL;
 	}
+}
+
+
+// 登陆
+void CIC_TESTDlg::OnLanded(void)
+{
+	m_bAdmin = false;
+	CLandedDlg dlg;
+	dlg.DoModal();
+	RefreshView();
+}
+
+
+void CIC_TESTDlg::OnBnClickedBtnLanded()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	OnLanded();
+}
+
+
+// 重置界面
+void CIC_TESTDlg::RefreshView(void)
+{
+	while(m_ctrlComboProMode.GetCount() != 0)
+	{
+		m_ctrlComboProMode.DeleteString(0);
+	}
+	m_ctrlComboProMode.AddString(_T("OTP Program with VPP_std"));
+	while (m_ctrlComboReadback.GetCount() != 0)
+	{
+		m_ctrlComboReadback.DeleteString(0);
+	}
+	m_ctrlComboReadback.AddString(_T("User Mode OTP Read with Vdd_Hi"));
+	if (m_bAdmin == true)
+	{
+		m_ctrlComboProMode.AddString(_T("OTP Program with VPP_Lo"));
+		m_ctrlComboReadback.AddString(_T("User Mode OTP Read with Vdd_Lo"));
+		m_ctrlComboReadback.AddString(_T("Test Mode OTP Margin-1 Read"));
+		m_ctrlComboReadback.AddString(_T("Test Mode OTP Margin-2 Read"));
+		m_ctrlComboReadback.AddString(_T("Test Mode OTP off-state Margin Read"));
+		ShowControls(SW_SHOW);
+	}
+	else
+	{
+		ShowControls(SW_HIDE);
+	}
+}
+
+
+// 显示控件
+void CIC_TESTDlg::ShowControls(int iStyle)
+{
+	GetDlgItem(IDC_STATIC_SRC)->ShowWindow(iStyle);
+	GetDlgItem(IDC_STATIC_SRC_VALUE)->ShowWindow(iStyle);
+	GetDlgItem(IDC_STATIC_SRC_MODE)->ShowWindow(iStyle);
+	GetDlgItem(IDC_BTN_SRC_DO)->ShowWindow(iStyle);
+	m_ctrlSpinSRC.ShowWindow(iStyle);
+	m_ctrlEditSRC.ShowWindow(iStyle);
+	m_ctrlComboSRC.ShowWindow(iStyle);
+
+	GetDlgItem(IDC_STATIC_IRC1K)->ShowWindow(iStyle);
+	GetDlgItem(IDC_STATIC_IRC1K_VALUE)->ShowWindow(iStyle);
+	GetDlgItem(IDC_STATIC_IRC1K_MODE)->ShowWindow(iStyle);
+	GetDlgItem(IDC_BTN_IRC1K_DO)->ShowWindow(iStyle);
+	m_ctrlSpinIRC1K.ShowWindow(iStyle);
+	m_ctrlEditIRC1K.ShowWindow(iStyle);
+	m_ctrlComboIRC1K.ShowWindow(iStyle);
+
+	GetDlgItem(IDC_STATIC_IRC4M)->ShowWindow(iStyle);
+	GetDlgItem(IDC_STATIC_IRC4M_VALUE)->ShowWindow(iStyle);
+	GetDlgItem(IDC_STATIC_IRC4M_MODE)->ShowWindow(iStyle);
+	GetDlgItem(IDC_BTN_IRC4M_DO)->ShowWindow(iStyle);
+	m_ctrlSpinIRC4M.ShowWindow(iStyle);
+	m_ctrlEditIRC4M.ShowWindow(iStyle);
+	m_ctrlComboIRC4M.ShowWindow(iStyle);
 }

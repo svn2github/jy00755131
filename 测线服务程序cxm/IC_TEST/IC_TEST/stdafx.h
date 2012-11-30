@@ -71,3 +71,4 @@
 #endif
 
 #include <XTToolkitPro.h>    // Xtreme Toolkit Pro components
+#include <afxcontrolbars.h>

@@ -7,6 +7,7 @@
 #define IDS_ABOUTBOX                    101
 #define IDD_IC_TEST_DIALOG              102
 #define IDR_MAINFRAME                   128
+#define IDD_DIALOG_LAND                 130
 #define IDC_EDIT_HEX                    1000
 #define IDC_LIST_MSG                    1005
 #define IDC_BTN_RESET                   1006
@@ -23,7 +24,6 @@
 #define IDC_BTN_IRC1K_DO                1018
 #define IDC_BTN_PROGRAM_DO              1019
 #define IDC_STATIC_PROGRAM              1021
-#define IDC_COMBO1                      1023
 #define IDC_COMBO_PROGRAM_MODE          1023
 #define IDC_BTN_SAVEFILE                1024
 #define IDC_STATIC_SRC_VALUE            1025
@@ -39,14 +39,26 @@
 #define IDC_STATIC_IRC1K_MODE           1035
 #define IDC_COMBO_IRC1K                 1036
 #define IDC_STATIC_PROGRAM_MODE         1037
+#define IDC_STATIC_SERIALPORT           1038
+#define IDC_STATIC_COMNO                1039
+#define IDC_EDIT_COMNO                  1040
+#define IDC_BTN_OPENCOM                 1041
+#define IDC_BTN_CLOSECOM                1042
+#define IDC_STATIC_READBACK             1043
+#define IDC_COMBO_READBACK              1044
+#define IDC_BTN_READBACK                1045
+#define IDC_COMBO_LANDED                1046
+#define IDC_EDIT_PASSWORD               1047
+#define IDC_BUTTON1                     1048
+#define IDC_BTN_LANDED                  1048
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        130
+#define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1038
+#define _APS_NEXT_CONTROL_VALUE         1049
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
