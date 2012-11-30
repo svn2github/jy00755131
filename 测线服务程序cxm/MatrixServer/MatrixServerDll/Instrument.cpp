@@ -208,6 +208,10 @@ void OnInstrumentReset(m_oInstrumentStruct* pInstrument, bool bSetByHand)
 	pInstrument->m_bCheckADCFrameLate = true;
 	// 仪器存活时间
 	pInstrument->m_uiActiveTime = 0;
+	// 本地系统时间高位
+	pInstrument->m_uiSysTimeHigh = 0;
+	// 本地系统时间低位
+	pInstrument->m_usSysTimeLow = 0;
 }
 // 判断索引号是否已加入索引表
 BOOL IfIndexExistInMap(unsigned int uiIndex, 

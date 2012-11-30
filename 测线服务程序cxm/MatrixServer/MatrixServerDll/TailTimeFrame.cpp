@@ -214,14 +214,14 @@ void MakeInstrTailTimeQueryFramebyBroadCast(m_oTailTimeFrameStruct* pTailTimeFra
 	// 广播端口
 	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdBroadCastPortSeted;
 	usPos ++;
+	// 尾包接收/发送时刻
+	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdTailRecSndTime1;
+	usPos ++;
 	// 交叉站交叉线尾包接收时刻
 	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLAUTailRecTimeLAUX;
 	usPos ++;
 	// 交叉站大线尾包接收时刻
 	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLineTailRecTimeLAUX;
-	usPos ++;
-	// 尾包接收/发送时刻
-	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdTailRecSndTime1;
 	usPos ++;
 	// 本地时间
 	pTailTimeFrame->m_pbyCommandWord[usPos] = pConstVar->m_byCmdLocalSysTime1;

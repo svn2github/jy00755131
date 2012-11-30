@@ -329,8 +329,8 @@ bool LoadIniFile(m_oConstVarStruct* pConstVar)
 		pConstVar->m_byCmdTailRecSndTime1 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 		strSectionKey=_T("CmdTailRecSndTimeLow2");	// 尾包接收\发送时刻低位
 		pConstVar->m_byCmdTailRecSndTime2 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
-// 		strSectionKey=_T("CmdTailRecSndTimeLow3");	// 尾包接收\发送时刻低位
-// 		pConstVar->m_byCmdTailRecSndTime3 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
+ 		strSectionKey=_T("CmdTailRecSndTimeLow3");	// 尾包接收\发送时刻低位
+ 		pConstVar->m_byCmdTailRecSndTime3 = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));
 
 		strSectionKey=_T("CmdBroadCastPortSet");	// 广播命令等待端口匹配
 		pConstVar->m_byCmdBroadCastPortSeted = static_cast<BYTE>(GetPrivateProfileInt(strSection,strSectionKey,NULL,strFilePath));

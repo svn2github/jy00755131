@@ -566,9 +566,9 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	strValue = _T("86");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
-// 	strSectionKey=_T("CmdTailRecSndTimeLow3");	// 尾包接收\发送时刻低位
-// 	strValue = _T("102");
-// 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
+	strSectionKey=_T("CmdTailRecSndTimeLow3");	// 尾包接收\发送时刻低位
+	strValue = _T("102");
+	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("CmdBroadCastPortSet");	// 广播命令等待端口匹配
 	strValue = _T("23");

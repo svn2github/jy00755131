@@ -141,6 +141,8 @@ bool ResetInstrFramePacket(m_oInstrumentCommandStruct* pCommand)
 // 	pCommand->m_usTailSndTimeLow = 0;
 	/** 尾包发送时刻/交叉站尾包发送时刻高位*/
 	pCommand->m_uiTailSndTime = 0;
+	/** 低位锁存时间*/
+	pCommand->m_uiLowTime = 0;
 	// 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令
 	pCommand->m_uiBroadCastPortSeted = 0;
 	// 网络时刻
@@ -416,14 +418,14 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			memcpy(&pCommand->m_uiTailSndTime, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
 		}
-// 		else if (byCommandWord == pConstVar->m_byCmdTailRecSndTime3)
-// 		{
-// 			memcpy(&pCommand->m_uiTailSndTime, &pFrameData[iPos], iFramePacketSize4B);
-// 			iPos += iFramePacketSize4B;
+		else if (byCommandWord == pConstVar->m_byCmdTailRecSndTime3)
+		{
+			memcpy(&pCommand->m_uiLowTime, &pFrameData[iPos], iFramePacketSize4B);
+			iPos += iFramePacketSize4B;
 // 			pCommand->m_uiTailSndTime <<= 2;
 // 			pCommand->m_uiTailSndTime += (pCommand->m_usTailSndTimeLow >> 14);
 // 			pCommand->m_usTailSndTimeLow &= 0x3fff;
-// 		}
+		}
 		else if (byCommandWord == pConstVar->m_byCmdBroadCastPortSeted)
 		{
 			memcpy(&pCommand->m_uiBroadCastPortSeted, &pFrameData[iPos], iFramePacketSize4B);
@@ -774,6 +776,9 @@ SOCKET CreateInstrSocket(unsigned short usPort, unsigned int uiIP, m_oLogOutPutS
 	CString str = _T("");
 	string strConv = "";
 	sockaddr_in oAddr;
+	DWORD bytes_returned = 0;
+	BOOL new_behavior = FALSE;
+	unsigned long arg = 1;
 	// 填充套接字地址结构
 	oSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	oAddr.sin_family = AF_INET;
@@ -791,7 +796,12 @@ SOCKET CreateInstrSocket(unsigned short usPort, unsigned int uiIP, m_oLogOutPutS
 	}
 	else
 	{
-		listen(oSocket, 2);
+//		listen(oSocket, 2);
+		// 设置Socket为非阻塞模式，默认为阻塞模式
+		ioctlsocket(oSocket, FIONBIO, &arg);
+		// disable  new behavior using IOCTL: SIO_UDP_CONNRESET
+		WSAIoctl(oSocket, SIO_UDP_CONNRESET,	&new_behavior, sizeof(new_behavior), 
+			NULL, 0, &bytes_returned,	NULL, NULL);
 	}
 	return oSocket;
 }
@@ -915,12 +925,22 @@ bool SendFrame(SOCKET oSocket, char* pFrameData,int iSndFrameSize,
 	unsigned short usPort, unsigned int uiIP, m_oLogOutPutStruct* pLogOutPut)
 {
 	bool bReturn = false;
+	int ret = 0;
+	timeval time_val = {0};
+	fd_set write_fds;
 	string strFrameData = "";
 	// 填充套接字地址结构
 	sockaddr_in addrSend;
 	addrSend.sin_family = AF_INET;
 	addrSend.sin_port = htons(usPort);
 	addrSend.sin_addr.S_un.S_addr = uiIP;
+
+	FD_ZERO(&write_fds);
+	FD_SET(oSocket, &write_fds);
+	ret = select(NULL, NULL, &write_fds, NULL, &time_val);
+
+	if(ret == 0) return false;
+	else if(ret == SOCKET_ERROR) return false;
 	int iCount = sendto(oSocket, pFrameData, iSndFrameSize, 0, 
 		reinterpret_cast<sockaddr*>(&addrSend), sizeof(addrSend));
 	if (iCount == iSndFrameSize)

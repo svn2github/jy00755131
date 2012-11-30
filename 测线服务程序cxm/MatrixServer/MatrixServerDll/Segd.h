@@ -175,6 +175,7 @@ typedef struct Segd_Standard_Header_Struct
 
 	char* m_pConcatenationOfExternal;//外部头段,m_pExternalHeaderLengthGeneral1*32,*SHOTPRO SP#    1/SL#    3.0/SN#   30.0/SI#1/SEQ# 1/STA:2/CTB:00.000/UH:000.0
 }m_oSegdStandardHeaderStruct;
+
 typedef struct Segd_Trace_Header_Struct
 {
 	//说明，字节数，采集道数据，辅助道数据

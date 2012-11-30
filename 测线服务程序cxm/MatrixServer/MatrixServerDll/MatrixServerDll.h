@@ -4,7 +4,7 @@
 // 任何其他项目上不应定义此符号。这样，源文件中包含此文件的任何其他项目都会将
 // MATRIXSERVERDLL_API 函数视为是从 DLL 导入的，而此 DLL 则将用此宏定义的
 // 符号视为是被导出的。
-
+#pragma once
 #ifndef _MatrixServerDll_H
 #define _MatrixServerDll_H
 #include "ConfigLineXml.h"
@@ -271,8 +271,8 @@ typedef struct ConstVar_Struct
 	BYTE m_byCmdTailRecSndTime1;
 	/** 尾包接收\发送时刻低位*/
 	BYTE m_byCmdTailRecSndTime2;
-// 	/** 尾包接收\发送时刻低位*/
-// 	BYTE m_byCmdTailRecSndTime3;
+	/** 尾包接收\发送时刻低位*/
+	BYTE m_byCmdTailRecSndTime3;
 	/** 广播命令等待端口匹配*/
 	BYTE m_byCmdBroadCastPortSeted;
 	/** 设置ADC控制命令命令字*/
@@ -541,6 +541,8 @@ typedef struct InstrumentCommand_Struct
 // 	unsigned short m_usTailSndTimeLow;
 	/** 尾包发送时刻/交叉站尾包发送时刻高位*/
 	unsigned int m_uiTailSndTime;
+	/** 低位锁存时间*/
+	unsigned int m_uiLowTime;
 	/** 广播命令等待端口匹配，必须放在第一个命令字位置，并和0x0a命令中的16位端口匹配才能接收广播命令*/
 	unsigned int m_uiBroadCastPortSeted;
 	/** 网络时刻*/
@@ -1019,6 +1021,10 @@ typedef struct Instrument_Struct
 	bool m_bCheckADCFrameLate;
 	/** 仪器存活时间*/
 	unsigned int m_uiActiveTime;
+	/** 本地系统时间高位*/
+	unsigned int m_uiSysTimeHigh;
+	/** 本地系统时间低位*/
+	unsigned short m_usSysTimeLow;
 }m_oInstrumentStruct;
 
 /**
@@ -2877,6 +2883,10 @@ MatrixServerDll_API void OnFreeADCDataRecThread(m_oADCDataRecThreadStruct* pADCD
 MatrixServerDll_API m_oADCDataSaveThreadStruct* OnCreateADCDataSaveThread(void);
 // 线程等待函数
 MatrixServerDll_API void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCDataSaveThread);
+// 初始化SEGD文件标准头
+MatrixServerDll_API void OnInitSegdSH(m_oSegdStandardHeaderStruct* pSegdSH);
+// 初始化SEGD文件数据道头
+MatrixServerDll_API void OnInitSegdTH(m_oSegdTraceHeaderStruct* pSegdTH);
 // 保存到Segd文件，成功返回true，失败返回false
 MatrixServerDll_API bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct);
 MatrixServerDll_API void ProcessGeneralHeaderBlock1BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);
