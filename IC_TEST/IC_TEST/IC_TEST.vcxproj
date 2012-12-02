@@ -106,6 +106,7 @@
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Uart.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IC_TEST.cpp" />
@@ -115,6 +116,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Uart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="IC_TEST.rc" />

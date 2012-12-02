@@ -50,6 +50,10 @@ bool m_bAdmin;
 CIC_TESTDlg::CIC_TESTDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CIC_TESTDlg::IDD, pParent)
 	, m_pProData(NULL)
+	, m_uiSCRPosition(0)
+	, m_uiIRC4MPosition(0)
+	, m_uiIRC1KPosition(0)
+	, m_strProFilePath(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -59,13 +63,13 @@ void CIC_TESTDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_MSG, m_ctrlListMsg);
 	DDX_Control(pDX, IDC_EDIT_HEX, m_ctrlEditHex);
-	DDX_Control(pDX, IDC_SPIN_SRC, m_ctrlSpinSRC);
+	DDX_Control(pDX, IDC_SPIN_SCR, m_ctrlSpinSCR);
 	DDX_Control(pDX, IDC_SPIN_IRC4M, m_ctrlSpinIRC4M);
 	DDX_Control(pDX, IDC_SPIN_IRC1K, m_ctrlSpinIRC1K);
 	DDX_Control(pDX, IDC_COMBO_PROGRAM_MODE, m_ctrlComboProMode);
 	DDX_Control(pDX, IDC_EDIT_COMNO, m_ctrlComNo);
-	DDX_Control(pDX, IDC_EDIT_SRC, m_ctrlEditSRC);
-	DDX_Control(pDX, IDC_COMBO_SRC, m_ctrlComboSRC);
+	DDX_Control(pDX, IDC_EDIT_SCR, m_ctrlEditSCR);
+	DDX_Control(pDX, IDC_COMBO_SCR, m_ctrlComboSCR);
 	DDX_Control(pDX, IDC_EDIT_IRC4M, m_ctrlEditIRC4M);
 	DDX_Control(pDX, IDC_COMBO_IRC4M, m_ctrlComboIRC4M);
 	DDX_Control(pDX, IDC_EDIT_IRC1K, m_ctrlEditIRC1K);
@@ -83,6 +87,14 @@ BEGIN_MESSAGE_MAP(CIC_TESTDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_OPENFILE, &CIC_TESTDlg::OnBnClickedBtnOpenfile)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BTN_LANDED, &CIC_TESTDlg::OnBnClickedBtnLanded)
+	ON_BN_CLICKED(IDC_BTN_OPENCOM, &CIC_TESTDlg::OnBnClickedBtnOpencom)
+	ON_BN_CLICKED(IDC_BTN_CLOSECOM, &CIC_TESTDlg::OnBnClickedBtnClosecom)
+	ON_BN_CLICKED(IDC_BTN_READBACK_DO, &CIC_TESTDlg::OnBnClickedBtnReadbackDo)
+	ON_BN_CLICKED(IDC_BTN_PROGRAM_DO, &CIC_TESTDlg::OnBnClickedBtnProgramDo)
+	ON_BN_CLICKED(IDC_BTN_SCR_DO, &CIC_TESTDlg::OnBnClickedBtnSCRDo)
+	ON_BN_CLICKED(IDC_BTN_IRC4M_DO, &CIC_TESTDlg::OnBnClickedBtnIrc4mDo)
+	ON_BN_CLICKED(IDC_BTN_IRC1K_DO, &CIC_TESTDlg::OnBnClickedBtnIrc1kDo)
+	ON_BN_CLICKED(IDC_BTN_SAVEFILE, &CIC_TESTDlg::OnBnClickedBtnSavefile)
 END_MESSAGE_MAP()
 
 
@@ -115,16 +127,22 @@ BOOL CIC_TESTDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);         // Set big icon
 	SetIcon(m_hIcon, FALSE);        // Set small icon
 	// TODO: Add extra initialization here
-	m_ctrlSpinSRC.SetBuddy(GetDlgItem(IDC_EDIT_SRC));
-	m_ctrlSpinSRC.SetRange(0, 255);
+	m_ctrlSpinSCR.SetBuddy(GetDlgItem(IDC_EDIT_SCR));
+	m_ctrlSpinSCR.SetRange(0, 255);
 	m_ctrlSpinIRC1K.SetBuddy(GetDlgItem(IDC_EDIT_IRC1K));
 	m_ctrlSpinIRC1K.SetRange(0, 255);
 	m_ctrlSpinIRC4M.SetBuddy(GetDlgItem(IDC_EDIT_IRC4M));
 	m_ctrlSpinIRC4M.SetRange(0, 255);
 	m_ctrlComNo.SetWindowText(_T("0"));
-
+	GetDlgItem(IDC_BTN_CLOSECOM)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_READBACK_DO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_PROGRAM_DO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_SCR_DO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_IRC1K_DO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_IRC4M_DO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_SAVEFILE)->EnableWindow(FALSE);
+	m_oUart.m_OnUartRead = OnUartRead;
 	OnLanded();
-
 	RefreshControls();
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -191,10 +209,10 @@ void CIC_TESTDlg::RefreshControls(void)
 	m_bySCR = 0x00;
 	m_byIRC1K = 0x00;
 	m_byIRC4M = 0x00;
-	SetDlgItemInt(IDC_EDIT_SRC, m_bySCR);
+	SetDlgItemInt(IDC_EDIT_SCR, m_bySCR);
 	SetDlgItemInt(IDC_EDIT_IRC1K, m_byIRC1K);
 	SetDlgItemInt(IDC_EDIT_IRC4M, m_byIRC4M);
-	SetDlgItemText(IDC_COMBO_SRC, _T(""));
+	SetDlgItemText(IDC_COMBO_SCR, _T(""));
 	SetDlgItemText(IDC_COMBO_IRC1K, _T(""));
 	SetDlgItemText(IDC_COMBO_IRC4M, _T(""));
 	SetDlgItemText(IDC_COMBO_PROGRAM_MODE, _T(""));
@@ -237,13 +255,14 @@ void CIC_TESTDlg::OnBnClickedBtnOpenfile()
 // 		OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT,_T("Hex File(*.hex)|*.hex"));
 	CFileDialog dlg(TRUE, _T("EC"), _T("*.hex"),OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT,_T("(*.hex)|*.hex|All Files(*.*)|*.*|"));//同时打开多个类型文件
 	if ( dlg.DoModal()!=IDOK ) return;
+	GetDlgItem(IDC_BTN_SAVEFILE)->EnableWindow(FALSE);
 	//获取文件的绝对路径
-	CString sPathName = dlg.GetPathName();
+	m_strProFilePath = dlg.GetPathName();
 	CString	sFileName = dlg.GetFileName();
 	CString strOutput = _T("Open file path: ");
-	strOutput += sPathName;
+	strOutput += m_strProFilePath;
 	m_ctrlListMsg.AddString(strOutput);
-	if ((_taccess(sPathName,0)) != -1)
+	if ((_taccess(m_strProFilePath,0)) != -1)
 	{
 		size_t sFileName_size = sFileName.GetLength();
 		//后缀名
@@ -263,7 +282,7 @@ void CIC_TESTDlg::OnBnClickedBtnOpenfile()
 			{
 				data_vector.push_back(DefaultBufValue);
 			}
-			CStdioFile file(sPathName, CFile::modeRead); //只读
+			CStdioFile file(m_strProFilePath, CFile::modeRead); //只读
 			// 每读完一行，指向下一行，如果读到文件末尾，退出循环
 			while(file.ReadString(str))
 			{
@@ -300,9 +319,23 @@ void CIC_TESTDlg::OnBnClickedBtnOpenfile()
 						strTemp = _T("0x") + strTemp;
 						swscanf_s(strTemp, _T("%x"), &uiDataTemp);
 						data_vector[i + uiLoadOffset] = ((unsigned char)uiDataTemp);
+						// 当前坐标-换行符-校验和-该数据及其之后的数据长度
+						if (i + uiLoadOffset == SCRAddr)
+						{
+							m_uiSCRPosition = (unsigned int)file.GetPosition() - (uiDataLength - i) * 2 - 2 - 2;
+						}
+						else if (i + uiLoadOffset == IRC1KAddr)
+						{
+							m_uiIRC1KPosition = (unsigned int)file.GetPosition() - (uiDataLength - i) * 2 - 2 - 2;
+						}
+						else if (i + uiLoadOffset == IRC4MAddr)
+						{
+							m_uiIRC4MPosition = (unsigned int)file.GetPosition() - (uiDataLength - i) * 2 - 2 - 2;
+						}
 					}
 				}
 			}
+			file.Close();
 			if (m_pProData != NULL)
 			{
 				delete[] m_pProData;
@@ -318,21 +351,26 @@ void CIC_TESTDlg::OnBnClickedBtnOpenfile()
 			data_vector.clear();
 			m_ctrlEditHex.SetAddressBase(m_uiAddrMin);
 			m_ctrlEditHex.SetData(m_pProData, uiDataNum, uiDataNum);
-			m_bySCR = m_pProData[SRCAddr - m_uiAddrMin];
+			m_bySCR = m_pProData[SCRAddr - m_uiAddrMin];
 			m_byIRC1K = m_pProData[IRC1KAddr - m_uiAddrMin];
 			m_byIRC4M = m_pProData[IRC4MAddr - m_uiAddrMin];
-			SetDlgItemInt(IDC_EDIT_SRC, m_bySCR);
+			SetDlgItemInt(IDC_EDIT_SCR, m_bySCR);
 			SetDlgItemInt(IDC_EDIT_IRC1K, m_byIRC1K);
 			SetDlgItemInt(IDC_EDIT_IRC4M, m_byIRC4M);
+			GetDlgItem(IDC_BTN_SAVEFILE)->EnableWindow(TRUE);
 		}
 		else
 		{
-			AfxMessageBox(_T("The file's type is not ' *.hex ' !"));
+			strOutput = _T("The file's type is not ' *.hex ' !");
+			AfxMessageBox(strOutput);
+			m_ctrlListMsg.AddString(strOutput);
 		}
 	}
 	else
 	{
-		AfxMessageBox(_T("The file is not exit!"));
+		strOutput = _T("The file is not exit!");
+		AfxMessageBox(strOutput);
+		m_ctrlListMsg.AddString(strOutput);
 	}
 }
 
@@ -346,6 +384,10 @@ void CIC_TESTDlg::OnDestroy()
 	{
 		delete[] m_pProData;
 		m_pProData = NULL;
+	}
+	if (m_oUart.GetComOpened() == TRUE)
+	{
+		m_oUart.ClosePort();
 	}
 }
 
@@ -393,19 +435,24 @@ void CIC_TESTDlg::RefreshView(void)
 	{
 		ShowControls(SW_HIDE);
 	}
+	m_ctrlComboReadback.SetCurSel(0);
+	m_ctrlComboSCR.SetCurSel(0);
+	m_ctrlComboIRC1K.SetCurSel(0);
+	m_ctrlComboIRC4M.SetCurSel(0);
+	m_ctrlComboProMode.SetCurSel(0);
 }
 
 
 // 显示控件
 void CIC_TESTDlg::ShowControls(int iStyle)
 {
-	GetDlgItem(IDC_STATIC_SRC)->ShowWindow(iStyle);
-	GetDlgItem(IDC_STATIC_SRC_VALUE)->ShowWindow(iStyle);
-	GetDlgItem(IDC_STATIC_SRC_MODE)->ShowWindow(iStyle);
-	GetDlgItem(IDC_BTN_SRC_DO)->ShowWindow(iStyle);
-	m_ctrlSpinSRC.ShowWindow(iStyle);
-	m_ctrlEditSRC.ShowWindow(iStyle);
-	m_ctrlComboSRC.ShowWindow(iStyle);
+	GetDlgItem(IDC_STATIC_SCR)->ShowWindow(iStyle);
+	GetDlgItem(IDC_STATIC_SCR_VALUE)->ShowWindow(iStyle);
+	GetDlgItem(IDC_STATIC_SCR_MODE)->ShowWindow(iStyle);
+	GetDlgItem(IDC_BTN_SCR_DO)->ShowWindow(iStyle);
+	m_ctrlSpinSCR.ShowWindow(iStyle);
+	m_ctrlEditSCR.ShowWindow(iStyle);
+	m_ctrlComboSCR.ShowWindow(iStyle);
 
 	GetDlgItem(IDC_STATIC_IRC1K)->ShowWindow(iStyle);
 	GetDlgItem(IDC_STATIC_IRC1K_VALUE)->ShowWindow(iStyle);
@@ -422,4 +469,149 @@ void CIC_TESTDlg::ShowControls(int iStyle)
 	m_ctrlSpinIRC4M.ShowWindow(iStyle);
 	m_ctrlEditIRC4M.ShowWindow(iStyle);
 	m_ctrlComboIRC4M.ShowWindow(iStyle);
+
+	GetDlgItem(IDC_BTN_SAVEFILE)->ShowWindow(iStyle);
+}
+// 串口接收数据回调函数
+void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
+{
+	// 得到父对象指针
+	CIC_TESTDlg* pThis = (CIC_TESTDlg*)pFatherPtr;
+
+}
+
+
+
+void CIC_TESTDlg::OnBnClickedBtnOpencom()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("");
+	if (m_oUart.OpenPort(this, GetDlgItemInt(IDC_EDIT_COMNO), 38400, NOPARITY, 8, ONESTOPBIT))
+	{
+		str = _T("Open the serial port successfully！");
+		AfxMessageBox(str);
+		m_ctrlListMsg.AddString(str);
+		GetDlgItem(IDC_BTN_OPENCOM)->EnableWindow(FALSE);
+		GetDlgItem(IDC_BTN_CLOSECOM)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BTN_READBACK_DO)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BTN_PROGRAM_DO)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BTN_SCR_DO)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BTN_IRC1K_DO)->EnableWindow(TRUE);
+		GetDlgItem(IDC_BTN_IRC4M_DO)->EnableWindow(TRUE);
+	}
+	else
+	{
+		str = _T("Open the serial port failed！");
+		AfxMessageBox(str);
+		m_ctrlListMsg.AddString(str);
+	}
+}
+
+
+void CIC_TESTDlg::OnBnClickedBtnClosecom()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("Close the serial port!");
+	m_ctrlListMsg.AddString(str);
+	m_oUart.ClosePort();
+	GetDlgItem(IDC_BTN_OPENCOM)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BTN_CLOSECOM)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_READBACK_DO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_PROGRAM_DO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_SCR_DO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_IRC1K_DO)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_IRC4M_DO)->EnableWindow(FALSE);
+}
+
+
+void CIC_TESTDlg::OnBnClickedBtnReadbackDo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CIC_TESTDlg::OnBnClickedBtnProgramDo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CIC_TESTDlg::OnBnClickedBtnSCRDo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int iPos = m_ctrlComboSCR.GetCurSel();
+	if (iPos == ReadMode)
+	{
+
+	}
+	else if (iPos == WriteMode)
+	{
+
+	}
+}
+
+
+void CIC_TESTDlg::OnBnClickedBtnIrc4mDo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int iPos = m_ctrlComboIRC4M.GetCurSel();
+	if (iPos == ReadMode)
+	{
+
+	}
+	else if (iPos == WriteMode)
+	{
+
+	}
+}
+
+
+void CIC_TESTDlg::OnBnClickedBtnIrc1kDo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int iPos = m_ctrlComboIRC1K.GetCurSel();
+	if (iPos == ReadMode)
+	{
+
+	}
+	else if (iPos == WriteMode)
+	{
+
+	}
+}
+
+
+void CIC_TESTDlg::OnBnClickedBtnSavefile()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("");
+	string strA = "";
+	str = _T("Save in file!");
+	UpdateData(TRUE);
+	m_bySCR = (BYTE)GetDlgItemInt(IDC_EDIT_SCR);
+	m_byIRC1K = (BYTE)GetDlgItemInt(IDC_EDIT_IRC1K);
+	m_byIRC4M = (BYTE)GetDlgItemInt(IDC_EDIT_IRC4M);
+	m_ctrlListMsg.AddString(str);
+	CStdioFile file(m_strProFilePath, CFile::modeWrite); // 写文件
+	file.Seek(m_uiIRC1KPosition, CFile::begin);
+	str.Format(_T("%02X"), m_byIRC1K);
+	strA = (CStringA)str;
+	file.Write(strA.c_str(), 2);
+
+	file.Seek(m_uiIRC4MPosition, CFile::begin);
+	str.Format(_T("%02X"), m_byIRC4M);
+	strA = (CStringA)str;
+	file.Write(strA.c_str(), 2);
+
+	file.Seek(m_uiSCRPosition, CFile::begin);
+	str.Format(_T("%02X"), m_bySCR);
+	strA = (CStringA)str;
+	file.Write(strA.c_str(), 2);
+	file.Close();
+	m_pProData[SCRAddr - m_uiAddrMin] = m_bySCR;
+	m_pProData[IRC1KAddr - m_uiAddrMin] = m_byIRC1K;
+	m_pProData[IRC4MAddr - m_uiAddrMin] = m_byIRC4M;
+
+	unsigned int uiDataNum = m_uiAddrMax - m_uiAddrMin + 1;
+	m_ctrlEditHex.SetData(m_pProData, uiDataNum, uiDataNum);
 }

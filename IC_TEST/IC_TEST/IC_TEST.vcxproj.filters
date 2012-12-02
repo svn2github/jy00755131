@@ -45,6 +45,9 @@
     <ClInclude Include="Parameter.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Uart.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IC_TEST.cpp">
@@ -57,6 +60,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="LandedDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Uart.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

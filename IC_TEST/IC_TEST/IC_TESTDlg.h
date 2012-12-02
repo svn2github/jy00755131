@@ -7,19 +7,23 @@
 #include <vector>
 #include "afxcmn.h"
 #include "LandedDlg.h"
-
+#include "Uart.h"
 using std::vector;
+using std::string;
 // 定义默认缓冲区大小
 #define DefaultBufSize	10240
 // 定义默认缓冲区数值
 #define DefaultBufValue	0xff
-// 定义SRC地址
-#define SRCAddr			1039
+// 定义SCR地址
+#define SCRAddr			1039
 // 定义IRC4M地址
 #define IRC4MAddr		1038
 // 定义IRC1K地址
 #define IRC1KAddr		1037
-
+// 定义读数据模式
+// #define ReadMode		0
+// 定义写数据模式
+// #define WriteMode		1
 // CIC_TESTDlg dialog
 class CIC_TESTDlg : public CDialog
 {
@@ -63,6 +67,8 @@ public:
 	BYTE m_byIRC1K;
 	// 重置控件
 	void RefreshControls(void);
+	// 串口接收数据回调函数
+	static void CALLBACK OnUartRead(void* pFatherPtr, BYTE buf);
 	afx_msg void OnBnClickedBtnReset();
 	afx_msg void OnBnClickedBtnResetMsg();
 	afx_msg void OnBnClickedBtnOpenfile();
@@ -79,10 +85,10 @@ public:
 	void RefreshView(void);
 	// 显示控件
 	void ShowControls(int iStyle);
-	// SRC的Spin控件控制变量
-	CSpinButtonCtrl m_ctrlSpinSRC;
-	CEdit m_ctrlEditSRC;
-	CComboBox m_ctrlComboSRC;
+	// SCR的Spin控件控制变量
+	CSpinButtonCtrl m_ctrlSpinSCR;
+	CEdit m_ctrlEditSCR;
+	CComboBox m_ctrlComboSCR;
 	// IRC4M的Spin控件控制变量
 	CSpinButtonCtrl m_ctrlSpinIRC4M;
 	CEdit m_ctrlEditIRC4M;
@@ -93,4 +99,24 @@ public:
 	CComboBox m_ctrlComboIRC1K;
 	// 读回菜单控制变量
 	CComboBox m_ctrlComboReadback;
+	// 串口通讯类成员
+	CUart m_oUart;
+	afx_msg void OnBnClickedBtnOpencom();
+	afx_msg void OnBnClickedBtnClosecom();
+	afx_msg void OnBnClickedBtnReadbackDo();
+	afx_msg void OnBnClickedBtnProgramDo();
+	afx_msg void OnBnClickedBtnSCRDo();
+	afx_msg void OnBnClickedBtnIrc4mDo();
+	afx_msg void OnBnClickedBtnIrc1kDo();
+	afx_msg void OnBnClickedBtnSavefile();
+	// SCR在文件中位置
+	unsigned int m_uiSCRPosition;
+	// IRC4M在文件中的位置
+	unsigned int m_uiIRC4MPosition;
+	// IRC1K在文件中的位置
+	unsigned int m_uiIRC1KPosition;
+	// 烧写文件路径
+	CString m_strProFilePath;
+	// 定义读数据模式
+	enum {ReadMode, WriteMode};
 };
