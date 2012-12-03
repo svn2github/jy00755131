@@ -427,14 +427,14 @@ void CIC_TESTDlg::RefreshView(void)
 	{
 		m_ctrlComboReadback.DeleteString(0);
 	}
-	m_ctrlComboReadback.AddString(_T("User Mode OTP Read with Vdd_Hi"));
+	m_ctrlComboReadback.AddString(_T("Read with Vdd_Hi"));
 	if (m_bAdmin == true)
 	{
 		m_ctrlComboProMode.AddString(_T("OTP Program with VPP_Lo"));
-		m_ctrlComboReadback.AddString(_T("User Mode OTP Read with Vdd_Lo"));
-		m_ctrlComboReadback.AddString(_T("Test Mode OTP Margin-1 Read"));
-		m_ctrlComboReadback.AddString(_T("Test Mode OTP Margin-2 Read"));
-		m_ctrlComboReadback.AddString(_T("Test Mode OTP off-state Margin Read"));
+		m_ctrlComboReadback.AddString(_T("Read with Vdd_Lo"));
+		m_ctrlComboReadback.AddString(_T("Margin-1 Read"));
+		m_ctrlComboReadback.AddString(_T("Margin-2 Read"));
+		m_ctrlComboReadback.AddString(_T("off-state Margin Read"));
 		ShowControls(SW_SHOW);
 	}
 	else
@@ -482,6 +482,7 @@ void CIC_TESTDlg::ShowControls(int iStyle)
 void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 {
 	BYTE byMatch = 0;
+	int ibuf = 0;
 	// 得到父对象指针
 	CIC_TESTDlg* pThis = (CIC_TESTDlg*)pFatherPtr;
 	CString str = _T("");
@@ -489,7 +490,8 @@ void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 	{
 		if (m_bAdmin == true)
 		{
-			str.Format(_T("%c."), &buf);
+			ibuf = (int)buf;
+			str.Format(_T("%02X."), &ibuf);
 			str = _T("Receive the data ") + str;
 			pThis->m_ctrlListMsg.AddString(str);
 		}
@@ -513,7 +515,8 @@ void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 			pThis->m_oUart.WriteSyncPort(&pThis->m_olsSendData.GetHead(), 1);
 			if (m_bAdmin == true)
 			{
-				str.Format(_T("%c."), &pThis->m_olsSendData.GetHead());
+				ibuf = (int)pThis->m_olsSendData.GetHead();
+				str.Format(_T("%02X."), &ibuf);
 				str = _T("Write the data ") + str;
 				pThis->m_ctrlListMsg.AddString(str);
 			}
@@ -534,7 +537,8 @@ void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 			pThis->m_oUart.WriteSyncPort(&buf, 1);
 			if (m_bAdmin == true)
 			{
-				str.Format(_T("%c."), &buf);
+				ibuf = (int)buf;
+				str.Format(_T("%02X."), ibuf);
 				str = _T("Read the data ") + str;
 				pThis->m_ctrlListMsg.AddString(str);
 			}

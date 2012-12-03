@@ -70,7 +70,7 @@ DWORD CUart::ReadThreadProc(LPVOID lparam)
 				}
 			}
 		}
-		if (WaitForSingleObject(pUart->m_hReadCloseEvent, 100) == WAIT_OBJECT_0)
+		if (WaitForSingleObject(pUart->m_hReadCloseEvent, 10) == WAIT_OBJECT_0)
 		{
 			break;
 		}
