@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "IC_TEST.h"
 #include "IC_TESTDlg.h"
-
+#include "Parameter.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -54,6 +54,10 @@ CIC_TESTDlg::CIC_TESTDlg(CWnd* pParent /*=NULL*/)
 	, m_uiIRC4MPosition(0)
 	, m_uiIRC1KPosition(0)
 	, m_strProFilePath(_T(""))
+	, m_bModeWrite(false)
+	, m_uiRecDataNum(0)
+	, m_uiRecDataNeed(0)
+	, m_bBusy(false)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -127,6 +131,8 @@ BOOL CIC_TESTDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);         // Set big icon
 	SetIcon(m_hIcon, FALSE);        // Set small icon
 	// TODO: Add extra initialization here
+	m_olsSendData.RemoveAll();
+	m_olsRecData.RemoveAll();
 	m_ctrlSpinSCR.SetBuddy(GetDlgItem(IDC_EDIT_SCR));
 	m_ctrlSpinSCR.SetRange(0, 255);
 	m_ctrlSpinIRC1K.SetBuddy(GetDlgItem(IDC_EDIT_IRC1K));
@@ -475,9 +481,88 @@ void CIC_TESTDlg::ShowControls(int iStyle)
 // 串口接收数据回调函数
 void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 {
+	BYTE byMatch = 0;
 	// 得到父对象指针
 	CIC_TESTDlg* pThis = (CIC_TESTDlg*)pFatherPtr;
-
+	CString str = _T("");
+	if (pThis->m_bModeWrite == true)
+	{
+		if (m_bAdmin == true)
+		{
+			str.Format(_T("%c."), &buf);
+			str = _T("Receive the data ") + str;
+			pThis->m_ctrlListMsg.AddString(str);
+		}
+		if (buf == pThis->m_olsSendData.GetHead())
+		{
+			byMatch = MatchCmd;
+			pThis->m_olsSendData.RemoveHead();
+		}
+		else
+		{
+			byMatch = NoMatchCmd;
+			if (m_bAdmin == true)
+			{
+				str = _T("Retry!");
+				pThis->m_ctrlListMsg.AddString(str);
+			}
+		}
+		pThis->m_oUart.WriteSyncPort(&byMatch, 1);
+		if (pThis->m_olsSendData.GetCount() != 0)
+		{
+			pThis->m_oUart.WriteSyncPort(&pThis->m_olsSendData.GetHead(), 1);
+			if (m_bAdmin == true)
+			{
+				str.Format(_T("%c."), &pThis->m_olsSendData.GetHead());
+				str = _T("Write the data ") + str;
+				pThis->m_ctrlListMsg.AddString(str);
+			}
+		}
+		else
+		{
+			// 烧写任务完成
+			str = _T("Program task finished!");
+			pThis->m_ctrlListMsg.AddString(str);
+			pThis->m_bBusy = false;
+		}
+	}
+	else
+	{
+		if (pThis->m_uiRecDataNum % 2 == 0)
+		{
+			pThis->m_olsRecData.AddTail(buf);
+			pThis->m_oUart.WriteSyncPort(&buf, 1);
+			if (m_bAdmin == true)
+			{
+				str.Format(_T("%c."), &buf);
+				str = _T("Read the data ") + str;
+				pThis->m_ctrlListMsg.AddString(str);
+			}
+		}
+		else
+		{
+			if (buf == NoMatchCmd)
+			{
+				pThis->m_olsRecData.RemoveTail();
+				if (m_bAdmin == true)
+				{
+					str = _T("Retry!");
+					pThis->m_ctrlListMsg.AddString(str);
+				}
+			}
+			else
+			{
+				if (pThis->m_uiRecDataNeed == pThis->m_olsRecData.GetCount())
+				{
+					// 读任务完成
+					str = _T("Read task finished!");
+					pThis->m_ctrlListMsg.AddString(str);
+					pThis->m_bBusy = false;
+				}
+			}
+		}
+		pThis->m_uiRecDataNum ++;
+	}
 }
 
 

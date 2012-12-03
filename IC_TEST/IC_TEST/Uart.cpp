@@ -82,12 +82,13 @@ DWORD CUart::ReadThreadProc(LPVOID lparam)
 void CUart::CloseReadThread(void)
 {
 	SetEvent(m_hReadCloseEvent);
+	// @@@不得已，如果不注释掉则会卡死，在Wince下则不会出现这个情况
 	// 设置所有事件无效
-	SetCommMask(m_hComm, NULL);
+//	SetCommMask(m_hComm, NULL);
 	// 清空所有要读的数据
-	PurgeComm(m_hComm, PURGE_RXCLEAR);
+//	PurgeComm(m_hComm, PURGE_RXCLEAR);
 	// 如果读线程没有退出则强制退出
-	if (WaitForSingleObject(m_hReadThread, 2000) == WAIT_TIMEOUT)
+	if (WaitForSingleObject(m_hReadThread, 1000) == WAIT_TIMEOUT)
 	{
 		TerminateThread(m_hReadThread, 0);
 	}

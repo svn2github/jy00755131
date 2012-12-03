@@ -101,6 +101,12 @@ public:
 	CComboBox m_ctrlComboReadback;
 	// 串口通讯类成员
 	CUart m_oUart;
+	// 发送数据队列
+	CList<BYTE> m_olsSendData;
+	// 读命令接收字节数
+	unsigned int m_uiRecDataNum;
+	// 接收数据队列
+	CList<BYTE> m_olsRecData;
 	afx_msg void OnBnClickedBtnOpencom();
 	afx_msg void OnBnClickedBtnClosecom();
 	afx_msg void OnBnClickedBtnReadbackDo();
@@ -119,4 +125,10 @@ public:
 	CString m_strProFilePath;
 	// 定义读数据模式
 	enum {ReadMode, WriteMode};
+	// 向串口写模式
+	bool m_bModeWrite;
+	// 需要接收到的ADC数据
+	unsigned int m_uiRecDataNeed;
+	// 忙状态
+	bool m_bBusy;
 };
