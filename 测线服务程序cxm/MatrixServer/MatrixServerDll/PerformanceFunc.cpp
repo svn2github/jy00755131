@@ -253,9 +253,9 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 		iPos += iFramePacketSize2B;
 		memcpy(&pCommand->m_uiADCSampleSysTimeHigh, &pFrameData[iPos], iFramePacketSize4B);
 		iPos += iFramePacketSize4B;
-		pCommand->m_uiADCSampleSysTimeHigh = (pCommand->m_uiADCSampleSysTimeHigh << 2) 
-			+ (pCommand->m_usADCSampleSysTimeLow >> 14);
-		pCommand->m_usADCSampleSysTimeLow &= 0x3fff;
+// 		pCommand->m_uiADCSampleSysTimeHigh = (pCommand->m_uiADCSampleSysTimeHigh << 2) 
+// 			+ (pCommand->m_usADCSampleSysTimeLow >> 14);
+// 		pCommand->m_usADCSampleSysTimeLow &= 0x3fff;
 		iBufLen = pConstVar->m_iADCDataInOneFrameNum * iADCDataSize3B;
 		memcpy(pCommand->m_pADCDataBuf, &pFrameData[iPos], iBufLen);
 		iPos += iBufLen;
@@ -283,13 +283,20 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLocalSysTime1)
 		{
-			// @@@时间48位
-// 			memcpy(&pCommand->m_uiSysTimeNewHigh, &pFrameData[iPos], iFramePacketSize4B);
-// 			iPos += iFramePacketSize4B;
-			memcpy(&pCommand->m_usSysTimeNewLow, &pFrameData[iPos], iFramePacketSize2B);
-			iPos += iFramePacketSize2B;
-			memcpy(&pCommand->m_uiSysTimeNewHigh, &pFrameData[iPos], iFramePacketSize2B);
-			iPos += iFramePacketSize2B;
+			// @@@@尾包端口
+			if (pCommand->m_usReturnPort == 0x9000)
+			{
+				memcpy(&pCommand->m_uiSysTimeNewHigh, &pFrameData[iPos], iFramePacketSize4B);
+				iPos += iFramePacketSize4B;
+				pCommand->m_uiSysTimeNewHigh >>= 2;
+			}
+			else
+			{
+				memcpy(&pCommand->m_usSysTimeNewLow, &pFrameData[iPos], iFramePacketSize2B);
+				iPos += iFramePacketSize2B;
+				memcpy(&pCommand->m_uiSysTimeNewHigh, &pFrameData[iPos], iFramePacketSize2B);
+				iPos += iFramePacketSize2B;
+			}
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLocalSysTime2)
 		{
@@ -300,9 +307,6 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			uiTemp = usTemp;
 			uiTemp = uiTemp << 16;
 			pCommand->m_uiSysTimeNewHigh += uiTemp;
-			pCommand->m_uiSysTimeNewHigh <<= 2;
-			pCommand->m_uiSysTimeNewHigh += (pCommand->m_usSysTimeNewLow >> 14);
-			pCommand->m_usSysTimeNewLow &= 0x3fff;
 			memcpy(&pCommand->m_usSysTimeOldLow, &pFrameData[iPos], iFramePacketSize2B);
 			iPos += iFramePacketSize2B;
 		}
@@ -310,9 +314,6 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 		{
 			memcpy(&pCommand->m_uiSysTimeOldHigh, &pFrameData[iPos], iFramePacketSize4B);
 			iPos += iFramePacketSize4B;
-			pCommand->m_uiSysTimeOldHigh <<= 2;
-			pCommand->m_uiSysTimeOldHigh += (pCommand->m_usSysTimeOldLow >> 14);
-			pCommand->m_usSysTimeOldLow &= 0x3fff;
 		}
 		else if (byCommandWord == pConstVar->m_byCmdLocalTimeFixedHigh)
 		{

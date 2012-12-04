@@ -2856,7 +2856,7 @@ MatrixServerDll_API m_oADCDataRecThreadStruct* OnCreateADCDataRecThread(void);
 // 线程等待函数
 MatrixServerDll_API void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread);
 // 将ADC数据加入到任务缓冲区
-MatrixServerDll_API void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPointTime, char* pBuf, 
+MatrixServerDll_API void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, double dPointTime, char* pBuf, 
 	unsigned int uiLen, m_oADCDataRecThreadStruct* pADCDataRecThread);
 // 采样数据回调函数
 // MatrixServerDll_API void GetProSampleDateCallBack(m_oADCDataRecThreadStruct* pADCDataRecThread, 

@@ -58,7 +58,7 @@ bool CompareSegdDataHeader(m_oSegdDataHeaderStruct* ptrFirst, m_oSegdDataHeaderS
 // 	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 // }
 // 将ADC数据加入到任务缓冲区
-void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPointTime, char* pBuf, 
+void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, double dPointTime, char* pBuf, 
 	unsigned int uiLen, m_oADCDataRecThreadStruct* pADCDataRecThread)
 {
 	ASSERT(pBuf != NULL);
@@ -80,7 +80,7 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 	{
 		uiTS = iter->second->m_uiTS;
 		if ((FALSE == IfIndexExistInOptTaskIPMap(uiIP, &iter->second->m_oIPMap))
-			|| (iter->second->m_uiTB > (uiTime + uiPointTime * iADCDataInOneFrameNum)))
+			|| (iter->second->m_uiTB > (uiTime + dPointTime * iADCDataInOneFrameNum)))
 		{
 			iter++;
 			continue;
@@ -97,8 +97,8 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 			}
 			iter->second->m_bSaveBuf = true;
 			iter->second->m_uiSaveBufNo = pADCDataBuf->m_uiIndex;
-			pADCDataBuf->m_uiSampleTime = (uiTS - iter->second->m_uiTB) / 4;
-			pADCDataBuf->m_uiSavePointNum = (uiTS - iter->second->m_uiTB) / uiPointTime + 1;
+			pADCDataBuf->m_uiSampleTime = uiTS - iter->second->m_uiTB;
+			pADCDataBuf->m_uiSavePointNum = (uiTS - iter->second->m_uiTB) / dPointTime + 1;
 			pADCDataBuf->m_uiOptNo = iter->second->m_uiOptNo;
 			pADCDataBuf->m_SaveFilePath = iter->second->m_SaveFilePath;
 			pADCDataBuf->m_iSampleRate = iter->second->m_iSampleRate;
@@ -158,18 +158,18 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, unsigned int uiPoin
 			uiPos = pOptInstr->m_uiLocation * uiPointNum * iADCDataSize3B;
 			if (uiTime <= iter->second->m_uiTB)
 			{
-				uiMov = (iter->second->m_uiTB - uiTime) / uiPointTime * iADCDataSize3B;
+				uiMov = (iter->second->m_uiTB - uiTime) / dPointTime * iADCDataSize3B;
 				memcpy(&pADCDataBuf->m_pADCDataBuf[uiPos], &pBuf[uiMov], (uiLen - uiMov) * sizeof(char));
 			}
-			else if (uiTS <= (uiTime + uiPointTime * iADCDataInOneFrameNum))
+			else if (uiTS <= (uiTime + dPointTime * iADCDataInOneFrameNum))
 			{
-				uiMov = (uiTS - uiTime) / uiPointTime * iADCDataSize3B;
+				uiMov = (uiTS - uiTime) / dPointTime * iADCDataSize3B;
 				uiPos = uiPos + uiPointNum * iADCDataSize3B - uiMov;
 				memcpy(&pADCDataBuf->m_pADCDataBuf[uiPos], pBuf, uiMov * sizeof(char));
 			}
 			else
 			{
-				uiMov = (uiTime - iter->second->m_uiTB) / uiPointTime * iADCDataSize3B;
+				uiMov = (uiTime - iter->second->m_uiTB) / dPointTime * iADCDataSize3B;
 				uiPos = uiPos + uiMov;
 				memcpy(&pADCDataBuf->m_pADCDataBuf[uiPos], pBuf, uiLen * sizeof(char));
 			}
@@ -226,13 +226,13 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	int iADCDataSize3B = 0;
 	char* pADCDataBuf = NULL;
 	unsigned int uiFrameTime = 0;
-	unsigned int uiPointTime = 0;
+	double dPointTime = 0.0;
 	iADCDataSize3B = pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataSize3B;
 	iADCDataInOneFrameNum = pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum;
 	usADCFramePointLimit = pADCDataRecThread->m_pThread->m_pConstVar->m_usADCFramePointLimit;
 	uiADCSaveBufSize = iADCDataInOneFrameNum * iADCDataSize3B;
-	uiPointTime = 4000 / pADCDataRecThread->m_iADCSampleRate;
-	uiFrameTime = uiPointTime * iADCDataInOneFrameNum;
+	dPointTime = 1000 / pADCDataRecThread->m_iADCSampleRate;
+	uiFrameTime = dPointTime * iADCDataInOneFrameNum;
 	EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 	// 得到仪器IP
 	uiIPInstrument = pADCDataRecThread->m_pADCDataFrame->m_pCommandStructReturn->m_uiSrcIP;
@@ -284,7 +284,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			pInstrument->m_uiADCDataRetransmissionFrameNum++;
 			pADCLostFrame->m_bReturnOk = true;
 			// 将ADC数据加入到任务缓冲区
-			AddToADCDataBuf(pInstrument->m_uiIP, pADCLostFrame->m_uiSysTime, uiPointTime,
+			AddToADCDataBuf(pInstrument->m_uiIP, pADCLostFrame->m_uiSysTime, dPointTime,
 				pADCDataBuf, uiADCSaveBufSize, pADCDataRecThread);
 		}
 		LeaveCriticalSection(&pADCDataRecThread->m_pLineList->m_oSecLineList);
@@ -380,7 +380,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 					AddToADCFrameLostMap(pInstrument->m_uiIP, usADCFramePointNb, ADCLostFrame, &pADCDataRecThread->m_pLineList->m_pInstrumentList->m_oADCLostFrameMap);
 					pInstrument->m_uiADCDataShouldRecFrameNum++;
 					// 在丢帧的位置写当前帧的内容
-					AddToADCDataBuf(pInstrument->m_uiIP, ADCLostFrame.m_uiSysTime, uiPointTime,
+					AddToADCDataBuf(pInstrument->m_uiIP, ADCLostFrame.m_uiSysTime, dPointTime,
 						pADCDataBuf, uiADCSaveBufSize, pADCDataRecThread);
 					for (int i=0; i<iADCDataInOneFrameNum; i++)
 					{
@@ -407,7 +407,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			}
 		}
 		// 保存当前帧的内容
-		AddToADCDataBuf(pInstrument->m_uiIP, pInstrument->m_uiADCDataFrameSysTimeNow, uiPointTime,
+		AddToADCDataBuf(pInstrument->m_uiIP, pInstrument->m_uiADCDataFrameSysTimeNow, dPointTime,
 			pADCDataBuf, uiADCSaveBufSize, pADCDataRecThread);
 		for (int i=0; i<iADCDataInOneFrameNum; i++)
 		{

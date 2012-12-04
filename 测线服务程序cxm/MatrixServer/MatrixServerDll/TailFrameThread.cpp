@@ -245,8 +245,8 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 			strFrameData, ErrorType, IDS_ERR_ROUT_CHANGE);
 		return;
 	}
-	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包，仪器位置= %d，尾包计数 = %d"), 
-		uiSN, uiRoutIP, pInstrument->m_iPointIndex, uiTailFrameCount);
+	str.Format(_T("接收到SN = 0x%x，路由 = 0x%x 的仪器的尾包，仪器位置= %d，尾包计数 = %d，本地时间 = 0x%x"), 
+		uiSN, uiRoutIP, pInstrument->m_iPointIndex, uiTailFrameCount, uiSysTime);
 	strConv = (CStringA)str;
 	AddMsgToLogOutPutList(pTailFrameThread->m_pThread->m_pLogOutPut, "ProcTailFrameOne", strConv);
 	OutputDebugString(str);

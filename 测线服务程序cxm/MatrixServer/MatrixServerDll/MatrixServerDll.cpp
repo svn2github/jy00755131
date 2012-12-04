@@ -100,7 +100,7 @@ void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, uns
 	uiSysTime = pLineList->m_uiLocalSysTime;
 	LeaveCriticalSection(&pLineList->m_oSecLineList);
 	// 1ms对应下位机本地时间计数器数值为4
-	uiTBHigh = uiSysTime + pConstVar->m_uiTBSleepTimeHigh + uiTBWindow * 4;
+	uiTBHigh = uiSysTime + pConstVar->m_uiTBSleepTimeHigh + uiTBWindow;
 	EnterCriticalSection(&pOptTaskArray->m_oSecOptTaskArray);
 	pOptTaskArray->m_uiOptTaskNb++;
 	str.Format(_T("\\施工任务%d"), pOptTaskArray->m_uiOptTaskNb);
@@ -117,7 +117,7 @@ void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, uns
 		AddOptTaskToMap(pOptTask->m_uiOptNo, pOptTask, &pOptTaskArray->m_oOptTaskWorkMap);
 		// @@@@记录施工任务开始和停止记录时间，根据当前时间和TB时间计算
 		pOptTask->m_uiTB = uiTBHigh;
-		pOptTask->m_uiTS = uiTBHigh + uiTSample * 4;
+		pOptTask->m_uiTS = uiTBHigh + uiTSample;
 		pOptTask->m_SaveFilePath = (CStringA)strPath;
 		pOptTask->m_iSampleRate = iSampleRate;
 		uiTBHigh = pOptTask->m_uiTS;

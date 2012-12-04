@@ -402,11 +402,11 @@ void CWriteINIDlg::OnBnClickedBtnGenini()
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TBSleepTimeHigh");			// TB设置延时高位
-	strValue = _T("16384");
+	strValue = _T("4000");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("TBSleepTimeLow");				// TB设置延时低位
-	strValue = _T("250");
+	strValue = _T("511");
 	WritePrivateProfileString(strSection,strSectionKey,strValue,strFilePath);
 
 	strSectionKey=_T("FieldOnWaitTimeLimit");		// FieldOn与上一次FieldOff的时间间隔

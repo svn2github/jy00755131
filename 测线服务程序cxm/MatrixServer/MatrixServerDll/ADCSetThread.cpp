@@ -323,11 +323,11 @@ void OnSelectADCSetCmd(m_oADCSetThreadStruct* pADCSetThread, bool bRout,
 		// 命令，为1则设置命令应答，为2查询命令应答，为3AD采样数据重发
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usCommand = pADCSetThread->m_pThread->m_pConstVar->m_usSendSetCmd;
 		// 设置TB时间高位
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBHigh = uiTBHigh >> 2;
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_uiTBHigh = uiTBHigh;
 		pADCSetThread->m_pADCSetFrame->m_pbyCommandWord[pADCSetThread->m_pADCSetFrame->m_usCommandWordNum] = pADCSetThread->m_pThread->m_pConstVar->m_byCmdTBHigh;
 		pADCSetThread->m_pADCSetFrame->m_usCommandWordNum++;
 		// 设置TB时间低位
-		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBLow = (pADCSetThread->m_pThread->m_pConstVar->m_usTBSleepTimeLow) + ((uiTBHigh & 0x3) << 14);
+		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBLow = pADCSetThread->m_pThread->m_pConstVar->m_usTBSleepTimeLow;
 		// TB控制，0x05启动TB，0x06则AD采集无需TB，0x00停止AD，ad_ctrl(2)=1则LED灯灭
 		pADCSetThread->m_pADCSetFrame->m_pCommandStructSet->m_usTBCtrl = pADCSetThread->m_pThread->m_pConstVar->m_usCmdTBCtrlStartSample
 			+ pADCSetThread->m_pThread->m_pConstVar->m_usCmdCtrlCloseLed;
@@ -488,11 +488,11 @@ void OnSendADCSetCmd(m_oADCSetThreadStruct* pADCSetThread)
 		uiSysTime = pADCSetThread->m_pLineList->m_uiLocalSysTime;
 		if (uiTBHighOld > (uiSysTime + uiTBSleepTimeHigh))
 		{
-			uiTemp = (0xffffffff - uiTBHighOld + uiSysTime + uiTBSleepTimeHigh) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
+			uiTemp = (0xffffffff - uiTBHighOld + uiSysTime + uiTBSleepTimeHigh) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 4);
 		}
 		else
 		{
-			uiTemp = (uiTBSleepTimeHigh + uiSysTime - uiTBHighOld) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 16);
+			uiTemp = (uiTBSleepTimeHigh + uiSysTime - uiTBHighOld) % (pADCSetThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum * 4);
 		}
 		uiTBHigh = uiSysTime + uiTBSleepTimeHigh - uiTemp;
 		pADCSetThread->m_pLineList->m_uiTBHigh = uiTBHigh;

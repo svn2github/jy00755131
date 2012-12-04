@@ -337,7 +337,7 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 			break;
 		}
 		// @@@以第一个采集站做基准
-		if ((pInstrumentNext->m_iPointIndex == -1) || (pInstrumentNext->m_iPointIndex == 1))
+		if (pInstrument == pRout->m_pHead)
 		{
 			uiSysTimeHigh = pInstrumentNext->m_uiSysTimeHigh;
 			usSysTimeLow = pInstrumentNext->m_usSysTimeLow;
@@ -381,23 +381,11 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 			}
 			uiFix1 = pInstrument->m_uiReceiveTime - pInstrumentNext->m_uiSendTime;
 			uiFix1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToFDU;
-			usSysTimeLowFix = usSysTimeLow - pInstrumentNext->m_usSysTimeLow;
-			uiSysTimeHighFix = uiSysTimeHigh - pInstrumentNext->m_uiSysTimeHigh;
-			if (pInstrumentNext->m_usSysTimeLow > usSysTimeLow)
-			{
-				uiSysTimeHighFix -= 1;
-			}
 		}
 		else
 		{
 			uiFix1 = pInstrument->m_uiReceiveTime - pInstrumentNext->m_uiSendTime;
 			uiFix1 += pTimeDelayThread->m_pThread->m_pConstVar->m_iTimeDelayFDUToFDU;
-			usSysTimeLowFix = usSysTimeLow - pInstrumentNext->m_usSysTimeLow;
-			uiSysTimeHighFix = uiSysTimeHigh - pInstrumentNext->m_uiSysTimeHigh;
-			if (pInstrumentNext->m_usSysTimeLow > usSysTimeLow)
-			{
-				uiSysTimeHighFix -= 1;
-			}
 		}
 // 		if ((pInstrument->m_iInstrumentType == InstrumentTypeFDU)
 // 			&& (pInstrumentNext->m_iInstrumentType == InstrumentTypeFDU))
@@ -438,15 +426,16 @@ void ProcTimeDelayFrame(m_oRoutStruct* pRout, m_oTimeDelayThreadStruct* pTimeDel
 // 		// 时间修正高位
 // 		pInstrumentNext->m_uiTimeHigh = iFixHigh2;
 
-		pInstrumentNext->m_uiTimeLow = uiFix2 & 0xffff;
-		pInstrumentNext->m_uiTimeHigh = uiFix2 >> 16;
-		if (pInstrumentNext->m_uiTimeLow + usSysTimeLowFix > 0xffff)
-		{
-			pInstrumentNext->m_uiTimeLow += usSysTimeLowFix;
-			pInstrumentNext->m_uiTimeLow &= 0xffff;
-			pInstrumentNext->m_uiTimeHigh += 1;
-		}
-		pInstrumentNext->m_uiTimeHigh += uiSysTimeHighFix;
+		usSysTimeLowFix = uiFix2 & 0xffff;
+		uiSysTimeHighFix = uiSysTimeHigh - pInstrumentNext->m_uiSysTimeHigh + (uiFix2 >> 16);
+// 		usSysTimeLowFix = usSysTimeLow - pInstrumentNext->m_usSysTimeLow;
+// 		uiSysTimeHighFix = uiSysTimeHigh - pInstrumentNext->m_uiSysTimeHigh;
+// 		if (pInstrumentNext->m_usSysTimeLow > usSysTimeLow)
+// 		{
+// 			uiSysTimeHighFix -= 1;
+// 		}
+		pInstrumentNext->m_uiTimeLow = usSysTimeLowFix;
+		pInstrumentNext->m_uiTimeHigh = uiSysTimeHighFix;
 		// 在数据采集期间只针对未时统的仪器进行时统设置
 		if (((bADCStartSample == true) && (pInstrumentNext->m_iTimeSetReturnCount == 0))
 			|| (bADCStartSample == false))
