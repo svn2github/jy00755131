@@ -5,6 +5,7 @@
 #include "IC_TEST.h"
 #include "IC_TESTDlg.h"
 #include "Parameter.h"
+#include <io.h>
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -56,7 +57,7 @@ CIC_TESTDlg::CIC_TESTDlg(CWnd* pParent /*=NULL*/)
 	, m_strProFilePath(_T(""))
 	, m_bModeWrite(false)
 	, m_uiRecDataNum(0)
-	, m_uiRecDataNeed(0)
+	, m_usRecDataNeed(0)
 	, m_bBusy(false)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -99,6 +100,7 @@ BEGIN_MESSAGE_MAP(CIC_TESTDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_IRC4M_DO, &CIC_TESTDlg::OnBnClickedBtnIrc4mDo)
 	ON_BN_CLICKED(IDC_BTN_IRC1K_DO, &CIC_TESTDlg::OnBnClickedBtnIrc1kDo)
 	ON_BN_CLICKED(IDC_BTN_SAVEFILE, &CIC_TESTDlg::OnBnClickedBtnSavefile)
+	ON_MESSAGE(WM_RECV_SAVE_DATA, &CIC_TESTDlg::OnRecvSaveData)
 END_MESSAGE_MAP()
 
 
@@ -136,9 +138,9 @@ BOOL CIC_TESTDlg::OnInitDialog()
 	m_ctrlSpinSCR.SetBuddy(GetDlgItem(IDC_EDIT_SCR));
 	m_ctrlSpinSCR.SetRange(0, 255);
 	m_ctrlSpinIRC1K.SetBuddy(GetDlgItem(IDC_EDIT_IRC1K));
-	m_ctrlSpinIRC1K.SetRange(0, 255);
+	m_ctrlSpinIRC1K.SetRange(0, 127);
 	m_ctrlSpinIRC4M.SetBuddy(GetDlgItem(IDC_EDIT_IRC4M));
-	m_ctrlSpinIRC4M.SetRange(0, 255);
+	m_ctrlSpinIRC4M.SetRange(0, 127);
 	m_ctrlComNo.SetWindowText(_T("0"));
 	GetDlgItem(IDC_BTN_CLOSECOM)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BTN_READBACK_DO)->EnableWindow(FALSE);
@@ -281,7 +283,6 @@ void CIC_TESTDlg::OnBnClickedBtnOpenfile()
 			unsigned int uiLoadOffset = 0;
 			unsigned int uiRecType = 0;
 			unsigned int uiDataTemp = 0;
-			LPBYTE lpchar=_T('');
 			unsigned int uiDataNum = 0;
 			vector <unsigned char> data_vector;
 			for (int i=0; i<DefaultBufSize; i++)
@@ -299,15 +300,15 @@ void CIC_TESTDlg::OnBnClickedBtnOpenfile()
 				strTemp = str.Mid(iPos, 2);
 				iPos += 2;
 				strTemp = _T("0x") + strTemp;
-				swscanf_s(strTemp, _T("%x"), &uiDataLength);
+				_stscanf_s(strTemp, _T("%x"), &uiDataLength);
 				strTemp = str.Mid(iPos, 4);
 				iPos += 4;
 				strTemp = _T("0x") + strTemp;
-				swscanf_s(strTemp, _T("%x"), &uiLoadOffset);
+				_stscanf_s(strTemp, _T("%x"), &uiLoadOffset);
 				strTemp = str.Mid(iPos, 2);
 				iPos += 2;
 				strTemp = _T("0x") + strTemp;
-				swscanf_s(strTemp, _T("%x"), &uiRecType);
+				_stscanf_s(strTemp, _T("%x"), &uiRecType);
 				if (uiDataLength > 0)
 				{
 					if (uiLoadOffset < m_uiAddrMin)
@@ -323,7 +324,7 @@ void CIC_TESTDlg::OnBnClickedBtnOpenfile()
 						strTemp = str.Mid(iPos, 2);
 						iPos += 2;
 						strTemp = _T("0x") + strTemp;
-						swscanf_s(strTemp, _T("%x"), &uiDataTemp);
+						_stscanf_s(strTemp, _T("%x"), &uiDataTemp);
 						data_vector[i + uiLoadOffset] = ((unsigned char)uiDataTemp);
 						// 当前坐标-换行符-校验和-该数据及其之后的数据长度
 						if (i + uiLoadOffset == SCRAddr)
@@ -359,7 +360,7 @@ void CIC_TESTDlg::OnBnClickedBtnOpenfile()
 			m_ctrlEditHex.SetData(m_pProData, uiDataNum, uiDataNum);
 			m_bySCR = m_pProData[SCRAddr - m_uiAddrMin];
 			m_byIRC1K = m_pProData[IRC1KAddr - m_uiAddrMin];
-			m_byIRC4M = m_pProData[IRC4MAddr - m_uiAddrMin];
+			m_byIRC4M = m_pProData[IRC4MAddr - m_uiAddrMin] & 0x7f;
 			SetDlgItemInt(IDC_EDIT_SCR, m_bySCR);
 			SetDlgItemInt(IDC_EDIT_IRC1K, m_byIRC1K);
 			SetDlgItemInt(IDC_EDIT_IRC4M, m_byIRC4M);
@@ -422,23 +423,25 @@ void CIC_TESTDlg::RefreshView(void)
 	{
 		m_ctrlComboProMode.DeleteString(0);
 	}
-	m_ctrlComboProMode.AddString(_T("OTP Program with VPP_std"));
 	while (m_ctrlComboReadback.GetCount() != 0)
 	{
 		m_ctrlComboReadback.DeleteString(0);
 	}
-	m_ctrlComboReadback.AddString(_T("Read with Vdd_Hi"));
 	if (m_bAdmin == true)
 	{
-		m_ctrlComboProMode.AddString(_T("OTP Program with VPP_Lo"));
-		m_ctrlComboReadback.AddString(_T("Read with Vdd_Lo"));
-		m_ctrlComboReadback.AddString(_T("Margin-1 Read"));
-		m_ctrlComboReadback.AddString(_T("Margin-2 Read"));
-		m_ctrlComboReadback.AddString(_T("off-state Margin Read"));
+		m_ctrlComboProMode.AddString(ProgramVPPLo);
+		m_ctrlComboProMode.AddString(ProgramVPPStd);
+		m_ctrlComboReadback.AddString(ReadVddLo);
+		m_ctrlComboReadback.AddString(ReadVddHi);
+		m_ctrlComboReadback.AddString(ReadMargin1);
+		m_ctrlComboReadback.AddString(ReadMargin2);
+		m_ctrlComboReadback.AddString(ReadMarginOffState);
 		ShowControls(SW_SHOW);
 	}
 	else
 	{
+		m_ctrlComboProMode.AddString(ProgramVPPStd);
+		m_ctrlComboReadback.AddString(ReadVddHi);
 		ShowControls(SW_HIDE);
 	}
 	m_ctrlComboReadback.SetCurSel(0);
@@ -452,13 +455,13 @@ void CIC_TESTDlg::RefreshView(void)
 // 显示控件
 void CIC_TESTDlg::ShowControls(int iStyle)
 {
-	GetDlgItem(IDC_STATIC_SCR)->ShowWindow(iStyle);
-	GetDlgItem(IDC_STATIC_SCR_VALUE)->ShowWindow(iStyle);
-	GetDlgItem(IDC_STATIC_SCR_MODE)->ShowWindow(iStyle);
-	GetDlgItem(IDC_BTN_SCR_DO)->ShowWindow(iStyle);
-	m_ctrlSpinSCR.ShowWindow(iStyle);
-	m_ctrlEditSCR.ShowWindow(iStyle);
-	m_ctrlComboSCR.ShowWindow(iStyle);
+// 	GetDlgItem(IDC_STATIC_SCR)->ShowWindow(iStyle);
+// 	GetDlgItem(IDC_STATIC_SCR_VALUE)->ShowWindow(iStyle);
+// 	GetDlgItem(IDC_STATIC_SCR_MODE)->ShowWindow(iStyle);
+// 	GetDlgItem(IDC_BTN_SCR_DO)->ShowWindow(iStyle);
+// 	m_ctrlSpinSCR.ShowWindow(iStyle);
+// 	m_ctrlEditSCR.ShowWindow(iStyle);
+// 	m_ctrlComboSCR.ShowWindow(iStyle);
 
 	GetDlgItem(IDC_STATIC_IRC1K)->ShowWindow(iStyle);
 	GetDlgItem(IDC_STATIC_IRC1K_VALUE)->ShowWindow(iStyle);
@@ -476,12 +479,11 @@ void CIC_TESTDlg::ShowControls(int iStyle)
 	m_ctrlEditIRC4M.ShowWindow(iStyle);
 	m_ctrlComboIRC4M.ShowWindow(iStyle);
 
-	GetDlgItem(IDC_BTN_SAVEFILE)->ShowWindow(iStyle);
+//	GetDlgItem(IDC_BTN_SAVEFILE)->ShowWindow(iStyle);
 }
 // 串口接收数据回调函数
 void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 {
-	BYTE byMatch = 0;
 	int ibuf = 0;
 	// 得到父对象指针
 	CIC_TESTDlg* pThis = (CIC_TESTDlg*)pFatherPtr;
@@ -497,22 +499,21 @@ void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 		}
 		if (buf == pThis->m_olsSendData.GetHead())
 		{
-			byMatch = MatchCmd;
 			pThis->m_olsSendData.RemoveHead();
+			pThis->m_oUart.WriteSyncPort(MatchCmd);
 		}
 		else
 		{
-			byMatch = NoMatchCmd;
 			if (m_bAdmin == true)
 			{
 				str = _T("Retry!");
 				pThis->m_ctrlListMsg.AddString(str);
 			}
+			pThis->m_oUart.WriteSyncPort(NoMatchCmd);
 		}
-		pThis->m_oUart.WriteSyncPort(&byMatch, 1);
 		if (pThis->m_olsSendData.GetCount() != 0)
 		{
-			pThis->m_oUart.WriteSyncPort(&pThis->m_olsSendData.GetHead(), 1);
+			pThis->m_oUart.WriteSyncPort(pThis->m_olsSendData.GetHead());
 			if (m_bAdmin == true)
 			{
 				ibuf = (int)pThis->m_olsSendData.GetHead();
@@ -523,10 +524,14 @@ void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 		}
 		else
 		{
-			// 烧写任务完成
-			str = _T("Program task finished!");
-			pThis->m_ctrlListMsg.AddString(str);
-			pThis->m_bBusy = false;
+			if (buf == EndCmd)
+			{
+				// 烧写任务完成
+				str = _T("Program task finished!");
+				pThis->m_ctrlListMsg.AddString(str);
+				pThis->m_bBusy = false;
+			}
+			pThis->m_bModeWrite = false;
 		}
 	}
 	else
@@ -534,7 +539,7 @@ void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 		if (pThis->m_uiRecDataNum % 2 == 0)
 		{
 			pThis->m_olsRecData.AddTail(buf);
-			pThis->m_oUart.WriteSyncPort(&buf, 1);
+			pThis->m_oUart.WriteSyncPort(buf);
 			if (m_bAdmin == true)
 			{
 				ibuf = (int)buf;
@@ -556,12 +561,15 @@ void CALLBACK CIC_TESTDlg::OnUartRead(void* pFatherPtr, BYTE buf)
 			}
 			else
 			{
-				if (pThis->m_uiRecDataNeed == pThis->m_olsRecData.GetCount())
+				if (pThis->m_usRecDataNeed == pThis->m_olsRecData.GetCount())
 				{
 					// 读任务完成
 					str = _T("Read task finished!");
 					pThis->m_ctrlListMsg.AddString(str);
-					pThis->m_bBusy = false;
+					pThis->m_bModeWrite = true;
+					pThis->m_olsSendData.AddTail(EndCmd);
+					pThis->PostMessage(WM_RECV_SAVE_DATA, NULL, NULL);
+					pThis->m_oUart.WriteSyncPort(EndCmd);
 				}
 			}
 		}
@@ -587,6 +595,8 @@ void CIC_TESTDlg::OnBnClickedBtnOpencom()
 		GetDlgItem(IDC_BTN_SCR_DO)->EnableWindow(TRUE);
 		GetDlgItem(IDC_BTN_IRC1K_DO)->EnableWindow(TRUE);
 		GetDlgItem(IDC_BTN_IRC4M_DO)->EnableWindow(TRUE);
+		m_olsRecData.RemoveAll();
+		m_olsSendData.RemoveAll();
 	}
 	else
 	{
@@ -616,27 +626,120 @@ void CIC_TESTDlg::OnBnClickedBtnClosecom()
 void CIC_TESTDlg::OnBnClickedBtnReadbackDo()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("");
+	unsigned short usReadStartAddr = 0;
+	if (m_bBusy == true)
+	{
+		str = _T("System is busy now. Please wait for a second!");
+		m_ctrlListMsg.AddString(str);
+		return;
+	}
+	m_ctrlComboReadback.GetWindowText(str);
+	m_olsSendData.RemoveAll();
+	m_olsRecData.RemoveAll();
+	m_olsSendData.AddTail(FrameHead1);
+	m_olsSendData.AddTail(FrameHead2);
+	if (str == ReadVddLo)
+	{
+		m_olsSendData.AddTail(ReadVddLoCmd);
+	}
+	else if (str == ReadVddHi)
+	{
+		m_olsSendData.AddTail(ReadVddHiCmd);
+	}
+	else if (str == ReadMargin1)
+	{
+		m_olsSendData.AddTail(ReadMargin1Cmd);
+	}
+	else if (str == ReadMargin2)
+	{
+		m_olsSendData.AddTail(ReadMargin2Cmd);
+	}
+	else if (str == ReadMarginOffState)
+	{
+		m_olsSendData.AddTail(ReadMarginOffStateCmd);
+	}
+	m_olsSendData.AddTail(usReadStartAddr >> 8);
+	m_olsSendData.AddTail(usReadStartAddr & 0xff);
+	m_usRecDataNeed = 1400;
+	m_olsSendData.AddTail(m_usRecDataNeed >> 8);
+	m_olsSendData.AddTail(m_usRecDataNeed & 0xff);
+	m_bBusy = true;
+	m_bModeWrite = true;
+	m_uiRecDataNum = 0;
+	str = _T("Read task start!");
+	m_ctrlListMsg.AddString(str);
+	m_oUart.WriteSyncPort(m_olsSendData.GetHead());
 }
 
 
 void CIC_TESTDlg::OnBnClickedBtnProgramDo()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	CString str = _T("");
+	unsigned short usProgramStartAddr = 0;
+	unsigned short usProgramDataNum = 0;
+	if (m_bBusy == true)
+	{
+		str = _T("System is busy now. Please wait for a second!");
+		m_ctrlListMsg.AddString(str);
+		return;
+	}
+	m_ctrlComboProMode.GetWindowText(str);
+	m_olsSendData.RemoveAll();
+	m_olsSendData.AddTail(FrameHead1);
+	m_olsSendData.AddTail(FrameHead2);
+	if (str == ProgramVPPStd)
+	{
+		m_olsSendData.AddTail(ProgramVPPStdCmd);
+	}
+	else if (str == ProgramVPPLo)
+	{
+		m_olsSendData.AddTail(ProgramVPPLoCmd);
+	}
+	usProgramStartAddr = m_uiAddrMin;
+	m_olsSendData.AddTail(usProgramStartAddr >> 8);
+	m_olsSendData.AddTail(usProgramStartAddr & 0xff);
+	usProgramDataNum = m_uiAddrMax - m_uiAddrMin + 1;
+	ASSERT(usProgramDataNum != 0);
+	m_olsSendData.AddTail(usProgramDataNum >> 8);
+	m_olsSendData.AddTail(usProgramDataNum & 0xff);
+	ASSERT(m_pProData != NULL);
+	for (unsigned int i=0; i<usProgramDataNum; i++)
+	{
+		m_olsSendData.AddTail(m_pProData[i]);
+	}
+	m_olsSendData.AddTail(EndCmd);
+	m_bBusy = true;
+	m_bModeWrite = true;
+	str = _T("Program task start!");
+	m_ctrlListMsg.AddString(str);
+	m_oUart.WriteSyncPort(m_olsSendData.GetHead());
 }
 
 
 void CIC_TESTDlg::OnBnClickedBtnSCRDo()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	int iPos = m_ctrlComboSCR.GetCurSel();
-	if (iPos == ReadMode)
+	CString str = _T("");
+	if (m_bBusy == true)
 	{
-
+		str = _T("System is busy now. Please wait for a second!");
+		m_ctrlListMsg.AddString(str);
+		return;
 	}
-	else if (iPos == WriteMode)
-	{
-
-	}
+	m_olsSendData.RemoveAll();
+	m_olsSendData.AddTail(FrameHead1);
+	m_olsSendData.AddTail(FrameHead2);
+	m_olsSendData.AddTail(ProgramSCRCmd);
+	m_bySCR = (BYTE)GetDlgItemInt(IDC_EDIT_SCR);
+	m_olsSendData.AddTail(m_bySCR);
+	m_olsSendData.AddTail(EndCmd);
+	m_bBusy = true;
+	m_bModeWrite = true;
+	str = _T("Program SCR task start!");
+	m_ctrlListMsg.AddString(str);
+	m_oUart.WriteSyncPort(m_olsSendData.GetHead());
 }
 
 
@@ -644,13 +747,13 @@ void CIC_TESTDlg::OnBnClickedBtnIrc4mDo()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	int iPos = m_ctrlComboIRC4M.GetCurSel();
-	if (iPos == ReadMode)
+	if (iPos == ProgramMode)
 	{
-
+		OnProgramIRC(true);
 	}
-	else if (iPos == WriteMode)
+	else if (iPos == TestMode)
 	{
-
+		OnTestIRC();
 	}
 }
 
@@ -659,13 +762,13 @@ void CIC_TESTDlg::OnBnClickedBtnIrc1kDo()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	int iPos = m_ctrlComboIRC1K.GetCurSel();
-	if (iPos == ReadMode)
+	if (iPos == ProgramMode)
 	{
-
+		OnProgramIRC(false);
 	}
-	else if (iPos == WriteMode)
+	else if (iPos == TestMode)
 	{
-
+		OnTestIRC();
 	}
 }
 
@@ -676,11 +779,11 @@ void CIC_TESTDlg::OnBnClickedBtnSavefile()
 	CString str = _T("");
 	string strA = "";
 	str = _T("Save in file!");
+	m_ctrlListMsg.AddString(str);
 	UpdateData(TRUE);
 	m_bySCR = (BYTE)GetDlgItemInt(IDC_EDIT_SCR);
 	m_byIRC1K = (BYTE)GetDlgItemInt(IDC_EDIT_IRC1K);
 	m_byIRC4M = (BYTE)GetDlgItemInt(IDC_EDIT_IRC4M);
-	m_ctrlListMsg.AddString(str);
 	CStdioFile file(m_strProFilePath, CFile::modeWrite); // 写文件
 	file.Seek(m_uiIRC1KPosition, CFile::begin);
 	str.Format(_T("%02X"), m_byIRC1K);
@@ -688,7 +791,7 @@ void CIC_TESTDlg::OnBnClickedBtnSavefile()
 	file.Write(strA.c_str(), 2);
 
 	file.Seek(m_uiIRC4MPosition, CFile::begin);
-	str.Format(_T("%02X"), m_byIRC4M);
+	str.Format(_T("%02X"), m_byIRC4M | 0x80);
 	strA = (CStringA)str;
 	file.Write(strA.c_str(), 2);
 
@@ -699,8 +802,98 @@ void CIC_TESTDlg::OnBnClickedBtnSavefile()
 	file.Close();
 	m_pProData[SCRAddr - m_uiAddrMin] = m_bySCR;
 	m_pProData[IRC1KAddr - m_uiAddrMin] = m_byIRC1K;
-	m_pProData[IRC4MAddr - m_uiAddrMin] = m_byIRC4M;
+	m_pProData[IRC4MAddr - m_uiAddrMin] = m_byIRC4M | 0x80;
 
 	unsigned int uiDataNum = m_uiAddrMax - m_uiAddrMin + 1;
 	m_ctrlEditHex.SetData(m_pProData, uiDataNum, uiDataNum);
+}
+
+
+// 烧写IRC
+void CIC_TESTDlg::OnProgramIRC(bool bIRC4M)
+{
+	CString str = _T("");
+	if (m_bBusy == true)
+	{
+		str = _T("System is busy now. Please wait for a second!");
+		m_ctrlListMsg.AddString(str);
+		return;
+	}
+	m_olsSendData.RemoveAll();
+	m_olsSendData.AddTail(FrameHead1);
+	m_olsSendData.AddTail(FrameHead2);
+	m_olsSendData.AddTail(ProgramIRCCmd);
+	if (bIRC4M == true)
+	{
+		m_byIRC4M = (BYTE)GetDlgItemInt(IDC_EDIT_IRC4M);
+		m_olsSendData.AddTail(m_byIRC4M | 0x80);
+		str = _T("Program IRC4M task start!");
+	}
+	else
+	{
+		m_byIRC1K = (BYTE)GetDlgItemInt(IDC_EDIT_IRC1K);
+		m_olsSendData.AddTail(m_byIRC1K);
+		str = _T("Program IRC1K task start!");
+	}
+	m_olsSendData.AddTail(EndCmd);
+	m_bBusy = true;
+	m_bModeWrite = true;
+	m_ctrlListMsg.AddString(str);
+	m_oUart.WriteSyncPort(m_olsSendData.GetHead());
+}
+
+
+// 测试IRC
+void CIC_TESTDlg::OnTestIRC(void)
+{
+	CString str = _T("");
+	if (m_bBusy == true)
+	{
+		str = _T("System is busy now. Please wait for a second!");
+		m_ctrlListMsg.AddString(str);
+		return;
+	}
+	m_olsSendData.RemoveAll();
+	m_olsSendData.AddTail(FrameHead1);
+	m_olsSendData.AddTail(FrameHead2);
+	m_olsSendData.AddTail(TestIRCCmd);
+	m_byIRC4M = (BYTE)GetDlgItemInt(IDC_EDIT_IRC4M);
+	m_olsSendData.AddTail(m_byIRC4M);
+	m_olsSendData.AddTail(EndCmd);
+	m_olsSendData.AddTail(FrameHead1);
+	m_olsSendData.AddTail(FrameHead2);
+	m_olsSendData.AddTail(TestIRCCmd);
+	m_byIRC1K = (BYTE)GetDlgItemInt(IDC_EDIT_IRC1K);
+	m_olsSendData.AddTail(m_byIRC1K);
+	m_olsSendData.AddTail(EndCmd);
+
+	m_bBusy = true;
+	m_bModeWrite = true;
+	str = _T("Test IRC task start!");
+	m_ctrlListMsg.AddString(str);
+	m_oUart.WriteSyncPort(m_olsSendData.GetHead());
+}
+// 串口接收数据存储
+LRESULT CIC_TESTDlg::OnRecvSaveData(WPARAM wParam, LPARAM lParam)
+{
+	if (m_olsRecData.GetCount() == 0)
+	{
+		return 0;
+	}
+	CString strPath = _T("");
+	TCHAR currPath[256];
+	GetCurrentDirectory(256, currPath);
+	strPath = currPath;
+	ofstream m_fout(strPath);
+	POSITION pos = m_olsRecData.GetHeadPosition();
+	for (int i = 0; i < m_olsRecData.GetCount(); i++)
+	{
+		m_fout << m_olsRecData.GetNext(pos);
+		if ((i % 10 == 0) && (i != 0))
+		{
+			m_fout << endl;
+		}
+	}    
+	m_fout.close();
+	return 0;
 }

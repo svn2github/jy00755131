@@ -8,8 +8,11 @@
 #include "afxcmn.h"
 #include "LandedDlg.h"
 #include "Uart.h"
+#include <fstream>
+using std::ofstream;
 using std::vector;
 using std::string;
+using std::endl;
 // 定义默认缓冲区大小
 #define DefaultBufSize	10240
 // 定义默认缓冲区数值
@@ -124,11 +127,17 @@ public:
 	// 烧写文件路径
 	CString m_strProFilePath;
 	// 定义读数据模式
-	enum {ReadMode, WriteMode};
+	enum {ProgramMode, TestMode};
 	// 向串口写模式
 	bool m_bModeWrite;
 	// 需要接收到的ADC数据
-	unsigned int m_uiRecDataNeed;
+	unsigned short m_usRecDataNeed;
 	// 忙状态
 	bool m_bBusy;
+	// 烧写IRC
+	void OnProgramIRC(bool bIRC4M);
+	// 测试IRC
+	void OnTestIRC(void);
+	// 串口接收数据存储
+	LRESULT OnRecvSaveData(WPARAM wParam, LPARAM lParam);
 };

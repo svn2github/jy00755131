@@ -208,22 +208,20 @@ void CUart::ClosePort(void)
 }
 
 // 往串口写入数据
-BOOL CUart::WriteSyncPort(const BYTE* pbuf, DWORD dwbufLen)
+BOOL CUart::WriteSyncPort(const BYTE buf)
 {
 	DWORD dwNumBytesWritten = 0;
-	DWORD dwNumHaveWritten = 0;
 	int iRetryCount = 0;
 	ASSERT(m_hComm != INVALID_HANDLE_VALUE);
 	do 
 	{
 		if (WriteFile(m_hComm, // 串口句柄
-			pbuf + dwNumHaveWritten,
-			dwbufLen - dwNumHaveWritten,
+			&buf,
+			1,
 			&dwNumBytesWritten,
 			NULL))
 		{
-			dwNumHaveWritten += dwNumBytesWritten;
-			if (dwNumHaveWritten == dwbufLen)
+			if (dwNumBytesWritten == 1)
 			{
 				break;
 			}

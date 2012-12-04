@@ -34,7 +34,12 @@ END_MESSAGE_MAP()
 
 
 // CLandedDlg 消息处理程序
-
+BOOL CLandedDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+	((CComboBox*)GetDlgItem(IDC_COMBO_LANDED))->SetCurSel(0);
+	return TRUE;
+}
 
 void CLandedDlg::OnOK()
 {
