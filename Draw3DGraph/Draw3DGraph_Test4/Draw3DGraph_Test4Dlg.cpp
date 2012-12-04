@@ -78,6 +78,9 @@ BEGIN_MESSAGE_MAP(CDraw3DGraph_Test4Dlg, CDialog)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_RADIO_COLOR_SINGLE, &CDraw3DGraph_Test4Dlg::OnBnClickedRadioColorSingle)
 	ON_BN_CLICKED(IDC_RADIO_COLOR_SPECTRUM, &CDraw3DGraph_Test4Dlg::OnBnClickedRadioColorSpectrum)
+	ON_BN_CLICKED(IDC_RADIO_XYVIEW, &CDraw3DGraph_Test4Dlg::OnBnClickedRadioXyview)
+	ON_BN_CLICKED(IDC_XZVIEW, &CDraw3DGraph_Test4Dlg::OnBnClickedXzview)
+	ON_BN_CLICKED(IDC_RADIO_YZVIEW, &CDraw3DGraph_Test4Dlg::OnBnClickedRadioYzview)
 END_MESSAGE_MAP()
 
 
@@ -139,6 +142,18 @@ BOOL CDraw3DGraph_Test4Dlg::OnInitDialog()
 	rectCtrl.top = rectWindow.bottom * 9 / 16;
 	rectCtrl.bottom = rectWindow.bottom * 19 / 32;
 	GetDlgItem(IDC_RADIO_COLOR_SPECTRUM)->MoveWindow(rectCtrl);
+
+	rectCtrl.top = rectWindow.bottom * 5 / 8;
+	rectCtrl.bottom = rectWindow.bottom * 21 / 32;
+	GetDlgItem(IDC_RADIO_XYVIEW)->MoveWindow(rectCtrl);
+
+	rectCtrl.top = rectWindow.bottom * 11 / 16;
+	rectCtrl.bottom = rectWindow.bottom * 23 / 32;
+	GetDlgItem(IDC_RADIO_XZVIEW)->MoveWindow(rectCtrl);
+
+	rectCtrl.top = rectWindow.bottom * 3 / 4;
+	rectCtrl.bottom = rectWindow.bottom * 25 / 32;
+	GetDlgItem(IDC_RADIO_YZVIEW)->MoveWindow(rectCtrl);
 
 	OnInitGraph3D();
 	m_ctrlBtnStart.EnableWindow(FALSE);
@@ -223,7 +238,7 @@ CString CDraw3DGraph_Test4Dlg::SelectOpenFile(void)
 	CFileDialog hFileDlg(true,NULL ,
 		NULL,
 		OFN_FILEMUSTEXIST | OFN_READONLY | OFN_PATHMUSTEXIST,
-		TEXT("数据文件 (*.text)|*.text|*.txt|所有文件(*.*)|*.*|"),
+		TEXT("数据文件 (*.text)|*.text|*.txt|所有文件(*.*)|*.*"),
 		NULL);
 	if(hFileDlg.DoModal() == IDOK)
 	{
@@ -459,10 +474,10 @@ void CDraw3DGraph_Test4Dlg::OnInitAxis3D(void)
 	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(2);
 	m_Axis3D.SetCaption(_T("Column"));
 	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
-	m_Axis3D.GetLabels().SetOpposite(true);
-	m_Axis3D.GetLabels().SetNormal(false);
-	m_Axis3D.SetCaptionOpposite(true);
-	m_Axis3D.SetCaptionNormal(false);
+// 	m_Axis3D.GetLabels().SetOpposite(true);
+// 	m_Axis3D.GetLabels().SetNormal(false);
+// 	m_Axis3D.SetCaptionOpposite(true);
+// 	m_Axis3D.SetCaptionNormal(false);
 	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(3);
 	m_Axis3D.SetMinMax(SampleAmpMin, SampleAmpMax);
 	m_Axis3D.SetCaption(_T("Amp"));
@@ -485,4 +500,31 @@ void CDraw3DGraph_Test4Dlg::OnBnClickedRadioColorSpectrum()
 	m_ctrlGraph3D.GetPlots().Item(1).SetLineColor(RGB(0, 191, 255));
 	((CButton*)GetDlgItem(IDC_RADIO_COLOR_SINGLE))->SetCheck(0); 
 	((CButton*)GetDlgItem(IDC_RADIO_COLOR_SPECTRUM))->SetCheck(1); 
+}
+
+void CDraw3DGraph_Test4Dlg::OnBnClickedRadioXyview()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	((CButton*)GetDlgItem(IDC_RADIO_XYVIEW))->SetCheck(1);
+	((CButton*)GetDlgItem(IDC_RADIO_YZVIEW))->SetCheck(0);
+	((CButton*)GetDlgItem(IDC_RADIO_XZVIEW))->SetCheck(0);
+	m_ctrlGraph3D.SetViewMode(CNiGraph3D::ViewXYPlane);
+}
+
+void CDraw3DGraph_Test4Dlg::OnBnClickedXzview()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	((CButton*)GetDlgItem(IDC_RADIO_XYVIEW))->SetCheck(0);
+	((CButton*)GetDlgItem(IDC_RADIO_YZVIEW))->SetCheck(0);
+	((CButton*)GetDlgItem(IDC_RADIO_XZVIEW))->SetCheck(1);
+	m_ctrlGraph3D.SetViewMode(CNiGraph3D::ViewXZPlane);
+}
+
+void CDraw3DGraph_Test4Dlg::OnBnClickedRadioYzview()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	((CButton*)GetDlgItem(IDC_RADIO_XYVIEW))->SetCheck(0);
+	((CButton*)GetDlgItem(IDC_RADIO_YZVIEW))->SetCheck(1);
+	((CButton*)GetDlgItem(IDC_RADIO_XZVIEW))->SetCheck(0);
+	m_ctrlGraph3D.SetViewMode(CNiGraph3D::ViewYZPlane);
 }

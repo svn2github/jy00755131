@@ -114,4 +114,7 @@ public:
 	void OnInitAxis3D(void);
 	afx_msg void OnBnClickedRadioColorSingle();
 	afx_msg void OnBnClickedRadioColorSpectrum();
+	afx_msg void OnBnClickedRadioXyview();
+	afx_msg void OnBnClickedXzview();
+	afx_msg void OnBnClickedRadioYzview();
 };

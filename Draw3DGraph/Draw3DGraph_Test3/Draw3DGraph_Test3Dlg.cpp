@@ -258,13 +258,19 @@ void CDraw3DGraph_Test3Dlg::OnBnClickedBtnSelectfile()
 	m_iOff = 0;
 	m_bOpenFile = false;
 	m_uiTimeCount = 0;
-
+	char temp = 9;
 	m_fin.open(m_strFilePath, ios::_Nocreate);
 	getline(m_fin, str, '\n');
 	getline(m_fin, str, '\n');
 	getline(m_fin, str, '\n');
 	m_iOff = m_fin.tellg();
-	m_fin.seekg(FrameTimeBytesNume + m_iOff, ios::beg);
+	
+	m_fin.read(data, 3);
+	while(temp != m_fin.peek())
+	{
+		m_fin.seekg(1, ios::cur);
+	}
+	m_fin.seekg(1, ios::cur);
 	while(1)
 	{
 		if (m_fin.peek() == 0x0a)
@@ -360,6 +366,8 @@ void CDraw3DGraph_Test3Dlg::OnTimer(UINT_PTR nIDEvent)
 		char data[10];
 		unsigned int uiCounter = 0;
 		unsigned int x = 0;
+		// 横向制表符为9
+		char temp = 9;
 		int iTemp = 0;
 		if (m_uiTimeCount < SampleTime)
 		{
@@ -388,7 +396,17 @@ void CDraw3DGraph_Test3Dlg::OnTimer(UINT_PTR nIDEvent)
 		}
 		if (m_uiTimeCount % 72 == 0)
 		{
-			m_fin.seekg(FrameTimeBytesNume + m_iOff, ios::beg);
+			m_fin.read(data, 3);
+			if (m_fin.fail() == true)
+			{
+				CDialog::OnTimer(nIDEvent);
+				return;
+			}
+			while(temp != m_fin.peek())
+			{
+				m_fin.seekg(1, ios::cur);
+			}
+			m_fin.seekg(1, ios::cur);
 		}
 		while(1)
 		{
