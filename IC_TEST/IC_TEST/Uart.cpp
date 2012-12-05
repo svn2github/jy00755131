@@ -24,50 +24,29 @@ CUart::~CUart(void)
 DWORD CUart::ReadThreadProc(LPVOID lparam)
 {
 	CUart* pUart = (CUart*)lparam;
-	DWORD dwEvtMask = 0;
 	// 读取数据缓冲区
 	BYTE readBuf;
 	// 实际读取字节数
 	DWORD dwActualReadLen = 0;
-	// 想要读取的字节数
-	DWORD dwWillReadLen = 0;
-	// 串口错误数
-	DWORD dwUartErrors = 0;
-	// 串口状态
-	COMSTAT cmstate;
-
+	OVERLAPPED wol;
+	wol.Internal=0;
+	wol.InternalHigh=0;
+	wol.Offset=0;
+	wol.OffsetHigh=0;
+	wol.hEvent=CreateEvent(NULL,TRUE,FALSE,NULL);
 	// 检查串口是否打开
 	ASSERT(pUart->m_hComm != INVALID_HANDLE_VALUE);
 	// 清空串口接收和发送缓冲区
 	PurgeComm(pUart->m_hComm, PURGE_RXCLEAR | PURGE_TXCLEAR);
-	// 设置端口检测事件
-	SetCommMask(pUart->m_hComm, EV_RXCHAR | EV_CTS | EV_DSR);
 	while (TRUE)
 	{
-		if (WaitCommEvent(pUart->m_hComm, &dwEvtMask, 0))
+		ReadFile(pUart->m_hComm, &readBuf, 1, &dwActualReadLen, &wol);
+		if (dwActualReadLen == 1)
 		{
-			SetCommMask(pUart->m_hComm, EV_RXCHAR | EV_CTS | EV_DSR);
-			// 串口接收到字符
-			if (dwEvtMask & EV_RXCHAR)
+			// 触发回调函数
+			if (pUart->m_OnUartRead)
 			{
-				ClearCommError(pUart->m_hComm, &dwUartErrors, &cmstate);
-				dwWillReadLen = cmstate.cbInQue;
-				if (dwWillReadLen <= 0)
-				{
-					continue;
-				}
-				dwWillReadLen = 1;
-				// 读取串口数据
-				ReadFile(pUart->m_hComm, &readBuf, dwWillReadLen,
-					&dwActualReadLen, 0);
-				if (dwActualReadLen == 1)
-				{
-					// 触发回调函数
-					if (pUart->m_OnUartRead)
-					{
-						pUart->m_OnUartRead(pUart->m_pFatherPtr, readBuf);
-					}
-				}
+				pUart->m_OnUartRead(pUart->m_pFatherPtr, readBuf);
 			}
 		}
 		if (WaitForSingleObject(pUart->m_hReadCloseEvent, 10) == WAIT_OBJECT_0)
@@ -82,11 +61,8 @@ DWORD CUart::ReadThreadProc(LPVOID lparam)
 void CUart::CloseReadThread(void)
 {
 	SetEvent(m_hReadCloseEvent);
-	// @@@不得已，如果不注释掉则会卡死，在Wince下则不会出现这个情况
-	// 设置所有事件无效
-//	SetCommMask(m_hComm, NULL);
 	// 清空所有要读的数据
-//	PurgeComm(m_hComm, PURGE_RXCLEAR);
+	PurgeComm(m_hComm, PURGE_RXCLEAR);
 	// 如果读线程没有退出则强制退出
 	if (WaitForSingleObject(m_hReadThread, 1000) == WAIT_TIMEOUT)
 	{
@@ -166,16 +142,14 @@ BOOL CUart::OpenPort(void* pFatherPtr, UINT uiPortNo, UINT uiBaud, UINT uiParity
 	CommTimeOuts.ReadIntervalTimeout = MAXDWORD;
 	CommTimeOuts.ReadTotalTimeoutMultiplier = 0;
 	CommTimeOuts.ReadTotalTimeoutConstant = 0;
-	CommTimeOuts.WriteTotalTimeoutMultiplier = 10;
-	CommTimeOuts.WriteTotalTimeoutConstant = 1000;
+	CommTimeOuts.WriteTotalTimeoutMultiplier = 50;
+	CommTimeOuts.WriteTotalTimeoutConstant = 2000;
 	if (!SetCommTimeouts(m_hComm, &CommTimeOuts))
 	{
 		CloseHandle(m_hComm);
 		m_hComm = INVALID_HANDLE_VALUE;
 		return FALSE;
 	}
-	// 指定端口监测事件集
-	SetCommMask(m_hComm, EV_RXCHAR);
 	// 设置串口设备缓冲区
 	SetupComm(m_hComm, 512, 512);
 	// 清空接收和发送缓冲区
@@ -208,36 +182,16 @@ void CUart::ClosePort(void)
 }
 
 // 往串口写入数据
-BOOL CUart::WriteSyncPort(const BYTE buf)
+void CUart::WriteSyncPort(const BYTE buf)
 {
-	DWORD dwNumBytesWritten = 0;
-	int iRetryCount = 0;
 	ASSERT(m_hComm != INVALID_HANDLE_VALUE);
-	do 
-	{
-		if (WriteFile(m_hComm, // 串口句柄
-			&buf,
-			1,
-			&dwNumBytesWritten,
-			NULL))
-		{
-			if (dwNumBytesWritten == 1)
-			{
-				break;
-			}
-			iRetryCount++;
-			if (iRetryCount >= 3)
-			{
-				return FALSE;
-			}
-			Sleep(10);
-		}
-		else
-		{
-			return FALSE;
-		}
-	} while (TRUE);
-	return TRUE;
+	OVERLAPPED wol;
+	wol.Internal=0;
+	wol.InternalHigh=0;
+	wol.Offset=0;
+	wol.OffsetHigh=0;
+	wol.hEvent=CreateEvent(NULL,TRUE,FALSE,NULL);
+	WriteFile(m_hComm, &buf, 1, NULL, &wol);
 }
 
 // 设置串口读取、写入超时

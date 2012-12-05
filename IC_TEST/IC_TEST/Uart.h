@@ -38,7 +38,7 @@ public:
 	// 关闭串口
 	void ClosePort(void);
 	// 往串口写入数据
-	BOOL WriteSyncPort(const BYTE buf);
+	void WriteSyncPort(const BYTE buf);
 	// 设置串口读取、写入超时
 	BOOL SetUartTimeouts(COMMTIMEOUTS CommTimeOuts);
 	// 得到串口是否打开
