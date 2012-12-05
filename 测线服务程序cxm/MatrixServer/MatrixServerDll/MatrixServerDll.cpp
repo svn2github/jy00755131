@@ -132,6 +132,7 @@ void GenOptTaskList(unsigned int uiStartOptNo, unsigned int uiOptNoInterval, uns
 				m_oOptInstrumentStruct* pOptInstrument = NULL;
 				pOptInstrument = new m_oOptInstrumentStruct;
 				pOptInstrument->m_uiIP = iterMap->second->m_uiIP;
+				// µ÷ÊÔÓÃ
 				if (pOptInstrument->m_uiIP == 167)
 				{
 					pOptInstrument->m_bAuxiliary = true;

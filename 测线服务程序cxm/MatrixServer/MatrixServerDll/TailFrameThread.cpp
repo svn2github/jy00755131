@@ -277,9 +277,7 @@ void ProcTailFrameOne(m_oTailFrameThreadStruct* pTailFrameThread)
 				// 处理尾包时刻查询
 				ProcTailTimeFrame(pRout, pTailFrameThread->m_pTimeDelayThread);
 			}
-		}
-		else
-		{
+			// @@@@暂不考虑LCI尾包的本地时间
 			// 仪器类型为LCI则更新本地时间
 			UpdateLocalSysTime(uiSysTime, pTailFrameThread->m_pLineList);
 		}

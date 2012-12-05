@@ -288,7 +288,7 @@ bool ParseInstrFrame(m_oInstrumentCommandStruct* pCommand,
 			{
 				memcpy(&pCommand->m_uiSysTimeNewHigh, &pFrameData[iPos], iFramePacketSize4B);
 				iPos += iFramePacketSize4B;
-				pCommand->m_uiSysTimeNewHigh >>= 2;
+/*				pCommand->m_uiSysTimeNewHigh >>= 2;*/
 			}
 			else
 			{
