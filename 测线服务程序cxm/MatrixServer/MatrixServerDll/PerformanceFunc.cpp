@@ -35,7 +35,7 @@ void ParseCStringToArray(char** pData, int iSize, CString str)
 		iDirectionNew += 2;
 		strTemp = str.Mid(iDirectionNew, 2);
 		_stscanf_s(strTemp, _T("%x"), &iTemp, sizeof(int));
-		(*pData)[i] = iTemp;
+		(*pData)[i] = (char)iTemp;
 		iDirectionOld = iDirectionNew;
 	}
 }
