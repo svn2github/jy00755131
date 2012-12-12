@@ -87,21 +87,22 @@ void ProcADCDataSaveInFile(m_oADCDataSaveThreadStruct* pADCDataSaveThread)
 	if (bSave == true)
 	{
 		m_oSegdFileStruct oSegdFile;
+		OnInitSegdSH(&oSegdFile.m_oSegdSH);
 		oSegdFile.m_strPath = pADCDataBuf->m_SaveFilePath;
 		oSegdFile.m_oSegdSH.m_uiSampleRate = pADCDataBuf->m_iSampleRate;
 		oSegdFile.m_oSegdSH.m_uiShotNo = pADCDataBuf->m_uiOptNo;
 		oSegdFile.m_oSegdSH.m_iSampleLength = pADCDataBuf->m_uiSavePointNum;
 		oSegdFile.m_oSegdSH.m_uiSampleTime = pADCDataBuf->m_uiSampleTime;
-		oSegdFile.m_oSegdSH.m_iAcqTraceNum = pADCDataBuf->m_uiAcqTraceNum;
-		oSegdFile.m_oSegdSH.m_iAuxTraceNum = pADCDataBuf->m_uiAuxTraceNum;
-		oSegdFile.m_oSegdSH.m_iTotalTraceNum = pADCDataBuf->m_uiAcqTraceNum + pADCDataBuf->m_uiAuxTraceNum;
+		oSegdFile.m_iAcqTraceNum = pADCDataBuf->m_uiAcqTraceNum;
+		oSegdFile.m_iAuxTraceNum = pADCDataBuf->m_uiAuxTraceNum;
+		oSegdFile.m_iTotalTraceNum = pADCDataBuf->m_uiAcqTraceNum + pADCDataBuf->m_uiAuxTraceNum;
 		oSegdFile.m_uiSegdDataBufLength = oSegdFile.m_oSegdSH.m_iSampleLength 
-			* (oSegdFile.m_oSegdSH.m_iAcqTraceNum + oSegdFile.m_oSegdSH.m_iAuxTraceNum) 
+			* (oSegdFile.m_iAcqTraceNum + oSegdFile.m_iAuxTraceNum) 
 			* pADCDataSaveThread->m_pThread->m_pConstVar->m_iADCDataSize3B;
 		oSegdFile.m_pSegdDataBuf = pADCDataBuf->m_pADCDataBuf;
 		oSegdFile.m_pSegdDHList = &pADCDataBuf->m_olsSegdDataHeader;
 		// 保存文件
-//		SaveSegdFile(&oSegdFile);
+		SaveSegdFile(&oSegdFile);
 		str.Format(_T("保存文件炮号为 %d"), oSegdFile.m_oSegdSH.m_uiShotNo);
 		OutputDebugString(str);
 		EnterCriticalSection(&pADCDataSaveThread->m_pADCDataBufArray->m_oSecADCDataBufArray);

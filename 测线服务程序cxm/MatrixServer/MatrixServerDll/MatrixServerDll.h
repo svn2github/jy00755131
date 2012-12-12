@@ -1335,7 +1335,7 @@ typedef struct ADCDataBuf_Struct
 	// 	unsigned int m_uiSEGDHeaderLen;
 	// 	/** 采集站数据头长度*/
 	// 	unsigned int m_uiDataHeaderLen;
-	/** 施工任务索引表指针，关键字为IP，内容为参与施工的Segd数据头结构体*/
+	/** 内容为参与施工的Segd数据头结构体指针*/
 	list<m_oSegdDataHeaderStruct*> m_olsSegdDataHeader;
 	/** 缓冲区序号*/
 	unsigned int m_uiIndex;
@@ -2886,7 +2886,7 @@ MatrixServerDll_API void WaitADCDataSaveThread(m_oADCDataSaveThreadStruct* pADCD
 // 初始化SEGD文件标准头
 MatrixServerDll_API void OnInitSegdSH(m_oSegdStandardHeaderStruct* pSegdSH);
 // 初始化SEGD文件数据道头
-MatrixServerDll_API void OnInitSegdTH(m_oSegdTraceHeaderStruct* pSegdTH);
+MatrixServerDll_API void OnInitSegdTH(m_oSegdTraceHeaderStruct* pSegdTH, bool bAcqTrace);
 // 保存到Segd文件，成功返回true，失败返回false
 MatrixServerDll_API bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct);
 MatrixServerDll_API void ProcessGeneralHeaderBlock1BackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct);

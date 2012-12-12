@@ -14,12 +14,6 @@ typedef struct Segd_Standard_Header_Struct
 	int m_iSampleLength;
 	/** 采样时间*/
 	unsigned int m_uiSampleTime;
-	/** 辅助道数目*/
-	int m_iAuxTraceNum;
-	/* 采集道数目*/
-	int m_iAcqTraceNum;
-	/** 总道数*/
-	int m_iTotalTraceNum;
 	/** 炮号*/
 	unsigned int m_uiShotNo;
 
@@ -155,7 +149,7 @@ typedef struct Segd_Standard_Header_Struct
 	string m_pSlipSweepModeUsedExtended;//所用的滑动扫描模式,4,00
 	string m_pFilesPerTapeExtended;//每个磁带的文件数,4,2000
 	string m_pFileCountExtended;//文件计数,4,01
-	string m_pAcquisitionErrorDescriptionExtended;//采集错误说明,160,
+	char m_pAcquisitionErrorDescriptionExtended[160];//采集错误说明,160,
 	string m_pFilterTypeExtended;//滤波器类型,4,02
 	string m_pStackDumpedExtended;//叠加已转储,4,00
 	string m_pStackSignExtended;//叠加符号（当前）,4,01
@@ -172,8 +166,7 @@ typedef struct Segd_Standard_Header_Struct
 	string m_pGPSTimeAcquisitionTimeBreakExtended;//,8,0003a4ac0c90344f
 	string m_pAlignedGPSTimeAcquisitionExtended;//,8,0000000000000000
 	string m_pNotUsed3Extended;//未使用,132,000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-	char* m_pConcatenationOfExternal;//外部头段,m_pExternalHeaderLengthGeneral1*32,*SHOTPRO SP#    1/SL#    3.0/SN#   30.0/SI#1/SEQ# 1/STA:2/CTB:00.000/UH:000.0
+	string m_pConcatenationOfExternal;//外部头段,m_pExternalHeaderLengthGeneral1*32,*SHOTPRO SP#    1/SL#    3.0/SN#   30.0/SI#1/SEQ# 1/STA:2/CTB:00.000/UH:000.0
 }m_oSegdStandardHeaderStruct;
 
 typedef struct Segd_Trace_Header_Struct
@@ -286,6 +279,12 @@ typedef struct Segd_File_Struct
 {
 	/** Segd文件保存路径*/
 	string m_strPath;
+	/** 辅助道数目*/
+	int m_iAuxTraceNum;
+	/* 采集道数目*/
+	int m_iAcqTraceNum;
+	/** 总道数*/
+	int m_iTotalTraceNum;
 	/** Segd标准头文件*/
 	m_oSegdStandardHeaderStruct m_oSegdSH;
 	/** Segd数据头队列*/

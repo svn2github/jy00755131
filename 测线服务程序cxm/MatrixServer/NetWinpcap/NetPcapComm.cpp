@@ -336,7 +336,6 @@ void CNetPcapComm::AddFreeFrameData(m_oFrameData* pFrameData)
 int CNetPcapComm::SocketSndFrameData(m_oFrameData* pFrameData)
 {
 	int ret = 0;
-	int iReturn = 0;
 	timeval time_val = {0};
 	fd_set write_fds;
 	SOCKADDR_IN socketaddr;

@@ -150,22 +150,88 @@ void OnInitSegdSH(m_oSegdStandardHeaderStruct* pSegdSH)
 	{
 		pSegdSH->m_pNumberSubscansExponentScan[i] = "0";
 	}
-
-	char m_pChannelGainControlMethodScan[16][SIZE_BUFFER];//地震道增益控制方法（固定增益）,L,3,3,0...
-	char m_pAliasFilterFrequency3dBPointScan[16][SIZE_BUFFER];//3dB 点处的混叠滤波器频率,2,0400,0400,0000...
-	char m_pAliasFilterSlopeScan[16][SIZE_BUFFER];//混叠滤波器斜率,2,0370,0370,0000...
-	char m_pLowCutFilterFrequencyScan[16][SIZE_BUFFER];//低截滤波器频率,2,0000,0000,0000...
-	char m_pLowCutFilterSlopeScan[16][SIZE_BUFFER];//低截滤波器斜率,2,0000,0000,0000...
-	char m_pFirstNotchFrequencyScan[16][SIZE_BUFFER];//第一陷波频率,2,0000,0000,0000...
-	char m_pSecondNotchFrequencyScan[16][SIZE_BUFFER];//第二陷波频率,2,0000,0000,0000...
-	char m_pThirdNotchFrequencyScan[16][SIZE_BUFFER];//第三陷波频率,2,0000,0000,0000...
-	char m_pExtendedChannelSetNumberScan[16][SIZE_BUFFER];//扩展地震道组号,2,0000,0000,0000...
-	char m_pExtendedHeaderFlagScan[16][SIZE_BUFFER];//扩展头段标记,H,0,0,0...
-	char m_pTraceHeaderExtensionsScan[16][SIZE_BUFFER];//道头扩展,L,7,7,0...
-	char m_pVerticalStackScan[16][SIZE_BUFFER];//垂直叠加,1,01,01,00...
-	char m_pStreamerCableNumberScan[16][SIZE_BUFFER];//拖缆电缆号,1,00,00,00...
-	char m_pArrayFormingScan[16][SIZE_BUFFER];//阵列组成（无阵列组成）,1,01,01,00...
-
+	//地震道增益控制方法（固定增益）,L,3,3,0...
+	pSegdSH->m_pChannelGainControlMethodScan[0] = "3";
+	pSegdSH->m_pChannelGainControlMethodScan[1] = "3";
+	for (int i = 2; i < 16; i++)
+	{
+		pSegdSH->m_pChannelGainControlMethodScan[i] = "0";
+	}
+	//3dB 点处的混叠滤波器频率,2,0400,0400,0000...
+	pSegdSH->m_pAliasFilterFrequency3dBPointScan[0] = "0400";
+	pSegdSH->m_pAliasFilterFrequency3dBPointScan[1] = "0400";
+	for (int i = 2; i < 16; i++)
+	{
+		pSegdSH->m_pAliasFilterFrequency3dBPointScan[i] = "0000";
+	}
+	//混叠滤波器斜率,2,0370,0370,0000...
+	pSegdSH->m_pAliasFilterSlopeScan[0] = "0370";
+	pSegdSH->m_pAliasFilterSlopeScan[1] = "0370";
+	for (int i = 2; i < 16; i++)
+	{
+		pSegdSH->m_pAliasFilterSlopeScan[i] = "0000";
+	}
+	//低截滤波器频率,2,0000,0000,0000...
+	for (int i = 0; i < 16; i++)
+	{
+		pSegdSH->m_pLowCutFilterFrequencyScan[i] = "0000";
+	}
+	//低截滤波器斜率,2,0000,0000,0000...
+	for (int i = 0; i < 16; i++)
+	{
+		pSegdSH->m_pLowCutFilterSlopeScan[i] = "0000";
+	}
+	//第一陷波频率,2,0000,0000,0000...
+	for (int i = 0; i < 16; i++)
+	{
+		pSegdSH->m_pFirstNotchFrequencyScan[i] = "0000";
+	}
+	//第二陷波频率,2,0000,0000,0000...
+	for (int i = 0; i < 16; i++)
+	{
+		pSegdSH->m_pSecondNotchFrequencyScan[i] = "0000";
+	}
+	//第三陷波频率,2,0000,0000,0000...
+	for (int i = 0; i < 16; i++)
+	{
+		pSegdSH->m_pThirdNotchFrequencyScan[i] = "0000";
+	}
+	//扩展地震道组号,2,0000,0000,0000...
+	for (int i = 0; i < 16; i++)
+	{
+		pSegdSH->m_pExtendedChannelSetNumberScan[i] = "0000";
+	}
+	//扩展头段标记,H,0,0,0...
+	for (int i = 0; i < 16; i++)
+	{
+		pSegdSH->m_pExtendedHeaderFlagScan[i] = "0";
+	}
+	//道头扩展,L,7,7,0...
+	pSegdSH->m_pTraceHeaderExtensionsScan[0] = "7";
+	pSegdSH->m_pTraceHeaderExtensionsScan[1] = "7";
+	for (int i = 2; i < 16; i++)
+	{
+		pSegdSH->m_pTraceHeaderExtensionsScan[i] = "0";
+	}
+	//垂直叠加,1,01,01,00...
+	pSegdSH->m_pVerticalStackScan[0] = "01";
+	pSegdSH->m_pVerticalStackScan[1] = "01";
+	for (int i = 2; i < 16; i++)
+	{
+		pSegdSH->m_pVerticalStackScan[i] = "00";
+	}
+	//拖缆电缆号,1,00,00,00...
+	for (int i = 0; i < 16; i++)
+	{
+		pSegdSH->m_pStreamerCableNumberScan[i] = "00";
+	}
+	//阵列组成（无阵列组成）,1,01,01,00...
+	pSegdSH->m_pArrayFormingScan[0] = "01";
+	pSegdSH->m_pArrayFormingScan[1] = "01";
+	for (int i = 2; i < 16; i++)
+	{
+		pSegdSH->m_pArrayFormingScan[i] = "00";
+	}
 	//采集长度,4,4000
 	pSegdSH->m_pAcquisitionLengthExtended = "4000";
 	//采样率,4,1000
@@ -286,9 +352,9 @@ void OnInitSegdSH(m_oSegdStandardHeaderStruct* pSegdSH)
 	pSegdSH->m_pFilesPerTapeExtended = "2000";
 	//文件计数,4,01
 	pSegdSH->m_pFileCountExtended = "01";
-	//@@@@@未赋值
-	char m_pAcquisitionErrorDescriptionExtended[SIZE_BUFFER];//采集错误说明,160,
-
+	//采集错误说明,160,
+	memset(pSegdSH->m_pAcquisitionErrorDescriptionExtended, 0, sizeof(char) * 160);
+	
 	//滤波器类型,4,02
 	pSegdSH->m_pFilterTypeExtended = "02";
 	//叠加已转储,4,00
@@ -321,121 +387,392 @@ void OnInitSegdSH(m_oSegdStandardHeaderStruct* pSegdSH)
 	pSegdSH->m_pAlignedGPSTimeAcquisitionExtended = "0000000000000000";
 	//未使用,132,000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 	pSegdSH->m_pNotUsed3Extended = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-	
-	//@@@@@未赋值
-	char* m_pConcatenationOfExternal;//外部头段,m_pExternalHeaderLengthGeneral1*32,*SHOTPRO SP#    1/SL#    3.0/SN#   30.0/SI#1/SEQ# 1/STA:2/CTB:00.000/UH:000.0
+	//外部头段,m_pExternalHeaderLengthGeneral1*32,*SHOTPRO SP#    1/SL#    3.0/SN#   30.0/SI#1/SEQ# 1/STA:2/CTB:00.000/UH:000.0
+	pSegdSH->m_pConcatenationOfExternal = "*SHOTPRO SP#    1/SL#    3.0/SN#   30.0/SI#1/SEQ# 1/STA:2/CTB:00.000/UH:000.0";
 }
 
 // 初始化SEGD文件数据道头
-void OnInitSegdTH(m_oSegdTraceHeaderStruct* pSegdTH)
+void OnInitSegdTH(m_oSegdTraceHeaderStruct* pSegdTH, bool bAcqTrace)
 {
 	//说明，字节数，采集道数据，辅助道数据
-	char m_pFileNumberTrace[SIZE_BUFFER];//四位数文件号(0-9999),2,0327,0327
-	char m_pScanTypeNumberTrace[SIZE_BUFFER];//扫描类型编号,1,01,01
-	char m_pChannelSetNumberTrace[SIZE_BUFFER];//地震道组号,1,02,01
-	char m_pTraceNumberTrace[SIZE_BUFFER];//记录道编号,2,0001,0001
-	char m_pFirstTimingWordTrace[SIZE_BUFFER];//第一个计时字,3,00,00
-	char m_pTraceHeaderExtensionTrace[SIZE_BUFFER];//道头扩展,1,07,07
-	char m_pSampleSkewTrace[SIZE_BUFFER];//采样时滞,1,00,00
-	char m_pTraceEditTrace[SIZE_BUFFER];//记录道编辑,1,00,00
-	char m_pTimeBreakWindowTrace[SIZE_BUFFER];//时断信号窗口,3,00,00
-	char m_pExtendedChannelSetNumberTrace[SIZE_BUFFER];//扩展地震道组号,2,0000,0000
-	char m_pExtendedFileNumberTrace[SIZE_BUFFER];//扩展文件编号,3,000147,000147
+	//四位数文件号(0-9999),2,0327,0327
+	pSegdTH->m_pFileNumberTrace = "0327";
+	//扫描类型编号,1,01,01
+	pSegdTH->m_pScanTypeNumberTrace = "01";
+	//地震道组号,1,02,01
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pChannelSetNumberTrace = "02";
+	}
+	else
+	{
+		pSegdTH->m_pChannelSetNumberTrace = "01";
+	}
+	//记录道编号,2,0001,0001
+	pSegdTH->m_pTraceNumberTrace = "0001";
+	//第一个计时字,3,00,00
+	pSegdTH->m_pFirstTimingWordTrace = "00";
+	//道头扩展,1,07,07
+	pSegdTH->m_pTraceHeaderExtensionTrace = "07";
+	//采样时滞,1,00,00
+	pSegdTH->m_pSampleSkewTrace = "00";
+	//记录道编辑,1,00,00
+	pSegdTH->m_pTraceEditTrace = "00";
+	//时断信号窗口,3,00,00
+	pSegdTH->m_pTimeBreakWindowTrace = "00";
+	//扩展地震道组号,2,0000,0000
+	pSegdTH->m_pExtendedChannelSetNumberTrace = "0000";
+	//扩展文件编号,3,000147,000147
+	pSegdTH->m_pExtendedFileNumberTrace = "000147";
 
-	char m_pReceiverLineNumberTrace1[SIZE_BUFFER];//接收点测线号,3,01,00
-	char m_pReceiverPointNumberTrace1[SIZE_BUFFER];//接收点号,3,34,01
-	char m_pReceiverPointIndexTrace1[SIZE_BUFFER];//接收点索引,1,01,01
-	char m_pNumberSamplesPerTraceTrace1[SIZE_BUFFER];//每个记录道样本数目,3,4001,4001
-	char m_pExtendedReceiverLineNumberTrace1[SIZE_BUFFER];//扩展接收点测线号,5,0000000000,0000000000
-	char m_pExtendedReceiverPointNumberTrace1[SIZE_BUFFER];//扩展接收点号,5,0000000000,0000000000
-	char m_pSensorSEGDCodeTrace1[SIZE_BUFFER];//检波器 SEGD 代码,1,02,00
-	char m_pNotUsedTrace1[SIZE_BUFFER];//未使用,11,0000000000000000000000,0000000000000000000000
+	//接收点测线号,3,01,00
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pReceiverLineNumberTrace1 = "01";
+	}
+	else
+	{
+		pSegdTH->m_pReceiverLineNumberTrace1 = "00";
+	}
+	//接收点号,3,34,01
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pReceiverPointNumberTrace1 = "34";
+	}
+	else
+	{
+		pSegdTH->m_pReceiverPointNumberTrace1 = "01";
+	}
+	//接收点索引,1,01,01
+	pSegdTH->m_pReceiverPointIndexTrace1 = "01";
+	//每个记录道样本数目,3,4001,4001
+	pSegdTH->m_pNumberSamplesPerTraceTrace1 = "4001";
+	//扩展接收点测线号,5,0000000000,0000000000
+	pSegdTH->m_pExtendedReceiverLineNumberTrace1 = "0000000000";
+	//扩展接收点号,5,0000000000,0000000000
+	pSegdTH->m_pExtendedReceiverPointNumberTrace1 = "0000000000";
+	//检波器 SEGD 代码,1,02,00
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pSensorSEGDCodeTrace1 = "02";
+	}
+	else
+	{
+		pSegdTH->m_pSensorSEGDCodeTrace1 = "00";
+	}
+	//未使用,11,0000000000000000000000,0000000000000000000000
+	pSegdTH->m_pNotUsedTrace1 = "0000000000000000000000";
+	//接收点偏东距,8,0,0
+	pSegdTH->m_pReceiverPointEastingTrace2 = "0";
+	//接收点北向纬度差,8,0,0
+	pSegdTH->m_pReceiverPointNorthingTrace2 = "0";
+	//接收点高程,4,0.000000,0.000000
+	pSegdTH->m_pReceiverPointElevationTrace2 = "0.000000";
+	//检波器类型编号（1 到 9）,1,01,00
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pSensorTypeNumberTrace2 = "01";
+	}
+	else
+	{
+		pSegdTH->m_pSensorTypeNumberTrace2 = "00";
+	}
+	//未使用,3,000000,000000
+	pSegdTH->m_pNotUsedTrace2 = "000000";
+	//未使用,4,00,00
+	pSegdTH->m_pDSDIdentificationNoTrace2 = "00";
+	//扩展记录道编号,4,01,01
+	pSegdTH->m_pExtendedTraceNoTrace2 = "01";
 
-	char m_pReceiverPointEastingTrace2[SIZE_BUFFER];//接收点偏东距,8,0,0
-	char m_pReceiverPointNorthingTrace2[SIZE_BUFFER];//接收点北向纬度差,8,0,0
-	char m_pReceiverPointElevationTrace2[SIZE_BUFFER];//接收点高程,4,0.000000,0.000000
-	char m_pSensorTypeNumberTrace2[SIZE_BUFFER];//检波器类型编号（1 到 9）,1,01,00
-	char m_pNotUsedTrace2[SIZE_BUFFER];//未使用,3,000000,000000
-	char m_pDSDIdentificationNoTrace2[SIZE_BUFFER];//未使用,4,00,00
-	char m_pExtendedTraceNoTrace2[SIZE_BUFFER];//扩展记录道编号,4,01,01
+	//电阻下限,4,300.000000,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pResistanceLowLimitTrace3 = "300.000000";
+	}
+	else
+	{
+		pSegdTH->m_pResistanceLowLimitTrace3 = "0.000000";
+	}
+	//电阻上限,4,500.000000,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pResistanceHighLimitTrace3 = "500.000000";
+	}
+	else
+	{
+		pSegdTH->m_pResistanceHighLimitTrace3 = "0.000000";
+	}
+	//电阻值,4,1904.939941,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pResistanceResistanceValueTrace3 = "1904.939941";
+	}
+	else
+	{
+		pSegdTH->m_pResistanceResistanceValueTrace3 = "0.000000";
+	}
+	//倾斜度界限,4,15.000000,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pTiltLimitTrace3 = "15.000000";
+	}
+	else
+	{
+		pSegdTH->m_pTiltLimitTrace3 = "0.000000";
+	}
+	//倾斜度值,4,N-,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pTiltValueTrace3 = "N-";
+	}
+	else
+	{
+		pSegdTH->m_pTiltValueTrace3 = "0.000000";
+	}
+	//电阻误差,1,01,00
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pResistanceErrorTrace3 = "01";
+	}
+	else
+	{
+		pSegdTH->m_pResistanceErrorTrace3 = "00";
+	}
+	//倾斜度误差,1,00,00
+	pSegdTH->m_pTiltErrorTrace3 = "00";
+	//未使用,10,00000000000000000000,00000000000000000000
+	pSegdTH->m_pNotUsedTrace3 = "00000000000000000000";
 
-	char m_pResistanceLowLimitTrace3[SIZE_BUFFER];//电阻下限,4,300.000000,0.000000
-	char m_pResistanceHighLimitTrace3[SIZE_BUFFER];//电阻上限,4,500.000000,0.000000
-	char m_pResistanceResistanceValueTrace3[SIZE_BUFFER];//电阻值,4,1904.939941,0.000000
-	char m_pTiltLimitTrace3[SIZE_BUFFER];//倾斜度界限,4,15.000000,0.000000
-	char m_pTiltValueTrace3[SIZE_BUFFER];//倾斜度值,4,N-,0.000000
-	char m_pResistanceErrorTrace3[SIZE_BUFFER];//电阻误差,1,01,00
-	char m_pTiltErrorTrace3[SIZE_BUFFER];//倾斜度误差,1,00,00
-	char m_pNotUsedTrace3[SIZE_BUFFER];//未使用,10,00000000000000000000,00000000000000000000
+	//电容下限,4,N-,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pCapacitanceLowLimitTrace4 = "N-";
+	}
+	else
+	{
+		pSegdTH->m_pCapacitanceLowLimitTrace4 = "0.000000";
+	}
+	//电容上限,4,N-,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pCapacitanceHighLimitTrace4 = "N-";
+	}
+	else
+	{
+		pSegdTH->m_pCapacitanceHighLimitTrace4 = "0.000000";
+	}
+	//电容值,4,N-,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pCapacitanceValueTrace4 = "N-";
+	}
+	else
+	{
+		pSegdTH->m_pCapacitanceValueTrace4 = "0.000000";
+	}
+	//截止下限,4,N-,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pCutOffLowLimitTrace4 = "N-";
+	}
+	else
+	{
+		pSegdTH->m_pCutOffLowLimitTrace4 = "0.000000";
+	}
+	//截止上限,4,N-,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pCutOffHighLimitsTrace4 = "N-";
+	}
+	else
+	{
+		pSegdTH->m_pCutOffHighLimitsTrace4 = "0.000000";
+	}
+	//截止值,4,N-,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pCutOffValueTrace4 = "N-";
+	}
+	else
+	{
+		pSegdTH->m_pCutOffValueTrace4 = "0.000000";
+	}
+	//电容误差,1,00,00
+	pSegdTH->m_pCapacitanceErrorTrace4 = "00";
+	//截止误差,1,00,00
+	pSegdTH->m_pCutOffErrorTrace4 = "00";
+	//未使用,6,000000000000,000000000000
+	pSegdTH->m_pNotUsedTrace4 = "000000000000";
 
-	char m_pCapacitanceLowLimitTrace4[SIZE_BUFFER];//电容下限,4,N-,0.000000
-	char m_pCapacitanceHighLimitTrace4[SIZE_BUFFER];//电容上限,4,N-,0.000000
-	char m_pCapacitanceValueTrace4[SIZE_BUFFER];//电容值,4,N-,0.000000
-	char m_pCutOffLowLimitTrace4[SIZE_BUFFER];//截止下限,4,N-,0.000000
-	char m_pCutOffHighLimitsTrace4[SIZE_BUFFER];//截止上限,4,N-,0.000000
-	char m_pCutOffValueTrace4[SIZE_BUFFER];//截止值,4,N-,0.000000
-	char m_pCapacitanceErrorTrace4[SIZE_BUFFER];//电容误差,1,00,00
-	char m_pCutOffErrorTrace4[SIZE_BUFFER];//截止误差,1,00,00
-	char m_pNotUsedTrace4[SIZE_BUFFER];//未使用,6,000000000000,000000000000
+	//漏电界限,4,5.000000,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pLeakageLimitTrace5 = "5.000000";
+	}
+	else
+	{
+		pSegdTH->m_pLeakageLimitTrace5 = "0.000000";
+	}
+	//漏电值,4,5.000000,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pLeakageValueTrace5 = "5.000000";
+	}
+	else
+	{
+		pSegdTH->m_pLeakageValueTrace5 = "0.000000";
+	}
+	//未使用,16,00000000000000000000000000000000,00000000000000000000000000000000
+	pSegdTH->m_pNotUsed1Trace5 = "00000000000000000000000000000000";
+	//漏电误差,1,00,00
+	pSegdTH->m_pLeakageErrorTrace5 = "00";
+	//未使用,7,00000000000000,00000000000000
+	pSegdTH->m_pNotUsed2Trace5 = "00000000000000";
 
-	char m_pLeakageLimitTrace5[SIZE_BUFFER];//漏电界限,4,5.000000,0.000000
-	char m_pLeakageValueTrace5[SIZE_BUFFER];//漏电值,4,5.000000,0.000000
-	char m_pNotUsed1Trace5[SIZE_BUFFER];//未使用,16,00000000000000000000000000000000,00000000000000000000000000000000
-	char m_pLeakageErrorTrace5[SIZE_BUFFER];//漏电误差,1,00,00
-	char m_pNotUsed2Trace5[SIZE_BUFFER];//未使用,7,00000000000000,00000000000000
+	//设备类型,1,01,01
+	pSegdTH->m_pUnitTypeTrace6 = "01";
+	//设备序列号,3,6104422,4819236
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pUnitSerialNumberTrace6 = "6104422";
+	}
+	else
+	{
+		pSegdTH->m_pUnitSerialNumberTrace6 = "4819236";
+	}
+	//地震道编号,1,01,01
+	pSegdTH->m_pChannelNumberTrace6 = "01";
+	//备用,3,000000,000000
+	pSegdTH->m_pSpare1Trace6 = "000000";
+	//组件类型,1,03,04
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pAssemblyTypeTrace6 = "03";
+	}
+	else
+	{
+		pSegdTH->m_pAssemblyTypeTrace6 = "04";
+	}
+	//FDU 或 DSU 组件序列号,3,1791352,4819236
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pFDUorDSUAssemblySerialNumberTrace6 = "1791352";
+	}
+	else
+	{
+		pSegdTH->m_pFDUorDSUAssemblySerialNumberTrace6 = "4819236";
+	}
+	//在 FDU 或 DSU组件中的位置,1,02,01
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pLocationInFDUorDSUAssemblyTrace6 = "02";
+	}
+	else
+	{
+		pSegdTH->m_pLocationInFDUorDSUAssemblyTrace6 = "01";
+	}
+	//备用,3,000000,000000
+	pSegdTH->m_pSpare2Trace6 = "000000";
+	//FDU 或 DSU 设备类型,1,01,21
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pSubunitTypeTrace6 = "01";
+	}
+	else
+	{
+		pSegdTH->m_pSubunitTypeTrace6 = "21";
+	}
+	//地震道类型,1,00,00
+	pSegdTH->m_pChannelTypeTrace6 = "00";
+	//备用,2,0000,0000
+	pSegdTH->m_pSpare3Trace6 = "0000";
+	//检波器灵敏度,4,4294967296.000000,4294967296.000000
+	pSegdTH->m_pSensorSensitivityTrace6 = "4294967296.000000";
+	//未使用,8,0000000000000000,0000000000000000
+	pSegdTH->m_pNotUsedTrace6 = "0000000000000000";
 
-	char m_pUnitTypeTrace6[SIZE_BUFFER];//设备类型,1,01,01
-	char m_pUnitSerialNumberTrace6[SIZE_BUFFER];//设备序列号,3,6104422,4819236
-	char m_pChannelNumberTrace6[SIZE_BUFFER];//地震道编号,1,01,01
-	char m_pSpare1Trace6[SIZE_BUFFER];//备用,3,000000,000000
-	char m_pAssemblyTypeTrace6[SIZE_BUFFER];//组件类型,1,03,04
-	char m_pFDUorDSUAssemblySerialNumberTrace6[SIZE_BUFFER];//FDU 或 DSU 组件序列号,3,1791352,4819236
-	char m_pLocationInFDUorDSUAssemblyTrace6[SIZE_BUFFER];//在 FDU 或 DSU组件中的位置,1,02,01
-	char m_pSpare2Trace6[SIZE_BUFFER];//备用,3,000000,000000
-	char m_pSubunitTypeTrace6[SIZE_BUFFER];//FDU 或 DSU 设备类型,1,01,21
-	char m_pChannelTypeTrace6[SIZE_BUFFER];//地震道类型,1,00,00
-	char m_pSpare3Trace6[SIZE_BUFFER];//备用,2,0000,0000
-	char m_pSensorSensitivityTrace6[SIZE_BUFFER];//检波器灵敏度,4,4294967296.000000,4294967296.000000
-	char m_pNotUsedTrace6[SIZE_BUFFER];//未使用,8,0000000000000000,0000000000000000
-
-	char m_pControlUnitTypeTrace7[SIZE_BUFFER];//控制单元类型,1,02,49
-	char m_pControlUnitSerialNumberTrace7[SIZE_BUFFER];//控制单元序列号,3,17693,2442269
-	char m_pChannelGainScaleTrace7[SIZE_BUFFER];//地震道增益刻度,1,02,02
-	char m_pChannelFilterTrace7[SIZE_BUFFER];//地震道滤波器,1,02,02
-	char m_pChannelDataErrorTrace7[SIZE_BUFFER];//地震道数据误差：超过范围,1,00,00
-	char m_pChannelEditedStatusTrace7[SIZE_BUFFER];//地震道编辑状态,1,00,00
-	char m_pChannelSampleTomVConversionFactorTrace7[SIZE_BUFFER];//地震道采样毫伏转换系数,4,0.000067,0.000000
-	char m_pNumberOfStacksNoisyTrace7[SIZE_BUFFER];//有噪声叠加次数,1,00,00
-	char m_pNumberOfStacksLowTrace7[SIZE_BUFFER];//低叠加次数,1,00,00
-	char m_pChannelTypeIdTrace7[SIZE_BUFFER];//地震道类型标识号,1,01,09
-	char m_pChannelProcessTrace7[SIZE_BUFFER];//地震道处理,1,01,01
-	char m_pTraceMaxValueTrace7[SIZE_BUFFER];//记录道最大值,4,0.000000,0.000000
-	char m_pTraceMaxTimeTrace7[SIZE_BUFFER];//记录道最大时间,4,00,00
-	char m_pNumberInterpolationsTrace7[SIZE_BUFFER];//内插次数,4,00,00
-	char m_pSeismicTraceOffsetValueTrace7[SIZE_BUFFER];//未使用,4,00,00	
+	//控制单元类型,1,02,49
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pControlUnitTypeTrace7 = "02";
+	}
+	else
+	{
+		pSegdTH->m_pControlUnitTypeTrace7 = "49";
+	}
+	//控制单元序列号,3,17693,2442269
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pControlUnitSerialNumberTrace7 = "17693";
+	}
+	else
+	{
+		pSegdTH->m_pControlUnitSerialNumberTrace7 = "2442269";
+	}
+	//地震道增益刻度,1,02,02
+	pSegdTH->m_pChannelGainScaleTrace7 = "02";
+	//地震道滤波器,1,02,02
+	pSegdTH->m_pChannelFilterTrace7 = "02";
+	//地震道数据误差：超过范围,1,00,00
+	pSegdTH->m_pChannelDataErrorTrace7 = "00";
+	//地震道编辑状态,1,00,00
+	pSegdTH->m_pChannelEditedStatusTrace7 = "00";
+	//地震道采样毫伏转换系数,4,0.000067,0.000000
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pChannelSampleTomVConversionFactorTrace7 = "0.000067";
+	}
+	else
+	{
+		pSegdTH->m_pChannelSampleTomVConversionFactorTrace7 = "0.000000";
+	}
+	//有噪声叠加次数,1,00,00
+	pSegdTH->m_pNumberOfStacksNoisyTrace7 = "00";
+	//低叠加次数,1,00,00
+	pSegdTH->m_pNumberOfStacksLowTrace7 = "00";
+	//地震道类型标识号,1,01,09
+	if (bAcqTrace == true)
+	{
+		pSegdTH->m_pChannelTypeIdTrace7 = "01";
+	}
+	else
+	{
+		pSegdTH->m_pChannelTypeIdTrace7 = "09";
+	}
+	//地震道处理,1,01,01
+	pSegdTH->m_pChannelProcessTrace7 = "01";
+	//记录道最大值,4,0.000000,0.000000
+	pSegdTH->m_pTraceMaxValueTrace7 = "0.000000";
+	//记录道最大时间,4,00,00
+	pSegdTH->m_pTraceMaxTimeTrace7 = "00";
+	//内插次数,4,00,00
+	pSegdTH->m_pNumberInterpolationsTrace7 = "00";
+	//未使用,4,00,00
+	pSegdTH->m_pSeismicTraceOffsetValueTrace7 = "00";
 }
 // 保存到Segd文件，成功返回true，失败返回false
 bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct)
 {
 	int iCountSeisChannel = 0;
 
-	struct tm *newtime = NULL;
-	char tmpbuf[128];
+	struct tm newtime;
+	TCHAR tmpbuf[128];
 	time_t lt1;
 	time(&lt1);
-	localtime_s(newtime, &lt1);
+	localtime_s(&newtime, &lt1);
 	CString strTime = _T("");
 	CString strFilePath = _T("");
 	CString strPath = _T("");
 	FILE* pNewSegdFile;
 	string strTemp = "";
-	strftime(tmpbuf, 128, "%Y%m%d %I%M%S", newtime);
-	strTime.Format(_T("%s"), tmpbuf);
-	strPath.Format(_T("%s"), pSegdFileStruct->m_strPath.c_str());
+	_tcsftime(tmpbuf, 128, _T("%Y%m%d %I%M%S"), &newtime);
+	strTime.Format(_T("\\%s"), tmpbuf);
+	strPath = pSegdFileStruct->m_strPath.c_str();
+//	strPath.Format(_T("%s"), pSegdFileStruct->m_strPath.c_str());
 	strTime = strTime + _T(".segd"); 
 	strFilePath = strPath + strTime;
 	strTemp = (CStringA)strFilePath;
-	if((0 != fopen_s(&pNewSegdFile, strTemp.c_str(), "wb+")) == NULL)
+	if(0 != fopen_s(&pNewSegdFile, strTemp.c_str(), "wb+"))
 	{
 		AfxMessageBox(_T("Open new segd failed!\n"));
 	}
@@ -451,14 +788,14 @@ bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct)
 
 	ProcessExternalHeaderBackNew(pNewSegdFile, pSegdFileStruct);
 
-	for(int i = 1; i< pSegdFileStruct->m_oSegdSH.m_iTotalTraceNum + 1; i++)
+	for(int i = 1; i< pSegdFileStruct->m_iTotalTraceNum + 1; i++)
 	{
 
 		iCountSeisChannel++;
 
-		if (iCountSeisChannel > pSegdFileStruct->m_oSegdSH.m_iAcqTraceNum)
+		if (iCountSeisChannel > pSegdFileStruct->m_iAcqTraceNum)
 		{
-			iCountSeisChannel -= pSegdFileStruct->m_oSegdSH.m_iAcqTraceNum;
+			iCountSeisChannel -= pSegdFileStruct->m_iAcqTraceNum;
 		}
 
 		ProcessTraceHeaderBackNew(pNewSegdFile, iCountSeisChannel, pSegdFileStruct);
@@ -478,7 +815,12 @@ bool SaveSegdFile(m_oSegdFileStruct* pSegdFileStruct)
 	{
 		AfxMessageBox(_T("Close new segd file failed!"));
 	}
-
+	// @@@@内存释放报错
+// 	if (pSegdFileStruct->m_oSegdSH.m_pConcatenationOfExternal != NULL)
+// 	{
+// 		delete[] pSegdFileStruct->m_oSegdSH.m_pConcatenationOfExternal;
+// 		pSegdFileStruct->m_oSegdSH.m_pConcatenationOfExternal = NULL;
+// 	}
 	return true;
 }
 
@@ -568,11 +910,11 @@ void ProcessScanTypeHeaderBackNew(FILE* pFile, int iChannel, m_oSegdFileStruct* 
 	ReadInitToWriteSegdNew_BCD(pFile, 2, pSegdFileStruct->m_oSegdSH.m_pDescaleMultiplierScan[iChannel-1].c_str());
 	if (iChannel == 1)
 	{
-		iNumTrace = pSegdFileStruct->m_oSegdSH.m_iAuxTraceNum;
+		iNumTrace = pSegdFileStruct->m_iAuxTraceNum;
 	}
 	else if(iChannel == 2)
 	{
-		iNumTrace = pSegdFileStruct->m_oSegdSH.m_iAcqTraceNum;
+		iNumTrace = pSegdFileStruct->m_iAcqTraceNum;
 	}
 	else
 	{
@@ -632,43 +974,43 @@ void ProcessExtendedHeaderBackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruc
 	}
 
 
-	if (pSegdFileStruct->m_oSegdSH.m_iTotalTraceNum == 0)
+	if (pSegdFileStruct->m_iTotalTraceNum == 0)
 	{
-		pSegdFileStruct->m_oSegdSH.m_iTotalTraceNum = ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pTotalNumberTracesExtended.c_str());
+		pSegdFileStruct->m_iTotalTraceNum = ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pTotalNumberTracesExtended.c_str());
 	}
 	else
 	{
-		ReadParameterToSegd_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_iTotalTraceNum);
+		ReadParameterToSegd_BIN(pFile, 4, pSegdFileStruct->m_iTotalTraceNum);
 	}
 
-	if (pSegdFileStruct->m_oSegdSH.m_iAuxTraceNum == 0)
+	if (pSegdFileStruct->m_iAuxTraceNum == 0)
 	{
-		pSegdFileStruct->m_oSegdSH.m_iAuxTraceNum = ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pNumberAuxesExtended.c_str());
+		pSegdFileStruct->m_iAuxTraceNum = ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pNumberAuxesExtended.c_str());
 	}
 	else
 	{
-		ReadParameterToSegd_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_iAuxTraceNum);
+		ReadParameterToSegd_BIN(pFile, 4, pSegdFileStruct->m_iAuxTraceNum);
 	}
 
-	if (pSegdFileStruct->m_oSegdSH.m_iAcqTraceNum == 0)
+	if (pSegdFileStruct->m_iAcqTraceNum == 0)
 	{
-		pSegdFileStruct->m_oSegdSH.m_iAcqTraceNum = ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pNumberSeisTracesExtended.c_str());
+		pSegdFileStruct->m_iAcqTraceNum = ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pNumberSeisTracesExtended.c_str());
 	} 
 	else
 	{
-		ReadParameterToSegd_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_iAcqTraceNum);
+		ReadParameterToSegd_BIN(pFile, 4, pSegdFileStruct->m_iAcqTraceNum);
 	}
 
 	ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pNumberDeadSeisTracesExtended.c_str());
 
 
-	if (pSegdFileStruct->m_oSegdSH.m_iAcqTraceNum == 0)
+	if (pSegdFileStruct->m_iAcqTraceNum == 0)
 	{
 		ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pNumberLiveSeisTracesExtended.c_str());
 	}
 	else
 	{
-		ReadParameterToSegd_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_iAcqTraceNum);
+		ReadParameterToSegd_BIN(pFile, 4, pSegdFileStruct->m_iAcqTraceNum);
 	}
 
 	ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pTypeSourceExtended.c_str());
@@ -746,7 +1088,7 @@ void ProcessExtendedHeaderBackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruc
 	ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pSlipSweepModeUsedExtended.c_str());
 	ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pFilesPerTapeExtended.c_str());
 	ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pFileCountExtended.c_str());
-	ReadInitToWriteSegdNew_ASC(pFile, 160, pSegdFileStruct->m_oSegdSH.m_pAcquisitionErrorDescriptionExtended.c_str());
+	ReadInitToWriteSegdNew_ASC(pFile, 160, pSegdFileStruct->m_oSegdSH.m_pAcquisitionErrorDescriptionExtended);
 	ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pFilterTypeExtended.c_str());
 
 	ReadInitToWriteSegdNew_BIN(pFile, 4, pSegdFileStruct->m_oSegdSH.m_pStackDumpedExtended.c_str());
@@ -780,7 +1122,7 @@ void ProcessExternalHeaderBackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruc
 	int iLenth = 0;
 	int iLenthExternalHeader = ReadInitToWriteSegdNew_BCD(pFile, 1, pSegdFileStruct->m_oSegdSH.m_pExternalHeaderLengthGeneral1.c_str());
 	iLenth = iLenthExternalHeader * 32;
-	ReadInitToWriteSegdNew_ASC(pFile, iLenth, pSegdFileStruct->m_oSegdSH.m_pConcatenationOfExternal);
+	ReadInitToWriteSegdNew_ASC(pFile, iLenth, pSegdFileStruct->m_oSegdSH.m_pConcatenationOfExternal.c_str());
 }
 
 void ProcessTraceHeaderBackNew(FILE* pFile, int iChannel, m_oSegdFileStruct* pSegdFileStruct)
@@ -1141,14 +1483,16 @@ void ReadInitToWriteSegdNew_ASC(FILE* pFile, int iCountByte, const char* pParame
 {
 	int iResultNew = 0;
 	CString strTemp = _T("");
-
-	char charByte[1024];
-	memset(charByte, 0, sizeof(char)*1024);
+	char* pBuf = NULL;
 	if (iCountByte > 0)
 	{
-
 		iResultNew = fseek(pFile, 0, SEEK_CUR);
-		fwrite(pParameter, sizeof(char), iCountByte, pFile);
+		pBuf = new char[iCountByte];
+		memset(pBuf, 0, iCountByte);
+		memcpy(pBuf, pParameter, strlen(pParameter));
+		fwrite(pBuf, sizeof(char), iCountByte, pFile);
+		delete[] pBuf;
+		pBuf = NULL;
 	}
 }
 

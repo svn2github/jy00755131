@@ -106,7 +106,6 @@ HCURSOR CNetWinPcapDlg::OnQueryDragIcon()
 void CNetWinPcapDlg::PhraseCommandLine(CString str)
 {
 	int iPos = 0;
-	int iCount = 0;
 	CString strCmd = _T("");
 	CString strTemp = _T("");
 	iPos = str.Find('=');
@@ -285,7 +284,6 @@ void CNetWinPcapDlg::OnClose()
 void CNetWinPcapDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	int iTemp = 0;
 	if (nIDEvent == RevSndFrameNumTimerEventID)
 	{
 		m_lEditDownStreamRcvNum = _InterlockedCompareExchange(&m_oNetPcapComm.m_lDownStreamNetRevFrameNum, 0, 0);

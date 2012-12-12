@@ -231,7 +231,7 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 		{
 			m_oProTypeControlsShow.m_bRefractionDelay = false;
 		}
-		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		else if (m_radioProcessSetup == PROCESS_ADVANCE)
 		{
 			m_oProTypeControlsShow.m_bRefractionDelay = true;
 		}
@@ -259,7 +259,7 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 			m_oProTypeControlsShow.m_bRefractionDelay = false;
 			m_oProTypeControlsShow.m_bPreStack = false;
 		}
-		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		else if (m_radioProcessSetup == PROCESS_ADVANCE)
 		{
 			m_oProTypeControlsShow.m_bRefractionDelay = true;
 			m_oProTypeControlsShow.m_bPreStack = true;
@@ -289,7 +289,7 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 			m_oProTypeControlsShow.m_bListeningTime = false;
 			m_oProTypeControlsShow.m_bPreStack = false;
 		}
-		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		else if (m_radioProcessSetup == PROCESS_ADVANCE)
 		{
 			m_oProTypeControlsShow.m_bListeningTime = true;
 			m_oProTypeControlsShow.m_bPreStack = true;
@@ -318,7 +318,7 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 		{
 			m_oProTypeControlsShow.m_bListeningTime = false;
 		}
-		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		else if (m_radioProcessSetup == PROCESS_ADVANCE)
 		{
 			m_oProTypeControlsShow.m_bListeningTime = true;
 		}
@@ -346,7 +346,7 @@ void CDlgProcessTypeSetup::OnShowProcessTypeWindow(int iProcessType)
 			m_oProTypeControlsShow.m_bListeningTime = false;
 			m_oProTypeControlsShow.m_bPreStack = false;
 		}
-		else if (m_radioProcessSetup = PROCESS_ADVANCE)
+		else if (m_radioProcessSetup == PROCESS_ADVANCE)
 		{
 			m_oProTypeControlsShow.m_bListeningTime = true;
 			m_oProTypeControlsShow.m_bPreStack = true;
