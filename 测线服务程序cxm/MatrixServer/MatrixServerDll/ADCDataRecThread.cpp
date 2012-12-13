@@ -53,6 +53,10 @@ void WaitADCDataRecThread(m_oADCDataRecThreadStruct* pADCDataRecThread)
 // 	pADCDataRecThread->m_oProSampleDataCallBack = pCallBack;
 // 	LeaveCriticalSection(&pADCDataRecThread->m_oSecADCDataRecThread);
 // }
+bool CompareLocation(m_oSegdDataHeaderStruct* pOptStrFirst, m_oSegdDataHeaderStruct* pOptStrSecond)
+{
+	return (pOptStrFirst->m_uiLocation < pOptStrSecond->m_uiLocation);
+}
 // 将ADC数据加入到任务缓冲区
 void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, double dPointTime, char* pBuf, 
 	unsigned int uiLen, m_oADCDataRecThreadStruct* pADCDataRecThread)
@@ -117,6 +121,7 @@ void AddToADCDataBuf(unsigned int uiIP, unsigned int uiTime, double dPointTime, 
 				}
 				pADCDataBuf->m_olsSegdDataHeader.push_back(pSegdDataHeader);
 			}
+			pADCDataBuf->m_olsSegdDataHeader.sort(CompareLocation);
 			// 将数据存储缓冲区加入索引表
 			AddToADCDataBufMap(pADCDataBuf->m_uiIndex, pADCDataBuf, 
 				&pADCDataRecThread->m_pADCDataBufArray->m_oADCDataBufWorkMap);
@@ -228,7 +233,7 @@ void ProcADCDataRecFrameOne(m_oADCDataRecThreadStruct* pADCDataRecThread)
 	iADCDataInOneFrameNum = pADCDataRecThread->m_pThread->m_pConstVar->m_iADCDataInOneFrameNum;
 	usADCFramePointLimit = pADCDataRecThread->m_pThread->m_pConstVar->m_usADCFramePointLimit;
 	uiADCSaveBufSize = iADCDataInOneFrameNum * iADCDataSize3B;
-	dPointTime = 1000 / pADCDataRecThread->m_iADCSampleRate;
+	dPointTime = 1000.0 / pADCDataRecThread->m_iADCSampleRate;
 	uiFrameTime = dPointTime * iADCDataInOneFrameNum;
 	EnterCriticalSection(&pADCDataRecThread->m_pADCDataFrame->m_oSecADCDataFrame);
 	// 得到仪器IP

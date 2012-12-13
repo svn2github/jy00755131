@@ -311,7 +311,7 @@ void OnInitSegdSH(m_oSegdStandardHeaderStruct* pSegdSH)
 	//叠加次数,4,01
 	pSegdSH->m_pStackingFoldExtended = "01";
 	//未使用,80,00
-	pSegdSH->m_pNotUsed1Extended = "02";
+	pSegdSH->m_pNotUsed1Extended = "00";
 	//记录长度,4,4000
 	pSegdSH->m_pRecordLengthExtended = "4000";
 	//自相关峰值时间,4,00
@@ -1120,7 +1120,9 @@ void ProcessExtendedHeaderBackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruc
 void ProcessExternalHeaderBackNew(FILE* pFile, m_oSegdFileStruct* pSegdFileStruct)
 {
 	int iLenth = 0;
-	int iLenthExternalHeader = ReadInitToWriteSegdNew_BCD(pFile, 1, pSegdFileStruct->m_oSegdSH.m_pExternalHeaderLengthGeneral1.c_str());
+	CString str = _T("");
+	str = pSegdFileStruct->m_oSegdSH.m_pExternalHeaderLengthGeneral1.c_str();
+	int iLenthExternalHeader = _ttoi(str);
 	iLenth = iLenthExternalHeader * 32;
 	ReadInitToWriteSegdNew_ASC(pFile, iLenth, pSegdFileStruct->m_oSegdSH.m_pConcatenationOfExternal.c_str());
 }
@@ -1398,8 +1400,8 @@ void ReadInitToWriteSegdNew_BCD_addLow(FILE* pFile, int iCountByte, const char* 
 
 	char charByte[SIZE_BUFFER];
 	memset(charByte, 0, sizeof(char)*SIZE_BUFFER);
-
-	cstrHigh.Format(_T("%s"), strHigh);
+	cstrHigh = strHigh.c_str();
+//	cstrHigh.Format(_T("%s"), strHigh);
 
 	strTemp = cstrHigh + CString(pParameter);
 
