@@ -140,11 +140,11 @@ BOOL CDraw3DGraph_Test2Dlg::OnInitDialog()
 	{
 		m_xTimeData[i] = i;
 	}
-	m_ctrlGraph3D.SetPlotAreaColor(RGB(128, 128, 128));
+	m_ctrlGraph3D.SetPlotAreaColor(RGB(128, 128, 128));           //背景颜色
 	/*m_ctrlGraph3D.GetPlots().Item(1).SetProjectionYZ(TRUE);*/
-	m_ctrlGraph3D.GetPlots().Item(1).SetFillColor(RGB(0, 0, 0));
-	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::None;
-	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
+	m_ctrlGraph3D.GetPlots().Item(1).SetFillColor(RGB(0, 0, 0));  //曲面颜色
+	m_ctrlGraph3D.Plots.Item(1).ColorMapStyle = CNiPlot3D::None;  //曲面风格
+	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);                   //设置轴标签
 	m_Axis3D.SetCaption(_T("Time"));
 	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
 	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(2);
@@ -155,8 +155,8 @@ BOOL CDraw3DGraph_Test2Dlg::OnInitDialog()
 	m_Axis3D.SetCaption(_T("Amp"));
 	m_Axis3D.SetCaptionColor(RGB(255, 0, 0));
 	m_ctrlGraph3D.SetCaptionColor(RGB(213, 43, 213));
-	m_ctrlGraph3D.SetGridFrameColor(RGB(128, 0, 0));
-//	m_ctrlGraph3D.SetPlotAreaColor(RGB(0, 128, 0));
+	m_ctrlGraph3D.SetGridFrameColor(RGB(128, 0, 0));   //边线颜色
+	//	m_ctrlGraph3D.SetPlotAreaColor(RGB(0, 128, 0));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 

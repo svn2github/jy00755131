@@ -266,11 +266,13 @@ void CDraw3DGraph_Test3Dlg::OnBnClickedBtnSelectfile()
 	m_iOff = m_fin.tellg();
 	
 	m_fin.read(data, 3);
+	//滤过时间
 	while(temp != m_fin.peek())
 	{
 		m_fin.seekg(1, ios::cur);
 	}
 	m_fin.seekg(1, ios::cur);
+	//只读数据的第一行，得到m_uiTraceNume值，用于开内存
 	while(1)
 	{
 		if (m_fin.peek() == 0x0a)
@@ -391,6 +393,7 @@ void CDraw3DGraph_Test3Dlg::OnTimer(UINT_PTR nIDEvent)
 					m_zAmpData(i-1, j) = m_zAmpData(i, j);
 				}
 			}
+			//x轴即time轴，最大最小值递增
  			m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
  			m_Axis3D.SetMinMax(m_xTimeData[0], m_xTimeData[SampleTime - 1]);
 		}
@@ -402,12 +405,13 @@ void CDraw3DGraph_Test3Dlg::OnTimer(UINT_PTR nIDEvent)
 				CDialog::OnTimer(nIDEvent);
 				return;
 			}
-			while(temp != m_fin.peek())
+			while(temp != m_fin.peek())//peek()返回asc字符
 			{
 				m_fin.seekg(1, ios::cur);
 			}
 			m_fin.seekg(1, ios::cur);
 		}
+		//读一行数据并存储，每行为同一时间点的各道数据
 		while(1)
 		{
 			if (m_fin.peek() == 0x0a)
@@ -421,6 +425,7 @@ void CDraw3DGraph_Test3Dlg::OnTimer(UINT_PTR nIDEvent)
 			}
 			s = data;
 			sscanf_s(s, _T("%8d /t"), &iTemp);
+			//排除无效数据
 			if (iTemp > 10000)
 			{
 				iTemp = 0;

@@ -15,7 +15,7 @@ using std::streamoff;
 // 采样数据最大值
 #define SampleAmpMin		-10000.0
 // 列数
-#define ColumnNum	20
+#define ColumnNum			20
 // 定时器序号
 #define TimerID				1
 // 定时器延时

@@ -288,19 +288,19 @@ void CDraw3DGraph_Test4Dlg::OnBnClickedBtnSelectfile()
 		m_fin.read(data, DataBytesNum);
 		m_uiTraceNume++;
 	}
-	uiRowNum = m_uiTraceNume / ColumnNum;
-	m_xRow.SetSize(uiRowNum);
-	uiCurveRowNum = uiRowNum * (InterpolateRowNum + 1) - InterpolateRowNum;
-	m_xCurveRow.SetSize(uiCurveRowNum);
-	m_dtRow.SetSize(uiRowNum);
-	m_zAmpRowTemp.SetSize(uiRowNum);
+	uiRowNum = m_uiTraceNume / ColumnNum;  //22=445/20
+	m_xRow.SetSize(uiRowNum);           //X轴数据
+	uiCurveRowNum = uiRowNum * (InterpolateRowNum + 1) - InterpolateRowNum;//211=22*(9+1)-9
+	m_xCurveRow.SetSize(uiCurveRowNum); //差值计算后x轴数据
+	m_dtRow.SetSize(uiRowNum);          //x轴方向衍生数据
+	m_zAmpRowTemp.SetSize(uiRowNum);    //X轴方向采样数据临时缓冲
 	for (unsigned int i=0; i<uiRowNum; i++)
 	{
 		m_xRow[i] = i + 1;
 	}
 	for (unsigned int i=0; i<uiCurveRowNum; i++)
 	{
-		m_xCurveRow[i] = 0.1 * i + 1;
+		m_xCurveRow[i] = 1.0 / (InterpolateRowNum + 1) * i + 1;
 	}
 	m_yColumn.SetSize(ColumnNum);
 	uiCurveColumnNum = ColumnNum * (InterpolateColumnNum + 1) - InterpolateColumnNum;
@@ -313,10 +313,10 @@ void CDraw3DGraph_Test4Dlg::OnBnClickedBtnSelectfile()
 	}
 	for (unsigned int i=0; i<uiCurveColumnNum; i++)
 	{
-		m_yCurveColumn[i] = 0.1 * i + 1;
+		m_yCurveColumn[i] = 1.0 / (InterpolateColumnNum + 1) * i + 1;
 	}
-	m_zAmpData.SetSize(uiRowNum, ColumnNum);
-	m_zCurveAmpData.SetSize(uiCurveRowNum, uiCurveColumnNum);
+	m_zAmpData.SetSize(uiRowNum, ColumnNum);                 //采样数据
+	m_zCurveAmpData.SetSize(uiCurveRowNum, uiCurveColumnNum);//差值计算后Z轴数据
 	for (unsigned int i=0; i< uiRowNum; i++)
 	{
 		for (unsigned int j = 0; j< ColumnNum; j++)
@@ -360,7 +360,7 @@ void CDraw3DGraph_Test4Dlg::OnTimer(UINT_PTR nIDEvent)
 			{
 				iTemp = 0;
 			}
-			if (uiCounter < (m_uiTraceNume / ColumnNum) * ColumnNum)
+			if (uiCounter < (m_uiTraceNume / ColumnNum) * ColumnNum)//将数据存入20*22的缓冲中,只取440道数据
 			{
 				m_zAmpData(uiCounter / ColumnNum, uiCounter % ColumnNum) = iTemp;
 			}
@@ -376,10 +376,10 @@ void CDraw3DGraph_Test4Dlg::OnTimer(UINT_PTR nIDEvent)
 			{
 				m_zAmpRowTemp[i] = m_zAmpData(i, j);
 			}
-			CNiMath::Spline(m_xRow, m_zAmpRowTemp, 1, 1, m_dtRow);
+			CNiMath::Spline(m_xRow, m_zAmpRowTemp, 1, 1, m_dtRow);//求斜率
 			for (unsigned int i=0; i<m_xCurveRow.GetSize(); i++)
 			{
-				CNiMath::InterpolateSpline(m_xRow, m_zAmpRowTemp, m_dtRow, m_xCurveRow[i], m_zCurveAmpData(i, j * (InterpolateColumnNum + 1)));
+				CNiMath::InterpolateSpline(m_xRow, m_zAmpRowTemp, m_dtRow, m_xCurveRow[i], m_zCurveAmpData(i, j * (InterpolateColumnNum + 1)));//
 			}
 		}
  		// 按列求差值

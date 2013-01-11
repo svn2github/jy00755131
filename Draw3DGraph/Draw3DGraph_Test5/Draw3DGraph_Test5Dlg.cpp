@@ -102,7 +102,7 @@ BOOL CDraw3DGraph_Test5Dlg::OnInitDialog()
 	rectCtrl = rectWindow;
 	rectCtrl.right = rectWindow.right * 4 / 5;
 	m_ctrlGraph3D.MoveWindow(rectCtrl);
-	m_ctrlGraph3D.SetProjectionStyle(m_ctrlGraph3D.Perspective);
+	m_ctrlGraph3D.SetProjectionStyle(m_ctrlGraph3D.Perspective);//投射模式——近大远小
 
 	m_Axis3D = m_ctrlGraph3D.GetAxes().Item(1);
 	m_Axis3D.SetCaption(_T("Y-axis"));
