@@ -376,9 +376,11 @@ void CDraw3DGraph_Test4Dlg::OnTimer(UINT_PTR nIDEvent)
 			{
 				m_zAmpRowTemp[i] = m_zAmpData(i, j);
 			}
-			CNiMath::Spline(m_xRow, m_zAmpRowTemp, 1, 1, m_dtRow);//求斜率
+			// 1,1为曲线两端的一阶导数（切线斜率），该函数计算三次样条插值的参数
+			CNiMath::Spline(m_xRow, m_zAmpRowTemp, 1, 1, m_dtRow);
 			for (unsigned int i=0; i<m_xCurveRow.GetSize(); i++)
 			{
+				// 求出三次样条插值后Z轴的坐标值
 				CNiMath::InterpolateSpline(m_xRow, m_zAmpRowTemp, m_dtRow, m_xCurveRow[i], m_zCurveAmpData(i, j * (InterpolateColumnNum + 1)));//
 			}
 		}
