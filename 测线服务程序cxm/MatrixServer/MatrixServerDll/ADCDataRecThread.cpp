@@ -499,14 +499,15 @@ void ProcADCRetransmission(m_oADCDataRecThreadStruct* pADCDataRecThread)
 			&& (pLostFrame->m_bReturnOk == false))
 		{
 			// 生成ADC数据重发帧
-			MakeInstrADCDataFrame(pADCDataRecThread->m_pADCDataFrame, 
-				pADCDataRecThread->m_pThread->m_pConstVar, iter->first.m_uiIP, iter->first.m_usADCFramePointNb,
-				pADCDataRecThread->m_pThread->m_pLogOutPut);
-			str.Format(_T("向仪器IP = 0x%x的仪器发送ADC数据重发帧，重发的指针偏移量 = %d"), iter->first.m_uiIP,
-				iter->first.m_usADCFramePointNb);
-			strConv = (CStringA)str;
-			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCRetransmission", 
-				strConv);
+			// @@@@考虑到网络容量暂不重发丢帧
+// 			MakeInstrADCDataFrame(pADCDataRecThread->m_pADCDataFrame, 
+// 				pADCDataRecThread->m_pThread->m_pConstVar, iter->first.m_uiIP, iter->first.m_usADCFramePointNb,
+// 				pADCDataRecThread->m_pThread->m_pLogOutPut);
+// 			str.Format(_T("向仪器IP = 0x%x的仪器发送ADC数据重发帧，重发的指针偏移量 = %d"), iter->first.m_uiIP,
+// 				iter->first.m_usADCFramePointNb);
+// 			strConv = (CStringA)str;
+// 			AddMsgToLogOutPutList(pADCDataRecThread->m_pThread->m_pLogOutPut, "ProcADCRetransmission", 
+// 				strConv);
 			iter++;
 		}
 		// 重发次数大于指定次数则从索引中删除

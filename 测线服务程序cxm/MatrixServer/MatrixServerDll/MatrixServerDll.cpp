@@ -364,7 +364,7 @@ void OnADCStartSample(m_oEnvironmentStruct* pEnv)
 	// 产生施工任务
 	// 炮号、TB开始时间、采样时间、参与采集的仪器指针索引表
 	// @@@实验连续放炮
-	GenOptTaskList(100, 10, 20, 2000, 4000, iSampleRate, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
+//	GenOptTaskList(100, 10, 20, 2000, 4000, iSampleRate, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
 	// @@@实验叠加放炮
 //	GenOptTaskList(600, 10, 20, 2000, 4000, iSampleRate, pEnv->m_pOptTaskArray, pEnv->m_pLineList, pEnv->m_pConstVar);
 	AddMsgToLogOutPutList(pEnv->m_pLogOutPutOpt, "OnADCStartSample", "开始ADC数据采集");

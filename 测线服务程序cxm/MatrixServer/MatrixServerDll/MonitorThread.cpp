@@ -761,7 +761,8 @@ void ProcMonitor(m_oMonitorThreadStruct* pMonitorThread)
 		MonitorADCSet(pMonitorThread->m_pADCSetThread);
 	}
 	// 系统稳定则进行误码查询
-	MonitorErrorCode(pMonitorThread->m_pErrorCodeThread);
+	// @@@考虑到网络容量暂不误码查询
+//	MonitorErrorCode(pMonitorThread->m_pErrorCodeThread);
 }
 // 线程函数
 DWORD WINAPI RunMonitorThread(m_oMonitorThreadStruct* pMonitorThread)
